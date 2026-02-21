@@ -12754,6 +12754,17 @@
                         </div>
                         <div class="switch active"></div>
                     </div>
+                    <div style="display:flex;align-items:center;gap:12px;padding:12px 0 4px;">
+                        <div style="flex:1;">
+                            <div class="switch-label">Profile display mode</div>
+                            <div class="switch-help">Which release cards appear on your profile</div>
+                        </div>
+                        <select id="musicProfileDisplayMode" class="form-input" style="width:auto;font-size:13px;padding:6px 10px;" onchange="setMusicDisplayMode(this.value)">
+                            <option value="both">Both</option>
+                            <option value="tracklist">Tracklist only</option>
+                            <option value="embeds">Embeds only</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Section action -->
@@ -14723,7 +14734,9 @@
 
         // Music State — hoisted so DOMContentLoaded can safely call loadMusicState()
         const MUSIC_KEY = 'able_music_releases';
+        const MUSIC_DISPLAY_MODE_KEY = 'able_music_display_mode';
         let musicState = { releases: [] };
+        let musicDisplayMode = 'both'; // 'tracklist' | 'embeds' | 'both'
         const AUTO_STATE_KEY = 'able_dashboard_autostate';
 
         // Section Actions — explicit per-section CTA assignments (able_section_actions_v1)
@@ -16857,6 +16870,10 @@
 
                 // Load music releases and render
                 loadMusicState();
+                (function() {
+                    var _saved = localStorage.getItem(MUSIC_DISPLAY_MODE_KEY);
+                    if (_saved && ['tracklist','embeds','both'].includes(_saved)) musicDisplayMode = _saved;
+                })();
                 renderMusicTab();
                 updatePreviewMusic();
 
@@ -19310,6 +19327,12 @@
                     <div class="tracks-list" id="trackRowsList"></div>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label">Credits <span style="font-weight:400;color:var(--text-tertiary);">(optional)</span></label>
+                    <input type="text" class="form-input" id="releaseCredits" placeholder="e.g. Prod. @name, Mix: @name" maxlength="120">
+                    <div class="form-help">Credits (optional) — e.g. Prod. @name, Mix: @name</div>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('addReleaseModal')">Cancel</button>
@@ -19348,6 +19371,11 @@
                         <option value="vimeo">Vimeo</option>
                         <option value="other">Other</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Credits <span style="font-weight:400;color:var(--text-tertiary);">(optional)</span></label>
+                    <input type="text" class="form-input" id="videoCredits" placeholder="e.g. Prod. @name, Mix: @name" maxlength="120">
+                    <div class="form-help">Credits (optional) — e.g. Prod. @name, Mix: @name</div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -19391,6 +19419,11 @@
                     <label class="form-label">Ticket Link (optional)</label>
                     <input type="url" class="form-input" placeholder="https://..." id="eventTicketUrl">
                 </div>
+                <div class="form-group">
+                    <label class="form-label">Credits <span style="font-weight:400;color:var(--text-tertiary);">(optional)</span></label>
+                    <input type="text" class="form-input" id="eventCredits" placeholder="e.g. Prod. @name, Mix: @name" maxlength="120">
+                    <div class="form-help">Credits (optional) — e.g. Prod. @name, Mix: @name</div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('addEventModal')">Cancel</button>
@@ -19432,6 +19465,11 @@
                 <div class="form-group">
                     <label class="form-label">Product Image URL (optional)</label>
                     <input type="url" class="form-input" placeholder="https://..." id="productImage">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Credits <span style="font-weight:400;color:var(--text-tertiary);">(optional)</span></label>
+                    <input type="text" class="form-input" id="productCredits" placeholder="e.g. Prod. @name, Mix: @name" maxlength="120">
+                    <div class="form-help">Credits (optional) — e.g. Prod. @name, Mix: @name</div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -19476,6 +19514,7 @@
             document.getElementById('releaseYoutube').value = '';
             document.getElementById('releaseTiktok').value = '';
             document.getElementById('trackRowsList').innerHTML = '';
+            document.getElementById('releaseCredits').value = '';
             selectDisplayMode('tracklist');
 
             if (editId) {
@@ -19493,6 +19532,7 @@
                 document.getElementById('releaseYoutube').value = rel.platforms.youtube || '';
                 document.getElementById('releaseTiktok').value = rel.platforms.tiktok || '';
                 selectDisplayMode(rel.displayMode || 'tracklist');
+                document.getElementById('releaseCredits').value = rel.credits || '';
                 // Re-populate tracks
                 (rel.tracks || []).forEach(t => addTrackRow(t.title, t.duration));
             } else {
@@ -19516,6 +19556,16 @@
             document.querySelectorAll('.display-mode-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.mode === mode);
             });
+        }
+
+        // ── Global profile display mode (tracklist | embeds | both) ──
+        function setMusicDisplayMode(mode) {
+            const valid = ['tracklist', 'embeds', 'both'];
+            if (!valid.includes(mode)) mode = 'both';
+            musicDisplayMode = mode;
+            try { localStorage.setItem(MUSIC_DISPLAY_MODE_KEY, mode); } catch(e) {}
+            renderMusicTab();
+            updatePreviewMusic();
         }
 
         let trackRowCount = 0;
@@ -19589,6 +19639,7 @@
                 type: document.getElementById('releaseType').value,
                 artwork: document.getElementById('releaseArtwork').value.trim(),
                 displayMode: document.getElementById('releaseDisplayMode').value,
+                credits: document.getElementById('releaseCredits').value.trim(),
                 platforms: {
                     spotify:    document.getElementById('releaseSpotify').value.trim(),
                     apple:      document.getElementById('releaseApple').value.trim(),
@@ -19634,6 +19685,10 @@
         function renderMusicTab() {
             const container = document.getElementById('musicReleaseList');
             if (!container) return;
+
+            // Sync global display mode selector
+            var _mdSel = document.getElementById('musicProfileDisplayMode');
+            if (_mdSel) _mdSel.value = musicDisplayMode;
 
             const emptyState = document.getElementById('musicEmptyState');
             const addBtn     = document.getElementById('musicAddBtn');
@@ -19702,7 +19757,15 @@
 
             section.style.display = 'block';
 
-            cards.innerHTML = musicState.releases.slice(0, 2).map(rel => {
+            // Filter by global profile display mode (does not affect per-release rel.displayMode)
+            var _visible = musicState.releases.filter(function(rel) {
+                if (musicDisplayMode === 'tracklist') return rel.displayMode !== 'embed';
+                if (musicDisplayMode === 'embeds')   return rel.displayMode === 'embed';
+                return true; // 'both'
+            });
+            if (_visible.length === 0) { section.style.display = 'none'; return; }
+
+            cards.innerHTML = _visible.slice(0, 2).map(rel => {
                 const platforms = rel.platforms || {};
                 const hasPlatforms = Object.values(platforms).some(u => u);
                 const pills = [
@@ -19721,8 +19784,11 @@
                         if (embedId) {
                             const embedType = platforms.spotify.includes('/album/') ? 'album' : 'track';
                             return `
-                                <div style="border-radius:12px;overflow:hidden;background:var(--bg-secondary);border:1px solid var(--border);">
-                                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${embedType}/${embedId}?utm_source=generator&theme=0" width="100%" height="80" frameborder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                                <div>
+                                    <div style="border-radius:12px;overflow:hidden;background:var(--bg-secondary);border:1px solid var(--border);">
+                                        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${embedType}/${embedId}?utm_source=generator&theme=0" width="100%" height="80" frameborder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                                    </div>
+                                    ${rel.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${rel.credits}</div>` : ''}
                                 </div>`;
                         }
                     }
@@ -19731,8 +19797,11 @@
                         const ytId = extractYouTubeId(platforms.youtube);
                         if (ytId) {
                             return `
-                                <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);">
-                                    <iframe width="100%" height="160" src="https://www.youtube.com/embed/${ytId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display:block;"></iframe>
+                                <div>
+                                    <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);">
+                                        <iframe width="100%" height="160" src="https://www.youtube.com/embed/${ytId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display:block;"></iframe>
+                                    </div>
+                                    ${rel.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${rel.credits}</div>` : ''}
                                 </div>`;
                         }
                     }
@@ -19740,8 +19809,11 @@
                     if (platforms.soundcloud) {
                         const scEncoded = encodeURIComponent(platforms.soundcloud);
                         return `
-                            <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);">
-                                <iframe width="100%" height="120" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=${scEncoded}&color=%230891b2&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false" style="display:block;"></iframe>
+                            <div>
+                                <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);">
+                                    <iframe width="100%" height="120" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=${scEncoded}&color=%230891b2&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false" style="display:block;"></iframe>
+                                </div>
+                                ${rel.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${rel.credits}</div>` : ''}
                             </div>`;
                     }
                     // No embeddable URL set — fall through to tracklist
@@ -19769,6 +19841,7 @@
                         ${tracksHtml}
                         ${moreCount > 0 ? `<div style="font-size:11px;color:var(--text-tertiary);padding-top:6px;text-align:center;">+${moreCount} more tracks</div>` : ''}
                         ${hasPlatforms ? `<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;">${pills}</div>` : ''}
+                        ${rel.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:6px;padding-top:5px;border-top:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${rel.credits}</div>` : ''}
                     </div>`;
             }).join('');
         }
@@ -19846,13 +19919,15 @@
                 showToast('⚠️ Please enter both title and URL');
                 return;
             }
+            const credits = document.getElementById('videoCredits').value.trim();
             const videos = loadVideos();
-            videos.push({ id: Date.now(), title, url, platform });
+            videos.push({ id: Date.now(), title, url, platform, credits });
             saveVideos(videos);
             showToast(`✅ "${title}" added to your videos`);
             closeModal('addVideoModal');
             document.getElementById('videoTitle').value = '';
             document.getElementById('videoUrl').value = '';
+            document.getElementById('videoCredits').value = '';
             renderVideoList();
         }
 
@@ -19941,8 +20016,9 @@
                 showToast('⚠️ Please fill in event name, venue, and date');
                 return;
             }
+            const credits = document.getElementById('eventCredits').value.trim();
             const events = loadEvents();
-            events.push({ id: Date.now(), name, venue, city, date, time, ticketUrl });
+            events.push({ id: Date.now(), name, venue, city, date, time, ticketUrl, credits });
             // Sort by date ascending
             events.sort((a, b) => new Date(a.date) - new Date(b.date));
             saveEvents(events);
@@ -19954,6 +20030,7 @@
             document.getElementById('eventDate').value = '';
             document.getElementById('eventTime').value = '';
             document.getElementById('eventTicketUrl').value = '';
+            document.getElementById('eventCredits').value = '';
             renderEventList();
         }
 
@@ -20036,8 +20113,9 @@
                 showToast('⚠️ Please enter product name and price');
                 return;
             }
+            const credits = document.getElementById('productCredits').value.trim();
             const merch = loadMerch();
-            merch.push({ id: Date.now(), name, description, price, stock, url, image });
+            merch.push({ id: Date.now(), name, description, price, stock, url, image, credits });
             saveMerch(merch);
             showToast(`✅ "${name}" added to your merch`);
             closeModal('addProductModal');
@@ -20047,6 +20125,7 @@
             document.getElementById('productStock').value = '';
             document.getElementById('productUrl').value = '';
             document.getElementById('productImage').value = '';
+            document.getElementById('productCredits').value = '';
             renderMerchList();
         }
 
@@ -21860,6 +21939,7 @@
                         <div class="video-info">
                             <div class="video-title">${featured.title}</div>
                             <div class="video-stats">${featured.platform || 'YouTube'}</div>
+                            ${featured.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${featured.credits}</div>` : ''}
                         </div>
                     </a>
                 `;
@@ -21887,6 +21967,7 @@
                             <div class="video-info">
                                 <div class="video-title">${v.title}</div>
                                 <div class="video-stats">${v.platform || 'YouTube'}</div>
+                                ${v.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${v.credits}</div>` : ''}
                             </div>
                         </a>
                     `;
@@ -21952,6 +22033,7 @@
                                     <div class="bento-title">${event.name}</div>
                                     <div class="bento-subtitle">${event.venue}${event.city ? ', ' + event.city : ''}</div>
                                     ${event.time ? `<div class="bento-time">🎸 ${event.time}</div>` : ''}
+                                    ${event.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${event.credits}</div>` : ''}
                                 </div>
                             </div>
                         `;
@@ -22010,6 +22092,7 @@
                                 <div class="merch-bento-name">${product.name}</div>
                                 ${product.description ? `<div class="merch-bento-desc">${product.description}</div>` : ''}
                                 <div class="merch-bento-price">$${product.price}</div>
+                                ${product.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${product.credits}</div>` : ''}
                             </div>
                         </div>
                     `;
