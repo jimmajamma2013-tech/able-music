@@ -13045,6 +13045,9 @@
                         </div>
                     </div>
                 </div>
+                <div id="merchTabErrorBanner" style="display:none;margin-bottom:12px;padding:10px 14px;background:var(--error-soft,#fee2e2);color:var(--error,#dc2626);border-radius:8px;font-size:12px;font-weight:600;">
+                    ⚠️ Could not load products. Your data is safe — please refresh or try again.
+                </div>
                 <div class="card" style="display:none;" id="merchListCard">
                     <div class="card-header" style="display:flex;align-items:center;justify-content:space-between;">
                         <span class="card-title">Your Products</span>
@@ -19771,6 +19774,13 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     <label class="form-label">Purchase Link</label>
                     <input type="url" class="form-input" placeholder="https://..." id="productUrl">
                 </div>
+                <div id="merchEnrichPreview" style="display:none;margin:-4px 0 12px;padding:8px 12px;background:var(--bg-tertiary,rgba(0,0,0,0.04));border-radius:8px;border:1px solid var(--border);flex-direction:row;align-items:center;gap:10px;">
+                    <img id="merchEnrichThumb" style="width:44px;height:44px;border-radius:6px;object-fit:cover;flex-shrink:0;display:none;" alt="">
+                    <div style="flex:1;min-width:0;">
+                        <div id="merchEnrichLabel" style="font-size:12px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+                        <div id="merchEnrichStatus" style="font-size:11px;color:var(--accent);margin-top:2px;display:none;"></div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="form-label">Product Image URL (optional)</label>
                     <input type="url" class="form-input" placeholder="https://..." id="productImage">
@@ -20608,6 +20618,72 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             if (row) row.style.display = 'none';
         }
 
+        // ─── Merch / commerce link provider detection (URL-based) ──────────
+        var _merchDraft = { provider: '', providerTitle: '', artworkUrl: '', oembedTitle: '', titleAutoFilled: false };
+        var _merchEnrichTimer = null;
+
+        function _detectMerchProvider(url) {
+            if (!url) return null;
+            try {
+                var u = url.toLowerCase();
+                if (u.indexOf('.myshopify.com') > -1 || u.indexOf('shopify.com') > -1) return { provider: 'shopify',   providerTitle: 'Shopify' };
+                if (u.indexOf('bandcamp.com') > -1)     return { provider: 'bandcamp',   providerTitle: 'Bandcamp' };
+                if (u.indexOf('gumroad.com') > -1)      return { provider: 'gumroad',    providerTitle: 'Gumroad' };
+                if (u.indexOf('etsy.com') > -1)         return { provider: 'etsy',       providerTitle: 'Etsy' };
+                if (u.indexOf('sellfy.com') > -1)       return { provider: 'sellfy',     providerTitle: 'Sellfy' };
+                if (u.indexOf('bigcartel.com') > -1)    return { provider: 'bigcartel',  providerTitle: 'Big Cartel' };
+                if (u.indexOf('ko-fi.com') > -1)        return { provider: 'kofi',       providerTitle: 'Ko-fi' };
+                if (u.indexOf('patreon.com') > -1)      return { provider: 'patreon',    providerTitle: 'Patreon' };
+                if (u.indexOf('paypal.me') > -1)        return { provider: 'paypal',     providerTitle: 'PayPal' };
+                if (u.indexOf('square.site') > -1 || u.indexOf('squareup.com') > -1) return { provider: 'square', providerTitle: 'Square' };
+                if (u.indexOf('woocommerce') > -1 || (u.indexOf('/shop') > -1 && u.indexOf('/product') > -1)) return { provider: 'woocommerce', providerTitle: 'WooCommerce' };
+            } catch(e) {}
+            return null;
+        }
+
+        function _triggerMerchEnrichment() {
+            clearTimeout(_merchEnrichTimer);
+            _merchEnrichTimer = setTimeout(_runMerchEnrichment, 350);
+        }
+
+        function _runMerchEnrichment() {
+            var urlEl   = document.getElementById('productUrl');
+            var titleEl = document.getElementById('productName');
+            var url = urlEl ? urlEl.value.trim() : '';
+            if (!url) { _hideMerchEnrichPreview(); _merchDraft = { provider: '', providerTitle: '', artworkUrl: '', oembedTitle: '', titleAutoFilled: false }; return; }
+            var result = _detectMerchProvider(url);
+            if (!result) { _hideMerchEnrichPreview(); _merchDraft.provider = ''; _merchDraft.providerTitle = ''; return; }
+            _merchDraft.provider      = result.provider;
+            _merchDraft.providerTitle = result.providerTitle;
+            // Derive title hint from URL slug if title is blank
+            var autoTitle = '';
+            try {
+                var slug = url.replace(/[?#].*/, '').split('/').filter(Boolean).pop() || '';
+                autoTitle = slug.replace(/[-_]/g, ' ').replace(/\.\w+$/, '').trim();
+                if (autoTitle && autoTitle.length > 2 && titleEl && !titleEl.value.trim()) {
+                    titleEl.value = autoTitle.charAt(0).toUpperCase() + autoTitle.slice(1);
+                    _merchDraft.titleAutoFilled = true;
+                    _merchDraft.oembedTitle     = titleEl.value;
+                }
+            } catch(se) {}
+            _showMerchEnrichPreview(result.provider, result.providerTitle);
+        }
+
+        function _showMerchEnrichPreview(provider, providerTitle) {
+            var row    = document.getElementById('merchEnrichPreview');
+            var label  = document.getElementById('merchEnrichLabel');
+            var status = document.getElementById('merchEnrichStatus');
+            if (!row) return;
+            if (label)  label.textContent = 'Store: ' + (providerTitle || provider);
+            if (status) status.style.display = 'none';
+            row.style.display = 'flex';
+        }
+
+        function _hideMerchEnrichPreview() {
+            var row = document.getElementById('merchEnrichPreview');
+            if (row) row.style.display = 'none';
+        }
+
         // Legacy thin wrappers — kept so any external call sites don't break
         function extractSpotifyId(url) {
             var r = normalizeSpotifyEmbedUrl(url);
@@ -20680,7 +20756,32 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
         }
 
         function openAddProductModal() {
-            document.getElementById('addProductModal').classList.add('active');
+            var modal = document.getElementById('addProductModal');
+            if (!modal) return;
+            // Reset all fields + draft on every open
+            document.getElementById('productName').value        = '';
+            document.getElementById('productDescription').value = '';
+            document.getElementById('productPrice').value       = '';
+            document.getElementById('productStock').value       = '';
+            document.getElementById('productUrl').value         = '';
+            document.getElementById('productImage').value       = '';
+            document.getElementById('productCredits').value     = '';
+            _merchDraft = { provider: '', providerTitle: '', artworkUrl: '', oembedTitle: '', titleAutoFilled: false };
+            _hideMerchEnrichPreview();
+            // Attach purchase URL listener once (dataset guard)
+            if (!modal.dataset.enrichInit) {
+                modal.dataset.enrichInit = '1';
+                var urlEl = document.getElementById('productUrl');
+                if (urlEl) {
+                    urlEl.addEventListener('input',  _triggerMerchEnrichment);
+                    urlEl.addEventListener('change', _triggerMerchEnrichment);
+                    urlEl.addEventListener('blur',   _triggerMerchEnrichment);
+                }
+                var nameEl = document.getElementById('productName');
+                if (nameEl) nameEl.addEventListener('input', function() { _merchDraft.titleAutoFilled = false; });
+            }
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeModal(modalId) {
@@ -20925,17 +21026,16 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             }
             const credits = document.getElementById('productCredits').value.trim();
             const merch = loadMerch();
-            merch.push({ id: Date.now(), name, description, price, stock, url, image, credits });
+            merch.push({
+                id: Date.now(), name, description, price, stock, url, image, credits,
+                provider:      _merchDraft.provider      || undefined,
+                providerTitle: _merchDraft.providerTitle || undefined,
+                artworkUrl:    _merchDraft.artworkUrl    || undefined,
+                oembedTitle:   _merchDraft.oembedTitle   || undefined,
+            });
             saveMerch(merch);
             showToast(`✅ "${name}" added to your merch`);
             closeModal('addProductModal');
-            document.getElementById('productName').value = '';
-            document.getElementById('productDescription').value = '';
-            document.getElementById('productPrice').value = '';
-            document.getElementById('productStock').value = '';
-            document.getElementById('productUrl').value = '';
-            document.getElementById('productImage').value = '';
-            document.getElementById('productCredits').value = '';
             renderMerchList();
         }
 
@@ -20967,43 +21067,45 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
         }
 
         function renderMerchList() {
-            const container = document.getElementById('merchList');
-            if (!container) return;
-            const merch = loadMerch();
+            const merchErrBanner = document.getElementById('merchTabErrorBanner');
+            try {
+                if (merchErrBanner) merchErrBanner.style.display = 'none';
+                const container = document.getElementById('merchList');
+                if (!container) return;
+                const merch = loadMerch();
 
-            const emptyState = document.getElementById('merchEmptyState');
-            const listCard   = document.getElementById('merchListCard');
-            if (merch.length === 0) {
-                container.innerHTML = '';
-                if (emptyState) emptyState.style.display = '';
-                if (listCard)   listCard.style.display   = 'none';
-                
-                // Update artist page (clear merch)
-                if (typeof renderProfileMerch === 'function') {
-                    renderProfileMerch();
+                const emptyState = document.getElementById('merchEmptyState');
+                const listCard   = document.getElementById('merchListCard');
+                if (merch.length === 0) {
+                    container.innerHTML = '';
+                    if (emptyState) emptyState.style.display = '';
+                    if (listCard)   listCard.style.display   = 'none';
+                    try { renderProfileMerch(); } catch(be) { console.warn('merch bridge error', be); }
+                    return;
                 }
-                return;
-            }
-            if (emptyState) emptyState.style.display = 'none';
-            if (listCard)   listCard.style.display   = '';
+                if (emptyState) emptyState.style.display = 'none';
+                if (listCard)   listCard.style.display   = '';
 
-            container.innerHTML = merch.map(p => `
-                <div class="list-item" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
-                    <div style="width:40px;height:40px;border-radius:8px;background:${p.image ? 'none' : 'var(--accent-soft)'};flex-shrink:0;overflow:hidden;">
-                        ${p.image ? `<img src="${p.image.replace(/"/g,'%22')}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:18px;">🛍️</div>'}
+                const imgSrc = p => p.artworkUrl || p.image || '';
+                const viewLabel = p => p.providerTitle || 'View';
+                container.innerHTML = merch.map(p => `
+                    <div class="list-item" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
+                        <div style="width:40px;height:40px;border-radius:8px;background:${imgSrc(p) ? 'none' : 'var(--accent-soft)'};flex-shrink:0;overflow:hidden;">
+                            ${imgSrc(p) ? `<img src="${imgSrc(p).replace(/"/g,'%22')}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:18px;">🛍️</div>'}
+                        </div>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-weight:700;font-size:13px;">${p.name}</div>
+                            <div style="font-size:11px;color:var(--text-tertiary);">${p.price}${p.stock ? ' · ' + p.stock + ' in stock' : ''}${p.providerTitle ? ' · ' + p.providerTitle : ''}</div>
+                        </div>
+                        ${p.url ? `<a href="${p.url.replace(/"/g,'%22')}" target="_blank" style="font-size:11px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;">${viewLabel(p)} ↗</a>` : ''}
+                        <button onclick="deleteProduct(${p.id})" style="background:none;border:none;color:var(--text-tertiary);cursor:pointer;font-size:16px;padding:4px;flex-shrink:0;" title="Remove">✕</button>
                     </div>
-                    <div style="flex:1;min-width:0;">
-                        <div style="font-weight:700;font-size:13px;">${p.name}</div>
-                        <div style="font-size:11px;color:var(--text-tertiary);">${p.price}${p.stock ? ' · ' + p.stock + ' in stock' : ''}</div>
-                    </div>
-                    ${p.url ? `<a href="${p.url.replace(/"/g,'%22')}" target="_blank" style="font-size:11px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;">View ↗</a>` : ''}
-                    <button onclick="deleteProduct(${p.id})" style="background:none;border:none;color:var(--text-tertiary);cursor:pointer;font-size:16px;padding:4px;flex-shrink:0;" title="Remove">✕</button>
-                </div>
-            `).join('');
-            
-            // Update artist page merch
-            if (typeof renderProfileMerch === 'function') {
-                renderProfileMerch();
+                `).join('');
+
+                try { renderProfileMerch(); } catch(be) { console.warn('merch bridge error', be); }
+            } catch(err) {
+                console.error('renderMerchList error:', err);
+                if (merchErrBanner) merchErrBanner.style.display = '';
             }
         }
 
@@ -22835,28 +22937,29 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
 
         // 4. Merch Bridge
         function renderProfileMerch() {
-            const profileRoot = document.getElementById('profilePreviewRoot');
+            var profileRoot = document.getElementById('profilePreviewRoot');
             if (!profileRoot) return;
 
             try {
-                const merchData = localStorage.getItem('able_merch');
-                if (!merchData) return;
-
-                const merch = JSON.parse(merchData);
-                if (!merch.length) return;
-
-                // Find merch grid container
-                const merchGrid = profileRoot.querySelector('.merch-bento-grid');
+                var merchSection = profileRoot.querySelector('#merch');
+                var merchGrid    = profileRoot.querySelector('.merch-bento-grid');
                 if (!merchGrid) return;
 
-                // Clear existing items
                 merchGrid.innerHTML = '';
 
-                // Take first 6 products
-                const products = merch.slice(0, 6);
-                
-                const sizes = ['size-large', 'size-medium', 'size-medium', 'size-small', 'size-small', 'size-small'];
-                const gradients = [
+                var merch = [];
+                try { merch = JSON.parse(localStorage.getItem('able_merch') || '[]'); } catch(pe) {}
+
+                if (!merch.length) {
+                    // Hide merch section cleanly when empty
+                    if (merchSection) merchSection.style.display = 'none';
+                    return;
+                }
+                if (merchSection) merchSection.style.display = '';
+
+                var products  = merch.slice(0, 6);
+                var sizes     = ['size-large', 'size-medium', 'size-medium', 'size-small', 'size-small', 'size-small'];
+                var gradients = [
                     '#a855f7 0%, #ec4899 100%',
                     '#1e3a5f 0%, #0d1b2a 100%',
                     '#0891b2 0%, #06b6d4 100%',
@@ -22864,24 +22967,20 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     '#f59e0b 0%, #d97706 100%',
                     '#10b981 0%, #059669 100%'
                 ];
-                
-                products.forEach((product, i) => {
-                    const size = sizes[i] || 'size-medium';
-                    const gradient = gradients[i] || gradients[0];
-                    
-                    merchGrid.innerHTML += `
-                        <div class="merch-bento-tile ${size}">
-                            <div class="merch-bento-image" style="background: linear-gradient(135deg, ${gradient});">
-                                ${i === 0 ? '<span class="merch-badge badge-new">New</span>' : ''}
-                            </div>
-                            <div class="merch-bento-info">
-                                <div class="merch-bento-name">${product.name}</div>
-                                ${product.description ? `<div class="merch-bento-desc">${product.description}</div>` : ''}
-                                <div class="merch-bento-price">$${product.price}</div>
-                                ${product.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${product.credits}</div>` : ''}
-                            </div>
-                        </div>
-                    `;
+
+                products.forEach(function(product, i) {
+                    var size      = sizes[i] || 'size-medium';
+                    var gradient  = gradients[i] || gradients[0];
+                    var imgSrc    = product.artworkUrl || product.image || '';
+                    var bgStyle   = imgSrc
+                        ? 'background:url(' + imgSrc.replace(/"/g, '%22') + ') center/cover no-repeat;'
+                        : 'background:linear-gradient(135deg,' + gradient + ');';
+                    var ctaLabel  = product.providerTitle || 'Shop Item';
+                    var ctaBtn    = product.url
+                        ? '<a href="' + product.url.replace(/"/g, '%22') + '" target="_blank" style="display:inline-block;margin-top:6px;padding:4px 10px;background:var(--accent);color:#fff;border-radius:20px;font-size:10px;font-weight:700;text-decoration:none;letter-spacing:0.02em;">' + ctaLabel + ' ↗</a>'
+                        : '';
+
+                    merchGrid.innerHTML += '<div class="merch-bento-tile ' + size + '"><div class="merch-bento-image" style="' + bgStyle + '">' + (i === 0 ? '<span class="merch-badge badge-new">New</span>' : '') + '</div><div class="merch-bento-info"><div class="merch-bento-name">' + product.name + '</div>' + (product.description ? '<div class="merch-bento-desc">' + product.description + '</div>' : '') + '<div class="merch-bento-price">' + product.price + '</div>' + ctaBtn + '</div></div>';
                 });
 
             } catch(e) {
