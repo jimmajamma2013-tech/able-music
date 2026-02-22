@@ -1,7 +1,33 @@
-# ABLE — 10-Prompt Engineering Roadmap
+# ABLE — Engineering Roadmap
 
 Each prompt = one focused PR-sized chunk of work. Max 3–6 files touched.
 Prompts build on each other — do not skip ahead.
+
+---
+
+## ✅ Pre-Prompt Work — Section-by-Section Idiot-Proof Passes
+
+Completed before Prompt 0 as a parallel hardening stream:
+
+- **Release Link Enrichment v1** — oEmbed fetch (Spotify/YouTube/SoundCloud/Vimeo), 7-day cache, auto-fill title + artwork thumbnail in Add Release modal
+- **Videos idiot-proof pass** — lazy-load embeds (16:9 ratio), Vimeo support, `_videoOembedDraft` enrichment, scroll lock, form reset, `renderProfileVideos()` rewrite
+- **Events idiot-proof pass** — `openAddEventModal()` scroll lock + reset, ticket-platform provider detection (Dice/Eventbrite/RA/etc.), `#eventsTabErrorBanner`, `renderProfileBento()` upcoming-first sort + past-opacity + ticket CTA
+- **Merch idiot-proof pass** — `openAddProductModal()` scroll lock + reset, commerce-platform provider detection (Bandcamp/Shopify/Gumroad/etc.), `#merchTabErrorBanner`, `renderProfileMerch()` real images + CTA pills + section hide-when-empty
+
+---
+
+## ✅ Prompt 0 — Foundation + Workflow Stabilisation
+
+**Status: Complete**
+
+**What was done:**
+- Canonical file rule established: `able-merged.html` is the sole edit target; `index.html` has a DO NOT EDIT banner
+- `getAbleStorageKeys()` helper — explicit canonical list of all Able localStorage keys
+- Test Mode panel (already existed in Settings tab) expanded:
+  - `seedDemoData()` — now seeds Events (6 items: mix future/past, multiple providers) + Merch (5 items: multiple providers), deterministic stable IDs
+  - `runSmokeChecks()` — expanded with Events/Merch DOM assertions, data sanity checks (date parseable, price no double-$, URLs valid), CTA guardrails (active pills ≤ 8)
+  - `copyDebugSnapshot()` — now prints state summary (counts, hero CTAs, mode, LS keys) into the panel `<pre>` box + copies JSON snapshot to clipboard
+- Docs created/updated: `PRODUCT_SPEC.md` (ables vocabulary, section inventory, state approach, CTA guardrails §5.4), `QA_SMOKE_TESTS.md` (full Events S7 + Merch S8 + Test Mode S14 + Global S15 checklists), `ROADMAP.md` (this file)
 
 ---
 
@@ -61,20 +87,22 @@ Prompts build on each other — do not skip ahead.
 
 ## Prompt 4 — Display Modes: Tracklist / Embeds / Both
 
-**Goal:** Per-release display mode toggle that actually works across all three states.
+**Goal:** Per-release display mode toggle that works across all three states, is mobile-safe, and produces zero horizontal scroll.
 
 **Work:**
 - Add display mode selector (Tracklist | Embeds | Both) to each release card in admin
 - Persist choice per-release in `able_music_releases[n].displayMode`
-- Profile renderer switches card body based on `displayMode`:
-  - `tracklist` → clean `<ol>` rows: number · title · duration, no buttons
-  - `embeds` → iframe embed inside card body
+- Profile renderer switches card body based on `displayMode` using `.able-card` anatomy:
+  - `tracklist` → clean `<ol>` rows: number · title · duration, no buttons, no iframes
+  - `embeds` → iframe embed inside card body, `max-width: 100%`, `overflow: hidden`
   - `both` → card with tracklist rows in body + Open button in header (no iframe)
 - Enforce: zero buttons inside tracklist rows (AC-04)
+- Mobile-safe: no horizontal scroll at 375px viewport; iframes use `aspect-ratio: 16/9` or fixed heights from normaliser functions
+- Use `.able-card`, `.able-embedRatio`, `.able-embedLazy` classes for consistent containment
 
 **Files touched:** `able-merged.html` (Music tab HTML for the toggle, profile renderer JS)
 
-**Acceptance test:** AC-04, AC-05, S6-04 through S6-08
+**Acceptance test:** AC-04, AC-05, S6-04 through S6-08, S15-07 (no horizontal scroll)
 
 ---
 

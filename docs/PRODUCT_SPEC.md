@@ -1,6 +1,25 @@
 # ABLE — Product Specification
-**Version:** 0.1 · **Last updated:** 2026-02-19
-**Scope:** Artist profile + admin dashboard (single-file, no build pipeline)
+**Version:** 0.2 · **Last updated:** 2026-02-22
+**Canonical file:** `able-merged.html` (single-file, no build pipeline)
+**Non-canonical files:** `index.html` (redirect only — DO NOT edit)
+
+---
+
+## 0. The "Ables" Vocabulary
+
+Use these terms consistently across all UI copy, docs, and code comments:
+
+| Term | Meaning |
+|---|---|
+| **Linkable** | The artist's profile is a single shareable URL — their link-in-bio |
+| **Shareable** | Any piece of content (release, event, merch item) can be shared via a native share sheet or copied link |
+| **Discoverable** | The profile and content are structured for search/social preview (Open Graph, schema.org metadata) |
+| **Supportable** | Fans can support the artist directly — tip, buy, subscribe — from the profile |
+| **Shoppable** | Merch items are purchasable directly from the profile with a single tap |
+| **Bookable** | Events have a ticket CTA; venues and promoters can submit booking enquiries |
+| **Trackable** | The artist can see what's working — which links are tapped, which sections are engaged — without a backend |
+
+These are product primitives. Every section of the profile makes the artist more Linkable, Shareable, etc. Use the vocabulary when naming features and writing onboarding copy.
 
 ---
 
@@ -12,6 +31,41 @@ ABLE is a premium mobile-first artist profile product. It lets musicians publish
 - Embed cards that contain platform players *without* letting the platform take over the UI
 - An honest credits system that treats collaborators as first-class citizens
 - A calm, structured profile — not a scrolling content dump
+
+---
+
+## 1a. Section Inventory (today's implementation)
+
+| Section | Tab key | Profile section ID | What it does |
+|---|---|---|---|
+| Profile / Hero | `profile` | `#hero` | Artist name, bio, handle, location, avatar, hero image, share button |
+| Appearance | `appearance` | — | Theme (light/dark/image), brand colour, fonts, glassmorphism, tier-1 settings |
+| Music | `music` | `#previewMusicSection` | Releases (singles/EPs/albums) — tracklist or embeds from Spotify/YouTube/SoundCloud |
+| Videos | `videos` | `.video-collage` | Video embeds — YouTube/Vimeo (lazy-loaded); TikTok/Other as fallback links |
+| Events | `events` | `#events` → `#bentoGrid` | Upcoming + past shows; bento tile layout; ticket CTA per event |
+| Merch | `merch` | `#merch` → `.merch-bento-grid` | Product tiles; per-product CTA; store URL setting |
+| Action Links | `ctas` | Quick Actions pills | Extra CTA pills below hero; all active links shown, no positional role |
+| Auto-State | `auto-state` | — | Mode switching (pre-release/live/evergreen/gig); per-mode hero button config |
+| Profile Feed | `feed` | `.profile-feed` | Text/media post updates from the artist |
+| Platforms | `platforms` | Streaming pills | Streaming platform URLs; shown as pills on profile |
+| Supporters | `supporters` | — | (stub) Fan support / tipping |
+| Analytics | `analytics` | — | (stub) Tap counts, engagement |
+| Share | `share` | — | QR code + share link |
+| Settings | `settings` | — | Account, plan, Test Mode panel |
+
+---
+
+## 1b. State Approach
+
+**MVP:** All state is localStorage. No server, no build pipeline.
+
+**Key architecture decisions:**
+- Single canonical HTML file (`able-merged.html`) — no framework, no bundler
+- Three `<script>` blocks: (1) polyfill, (2) main app, (3) profile bridge (bridge reads localStorage and populates the preview iframe-like right panel)
+- `safeRender(fn)` pattern wraps all render calls in try/catch to prevent cascade failures
+- Appearance propagation: `applyAppearanceToRoot(root)` applies theme/colour/font to any root element; `applyAppearanceEverywhere()` calls it on all three preview surfaces
+
+**Later backend:** localStorage keys will map 1:1 to API endpoints. No key renames at that migration point.
 
 ---
 
@@ -146,6 +200,20 @@ Rules:
 - Do NOT use position-in-list to determine button role (no "first CTA = primary" logic)
 - Do NOT use keyword/regex matching on CTA text to infer section button URLs
 - Do NOT show more than 2 hero buttons at once
+
+### 5.4 CTA Guardrails (MVP — warn-only, never block)
+
+These are soft limits enforced by the Test Mode "Run Assertions" check. They never block saving.
+
+| Guardrail | Limit | Enforcement |
+|---|---|---|
+| Hero buttons | Max 2 (primary + secondary) | Hard — UI only renders 2 slots |
+| Quick Actions pills | Suggested max 8 | Warn-only in Test Mode assertions |
+| Section action buttons | Max 1 per section | Hard — one slot per section header |
+| Duplicate CTA URLs across zones | Not allowed | Warn-only in Test Mode assertions |
+| CTA text length | ≤ 32 chars | Warn-only (long text truncated with ellipsis in pill) |
+
+**Deduplication approach (future):** When the same URL appears in both hero buttons and Quick Actions, surfacing a deduplicate suggestion to the user. No silent removal — always warn and let the user decide.
 
 ---
 

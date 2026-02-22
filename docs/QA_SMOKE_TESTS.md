@@ -1,5 +1,5 @@
 # ABLE — QA Smoke Test Checklist
-**Run after every prompt / code change.**
+**Run after every prompt / code change. Target: 5–10 minutes.**
 Check each item. Mark ✅ pass or ❌ fail with a note.
 
 ---
@@ -9,6 +9,7 @@ Check each item. Mark ✅ pass or ❌ fail with a note.
 2. Open DevTools Console (F12) — keep it visible throughout
 3. Work through each section in order
 4. Screenshot any ❌ failure before fixing
+5. Use **Test Mode → Seed demo data** to populate Events/Merch before running S7/S8
 
 ---
 
@@ -97,10 +98,20 @@ Check each item. Mark ✅ pass or ❌ fail with a note.
 
 | # | Check | How to verify |
 |---|---|---|
-| S7-01 | Events tab renders event entries | Add a test event |
-| S7-02 | Adding an event with a future date and ticketUrl populates the Tour section action button | Check profile preview |
-| S7-03 | Past-dated events do NOT populate the section action button | Add past event, check button |
-| S7-04 | If no upcoming events with ticket URLs exist, the section action button is hidden | Delete all events, check |
+| S7-01 | **Add Event modal resets all fields on open** | Open modal, fill fields, close, re-open — all fields blank |
+| S7-02 | **Ticket URL enrich preview shows correct provider after debounce** | Paste `https://dice.fm/event/x` → wait 300ms → banner shows "Ticket link: Dice" |
+| S7-03 | **Enrich preview shows Eventbrite for Eventbrite URL** | Paste `https://www.eventbrite.co.uk/e/demo` → banner shows "Eventbrite" |
+| S7-04 | **Enrich preview hides when URL is cleared** | Clear the ticket URL field → preview row disappears |
+| S7-05 | **Close via X releases scroll lock** | Open modal → click ✕ → page scrolls normally |
+| S7-06 | **Close via backdrop releases scroll lock** | Open modal → click outside modal → page scrolls normally |
+| S7-07 | **Save + reload persists event** | Add event → F5 → event still listed in admin |
+| S7-08 | **Bento sorts future events first** | Seed demo data → profile preview → London show (14 days) appears before Amsterdam (60 days) |
+| S7-09 | **Past events show at 50% opacity in bento** | Seed demo data → profile preview → SXSW/New York tiles visibly faded |
+| S7-10 | **Bento caps at 6 tiles max** | Add 10 events → profile preview bento has at most 6 tiles |
+| S7-11 | **Ticket CTA button appears on event bento tile** | Seed demo data → Dice event tile has "Dice ↗" pill button |
+| S7-12 | **Events error banner shows on forced crash** | In console: `EVENTS_KEY = null; renderEventList()` → red banner visible |
+| S7-13 | **Events error banner hides on successful render** | Restore key → call `renderEventList()` → banner hidden |
+| S7-14 | **Empty bento shows friendly message** | Clear all events → profile preview bento shows "No upcoming shows…" |
 
 ---
 
@@ -108,9 +119,21 @@ Check each item. Mark ✅ pass or ❌ fail with a note.
 
 | # | Check | How to verify |
 |---|---|---|
-| S8-01 | Merch tab has a "Store URL" field in the settings card | Click Merch → Settings card |
-| S8-02 | Filling in the Store URL updates the Merch section action button on the profile | Type a URL, check preview |
-| S8-03 | Store URL persists on page reload | F5 → check field |
+| S8-01 | **Add Product modal resets all fields on open** | Open modal, fill fields, close, re-open — all fields blank |
+| S8-02 | **Purchase URL enrich preview shows correct provider** | Paste `https://demo.bandcamp.com/merch/x` → banner shows "Store: Bandcamp" |
+| S8-03 | **Enrich preview shows Gumroad for Gumroad URL** | Paste `https://demo.gumroad.com/l/x` → banner shows "Gumroad" |
+| S8-04 | **Auto-fill product name only if blank** | Leave name blank → paste Bandcamp URL → name auto-fills from URL slug |
+| S8-05 | **Auto-fill never overwrites a manually typed name** | Type "My Product" → paste URL → name unchanged |
+| S8-06 | **Close via X releases scroll lock** | Open modal → click ✕ → page scrolls normally |
+| S8-07 | **Close via backdrop releases scroll lock** | Open modal → click outside → page scrolls normally |
+| S8-08 | **Save + reload persists product** | Add product → F5 → product still listed in admin |
+| S8-09 | **Product tile uses artworkUrl then image** | Seed product with `artworkUrl` → profile tile shows that image |
+| S8-10 | **CTA label uses providerTitle (e.g. "Bandcamp ↗")** | Seed demo → profile merch tile for Bandcamp item shows "Bandcamp ↗" pill |
+| S8-11 | **Price displays once — no double-$ or double-£** | Seed demo → inspect merch tile — price shows "£30" not "££30" |
+| S8-12 | **Merch section hides when no products** | Clear all merch → profile preview → `#merch` section not visible |
+| S8-13 | **Merch section returns when product added** | Add a product → profile preview → `#merch` section reappears |
+| S8-14 | **Store URL persists on page reload** | Fill in Store URL field → F5 → field still populated |
+| S8-15 | **Merch error banner shows on forced crash** | In console: `MERCH_KEY = null; renderMerchList()` → red banner visible |
 
 ---
 
@@ -168,6 +191,38 @@ Check each item. Mark ✅ pass or ❌ fail with a note.
 | S13-01 | All form data survives a hard refresh (F5) | Fill forms → F5 → check |
 | S13-02 | localStorage contains expected keys after filling data | DevTools → Application → Local Storage |
 | S13-03 | No `console.error` appears when localStorage is full or unavailable | N/A unless testing storage limits |
+
+---
+
+## S14 — Test Mode Panel
+
+| # | Check | How to verify |
+|---|---|---|
+| S14-01 | Test Mode card exists in Settings tab | Click Settings → scroll to bottom → dashed-border "🔬 Test Mode" card |
+| S14-02 | Card expands and collapses on click | Click header → body shows; click again → body hides |
+| S14-03 | **Seed demo data** populates Events + Merch + Music | Click "🌱 Seed demo data" → check Events and Merch tabs |
+| S14-04 | Seeding twice produces same result (deterministic) | Click seed → note event IDs → click seed again → same IDs, same count |
+| S14-05 | **Clear local data** removes all Able keys | Click "🗑 Clear local data" → DevTools Application → Local Storage — no `able_` keys |
+| S14-06 | Clear does NOT wipe non-Able localStorage keys | Add a key `my_other_app = x` → Clear → key still present |
+| S14-07 | **Print state summary** shows counts in the panel pre box | Click "📋 Print state summary" → `#smokeCheckOutput` shows releases/events/merch counts |
+| S14-08 | **Run Assertions** shows PASS/FAIL lines in panel | Click "✅ Smoke checks" → output shows lines prefixed `[PASS]` or `[FAIL]` |
+| S14-09 | Run Assertions: Events error banner check passes | After seed → Run Assertions → `[PASS] eventsTabErrorBanner exists` |
+| S14-10 | Run Assertions: Merch error banner check passes | Same → `[PASS] merchTabErrorBanner exists` |
+| S14-11 | Run Assertions: Merch price double-$ check passes | Seeded prices use "£30" not "$$30" → `[PASS] Merch prices: no double-$` |
+
+---
+
+## S15 — Global / Regression Guards
+
+| # | Check | How to verify |
+|---|---|---|
+| S15-01 | **No console.error on page load** | Hard-refresh (Cmd+Shift+R) → Console tab → zero red entries |
+| S15-02 | **All tabs/nav still work** | Click every left-nav item — each tab panel renders without blank or error |
+| S15-03 | **Appearance changes propagate to preview** | Change accent colour → phone frame preview updates colour immediately |
+| S15-04 | **Appearance propagates to full-page overlay** | Open full-page preview → change theme → overlay updates |
+| S15-05 | **Appearance propagates to mobile preview overlay** | Open mobile preview → change theme → overlay updates |
+| S15-06 | **All 3 JS script blocks parse clean (automated)** | Run `node -e "…"` parse check — all 3 blocks OK |
+| S15-07 | **No horizontal scroll on profile at 375px** | DevTools Device Mode → iPhone SE → scroll profile — no horizontal overflow |
 
 ---
 

@@ -13540,7 +13540,7 @@
                             <button class="btn btn-secondary btn-small" onclick="seedDemoData()">🌱 Seed demo data</button>
                             <button class="btn btn-secondary btn-small" onclick="clearAbleLocalData()">🗑 Clear local data</button>
                             <button class="btn btn-secondary btn-small" onclick="runSmokeChecks()">✅ Smoke checks</button>
-                            <button class="btn btn-secondary btn-small" onclick="copyDebugSnapshot()">📋 Copy snapshot</button>
+                            <button class="btn btn-secondary btn-small" onclick="copyDebugSnapshot()">📋 Print state summary</button>
                         </div>
                         <pre id="smokeCheckOutput" style="display:none;font-size:11px;line-height:1.6;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:8px;padding:10px;max-height:220px;overflow-y:auto;white-space:pre-wrap;margin:0;"></pre>
                     </div>
@@ -23270,26 +23270,58 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     localStorage.setItem(PLATFORMS_KEY, JSON.stringify(existingPlatforms));
                 } catch(e) {}
 
+                // Seed Events (deterministic — stable IDs, relative dates)
+                var _t0 = new Date();
+                function _fd(n) { var d = new Date(_t0); d.setDate(d.getDate() + n); return d.toISOString().split('T')[0]; }
+                function _pd(n) { var d = new Date(_t0); d.setDate(d.getDate() - n); return d.toISOString().split('T')[0]; }
+                var demoEvents = [
+                    { id:'demo_ev_1', name:'Midnight Drive — Album Launch', venue:'Scala',               city:'London, UK',     date:_fd(14), time:'20:00', ticketUrl:'https://dice.fm/event/demo1',                  credits:'', provider:'dice',         providerTitle:'Dice' },
+                    { id:'demo_ev_2', name:'Summer Tour — Manchester',      venue:'Albert Hall',          city:'Manchester, UK', date:_fd(28), time:'19:30', ticketUrl:'https://www.eventbrite.co.uk/e/demo2',          credits:'', provider:'eventbrite',   providerTitle:'Eventbrite' },
+                    { id:'demo_ev_3', name:'Headline Show — Berlin',        venue:'Berghain Kantine',     city:'Berlin, DE',     date:_fd(45), time:'21:00', ticketUrl:'',                                             credits:'', provider:'',            providerTitle:'' },
+                    { id:'demo_ev_4', name:'RA Pick — Amsterdam',           venue:'Shelter',              city:'Amsterdam, NL',  date:_fd(60), time:'23:00', ticketUrl:'https://ra.co/events/demo4',                   credits:'', provider:'ra',          providerTitle:'Resident Advisor' },
+                    { id:'demo_ev_5', name:'Last Tour — New York (Past)',   venue:'Brooklyn Steel',       city:'New York, NY',   date:_pd(30), time:'20:00', ticketUrl:'https://www.ticketmaster.com/event/demo5',     credits:'', provider:'ticketmaster', providerTitle:'Ticketmaster' },
+                    { id:'demo_ev_6', name:'SXSW Showcase (Past)',          venue:"Stubb's Amphitheatre", city:'Austin, TX',     date:_pd(90), time:'22:00', ticketUrl:'',                                             credits:'', provider:'',            providerTitle:'' },
+                ];
+                demoEvents.sort(function(a, b) { return new Date(a.date) - new Date(b.date); });
+                try { localStorage.setItem(EVENTS_KEY, JSON.stringify(demoEvents)); } catch(ee) {}
+
+                // Seed Merch (deterministic — stable IDs)
+                var demoMerch = [
+                    { id:'demo_merch_1', name:'Midnight Drive Tee',         description:'100% organic cotton, screen-printed logo', price:'£30', stock:'50',  url:'https://demo.bandcamp.com/merch/tee',              credits:'', provider:'bandcamp', providerTitle:'Bandcamp', artworkUrl:'' },
+                    { id:'demo_merch_2', name:'Signed Vinyl — Limited Ed.', description:'Hand-signed 12" heavyweight vinyl',         price:'£25', stock:'25',  url:'https://demo.bandcamp.com/merch/vinyl',            credits:'', provider:'bandcamp', providerTitle:'Bandcamp', artworkUrl:'' },
+                    { id:'demo_merch_3', name:'Logo Hoodie',                description:'Heavyweight 350gsm, embroidered',           price:'£55', stock:'',    url:'https://demostore.myshopify.com/products/hoodie',  credits:'', provider:'shopify',  providerTitle:'Shopify',  artworkUrl:'' },
+                    { id:'demo_merch_4', name:'Digital Bundle',             description:'Full discography — MP3 + FLAC',             price:'£8',  stock:'',    url:'https://demo.gumroad.com/l/bundle',                credits:'', provider:'gumroad',  providerTitle:'Gumroad',  artworkUrl:'' },
+                    { id:'demo_merch_5', name:'Tour Poster — A2 Print',     description:'Giclée print on 250gsm stock',              price:'£15', stock:'100', url:'',                                                 credits:'', provider:'',        providerTitle:'',         artworkUrl:'' },
+                ];
+                try { localStorage.setItem(MERCH_KEY, JSON.stringify(demoMerch)); } catch(me) {}
+
                 safeRender(renderMusicTab);
                 safeRender(updatePreviewMusic);
                 if (typeof renderProfileStreaming === 'function') safeRender(renderProfileStreaming);
-                showToast('🌱 Seeded demo data — check Music tab and preview');
+                safeRender(renderEventList);
+                safeRender(renderMerchList);
+                showToast('🌱 Seeded demo data — Music, Events + Merch');
             } catch(e) {
                 console.error('[seedDemoData]', e);
                 showToast('⚠️ Seed failed — check console');
             }
         }
 
+        // ── Helper: canonical list of all Able localStorage keys ─────────
+        function getAbleStorageKeys() {
+            return [
+                STORAGE_KEY, MUSIC_KEY, MUSIC_DISPLAY_MODE_KEY, AUTO_STATE_KEY,
+                SECTION_ACTIONS_KEY, VIDEOS_KEY, EVENTS_KEY, MERCH_KEY,
+                'able_merch_shop_url', PLATFORMS_KEY, PROFILE_KEY, BRAND_COLOR_KEY,
+                APPEARANCE_KEY, TIER1_KEY, CHECKLIST_KEY, PROFILE_POSTS_KEY,
+                LAST_VISIT_KEY, ONBOARDING_KEY, OEMBED_CACHE_KEY
+            ].filter(Boolean);
+        }
+
         // ── B. Clear local data ───────────────────────────────────────────
         function clearAbleLocalData() {
             try {
-                const ableKeys = [
-                    STORAGE_KEY, MUSIC_KEY, MUSIC_DISPLAY_MODE_KEY, AUTO_STATE_KEY,
-                    SECTION_ACTIONS_KEY, VIDEOS_KEY, EVENTS_KEY, MERCH_KEY,
-                    'able_merch_shop_url', PLATFORMS_KEY, PROFILE_KEY,
-                    APPEARANCE_KEY, CHECKLIST_KEY, PROFILE_POSTS_KEY, LAST_VISIT_KEY,
-                    ONBOARDING_KEY
-                ].filter(Boolean);
+                const ableKeys = getAbleStorageKeys();
 
                 ableKeys.forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
 
@@ -23397,6 +23429,46 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 } catch(e) { toastThrew = true; }
                 check('showToast is null-safe (no throw without .toast el)', !toastThrew);
 
+                // 8. Events DOM + data sanity
+                check('addEventModal exists',        !!document.getElementById('addEventModal'));
+                check('eventsTabErrorBanner exists', !!document.getElementById('eventsTabErrorBanner'));
+                var eventsArr = [];
+                try { eventsArr = JSON.parse(localStorage.getItem(EVENTS_KEY) || '[]'); } catch(ev_e) {}
+                check('Events: data is an Array', Array.isArray(eventsArr));
+                if (eventsArr.length > 0) {
+                    var evDateOk = !isNaN(new Date(eventsArr[0].date + 'T00:00:00').getTime());
+                    check('Events[0].date is parseable', evDateOk);
+                    var evUrlOk  = eventsArr.filter(function(e) { return e.ticketUrl; })
+                        .every(function(e) { try { new URL(e.ticketUrl); return true; } catch(ue) { return false; } });
+                    check('Events with ticketUrl have valid URLs (warn only)', evUrlOk);
+                } else {
+                    check('Events[0].date parseable (skipped — 0 events)', true);
+                    check('Events ticketUrl valid (skipped — 0 events)', true);
+                }
+
+                // 9. Merch DOM + data sanity
+                check('addProductModal exists',       !!document.getElementById('addProductModal'));
+                check('merchTabErrorBanner exists',   !!document.getElementById('merchTabErrorBanner'));
+                var merchArr = [];
+                try { merchArr = JSON.parse(localStorage.getItem(MERCH_KEY) || '[]'); } catch(me_e) {}
+                check('Merch: data is an Array', Array.isArray(merchArr));
+                if (merchArr.length > 0) {
+                    check('Merch prices: no double-$ formatting',
+                        merchArr.every(function(p) { return !p.price || !p.price.startsWith('$$'); }));
+                    var mUrlOk = merchArr.filter(function(p) { return p.url; })
+                        .every(function(p) { try { new URL(p.url); return true; } catch(ue) { return false; } });
+                    check('Merch with url have valid URLs (warn only)', mUrlOk);
+                } else {
+                    check('Merch price format ok (skipped — 0 products)', true);
+                    check('Merch URLs valid (skipped — 0 products)', true);
+                }
+
+                // 10. CTA guardrails (warn-only)
+                var ctaRaw = {};
+                try { ctaRaw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(ce) {}
+                var activeCTAs = Object.values(ctaRaw).filter(function(c) { return c && c.active; });
+                check('Active Quick Actions ≤ 8 (warn only)', activeCTAs.length <= 8);
+
                 // Restore original state
                 musicState.releases = origReleases;
                 musicDisplayMode    = origMode;
@@ -23418,33 +23490,66 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             showToast(fail === 0 ? `✅ All ${pass} checks passed` : `⚠️ ${fail} check(s) failed — see panel`);
         }
 
-        // ── D. Copy debug snapshot ────────────────────────────────────────
+        // ── D. Print state summary + copy snapshot ───────────────────────
         function copyDebugSnapshot() {
             try {
-                const ableKeys = [];
-                for (let i = 0; i < localStorage.length; i++) {
-                    const k = localStorage.key(i);
+                // Gather counts
+                var releases  = (musicState && musicState.releases) ? musicState.releases : [];
+                var eventsS   = []; try { eventsS  = JSON.parse(localStorage.getItem(EVENTS_KEY)  || '[]'); } catch(e2) {}
+                var merchS    = []; try { merchS   = JSON.parse(localStorage.getItem(MERCH_KEY)   || '[]'); } catch(e2) {}
+                var ctaRawS   = {}; try { ctaRawS  = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e2) {}
+                var activeLinks = Object.values(ctaRawS).filter(function(c) { return c && c.active; });
+
+                // Current auto-state mode + hero CTAs
+                var autoS = {}; try { autoS = JSON.parse(localStorage.getItem(AUTO_STATE_KEY) || '{}'); } catch(e2) {}
+                var currentMode = (autoS && autoS.currentMode) || 'live';
+                var modeConf = (autoS && autoS.modes && autoS.modes[currentMode]) || {};
+
+                // Summary lines
+                var lines = [
+                    '── Able State Summary ──────────────────',
+                    'Generated: ' + new Date().toLocaleString(),
+                    '',
+                    'Counts:',
+                    '  Releases:     ' + releases.length,
+                    '  Events:       ' + eventsS.length + ' (' + eventsS.filter(function(e) { return new Date(e.date + 'T00:00:00') >= new Date(new Date().toDateString()); }).length + ' upcoming)',
+                    '  Merch items:  ' + merchS.length,
+                    '  Active links: ' + activeLinks.length,
+                    '',
+                    'Hero CTAs (mode: ' + currentMode + '):',
+                    '  Primary:   ' + ((modeConf.primaryText || modeConf.primary) ? (modeConf.primaryIcon || '') + ' ' + (modeConf.primaryText || modeConf.primary) : '(not set)'),
+                    '  Secondary: ' + ((modeConf.secondaryText || modeConf.secondary) ? (modeConf.secondaryIcon || '') + ' ' + (modeConf.secondaryText || modeConf.secondary) : '(not set)'),
+                    '',
+                    'Music display mode: ' + musicDisplayMode,
+                    '',
+                    'LS keys present: ' + getAbleStorageKeys().filter(function(k) { return !!localStorage.getItem(k); }).join(', '),
+                ].join('\n');
+
+                console.log(lines);
+                const out = document.getElementById('smokeCheckOutput');
+                if (out) { out.textContent = lines; out.style.display = ''; }
+
+                // Also copy full JSON snapshot to clipboard
+                var ableKeys = [];
+                for (var i = 0; i < localStorage.length; i++) {
+                    var k = localStorage.key(i);
                     if (k && k.startsWith('able_')) ableKeys.push(k);
                 }
-                const snapshot = {
-                    time:             new Date().toISOString(),
-                    lsKeys:           ableKeys.sort(),
+                var snapshot = {
+                    time: new Date().toISOString(),
+                    summary: { releases: releases.length, events: eventsS.length, merch: merchS.length, activeLinks: activeLinks.length },
+                    currentMode: currentMode,
                     musicDisplayMode: musicDisplayMode,
-                    releasesCount:    (musicState.releases || []).length,
-                    overlaysActive: {
-                        modal:         !!document.querySelector('.modal-overlay.active'),
-                        fullPage:      !!(document.getElementById('fullPageOverlay') || {}).classList?.contains('active'),
-                        mobilePreview: !!document.querySelector('.mobile-preview-overlay.active')
-                    }
+                    lsKeys: ableKeys.sort(),
                 };
-                const text = JSON.stringify(snapshot, null, 2);
+                var text = JSON.stringify(snapshot, null, 2);
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(text)
-                        .then(() => showToast('📋 Debug snapshot copied to clipboard'))
-                        .catch(() => { console.log(text); showToast('⚠️ Clipboard failed — snapshot logged to console'); });
+                        .then(function() { showToast('📋 Snapshot copied — summary shown in panel'); })
+                        .catch(function() { console.log(text); showToast('⚠️ Clipboard failed — snapshot logged'); });
                 } else {
                     console.log('[Debug Snapshot]', text);
-                    showToast('📋 Snapshot logged to console (no clipboard API)');
+                    showToast('📋 Summary shown in panel; snapshot logged to console');
                 }
             } catch(e) {
                 console.error('[copyDebugSnapshot]', e);
