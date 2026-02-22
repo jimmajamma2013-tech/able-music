@@ -2873,6 +2873,40 @@
             padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;
             background: var(--accent-soft); color: var(--accent);
         }
+        /* Embed player wrappers (used in preview Releases section) */
+        .able-embedWrap {
+            width: 100%; border-radius: var(--radius-lg, 12px);
+            overflow: hidden; border: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+        .able-embedRatio { position: relative; width: 100%; padding-top: 56.25%; }
+        .able-embedRatio iframe {
+            position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block;
+        }
+        /* Lazy embed placeholder */
+        .able-embedLazy {
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 8px; min-height: 180px;
+            background: var(--bg-secondary);
+        }
+        .able-embedLoadBtn {
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-weight: var(--weight-semibold);
+            font-size: 13px; cursor: pointer;
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+        .able-embedLoadBtn:hover { transform: translateY(-1px); box-shadow: var(--elevation-2, 0 4px 12px rgba(0,0,0,.12)); }
+        .able-embedLoadBtn:active { transform: scale(0.97); }
+        .able-embedHint { font-size: 11px; color: var(--text-tertiary); }
+        body.glassmorphism-enabled .able-embedLazy {
+            background: var(--card-glass-bg);
+            backdrop-filter: blur(var(--card-glass-blur, 12px));
+            border-color: var(--card-glass-border);
+        }
         /* ── Display Mode Toggle ── */
         .display-mode-btn {
             padding: 14px 12px; border-radius: var(--radius-md);
@@ -11409,6 +11443,9 @@
                 <div class="nav-tab" data-tab="share">
                     <span class="nav-tab-icon">📤</span><span>Share</span>
                 </div>
+                <div class="nav-tab" data-tab="feed">
+                    <span class="nav-tab-icon">📢</span><span>Feed</span>
+                </div>
                 <div class="nav-tab" data-tab="settings">
                     <span class="nav-tab-icon">⚙️</span><span>Settings</span>
                 </div>
@@ -12708,6 +12745,12 @@
                     <p class="editor-subtitle">Manage your releases and streaming links</p>
                 </div>
 
+                <!-- Inline error banner — shown by render error handlers -->
+                <div id="musicTabErrorBanner" style="display:none;margin-bottom:12px;padding:8px 12px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:#ef4444;font-size:12px;align-items:center;gap:8px;" role="alert">
+                    <span id="musicTabErrorMsg" style="flex:1;min-width:0;"></span>
+                    <button type="button" onclick="resetMusicUI()" style="flex-shrink:0;padding:3px 10px;border-radius:6px;border:1px solid #ef4444;background:transparent;color:#ef4444;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Reset</button>
+                </div>
+
                 <!-- Releases list (populated by JS) -->
                 <div id="musicReleaseList"></div>
 
@@ -12764,6 +12807,7 @@
                             <option value="tracklist">Tracklist only</option>
                             <option value="embeds">Embeds only</option>
                         </select>
+                        <button class="btn btn-secondary btn-small" onclick="previewMusicNow()" style="font-size:12px;padding:5px 9px;white-space:nowrap;flex-shrink:0;" title="Refresh preview">↻ Preview</button>
                     </div>
                 </div>
 
@@ -13477,6 +13521,78 @@
                         Delete Account
                     </button>
                 </div>
+
+                <!-- ── Test Mode ── -->
+                <div class="card" id="testModeCard" style="border:1px dashed rgba(8,145,178,0.4);margin-top:8px;">
+                    <div class="card-header" style="cursor:pointer;user-select:none;" onclick="toggleTestMode()">
+                        <span class="card-title" style="color:var(--accent,#0891b2);">🔬 Test Mode</span>
+                        <span id="testModeChevron" style="font-size:11px;color:var(--text-tertiary);">▼ expand</span>
+                    </div>
+                    <div id="testModeBody" style="display:none;padding-top:4px;">
+                        <p class="form-help" style="margin-bottom:12px;">Developer tools — seed data, run smoke checks, export a debug snapshot.</p>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+                            <button class="btn btn-secondary btn-small" onclick="seedDemoData()">🌱 Seed demo data</button>
+                            <button class="btn btn-secondary btn-small" onclick="clearAbleLocalData()">🗑 Clear local data</button>
+                            <button class="btn btn-secondary btn-small" onclick="runSmokeChecks()">✅ Smoke checks</button>
+                            <button class="btn btn-secondary btn-small" onclick="copyDebugSnapshot()">📋 Copy snapshot</button>
+                        </div>
+                        <pre id="smokeCheckOutput" style="display:none;font-size:11px;line-height:1.6;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:8px;padding:10px;max-height:220px;overflow-y:auto;white-space:pre-wrap;margin:0;"></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Feed Tab ── -->
+            <div class="tab-content" data-content="feed">
+                <div class="editor-header">
+                    <h1 class="editor-title">Profile Feed</h1>
+                    <p class="editor-subtitle">Post updates that appear on your profile</p>
+                </div>
+
+                <!-- Post form -->
+                <div class="card">
+                    <div class="card-header"><span class="card-title">New post</span></div>
+                    <div class="form-group">
+                        <label class="form-label">Type</label>
+                        <select id="postType" class="form-input" style="font-size:13px;">
+                            <option value="update">📣 Update</option>
+                            <option value="release">🎵 Release</option>
+                            <option value="event">🎟 Event</option>
+                            <option value="merch">🛍 Merch</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-field">
+                            <input type="text" id="postTitle" class="form-input" placeholder=" " maxlength="80">
+                            <label class="floating-label">Title *</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Body</label>
+                        <textarea id="postBody" class="form-input" rows="3" placeholder="What's new?" style="resize:vertical;min-height:72px;font-family:inherit;"></textarea>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" class="form-group">
+                        <div class="form-field">
+                            <input type="text" id="postAttachLabel" class="form-input" placeholder=" " maxlength="40">
+                            <label class="floating-label">Button label (optional)</label>
+                        </div>
+                        <div class="form-field">
+                            <input type="url" id="postAttachUrl" class="form-input" placeholder=" ">
+                            <label class="floating-label">URL (optional)</label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-full" onclick="submitProfilePost()">Post update</button>
+                </div>
+
+                <!-- Existing posts -->
+                <div class="card">
+                    <div class="card-header"><span class="card-title">Posted updates</span></div>
+                    <div id="feedAdminList">
+                        <div class="empty-state" style="padding:24px 0;">
+                            <div class="empty-state-icon">📢</div>
+                            <div class="empty-state-title">No posts yet</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
 
@@ -13906,6 +14022,24 @@
                         6 tracks • 24 min
                     </div>
                 </div>
+            </section>
+
+            <!-- Music Releases — dynamically populated by updatePreviewMusic() -->
+            <section class="section" id="previewMusicSection" style="display:none;">
+                <div class="section-header-row">
+                    <h2 class="section-title">Releases</h2>
+                </div>
+                <div id="previewMusicCards" style="display:flex;flex-direction:column;gap:12px;"></div>
+            </section>
+
+            <!-- Profile Feed — dynamically populated by renderProfileFeed() -->
+            <section class="section" id="profileFeedSection" style="display:none;">
+                <div id="profileFeedNewBanner" style="display:none;margin-bottom:10px;padding:6px 10px;background:var(--accent-soft);border-radius:8px;font-size:12px;font-weight:700;color:var(--accent);"></div>
+                <div class="section-header-row">
+                    <h2 class="section-title">Updates</h2>
+                </div>
+                <div id="profileFeedCards" style="display:flex;flex-direction:column;gap:10px;"></div>
+                <button id="profileFeedToggle" onclick="toggleFeedExpand()" style="display:none;width:100%;margin-top:10px;background:none;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:12px;color:var(--text-secondary);cursor:pointer;font-family:inherit;"></button>
             </section>
 
             <!-- Videos Section - DIY Textured Grid -->
@@ -14721,6 +14855,31 @@
         </div>
     </div>
 
+    <!-- Onboarding Step 2 mode-card styles -->
+    <style>
+        .ob-mode-card { display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border-radius:12px;border:2px solid var(--border);background:var(--bg-secondary);cursor:pointer;transition:border-color 0.15s,background 0.15s;font-family:inherit;width:100%; }
+        .ob-mode-card:hover { border-color:#0891b2; }
+        .ob-mode-card.selected { border-color:#0891b2;background:rgba(8,145,178,.1); }
+    </style>
+
+    <!-- Magic Moment Onboarding Modal -->
+    <div id="onboardingModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
+        <div style="max-width:520px;width:90%;padding:28px 28px 24px;border-radius:16px;background:var(--bg-primary);position:relative;box-shadow:0 8px 32px rgba(0,0,0,.18);border:1px solid var(--border);">
+            <h2 id="onboardingTitle" style="font-size:1.4rem;font-weight:700;margin:0 0 6px;color:var(--text-primary);">Set up your Able page</h2>
+            <p style="color:var(--text-secondary);margin:0 0 16px;font-size:14px;line-height:1.5;">Paste your links below — Spotify, Apple Music, YouTube, Instagram and more. Able will auto-detect and add them as action buttons in seconds.</p>
+            <textarea id="onboardingLinksInput" rows="7" placeholder="Paste your links here, one per line:
+https://open.spotify.com/artist/...
+https://instagram.com/yourhandle
+https://youtube.com/yourchannel
+https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:var(--bg-secondary);color:var(--text-primary);font-size:13px;font-family:inherit;resize:vertical;min-height:150px;display:block;"></textarea>
+            <div id="onboardingWarn" style="display:none;margin-top:8px;padding:8px 12px;border-radius:8px;background:rgba(239,68,68,.08);color:#ef4444;font-size:13px;font-weight:500;"></div>
+            <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap;">
+                <button type="button" onclick="skipOnboarding()" style="padding:10px 18px;border-radius:9999px;border:1px solid var(--border);background:transparent;color:var(--text-secondary);font-size:14px;font-weight:500;cursor:pointer;line-height:1;">Skip for now</button>
+                <button type="button" onclick="importOnboardingLinks()" style="padding:10px 22px;border-radius:9999px;border:none;background:#0891b2;color:#fff;font-size:14px;font-weight:600;cursor:pointer;line-height:1;">Import links</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ═══════════════════════════════════════════════════════════════════
         // REAL-TIME PREVIEW SYSTEM
@@ -14737,6 +14896,11 @@
         const MUSIC_DISPLAY_MODE_KEY = 'able_music_display_mode';
         let musicState = { releases: [] };
         let musicDisplayMode = 'both'; // 'tracklist' | 'embeds' | 'both'
+
+        // Profile Feed
+        const PROFILE_POSTS_KEY = 'able_profile_posts_v1';
+        const LAST_VISIT_KEY    = 'able_last_visit_ts';
+        let profilePosts = { posts: [] };
         const AUTO_STATE_KEY = 'able_dashboard_autostate';
 
         // Section Actions — explicit per-section CTA assignments (able_section_actions_v1)
@@ -14839,8 +15003,9 @@
         // Single source-of-truth for sorting + rendering the strip.
         // Also wires a ResizeObserver on first call so cap adjusts if the
         // preview panel is resized (e.g. window resize on desktop admin).
-        let _qlObserver = null;
-        let _qlTimer    = null;
+        let _qlObserver  = null;
+        let _qlTimer     = null;
+        let _qlRenderReq = null; // RAF handle for debounced sync renders
 
         function rerenderQuickLinksStrip() {
             const strip = document.getElementById('quickLinksStrip');
@@ -14865,11 +15030,19 @@
                 _qlObserver.observe(strip);
             }
 
-            const sorted = Object.entries(ctaState)
-                .filter(([, d]) => d.active)
-                .sort(([, a], [, b]) => a.order - b.order);
-            strip.classList.remove('ql-more-open');
-            strip.innerHTML = buildQuickLinksPillsHtml(sorted, strip);
+            // Coalesce multiple synchronous calls in the same event loop tick
+            // (e.g. DOMContentLoaded triggers renderPreviewCTAStack AND updatePreviewCTA).
+            if (_qlRenderReq) cancelAnimationFrame(_qlRenderReq);
+            _qlRenderReq = requestAnimationFrame(() => {
+                _qlRenderReq = null;
+                const s = document.getElementById('quickLinksStrip');
+                if (!s) return;
+                const sorted = Object.entries(ctaState)
+                    .filter(([, d]) => d.active)
+                    .sort(([, a], [, b]) => a.order - b.order);
+                s.classList.remove('ql-more-open');
+                s.innerHTML = buildQuickLinksPillsHtml(sorted, s);
+            });
         }
 
         // Update the live preview strip (called after every admin toggle/edit).
@@ -15086,6 +15259,7 @@
 
         // Rebuild the dashboard CTA list UI from saved ctaState
         function rebuildUIFromState() {
+            try {
             const listContainer = document.querySelector('[data-content="ctas"] #ctaList');
             if (!listContainer) return;
 
@@ -15131,6 +15305,7 @@
             updateActiveCTACount();
             // Keep diagram pills in sync
             if (typeof updateDiagramButtons === 'function') updateDiagramButtons();
+            } catch(e) { console.warn('[rebuildUIFromState]', e); }
         }
 
         // Render the Mode Map grid (kept for compatibility but no longer called from rebuildUIFromState)
@@ -15590,6 +15765,11 @@
 
         // Initialize drag and drop for a single item
         function initializeDragAndDropForItem(item) {
+            // Guard: mark node so neither this function nor initCTADragAndDrop
+            // can register duplicate listeners on the same element.
+            if (item.dataset.dndInit) return;
+            item.dataset.dndInit = '1';
+
             // Drag start
             item.addEventListener('dragstart', function(e) {
                 e.dataTransfer.effectAllowed = 'move';
@@ -15601,8 +15781,7 @@
             // Drag end
             item.addEventListener('dragend', function(e) {
                 this.classList.remove('dragging');
-                updateCTAOrder();
-                rebuildUIFromState();
+                updateCTAOrder(); // internally calls rebuildUIFromState()
             });
             
             // Drag over
@@ -15696,8 +15875,8 @@
         function openMobilePreview() {
             const overlay = document.getElementById('mobilePreviewOverlay');
             const mobileContent = document.getElementById('mobilePreviewContent');
-            const desktopPreview = document.querySelector('.preview-frame');
-            
+            const desktopPreview = document.getElementById('profilePreviewFrame');
+
             if (!overlay || !mobileContent || !desktopPreview) return;
             
             // Clone the preview frame
@@ -15722,20 +15901,22 @@
             // Hide overlay
             overlay.classList.remove('active');
             
-            // Restore body scroll
-            document.body.style.overflow = '';
+            // Restore body scroll only if no modal or overlay is still blocking
+            if (!document.querySelector('.modal-overlay.active, #fullPageOverlay.active')) {
+                document.body.style.overflow = '';
+            }
         }
-        
+
         // Update mobile preview when it's open (sync with desktop preview)
         function syncMobilePreview() {
             const overlay = document.getElementById('mobilePreviewOverlay');
-            
+
             // Only sync if mobile preview is open
             if (!overlay || !overlay.classList.contains('active')) return;
-            
+
             const mobileContent = document.getElementById('mobilePreviewContent');
-            const desktopPreview = document.querySelector('.preview-frame');
-            
+            const desktopPreview = document.getElementById('profilePreviewFrame');
+
             if (!mobileContent || !desktopPreview) return;
             
             // Re-clone to get latest state
@@ -16028,8 +16209,10 @@
         }
 
         function renderPreviewCTAStack(mode) {
+            try {
             // Delegate to the unified updatePreviewCTA which handles the embedded profile
             updatePreviewCTA(null, null);
+            } catch(e) { console.warn('[renderPreviewCTAStack]', e); }
         }
 
         // Legacy stub — kept so old callers don't break
@@ -16645,6 +16828,7 @@
             
             // Update preview to match theme
             updatePreviewTheme(theme);
+            try { applyAppearanceEverywhere(); } catch(e) {}
 
             // Reset charts so they re-render with correct theme colours
             if (typeof _activeCharts !== 'undefined') {
@@ -16867,6 +17051,7 @@
                 initializeBrandColor(); // Load brand color
                 initializeAppearanceSettings(); // Load appearance settings
                 initializeTier1Settings(); // Load Tier 1 customizations
+                try { applyAppearanceEverywhere(); } catch(e) {} // Sync appearance to all profile surfaces
 
                 // Load music releases and render
                 loadMusicState();
@@ -16876,6 +17061,11 @@
                 })();
                 renderMusicTab();
                 updatePreviewMusic();
+
+                // Load and render profile feed
+                loadProfilePosts();
+                renderFeedAdmin();
+                renderProfileFeed();
 
                 // Populate merch shop URL
                 populateMerchShopUrl();
@@ -16898,7 +17088,18 @@
                     const today = new Date().toISOString().split('T')[0];
                     releaseDateInput.setAttribute('min', today);
                 }
+
+                // Apply saved objective mode (silently, no onboarding)
+                var _savedObjMode = localStorage.getItem(OBJECTIVE_MODE_KEY);
+                if (_savedObjMode) setObjectiveMode(_savedObjMode);
             }, 100);
+
+            // Show onboarding modal for new users (after UI is fully ready)
+            setTimeout(function() {
+                if (localStorage.getItem(ONBOARDING_KEY) !== 'true') {
+                    openOnboardingModal();
+                }
+            }, 600);
 
             // Setup mobile menu close on nav click
             document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -17362,8 +17563,10 @@
             
             // Force repaint
             document.body.offsetHeight;
+            // Propagate to all profile preview surfaces
+            try { applyAppearanceEverywhere(); } catch(e) {}
         }
-        
+
         // Update preview panel with brand color
         function updatePreviewBrandColor(color) {
             // Update profile header gradient
@@ -17434,13 +17637,81 @@
         function saveAppearanceSettings(settings) {
             try {
                 localStorage.setItem(APPEARANCE_KEY, JSON.stringify(settings));
+                try { applyAppearanceEverywhere(); } catch(e) {}
                 return true;
             } catch (e) {
                 console.error('Error saving appearance:', e);
                 return false;
             }
         }
-        
+
+        // ── Single source-of-truth: apply all appearance state to one root ──
+        function applyAppearanceToRoot(root) {
+            if (!root) return;
+            try {
+                var _theme = localStorage.getItem('able_theme') || 'light';
+                if (_theme === 'light') { root.removeAttribute('data-theme'); }
+                else { root.setAttribute('data-theme', _theme); }
+
+                // Brand color — read from live CSS var first (already updated by updateBrandColorVariables)
+                var _color = (document.documentElement.style.getPropertyValue('--accent') || '').trim() || loadBrandColor();
+                root.style.setProperty('--accent', _color);
+                root.style.setProperty('--accent-hover', adjustBrightness(_color, -10));
+                root.style.setProperty('--accent-soft', _color + '15');
+                root.style.setProperty('--accent-gradient', 'linear-gradient(135deg,' + _color + ' 0%,' + adjustBrightness(_color, 15) + ' 100%)');
+
+                // Font
+                var _s = loadAppearanceSettings();
+                var _fontMap = {
+                    'system-sans':    '-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif',
+                    'rounded-sans':   'ui-rounded,"SF Pro Rounded",system-ui,"Nunito","Varela Round",sans-serif',
+                    'condensed-sans': '"Arial Narrow","Helvetica Condensed","Roboto Condensed",sans-serif',
+                    'classic-serif':  'Georgia,"Times New Roman","Garamond",serif',
+                    'modern-serif':   '"Iowan Old Style","Palatino Linotype","Libre Baskerville",serif',
+                    'monospace':      '"SF Mono",Monaco,"Courier New","Roboto Mono",monospace',
+                    'sans':           '-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif',
+                    'serif':          'Georgia,"Times New Roman",serif'
+                };
+                root.style.fontFamily = _fontMap[_s.fontStyle] || _fontMap['system-sans'];
+
+                // Tier-1 classes / attributes
+                var _t1 = loadTier1Settings();
+                if (_t1.aesthetic && _t1.aesthetic !== 'default') {
+                    root.setAttribute('data-aesthetic', _t1.aesthetic);
+                } else {
+                    root.removeAttribute('data-aesthetic');
+                }
+                ['smooth','bouncy','snappy','glitchy','none'].forEach(function(a) { root.classList.remove('anim-' + a); });
+                root.classList.add('anim-' + (_t1.animation || 'smooth'));
+                ['elevated','flat','outlined','neumorphic','neon','handdrawn'].forEach(function(c) { root.classList.remove('cards-' + c); });
+                root.classList.add('cards-' + (_t1.cardStyle || 'elevated'));
+                ['rounded','extra-rounded','sharp','mixed','organic'].forEach(function(c) { root.classList.remove('corners-' + c); });
+                root.classList.add('corners-' + (_t1.cornerStyle || 'rounded'));
+
+                // Glassmorphism
+                if (_s.glassmorphismEnabled) { root.classList.add('glassmorphism-enabled'); }
+                else { root.classList.remove('glassmorphism-enabled'); }
+            } catch(e) { console.warn('[applyAppearanceToRoot]', e); }
+        }
+
+        // Apply appearance to every profile surface
+        function applyAppearanceEverywhere() {
+            // Right-side preview container (always in DOM)
+            applyAppearanceToRoot(document.getElementById('profilePreviewFrame'));
+            // Full-page overlay: profilePreviewRoot is moved here when active
+            var _fp = document.getElementById('fullPageOverlay');
+            if (_fp && _fp.classList.contains('active')) {
+                applyAppearanceToRoot(document.getElementById('profilePreviewRoot'));
+            }
+            // Mobile overlay: re-sync the clone then apply
+            var _mob = document.getElementById('mobilePreviewOverlay');
+            if (_mob && _mob.classList.contains('active')) {
+                syncMobilePreview();
+                var _mc = document.getElementById('mobilePreviewContent');
+                if (_mc && _mc.firstElementChild) { applyAppearanceToRoot(_mc.firstElementChild); }
+            }
+        }
+
         // Set button style
         function setButtonStyle(style, buttonElement) {
             const settings = loadAppearanceSettings();
@@ -17953,6 +18224,7 @@
         function saveTier1Settings(settings) {
             try {
                 localStorage.setItem(TIER1_KEY, JSON.stringify(settings));
+                try { applyAppearanceEverywhere(); } catch(e) {}
                 return true;
             } catch (e) {
                 console.error('Error saving Tier 1 settings:', e);
@@ -19029,10 +19301,17 @@
             switchEl.classList.toggle('active');
         }
 
+        // Utility: run a render function and swallow errors so one bad render
+        // never cascades to break unrelated parts of the UI.
+        function safeRender(fn) {
+            try { fn(); } catch(e) { console.warn('[safeRender] render error:', e); }
+        }
+
         // Show toast — type auto-detected from message prefix or passed explicitly
         // type: 'success' | 'error' | 'warning'
         function showToast(message, type) {
             const toast = document.querySelector('.toast');
+            if (!toast) return;
             const messageEl = document.getElementById('toast-message');
             const iconEl = document.getElementById('toast-icon');
 
@@ -19289,6 +19568,10 @@
                         </div>
                     </div>
                     <input type="hidden" id="releaseDisplayMode" value="tracklist">
+                    <!-- Embed mode warning — shown when embed mode active but no embed URL -->
+                    <div id="embedModeWarn" style="display:none;margin-top:8px;padding:7px 10px;border-radius:8px;background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.3);color:var(--text-secondary);font-size:12px;">
+                        ⚠️ Add a Spotify, YouTube, or SoundCloud URL below so the embed player has something to load.
+                    </div>
                 </div>
 
                 <!-- Streaming URLs -->
@@ -19298,6 +19581,7 @@
                         <div class="stream-input-row">
                             <span class="stream-prefix" style="color:#1DB954;">SP</span>
                             <input type="url" class="form-input" placeholder="open.spotify.com/album/..." id="releaseSpotify">
+                            <button type="button" onclick="fillExampleSpotify()" title="Auto-fill a test Spotify track URL" style="flex-shrink:0;padding:0 8px;height:36px;border-radius:8px;border:1px solid #1DB954;background:transparent;color:#1DB954;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">Example</button>
                         </div>
                         <div class="stream-input-row">
                             <span class="stream-prefix" style="color:#fc3c44;">AM</span>
@@ -19542,6 +19826,7 @@
             }
 
             modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
             updateTracksSection();
             setTimeout(() => document.getElementById('releaseTitle').focus(), 100);
         }
@@ -19556,6 +19841,18 @@
             document.querySelectorAll('.display-mode-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.mode === mode);
             });
+            // Show warning when embed mode has no embeddable URL
+            var warn = document.getElementById('embedModeWarn');
+            if (warn) {
+                if (mode === 'embed') {
+                    var spv = (document.getElementById('releaseSpotify')?.value || '').trim();
+                    var ytv = (document.getElementById('releaseYoutube')?.value || '').trim();
+                    var scv = (document.getElementById('releaseSoundcloud')?.value || '').trim();
+                    warn.style.display = (!spv && !ytv && !scv) ? '' : 'none';
+                } else {
+                    warn.style.display = 'none';
+                }
+            }
         }
 
         // ── Global profile display mode (tracklist | embeds | both) ──
@@ -19566,6 +19863,17 @@
             try { localStorage.setItem(MUSIC_DISPLAY_MODE_KEY, mode); } catch(e) {}
             renderMusicTab();
             updatePreviewMusic();
+        }
+
+        // ── Force-refresh the preview and briefly flash the frame ──
+        function previewMusicNow() {
+            updatePreviewMusic();
+            const frame = document.getElementById('profilePreviewFrame');
+            if (frame) {
+                frame.style.transition = 'box-shadow 0.15s ease';
+                frame.style.boxShadow = '0 0 0 3px var(--accent, #0891b2)';
+                setTimeout(() => { frame.style.boxShadow = ''; }, 650);
+            }
         }
 
         let trackRowCount = 0;
@@ -19615,11 +19923,33 @@
             } catch(e) {}
         }
 
+        function fillExampleSpotify() {
+            var inp = document.getElementById('releaseSpotify');
+            if (!inp) return;
+            inp.value = 'https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b';
+            var warn = document.getElementById('embedModeWarn');
+            if (warn) warn.style.display = 'none';
+        }
+
         function saveRelease() {
             const title = document.getElementById('releaseTitle').value.trim();
             if (!title) {
                 showToast('⚠️ Please enter a release title');
                 return;
+            }
+
+            // Embed mode requires at least one embeddable URL
+            const _dm = document.getElementById('releaseDisplayMode').value;
+            if (_dm === 'embed') {
+                const _sp = document.getElementById('releaseSpotify').value.trim();
+                const _yt = document.getElementById('releaseYoutube').value.trim();
+                const _sc = document.getElementById('releaseSoundcloud').value.trim();
+                if (!_sp && !_yt && !_sc) {
+                    var _w = document.getElementById('embedModeWarn');
+                    if (_w) _w.style.display = '';
+                    showToast('⚠️ Add a Spotify, YouTube, or SoundCloud URL for Embed mode');
+                    return;
+                }
             }
 
             const editId = document.getElementById('releaseEditId').value;
@@ -19658,10 +19988,10 @@
             }
 
             saveMusicState();
-            renderMusicTab();
-            updatePreviewMusic();
             closeModal('addReleaseModal');
             showToast(`✅ "${title}" saved`);
+            try { renderMusicTab(); } catch(e) { console.error('renderMusicTab error', e); }
+            try { updatePreviewMusic(); } catch(e) { console.error('updatePreviewMusic error', e); }
         }
 
         function deleteRelease(id) {
@@ -19683,6 +20013,9 @@
 
         // ── Render the Music tab release list ──
         function renderMusicTab() {
+            try {
+            const _errBanner = document.getElementById('musicTabErrorBanner');
+            if (_errBanner) _errBanner.style.display = 'none';
             const container = document.getElementById('musicReleaseList');
             if (!container) return;
 
@@ -19742,10 +20075,25 @@
                     </div>
                 </div>`;
             }).join('');
+            } catch(e) {
+                console.warn('[renderMusicTab]', e);
+                const _b = document.getElementById('musicTabErrorBanner');
+                if (_b) { var _m = _b.querySelector('#musicTabErrorMsg'); if (_m) _m.textContent = 'Releases list failed to render — check console for details.'; _b.style.display = 'flex'; }
+            }
+        }
+
+        function resetMusicUI() {
+            var b = document.getElementById('musicTabErrorBanner');
+            if (b) b.style.display = 'none';
+            safeRender(renderMusicTab);
+            safeRender(updatePreviewMusic);
         }
 
         // ── Update preview panel music section ──
         function updatePreviewMusic() {
+            try {
+            const _errBanner = document.getElementById('musicTabErrorBanner');
+            if (_errBanner) _errBanner.style.display = 'none';
             const section = document.getElementById('previewMusicSection');
             const cards = document.getElementById('previewMusicCards');
             if (!section || !cards) return;
@@ -19778,45 +20126,39 @@
                 ).join('');
 
                 if (rel.displayMode === 'embed') {
-                    // Spotify embed
-                    if (platforms.spotify) {
-                        const embedId = extractSpotifyId(platforms.spotify);
-                        if (embedId) {
-                            const embedType = platforms.spotify.includes('/album/') ? 'album' : 'track';
-                            return `
-                                <div>
-                                    <div style="border-radius:12px;overflow:hidden;background:var(--bg-secondary);border:1px solid var(--border);">
-                                        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${embedType}/${embedId}?utm_source=generator&theme=0" width="100%" height="80" frameborder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-                                    </div>
-                                    ${rel.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${rel.credits}</div>` : ''}
-                                </div>`;
-                        }
+                    // Resolve embeds in priority order: Spotify → YouTube → SoundCloud
+                    const spEmbed = normalizeSpotifyEmbedUrl(platforms.spotify);
+                    const ytEmbed = normalizeYouTubeEmbedUrl(platforms.youtube);
+                    const scEmbed = normalizeSoundCloudEmbedUrl(platforms.soundcloud);
+                    const creditsHtml = rel.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${rel.credits}</div>` : '';
+
+                    if (spEmbed) {
+                        const h = spEmbed.height || 152;
+                        const spKindLabel = spEmbed.kind === 'album' ? ' · Album' : spEmbed.kind === 'playlist' ? ' · Playlist' : ' · Track';
+                        const spLabel = `<div style="font-size:11px;font-weight:600;color:#1DB954;margin-bottom:4px;">🟢 Spotify player${spKindLabel}</div>`;
+                        const spBtn = `<button type="button" class="able-embedLoadBtn" style="background:#1DB954;color:#000;border-color:#1DB954;">🎵 Load Spotify player</button><div class="able-embedHint">Tap to load · Spotify</div>`;
+                        const iframeHtml = `<div class="able-embedWrap"><div class="able-embedLazy" data-embed-src="${spEmbed.src}" data-embed-kind="spotify" data-embed-height="${h}" style="min-height:${h}px;">${spBtn}</div></div>`;
+                        return `<div>${spLabel}${iframeHtml}${creditsHtml}</div>`;
                     }
-                    // YouTube embed
-                    if (platforms.youtube) {
-                        const ytId = extractYouTubeId(platforms.youtube);
-                        if (ytId) {
-                            return `
-                                <div>
-                                    <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);">
-                                        <iframe width="100%" height="160" src="https://www.youtube.com/embed/${ytId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="display:block;"></iframe>
-                                    </div>
-                                    ${rel.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${rel.credits}</div>` : ''}
-                                </div>`;
-                        }
+                    if (ytEmbed) {
+                        const ytLabel = `<div style="font-size:11px;font-weight:600;color:#ff0000;margin-bottom:4px;">▶️ YouTube video</div>`;
+                        const ytBtn = `<button type="button" class="able-embedLoadBtn">▶️ Load video</button><div class="able-embedHint">Tap to load · YouTube</div>`;
+                        const iframeHtml = `<div class="able-embedWrap"><div class="able-embedRatio able-embedLazy" data-embed-src="${ytEmbed.src}" data-embed-kind="youtube">${ytBtn}</div></div>`;
+                        return `<div>${ytLabel}${iframeHtml}${creditsHtml}</div>`;
                     }
-                    // SoundCloud embed
-                    if (platforms.soundcloud) {
-                        const scEncoded = encodeURIComponent(platforms.soundcloud);
-                        return `
-                            <div>
-                                <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);">
-                                    <iframe width="100%" height="120" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=${scEncoded}&color=%230891b2&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false" style="display:block;"></iframe>
-                                </div>
-                                ${rel.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${rel.credits}</div>` : ''}
-                            </div>`;
+                    if (scEmbed) {
+                        const scLabel = `<div style="font-size:11px;font-weight:600;color:#ff5500;margin-bottom:4px;">🎧 SoundCloud player</div>`;
+                        const scBtn = `<button type="button" class="able-embedLoadBtn">🎧 Load SoundCloud player</button><div class="able-embedHint">Tap to load · SoundCloud</div>`;
+                        const iframeHtml = `<div class="able-embedWrap"><div class="able-embedLazy" data-embed-src="${scEmbed.src}" data-embed-kind="soundcloud" data-embed-height="180" style="min-height:180px;">${scBtn}</div></div>`;
+                        return `<div>${scLabel}${iframeHtml}${creditsHtml}</div>`;
                     }
-                    // No embeddable URL set — fall through to tracklist
+                    // No embeddable URL found — show explicit warning
+                    return `
+                        <div style="background:var(--bg-secondary);border:1px dashed var(--border);border-radius:12px;padding:12px;text-align:center;">
+                            <div style="font-size:13px;font-weight:600;margin-bottom:4px;">${rel.title}</div>
+                            <div style="font-size:11px;color:var(--text-tertiary);">Embed mode selected, but no embeddable link found.</div>
+                            <div style="font-size:10px;color:var(--text-tertiary);margin-top:2px;">Add a Spotify, YouTube, or SoundCloud URL in the edit modal.</div>
+                        </div>`;
                 }
 
                 // Tracklist mode preview
@@ -19844,22 +20186,143 @@
                         ${rel.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:6px;padding-top:5px;border-top:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${rel.credits}</div>` : ''}
                     </div>`;
             }).join('');
+            initLazyEmbeds(cards);
+            } catch(e) {
+                console.warn('[updatePreviewMusic]', e);
+                const _b = document.getElementById('musicTabErrorBanner');
+                if (_b) { var _m = _b.querySelector('#musicTabErrorMsg'); if (_m) _m.textContent = 'Preview failed to update — check console for details.'; _b.style.display = 'flex'; }
+            }
         }
 
         // ── Extract Spotify track/album ID from URL ──
-        function extractSpotifyId(url) {
+        // ── Embed URL normalisers ──────────────────────────────────────────
+        // Each returns { src: string } or null.
+
+        function normalizeSpotifyEmbedUrl(url) {
+            if (!url) return null;
             try {
-                const match = url.match(/spotify\.com\/(track|album|playlist)\/([A-Za-z0-9]+)/);
-                return match ? match[2] : '';
-            } catch(e) { return ''; }
+                // spotify:track:ID  /  spotify:album:ID  /  spotify:playlist:ID (URI form)
+                var uriM = url.match(/^spotify:(track|album|playlist):([A-Za-z0-9]+)$/);
+                if (uriM) {
+                    var spKind1 = uriM[1];
+                    return { src: 'https://open.spotify.com/embed/' + spKind1 + '/' + uriM[2],
+                             kind: spKind1, height: spKind1 === 'track' ? 152 : 380 };
+                }
+                // Already an embed URL — pass through, re-canonicalise
+                var embM = url.match(/spotify\.com\/embed\/(track|album|playlist)\/([A-Za-z0-9]+)/);
+                if (embM) {
+                    var spKind2 = embM[1];
+                    return { src: 'https://open.spotify.com/embed/' + spKind2 + '/' + embM[2],
+                             kind: spKind2, height: spKind2 === 'track' ? 152 : 380 };
+                }
+                // Standard share URL → open.spotify.com/(track|album|playlist)/ID
+                var shrM = url.match(/spotify\.com\/(track|album|playlist)\/([A-Za-z0-9]+)/);
+                if (shrM) {
+                    var spKind3 = shrM[1];
+                    return { src: 'https://open.spotify.com/embed/' + spKind3 + '/' + shrM[2],
+                             kind: spKind3, height: spKind3 === 'track' ? 152 : 380 };
+                }
+            } catch(e) {}
+            return null;
         }
 
-        // ── Extract YouTube video ID from URL ──
-        function extractYouTubeId(url) {
+        function normalizeYouTubeEmbedUrl(url) {
+            if (!url) return null;
             try {
-                const match = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-                return match ? match[1] : '';
-            } catch(e) { return ''; }
+                // Already embed URL
+                var embM = url.match(/youtube\.com\/embed\/([A-Za-z0-9_-]{11})/);
+                if (embM) return { src: 'https://www.youtube.com/embed/' + embM[1] };
+                // youtu.be short link
+                var shortM = url.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+                if (shortM) return { src: 'https://www.youtube.com/embed/' + shortM[1] };
+                // /watch?v=ID  /shorts/ID  /v/ID
+                var longM = url.match(/youtube\.com\/(?:watch\?v=|shorts\/|v\/)([A-Za-z0-9_-]{11})/);
+                if (longM) return { src: 'https://www.youtube.com/embed/' + longM[1] };
+            } catch(e) {}
+            return null;
+        }
+
+        function normalizeSoundCloudEmbedUrl(url) {
+            if (!url) return null;
+            try {
+                if (/soundcloud\.com\//.test(url))
+                    return { src: 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(url) +
+                        '&color=%230891b2&auto_play=false&hide_related=true&show_comments=false' +
+                        '&show_user=true&show_reposts=false&show_teaser=false&visual=false',
+                        height: 180 };
+            } catch(e) {}
+            return null;
+        }
+
+        // ── Lazy embed loader ─────────────────────────────────────────────
+        function injectLazyEmbed(el) {
+            if (!el || el.dataset.loaded) return;
+            el.dataset.loaded = '1';
+            var src  = el.dataset.embedSrc;
+            var kind = el.dataset.embedKind;
+            var h    = parseInt(el.dataset.embedHeight, 10) || 0;
+            if (!src) return;
+            if (kind === 'spotify') {
+                if (!h) h = 152;
+                el.style.minHeight = h + 'px';
+                el.style.height    = h + 'px';
+                el.innerHTML = '<iframe style="border-radius:12px;display:block;" src="' + src +
+                    '" width="100%" height="' + h +
+                    '" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>';
+            } else if (kind === 'soundcloud') {
+                if (!h) h = 180;
+                el.style.minHeight = h + 'px';
+                el.innerHTML = '<iframe width="100%" height="' + h +
+                    '" scrolling="no" frameborder="no" allow="autoplay" src="' + src +
+                    '" style="display:block;"></iframe>';
+            } else {
+                // YouTube — .able-embedRatio CSS handles 16:9 via padding-top:56.25%
+                el.innerHTML = '<iframe src="' + src +
+                    '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+            }
+        }
+
+        function initLazyEmbeds(root) {
+            root = root || document;
+            var nodes = root.querySelectorAll ? root.querySelectorAll('.able-embedLazy:not([data-loaded])') : [];
+            if (!nodes.length) return;
+            var observer = null;
+            if (typeof IntersectionObserver !== 'undefined') {
+                observer = new IntersectionObserver(function(entries, obs) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            injectLazyEmbed(entry.target);
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.15, rootMargin: '200px' });
+            }
+            nodes.forEach(function(el) {
+                if (el.dataset.loaded) return;
+                var btn = el.querySelector('.able-embedLoadBtn');
+                if (btn) btn.addEventListener('click', function() {
+                    btn.textContent = '⏳ Loading…';
+                    btn.disabled = true;
+                    btn.style.opacity = '0.7';
+                    btn.style.cursor = 'default';
+                    setTimeout(function() { injectLazyEmbed(el); }, 150);
+                });
+                if (observer) observer.observe(el);
+            });
+        }
+
+        // Legacy thin wrappers — kept so any external call sites don't break
+        function extractSpotifyId(url) {
+            var r = normalizeSpotifyEmbedUrl(url);
+            if (!r) return '';
+            var m = r.src.match(/\/embed\/(track|album|playlist)\/([A-Za-z0-9]+)/);
+            return m ? m[2] : '';
+        }
+        function extractYouTubeId(url) {
+            var r = normalizeYouTubeEmbedUrl(url);
+            if (!r) return '';
+            var m = r.src.match(/\/embed\/([A-Za-z0-9_-]{11})/);
+            return m ? m[1] : '';
         }
 
         // Legacy save (no-op now, kept so nothing breaks)
@@ -19880,7 +20343,12 @@
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
+            const m = document.getElementById(modalId);
+            if (m) m.classList.remove('active');
+            // Restore body scroll if no modal-like overlays remain open
+            if (!document.querySelector('.modal-overlay.active, #fullPageOverlay.active, .mobile-preview-overlay.active')) {
+                document.body.style.overflow = '';
+            }
         }
 
         // Close modal when clicking overlay
@@ -20265,7 +20733,7 @@
 
                 const tabs = [
                     'overview', 'profile', 'appearance', 'platforms', 'auto-state', 'ctas',
-                    'music', 'videos', 'events', 'merch', 'supporters', 'analytics', 'share', 'settings'
+                    'music', 'videos', 'events', 'merch', 'supporters', 'analytics', 'share', 'feed', 'settings'
                 ];
                 const active = document.querySelector('.nav-tab.active');
                 const currentTab = active ? active.getAttribute('data-tab') : tabs[0];
@@ -20620,8 +21088,13 @@
             if (!ctaList) return;
 
             const draggableItems = ctaList.querySelectorAll('.list-item[draggable="true"]');
-            
+
             draggableItems.forEach(item => {
+                // Skip items already initialised by this function — prevents duplicate
+                // listeners accumulating each time the CTAs tab is re-entered.
+                if (item.dataset.dndInit) return;
+                item.dataset.dndInit = '1';
+
                 // Drag start
                 item.addEventListener('dragstart', function(e) {
                     draggedElement = this;
@@ -20639,7 +21112,7 @@
                     draggedOverElement = null;
                     
                     // Save new order
-                    saveCTAOrder();
+                    updateCTAOrder();
                 });
 
                 // Drag over
@@ -20694,35 +21167,6 @@
             });
         }
 
-        function saveCTAOrder() {
-            const ctaList = document.getElementById('ctaList');
-            if (!ctaList) return;
-            
-            const items = ctaList.querySelectorAll('.list-item[draggable="true"]');
-            const order = Array.from(items).map(item => item.getAttribute('data-cta-id'));
-            
-            // Save to localStorage
-            localStorage.setItem('able_cta_order', JSON.stringify(order));
-        }
-
-        function loadCTAOrder() {
-            const savedOrder = localStorage.getItem('able_cta_order');
-            if (!savedOrder) return;
-            
-            const ctaList = document.getElementById('ctaList');
-            if (!ctaList) return;
-            
-            const order = JSON.parse(savedOrder);
-            const items = Array.from(ctaList.querySelectorAll('.list-item[draggable="true"]'));
-            
-            // Reorder items based on saved order
-            order.forEach((ctaId, index) => {
-                const item = items.find(el => el.getAttribute('data-cta-id') === ctaId);
-                if (item) {
-                    ctaList.appendChild(item);
-                }
-            });
-        }
 
         // Initialize drag and drop when CTAs tab is opened
         const ctasTab = document.querySelector('[data-tab="ctas"]');
@@ -20730,7 +21174,6 @@
             ctasTab.addEventListener('click', function() {
                 setTimeout(() => {
                     initCTADragAndDrop();
-                    loadCTAOrder();
                 }, 100);
             });
         }
@@ -20739,7 +21182,6 @@
         window.addEventListener('load', function() {
             if (document.querySelector('[data-content="ctas"].active')) {
                 initCTADragAndDrop();
-                loadCTAOrder();
             }
         });
 
@@ -21902,6 +22344,8 @@
                 }
             } catch(e) {}
 
+            // Wire up any lazy embeds that may have been rendered into the preview
+            initLazyEmbeds(profileRoot);
         }
 
         // 2. Videos Bridge
@@ -22131,23 +22575,14 @@
                     { id: 'deezer',     icon: '●', name: 'Deezer',        class: 'deezer' },
                 ];
 
-                // Only show platforms that have URLs configured
-                streamingPlatforms.forEach(platform => {
-                    const url = platforms[platform.id];
-                    if (url && url.trim()) {
-                        container.innerHTML += `
-                            <a href="${url}" target="_blank" class="streaming-pill ${platform.class}">
-                                <span class="pill-icon">${platform.icon}</span>
-                                <span class="pill-text">${platform.name}</span>
-                            </a>
-                        `;
-                    }
-                });
+                // Build all pills in one pass — avoid innerHTML+= O(n²) re-parse loop
+                const pillHtml = streamingPlatforms
+                    .filter(p => { const u = platforms[p.id]; return u && u.trim(); })
+                    .map(p => `<a href="${platforms[p.id]}" target="_blank" class="streaming-pill ${p.class}"><span class="pill-icon">${p.icon}</span><span class="pill-text">${p.name}</span></a>`)
+                    .join('');
 
-                // If no platforms configured, show a message
-                if (container.innerHTML.trim() === '') {
-                    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-tertiary);font-size:14px;">Configure streaming platforms in the Platforms tab</div>';
-                }
+                container.innerHTML = pillHtml ||
+                    '<div style="padding:20px;text-align:center;color:var(--text-tertiary);font-size:14px;">Configure streaming platforms in the Platforms tab</div>';
 
             } catch(e) {
                 console.error('Streaming bridge error:', e);
@@ -22163,7 +22598,706 @@
             }
         });
 
-        
+        // ═══════════════════════════════════════════════════════════════════
+        // PROFILE FEED
+        // ═══════════════════════════════════════════════════════════════════
+
+        function loadProfilePosts() {
+            try {
+                const saved = localStorage.getItem(PROFILE_POSTS_KEY);
+                if (saved) profilePosts = JSON.parse(saved);
+                if (!profilePosts || !Array.isArray(profilePosts.posts)) profilePosts = { posts: [] };
+            } catch(e) { profilePosts = { posts: [] }; }
+        }
+
+        function saveProfilePosts() {
+            try { localStorage.setItem(PROFILE_POSTS_KEY, JSON.stringify(profilePosts)); } catch(e) {}
+        }
+
+        function _postId() {
+            return 'p_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+        }
+
+        const _POST_TYPE_LABELS = {
+            update: '📣 Update', release: '🎵 Release', event: '🎟 Event', merch: '🛍 Merch'
+        };
+
+        function submitProfilePost() {
+            const title = (document.getElementById('postTitle')?.value || '').trim();
+            const body  = (document.getElementById('postBody')?.value  || '').trim();
+            if (!title) { showToast('⚠️ Add a title for your post'); return; }
+
+            const attachLabel = (document.getElementById('postAttachLabel')?.value || '').trim();
+            const attachUrl   = (document.getElementById('postAttachUrl')?.value   || '').trim();
+
+            const post = {
+                id:          _postId(),
+                type:        document.getElementById('postType')?.value || 'update',
+                title,
+                body,
+                createdAt:   new Date().toISOString(),
+                attachments: (attachLabel && attachUrl)
+                    ? [{ kind: 'url', label: attachLabel, url: attachUrl }] : []
+            };
+
+            profilePosts.posts.unshift(post);
+            saveProfilePosts();
+
+            // Clear form
+            ['postTitle', 'postBody', 'postAttachLabel', 'postAttachUrl'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            const ptEl = document.getElementById('postType');
+            if (ptEl) ptEl.value = 'update';
+
+            renderFeedAdmin();
+            renderProfileFeed();
+            showToast('✅ Update posted');
+        }
+
+        function deleteProfilePost(id) {
+            profilePosts.posts = (profilePosts.posts || []).filter(p => p.id !== id);
+            saveProfilePosts();
+            renderFeedAdmin();
+            renderProfileFeed();
+            showToast('Post removed');
+        }
+
+        function _escHF(s) {
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function renderFeedAdmin() {
+            const list = document.getElementById('feedAdminList');
+            if (!list) return;
+            const posts = profilePosts.posts || [];
+            if (!posts.length) {
+                list.innerHTML = '<div class="empty-state" style="padding:24px 0;"><div class="empty-state-icon">📢</div><div class="empty-state-title">No posts yet</div></div>';
+                return;
+            }
+            list.innerHTML = posts.map(p => {
+                const date = new Date(p.createdAt).toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' });
+                return `
+                <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+                    <div style="flex:1;min-width:0;">
+                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;flex-wrap:wrap;">
+                            <span style="font-size:10px;font-weight:700;background:var(--accent-soft);color:var(--accent);padding:2px 6px;border-radius:4px;">${_escHF(_POST_TYPE_LABELS[p.type] || p.type)}</span>
+                            <span style="font-size:10px;color:var(--text-tertiary);">${date}</span>
+                        </div>
+                        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${_escHF(p.title)}</div>
+                        ${p.body ? `<div style="font-size:11px;color:var(--text-secondary);margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${_escHF(p.body)}</div>` : ''}
+                    </div>
+                    <button class="icon-btn delete" onclick="deleteProfilePost('${_escHF(p.id)}')" title="Remove" style="flex-shrink:0;font-size:14px;padding:6px;">🗑</button>
+                </div>`;
+            }).join('');
+        }
+
+        let _feedExpanded = false;
+
+        function toggleFeedExpand() {
+            _feedExpanded = !_feedExpanded;
+            renderProfileFeed();
+        }
+
+        function renderProfileFeed() {
+            const section = document.getElementById('profileFeedSection');
+            const cards   = document.getElementById('profileFeedCards');
+            const banner  = document.getElementById('profileFeedNewBanner');
+            const toggle  = document.getElementById('profileFeedToggle');
+            if (!section || !cards) return;
+
+            const posts = profilePosts.posts || [];
+            if (!posts.length) { section.style.display = 'none'; return; }
+
+            section.style.display = '';
+
+            // "New since last visit" logic
+            const lastVisitRaw = localStorage.getItem(LAST_VISIT_KEY);
+            const lastVisit    = lastVisitRaw ? new Date(lastVisitRaw) : null;
+            const newCount     = lastVisit ? posts.filter(p => new Date(p.createdAt) > lastVisit).length : 0;
+
+            if (banner) {
+                if (newCount > 0) {
+                    banner.textContent = newCount + ' new update' + (newCount > 1 ? 's' : '') + ' since your last visit';
+                    banner.style.display = '';
+                } else {
+                    banner.style.display = 'none';
+                }
+            }
+
+            const visible = _feedExpanded ? posts : posts.slice(0, 3);
+
+            cards.innerHTML = visible.map(p => {
+                const date  = new Date(p.createdAt).toLocaleDateString(undefined, { month:'short', day:'numeric' });
+                const isNew = lastVisit && new Date(p.createdAt) > lastVisit;
+                const att   = (p.attachments || [])[0];
+                return `
+                <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:12px;">
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap;">
+                        <span style="font-size:10px;font-weight:700;background:var(--accent-soft);color:var(--accent);padding:2px 7px;border-radius:999px;">${_escHF(_POST_TYPE_LABELS[p.type] || p.type)}</span>
+                        ${isNew ? '<span style="font-size:10px;font-weight:800;background:#22c55e;color:#fff;padding:2px 6px;border-radius:999px;letter-spacing:.02em;">NEW</span>' : ''}
+                        <span style="font-size:10px;color:var(--text-tertiary);margin-left:auto;">${date}</span>
+                    </div>
+                    <div style="font-size:13px;font-weight:700;margin-bottom:4px;">${_escHF(p.title)}</div>
+                    ${p.body ? `<div style="font-size:12px;color:var(--text-secondary);overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;">${_escHF(p.body)}</div>` : ''}
+                    ${att ? `<a href="${_escHF(att.url)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-size:12px;font-weight:600;color:var(--accent);border:1.5px solid var(--accent);border-radius:999px;padding:4px 12px;text-decoration:none;">${_escHF(att.label || 'Open')}</a>` : ''}
+                </div>`;
+            }).join('');
+
+            if (toggle) {
+                if (posts.length > 3) {
+                    toggle.style.display = '';
+                    toggle.textContent = _feedExpanded
+                        ? 'Collapse ▲'
+                        : 'View all ' + posts.length + ' updates ▼';
+                } else {
+                    toggle.style.display = 'none';
+                }
+            }
+
+            // Stamp last-visit after first render so next visit detects new posts
+            try { localStorage.setItem(LAST_VISIT_KEY, new Date().toISOString()); } catch(e) {}
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // TEST MODE
+        // ═══════════════════════════════════════════════════════════════════
+
+        function toggleTestMode() {
+            const body    = document.getElementById('testModeBody');
+            const chevron = document.getElementById('testModeChevron');
+            if (!body) return;
+            const open = body.style.display === 'none';
+            body.style.display    = open ? '' : 'none';
+            if (chevron) chevron.textContent = open ? '▲ collapse' : '▼ expand';
+        }
+
+        // ── A. Seed demo data ─────────────────────────────────────────────
+        function seedDemoData() {
+            try {
+                // Two releases: one tracklist, one embed with a real Spotify track URL
+                musicState.releases = [
+                    {
+                        id: 'demo_tracklist_1',
+                        title: 'Midnight Drive EP',
+                        type: 'ep',
+                        artwork: '',
+                        displayMode: 'tracklist',
+                        credits: 'Prod. Demo Studio',
+                        platforms: {
+                            spotify:    'https://open.spotify.com/album/5Z9iiGl2FcIfa3BMiv6OIw',
+                            apple:      'https://music.apple.com/album/midnight-drive-ep/000000001',
+                            soundcloud: '',
+                            youtube:    'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                            tiktok:     ''
+                        },
+                        tracks: [
+                            { title: 'Midnight Drive', duration: '4:12' },
+                            { title: 'Neon Lights',    duration: '3:45' },
+                            { title: 'Lost in the City', duration: '5:02' }
+                        ]
+                    },
+                    {
+                        id: 'demo_embed_1',
+                        title: 'Blinding Lights (Embed Demo)',
+                        type: 'single',
+                        artwork: '',
+                        displayMode: 'embed',
+                        credits: '',
+                        platforms: {
+                            spotify:    'https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b',
+                            apple:      '',
+                            soundcloud: '',
+                            youtube:    '',
+                            tiktok:     ''
+                        },
+                        tracks: []
+                    }
+                ];
+                saveMusicState();
+
+                // Set display mode to 'both' so both releases appear
+                musicDisplayMode = 'both';
+                try { localStorage.setItem(MUSIC_DISPLAY_MODE_KEY, 'both'); } catch(e) {}
+
+                // Seed minimal streaming platforms so pills render
+                try {
+                    const existingPlatforms = JSON.parse(localStorage.getItem(PLATFORMS_KEY) || '{}');
+                    existingPlatforms.spotify    = existingPlatforms.spotify    || 'https://open.spotify.com/artist/demo';
+                    existingPlatforms.youtube    = existingPlatforms.youtube    || 'https://www.youtube.com/@demo';
+                    localStorage.setItem(PLATFORMS_KEY, JSON.stringify(existingPlatforms));
+                } catch(e) {}
+
+                safeRender(renderMusicTab);
+                safeRender(updatePreviewMusic);
+                if (typeof renderProfileStreaming === 'function') safeRender(renderProfileStreaming);
+                showToast('🌱 Seeded demo data — check Music tab and preview');
+            } catch(e) {
+                console.error('[seedDemoData]', e);
+                showToast('⚠️ Seed failed — check console');
+            }
+        }
+
+        // ── B. Clear local data ───────────────────────────────────────────
+        function clearAbleLocalData() {
+            try {
+                const ableKeys = [
+                    STORAGE_KEY, MUSIC_KEY, MUSIC_DISPLAY_MODE_KEY, AUTO_STATE_KEY,
+                    SECTION_ACTIONS_KEY, VIDEOS_KEY, EVENTS_KEY, MERCH_KEY,
+                    'able_merch_shop_url', PLATFORMS_KEY, PROFILE_KEY,
+                    APPEARANCE_KEY, CHECKLIST_KEY, PROFILE_POSTS_KEY, LAST_VISIT_KEY,
+                    ONBOARDING_KEY
+                ].filter(Boolean);
+
+                ableKeys.forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
+
+                // Reset in-memory state to defaults
+                musicState       = { releases: [] };
+                musicDisplayMode = 'both';
+                sectionActionsState = {};
+                ctaState = {};
+                profilePosts = { posts: [] };
+                _feedExpanded = false;
+                loadCTAState(); // restore defaults
+
+                safeRender(renderMusicTab);
+                safeRender(updatePreviewMusic);
+                safeRender(rebuildUIFromState);
+                safeRender(renderFeedAdmin);
+                safeRender(renderProfileFeed);
+                showToast('🗑 Able local data cleared');
+            } catch(e) {
+                console.error('[clearAbleLocalData]', e);
+                showToast('⚠️ Clear failed — check console');
+            }
+        }
+
+        // ── C. Smoke checks ───────────────────────────────────────────────
+        function runSmokeChecks() {
+            const out   = document.getElementById('smokeCheckOutput');
+            const lines = [];
+            let pass = 0, fail = 0;
+
+            function check(label, ok) {
+                const sym = ok ? 'PASS' : 'FAIL';
+                lines.push(`[${sym}] ${label}`);
+                if (ok) pass++; else fail++;
+            }
+
+            try {
+                // 1. Preview containers exist
+                check('previewMusicSection exists in DOM',
+                    !!document.getElementById('previewMusicSection'));
+                check('previewMusicCards exists in DOM',
+                    !!document.getElementById('previewMusicCards'));
+
+                // 2. Seed data so subsequent checks have something to test
+                const origReleases   = JSON.parse(JSON.stringify(musicState.releases));
+                const origMode       = musicDisplayMode;
+                musicState.releases = [
+                    { id: 'chk_tracklist', title: 'Check TL', type: 'single', artwork: '',
+                      displayMode: 'tracklist', credits: '', platforms: {}, tracks: [] },
+                    { id: 'chk_embed', title: 'Check EM', type: 'single', artwork: '',
+                      displayMode: 'embed', credits: '',
+                      platforms: { spotify: 'https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b' },
+                      tracks: [] }
+                ];
+
+                // 3. mode='both' — both releases should appear in preview
+                musicDisplayMode = 'both';
+                safeRender(updatePreviewMusic);
+                const cardsEl = document.getElementById('previewMusicCards');
+                check('mode=both: previewMusicSection visible',
+                    document.getElementById('previewMusicSection')?.style.display !== 'none');
+                check('mode=both: previewMusicCards has content',
+                    !!(cardsEl && cardsEl.innerHTML.trim().length > 0));
+
+                // 4. mode='embeds' — only embed release visible
+                musicDisplayMode = 'embeds';
+                safeRender(updatePreviewMusic);
+                const embedHtml = cardsEl ? cardsEl.innerHTML : '';
+                check('mode=embeds: contains iframe',
+                    embedHtml.includes('<iframe'));
+                check('mode=embeds: does NOT contain tracklist structure',
+                    !embedHtml.includes('chk_tracklist') && !embedHtml.includes('"Check TL"'));
+
+                // 5. mode='tracklist' — only tracklist release visible (no iframe)
+                musicDisplayMode = 'tracklist';
+                safeRender(updatePreviewMusic);
+                const tlHtml = cardsEl ? cardsEl.innerHTML : '';
+                check('mode=tracklist: no iframe',
+                    !tlHtml.includes('<iframe'));
+                check('mode=tracklist: tracklist card rendered',
+                    tlHtml.includes('Check TL'));
+
+                // 6. Modal scroll lock: open then close, body overflow should reset
+                const wasOverflow = document.body.style.overflow;
+                const dummyModal  = document.getElementById('addReleaseModal');
+                if (dummyModal) {
+                    dummyModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                    closeModal('addReleaseModal');
+                    check('closeModal restores body overflow',
+                        document.body.style.overflow !== 'hidden');
+                } else {
+                    check('addReleaseModal exists for scroll test', false);
+                }
+
+                // 7. showToast null-safety — must not throw when toast el is missing
+                let toastThrew = false;
+                try {
+                    // Temporarily detach toast element
+                    const toastEl = document.querySelector('.toast');
+                    const toastParent = toastEl ? toastEl.parentNode : null;
+                    if (toastEl && toastParent) toastEl.remove();
+                    showToast('smoke-check-toast');
+                    if (toastEl && toastParent) toastParent.appendChild(toastEl);
+                } catch(e) { toastThrew = true; }
+                check('showToast is null-safe (no throw without .toast el)', !toastThrew);
+
+                // Restore original state
+                musicState.releases = origReleases;
+                musicDisplayMode    = origMode;
+                safeRender(renderMusicTab);
+                safeRender(updatePreviewMusic);
+
+            } catch(e) {
+                lines.push(`[ERROR] Unexpected exception: ${e.message}`);
+                console.error('[runSmokeChecks]', e);
+            }
+
+            const summary = `Smoke checks: ${pass} passed, ${fail} failed\n` +
+                            '─'.repeat(36) + '\n' + lines.join('\n');
+            console.log(summary);
+            if (out) {
+                out.textContent  = summary;
+                out.style.display = '';
+            }
+            showToast(fail === 0 ? `✅ All ${pass} checks passed` : `⚠️ ${fail} check(s) failed — see panel`);
+        }
+
+        // ── D. Copy debug snapshot ────────────────────────────────────────
+        function copyDebugSnapshot() {
+            try {
+                const ableKeys = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('able_')) ableKeys.push(k);
+                }
+                const snapshot = {
+                    time:             new Date().toISOString(),
+                    lsKeys:           ableKeys.sort(),
+                    musicDisplayMode: musicDisplayMode,
+                    releasesCount:    (musicState.releases || []).length,
+                    overlaysActive: {
+                        modal:         !!document.querySelector('.modal-overlay.active'),
+                        fullPage:      !!(document.getElementById('fullPageOverlay') || {}).classList?.contains('active'),
+                        mobilePreview: !!document.querySelector('.mobile-preview-overlay.active')
+                    }
+                };
+                const text = JSON.stringify(snapshot, null, 2);
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text)
+                        .then(() => showToast('📋 Debug snapshot copied to clipboard'))
+                        .catch(() => { console.log(text); showToast('⚠️ Clipboard failed — snapshot logged to console'); });
+                } else {
+                    console.log('[Debug Snapshot]', text);
+                    showToast('📋 Snapshot logged to console (no clipboard API)');
+                }
+            } catch(e) {
+                console.error('[copyDebugSnapshot]', e);
+                showToast('⚠️ Snapshot failed — check console');
+            }
+        }
+
+        // ============================================
+        // MAGIC MOMENT ONBOARDING v1
+        // ============================================
+
+        const ONBOARDING_KEY = 'able_onboarding_complete';
+
+        function openOnboardingModal() {
+            var modal = document.getElementById('onboardingModal');
+            if (!modal) return;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeOnboardingModal() {
+            var modal = document.getElementById('onboardingModal');
+            if (modal) modal.classList.remove('active');
+            if (!document.querySelector('.modal-overlay.active')) {
+                document.body.style.overflow = '';
+            }
+        }
+
+        function skipOnboarding() {
+            try { localStorage.setItem(ONBOARDING_KEY, 'true'); } catch(e) {}
+            closeOnboardingModal();
+        }
+
+        // Platform detection table — matched top to bottom, first match wins per URL
+        var _OB_PLATFORMS = [
+            { re: /spotify\.com/,                         key: 'listen-spotify',     text: 'Listen on Spotify',       icon: '🟢', priority: 10 },
+            { re: /music\.apple\.com|itunes\.apple\.com/, key: 'listen-apple',       text: 'Listen on Apple Music',   icon: '🎵', priority: 11 },
+            { re: /soundcloud\.com/,                      key: 'listen-soundcloud',  text: 'Listen on SoundCloud',    icon: '🎧', priority: 12 },
+            { re: /tidal\.com/,                           key: 'listen-tidal',       text: 'Listen on Tidal',         icon: '💿', priority: 13 },
+            { re: /deezer\.com/,                          key: 'listen-deezer',      text: 'Listen on Deezer',        icon: '🎶', priority: 14 },
+            { re: /youtube\.com|youtu\.be/,               key: 'watch-youtube',      text: 'Watch on YouTube',        icon: '▶️', priority: 20 },
+            { re: /vimeo\.com/,                           key: 'watch-vimeo',        text: 'Watch on Vimeo',          icon: '🎬', priority: 21 },
+            { re: /eventbrite\.com/,                      key: 'tickets-eventbrite', text: 'Get Tickets',             icon: '🎫', priority: 30 },
+            { re: /dice\.fm/,                             key: 'tickets-dice',       text: 'Get Tickets on DICE',     icon: '🎫', priority: 31 },
+            { re: /songkick\.com/,                        key: 'tickets-songkick',   text: 'Get Tickets on Songkick', icon: '🎫', priority: 32 },
+            { re: /bandcamp\.com/,                        key: 'shop-bandcamp',      text: 'Buy on Bandcamp',         icon: '🎸', priority: 40 },
+            { re: /myshopify\.com|shopify\.com/,          key: 'shop-shopify',       text: 'Shop Now',                icon: '🛒', priority: 41 },
+            { re: /gumroad\.com/,                         key: 'shop-gumroad',       text: 'Shop on Gumroad',         icon: '🛒', priority: 42 },
+            { re: /etsy\.com/,                            key: 'shop-etsy',          text: 'Shop on Etsy',            icon: '🛒', priority: 43 },
+            { re: /sellfy\.com/,                          key: 'shop-sellfy',        text: 'Shop on Sellfy',          icon: '🛒', priority: 44 },
+            { re: /paypal\.me|paypal\.com\/paypalme/,     key: 'support-paypal',     text: 'Support via PayPal',      icon: '💖', priority: 50 },
+            { re: /buymeacoffee\.com/,                    key: 'support-bmc',        text: 'Buy Me a Coffee',         icon: '☕', priority: 51 },
+            { re: /ko-fi\.com/,                           key: 'support-kofi',       text: 'Support on Ko-fi',        icon: '💖', priority: 52 },
+            { re: /patreon\.com/,                         key: 'support-patreon',    text: 'Support on Patreon',      icon: '💝', priority: 53 },
+            { re: /instagram\.com/,                       key: 'instagram',          text: 'Follow on Instagram',     icon: '📸', priority: 60 },
+            { re: /tiktok\.com/,                          key: 'tiktok',             text: 'Follow on TikTok',        icon: '📱', priority: 61 },
+            { re: /twitter\.com|x\.com/,                  key: 'twitter',            text: 'Follow on X',             icon: '🐦', priority: 62 },
+            { re: /facebook\.com/,                        key: 'facebook',           text: 'Follow on Facebook',      icon: '👥', priority: 63 },
+            { re: /threads\.net/,                         key: 'threads',            text: 'Follow on Threads',       icon: '🧵', priority: 64 },
+            { re: /linktr\.ee/,                           key: 'linktree',           text: 'Linktree',                icon: '🌳', priority: 70 },
+        ];
+
+        function parseOnboardingLinks(text) {
+            var results = [];
+            var seenKeys = {};
+            var lines = (text || '').split(/[\n\r,]+/);
+            lines.forEach(function(line) {
+                var url = line.trim();
+                if (!url || !/^https?:\/\//i.test(url)) return;
+                for (var i = 0; i < _OB_PLATFORMS.length; i++) {
+                    var p = _OB_PLATFORMS[i];
+                    if (p.re.test(url)) {
+                        if (!seenKeys[p.key]) {
+                            seenKeys[p.key] = true;
+                            results.push({ key: p.key, text: p.text, icon: p.icon, priority: p.priority, url: url });
+                        }
+                        break;
+                    }
+                }
+            });
+            results.sort(function(a, b) { return a.priority - b.priority; });
+            return results;
+        }
+
+        // ── Onboarding Step 2 helpers ──────────────────────────────────────
+
+        const OBJECTIVE_MODE_KEY = 'able_objective_mode';
+        var _currentObjectiveMode = null;
+        var _obSelectedMode = null;
+
+        function _obSelectMode(btn) {
+            document.querySelectorAll('.ob-mode-card').forEach(function(b) { b.classList.remove('selected'); });
+            btn.classList.add('selected');
+            _obSelectedMode = btn.dataset.obMode;
+            var warn = document.getElementById('obModeWarn');
+            if (warn) warn.style.display = 'none';
+        }
+
+        function _showOnboardingStep2() {
+            var modal = document.getElementById('onboardingModal');
+            if (!modal) return;
+            var inner = modal.querySelector('div');
+            if (!inner) return;
+            _obSelectedMode = null;
+
+            var MODES = [
+                { value: 'streams',    label: 'Streams',    emoji: '🎵' },
+                { value: 'tickets',    label: 'Tickets',    emoji: '🎫' },
+                { value: 'merch',      label: 'Merch',      emoji: '🛒' },
+                { value: 'support',    label: 'Support',    emoji: '💖' },
+                { value: 'engagement', label: 'Engagement', emoji: '📱' },
+                { value: 'press',      label: 'Press Pack', emoji: '📄' },
+            ];
+
+            var btnHtml = MODES.map(function(m) {
+                return '<button type="button" class="ob-mode-card" data-ob-mode="' + m.value + '" onclick="_obSelectMode(this)">' +
+                    '<span style="font-size:22px;line-height:1;">' + m.emoji + '</span>' +
+                    '<span style="font-size:12px;font-weight:600;line-height:1.2;">' + m.label + '</span>' +
+                '</button>';
+            }).join('');
+
+            inner.innerHTML =
+                '<h2 style="font-size:1.3rem;font-weight:700;margin:0 0 6px;color:var(--text-primary);">What are you promoting right now?</h2>' +
+                '<p style="color:var(--text-secondary);margin:0 0 16px;font-size:14px;line-height:1.5;">Able will highlight the right sections and set your hero buttons.</p>' +
+                '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">' + btnHtml + '</div>' +
+                '<div id="obModeWarn" style="display:none;margin-bottom:10px;font-size:13px;color:#ef4444;font-weight:500;"></div>' +
+                '<div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;">' +
+                    '<button type="button" onclick="skipOnboarding()" style="padding:10px 18px;border-radius:9999px;border:1px solid var(--border);background:transparent;color:var(--text-secondary);font-size:14px;font-weight:500;cursor:pointer;line-height:1;">Skip</button>' +
+                    '<button type="button" onclick="applyObjectiveAndFinish()" style="padding:10px 22px;border-radius:9999px;border:none;background:#0891b2;color:#fff;font-size:14px;font-weight:600;cursor:pointer;line-height:1;">Apply</button>' +
+                '</div>';
+        }
+
+        function applyObjectiveAndFinish() {
+            var warn = document.getElementById('obModeWarn');
+            if (!_obSelectedMode) {
+                if (warn) { warn.textContent = 'Please choose an option first.'; warn.style.display = ''; }
+                return;
+            }
+            setObjectiveMode(_obSelectedMode);
+            skipOnboarding(); // sets ONBOARDING_KEY + closes modal
+            showToast('✅ Objective set — you can update this anytime');
+        }
+
+        function setObjectiveMode(mode) {
+            var VALID = ['streams', 'tickets', 'merch', 'support', 'engagement', 'press', 'live'];
+            if (!mode || !VALID.includes(mode)) mode = 'live';
+            _currentObjectiveMode = mode;
+            try { localStorage.setItem(OBJECTIVE_MODE_KEY, mode); } catch(e) {}
+            _applyObjectiveSections(mode);
+            _applyObjectiveHero(mode);
+            safeRender(rerenderQuickLinksStrip);
+        }
+
+        // Elevate one section to appear right after #streaming in the preview
+        function _applyObjectiveSections(mode) {
+            try {
+                var container = document.getElementById('sectionsContainer');
+                if (!container) return;
+
+                var PRIORITY = {
+                    streams:    'previewMusicSection',
+                    tickets:    'events',
+                    merch:      'merch',
+                    support:    'support',
+                    engagement: 'videos',
+                    press:      null,
+                    live:       null,
+                };
+
+                var targetId = PRIORITY[mode];
+                if (!targetId) return;
+
+                var target = document.getElementById(targetId);
+                if (!target) return;
+
+                // Move target to right after #streaming (anchor) or first child
+                var anchor = document.getElementById('streaming');
+                var insertAfter = anchor || null;
+                if (insertAfter && insertAfter.nextElementSibling &&
+                        insertAfter.nextElementSibling.id !== targetId) {
+                    insertAfter.after(target);
+                } else if (!insertAfter && container.firstElementChild &&
+                        container.firstElementChild.id !== targetId) {
+                    container.prepend(target);
+                }
+            } catch(e) { console.warn('[_applyObjectiveSections]', e); }
+        }
+
+        // Set hero CTA buttons based on available ctaState entries for the objective
+        function _applyObjectiveHero(mode) {
+            try {
+                var mainBtn = document.getElementById('mainCta');
+                var secBtn  = document.getElementById('secondaryCta');
+                if (!mainBtn && !secBtn) return;
+
+                var INTENT_KEYS = {
+                    listen:  ['listen-spotify', 'listen-apple', 'listen-soundcloud', 'listen-tidal', 'listen-deezer', 'listen-now'],
+                    watch:   ['watch-youtube', 'watch-vimeo'],
+                    tickets: ['tickets-eventbrite', 'tickets-dice', 'tickets-songkick', 'get-tickets'],
+                    shop:    ['shop-bandcamp', 'shop-shopify', 'shop-gumroad', 'shop-etsy', 'shop-sellfy', 'shop-merch'],
+                    support: ['support-paypal', 'support-bmc', 'support-kofi', 'support-patreon', 'inner-circle'],
+                    follow:  ['instagram', 'tiktok', 'twitter', 'facebook', 'threads'],
+                };
+
+                var MODE_HERO = {
+                    streams:    { p: ['listen'],            s: ['watch', 'follow'] },
+                    tickets:    { p: ['tickets'],           s: ['listen', 'watch'] },
+                    merch:      { p: ['shop'],              s: ['listen', 'support'] },
+                    support:    { p: ['support'],           s: ['listen', 'shop'] },
+                    engagement: { p: ['watch'],             s: ['follow', 'listen'] },
+                    press:      { p: ['listen', 'watch'],   s: ['follow'] },
+                    live:       { p: ['listen'],            s: ['tickets'] },
+                };
+
+                var heroCfg = MODE_HERO[mode] || MODE_HERO.live;
+
+                function findCTA(intentList) {
+                    for (var ii = 0; ii < intentList.length; ii++) {
+                        var keys = INTENT_KEYS[intentList[ii]] || [];
+                        for (var ki = 0; ki < keys.length; ki++) {
+                            var entry = ctaState[keys[ki]];
+                            if (entry && entry.active && entry.url) return entry;
+                        }
+                    }
+                    return null;
+                }
+
+                var primary   = findCTA(heroCfg.p);
+                var secondary = findCTA(heroCfg.s);
+
+                if (mainBtn && primary) {
+                    mainBtn.textContent = primary.icon + ' ' + primary.text;
+                }
+                if (secBtn && secondary) {
+                    secBtn.textContent = secondary.icon + ' ' + secondary.text;
+                }
+            } catch(e) { console.warn('[_applyObjectiveHero]', e); }
+        }
+
+        function importOnboardingLinks() {
+            var warn = document.getElementById('onboardingWarn');
+            var input = document.getElementById('onboardingLinksInput');
+            if (!input) return;
+            if (warn) warn.style.display = 'none';
+
+            var parsed = parseOnboardingLinks(input.value || '');
+            if (!parsed.length) {
+                if (warn) {
+                    warn.textContent = 'No recognised links found. Make sure URLs start with https:// and try again.';
+                    warn.style.display = '';
+                }
+                return;
+            }
+
+            // Collect existing URLs to avoid adding duplicates
+            var existingUrls = {};
+            Object.values(ctaState).forEach(function(v) { if (v && v.url) existingUrls[v.url] = true; });
+
+            // Compute next available order slot
+            var maxOrder = 0;
+            Object.values(ctaState).forEach(function(v) { if (v && v.order > maxOrder) maxOrder = v.order; });
+
+            var added = 0;
+            parsed.forEach(function(p) {
+                if (existingUrls[p.url]) return; // exact URL already present
+                if (ctaState[p.key]) {
+                    // Key already exists — fill URL if blank, else skip
+                    if (!ctaState[p.key].url) {
+                        ctaState[p.key].url = p.url;
+                        ctaState[p.key].active = true;
+                        existingUrls[p.url] = true;
+                        added++;
+                    }
+                } else {
+                    // New platform — create entry
+                    maxOrder++;
+                    ctaState[p.key] = { active: true, text: p.text, icon: p.icon, order: maxOrder, url: p.url };
+                    existingUrls[p.url] = true;
+                    added++;
+                }
+            });
+
+            saveCTAState();
+
+            safeRender(rebuildUIFromState);
+            safeRender(function() { renderPreviewCTAStack('live'); });
+            safeRender(rerenderQuickLinksStrip);
+            safeRender(updateSectionActionBtns);
+
+            // Transition to Step 2 instead of closing
+            _showOnboardingStep2();
+        }
+
+
     </script>
 
 
