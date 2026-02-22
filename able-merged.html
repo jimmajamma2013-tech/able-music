@@ -12951,6 +12951,9 @@
                         </div>
                     </div>
                 </div>
+                <div id="eventsTabErrorBanner" style="display:none;margin-bottom:12px;padding:10px 14px;background:var(--error-soft,#fee2e2);color:var(--error,#dc2626);border-radius:8px;font-size:12px;font-weight:600;">
+                    ⚠️ Could not load events. Your data is safe — please refresh or try again.
+                </div>
                 <div class="card" style="display:none;" id="eventListCard">
                     <div class="card-header" style="display:flex;align-items:center;justify-content:space-between;">
                         <span class="card-title">Upcoming Shows</span>
@@ -19600,6 +19603,14 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                             <input type="url" class="form-input" placeholder="tiktok.com/@..." id="releaseTiktok">
                         </div>
                     </div>
+                    <!-- oEmbed enrichment preview — hidden until a URL is recognised -->
+                    <div id="releaseEnrichPreview" style="display:none;margin-top:8px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-secondary);align-items:center;gap:10px;">
+                        <img id="releaseEnrichThumb" src="" alt="" style="width:36px;height:36px;border-radius:6px;object-fit:cover;flex-shrink:0;display:none;">
+                        <div style="flex:1;min-width:0;">
+                            <div id="releaseEnrichLabel" style="font-size:11px;font-weight:600;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+                            <div id="releaseEnrichStatus" style="font-size:10px;color:var(--accent);margin-top:1px;display:none;"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Tracks list — label and add button driven by updateTracksSection() -->
@@ -19645,7 +19656,15 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 <div class="form-group">
                     <label class="form-label">Video URL</label>
                     <input type="url" class="form-input" placeholder="YouTube, TikTok, or Vimeo URL" id="videoUrl">
-                    <div class="form-help">We'll automatically fetch the thumbnail and details</div>
+                    <div class="form-help">Paste a YouTube or Vimeo link — title and thumbnail auto-fill</div>
+                    <!-- oEmbed enrichment preview -->
+                    <div id="videoEnrichPreview" style="display:none;margin-top:8px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-secondary);align-items:center;gap:10px;">
+                        <img id="videoEnrichThumb" src="" alt="" style="width:56px;height:32px;border-radius:4px;object-fit:cover;flex-shrink:0;display:none;">
+                        <div style="flex:1;min-width:0;">
+                            <div id="videoEnrichLabel" style="font-size:11px;font-weight:600;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+                            <div id="videoEnrichStatus" style="font-size:10px;color:var(--accent);margin-top:1px;display:none;"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Platform</label>
@@ -19702,6 +19721,12 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 <div class="form-group">
                     <label class="form-label">Ticket Link (optional)</label>
                     <input type="url" class="form-input" placeholder="https://..." id="eventTicketUrl">
+                </div>
+                <div id="eventEnrichPreview" style="display:none;margin:-4px 0 12px;padding:8px 12px;background:var(--bg-tertiary,rgba(0,0,0,0.04));border-radius:8px;border:1px solid var(--border);flex-direction:row;align-items:center;gap:10px;">
+                    <div style="flex:1;min-width:0;">
+                        <div id="eventEnrichLabel" style="font-size:12px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+                        <div id="eventEnrichStatus" style="font-size:11px;color:var(--accent);margin-top:2px;display:none;"></div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Credits <span style="font-weight:400;color:var(--text-tertiary);">(optional)</span></label>
@@ -19801,6 +19826,10 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             document.getElementById('releaseCredits').value = '';
             selectDisplayMode('tracklist');
 
+            // Reset oEmbed draft for this modal session
+            _oembedDraft = { artworkUrl: '', provider: '', providerTitle: '', oembedTitle: '', titleAutoFilled: false };
+            _hideEnrichPreview();
+
             if (editId) {
                 // Edit mode — populate from state
                 const rel = musicState.releases.find(r => r.id === editId);
@@ -19819,10 +19848,29 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 document.getElementById('releaseCredits').value = rel.credits || '';
                 // Re-populate tracks
                 (rel.tracks || []).forEach(t => addTrackRow(t.title, t.duration));
+                // Pre-populate draft from saved oEmbed data so it's preserved on save
+                _oembedDraft.artworkUrl    = rel.artworkUrl    || '';
+                _oembedDraft.provider      = rel.provider      || '';
+                _oembedDraft.providerTitle = rel.providerTitle || '';
+                _oembedDraft.oembedTitle   = rel.oembedTitle   || '';
             } else {
                 titleEl.textContent = 'Add Release';
                 // Start with one blank track row
                 addTrackRow();
+            }
+
+            // Attach enrichment listeners once per modal lifetime (guard with data attribute)
+            if (!modal.dataset.enrichInit) {
+                modal.dataset.enrichInit = '1';
+                ['releaseSpotify', 'releaseYoutube', 'releaseSoundcloud'].forEach(function(id) {
+                    var el = document.getElementById(id);
+                    if (!el) return;
+                    el.addEventListener('change', _triggerReleaseEnrichment);
+                    el.addEventListener('blur',   _triggerReleaseEnrichment);
+                });
+                // Track manual title edits so we don't overwrite after user types
+                var _titleEl = document.getElementById('releaseTitle');
+                if (_titleEl) _titleEl.addEventListener('input', function() { _oembedDraft.titleAutoFilled = false; });
             }
 
             modal.classList.add('active');
@@ -19968,6 +20016,11 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 title,
                 type: document.getElementById('releaseType').value,
                 artwork: document.getElementById('releaseArtwork').value.trim(),
+                // oEmbed enrichment fields (backwards-compatible — absent on old releases)
+                artworkUrl:    _oembedDraft.artworkUrl    || undefined,
+                provider:      _oembedDraft.provider      || undefined,
+                providerTitle: _oembedDraft.providerTitle || undefined,
+                oembedTitle:   _oembedDraft.oembedTitle   || undefined,
                 displayMode: document.getElementById('releaseDisplayMode').value,
                 credits: document.getElementById('releaseCredits').value.trim(),
                 platforms: {
@@ -20052,8 +20105,9 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     { key: 'tt', label: 'TT', url: platforms.tiktok },
                 ].map(p => `<span class="release-pill ${p.key}${p.url ? ' has-url' : ''}">${p.label}</span>`).join('');
 
-                const artwork = rel.artwork
-                    ? `<img src="${rel.artwork}" class="release-artwork-placeholder" style="object-fit:cover;" onerror="this.style.display='none'">`
+                const _artSrc = rel.artworkUrl || rel.artwork || '';
+                const artwork = _artSrc
+                    ? `<img src="${_artSrc}" class="release-artwork-placeholder" style="object-fit:cover;border-radius:6px;" onerror="this.style.display='none'">`
                     : `<div class="release-artwork-placeholder">🎵</div>`;
 
                 return `
@@ -20132,25 +20186,31 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     const scEmbed = normalizeSoundCloudEmbedUrl(platforms.soundcloud);
                     const creditsHtml = rel.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${rel.credits}</div>` : '';
 
+                    // Shared: release card header (thumb + title) above embed
+                    const _eSrc = rel.artworkUrl || rel.artwork || '';
+                    const _eThumb = _eSrc ? `<img src="${_eSrc}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">` : '';
+                    const _eTypeLabel = (rel.type || 'single').charAt(0).toUpperCase() + (rel.type || 'single').slice(1);
+                    const _eHeader = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:10px 10px 0;">${_eThumb}<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rel.title}</div><div style="font-size:10px;color:var(--text-tertiary);">${_eTypeLabel}</div></div></div>`;
+
                     if (spEmbed) {
                         const h = spEmbed.height || 152;
                         const spKindLabel = spEmbed.kind === 'album' ? ' · Album' : spEmbed.kind === 'playlist' ? ' · Playlist' : ' · Track';
-                        const spLabel = `<div style="font-size:11px;font-weight:600;color:#1DB954;margin-bottom:4px;">🟢 Spotify player${spKindLabel}</div>`;
+                        const spLabel = `<div style="font-size:11px;font-weight:600;color:#1DB954;margin-bottom:4px;padding:0 10px;">🟢 Spotify player${spKindLabel}</div>`;
                         const spBtn = `<button type="button" class="able-embedLoadBtn" style="background:#1DB954;color:#000;border-color:#1DB954;">🎵 Load Spotify player</button><div class="able-embedHint">Tap to load · Spotify</div>`;
-                        const iframeHtml = `<div class="able-embedWrap"><div class="able-embedLazy" data-embed-src="${spEmbed.src}" data-embed-kind="spotify" data-embed-height="${h}" style="min-height:${h}px;">${spBtn}</div></div>`;
-                        return `<div>${spLabel}${iframeHtml}${creditsHtml}</div>`;
+                        const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedLazy" data-embed-src="${spEmbed.src}" data-embed-kind="spotify" data-embed-height="${h}" style="min-height:${h}px;">${spBtn}</div></div>`;
+                        return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">${_eHeader}${spLabel}${iframeHtml}${creditsHtml ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
                     }
                     if (ytEmbed) {
-                        const ytLabel = `<div style="font-size:11px;font-weight:600;color:#ff0000;margin-bottom:4px;">▶️ YouTube video</div>`;
+                        const ytLabel = `<div style="font-size:11px;font-weight:600;color:#ff0000;margin-bottom:4px;padding:0 10px;">▶️ YouTube video</div>`;
                         const ytBtn = `<button type="button" class="able-embedLoadBtn">▶️ Load video</button><div class="able-embedHint">Tap to load · YouTube</div>`;
-                        const iframeHtml = `<div class="able-embedWrap"><div class="able-embedRatio able-embedLazy" data-embed-src="${ytEmbed.src}" data-embed-kind="youtube">${ytBtn}</div></div>`;
-                        return `<div>${ytLabel}${iframeHtml}${creditsHtml}</div>`;
+                        const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedRatio able-embedLazy" data-embed-src="${ytEmbed.src}" data-embed-kind="youtube">${ytBtn}</div></div>`;
+                        return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">${_eHeader}${ytLabel}${iframeHtml}${creditsHtml ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
                     }
                     if (scEmbed) {
-                        const scLabel = `<div style="font-size:11px;font-weight:600;color:#ff5500;margin-bottom:4px;">🎧 SoundCloud player</div>`;
+                        const scLabel = `<div style="font-size:11px;font-weight:600;color:#ff5500;margin-bottom:4px;padding:0 10px;">🎧 SoundCloud player</div>`;
                         const scBtn = `<button type="button" class="able-embedLoadBtn">🎧 Load SoundCloud player</button><div class="able-embedHint">Tap to load · SoundCloud</div>`;
-                        const iframeHtml = `<div class="able-embedWrap"><div class="able-embedLazy" data-embed-src="${scEmbed.src}" data-embed-kind="soundcloud" data-embed-height="180" style="min-height:180px;">${scBtn}</div></div>`;
-                        return `<div>${scLabel}${iframeHtml}${creditsHtml}</div>`;
+                        const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedLazy" data-embed-src="${scEmbed.src}" data-embed-kind="soundcloud" data-embed-height="180" style="min-height:180px;">${scBtn}</div></div>`;
+                        return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">${_eHeader}${scLabel}${iframeHtml}${creditsHtml ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
                     }
                     // No embeddable URL found — show explicit warning
                     return `
@@ -20171,10 +20231,14 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     </div>`).join('');
                 const moreCount = (rel.tracks || []).length - 3;
 
+                const _tSrc = rel.artworkUrl || rel.artwork || '';
+                const _tThumb = _tSrc
+                    ? `<img src="${_tSrc}" style="width:40px;height:40px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">`
+                    : `<div style="width:40px;height:40px;border-radius:6px;background:linear-gradient(135deg,var(--accent),#06b6d4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;">🎵</div>`;
                 return `
                     <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:12px;">
                         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-                            <div style="width:40px;height:40px;border-radius:6px;background:linear-gradient(135deg,var(--accent),#06b6d4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;">🎵</div>
+                            ${_tThumb}
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rel.title}</div>
                                 <div style="font-size:11px;color:var(--text-tertiary);">${typeLabel}</div>
@@ -20254,6 +20318,110 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             return null;
         }
 
+        // ─── Release Link Enrichment v1 (oEmbed) ──────────────────────────
+        var OEMBED_CACHE_KEY = 'able_oembed_cache_v1';
+        var OEMBED_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+        function _loadOEmbedCache() {
+            try { return JSON.parse(localStorage.getItem(OEMBED_CACHE_KEY) || '{}'); } catch(e) { return {}; }
+        }
+        function _saveOEmbedCache(cache) {
+            try { localStorage.setItem(OEMBED_CACHE_KEY, JSON.stringify(cache)); } catch(e) {}
+        }
+
+        function detectProviderFromUrl(url) {
+            if (!url) return null;
+            try {
+                if (/spotify\.com/.test(url))           return 'spotify';
+                if (/youtu\.be|youtube\.com/.test(url)) return 'youtube';
+                if (/soundcloud\.com/.test(url))        return 'soundcloud';
+                if (/vimeo\.com/.test(url))             return 'vimeo';
+            } catch(e) {}
+            return null;
+        }
+
+        function getOEmbed(url, provider) {
+            if (!url || !provider) return Promise.resolve(null);
+            var cache = _loadOEmbedCache();
+            var cached = cache[url];
+            if (cached && (Date.now() - cached.t) < OEMBED_TTL_MS) return Promise.resolve(cached.data);
+            var endpoint;
+            if      (provider === 'spotify')    endpoint = 'https://open.spotify.com/oembed?url=' + encodeURIComponent(url);
+            else if (provider === 'youtube')    endpoint = 'https://www.youtube.com/oembed?url=' + encodeURIComponent(url) + '&format=json';
+            else if (provider === 'soundcloud') endpoint = 'https://soundcloud.com/oembed?format=json&url=' + encodeURIComponent(url);
+            else if (provider === 'vimeo')      endpoint = 'https://vimeo.com/api/oembed.json?url=' + encodeURIComponent(url);
+            else return Promise.resolve(null);
+            return fetch(endpoint)
+                .then(function(res) { return res.ok ? res.json() : null; })
+                .then(function(data) {
+                    if (!data) return null;
+                    var result = { title: data.title || '', thumbnail_url: data.thumbnail_url || '', provider_name: data.provider_name || provider };
+                    cache[url] = { t: Date.now(), data: result };
+                    _saveOEmbedCache(cache);
+                    return result;
+                })
+                .catch(function() { return null; });
+        }
+
+        // Draft: holds enrichment data for the currently-open Add Release modal
+        var _oembedDraft = { artworkUrl: '', provider: '', providerTitle: '', oembedTitle: '', titleAutoFilled: false };
+        var _oembedTimer = null;
+
+        function _triggerReleaseEnrichment() {
+            clearTimeout(_oembedTimer);
+            _oembedTimer = setTimeout(_runReleaseEnrichment, 400);
+        }
+
+        function _runReleaseEnrichment() {
+            var spEl = document.getElementById('releaseSpotify');
+            var ytEl = document.getElementById('releaseYoutube');
+            var scEl = document.getElementById('releaseSoundcloud');
+            var spUrl = spEl ? spEl.value.trim() : '';
+            var ytUrl = ytEl ? ytEl.value.trim() : '';
+            var scUrl = scEl ? scEl.value.trim() : '';
+            var url = null, provider = null;
+            if (spUrl && detectProviderFromUrl(spUrl) === 'spotify')         { url = spUrl; provider = 'spotify'; }
+            else if (ytUrl && detectProviderFromUrl(ytUrl) === 'youtube')    { url = ytUrl; provider = 'youtube'; }
+            else if (scUrl && detectProviderFromUrl(scUrl) === 'soundcloud') { url = scUrl; provider = 'soundcloud'; }
+            if (!url) { _hideEnrichPreview(); return; }
+            getOEmbed(url, provider).then(function(data) {
+                if (!data) { _hideEnrichPreview(); return; }
+                _oembedDraft.artworkUrl    = data.thumbnail_url || '';
+                _oembedDraft.provider      = provider;
+                _oembedDraft.providerTitle = data.provider_name || provider;
+                _oembedDraft.oembedTitle   = data.title || '';
+                var titleEl = document.getElementById('releaseTitle');
+                var statusMsg = '';
+                if (titleEl && !titleEl.value.trim() && data.title) {
+                    titleEl.value = data.title.trim();
+                    _oembedDraft.titleAutoFilled = true;
+                    statusMsg = 'Auto-filled title';
+                }
+                _showEnrichPreview(data, provider, statusMsg);
+            }).catch(function() { _hideEnrichPreview(); });
+        }
+
+        function _showEnrichPreview(data, provider, statusMsg) {
+            var row    = document.getElementById('releaseEnrichPreview');
+            var thumb  = document.getElementById('releaseEnrichThumb');
+            var label  = document.getElementById('releaseEnrichLabel');
+            var status = document.getElementById('releaseEnrichStatus');
+            if (!row) return;
+            var provLabels = { spotify: 'Spotify', youtube: 'YouTube', soundcloud: 'SoundCloud' };
+            if (thumb) {
+                if (data.thumbnail_url) { thumb.src = data.thumbnail_url; thumb.style.display = 'block'; }
+                else { thumb.style.display = 'none'; }
+            }
+            if (label) label.textContent = 'Detected: ' + (provLabels[provider] || provider) + (data.title ? ' — ' + data.title : '');
+            if (status) { status.textContent = statusMsg || ''; status.style.display = statusMsg ? '' : 'none'; }
+            row.style.display = 'flex';
+        }
+
+        function _hideEnrichPreview() {
+            var row = document.getElementById('releaseEnrichPreview');
+            if (row) row.style.display = 'none';
+        }
+
         // ── Lazy embed loader ─────────────────────────────────────────────
         function injectLazyEmbed(el) {
             if (!el || el.dataset.loaded) return;
@@ -20311,6 +20479,135 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             });
         }
 
+        // ── Vimeo embed normaliser ────────────────────────────────────────
+        function normalizeVimeoEmbedUrl(url) {
+            if (!url) return null;
+            try {
+                // vimeo.com/123456789  or  player.vimeo.com/video/123456789
+                var m = url.match(/(?:vimeo\.com\/(?:video\/)?|player\.vimeo\.com\/video\/)(\d+)/);
+                if (m) return { src: 'https://player.vimeo.com/video/' + m[1] + '?title=0&byline=0&portrait=0', kind: 'vimeo' };
+            } catch(e) {}
+            return null;
+        }
+
+        // ─── Videos oEmbed draft (separate from release _oembedDraft) ─────
+        var _videoOembedDraft = { artworkUrl: '', provider: '', providerTitle: '', oembedTitle: '', titleAutoFilled: false };
+        var _videoOembedTimer = null;
+
+        function _triggerVideoEnrichment() {
+            clearTimeout(_videoOembedTimer);
+            _videoOembedTimer = setTimeout(_runVideoEnrichment, 400);
+        }
+
+        function _runVideoEnrichment() {
+            var urlEl = document.getElementById('videoUrl');
+            var url = urlEl ? urlEl.value.trim() : '';
+            var provider = detectProviderFromUrl(url);
+            if (!url || !provider || (provider !== 'youtube' && provider !== 'vimeo')) {
+                _hideVideoEnrichPreview();
+                return;
+            }
+            // Auto-select platform dropdown
+            var platEl = document.getElementById('videoPlatform');
+            if (platEl) platEl.value = (provider === 'vimeo' ? 'vimeo' : 'youtube');
+            getOEmbed(url, provider).then(function(data) {
+                if (!data) { _hideVideoEnrichPreview(); return; }
+                _videoOembedDraft.artworkUrl    = data.thumbnail_url || '';
+                _videoOembedDraft.provider      = provider;
+                _videoOembedDraft.providerTitle = data.provider_name || provider;
+                _videoOembedDraft.oembedTitle   = data.title || '';
+                var titleEl = document.getElementById('videoTitle');
+                var statusMsg = '';
+                if (titleEl && !titleEl.value.trim() && data.title) {
+                    titleEl.value = data.title.trim();
+                    _videoOembedDraft.titleAutoFilled = true;
+                    statusMsg = 'Auto-filled title';
+                }
+                _showVideoEnrichPreview(data, provider, statusMsg);
+            }).catch(function() { _hideVideoEnrichPreview(); });
+        }
+
+        function _showVideoEnrichPreview(data, provider, statusMsg) {
+            var row    = document.getElementById('videoEnrichPreview');
+            var thumb  = document.getElementById('videoEnrichThumb');
+            var label  = document.getElementById('videoEnrichLabel');
+            var status = document.getElementById('videoEnrichStatus');
+            if (!row) return;
+            var provLabels = { youtube: 'YouTube', vimeo: 'Vimeo' };
+            if (thumb) {
+                if (data.thumbnail_url) { thumb.src = data.thumbnail_url; thumb.style.display = 'block'; }
+                else { thumb.style.display = 'none'; }
+            }
+            if (label) label.textContent = 'Detected: ' + (provLabels[provider] || provider) + (data.title ? ' — ' + data.title : '');
+            if (status) { status.textContent = statusMsg || ''; status.style.display = statusMsg ? '' : 'none'; }
+            row.style.display = 'flex';
+        }
+
+        function _hideVideoEnrichPreview() {
+            var row = document.getElementById('videoEnrichPreview');
+            if (row) row.style.display = 'none';
+        }
+
+        // ─── Events ticket-link provider detection (no network fetch) ──────
+        var _eventOembedDraft = { provider: '', providerTitle: '' };
+        var _eventEnrichTimer = null;
+
+        function _detectEventProvider(url) {
+            if (!url) return null;
+            try {
+                var u = url.toLowerCase();
+                if (u.indexOf('eventbrite.') > -1)   return { provider: 'eventbrite',   providerTitle: 'Eventbrite' };
+                if (u.indexOf('dice.fm') > -1)        return { provider: 'dice',         providerTitle: 'Dice' };
+                if (u.indexOf('songkick.com') > -1)   return { provider: 'songkick',     providerTitle: 'Songkick' };
+                if (u.indexOf('ticketmaster.') > -1)  return { provider: 'ticketmaster', providerTitle: 'Ticketmaster' };
+                if (u.indexOf('bandsintown.com') > -1)return { provider: 'bandsintown',  providerTitle: 'Bands in Town' };
+                if (u.indexOf('seetickets.') > -1)    return { provider: 'seetickets',   providerTitle: 'See Tickets' };
+                if (u.indexOf('ra.co') > -1)          return { provider: 'ra',           providerTitle: 'Resident Advisor' };
+                if (u.indexOf('skiddle.com') > -1)    return { provider: 'skiddle',      providerTitle: 'Skiddle' };
+                if (u.indexOf('ticketweb.') > -1)     return { provider: 'ticketweb',    providerTitle: 'TicketWeb' };
+            } catch(e) {}
+            return null;
+        }
+
+        function _triggerEventEnrichment() {
+            clearTimeout(_eventEnrichTimer);
+            _eventEnrichTimer = setTimeout(_runEventEnrichment, 300);
+        }
+
+        function _runEventEnrichment() {
+            var urlEl = document.getElementById('eventTicketUrl');
+            var url = urlEl ? urlEl.value.trim() : '';
+            if (!url) {
+                _hideEventEnrichPreview();
+                _eventOembedDraft = { provider: '', providerTitle: '' };
+                return;
+            }
+            var result = _detectEventProvider(url);
+            if (!result) {
+                _hideEventEnrichPreview();
+                _eventOembedDraft = { provider: '', providerTitle: '' };
+                return;
+            }
+            _eventOembedDraft.provider      = result.provider;
+            _eventOembedDraft.providerTitle = result.providerTitle;
+            _showEventEnrichPreview(result.provider, result.providerTitle);
+        }
+
+        function _showEventEnrichPreview(provider, providerTitle) {
+            var row    = document.getElementById('eventEnrichPreview');
+            var label  = document.getElementById('eventEnrichLabel');
+            var status = document.getElementById('eventEnrichStatus');
+            if (!row) return;
+            if (label)  label.textContent = 'Ticket link: ' + (providerTitle || provider);
+            if (status) status.style.display = 'none';
+            row.style.display = 'flex';
+        }
+
+        function _hideEventEnrichPreview() {
+            var row = document.getElementById('eventEnrichPreview');
+            if (row) row.style.display = 'none';
+        }
+
         // Legacy thin wrappers — kept so any external call sites don't break
         function extractSpotifyId(url) {
             var r = normalizeSpotifyEmbedUrl(url);
@@ -20331,11 +20628,55 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
         }
 
         function openAddVideoModal() {
-            document.getElementById('addVideoModal').classList.add('active');
+            var modal = document.getElementById('addVideoModal');
+            if (!modal) return;
+            // Reset form + draft on every open
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoUrl').value = '';
+            document.getElementById('videoCredits').value = '';
+            document.getElementById('videoPlatform').value = 'youtube';
+            _videoOembedDraft = { artworkUrl: '', provider: '', providerTitle: '', oembedTitle: '', titleAutoFilled: false };
+            _hideVideoEnrichPreview();
+            // Attach listeners once (dataset guard)
+            if (!modal.dataset.enrichInit) {
+                modal.dataset.enrichInit = '1';
+                var urlEl = document.getElementById('videoUrl');
+                if (urlEl) {
+                    urlEl.addEventListener('change', _triggerVideoEnrichment);
+                    urlEl.addEventListener('blur',   _triggerVideoEnrichment);
+                }
+                var titleEl = document.getElementById('videoTitle');
+                if (titleEl) titleEl.addEventListener('input', function() { _videoOembedDraft.titleAutoFilled = false; });
+            }
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function openAddEventModal() {
-            document.getElementById('addEventModal').classList.add('active');
+            var modal = document.getElementById('addEventModal');
+            if (!modal) return;
+            // Reset form + draft on every open
+            document.getElementById('eventName').value      = '';
+            document.getElementById('eventVenue').value     = '';
+            document.getElementById('eventCity').value      = '';
+            document.getElementById('eventDate').value      = '';
+            document.getElementById('eventTime').value      = '';
+            document.getElementById('eventTicketUrl').value = '';
+            document.getElementById('eventCredits').value   = '';
+            _eventOembedDraft = { provider: '', providerTitle: '' };
+            _hideEventEnrichPreview();
+            // Attach ticket URL listeners once (dataset guard)
+            if (!modal.dataset.enrichInit) {
+                modal.dataset.enrichInit = '1';
+                var ticketEl = document.getElementById('eventTicketUrl');
+                if (ticketEl) {
+                    ticketEl.addEventListener('input',  _triggerEventEnrichment);
+                    ticketEl.addEventListener('change', _triggerEventEnrichment);
+                    ticketEl.addEventListener('blur',   _triggerEventEnrichment);
+                }
+            }
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function openAddProductModal() {
@@ -20389,13 +20730,16 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             }
             const credits = document.getElementById('videoCredits').value.trim();
             const videos = loadVideos();
-            videos.push({ id: Date.now(), title, url, platform, credits });
+            videos.push({
+                id: Date.now(), title, url, platform, credits,
+                artworkUrl:    _videoOembedDraft.artworkUrl    || undefined,
+                provider:      _videoOembedDraft.provider      || undefined,
+                providerTitle: _videoOembedDraft.providerTitle || undefined,
+                oembedTitle:   _videoOembedDraft.oembedTitle   || undefined,
+            });
             saveVideos(videos);
             showToast(`✅ "${title}" added to your videos`);
             closeModal('addVideoModal');
-            document.getElementById('videoTitle').value = '';
-            document.getElementById('videoUrl').value = '';
-            document.getElementById('videoCredits').value = '';
             renderVideoList();
         }
 
@@ -20437,9 +20781,9 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             if (listCard)   listCard.style.display   = '';
 
             container.innerHTML = videos.map(v => {
-                const ytId = getYouTubeId(v.url);
-                const thumb = ytId
-                    ? `<img src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="" style="width:80px;height:45px;object-fit:cover;border-radius:6px;flex-shrink:0;">`
+                const _vThumbSrc = v.artworkUrl || (getYouTubeId(v.url) ? 'https://img.youtube.com/vi/' + getYouTubeId(v.url) + '/mqdefault.jpg' : '');
+                const thumb = _vThumbSrc
+                    ? `<img src="${_vThumbSrc}" alt="" style="width:80px;height:45px;object-fit:cover;border-radius:6px;flex-shrink:0;" onerror="this.style.display='none'">`
                     : `<span style="width:80px;height:45px;display:flex;align-items:center;justify-content:center;background:var(--bg-tertiary);border-radius:6px;font-size:22px;flex-shrink:0;">${v.platform === 'tiktok' ? '🎬' : '🎥'}</span>`;
                 return `
                 <div class="list-item" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
@@ -20486,19 +20830,16 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             }
             const credits = document.getElementById('eventCredits').value.trim();
             const events = loadEvents();
-            events.push({ id: Date.now(), name, venue, city, date, time, ticketUrl, credits });
+            events.push({
+                id: Date.now(), name, venue, city, date, time, ticketUrl, credits,
+                provider:      _eventOembedDraft.provider      || undefined,
+                providerTitle: _eventOembedDraft.providerTitle || undefined,
+            });
             // Sort by date ascending
             events.sort((a, b) => new Date(a.date) - new Date(b.date));
             saveEvents(events);
             showToast(`✅ Event "${name}" added`);
             closeModal('addEventModal');
-            document.getElementById('eventName').value = '';
-            document.getElementById('eventVenue').value = '';
-            document.getElementById('eventCity').value = '';
-            document.getElementById('eventDate').value = '';
-            document.getElementById('eventTime').value = '';
-            document.getElementById('eventTicketUrl').value = '';
-            document.getElementById('eventCredits').value = '';
             renderEventList();
         }
 
@@ -20510,48 +20851,49 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
         }
 
         function renderEventList() {
-            const container = document.getElementById('eventList');
-            if (!container) return;
-            const events = loadEvents();
+            const eventsErrBanner = document.getElementById('eventsTabErrorBanner');
+            try {
+                if (eventsErrBanner) eventsErrBanner.style.display = 'none';
+                const container = document.getElementById('eventList');
+                if (!container) return;
+                const events = loadEvents();
 
-            const emptyState = document.getElementById('eventEmptyState');
-            const listCard   = document.getElementById('eventListCard');
-            if (events.length === 0) {
-                container.innerHTML = '';
-                if (emptyState) emptyState.style.display = '';
-                if (listCard)   listCard.style.display   = 'none';
-                
-                // Update artist page (clear bento)
-                if (typeof renderProfileBento === 'function') {
-                    renderProfileBento();
+                const emptyState = document.getElementById('eventEmptyState');
+                const listCard   = document.getElementById('eventListCard');
+                if (events.length === 0) {
+                    container.innerHTML = '';
+                    if (emptyState) emptyState.style.display = '';
+                    if (listCard)   listCard.style.display   = 'none';
+                    try { renderProfileBento(); } catch(be) { console.warn('bento error', be); }
+                    return;
                 }
-                return;
-            }
-            if (emptyState) emptyState.style.display = 'none';
-            if (listCard)   listCard.style.display   = '';
+                if (emptyState) emptyState.style.display = 'none';
+                if (listCard)   listCard.style.display   = '';
 
-            container.innerHTML = events.map(e => {
-                const d = new Date(e.date + 'T00:00:00');
-                const month = d.toLocaleString('default', { month: 'short' }).toUpperCase();
-                const day   = d.getDate();
-                return `
-                <div class="list-item" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
-                    <div style="text-align:center;min-width:40px;background:var(--accent-soft);border-radius:8px;padding:6px 4px;">
-                        <div style="font-size:10px;font-weight:800;color:var(--accent);">${month}</div>
-                        <div style="font-size:18px;font-weight:900;line-height:1;">${day}</div>
-                    </div>
-                    <div style="flex:1;min-width:0;">
-                        <div style="font-weight:700;font-size:13px;">${e.name}</div>
-                        <div style="font-size:11px;color:var(--text-tertiary);">${e.venue}${e.city ? ' · ' + e.city : ''}${e.time ? ' · ' + e.time : ''}</div>
-                    </div>
-                    ${e.ticketUrl ? `<a href="${e.ticketUrl.replace(/"/g,'%22')}" target="_blank" style="font-size:11px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;">Tickets ↗</a>` : ''}
-                    <button onclick="deleteEvent(${e.id})" style="background:none;border:none;color:var(--text-tertiary);cursor:pointer;font-size:16px;padding:4px;flex-shrink:0;" title="Remove">✕</button>
-                </div>`;
-            }).join('');
-            
-            // Update artist page bento grid
-            if (typeof renderProfileBento === 'function') {
-                renderProfileBento();
+                container.innerHTML = events.map(e => {
+                    const d     = new Date(e.date + 'T00:00:00');
+                    const month = d.toLocaleString('default', { month: 'short' }).toUpperCase();
+                    const day   = d.getDate();
+                    const ticketLabel = e.providerTitle || 'Tickets';
+                    return `
+                    <div class="list-item" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
+                        <div style="text-align:center;min-width:40px;background:var(--accent-soft);border-radius:8px;padding:6px 4px;">
+                            <div style="font-size:10px;font-weight:800;color:var(--accent);">${month}</div>
+                            <div style="font-size:18px;font-weight:900;line-height:1;">${day}</div>
+                        </div>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-weight:700;font-size:13px;">${e.name}</div>
+                            <div style="font-size:11px;color:var(--text-tertiary);">${e.venue}${e.city ? ' · ' + e.city : ''}${e.time ? ' · ' + e.time : ''}</div>
+                        </div>
+                        ${e.ticketUrl ? `<a href="${e.ticketUrl.replace(/"/g,'%22')}" target="_blank" style="font-size:11px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;">${ticketLabel} ↗</a>` : ''}
+                        <button onclick="deleteEvent(${e.id})" style="background:none;border:none;color:var(--text-tertiary);cursor:pointer;font-size:16px;padding:4px;flex-shrink:0;" title="Remove">✕</button>
+                    </div>`;
+                }).join('');
+
+                try { renderProfileBento(); } catch(be) { console.warn('bento error', be); }
+            } catch(err) {
+                console.error('renderEventList error:', err);
+                if (eventsErrBanner) eventsErrBanner.style.display = '';
             }
         }
 
@@ -22352,73 +22694,69 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
         function renderProfileVideos() {
             const profileRoot = document.getElementById('profilePreviewRoot');
             if (!profileRoot) return;
-
             try {
-                const videosData = localStorage.getItem('able_videos');
-                if (!videosData) return;
-
-                const videos = JSON.parse(videosData);
-                if (!videos.length) return;
-
-                // Find video-collage container
                 const collage = profileRoot.querySelector('.video-collage');
                 if (!collage) return;
 
-                // Clear existing content
-                collage.innerHTML = '';
+                var videos = [];
+                try { videos = JSON.parse(localStorage.getItem('able_videos') || '[]'); } catch(e) {}
+                if (!videos.length) { collage.innerHTML = ''; return; }
 
-                // First video is featured (large)
-                const featured = videos[0];
-                const featuredHTML = `
-                    <a href="${featured.url}" target="_blank" class="video-featured" style="--rotation: -0.5deg;">
-                        <div class="video-thumb">
-                            <div class="video-placeholder-thumb" style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);">
-                                <div class="thumb-pattern"></div>
-                            </div>
-                            <div class="video-overlay">
-                                <div class="video-play-btn">▶</div>
-                            </div>
-                            <span class="video-badge new">NEW</span>
-                        </div>
-                        <div class="video-info">
-                            <div class="video-title">${featured.title}</div>
-                            <div class="video-stats">${featured.platform || 'YouTube'}</div>
-                            ${featured.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${featured.credits}</div>` : ''}
-                        </div>
-                    </a>
-                `;
+                // ── Helper: build a single video card ──────────────────────
+                function _buildVideoCard(v, featured) {
+                    var ytEmbed  = (typeof normalizeYouTubeEmbedUrl === 'function') ? normalizeYouTubeEmbedUrl(v.url) : null;
+                    var vimEmbed = (typeof normalizeVimeoEmbedUrl  === 'function') ? normalizeVimeoEmbedUrl(v.url)   : null;
+                    var isEmbed  = !!(ytEmbed || vimEmbed);
 
-                // Rest go in grid
-                const gridVideos = videos.slice(1, 5); // Max 4 in grid
-                const gridHTML = gridVideos.map((v, i) => {
-                    const rotations = ['0.3deg', '-0.2deg', '0.4deg', '-0.3deg'];
-                    const gradients = [
-                        '#0891b2 0%, #06b6d4 100%',
-                        '#8b5cf6 0%, #a78bfa 100%',
-                        '#f59e0b 0%, #fbbf24 100%',
-                        '#10b981 0%, #34d399 100%'
-                    ];
-                    return `
-                        <a href="${v.url}" target="_blank" class="video-item" style="--rotation: ${rotations[i]};">
-                            <div class="video-thumb">
-                                <div class="video-placeholder-thumb" style="background: linear-gradient(135deg, ${gradients[i]});">
-                                    <div class="thumb-pattern"></div>
+                    // Thumbnail: oEmbed thumb > YT API > placeholder
+                    var ytId = (typeof getYouTubeId === 'function') ? getYouTubeId(v.url) : '';
+                    var thumbSrc = v.artworkUrl || (ytId ? 'https://img.youtube.com/vi/' + ytId + '/mqdefault.jpg' : '');
+                    var provLabel = v.providerTitle || (v.platform === 'vimeo' ? 'Vimeo' : v.platform === 'tiktok' ? 'TikTok' : 'YouTube');
+
+                    if (isEmbed) {
+                        // Lazy-load embed (16:9)
+                        var embed = ytEmbed || vimEmbed;
+                        var thumbHtml = thumbSrc
+                            ? `<img src="${thumbSrc}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:10px;" onerror="this.style.display='none'">`
+                            : `<div style="position:absolute;inset:0;background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:10px;"></div>`;
+                        var kindColor = (embed === vimEmbed) ? '#1ab7ea' : '#ff0000';
+                        var kindLabel = (embed === vimEmbed) ? '🎬 Vimeo' : '▶️ YouTube';
+                        return `<div style="margin-bottom:${featured ? '12px' : '8px'};">
+                            <div style="font-size:10px;font-weight:700;color:${kindColor};margin-bottom:4px;">${kindLabel}</div>
+                            <div style="font-size:12px;font-weight:700;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${v.title}</div>
+                            <div class="able-embedWrap"><div class="able-embedRatio able-embedLazy" data-embed-src="${embed.src}" data-embed-kind="${embed.kind || 'youtube'}" style="position:relative;">
+                                ${thumbHtml}
+                                <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:1;">
+                                    <button type="button" class="able-embedLoadBtn">▶️ Load video</button>
+                                    <div class="able-embedHint">Tap to load · ${provLabel}</div>
                                 </div>
-                                <div class="video-overlay">
-                                    <div class="video-play-btn">▶</div>
-                                </div>
+                            </div></div>
+                            ${v.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;">Credits: ${v.credits}</div>` : ''}
+                        </div>`;
+                    } else {
+                        // Non-embeddable fallback card
+                        var thumbEl = thumbSrc
+                            ? `<img src="${thumbSrc}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">`
+                            : `<div style="width:48px;height:48px;border-radius:8px;background:var(--bg-tertiary);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;">${v.platform === 'tiktok' ? '🎬' : '🎥'}</div>`;
+                        return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:10px;display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                            ${thumbEl}
+                            <div style="flex:1;min-width:0;">
+                                <div style="font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${v.title}</div>
+                                <div style="font-size:10px;color:var(--text-tertiary);margin-top:1px;">${provLabel}</div>
+                                ${v.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${v.credits}</div>` : ''}
                             </div>
-                            <div class="video-info">
-                                <div class="video-title">${v.title}</div>
-                                <div class="video-stats">${v.platform || 'YouTube'}</div>
-                                ${v.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${v.credits}</div>` : ''}
-                            </div>
-                        </a>
-                    `;
+                            <a href="${v.url}" target="_blank" rel="noopener" style="flex-shrink:0;padding:5px 10px;border-radius:8px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;">Open on ${provLabel}</a>
+                        </div>`;
+                    }
+                }
+
+                // Render up to 4 videos
+                collage.innerHTML = videos.slice(0, 4).map(function(v, i) {
+                    return _buildVideoCard(v, i === 0);
                 }).join('');
 
-                collage.innerHTML = featuredHTML + (gridVideos.length ? `<div class="video-grid">${gridHTML}</div>` : '');
-
+                // Wire lazy embeds
+                if (typeof initLazyEmbeds === 'function') initLazyEmbeds(collage);
             } catch(e) {
                 console.error('Videos bridge error:', e);
             }
@@ -22432,55 +22770,59 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
 
         // 3. Events/Bento Bridge
         function renderProfileBento() {
-            const profileRoot = document.getElementById('profilePreviewRoot');
+            var profileRoot = document.getElementById('profilePreviewRoot');
             if (!profileRoot) return;
 
             try {
-                const eventsData = localStorage.getItem('able_events');
-                if (!eventsData) return;
-
-                const events = JSON.parse(eventsData);
-                if (!events.length) return;
-
-                // Find bento grid container
-                const bentoGrid = profileRoot.querySelector('#bentoGrid');
+                var bentoGrid = profileRoot.querySelector('#bentoGrid');
                 if (!bentoGrid) return;
 
-                // Clear existing tiles
                 bentoGrid.innerHTML = '';
 
-                // Take first 6 upcoming events
-                const upcomingEvents = events.slice(0, 6);
-                
-                const colors = ['#ec4899', '#0891b2', '#8b5cf6', '#f59e0b', '#10b981', '#ef4444'];
-                const sizes = ['size-small', 'size-large', 'size-small', 'size-medium', 'size-medium', 'size-small'];
-                
-                upcomingEvents.forEach((event, i) => {
-                    const eventDate = new Date(event.date);
-                    const month = eventDate.toLocaleString('en', { month: 'short' }).toUpperCase();
-                    const day = eventDate.getDate();
-                    
-                    // Alternate between date tile and event tile
+                var eventsRaw = [];
+                try { eventsRaw = JSON.parse(localStorage.getItem('able_events') || '[]'); } catch(pe) {}
+
+                if (!eventsRaw.length) {
+                    bentoGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:32px 16px;color:var(--text-tertiary);font-size:13px;">No upcoming shows — add your events in the Events tab</div>';
+                    return;
+                }
+
+                // Split upcoming vs past
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
+                var upcoming = eventsRaw.filter(function(e) { return new Date(e.date + 'T00:00:00') >= today; });
+                var past     = eventsRaw.filter(function(e) { return new Date(e.date + 'T00:00:00') < today; });
+                // Upcoming ascending, past descending (most recent first)
+                upcoming.sort(function(a, b) { return new Date(a.date) - new Date(b.date); });
+                past.sort(function(a, b)     { return new Date(b.date) - new Date(a.date); });
+
+                // Show up to 6 events: upcoming first, then fill with recent past
+                var display = upcoming.concat(past).slice(0, 6);
+
+                if (!display.length) {
+                    bentoGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:32px 16px;color:var(--text-tertiary);font-size:13px;">No upcoming shows — add your events in the Events tab</div>';
+                    return;
+                }
+
+                var colors = ['#ec4899', '#0891b2', '#8b5cf6', '#f59e0b', '#10b981', '#ef4444'];
+                var sizes  = ['size-small', 'size-large', 'size-small', 'size-medium', 'size-medium', 'size-small'];
+
+                display.forEach(function(event, i) {
+                    var eventDate = new Date(event.date + 'T00:00:00');
+                    var isPast    = eventDate < today;
+                    var month     = eventDate.toLocaleString('en', { month: 'short' }).toUpperCase();
+                    var day       = eventDate.getDate();
+                    var pastStyle = isPast ? 'opacity:0.5;' : '';
+
+                    // Alternate: even index → date tile, odd index → event tile
                     if (i % 2 === 0) {
-                        // Date tile
-                        bentoGrid.innerHTML += `
-                            <div class="bento-tile size-small type-date" style="--accent-color: ${colors[i]};">
-                                <div class="bento-date">${month}<br>${day}</div>
-                            </div>
-                        `;
+                        bentoGrid.innerHTML += '<div class="bento-tile size-small type-date" style="--accent-color:' + colors[i % colors.length] + ';' + pastStyle + '"><div class="bento-date">' + month + '<br>' + day + '</div></div>';
                     } else {
-                        // Event tile
-                        const size = sizes[i] || 'size-medium';
-                        bentoGrid.innerHTML += `
-                            <div class="bento-tile ${size} type-event">
-                                <div class="bento-content">
-                                    <div class="bento-title">${event.name}</div>
-                                    <div class="bento-subtitle">${event.venue}${event.city ? ', ' + event.city : ''}</div>
-                                    ${event.time ? `<div class="bento-time">🎸 ${event.time}</div>` : ''}
-                                    ${event.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${event.credits}</div>` : ''}
-                                </div>
-                            </div>
-                        `;
+                        var size = sizes[i] || 'size-medium';
+                        var ticketBtn = event.ticketUrl
+                            ? '<a href="' + event.ticketUrl.replace(/"/g, '%22') + '" target="_blank" style="display:inline-block;margin-top:6px;padding:4px 10px;background:var(--accent);color:#fff;border-radius:20px;font-size:10px;font-weight:700;text-decoration:none;letter-spacing:0.02em;">' + (event.providerTitle || 'Get Tickets') + ' ↗</a>'
+                            : '';
+                        bentoGrid.innerHTML += '<div class="bento-tile ' + size + ' type-event" style="' + pastStyle + '"><div class="bento-content"><div class="bento-title">' + event.name + '</div><div class="bento-subtitle">' + event.venue + (event.city ? ', ' + event.city : '') + '</div>' + (event.time ? '<div class="bento-time">' + event.time + '</div>' : '') + ticketBtn + '</div></div>';
                     }
                 });
 
