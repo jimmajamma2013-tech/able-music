@@ -231,6 +231,21 @@
             --card-glass-bg:     rgba(255, 255, 255, 0.72);
             --card-glass-blur:   12px;
             --card-glass-border: rgba(255, 255, 255, 0.28);
+
+            /* ── Prompt 1 — design tokens (alias layer; no appearance change) ── */
+            --token-radius-sm:    var(--radius-sm);         /* 8px  */
+            --token-radius-md:    var(--radius-md);         /* 10px */
+            --token-radius-lg:    var(--card-embed-radius); /* 12px — profile-preview card shell */
+            --token-space-1:      var(--space-xs);          /* 4px  */
+            --token-space-2:      var(--space-sm);          /* 8px  */
+            --token-space-3:      var(--space-md);          /* 12px */
+            --token-space-4:      var(--space-lg);          /* 16px */
+            --token-border-color: var(--border);
+            --token-surface-1:    var(--bg-secondary);      /* card face */
+            --token-surface-2:    var(--bg-tertiary);       /* alt / sunken surface */
+            --token-text-1:       var(--text-primary);
+            --token-text-2:       var(--text-secondary);
+            --token-shadow-1:     var(--elevation-2);       /* 0 2px 8px rgba(0,0,0,.05) */
         }
 
         /* Dark Mode */
@@ -1047,6 +1062,16 @@
             transition: all var(--transition-base) var(--ease-smooth);
             position: relative;
             overflow: hidden;
+        }
+
+        /* ── .able-card — profile-preview card shell (Prompt 1) ─────────────── */
+        .able-card {
+            background: var(--token-surface-1);
+            border: 1px solid var(--token-border-color);
+            border-radius: var(--token-radius-lg);
+            padding: var(--token-space-3);
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         /* Light mode — give cards real depth so they lift off the page */
@@ -20222,19 +20247,19 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                         const spLabel = `<div style="font-size:11px;font-weight:600;color:#1DB954;margin-bottom:4px;padding:0 10px;">🟢 Spotify player${spKindLabel}</div>`;
                         const spBtn = `<button type="button" class="able-embedLoadBtn" style="background:#1DB954;color:#000;border-color:#1DB954;">🎵 Load Spotify player</button><div class="able-embedHint">Tap to load · Spotify</div>`;
                         const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedLazy" data-embed-src="${spEmbed.src}" data-embed-kind="spotify" data-embed-height="${h}" style="min-height:${h}px;">${spBtn}</div></div>`;
-                        return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">${_eHeader}${spLabel}${iframeHtml}${rel.credits ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
+                        return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${spLabel}${iframeHtml}${rel.credits ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
                     }
                     if (ytEmbed) {
                         const ytLabel = `<div style="font-size:11px;font-weight:600;color:#ff0000;margin-bottom:4px;padding:0 10px;">▶️ YouTube video</div>`;
                         const ytBtn = `<button type="button" class="able-embedLoadBtn">▶️ Load video</button><div class="able-embedHint">Tap to load · YouTube</div>`;
                         const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedRatio able-embedLazy" data-embed-src="${ytEmbed.src}" data-embed-kind="youtube">${ytBtn}</div></div>`;
-                        return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">${_eHeader}${ytLabel}${iframeHtml}${rel.credits ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
+                        return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${ytLabel}${iframeHtml}${rel.credits ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
                     }
                     if (scEmbed) {
                         const scLabel = `<div style="font-size:11px;font-weight:600;color:#ff5500;margin-bottom:4px;padding:0 10px;">🎧 SoundCloud player</div>`;
                         const scBtn = `<button type="button" class="able-embedLoadBtn">🎧 Load SoundCloud player</button><div class="able-embedHint">Tap to load · SoundCloud</div>`;
                         const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedLazy" data-embed-src="${scEmbed.src}" data-embed-kind="soundcloud" data-embed-height="180" style="min-height:180px;">${scBtn}</div></div>`;
-                        return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">${_eHeader}${scLabel}${iframeHtml}${rel.credits ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
+                        return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${scLabel}${iframeHtml}${rel.credits ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
                     }
                 }
 
@@ -20252,7 +20277,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 const _tThumb = _tSrc
                     ? `<img src="${_tSrc}" style="width:40px;height:40px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">`
                     : `<div style="width:40px;height:40px;border-radius:6px;background:linear-gradient(135deg,var(--accent),#06b6d4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;">🎵</div>`;
-                return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:12px;overflow:hidden;">` +
+                return `<div class="able-card" style="overflow:hidden;">` +
                     `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">${_tThumb}` +
                     `<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rel.title}</div>` +
                     `<div style="font-size:11px;color:var(--text-tertiary);">${typeLabel}</div></div></div>` +
@@ -22850,7 +22875,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                         var thumbEl = thumbSrc
                             ? `<img src="${thumbSrc}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">`
                             : `<div style="width:48px;height:48px;border-radius:8px;background:var(--bg-tertiary);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;">${v.platform === 'tiktok' ? '🎬' : '🎥'}</div>`;
-                        return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:10px;display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                        return `<div class="able-card" style="padding:10px;display:flex;align-items:center;gap:10px;margin-bottom:8px;">
                             ${thumbEl}
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${v.title}</div>
@@ -23184,7 +23209,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 const isNew = lastVisit && new Date(p.createdAt) > lastVisit;
                 const att   = (p.attachments || [])[0];
                 return `
-                <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:12px;">
+                <div class="able-card">
                     <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap;">
                         <span style="font-size:10px;font-weight:700;background:var(--accent-soft);color:var(--accent);padding:2px 7px;border-radius:999px;">${_escHF(_POST_TYPE_LABELS[p.type] || p.type)}</span>
                         ${isNew ? '<span style="font-size:10px;font-weight:800;background:#22c55e;color:#fff;padding:2px 6px;border-radius:999px;letter-spacing:.02em;">NEW</span>' : ''}
