@@ -12800,7 +12800,7 @@
                     <div style="display:flex;align-items:center;gap:12px;padding:12px 0 4px;">
                         <div style="flex:1;">
                             <div class="switch-label">Profile display mode</div>
-                            <div class="switch-help">Which release cards appear on your profile</div>
+                            <div class="switch-help">Tracklist is fastest. Embeds look richer. Both shows all (tracklist capped at 6, embeds at 3).</div>
                         </div>
                         <select id="musicProfileDisplayMode" class="form-input" style="width:auto;font-size:13px;padding:6px 10px;" onchange="setMusicDisplayMode(this.value)">
                             <option value="both">Both</option>
@@ -19918,6 +19918,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             const valid = ['tracklist', 'embeds', 'both'];
             if (!valid.includes(mode)) mode = 'both';
             musicDisplayMode = mode;
+            _musicPreviewExpanded = false;
             try { localStorage.setItem(MUSIC_DISPLAY_MODE_KEY, mode); } catch(e) {}
             renderMusicTab();
             updatePreviewMusic();
@@ -20154,6 +20155,12 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
         }
 
         // ── Update preview panel music section ──
+        var _musicPreviewExpanded = false;
+        function _toggleMusicPreviewExpand() {
+            _musicPreviewExpanded = !_musicPreviewExpanded;
+            updatePreviewMusic();
+        }
+
         function updatePreviewMusic() {
             try {
             const _errBanner = document.getElementById('musicTabErrorBanner');
@@ -20169,7 +20176,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
 
             section.style.display = 'block';
 
-            // Filter by global profile display mode (does not affect per-release rel.displayMode)
+            // Filter by global profile display mode
             var _visible = musicState.releases.filter(function(rel) {
                 if (musicDisplayMode === 'tracklist') return rel.displayMode !== 'embed';
                 if (musicDisplayMode === 'embeds')   return rel.displayMode === 'embed';
@@ -20177,7 +20184,12 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             });
             if (_visible.length === 0) { section.style.display = 'none'; return; }
 
-            cards.innerHTML = _visible.slice(0, 2).map(rel => {
+            // Caps: embeds are heavier → cap at 3; tracklist/both → 6
+            const CAP = musicDisplayMode === 'embeds' ? 3 : 6;
+            const _capped = _musicPreviewExpanded ? _visible : _visible.slice(0, CAP);
+            const _hasMore = !_musicPreviewExpanded && _visible.length > CAP;
+
+            cards.innerHTML = _capped.map(rel => {
                 const platforms = rel.platforms || {};
                 const hasPlatforms = Object.values(platforms).some(u => u);
                 const pills = [
@@ -20188,19 +20200,21 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 ].filter(p => p.url).map(p =>
                     `<span style="font-size:10px;font-weight:800;color:${p.color};border:1.5px solid ${p.color};border-radius:999px;padding:2px 7px;">${p.label}</span>`
                 ).join('');
+                const typeLabel = (rel.type || 'single').charAt(0).toUpperCase() + (rel.type || 'single').slice(1);
 
-                if (rel.displayMode === 'embed') {
-                    // Resolve embeds in priority order: Spotify → YouTube → SoundCloud
-                    const spEmbed = normalizeSpotifyEmbedUrl(platforms.spotify);
-                    const ytEmbed = normalizeYouTubeEmbedUrl(platforms.youtube);
-                    const scEmbed = normalizeSoundCloudEmbedUrl(platforms.soundcloud);
-                    const creditsHtml = rel.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${rel.credits}</div>` : '';
+                // Resolve embed URLs once — used for fail-soft check and rendering
+                const spEmbed = normalizeSpotifyEmbedUrl(platforms.spotify);
+                const ytEmbed = normalizeYouTubeEmbedUrl(platforms.youtube);
+                const scEmbed = normalizeSoundCloudEmbedUrl(platforms.soundcloud);
 
-                    // Shared: release card header (thumb + title) above embed
+                // Fail-soft: embed with no embeddable URL → fall back to tracklist
+                const effectiveMode = (rel.displayMode === 'embed' && !spEmbed && !ytEmbed && !scEmbed)
+                    ? 'tracklist' : (rel.displayMode || 'tracklist');
+
+                if (effectiveMode === 'embed') {
                     const _eSrc = rel.artworkUrl || rel.artwork || '';
                     const _eThumb = _eSrc ? `<img src="${_eSrc}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">` : '';
-                    const _eTypeLabel = (rel.type || 'single').charAt(0).toUpperCase() + (rel.type || 'single').slice(1);
-                    const _eHeader = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:10px 10px 0;">${_eThumb}<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rel.title}</div><div style="font-size:10px;color:var(--text-tertiary);">${_eTypeLabel}</div></div></div>`;
+                    const _eHeader = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:10px 10px 0;">${_eThumb}<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rel.title}</div><div style="font-size:10px;color:var(--text-tertiary);">${typeLabel}</div></div></div>`;
 
                     if (spEmbed) {
                         const h = spEmbed.height || 152;
@@ -20208,58 +20222,54 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                         const spLabel = `<div style="font-size:11px;font-weight:600;color:#1DB954;margin-bottom:4px;padding:0 10px;">🟢 Spotify player${spKindLabel}</div>`;
                         const spBtn = `<button type="button" class="able-embedLoadBtn" style="background:#1DB954;color:#000;border-color:#1DB954;">🎵 Load Spotify player</button><div class="able-embedHint">Tap to load · Spotify</div>`;
                         const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedLazy" data-embed-src="${spEmbed.src}" data-embed-kind="spotify" data-embed-height="${h}" style="min-height:${h}px;">${spBtn}</div></div>`;
-                        return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">${_eHeader}${spLabel}${iframeHtml}${creditsHtml ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
+                        return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">${_eHeader}${spLabel}${iframeHtml}${rel.credits ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
                     }
                     if (ytEmbed) {
                         const ytLabel = `<div style="font-size:11px;font-weight:600;color:#ff0000;margin-bottom:4px;padding:0 10px;">▶️ YouTube video</div>`;
                         const ytBtn = `<button type="button" class="able-embedLoadBtn">▶️ Load video</button><div class="able-embedHint">Tap to load · YouTube</div>`;
                         const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedRatio able-embedLazy" data-embed-src="${ytEmbed.src}" data-embed-kind="youtube">${ytBtn}</div></div>`;
-                        return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">${_eHeader}${ytLabel}${iframeHtml}${creditsHtml ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
+                        return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">${_eHeader}${ytLabel}${iframeHtml}${rel.credits ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
                     }
                     if (scEmbed) {
                         const scLabel = `<div style="font-size:11px;font-weight:600;color:#ff5500;margin-bottom:4px;padding:0 10px;">🎧 SoundCloud player</div>`;
                         const scBtn = `<button type="button" class="able-embedLoadBtn">🎧 Load SoundCloud player</button><div class="able-embedHint">Tap to load · SoundCloud</div>`;
                         const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedLazy" data-embed-src="${scEmbed.src}" data-embed-kind="soundcloud" data-embed-height="180" style="min-height:180px;">${scBtn}</div></div>`;
-                        return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">${_eHeader}${scLabel}${iframeHtml}${creditsHtml ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
+                        return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;overflow:hidden;">${_eHeader}${scLabel}${iframeHtml}${rel.credits ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
                     }
-                    // No embeddable URL found — show explicit warning
-                    return `
-                        <div style="background:var(--bg-secondary);border:1px dashed var(--border);border-radius:12px;padding:12px;text-align:center;">
-                            <div style="font-size:13px;font-weight:600;margin-bottom:4px;">${rel.title}</div>
-                            <div style="font-size:11px;color:var(--text-tertiary);">Embed mode selected, but no embeddable link found.</div>
-                            <div style="font-size:10px;color:var(--text-tertiary);margin-top:2px;">Add a Spotify, YouTube, or SoundCloud URL in the edit modal.</div>
-                        </div>`;
                 }
 
-                // Tracklist mode preview
-                const typeLabel = (rel.type || 'single').charAt(0).toUpperCase() + (rel.type || 'single').slice(1);
-                const tracksHtml = (rel.tracks || []).slice(0, 3).map((t, i) => `
-                    <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;">
-                        <span style="width:16px;text-align:center;color:var(--text-tertiary);font-size:11px;font-weight:600;">${i+1}</span>
-                        <span style="flex:1;font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${t.title}</span>
-                        <span style="color:var(--text-tertiary);font-size:11px;">${t.duration}</span>
-                    </div>`).join('');
-                const moreCount = (rel.tracks || []).length - 3;
-
+                // Tracklist mode (and fail-soft fallback from embed)
+                const fallbackNote = (rel.displayMode === 'embed')
+                    ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;">ℹ️ No embeddable URL — showing tracklist</div>` : '';
+                const tracksHtml = (rel.tracks || []).slice(0, 6).map((t, i) =>
+                    `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;">` +
+                    `<span style="width:16px;text-align:center;color:var(--text-tertiary);font-size:11px;font-weight:600;">${i+1}</span>` +
+                    `<span style="flex:1;font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${t.title}</span>` +
+                    `<span style="color:var(--text-tertiary);font-size:11px;">${t.duration || ''}</span></div>`
+                ).join('');
+                const moreCount = Math.max(0, (rel.tracks || []).length - 6);
                 const _tSrc = rel.artworkUrl || rel.artwork || '';
                 const _tThumb = _tSrc
                     ? `<img src="${_tSrc}" style="width:40px;height:40px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">`
                     : `<div style="width:40px;height:40px;border-radius:6px;background:linear-gradient(135deg,var(--accent),#06b6d4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;">🎵</div>`;
-                return `
-                    <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:12px;">
-                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-                            ${_tThumb}
-                            <div style="flex:1;min-width:0;">
-                                <div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rel.title}</div>
-                                <div style="font-size:11px;color:var(--text-tertiary);">${typeLabel}</div>
-                            </div>
-                        </div>
-                        ${tracksHtml}
-                        ${moreCount > 0 ? `<div style="font-size:11px;color:var(--text-tertiary);padding-top:6px;text-align:center;">+${moreCount} more tracks</div>` : ''}
-                        ${hasPlatforms ? `<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;">${pills}</div>` : ''}
-                        ${rel.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:6px;padding-top:5px;border-top:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${rel.credits}</div>` : ''}
-                    </div>`;
+                return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:12px;overflow:hidden;">` +
+                    `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">${_tThumb}` +
+                    `<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rel.title}</div>` +
+                    `<div style="font-size:11px;color:var(--text-tertiary);">${typeLabel}</div></div></div>` +
+                    `${tracksHtml}` +
+                    `${moreCount > 0 ? `<div style="font-size:11px;color:var(--text-tertiary);padding-top:6px;text-align:center;">+${moreCount} more tracks</div>` : ''}` +
+                    `${hasPlatforms ? `<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;">${pills}</div>` : ''}` +
+                    `${rel.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:6px;padding-top:5px;border-top:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${rel.credits}</div>` : ''}` +
+                    `${fallbackNote}</div>`;
             }).join('');
+
+            // "View all" / "Show less" expander
+            if (_hasMore) {
+                cards.innerHTML += `<button type="button" onclick="_toggleMusicPreviewExpand()" style="width:100%;padding:8px;margin-top:4px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;">▼ View all ${_visible.length} releases</button>`;
+            } else if (_musicPreviewExpanded && _visible.length > CAP) {
+                cards.innerHTML += `<button type="button" onclick="_toggleMusicPreviewExpand()" style="width:100%;padding:8px;margin-top:4px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;">▲ Show less</button>`;
+            }
+
             initLazyEmbeds(cards);
             } catch(e) {
                 console.warn('[updatePreviewMusic]', e);
@@ -23217,13 +23227,13 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
         // ── A. Seed demo data ─────────────────────────────────────────────
         function seedDemoData() {
             try {
-                // Two releases: one tracklist, one embed with a real Spotify track URL
+                // Eight releases: 4 tracklist + 4 embed (tests caps + "View all" expander)
                 musicState.releases = [
                     {
                         id: 'demo_tracklist_1',
                         title: 'Midnight Drive EP',
                         type: 'ep',
-                        artwork: '',
+                        artwork: '', artworkUrl: '',
                         displayMode: 'tracklist',
                         credits: 'Prod. Demo Studio',
                         platforms: {
@@ -23234,20 +23244,134 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                             tiktok:     ''
                         },
                         tracks: [
-                            { title: 'Midnight Drive', duration: '4:12' },
-                            { title: 'Neon Lights',    duration: '3:45' },
-                            { title: 'Lost in the City', duration: '5:02' }
+                            { title: 'Midnight Drive',    duration: '4:12' },
+                            { title: 'Neon Lights',       duration: '3:45' },
+                            { title: 'Lost in the City',  duration: '5:02' },
+                            { title: 'Afterglow',         duration: '3:58' },
+                            { title: 'Signal Break',      duration: '4:30' }
+                        ]
+                    },
+                    {
+                        id: 'demo_tracklist_2',
+                        title: 'Static Waves LP',
+                        type: 'album',
+                        artwork: '', artworkUrl: '',
+                        displayMode: 'tracklist',
+                        credits: '',
+                        platforms: {
+                            spotify:    'https://open.spotify.com/album/1ATL5GLyefJaxhQzSPVrLX',
+                            apple:      '',
+                            soundcloud: '',
+                            youtube:    '',
+                            tiktok:     ''
+                        },
+                        tracks: [
+                            { title: 'Static Waves',     duration: '3:21' },
+                            { title: 'Undertow',         duration: '4:15' },
+                            { title: 'Phosphene',        duration: '5:40' },
+                            { title: 'Red Line',         duration: '3:55' },
+                            { title: 'Drift',            duration: '4:08' },
+                            { title: 'Low End Theory',   duration: '3:50' },
+                            { title: 'Resonance',        duration: '5:12' },
+                            { title: 'Outro',            duration: '2:30' }
+                        ]
+                    },
+                    {
+                        id: 'demo_tracklist_3',
+                        title: 'Interlude 001',
+                        type: 'ep',
+                        artwork: '', artworkUrl: '',
+                        displayMode: 'tracklist',
+                        credits: '',
+                        platforms: {
+                            spotify:    '',
+                            apple:      '',
+                            soundcloud: 'https://soundcloud.com/demo/sets/interlude-001',
+                            youtube:    '',
+                            tiktok:     ''
+                        },
+                        tracks: [
+                            { title: 'Part I',   duration: '2:45' },
+                            { title: 'Part II',  duration: '3:10' },
+                            { title: 'Part III', duration: '3:55' }
+                        ]
+                    },
+                    {
+                        id: 'demo_tracklist_4',
+                        title: 'Pressure Drop',
+                        type: 'single',
+                        artwork: '', artworkUrl: '',
+                        displayMode: 'tracklist',
+                        credits: 'Mix: J. Coles',
+                        platforms: {
+                            spotify:    'https://open.spotify.com/track/1AoSF6GX6nGPMGq5CWQMQ3',
+                            apple:      '',
+                            soundcloud: '',
+                            youtube:    '',
+                            tiktok:     ''
+                        },
+                        tracks: [
+                            { title: 'Pressure Drop',               duration: '3:58' },
+                            { title: 'Pressure Drop (Instrumental)', duration: '3:58' }
                         ]
                     },
                     {
                         id: 'demo_embed_1',
-                        title: 'Blinding Lights (Embed Demo)',
+                        title: 'Blinding Lights (Spotify Embed)',
                         type: 'single',
-                        artwork: '',
+                        artwork: '', artworkUrl: '',
                         displayMode: 'embed',
                         credits: '',
                         platforms: {
                             spotify:    'https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b',
+                            apple:      '',
+                            soundcloud: '',
+                            youtube:    '',
+                            tiktok:     ''
+                        },
+                        tracks: []
+                    },
+                    {
+                        id: 'demo_embed_2',
+                        title: 'Shape of You (Spotify + YouTube)',
+                        type: 'single',
+                        artwork: '', artworkUrl: '',
+                        displayMode: 'embed',
+                        credits: '',
+                        platforms: {
+                            spotify:    'https://open.spotify.com/track/7qiZfU4dY1lWllzX7mPBI3',
+                            apple:      '',
+                            soundcloud: '',
+                            youtube:    'https://www.youtube.com/watch?v=JGwWNGJdvx8',
+                            tiktok:     ''
+                        },
+                        tracks: []
+                    },
+                    {
+                        id: 'demo_embed_3',
+                        title: 'Bohemian Rhapsody (YouTube Embed)',
+                        type: 'single',
+                        artwork: '', artworkUrl: '',
+                        displayMode: 'embed',
+                        credits: '',
+                        platforms: {
+                            spotify:    '',
+                            apple:      '',
+                            soundcloud: '',
+                            youtube:    'https://www.youtube.com/watch?v=fJ9rUzIMcZQ',
+                            tiktok:     ''
+                        },
+                        tracks: []
+                    },
+                    {
+                        id: 'demo_embed_4',
+                        title: 'War (Album Embed)',
+                        type: 'album',
+                        artwork: '', artworkUrl: '',
+                        displayMode: 'embed',
+                        credits: '',
+                        platforms: {
+                            spotify:    'https://open.spotify.com/album/3JL2EWiEbYBNIPO4D7kfKv',
                             apple:      '',
                             soundcloud: '',
                             youtube:    '',
@@ -23386,12 +23510,12 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 check('mode=both: previewMusicCards has content',
                     !!(cardsEl && cardsEl.innerHTML.trim().length > 0));
 
-                // 4. mode='embeds' — only embed release visible
+                // 4. mode='embeds' — only embed release visible (lazy placeholder, not inline iframe)
                 musicDisplayMode = 'embeds';
                 safeRender(updatePreviewMusic);
                 const embedHtml = cardsEl ? cardsEl.innerHTML : '';
-                check('mode=embeds: contains iframe',
-                    embedHtml.includes('<iframe'));
+                check('mode=embeds: has lazy embed placeholder (.able-embedLazy)',
+                    embedHtml.includes('able-embedLazy'));
                 check('mode=embeds: does NOT contain tracklist structure',
                     !embedHtml.includes('chk_tracklist') && !embedHtml.includes('"Check TL"'));
 
@@ -23403,6 +23527,12 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     !tlHtml.includes('<iframe'));
                 check('mode=tracklist: tracklist card rendered',
                     tlHtml.includes('Check TL'));
+
+                // 5b. music cards: no horizontal overflow (mobile-safe guard)
+                if (cardsEl) {
+                    check('music cards: no horizontal overflow',
+                        cardsEl.scrollWidth <= cardsEl.offsetWidth + 2);
+                }
 
                 // 6. Modal scroll lock: open then close, body overflow should reset
                 const wasOverflow = document.body.style.overflow;
