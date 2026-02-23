@@ -12812,6 +12812,12 @@
 
                     <!-- Add button -->
                     <button class="ql-add-btn" id="ctaAddBtn" style="display:none;" onclick="openAddLinkModal()">+ Add Action Link</button>
+
+                    <!-- Utility row: reset defaults + undo (shown only after reset) -->
+                    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+                        <button class="btn btn-secondary btn-small" onclick="resetActionLinksToDefaults()" title="Restore built-in links and default order — keeps your custom URLs">↺ Reset to defaults</button>
+                        <button id="ctaUndoResetBtn" class="btn btn-secondary btn-small" style="display:none;" onclick="undoResetActionLinks()">↩ Undo reset</button>
+                    </div>
                 </div>
             </div>
 
@@ -15090,6 +15096,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
         let _qlObserver  = null;
         let _qlTimer     = null;
         let _qlRenderReq = null; // RAF handle for debounced sync renders
+        let _ctaStateSnapshot = null; // snapshot for single-step undo after "Reset to defaults"
 
         function rerenderQuickLinksStrip() {
             const strip = document.getElementById('quickLinksStrip');
@@ -15105,7 +15112,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                         const s = document.getElementById('quickLinksStrip');
                         if (!s) return;
                         const sortedNow = Object.entries(ctaState)
-                            .filter(([, d]) => d.active)
+                            .filter(([, d]) => d.active && d.url && d.url.trim())
                             .sort(([, a], [, b]) => a.order - b.order);
                         s.classList.remove('ql-more-open');
                         s.innerHTML = buildQuickLinksPillsHtml(sortedNow, s);
@@ -15122,7 +15129,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 const s = document.getElementById('quickLinksStrip');
                 if (!s) return;
                 const sorted = Object.entries(ctaState)
-                    .filter(([, d]) => d.active)
+                    .filter(([, d]) => d.active && d.url && d.url.trim())
                     .sort(([, a], [, b]) => a.order - b.order);
                 s.classList.remove('ql-more-open');
                 s.innerHTML = buildQuickLinksPillsHtml(sorted, s);
@@ -15898,6 +15905,65 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             const badge1 = document.getElementById('activeCTABadge');
             const badge2 = document.querySelector('[data-content="ctas"] .badge-success');
             [badge1, badge2].forEach(b => { if (b) b.textContent = `${activeCount} Active`; });
+        }
+
+        // ── Reset Action Links to defaults ─────────────────────────────────────────
+        // Restores built-in order/active state; preserves user-entered URLs and any
+        // custom links the artist added. Single-step undo via the Undo button.
+        const _CTA_DEFAULTS = {
+            'listen-now':   { text: 'Listen Now',          icon: '▶️', order: 1, active: true  },
+            'get-tickets':  { text: 'Get Tickets',         icon: '🎫', order: 2, active: true  },
+            'shop-merch':   { text: 'Shop Merch',          icon: '🛍️', order: 3, active: true  },
+            'inner-circle': { text: 'Join Inner Circle',   icon: '💝', order: 4, active: true  },
+            'instagram':    { text: 'Follow on Instagram', icon: '📱', order: 5, active: true  },
+            'presave':      { text: 'Pre-save on Spotify', icon: '💿', order: 6, active: false },
+        };
+
+        function resetActionLinksToDefaults() {
+            if (!confirm(
+                'Restore default Action Links?\n\n' +
+                'This will:\n' +
+                '  • Restore built-in links (Listen Now, Get Tickets, Shop…)\n' +
+                '  • Reset their order\n' +
+                '  • Keep all your custom URLs\n' +
+                '  • Keep any links you added yourself\n\n' +
+                'You can undo this immediately after.'
+            )) return;
+
+            // Snapshot for undo
+            _ctaStateSnapshot = JSON.parse(JSON.stringify(ctaState));
+            const undoBtn = document.getElementById('ctaUndoResetBtn');
+            if (undoBtn) undoBtn.style.display = '';
+
+            // Apply defaults — preserve existing URL; reset order, text, icon, active
+            Object.entries(_CTA_DEFAULTS).forEach(([key, def]) => {
+                const existing = ctaState[key] || {};
+                ctaState[key] = { url: existing.url || '', order: def.order,
+                                  text: def.text, icon: def.icon, active: def.active };
+            });
+
+            // Push user-added (non-built-in) keys to the end
+            let nextOrder = Object.keys(_CTA_DEFAULTS).length + 1;
+            Object.entries(ctaState).forEach(([key, data]) => {
+                if (!_CTA_DEFAULTS[key]) data.order = nextOrder++;
+            });
+
+            saveCTAState();
+            safeRender(rebuildUIFromState);
+            safeRender(rerenderQuickLinksStrip);
+            showToast('↺ Action Links reset — click Undo to reverse');
+        }
+
+        function undoResetActionLinks() {
+            if (!_ctaStateSnapshot) return;
+            ctaState = _ctaStateSnapshot;
+            _ctaStateSnapshot = null;
+            const undoBtn = document.getElementById('ctaUndoResetBtn');
+            if (undoBtn) undoBtn.style.display = 'none';
+            saveCTAState();
+            safeRender(rebuildUIFromState);
+            safeRender(rerenderQuickLinksStrip);
+            showToast('↩ Undo complete');
         }
 
         // Enhanced toggle switch with preview update
@@ -23690,6 +23756,26 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     'Total CTA surface ≤ 10 [hero:' + heroCTACount + ' pills:' + activeCTAs.length +
                     ' section:' + sectionBtnCount + ' = ' + totalCtaSurface + '] (warn only)',
                     totalCtaSurface <= 10
+                );
+
+                // 12. Quick-links strip: no horizontal overflow at current width (warn-only)
+                var qlStripEl = document.getElementById('quickLinksStrip');
+                var qlOverflow = qlStripEl ? (qlStripEl.scrollWidth > qlStripEl.clientWidth + 2) : false;
+                check('Quick-links strip: no horizontal overflow (warn only)', !qlOverflow);
+
+                // 13. Active action links with no URL — fans would hit dead pills (warn-only)
+                var emptyUrlActive = activeCTAs.filter(function(c) { return !c.url || !c.url.trim(); });
+                check(
+                    'Active Action Links: all have URLs [' + emptyUrlActive.length + ' empty] (warn only)',
+                    emptyUrlActive.length === 0
+                );
+
+                // 14. Drag-and-drop init guard: every rendered list item has data-dnd-init (warn-only)
+                var ctaListItems = document.querySelectorAll('#ctaList .list-item');
+                var uninitDrag = Array.prototype.filter.call(ctaListItems, function(el) { return !el.dataset.dndInit; });
+                check(
+                    'Action Links: all list items have dnd-init guard [' + uninitDrag.length + ' without] (warn only)',
+                    uninitDrag.length === 0
                 );
 
                 // Restore original state
