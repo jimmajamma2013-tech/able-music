@@ -13106,9 +13106,9 @@
                     <p class="editor-subtitle">Showcase your visual content</p>
                 </div>
 
-                <div class="auto-banner" style="background: linear-gradient(135deg, #FF0000 0%, #FF4444 100%);">
-                    <div class="auto-banner-title">▶️ Import from YouTube</div>
-                    <div class="auto-banner-text">Automatically pull your latest videos, thumbnails, and view counts</div>
+                <div class="auto-banner">
+                    <div class="auto-banner-title">▶️ Connect a platform</div>
+                    <div class="auto-banner-text">Link YouTube or TikTok to auto-fill your videos, thumbnails, and view counts.</div>
                     <div class="auto-banner-actions">
                         <button class="auto-banner-btn" onclick="switchTab('platforms')">
                             Connect YouTube
@@ -13125,7 +13125,7 @@
                         <div class="empty-state-icon">🎬</div>
                         <div class="empty-state-title">No videos added yet</div>
                         <div class="empty-state-text">
-                            Connect YouTube or TikTok to automatically showcase your videos, or add video links manually
+                            Add YouTube, Vimeo, or TikTok links. They'll appear in your profile's Videos section.
                         </div>
                         <div class="empty-state-actions">
                             <button class="btn btn-primary" onclick="switchTab('platforms')">
@@ -21497,7 +21497,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                         <div style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(v.title)}</div>
                         <div style="font-size:11px;color:var(--text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(v.url)}</div>
                     </div>
-                    <button onclick="deleteVideo(${v.id})" style="background:none;border:none;color:var(--text-tertiary);cursor:pointer;font-size:16px;padding:4px;flex-shrink:0;" title="Remove">✕</button>
+                    <button onclick="deleteVideo(${v.id})" class="icon-btn delete" title="Remove" style="flex-shrink:0;">✕</button>
                 </div>`;
             }).join('');
 
@@ -23516,7 +23516,13 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
 
                 var videos = [];
                 try { videos = JSON.parse(localStorage.getItem('able_videos') || '[]'); } catch(e) {}
-                if (!videos.length) { collage.innerHTML = ''; return; }
+                var vidSection = profileRoot.querySelector('#videos');
+                if (!videos.length) {
+                    collage.innerHTML = '';
+                    if (vidSection) vidSection.style.display = 'none';
+                    return;
+                }
+                if (vidSection) vidSection.style.display = '';
 
                 // ── Helper: build a single video card ──────────────────────
                 function _buildVideoCard(v, featured) {
