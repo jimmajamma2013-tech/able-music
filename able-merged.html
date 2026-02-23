@@ -240,12 +240,14 @@
             --token-space-2:      var(--space-sm);          /* 8px  */
             --token-space-3:      var(--space-md);          /* 12px */
             --token-space-4:      var(--space-lg);          /* 16px */
-            --token-border-color: var(--border);
+            --token-border-color: var(--border);            /* legacy alias — keep */
+            --token-border:       var(--border);            /* short alias used in components */
             --token-surface-1:    var(--bg-secondary);      /* card face */
             --token-surface-2:    var(--bg-tertiary);       /* alt / sunken surface */
             --token-text-1:       var(--text-primary);
             --token-text-2:       var(--text-secondary);
             --token-shadow-1:     var(--elevation-2);       /* 0 2px 8px rgba(0,0,0,.05) */
+            --token-focus-ring:   var(--focus-ring-color);  /* keyboard focus outline colour */
         }
 
         /* Dark Mode */
@@ -1067,11 +1069,20 @@
         /* ── .able-card — profile-preview card shell (Prompt 1) ─────────────── */
         .able-card {
             background: var(--token-surface-1);
-            border: 1px solid var(--token-border-color);
+            border: 1px solid var(--token-border);
             border-radius: var(--token-radius-lg);
-            padding: var(--token-space-3);
+            padding: var(--token-space-4);
+            box-shadow: var(--token-shadow-1);
             max-width: 100%;
             box-sizing: border-box;
+        }
+
+        /* ── .able-cardHeader — flex row helper for card title rows ─────────── */
+        .able-cardHeader {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--token-space-3);
         }
 
         /* Light mode — give cards real depth so they lift off the page */
@@ -7791,6 +7802,18 @@
             box-shadow: var(--elevation-2), inset 0 1px 0 rgba(255, 255, 255, 0.06);
         }
 
+        /* ── Focus-visible ring — keyboard navigation (non-radical) ─────────── */
+        .profile-preview a:focus-visible,
+        .profile-preview button:focus-visible {
+            outline: var(--focus-ring-width) solid var(--token-focus-ring);
+            outline-offset: 2px;
+            border-radius: var(--token-radius-sm);
+        }
+        .profile-preview .able-card:focus-visible {
+            outline: var(--focus-ring-width) solid var(--token-focus-ring);
+            outline-offset: 2px;
+        }
+
         /* Card anatomy slots */
         .profile-preview .able-card__header {
             display: flex;
@@ -8640,7 +8663,7 @@
         }
 
         .profile-preview .bento-tile {
-            background: var(--bg-secondary);
+            background: var(--token-surface-1);
             border-radius: 16px;
             padding: 12px;
             border: 1px solid rgba(0, 0, 0, 0.06);
@@ -9389,7 +9412,7 @@
         }
 
         .profile-preview .merch-bento-tile {
-            background: var(--bg-secondary);
+            background: var(--token-surface-1);
             border-radius: 16px;
             overflow: hidden;
             border: 1px solid rgba(0, 0, 0, 0.06);
