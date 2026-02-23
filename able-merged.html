@@ -248,6 +248,14 @@
             --token-text-2:       var(--text-secondary);
             --token-shadow-1:     var(--elevation-2);       /* 0 2px 8px rgba(0,0,0,.05) */
             --token-focus-ring:   var(--focus-ring-color);  /* keyboard focus outline colour */
+
+            /* ── Prompt 2 — type scale (maps to existing sizes; no visual jump) ── */
+            --token-text-xs:       var(--font-caption);     /* 11px — labels, captions */
+            --token-text-sm:       var(--font-tiny);        /* 12px — secondary body   */
+            --token-text-md:       var(--font-small);       /* 14px — card body/titles */
+            --token-text-lg:       var(--font-body);        /* 15px — primary body     */
+            --token-leading-tight:  1.2;                    /* headings                */
+            --token-leading-normal: 1.5;                    /* body / readable prose   */
         }
 
         /* Dark Mode */
@@ -1084,6 +1092,10 @@
             justify-content: space-between;
             gap: var(--token-space-3);
         }
+
+        /* ── Spacing-rhythm helpers (column stacks) ──────────────────────────── */
+        .able-stack-2 { display: flex; flex-direction: column; gap: var(--token-space-2); }
+        .able-stack-3 { display: flex; flex-direction: column; gap: var(--token-space-3); }
 
         /* Light mode — give cards real depth so they lift off the page */
         html:not([data-theme]) .editor-panel {
@@ -5299,6 +5311,7 @@
             background-color: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100%;
+            line-height: var(--token-leading-normal); /* base readable rhythm; specific rules override */
         }
 
         /* :root removed */
@@ -6804,6 +6817,11 @@
             padding: 24px 0;
         }
 
+        /* Subtle divider between consecutive sections */
+        .profile-preview .section + .section {
+            border-top: 1px solid var(--token-border);
+        }
+
         /* Subtle layered paper effect - like stacked show posters/flyers */
         .profile-preview .section::before {
             content: '';
@@ -6932,7 +6950,7 @@
             color: var(--text-primary);
             font-variant-numeric: proportional-nums;
             font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'ss01' 1;
-            line-height: 1.1;
+            line-height: var(--token-leading-tight); /* 1.2 — was 1.1; slightly more breathing room */
         }
 
         /* Music section title gets maximum prominence */
@@ -7782,10 +7800,13 @@
 
         .profile-preview .able-card {
             background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);  /* 14px */
-            overflow: hidden;                  /* clips embed corners */
+            border: 1px solid var(--token-border);
+            border-radius: var(--token-radius-lg);  /* 12px — tokenised */
+            overflow: hidden;                        /* clips embed corners */
             box-shadow: var(--elevation-1);
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow-wrap: anywhere;                 /* long titles / URLs wrap cleanly */
             transition:
                 box-shadow var(--transition-base) var(--ease-smooth),
                 transform  var(--transition-base) var(--ease-smooth);
@@ -7820,7 +7841,7 @@
             align-items: center;
             justify-content: space-between;
             padding: var(--space-md) var(--space-lg);
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--token-border);
         }
 
         .profile-preview .able-card__body {
@@ -7837,7 +7858,7 @@
 
         .profile-preview .able-card__footer {
             padding: var(--space-md) var(--space-lg);
-            border-top: 1px solid var(--border);
+            border-top: 1px solid var(--token-border);
             display: flex;
             align-items: center;
             gap: var(--space-sm);
@@ -7850,7 +7871,7 @@
             border-radius: var(--card-embed-radius);
             overflow: hidden;
             background: var(--bg-secondary);
-            border: 1px solid var(--border);
+            border: 1px solid var(--token-border);
             position: relative;
         }
 
@@ -14083,7 +14104,7 @@
                 <div class="section-header-row">
                     <h2 class="section-title">Releases</h2>
                 </div>
-                <div id="previewMusicCards" style="display:flex;flex-direction:column;gap:12px;"></div>
+                <div id="previewMusicCards" class="able-stack-3"></div>
             </section>
 
             <!-- Profile Feed — dynamically populated by renderProfileFeed() -->
