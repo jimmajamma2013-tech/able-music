@@ -19769,10 +19769,21 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     <div class="tracks-list" id="trackRowsList"></div>
                 </div>
 
-                <div class="form-group">
+                <!-- Credits structured editor -->
+                <div class="form-group" id="creditsEditorGroup">
                     <label class="form-label">Credits <span style="font-weight:400;color:var(--text-tertiary);">(optional)</span></label>
-                    <input type="text" class="form-input" id="releaseCredits" placeholder="e.g. Prod. @name, Mix: @name" maxlength="120">
-                    <div class="form-help">Credits (optional) — e.g. Prod. @name, Mix: @name</div>
+                    <div style="display:flex;gap:8px;margin-bottom:6px;align-items:center;">
+                        <input type="text" class="form-input" id="creditNameInput" placeholder="Name"
+                               style="flex:1.2;"
+                               onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('creditRoleInput').focus();}">
+                        <input type="text" class="form-input" id="creditRoleInput" placeholder="Role (e.g. Producer)"
+                               style="flex:1.6;"
+                               onkeydown="if(event.key==='Enter'){event.preventDefault();addCreditRow();}">
+                        <button type="button" class="btn btn-secondary btn-small" onclick="addCreditRow()"
+                                style="flex-shrink:0;white-space:nowrap;height:40px;padding:0 12px;">+ Add</button>
+                    </div>
+                    <div id="creditsList"></div>
+                    <div id="creditsEmptyHint" style="font-size:12px;color:var(--text-tertiary);padding:3px 0 2px;">Add producer, engineer, writer, etc.</div>
                 </div>
 
             </div>
@@ -19962,6 +19973,92 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             }
         }
 
+        // ── Credits helpers (Prompt 5) ───────────────────────────────────────────
+        // _creditsDraft: working array for the current Add/Edit Release modal session.
+        let _creditsDraft = [];
+
+        // Convert legacy string credits → [{name, role}] array.
+        // Pass-through if already an array. Returns [] for falsy input.
+        function _normalizeCredits(raw) {
+            if (!raw) return [];
+            if (Array.isArray(raw)) return raw.filter(function(c) { return c && c.name; });
+            var s = String(raw).trim();
+            if (!s) return [];
+            return [{ name: s, role: '' }]; // best-effort migration from string
+        }
+
+        // Build the collapsed+expandable credits block for profile preview cards.
+        // Uses existing .credits-section / .credits-toggle / .credits-grid CSS.
+        function _buildCreditsHtml(rel) {
+            var credits = _normalizeCredits(rel.credits);
+            if (credits.length === 0) return '';
+            // Collapsed summary: up to 2 names (+role), then "+N more"
+            var shown = credits.slice(0, 2).map(function(c) {
+                return escapeHtml(c.name) + (c.role ? ' (' + escapeHtml(c.role) + ')' : '');
+            }).join(' · ');
+            if (credits.length > 2) shown += ' · +' + (credits.length - 2);
+            // Full expanded grid
+            var grid = credits.map(function(c) {
+                return '<div class="credit-item">' +
+                    (c.role ? '<span class="credit-role">' + escapeHtml(c.role) + '</span>' : '') +
+                    '<span class="credit-name">' + escapeHtml(c.name) + '</span>' +
+                    '</div>';
+            }).join('');
+            return '<div class="credits-section">' +
+                '<div class="credits-toggle" tabindex="0"' +
+                ' onclick="toggleCreditsSection(this.closest(\'.credits-section\'))"' +
+                ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleCreditsSection(this.closest(\'.credits-section\'));}">' +
+                '<span>Credits: ' + shown + '</span>' +
+                '<span class="credits-toggle-icon">▾</span>' +
+                '</div>' +
+                '<div class="credits-content"><div class="credits-grid">' + grid + '</div></div>' +
+                '</div>';
+        }
+
+        // Toggle the credits accordion open/closed.
+        function toggleCreditsSection(section) {
+            if (section) section.classList.toggle('expanded');
+        }
+
+        // Re-render the _creditsDraft list in the admin modal.
+        function _renderCreditsDraft() {
+            var list = document.getElementById('creditsList');
+            var hint = document.getElementById('creditsEmptyHint');
+            if (!list) return;
+            if (_creditsDraft.length === 0) {
+                list.innerHTML = '';
+                if (hint) hint.style.display = '';
+                return;
+            }
+            if (hint) hint.style.display = 'none';
+            list.innerHTML = _creditsDraft.map(function(c, i) {
+                return '<div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);">' +
+                    '<span style="flex:1;font-size:13px;font-weight:600;">' + escapeHtml(c.name) + '</span>' +
+                    (c.role ? '<span style="font-size:11px;color:var(--text-secondary);margin-right:4px;">' + escapeHtml(c.role) + '</span>' : '') +
+                    '<button type="button" onclick="removeCreditFromDraft(' + i + ')"' +
+                    ' style="background:none;border:none;cursor:pointer;color:var(--text-tertiary);font-size:18px;padding:0 2px;line-height:1;" title="Remove">×</button>' +
+                    '</div>';
+            }).join('');
+        }
+
+        // Add a credit entry from the Name/Role inputs.
+        function addCreditRow() {
+            var name = (document.getElementById('creditNameInput').value || '').trim();
+            if (!name) { showToast('⚠️ Credit name is required'); return; }
+            var role = (document.getElementById('creditRoleInput').value || '').trim();
+            _creditsDraft.push({ name: name, role: role });
+            document.getElementById('creditNameInput').value = '';
+            document.getElementById('creditRoleInput').value = '';
+            document.getElementById('creditNameInput').focus();
+            _renderCreditsDraft();
+        }
+
+        // Remove a credit entry by index.
+        function removeCreditFromDraft(idx) {
+            _creditsDraft.splice(idx, 1);
+            _renderCreditsDraft();
+        }
+
         function openAddReleaseModal(editId) {
             const modal = document.getElementById('addReleaseModal');
             const titleEl = document.getElementById('releaseModalTitle');
@@ -19977,7 +20074,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             document.getElementById('releaseYoutube').value = '';
             document.getElementById('releaseTiktok').value = '';
             document.getElementById('trackRowsList').innerHTML = '';
-            document.getElementById('releaseCredits').value = '';
+            _creditsDraft = []; _renderCreditsDraft();
             selectDisplayMode('tracklist');
 
             // Reset oEmbed draft for this modal session
@@ -19999,7 +20096,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 document.getElementById('releaseYoutube').value = rel.platforms.youtube || '';
                 document.getElementById('releaseTiktok').value = rel.platforms.tiktok || '';
                 selectDisplayMode(rel.displayMode || 'tracklist');
-                document.getElementById('releaseCredits').value = rel.credits || '';
+                _creditsDraft = _normalizeCredits(rel.credits); _renderCreditsDraft();
                 // Re-populate tracks
                 (rel.tracks || []).forEach(t => addTrackRow(t.title, t.duration));
                 // Pre-populate draft from saved oEmbed data so it's preserved on save
@@ -20177,7 +20274,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 providerTitle: _oembedDraft.providerTitle || undefined,
                 oembedTitle:   _oembedDraft.oembedTitle   || undefined,
                 displayMode: document.getElementById('releaseDisplayMode').value,
-                credits: document.getElementById('releaseCredits').value.trim(),
+                credits: _creditsDraft.slice(),
                 platforms: {
                     spotify:    document.getElementById('releaseSpotify').value.trim(),
                     apple:      document.getElementById('releaseApple').value.trim(),
@@ -20366,19 +20463,19 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                         const spLabel = `<div style="font-size:11px;font-weight:600;color:#1DB954;margin-bottom:4px;padding:0 10px;">🟢 Spotify player${spKindLabel}</div>`;
                         const spBtn = `<button type="button" class="able-embedLoadBtn" style="background:#1DB954;color:#000;border-color:#1DB954;">🎵 Load Spotify player</button><div class="able-embedHint">Tap to load · Spotify</div>`;
                         const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedLazy" data-embed-src="${spEmbed.src}" data-embed-kind="spotify" data-embed-height="${h}" style="min-height:${h}px;">${spBtn}</div></div>`;
-                        return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${spLabel}${iframeHtml}${rel.credits ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
+                        return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${spLabel}${iframeHtml}${_buildCreditsHtml(rel)}</div>`;
                     }
                     if (ytEmbed) {
                         const ytLabel = `<div style="font-size:11px;font-weight:600;color:#ff0000;margin-bottom:4px;padding:0 10px;">▶️ YouTube video</div>`;
                         const ytBtn = `<button type="button" class="able-embedLoadBtn">▶️ Load video</button><div class="able-embedHint">Tap to load · YouTube</div>`;
                         const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedRatio able-embedLazy" data-embed-src="${ytEmbed.src}" data-embed-kind="youtube">${ytBtn}</div></div>`;
-                        return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${ytLabel}${iframeHtml}${rel.credits ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
+                        return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${ytLabel}${iframeHtml}${_buildCreditsHtml(rel)}</div>`;
                     }
                     if (scEmbed) {
                         const scLabel = `<div style="font-size:11px;font-weight:600;color:#ff5500;margin-bottom:4px;padding:0 10px;">🎧 SoundCloud player</div>`;
                         const scBtn = `<button type="button" class="able-embedLoadBtn">🎧 Load SoundCloud player</button><div class="able-embedHint">Tap to load · SoundCloud</div>`;
                         const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedLazy" data-embed-src="${scEmbed.src}" data-embed-kind="soundcloud" data-embed-height="180" style="min-height:180px;">${scBtn}</div></div>`;
-                        return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${scLabel}${iframeHtml}${rel.credits ? `<div style="padding:0 10px 8px;font-size:10px;color:var(--text-tertiary);">Credits: ${rel.credits}</div>` : ''}</div>`;
+                        return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${scLabel}${iframeHtml}${_buildCreditsHtml(rel)}</div>`;
                     }
                 }
 
@@ -20403,7 +20500,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     `${tracksHtml}` +
                     `${moreCount > 0 ? `<div style="font-size:11px;color:var(--text-tertiary);padding-top:6px;text-align:center;">+${moreCount} more tracks</div>` : ''}` +
                     `${hasPlatforms ? `<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;">${pills}</div>` : ''}` +
-                    `${rel.credits ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:6px;padding-top:5px;border-top:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Credits: ${rel.credits}</div>` : ''}` +
+                    `${_buildCreditsHtml(rel)}` +
                     `${fallbackNote}</div>`;
             }).join('');
 
@@ -23383,7 +23480,13 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                         type: 'ep',
                         artwork: '', artworkUrl: '',
                         displayMode: 'tracklist',
-                        credits: 'Prod. Demo Studio',
+                        credits: [
+                            { name: 'Demo Studio',   role: 'Producer' },
+                            { name: 'Ava Noel',      role: 'Writer'   },
+                            { name: 'J. Morgan',     role: 'Mix'      },
+                            { name: 'K. Reves',      role: 'Master'   },
+                            { name: 'Art House',     role: 'Artwork'  },
+                        ],
                         platforms: {
                             spotify:    'https://open.spotify.com/album/5Z9iiGl2FcIfa3BMiv6OIw',
                             apple:      'https://music.apple.com/album/midnight-drive-ep/000000001',
@@ -23450,7 +23553,10 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                         type: 'single',
                         artwork: '', artworkUrl: '',
                         displayMode: 'tracklist',
-                        credits: 'Mix: J. Coles',
+                        credits: [
+                            { name: 'J. Coles',     role: 'Mix'    },
+                            { name: 'Demo Studio',  role: 'Master' },
+                        ],
                         platforms: {
                             spotify:    'https://open.spotify.com/track/1AoSF6GX6nGPMGq5CWQMQ3',
                             apple:      '',
@@ -23777,6 +23883,19 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     'Action Links: all list items have dnd-init guard [' + uninitDrag.length + ' without] (warn only)',
                     uninitDrag.length === 0
                 );
+
+                // 15-17. Credits data integrity (run against user's actual releases)
+                var _allCreds = [];
+                origReleases.forEach(function(rel) {
+                    _allCreds = _allCreds.concat(_normalizeCredits(rel.credits));
+                });
+                var _missingName = _allCreds.filter(function(c) { return !c.name || !c.name.trim(); });
+                check('Credits: no entry missing name [' + _missingName.length + ' of ' + _allCreds.length + ' total] (warn only)', _missingName.length === 0);
+                var _longCred = _allCreds.filter(function(c) { return (c.name||'').length > 80 || (c.role||'').length > 80; });
+                check('Credits: no name/role >80 chars [' + _longCred.length + '] (warn only)', _longCred.length === 0);
+                var _credSections = document.querySelectorAll('.profile-preview .credits-section');
+                var _credOverflow = Array.prototype.some.call(_credSections, function(el) { return el.scrollWidth > el.clientWidth + 2; });
+                check('Credits: no horizontal overflow in preview card (warn only)', !_credOverflow);
 
                 // Restore original state
                 musicState.releases = origReleases;
