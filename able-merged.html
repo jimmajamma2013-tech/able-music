@@ -6276,6 +6276,11 @@
             gap: 10px;
         }
 
+        /* CTA cap: hero never shows more than 2 action buttons */
+        .profile-preview .cta-group > *:nth-child(n+3) {
+            display: none;
+        }
+
         .profile-preview .btn {
             padding: 16px 26px;
             border: none;
@@ -6462,6 +6467,14 @@
             border-color: var(--card-glass-border) !important;
         }
 
+        /* Image mode: subtle text-shadow for legibility over background photos */
+        .profile-preview.has-background-image .artist-name,
+        .profile-preview.has-background-image .artist-handle {
+            text-shadow: 0 1px 4px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.25);
+        }
+        .profile-preview.has-background-image .section-title {
+            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
 
         /* ── Quick Links Strip ── */
         .profile-preview .quick-links-strip {
@@ -6908,11 +6921,6 @@
         .profile-preview[data-theme="dark"] .section::after,
         .profile-preview[data-theme="contrast"] .section::after {
             opacity: 0.18;
-        }
-
-        /* Music/streaming section gets more space */
-        .profile-preview #streaming {
-            margin-bottom: 32px;
         }
 
         /* Compress lower priority sections */
@@ -13284,9 +13292,9 @@
                     <p class="editor-subtitle">Manage your products and inventory</p>
                 </div>
 
-                <div class="auto-banner" style="background: linear-gradient(135deg, #95e1d3 0%, #5f3dc4 100%);">
-                    <div class="auto-banner-title">🛍️ Connect Your Store</div>
-                    <div class="auto-banner-text">Sync products from Shopify or add items manually to sell directly from your profile</div>
+                <div class="auto-banner">
+                    <div class="auto-banner-title">🛍️ Connect a store</div>
+                    <div class="auto-banner-text">Link Shopify or add products manually — they'll appear in your profile.</div>
                     <div class="auto-banner-actions">
                         <button class="auto-banner-btn" onclick="switchTab('platforms')">
                             Connect Shopify
@@ -13303,7 +13311,7 @@
                         <div class="empty-state-icon">🛍️</div>
                         <div class="empty-state-title">No products yet</div>
                         <div class="empty-state-text">
-                            Start selling merch by connecting your store or adding products manually. Vinyl, t-shirts, posters—anything you create
+                            Add products and they'll appear in your profile's Merch section.
                         </div>
                         <div class="empty-state-actions">
                             <button class="btn btn-primary" onclick="openAddProductModal()">
@@ -15235,6 +15243,36 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
         // Update preview when CTA is toggled — updates quick-links strip only
         // (Hero buttons are now driven by autoStateConfig.modes via updatePageState)
         // ── Quick Links cap + "More" helper ──────────────────────────────────
+        // ── CTA Dedupe helpers ────────────────────────────────────────────────
+        // To see dedupe decisions in console: window._ableDedupeDebug = true
+        window._ableDedupeDebug = false;
+
+        // Normalise a URL for deduplication comparison only (does NOT mutate stored data):
+        //   trim → ensure https:// scheme → lowercase hostname+path → strip trailing slash
+        function _normUrl(url) {
+            if (!url) return '';
+            url = url.trim();
+            if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+            try {
+                const _u = new URL(url);
+                return (_u.hostname + _u.pathname).toLowerCase().replace(/\/$/, '');
+            } catch(e) {
+                return url.toLowerCase().replace(/\/$/, '');
+            }
+        }
+
+        // Return a Set of normalised hero button URLs for the current (or given) mode.
+        // Reads directly from in-memory autoStateConfig — always matches the live preview state.
+        function _getHeroUrlSet(mode) {
+            const _m = mode || (typeof autoStateConfig !== 'undefined' && autoStateConfig.currentMode) || 'live';
+            const _cfg = (typeof autoStateConfig !== 'undefined' && autoStateConfig.modes && autoStateConfig.modes[_m]) || {};
+            const _urls = new Set();
+            if (_cfg.primary   && _cfg.primary.url)  _urls.add(_normUrl(_cfg.primary.url));
+            if (_cfg.secondary && _cfg.secondary.url) _urls.add(_normUrl(_cfg.secondary.url));
+            _urls.delete(''); // empty string is not a real URL
+            return _urls;
+        }
+
         // sorted: array of [id, {active,text,icon,order,url}] already filtered + sorted
         // Returns inner HTML string for #quickLinksStrip.
         // sorted: [[id, {active,text,icon,order,url}], ...]  already filtered + sorted
@@ -15308,8 +15346,16 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     _qlTimer = setTimeout(() => {
                         const s = document.getElementById('quickLinksStrip');
                         if (!s) return;
+                        const _hU1 = _getHeroUrlSet();
                         const sortedNow = Object.entries(ctaState)
                             .filter(([, d]) => d.active && d.url && d.url.trim())
+                            .filter(([, d]) => {
+                                if (_hU1.has(_normUrl(d.url))) {
+                                    if (window._ableDedupeDebug) console.log('DEDUPE: removed Quick Action \'' + d.text + '\' (matches Hero)');
+                                    return false;
+                                }
+                                return true;
+                            })
                             .sort(([, a], [, b]) => a.order - b.order);
                         s.classList.remove('ql-more-open');
                         s.innerHTML = buildQuickLinksPillsHtml(sortedNow, s);
@@ -15325,8 +15371,16 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 _qlRenderReq = null;
                 const s = document.getElementById('quickLinksStrip');
                 if (!s) return;
+                const _hU2 = _getHeroUrlSet();
                 const sorted = Object.entries(ctaState)
                     .filter(([, d]) => d.active && d.url && d.url.trim())
+                    .filter(([, d]) => {
+                        if (_hU2.has(_normUrl(d.url))) {
+                            if (window._ableDedupeDebug) console.log('DEDUPE: removed Quick Action \'' + d.text + '\' (matches Hero)');
+                            return false;
+                        }
+                        return true;
+                    })
                     .sort(([, a], [, b]) => a.order - b.order);
                 s.classList.remove('ql-more-open');
                 s.innerHTML = buildQuickLinksPillsHtml(sorted, s);
@@ -15350,6 +15404,17 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
         // Wire per-section action buttons — explicit assignments first, auto-detect fallback
         // for sections that have data sources (music/events/merch).
         function updateSectionActionBtns() {
+            // Build combined URL exclusion set: hero URLs ∪ active quick-action URLs.
+            // Section actions are lowest priority — no URL should appear in multiple zones.
+            const _saHero = (typeof _getHeroUrlSet === 'function') ? _getHeroUrlSet() : new Set();
+            const _saQuick = new Set(
+                Object.values(typeof ctaState !== 'undefined' ? ctaState : {})
+                    .filter(function(d) { return d.active && d.url && d.url.trim(); })
+                    .map(function(d) { return _normUrl(d.url); })
+            );
+            const _saExclude = new Set([..._saHero, ..._saQuick]);
+            _saExclude.delete('');
+
             // Helper: build one section-action-btn anchor
             function _btn(url, icon, text) {
                 return '<a class="section-action-btn" href="' + escapeAttr(url || '#') + '" target="_blank" rel="noopener">'
@@ -15364,17 +15429,32 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     return a.enabled !== false;
                 });
                 if (explicit.length > 0) {
-                    container.innerHTML = explicit.map(function(a) {
-                        const cta = ctaState[a.id] || {};
-                        return _btn(cta.url, cta.icon || '', cta.text || a.id);
-                    }).join('');
+                    container.innerHTML = explicit
+                        .filter(function(a) {
+                            const cta = ctaState[a.id] || {};
+                            const n = _normUrl(cta.url);
+                            if (n && _saExclude.has(n)) {
+                                if (window._ableDedupeDebug) console.log('DEDUPE: removed Section Action \'' + (cta.text || a.id) + '\' (matches Hero or Quick Action)');
+                                return false;
+                            }
+                            return true;
+                        })
+                        .map(function(a) {
+                            const cta = ctaState[a.id] || {};
+                            return _btn(cta.url, cta.icon || '', cta.text || a.id);
+                        }).join('');
                     return;
                 }
                 // No explicit actions — fall back to auto-detection (music/events/merch only)
                 if (typeof autoFn === 'function') {
                     try {
                         const result = autoFn();
-                        container.innerHTML = result ? _btn(result.url, result.icon, result.text) : '';
+                        if (result && _saExclude.has(_normUrl(result.url))) {
+                            if (window._ableDedupeDebug) console.log('DEDUPE: removed Section Action (auto) \'' + result.text + '\' (matches Hero or Quick Action)');
+                            container.innerHTML = '';
+                        } else {
+                            container.innerHTML = result ? _btn(result.url, result.icon, result.text) : '';
+                        }
                     } catch(e) { container.innerHTML = ''; }
                 } else {
                     container.innerHTML = '';
@@ -21701,8 +21781,8 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                             <div style="font-weight:700;font-size:13px;">${p.name}</div>
                             <div style="font-size:11px;color:var(--text-tertiary);">${p.price}${p.stock ? ' · ' + p.stock + ' in stock' : ''}${p.providerTitle ? ' · ' + p.providerTitle : ''}</div>
                         </div>
-                        ${p.url ? `<a href="${p.url.replace(/"/g,'%22')}" target="_blank" style="font-size:11px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;">${viewLabel(p)} ↗</a>` : ''}
-                        <button onclick="deleteProduct(${p.id})" style="background:none;border:none;color:var(--text-tertiary);cursor:pointer;font-size:16px;padding:4px;flex-shrink:0;" title="Remove">✕</button>
+                        ${p.url ? `<a href="${p.url.replace(/"/g,'%22')}" target="_blank" class="al-url-ok" style="font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;font-size:11px;">${viewLabel(p)} ↗</a>` : ''}
+                        <button onclick="deleteProduct(${p.id})" class="icon-btn delete" style="flex-shrink:0;" title="Remove">✕</button>
                     </div>
                 `).join('');
 
@@ -23392,10 +23472,21 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                         const active = Object.entries(ctas)
                             .filter(([, d]) => d.active)
                             .sort(([, a], [, b]) => a.order - b.order);
+                        // Dedupe: strip pills whose URL matches the current-mode hero buttons
+                        const _bHeroU = (typeof _getHeroUrlSet === 'function') ? _getHeroUrlSet() : new Set();
+                        const activeDeduped = _bHeroU.size === 0 ? active : active.filter(([, d]) => {
+                            if (!d.url) return true;
+                            const _n = (typeof _normUrl === 'function') ? _normUrl(d.url) : d.url.trim();
+                            if (_n && _bHeroU.has(_n)) {
+                                if (window._ableDedupeDebug) console.log('DEDUPE: removed Quick Action \'' + d.text + '\' (matches Hero) [bridge]');
+                                return false;
+                            }
+                            return true;
+                        });
                         strip.classList.remove('ql-more-open');
                         strip.innerHTML = (typeof buildQuickLinksPillsHtml === 'function')
-                            ? buildQuickLinksPillsHtml(active, strip)  // pass strip for width-based cap
-                            : active.map(([, d]) =>
+                            ? buildQuickLinksPillsHtml(activeDeduped, strip)  // pass strip for width-based cap
+                            : activeDeduped.map(([, d]) =>
                                 `<a href="${escapeAttr(d.url || '#')}" target="_blank" class="quick-link-pill" rel="noopener"><span class="pill-emoji">${d.icon}</span>${escapeHtml(d.text)}</a>`
                               ).join('');
                     }
