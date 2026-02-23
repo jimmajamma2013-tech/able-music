@@ -7346,6 +7346,59 @@
             color: var(--text-primary);
         }
 
+        /* Profile Credits Section — aggregated collaborator rows */
+        .profile-preview .credit-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--token-border);
+            cursor: pointer;
+        }
+        .profile-preview .credit-row:last-of-type { border-bottom: none; }
+        .profile-preview .credit-row-badge {
+            min-width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .profile-preview .credit-row-main {
+            flex: 1;
+            min-width: 0;
+        }
+        .profile-preview .credit-row-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .profile-preview .credit-row-roles {
+            font-size: 11px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .profile-preview .credit-row-detail {
+            display: none;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            padding: 4px 0 0 0;
+            line-height: 1.5;
+        }
+        .profile-preview .credit-row.detail-open .credit-row-detail {
+            display: block;
+        }
+
         /* Refined Square Calendar - Compact */
         .profile-preview .calendar-container {
             background: var(--bg-secondary);
@@ -14131,6 +14184,15 @@
                 <button id="profileFeedToggle" onclick="toggleFeedExpand()" style="display:none;width:100%;margin-top:10px;background:none;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:12px;color:var(--text-secondary);cursor:pointer;font-family:inherit;"></button>
             </section>
 
+            <!-- Credits Section -->
+            <section class="section" id="credits" style="display:none;">
+                <div class="section-header-row">
+                    <h2 class="section-title">Credits</h2>
+                    <div id="creditsSectionActions" class="section-actions"></div>
+                </div>
+                <div id="profileCreditsList"></div>
+            </section>
+
             <!-- Videos Section - DIY Textured Grid -->
             <section class="section" id="videos">
                 <div class="section-header-row">
@@ -20512,6 +20574,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             }
 
             initLazyEmbeds(cards);
+            if (typeof renderProfileCredits === 'function') safeRender(renderProfileCredits);
             } catch(e) {
                 console.warn('[updatePreviewMusic]', e);
                 const _b = document.getElementById('musicTabErrorBanner');
@@ -22490,7 +22553,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 hideSections: ['streaming', 'tracklist'],
                 sectionOrder: [
                     'bio', 'support', 'tour', 'events',
-                    'videos', 'subscribe', 'artists',
+                    'credits', 'videos', 'subscribe', 'artists',
                     'merch', 'activity', 'bts', 'qr'
                 ]
             },
@@ -22507,7 +22570,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 hideSections: [],
                 sectionOrder: [
                     'streaming', 'tracklist', 'tour', 'merch',
-                    'support', 'videos', 'bio', 'events',
+                    'support', 'credits', 'videos', 'bio', 'events',
                     'artists', 'activity', 'bts', 'subscribe', 'qr'
                 ]
             },
@@ -22520,7 +22583,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 hideSections: [],
                 sectionOrder: [
                     'streaming', 'bio', 'tracklist', 'merch',
-                    'tour', 'support', 'videos', 'artists',
+                    'tour', 'support', 'credits', 'videos', 'artists',
                     'activity', 'bts', 'events', 'subscribe', 'qr'
                 ]
             },
@@ -22533,7 +22596,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 hideSections: [],
                 sectionOrder: [
                     'tour', 'merch', 'streaming', 'support',
-                    'tracklist', 'bio', 'videos', 'events',
+                    'tracklist', 'bio', 'credits', 'videos', 'events',
                     'artists', 'activity', 'bts', 'subscribe', 'qr'
                 ]
             }
@@ -23043,8 +23106,108 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 }
             } catch(e) {}
 
+            // Aggregate credits section
+            if (typeof renderProfileCredits === 'function') safeRender(renderProfileCredits);
+
             // Wire up any lazy embeds that may have been rendered into the preview
             initLazyEmbeds(profileRoot);
+        }
+
+        // 1b. Credits Bridge — aggregate collaborators across all releases
+        var _creditsExpanded = false;
+
+        function aggregateCredits(releases) {
+            var map = {};
+            (releases || []).forEach(function(rel) {
+                var creds = (typeof _normalizeCredits === 'function')
+                    ? _normalizeCredits(rel.credits)
+                    : (Array.isArray(rel.credits) ? rel.credits : []);
+                var seenInRelease = {};
+                creds.forEach(function(c) {
+                    if (!c || !c.name) return;
+                    var key = c.name.trim().replace(/\s+/g, ' ').toLowerCase();
+                    if (!key) return;
+                    if (!map[key]) {
+                        map[key] = {
+                            name: c.name.trim().replace(/\s+/g, ' '),
+                            roles: [],
+                            count: 0,
+                            releases: []
+                        };
+                    }
+                    // count each person once per release
+                    if (!seenInRelease[key]) { map[key].count++; seenInRelease[key] = true; }
+                    // merge roles (case-insensitive dedup)
+                    if (c.role) {
+                        var rKey = c.role.trim().toLowerCase();
+                        if (!map[key].roles.some(function(r) { return r.toLowerCase() === rKey; })) {
+                            map[key].roles.push(c.role.trim());
+                        }
+                    }
+                    // record release title
+                    if (rel.title && map[key].releases.indexOf(rel.title) === -1) {
+                        map[key].releases.push(rel.title);
+                    }
+                });
+            });
+            return Object.values(map).sort(function(a, b) {
+                return b.count - a.count || a.name.localeCompare(b.name);
+            });
+        }
+
+        function renderProfileCredits() {
+            var profileRoot = document.getElementById('profilePreviewRoot');
+            if (!profileRoot) return;
+            var section = profileRoot.querySelector('#credits');
+            var listEl  = profileRoot.querySelector('#profileCreditsList');
+            if (!section || !listEl) return;
+
+            var releases = [];
+            try { releases = JSON.parse(localStorage.getItem('able_music_releases') || '[]'); } catch(e) {}
+            var aggregated = aggregateCredits(releases);
+
+            if (aggregated.length === 0) { section.style.display = 'none'; return; }
+            section.style.display = 'block';
+
+            var CAP_COLLAPSED = 6, CAP_EXPANDED = 12;
+            var shown   = _creditsExpanded ? aggregated.slice(0, CAP_EXPANDED) : aggregated.slice(0, CAP_COLLAPSED);
+            var hasMore = aggregated.length > CAP_COLLAPSED;
+
+            var rowsHtml = shown.map(function(p, i) {
+                var badge     = String(i + 1);
+                var rolesText = p.roles.length ? p.roles.join(', ') : '';
+                var relText   = p.releases.length
+                    ? 'Appears on: ' + p.releases.map(function(r) { return escapeHtml(r); }).join(', ')
+                    : '';
+                var hasDetail = relText.length > 0;
+                return '<div class="credit-row' + (hasDetail ? ' detail-clickable' : '') + '"' +
+                    (hasDetail ? ' onclick="toggleCreditDetail(this)"' : '') + '>' +
+                    '<div class="credit-row-badge">' + escapeHtml(badge) + '</div>' +
+                    '<div class="credit-row-main">' +
+                    '<div class="credit-row-name">' + escapeHtml(p.name) + '</div>' +
+                    (rolesText ? '<div class="credit-row-roles">' + escapeHtml(rolesText) + '</div>' : '') +
+                    (hasDetail ? '<div class="credit-row-detail">' + relText + '</div>' : '') +
+                    '</div></div>';
+            }).join('');
+
+            var toggleHtml = '';
+            if (hasMore) {
+                var btnLabel = _creditsExpanded
+                    ? '▲ Show fewer'
+                    : '▼ Show ' + Math.min(aggregated.length - CAP_COLLAPSED, CAP_EXPANDED - CAP_COLLAPSED) + ' more';
+                toggleHtml = '<button type="button" onclick="_toggleCreditsExpand()" style="width:100%;padding:8px;margin-top:6px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;font-family:inherit;">' + btnLabel + '</button>';
+            }
+
+            listEl.innerHTML = rowsHtml + toggleHtml;
+        }
+
+        function toggleCreditDetail(row) {
+            if (row) row.classList.toggle('detail-open');
+        }
+
+        function _toggleCreditsExpand() {
+            _creditsExpanded = !_creditsExpanded;
+            safeRender(renderProfileCredits);
         }
 
         // 2. Videos Bridge
@@ -23896,6 +24059,20 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 var _credSections = document.querySelectorAll('.profile-preview .credits-section');
                 var _credOverflow = Array.prototype.some.call(_credSections, function(el) { return el.scrollWidth > el.clientWidth + 2; });
                 check('Credits: no horizontal overflow in preview card (warn only)', !_credOverflow);
+
+                // 18. Profile credits section: no horizontal overflow (warn-only)
+                var _profCredSec  = document.querySelector('#profilePreviewRoot #credits');
+                var _profCredOver = _profCredSec ? (_profCredSec.scrollWidth > _profCredSec.clientWidth + 2) : false;
+                check('Profile Credits section: no horizontal overflow (warn only)', !_profCredOver);
+
+                // 19. Credits dedupe: aggregated count ≤ raw entry count (sanity guard)
+                var _rawCredCount2 = 0;
+                origReleases.forEach(function(rel) { _rawCredCount2 += _normalizeCredits(rel.credits).length; });
+                var _aggCount = (typeof aggregateCredits === 'function') ? aggregateCredits(origReleases).length : 0;
+                check(
+                    'Credits dedupe: aggregated [' + _aggCount + '] ≤ raw entries [' + _rawCredCount2 + '] (warn only)',
+                    _aggCount <= _rawCredCount2
+                );
 
                 // Restore original state
                 musicState.releases = origReleases;
