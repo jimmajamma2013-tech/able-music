@@ -20222,6 +20222,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             if (!valid.includes(mode)) mode = 'both';
             musicDisplayMode = mode;
             _musicPreviewExpanded = false;
+            _musicEmbedExpanded   = false;
             try { localStorage.setItem(MUSIC_DISPLAY_MODE_KEY, mode); } catch(e) {}
             renderMusicTab();
             updatePreviewMusic();
@@ -20410,6 +20411,8 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 const modeIcon = rel.displayMode === 'embed' ? '▶' : '≡';
                 const modeLabel = rel.displayMode === 'embed' ? 'Embed' : 'Tracklist';
                 const platforms = rel.platforms || {};
+                const modeWarn  = (rel.displayMode === 'embed' && !_isEmbedEligible(rel))
+                    ? ' <span style="font-size:10px;color:#f59e0b;" title="Add a Spotify, YouTube, or SoundCloud URL to enable embedding">⚠ needs URL</span>' : '';
 
                 const pills = [
                     { key: 'sp', label: 'SP', url: platforms.spotify },
@@ -20439,7 +20442,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     </div>
                     <div class="release-card-footer">
                         <div class="release-platform-pills">${pills}</div>
-                        <span class="release-mode-badge">${modeIcon} ${modeLabel}</span>
+                        <span class="release-mode-badge">${modeIcon} ${modeLabel}${modeWarn}</span>
                     </div>
                 </div>`;
             }).join('');
@@ -20459,9 +20462,93 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
 
         // ── Update preview panel music section ──
         var _musicPreviewExpanded = false;
+        var _musicEmbedExpanded   = false; // independent expander for embeds sub-block in Both mode
+
         function _toggleMusicPreviewExpand() {
             _musicPreviewExpanded = !_musicPreviewExpanded;
             updatePreviewMusic();
+        }
+
+        function _toggleMusicEmbedExpand() {
+            _musicEmbedExpanded = !_musicEmbedExpanded;
+            updatePreviewMusic();
+        }
+
+        // True when a release has at least one URL that can be embedded
+        function _isEmbedEligible(rel) {
+            var p = rel.platforms || {};
+            return !!(normalizeSpotifyEmbedUrl(p.spotify) ||
+                      normalizeYouTubeEmbedUrl(p.youtube) ||
+                      normalizeSoundCloudEmbedUrl(p.soundcloud));
+        }
+
+        // Build one tracklist card (used in Tracklist and Both modes)
+        function _buildTracklistCard(rel) {
+            const platforms    = rel.platforms || {};
+            const hasPlatforms = Object.values(platforms).some(u => u);
+            const pills = [
+                { label: 'SP', color: '#1DB954', url: platforms.spotify },
+                { label: 'AM', color: '#fc3c44', url: platforms.apple },
+                { label: 'SC', color: '#ff5500', url: platforms.soundcloud },
+                { label: 'YT', color: '#ff0000', url: platforms.youtube },
+            ].filter(p => p.url).map(p =>
+                `<span style="font-size:10px;font-weight:800;color:${p.color};border:1.5px solid ${p.color};border-radius:999px;padding:2px 7px;">${p.label}</span>`
+            ).join('');
+            const typeLabel  = (rel.type || 'single').charAt(0).toUpperCase() + (rel.type || 'single').slice(1);
+            const tracksHtml = (rel.tracks || []).slice(0, 6).map((t, i) =>
+                `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;">` +
+                `<span style="width:16px;text-align:center;color:var(--text-tertiary);font-size:11px;font-weight:600;">${i+1}</span>` +
+                `<span style="flex:1;font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${t.title}</span>` +
+                `<span style="color:var(--text-tertiary);font-size:11px;">${t.duration || ''}</span></div>`
+            ).join('');
+            const moreCount = Math.max(0, (rel.tracks || []).length - 6);
+            const _tSrc     = rel.artworkUrl || rel.artwork || '';
+            const _tThumb   = _tSrc
+                ? `<img src="${_tSrc}" style="width:40px;height:40px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">`
+                : `<div style="width:40px;height:40px;border-radius:6px;background:linear-gradient(135deg,var(--accent),#06b6d4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;">🎵</div>`;
+            return `<div class="able-card" style="overflow:hidden;">` +
+                `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">${_tThumb}` +
+                `<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rel.title}</div>` +
+                `<div style="font-size:11px;color:var(--text-tertiary);">${typeLabel}</div></div></div>` +
+                `${tracksHtml}` +
+                `${moreCount > 0 ? `<div style="font-size:11px;color:var(--text-tertiary);padding-top:6px;text-align:center;">+${moreCount} more tracks</div>` : ''}` +
+                `${hasPlatforms ? `<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;">${pills}</div>` : ''}` +
+                `${_buildCreditsHtml(rel)}</div>`;
+        }
+
+        // Build one embed card — call only after confirming _isEmbedEligible
+        function _buildEmbedCard(rel) {
+            const platforms  = rel.platforms || {};
+            const typeLabel  = (rel.type || 'single').charAt(0).toUpperCase() + (rel.type || 'single').slice(1);
+            const spEmbed    = normalizeSpotifyEmbedUrl(platforms.spotify);
+            const ytEmbed    = normalizeYouTubeEmbedUrl(platforms.youtube);
+            const scEmbed    = normalizeSoundCloudEmbedUrl(platforms.soundcloud);
+            const _eSrc      = rel.artworkUrl || rel.artwork || '';
+            const _eThumb    = _eSrc
+                ? `<img src="${_eSrc}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">`
+                : '';
+            const _eHeader   = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:10px 10px 0;">${_eThumb}<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rel.title}</div><div style="font-size:10px;color:var(--text-tertiary);">${typeLabel}</div></div></div>`;
+            if (spEmbed) {
+                const h           = spEmbed.height || 152;
+                const spKindLabel = spEmbed.kind === 'album' ? ' · Album' : spEmbed.kind === 'playlist' ? ' · Playlist' : ' · Track';
+                const spLabel     = `<div style="font-size:11px;font-weight:600;color:#1DB954;margin-bottom:4px;padding:0 10px;">🟢 Spotify player${spKindLabel}</div>`;
+                const spBtn       = `<button type="button" class="able-embedLoadBtn" style="background:#1DB954;color:#000;border-color:#1DB954;">🎵 Load Spotify player</button><div class="able-embedHint">Tap to load · Spotify</div>`;
+                const iHtml       = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedLazy" data-embed-src="${spEmbed.src}" data-embed-kind="spotify" data-embed-height="${h}" style="min-height:${h}px;">${spBtn}</div></div>`;
+                return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${spLabel}${iHtml}${_buildCreditsHtml(rel)}</div>`;
+            }
+            if (ytEmbed) {
+                const ytLabel = `<div style="font-size:11px;font-weight:600;color:#ff0000;margin-bottom:4px;padding:0 10px;">▶️ YouTube video</div>`;
+                const ytBtn   = `<button type="button" class="able-embedLoadBtn">▶️ Load video</button><div class="able-embedHint">Tap to load · YouTube</div>`;
+                const iHtml   = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedRatio able-embedLazy" data-embed-src="${ytEmbed.src}" data-embed-kind="youtube">${ytBtn}</div></div>`;
+                return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${ytLabel}${iHtml}${_buildCreditsHtml(rel)}</div>`;
+            }
+            if (scEmbed) {
+                const scLabel = `<div style="font-size:11px;font-weight:600;color:#ff5500;margin-bottom:4px;padding:0 10px;">🎧 SoundCloud player</div>`;
+                const scBtn   = `<button type="button" class="able-embedLoadBtn">🎧 Load SoundCloud player</button><div class="able-embedHint">Tap to load · SoundCloud</div>`;
+                const iHtml   = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedLazy" data-embed-src="${scEmbed.src}" data-embed-kind="soundcloud" data-embed-height="180" style="min-height:180px;">${scBtn}</div></div>`;
+                return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${scLabel}${iHtml}${_buildCreditsHtml(rel)}</div>`;
+            }
+            return ''; // shouldn't reach here if caller filters by _isEmbedEligible
         }
 
         function updatePreviewMusic() {
@@ -20479,98 +20566,66 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
 
             section.style.display = 'block';
 
-            // Filter by global profile display mode
-            var _visible = musicState.releases.filter(function(rel) {
-                if (musicDisplayMode === 'tracklist') return rel.displayMode !== 'embed';
-                if (musicDisplayMode === 'embeds')   return rel.displayMode === 'embed';
-                return true; // 'both'
-            });
-            if (_visible.length === 0) { section.style.display = 'none'; return; }
+            // Render by global display mode
+            if (musicDisplayMode === 'both') {
+                // Both: tracklist sub-block (ALL releases) + embeds sub-block (eligible only)
+                const _allRels   = musicState.releases;
+                const _embedElig = _allRels.filter(_isEmbedEligible);
 
-            // Caps: embeds are heavier → cap at 3; tracklist/both → 6
-            const CAP = musicDisplayMode === 'embeds' ? 3 : 6;
-            const _capped = _musicPreviewExpanded ? _visible : _visible.slice(0, CAP);
-            const _hasMore = !_musicPreviewExpanded && _visible.length > CAP;
-
-            cards.innerHTML = _capped.map(rel => {
-                const platforms = rel.platforms || {};
-                const hasPlatforms = Object.values(platforms).some(u => u);
-                const pills = [
-                    { key: 'sp', label: 'SP', color: '#1DB954', url: platforms.spotify },
-                    { key: 'am', label: 'AM', color: '#fc3c44', url: platforms.apple },
-                    { key: 'sc', label: 'SC', color: '#ff5500', url: platforms.soundcloud },
-                    { key: 'yt', label: 'YT', color: '#ff0000', url: platforms.youtube },
-                ].filter(p => p.url).map(p =>
-                    `<span style="font-size:10px;font-weight:800;color:${p.color};border:1.5px solid ${p.color};border-radius:999px;padding:2px 7px;">${p.label}</span>`
-                ).join('');
-                const typeLabel = (rel.type || 'single').charAt(0).toUpperCase() + (rel.type || 'single').slice(1);
-
-                // Resolve embed URLs once — used for fail-soft check and rendering
-                const spEmbed = normalizeSpotifyEmbedUrl(platforms.spotify);
-                const ytEmbed = normalizeYouTubeEmbedUrl(platforms.youtube);
-                const scEmbed = normalizeSoundCloudEmbedUrl(platforms.soundcloud);
-
-                // Fail-soft: embed with no embeddable URL → fall back to tracklist
-                const effectiveMode = (rel.displayMode === 'embed' && !spEmbed && !ytEmbed && !scEmbed)
-                    ? 'tracklist' : (rel.displayMode || 'tracklist');
-
-                if (effectiveMode === 'embed') {
-                    const _eSrc = rel.artworkUrl || rel.artwork || '';
-                    const _eThumb = _eSrc ? `<img src="${_eSrc}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">` : '';
-                    const _eHeader = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:10px 10px 0;">${_eThumb}<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rel.title}</div><div style="font-size:10px;color:var(--text-tertiary);">${typeLabel}</div></div></div>`;
-
-                    if (spEmbed) {
-                        const h = spEmbed.height || 152;
-                        const spKindLabel = spEmbed.kind === 'album' ? ' · Album' : spEmbed.kind === 'playlist' ? ' · Playlist' : ' · Track';
-                        const spLabel = `<div style="font-size:11px;font-weight:600;color:#1DB954;margin-bottom:4px;padding:0 10px;">🟢 Spotify player${spKindLabel}</div>`;
-                        const spBtn = `<button type="button" class="able-embedLoadBtn" style="background:#1DB954;color:#000;border-color:#1DB954;">🎵 Load Spotify player</button><div class="able-embedHint">Tap to load · Spotify</div>`;
-                        const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedLazy" data-embed-src="${spEmbed.src}" data-embed-kind="spotify" data-embed-height="${h}" style="min-height:${h}px;">${spBtn}</div></div>`;
-                        return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${spLabel}${iframeHtml}${_buildCreditsHtml(rel)}</div>`;
-                    }
-                    if (ytEmbed) {
-                        const ytLabel = `<div style="font-size:11px;font-weight:600;color:#ff0000;margin-bottom:4px;padding:0 10px;">▶️ YouTube video</div>`;
-                        const ytBtn = `<button type="button" class="able-embedLoadBtn">▶️ Load video</button><div class="able-embedHint">Tap to load · YouTube</div>`;
-                        const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedRatio able-embedLazy" data-embed-src="${ytEmbed.src}" data-embed-kind="youtube">${ytBtn}</div></div>`;
-                        return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${ytLabel}${iframeHtml}${_buildCreditsHtml(rel)}</div>`;
-                    }
-                    if (scEmbed) {
-                        const scLabel = `<div style="font-size:11px;font-weight:600;color:#ff5500;margin-bottom:4px;padding:0 10px;">🎧 SoundCloud player</div>`;
-                        const scBtn = `<button type="button" class="able-embedLoadBtn">🎧 Load SoundCloud player</button><div class="able-embedHint">Tap to load · SoundCloud</div>`;
-                        const iframeHtml = `<div class="able-embedWrap" style="padding:0 10px 10px;"><div class="able-embedLazy" data-embed-src="${scEmbed.src}" data-embed-kind="soundcloud" data-embed-height="180" style="min-height:180px;">${scBtn}</div></div>`;
-                        return `<div style="overflow:hidden;padding:0;" class="able-card">${_eHeader}${scLabel}${iframeHtml}${_buildCreditsHtml(rel)}</div>`;
-                    }
+                // Tracklist sub-block — cap 6, _musicPreviewExpanded
+                const TL_CAP     = 6;
+                const _tlCapped  = _musicPreviewExpanded ? _allRels : _allRels.slice(0, TL_CAP);
+                const _tlHasMore = !_musicPreviewExpanded && _allRels.length > TL_CAP;
+                let _html        = _tlCapped.map(_buildTracklistCard).join('');
+                if (_tlHasMore) {
+                    _html += `<button type="button" onclick="_toggleMusicPreviewExpand()" style="width:100%;padding:8px;margin-top:4px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;">▼ View all ${_allRels.length} releases</button>`;
+                } else if (_musicPreviewExpanded && _allRels.length > TL_CAP) {
+                    _html += `<button type="button" onclick="_toggleMusicPreviewExpand()" style="width:100%;padding:8px;margin-top:4px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;">▲ Show less</button>`;
                 }
 
-                // Tracklist mode (and fail-soft fallback from embed)
-                const fallbackNote = (rel.displayMode === 'embed')
-                    ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;">ℹ️ No embeddable URL — showing tracklist</div>` : '';
-                const tracksHtml = (rel.tracks || []).slice(0, 6).map((t, i) =>
-                    `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;">` +
-                    `<span style="width:16px;text-align:center;color:var(--text-tertiary);font-size:11px;font-weight:600;">${i+1}</span>` +
-                    `<span style="flex:1;font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${t.title}</span>` +
-                    `<span style="color:var(--text-tertiary);font-size:11px;">${t.duration || ''}</span></div>`
-                ).join('');
-                const moreCount = Math.max(0, (rel.tracks || []).length - 6);
-                const _tSrc = rel.artworkUrl || rel.artwork || '';
-                const _tThumb = _tSrc
-                    ? `<img src="${_tSrc}" style="width:40px;height:40px;border-radius:6px;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">`
-                    : `<div style="width:40px;height:40px;border-radius:6px;background:linear-gradient(135deg,var(--accent),#06b6d4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;">🎵</div>`;
-                return `<div class="able-card" style="overflow:hidden;">` +
-                    `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">${_tThumb}` +
-                    `<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${rel.title}</div>` +
-                    `<div style="font-size:11px;color:var(--text-tertiary);">${typeLabel}</div></div></div>` +
-                    `${tracksHtml}` +
-                    `${moreCount > 0 ? `<div style="font-size:11px;color:var(--text-tertiary);padding-top:6px;text-align:center;">+${moreCount} more tracks</div>` : ''}` +
-                    `${hasPlatforms ? `<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;">${pills}</div>` : ''}` +
-                    `${_buildCreditsHtml(rel)}` +
-                    `${fallbackNote}</div>`;
-            }).join('');
+                // Embeds sub-block — cap 3, _musicEmbedExpanded (independent)
+                if (_embedElig.length > 0) {
+                    const EM_CAP     = 3;
+                    const _emCapped  = _musicEmbedExpanded ? _embedElig : _embedElig.slice(0, EM_CAP);
+                    const _emHasMore = !_musicEmbedExpanded && _embedElig.length > EM_CAP;
+                    _html += `<div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);"><div style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Embeds</div>`;
+                    _html += _emCapped.map(_buildEmbedCard).join('');
+                    if (_emHasMore) {
+                        _html += `<button type="button" onclick="_toggleMusicEmbedExpand()" style="width:100%;padding:8px;margin-top:4px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;">▼ View all ${_embedElig.length} embeds</button>`;
+                    } else if (_musicEmbedExpanded && _embedElig.length > EM_CAP) {
+                        _html += `<button type="button" onclick="_toggleMusicEmbedExpand()" style="width:100%;padding:8px;margin-top:4px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;">▲ Show fewer embeds</button>`;
+                    }
+                    _html += `</div>`;
+                }
 
-            // "View all" / "Show less" expander
-            if (_hasMore) {
-                cards.innerHTML += `<button type="button" onclick="_toggleMusicPreviewExpand()" style="width:100%;padding:8px;margin-top:4px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;">▼ View all ${_visible.length} releases</button>`;
-            } else if (_musicPreviewExpanded && _visible.length > CAP) {
-                cards.innerHTML += `<button type="button" onclick="_toggleMusicPreviewExpand()" style="width:100%;padding:8px;margin-top:4px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;">▲ Show less</button>`;
+                cards.innerHTML = _html;
+
+            } else if (musicDisplayMode === 'embeds') {
+                // Embeds only: show ONLY embed-eligible releases as embed cards
+                const _visible = musicState.releases.filter(_isEmbedEligible);
+                if (_visible.length === 0) { section.style.display = 'none'; return; }
+                const CAP      = 3;
+                const _capped  = _musicPreviewExpanded ? _visible : _visible.slice(0, CAP);
+                const _hasMore = !_musicPreviewExpanded && _visible.length > CAP;
+                cards.innerHTML = _capped.map(_buildEmbedCard).join('');
+                if (_hasMore) {
+                    cards.innerHTML += `<button type="button" onclick="_toggleMusicPreviewExpand()" style="width:100%;padding:8px;margin-top:4px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;">▼ View all ${_visible.length} embeds</button>`;
+                } else if (_musicPreviewExpanded && _visible.length > CAP) {
+                    cards.innerHTML += `<button type="button" onclick="_toggleMusicPreviewExpand()" style="width:100%;padding:8px;margin-top:4px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;">▲ Show less</button>`;
+                }
+
+            } else {
+                // Tracklist mode: ALL releases as tracklist cards (ignores per-release displayMode)
+                const _visible = musicState.releases;
+                const CAP      = 6;
+                const _capped  = _musicPreviewExpanded ? _visible : _visible.slice(0, CAP);
+                const _hasMore = !_musicPreviewExpanded && _visible.length > CAP;
+                cards.innerHTML = _capped.map(_buildTracklistCard).join('');
+                if (_hasMore) {
+                    cards.innerHTML += `<button type="button" onclick="_toggleMusicPreviewExpand()" style="width:100%;padding:8px;margin-top:4px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;">▼ View all ${_visible.length} releases</button>`;
+                } else if (_musicPreviewExpanded && _visible.length > CAP) {
+                    cards.innerHTML += `<button type="button" onclick="_toggleMusicPreviewExpand()" style="width:100%;padding:8px;margin-top:4px;border:1px dashed var(--border);border-radius:8px;background:none;color:var(--text-secondary);font-size:12px;cursor:pointer;">▲ Show less</button>`;
+                }
             }
 
             initLazyEmbeds(cards);
