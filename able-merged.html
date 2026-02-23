@@ -6422,6 +6422,46 @@
             border-color: rgba(255, 255, 255, 0.12);
         }
 
+        /* ── Image mode: hero scrim + auto-readability frosted cards ── */
+        /* Transparent hero area so background image shows through */
+        .profile-preview.has-background-image .hero-content {
+            background: transparent !important;
+            position: relative;
+        }
+        /* Bottom-weighted gradient scrim — keeps text readable on any image */
+        .profile-preview.has-background-image .hero-content::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(0,0,0,0) 0%,
+                rgba(0,0,0,var(--img-scrim,0.4)) 100%
+            );
+        }
+        /* Lift all child elements above the scrim overlay */
+        .profile-preview.has-background-image .hero-content > * {
+            position: relative;
+            z-index: 1;
+        }
+        /* Quick-link pills: always glass in image mode */
+        .profile-preview.has-background-image .quick-link-pill {
+            background: var(--card-glass-bg) !important;
+            backdrop-filter: blur(var(--card-glass-blur, 12px));
+            -webkit-backdrop-filter: blur(var(--card-glass-blur, 12px));
+            border-color: var(--card-glass-border) !important;
+        }
+        /* Auto-readability: frosted glass on cards and action buttons */
+        .profile-preview.has-background-image.img-auto-readability .able-card,
+        .profile-preview.has-background-image.img-auto-readability .section-action-btn {
+            background: var(--card-glass-bg) !important;
+            backdrop-filter: blur(var(--card-glass-blur, 12px)) !important;
+            -webkit-backdrop-filter: blur(var(--card-glass-blur, 12px)) !important;
+            border-color: var(--card-glass-border) !important;
+        }
+
 
         /* ── Quick Links Strip ── */
         .profile-preview .quick-links-strip {
@@ -12318,6 +12358,48 @@
                                 </label>
                             </div>
                         </div>
+
+                        <!-- Auto Readability Controls -->
+                        <div style="background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                <div>
+                                    <div style="font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">🎯 Auto Readability</div>
+                                    <div style="font-size: 11px; color: var(--text-tertiary);">Hero scrim + frosted cards for legibility</div>
+                                </div>
+                                <label class="switch" style="cursor: pointer;">
+                                    <input type="checkbox" id="autoReadabilityToggle" checked onchange="updateBackgroundControl('autoReadability', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div id="readabilitySliders">
+                                <div style="margin-bottom: 10px;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                                        <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">Hero Scrim</label>
+                                        <span id="overlayStrengthValue" style="font-size: 12px; font-weight: 700; color: var(--accent);">45%</span>
+                                    </div>
+                                    <input type="range" id="overlayStrengthSlider" min="0" max="80" value="45"
+                                           oninput="updateBackgroundControl('overlayStrength', this.value)"
+                                           class="bg-slider">
+                                    <div style="display: flex; justify-content: space-between; margin-top: 2px;">
+                                        <span style="font-size: 10px; color: var(--text-tertiary);">None</span>
+                                        <span style="font-size: 10px; color: var(--text-tertiary);">Strong</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                                        <label style="font-size: 12px; font-weight: 600; color: var(--text-secondary);">Card Blur</label>
+                                        <span id="overlayBlurValue" style="font-size: 12px; font-weight: 700; color: var(--accent);">12px</span>
+                                    </div>
+                                    <input type="range" id="overlayBlurSlider" min="0" max="16" value="12"
+                                           oninput="updateBackgroundControl('overlayBlur', this.value)"
+                                           class="bg-slider">
+                                    <div style="display: flex; justify-content: space-between; margin-top: 2px;">
+                                        <span style="font-size: 10px; color: var(--text-tertiary);">Sharp</span>
+                                        <span style="font-size: 10px; color: var(--text-tertiary);">Blurred</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -17903,6 +17985,19 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 // Glassmorphism
                 if (_s.glassmorphismEnabled) { root.classList.add('glassmorphism-enabled'); }
                 else { root.classList.remove('glassmorphism-enabled'); }
+
+                // Image mode: sync has-background-image + img-auto-readability to .profile-preview inside this root
+                var _imgHasBg   = !!_s.backgroundImage;
+                var _imgAutoR   = (_s.autoReadability !== false);
+                var _pvTargets  = root.classList && root.classList.contains('profile-preview')
+                    ? [root]
+                    : Array.from(root.querySelectorAll ? root.querySelectorAll('.profile-preview') : []);
+                _pvTargets.forEach(function(el) {
+                    if (_imgHasBg) { el.classList.add('has-background-image'); }
+                    else           { el.classList.remove('has-background-image'); }
+                    if (_imgHasBg && _imgAutoR) { el.classList.add('img-auto-readability'); }
+                    else                        { el.classList.remove('img-auto-readability'); }
+                });
             } catch(e) { console.warn('[applyAppearanceToRoot]', e); }
         }
 
@@ -18107,6 +18202,9 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 settings.backgroundPosition = 'center';
                 settings.backgroundSize = 'cover';
                 settings.glassmorphismEnabled = false;
+                settings.autoReadability = true;
+                settings.overlayStrength = 45;
+                settings.overlayBlur = 12;
                 saveAppearanceSettings(settings);
                 
                 // Apply image with all settings
@@ -18150,7 +18248,18 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 if (sizeSelect) sizeSelect.value = 'cover';
                 const glassToggle = document.getElementById('glassmorphismToggle');
                 if (glassToggle) glassToggle.checked = false;
-                
+
+                const autoReadToggle = document.getElementById('autoReadabilityToggle');
+                if (autoReadToggle) autoReadToggle.checked = true;
+                const overlayStrSlider = document.getElementById('overlayStrengthSlider');
+                if (overlayStrSlider) overlayStrSlider.value = 45;
+                const overlayStrValue = document.getElementById('overlayStrengthValue');
+                if (overlayStrValue) overlayStrValue.textContent = '45%';
+                const overlayBlurSlider = document.getElementById('overlayBlurSlider');
+                if (overlayBlurSlider) overlayBlurSlider.value = 12;
+                const overlayBlurValue = document.getElementById('overlayBlurValue');
+                if (overlayBlurValue) overlayBlurValue.textContent = '12px';
+
                 showToast('✓ Background image uploaded');
             };
             reader.readAsDataURL(file);
@@ -18175,6 +18284,10 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 document.head.appendChild(bgStyle);
             }
             
+            const _ovStrength = (settings.overlayStrength !== undefined) ? settings.overlayStrength : 45;
+            const _ovBlur     = (settings.overlayBlur     !== undefined) ? settings.overlayBlur     : 12;
+            const _autoRead   = (settings.autoReadability  !== false);
+
             // Create CSS for pseudo-element background (won't blur dashboard)
             bgStyle.textContent = `
                 .profile-preview.has-background-image::before {
@@ -18191,10 +18304,18 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     background-attachment: fixed;
                     filter: blur(${blur}px) brightness(${brightness}%) saturate(${saturation}%);
                 }
+                .profile-preview.has-background-image {
+                    --img-scrim: ${_ovStrength / 100};
+                    --card-glass-blur: ${_ovBlur}px;
+                }
             `;
-            
-            // Add class to body
+
+            // Add class to body; manage auto-readability class on all .profile-preview elements
             document.querySelector('.profile-preview')?.classList.add('has-background-image');
+            document.querySelectorAll('.profile-preview').forEach(function(el) {
+                if (_autoRead) { el.classList.add('img-auto-readability'); }
+                else { el.classList.remove('img-auto-readability'); }
+            });
             body.style.background = 'transparent';
             body.style.backgroundImage = 'none';
             body.style.filter = '';
@@ -18243,8 +18364,21 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 case 'size':
                     settings.backgroundSize = value;
                     break;
+                case 'overlayStrength':
+                    settings.overlayStrength = parseInt(value);
+                    const overlayStrValue = document.getElementById('overlayStrengthValue');
+                    if (overlayStrValue) overlayStrValue.textContent = value + '%';
+                    break;
+                case 'overlayBlur':
+                    settings.overlayBlur = parseInt(value);
+                    const overlayBlurVal = document.getElementById('overlayBlurValue');
+                    if (overlayBlurVal) overlayBlurVal.textContent = value + 'px';
+                    break;
+                case 'autoReadability':
+                    settings.autoReadability = !!value;
+                    break;
             }
-            
+
             saveAppearanceSettings(settings);
             applyFullBackgroundImage(settings);
         }
@@ -18276,32 +18410,20 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             
             const presets = {
                 subtle: {
-                    opacity: 25,
-                    blur: 0,
-                    brightness: 100,
-                    saturation: 100,
-                    glassmorphism: false
+                    opacity: 25, blur: 0, brightness: 100, saturation: 100, glassmorphism: false,
+                    autoReadability: true, overlayStrength: 30, overlayBlur: 8
                 },
                 glass: {
-                    opacity: 70,
-                    blur: 10,
-                    brightness: 110,
-                    saturation: 100,
-                    glassmorphism: true
+                    opacity: 70, blur: 10, brightness: 110, saturation: 100, glassmorphism: true,
+                    autoReadability: true, overlayStrength: 50, overlayBlur: 14
                 },
                 bold: {
-                    opacity: 90,
-                    blur: 0,
-                    brightness: 90,
-                    saturation: 120,
-                    glassmorphism: false
+                    opacity: 90, blur: 0, brightness: 90, saturation: 120, glassmorphism: false,
+                    autoReadability: true, overlayStrength: 55, overlayBlur: 10
                 },
                 mono: {
-                    opacity: 50,
-                    blur: 5,
-                    brightness: 70,
-                    saturation: 0,
-                    glassmorphism: false
+                    opacity: 50, blur: 5, brightness: 70, saturation: 0, glassmorphism: false,
+                    autoReadability: true, overlayStrength: 40, overlayBlur: 10
                 }
             };
             
@@ -18309,39 +18431,53 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             if (!preset) return;
             
             // Apply preset values
-            settings.backgroundOpacity = preset.opacity;
-            settings.backgroundBlur = preset.blur;
-            settings.backgroundBrightness = preset.brightness;
-            settings.backgroundSaturation = preset.saturation;
-            settings.glassmorphismEnabled = preset.glassmorphism;
-            
+            settings.backgroundOpacity      = preset.opacity;
+            settings.backgroundBlur         = preset.blur;
+            settings.backgroundBrightness   = preset.brightness;
+            settings.backgroundSaturation   = preset.saturation;
+            settings.glassmorphismEnabled   = preset.glassmorphism;
+            settings.autoReadability        = preset.autoReadability;
+            settings.overlayStrength        = preset.overlayStrength;
+            settings.overlayBlur            = preset.overlayBlur;
+
             saveAppearanceSettings(settings);
             applyFullBackgroundImage(settings);
-            
+
             // Update UI controls
             const opacitySlider = document.getElementById('backgroundOpacitySlider');
             if (opacitySlider) opacitySlider.value = preset.opacity;
             const opacityValue = document.getElementById('opacityValue');
             if (opacityValue) opacityValue.textContent = preset.opacity + '%';
-            
+
             const blurSlider = document.getElementById('backgroundBlurSlider');
             if (blurSlider) blurSlider.value = preset.blur;
             const blurValue = document.getElementById('blurValue');
             if (blurValue) blurValue.textContent = preset.blur + 'px';
-            
+
             const brightnessSlider = document.getElementById('backgroundBrightnessSlider');
             if (brightnessSlider) brightnessSlider.value = preset.brightness;
             const brightnessValue = document.getElementById('brightnessValue');
             if (brightnessValue) brightnessValue.textContent = preset.brightness + '%';
-            
+
             const saturationSlider = document.getElementById('backgroundSaturationSlider');
             if (saturationSlider) saturationSlider.value = preset.saturation;
             const saturationValue = document.getElementById('saturationValue');
             if (saturationValue) saturationValue.textContent = preset.saturation + '%';
-            
+
             const glassToggle = document.getElementById('glassmorphismToggle');
             if (glassToggle) glassToggle.checked = preset.glassmorphism;
-            
+
+            const autoReadToggle3 = document.getElementById('autoReadabilityToggle');
+            if (autoReadToggle3) autoReadToggle3.checked = preset.autoReadability;
+            const overlayStrSlider3 = document.getElementById('overlayStrengthSlider');
+            if (overlayStrSlider3) overlayStrSlider3.value = preset.overlayStrength;
+            const overlayStrValue3 = document.getElementById('overlayStrengthValue');
+            if (overlayStrValue3) overlayStrValue3.textContent = preset.overlayStrength + '%';
+            const overlayBlurSlider3 = document.getElementById('overlayBlurSlider');
+            if (overlayBlurSlider3) overlayBlurSlider3.value = preset.overlayBlur;
+            const overlayBlurValue3 = document.getElementById('overlayBlurValue');
+            if (overlayBlurValue3) overlayBlurValue3.textContent = preset.overlayBlur + 'px';
+
             // Apply glassmorphism
             if (preset.glassmorphism) {
                 document.body.classList.add('glassmorphism-enabled');
@@ -18383,7 +18519,10 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             document.documentElement.classList.remove('glassmorphism-enabled');
             
             // Remove background class and clean up
-            document.querySelector('.profile-preview')?.classList.remove('has-background-image');
+            document.querySelectorAll('.profile-preview').forEach(function(el) {
+                el.classList.remove('has-background-image');
+                el.classList.remove('img-auto-readability');
+            });
             document.body.style.filter = '';
             document.body.style.background = '';
             document.body.style.backgroundImage = '';
@@ -18686,7 +18825,18 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 if (sizeSelect) sizeSelect.value = settings.backgroundSize || 'cover';
                 const glassToggle = document.getElementById('glassmorphismToggle');
                 if (glassToggle) glassToggle.checked = settings.glassmorphismEnabled || false;
-                
+
+                const autoReadToggle2 = document.getElementById('autoReadabilityToggle');
+                if (autoReadToggle2) autoReadToggle2.checked = (settings.autoReadability !== false);
+                const overlayStrSlider2 = document.getElementById('overlayStrengthSlider');
+                if (overlayStrSlider2) overlayStrSlider2.value = settings.overlayStrength !== undefined ? settings.overlayStrength : 45;
+                const overlayStrValue2 = document.getElementById('overlayStrengthValue');
+                if (overlayStrValue2) overlayStrValue2.textContent = (settings.overlayStrength !== undefined ? settings.overlayStrength : 45) + '%';
+                const overlayBlurSlider2 = document.getElementById('overlayBlurSlider');
+                if (overlayBlurSlider2) overlayBlurSlider2.value = settings.overlayBlur !== undefined ? settings.overlayBlur : 12;
+                const overlayBlurValue2 = document.getElementById('overlayBlurValue');
+                if (overlayBlurValue2) overlayBlurValue2.textContent = (settings.overlayBlur !== undefined ? settings.overlayBlur : 12) + 'px';
+
                 // Apply glassmorphism if enabled
                 if (settings.glassmorphismEnabled) {
                     document.body.classList.add('glassmorphism-enabled');
