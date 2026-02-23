@@ -18962,11 +18962,19 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             const reader = new FileReader();
             reader.onload = function(e) {
                 showProfileImage(e.target.result);
+                // Immediately sync avatar into phone preview (before saveProfile is clicked)
+                var _profileRoot = document.getElementById('profilePreviewRoot');
+                if (_profileRoot) {
+                    var _avatarEl = _profileRoot.querySelector('.bio-avatar');
+                    if (_avatarEl) {
+                        _avatarEl.innerHTML = '<img src="' + e.target.result + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">';
+                    }
+                }
                 showToast('✓ Image uploaded');
             };
             reader.readAsDataURL(file);
         }
-        
+
         // Show profile image preview
         function showProfileImage(imageData) {
             const preview = document.getElementById('profileImagePreview');
@@ -19634,7 +19642,10 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             }
 
             overlay.classList.remove('active');
-            document.body.style.overflow = '';
+            // Only restore scroll if no other overlay-like elements remain open
+            if (!document.querySelector('.modal-overlay.active, .mobile-preview-overlay.active')) {
+                document.body.style.overflow = '';
+            }
 
             // Re-trigger animate-in for visible sections in the preview frame
             setTimeout(() => {
@@ -23251,6 +23262,12 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     if (handleEl && data.handle) {
                         handleEl.textContent = data.handle;
                     }
+
+                    // Update QR URL to reflect current handle (S12-03)
+                    const qrUrlEl = profileRoot.querySelector('.qr-url');
+                    if (qrUrlEl && data.handle) {
+                        qrUrlEl.textContent = 'able.to/' + data.handle.replace(/^@/, '');
+                    }
                     
                     // Update bio text
                     const bioEl = profileRoot.querySelector('.bio-text');
@@ -24269,6 +24286,11 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 var _profCredSec  = document.querySelector('#profilePreviewRoot #credits');
                 var _profCredOver = _profCredSec ? (_profCredSec.scrollWidth > _profCredSec.clientWidth + 2) : false;
                 check('Profile Credits section: no horizontal overflow (warn only)', !_profCredOver);
+
+                // 19a. Full profile root: no horizontal overflow (warn-only, S15-07)
+                var _fullRootEl  = document.getElementById('profilePreviewRoot');
+                var _rootOverflow = _fullRootEl ? (_fullRootEl.scrollWidth > _fullRootEl.clientWidth + 2) : false;
+                check('Full profile root: no horizontal overflow (warn only)', !_rootOverflow);
 
                 // 19. Credits dedupe: aggregated count ≤ raw entry count (sanity guard)
                 var _rawCredCount2 = 0;
