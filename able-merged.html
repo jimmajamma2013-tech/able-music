@@ -6387,7 +6387,7 @@
             border: 1px solid transparent;
             border-radius: var(--radius-full);
             font-size: 13px;
-            font-weight: var(--weight-semibold);
+            font-weight: var(--weight-bold);
             cursor: pointer;
             text-decoration: none;
             transition:
@@ -8938,6 +8938,25 @@
         .profile-preview .bento-tile.size-small .bento-cta {
             font-size: 11px;
         }
+
+        /* ── Bento CTA pill — ticket + merch buy buttons inside bento tiles ── */
+        .profile-preview .bento-cta-pill {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 4px 10px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            transition: opacity var(--transition-fast) var(--ease-smooth),
+                        transform var(--transition-fast) var(--ease-smooth);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .profile-preview .bento-cta-pill:hover  { opacity: 0.85; transform: translateY(-1px); }
+        .profile-preview .bento-cta-pill:active  { opacity: 1;    transform: translateY(0); }
 
         /* Contrast mode adjustments */
         .profile-preview[data-theme="contrast"] .bento-tile.type-tour,
@@ -13080,7 +13099,7 @@
                             </button>
                             <span class="empty-state-divider">or</span>
                             <button class="btn btn-secondary" onclick="openAddVideoModal()">
-                                Add Video Link
+                                Add Video
                             </button>
                         </div>
                     </div>
@@ -23517,6 +23536,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
 
             try {
                 var bentoGrid = profileRoot.querySelector('#bentoGrid');
+                var evSection = profileRoot.querySelector('#events');
                 if (!bentoGrid) return;
 
                 bentoGrid.innerHTML = '';
@@ -23525,7 +23545,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 try { eventsRaw = JSON.parse(localStorage.getItem('able_events') || '[]'); } catch(pe) {}
 
                 if (!eventsRaw.length) {
-                    bentoGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:32px 16px;color:var(--text-tertiary);font-size:13px;">No upcoming shows — add your events in the Events tab</div>';
+                    if (evSection) evSection.style.display = 'none';
                     return;
                 }
 
@@ -23542,9 +23562,12 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 var display = upcoming.concat(past).slice(0, 6);
 
                 if (!display.length) {
-                    bentoGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:32px 16px;color:var(--text-tertiary);font-size:13px;">No upcoming shows — add your events in the Events tab</div>';
+                    if (evSection) evSection.style.display = 'none';
                     return;
                 }
+
+                // Events exist — ensure section is visible
+                if (evSection) evSection.style.display = '';
 
                 var colors = ['#ec4899', '#0891b2', '#8b5cf6', '#f59e0b', '#10b981', '#ef4444'];
                 var sizes  = ['size-small', 'size-large', 'size-small', 'size-medium', 'size-medium', 'size-small'];
@@ -23562,7 +23585,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                     } else {
                         var size = sizes[i] || 'size-medium';
                         var ticketBtn = event.ticketUrl
-                            ? '<a href="' + event.ticketUrl.replace(/"/g, '%22') + '" target="_blank" style="display:inline-block;margin-top:6px;padding:4px 10px;background:var(--accent);color:#fff;border-radius:20px;font-size:10px;font-weight:700;text-decoration:none;letter-spacing:0.02em;">' + (event.providerTitle || 'Get Tickets') + ' ↗</a>'
+                            ? '<a href="' + event.ticketUrl.replace(/"/g, '%22') + '" target="_blank" class="bento-cta-pill">' + (event.providerTitle || 'Get Tickets') + ' ↗</a>'
                             : '';
                         bentoGrid.innerHTML += '<div class="bento-tile ' + size + ' type-event" style="' + pastStyle + '"><div class="bento-content"><div class="bento-title">' + event.name + '</div><div class="bento-subtitle">' + event.venue + (event.city ? ', ' + event.city : '') + '</div>' + (event.time ? '<div class="bento-time">' + event.time + '</div>' : '') + ticketBtn + '</div></div>';
                     }
@@ -23617,7 +23640,7 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                         : 'background:linear-gradient(135deg,' + gradient + ');';
                     var ctaLabel  = product.providerTitle || 'Shop Item';
                     var ctaBtn    = product.url
-                        ? '<a href="' + product.url.replace(/"/g, '%22') + '" target="_blank" style="display:inline-block;margin-top:6px;padding:4px 10px;background:var(--accent);color:#fff;border-radius:20px;font-size:10px;font-weight:700;text-decoration:none;letter-spacing:0.02em;">' + ctaLabel + ' ↗</a>'
+                        ? '<a href="' + product.url.replace(/"/g, '%22') + '" target="_blank" class="bento-cta-pill">' + ctaLabel + ' ↗</a>'
                         : '';
 
                     merchGrid.innerHTML += '<div class="merch-bento-tile ' + size + '"><div class="merch-bento-image" style="' + bgStyle + '">' + (i === 0 ? '<span class="merch-badge badge-new">New</span>' : '') + '</div><div class="merch-bento-info"><div class="merch-bento-name">' + product.name + '</div>' + (product.description ? '<div class="merch-bento-desc">' + product.description + '</div>' : '') + '<div class="merch-bento-price">' + product.price + '</div>' + ctaBtn + '</div></div>';
