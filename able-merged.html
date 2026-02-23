@@ -11187,6 +11187,31 @@
             font-size: 11px; margin-top: 4px;
             display: flex; align-items: center; gap: 5px;
         }
+        /* URL status lines */
+        .al-url-ok {
+            font-size: 11px; color: var(--text-tertiary);
+            display: flex; align-items: center; gap: 4px;
+            overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 200px;
+        }
+        .al-url-missing {
+            font-size: 11px; color: #f59e0b;
+            display: flex; align-items: center; gap: 4px; font-weight: 600;
+        }
+        /* Action Links search/filter */
+        .al-search-wrap { position: relative; margin-bottom: 12px; }
+        .al-search-icon {
+            position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+            color: var(--text-tertiary); font-size: 13px; pointer-events: none; line-height: 1;
+        }
+        .al-search-input {
+            width: 100%; padding: 9px 12px 9px 32px;
+            background: var(--bg-secondary); border: 1.5px solid var(--border);
+            border-radius: var(--radius-lg); font-size: 13px; font-family: inherit;
+            color: var(--text-primary); transition: border-color 0.15s; box-sizing: border-box;
+        }
+        .al-search-input:focus { outline: none; border-color: var(--accent); }
+        .al-search-input::placeholder { color: var(--text-tertiary); }
+        .al-search-input::-webkit-search-cancel-button { cursor: pointer; }
         /* Add Link Modal */
         .add-link-modal-content {
             background: var(--bg-primary); border-radius: 20px;
@@ -12888,7 +12913,7 @@
                     <div class="card-header">
                         <span class="card-title">① Hero Buttons</span>
                     </div>
-                    <p style="font-size:13px; color:var(--text-tertiary); margin-bottom:14px;">The two big buttons at the top of your profile. Change per mode — fans always see the right CTA.</p>
+                    <p style="font-size:13px; color:var(--text-tertiary); margin-bottom:14px;">These 2 buttons sit at the top of your profile. Each mode (Pre-Release, Live, Gig, Evergreen) can have its own label and URL — fans always see the right one.</p>
 
                     <!-- Mode tabs -->
                     <div class="al-mode-tabs" id="heroModeTabs">
@@ -12951,7 +12976,16 @@
                         <span class="card-title">③ Action Links</span>
                         <span class="badge badge-success" id="activeCTABadge">0 Active</span>
                     </div>
-                    <p style="font-size:13px; color:var(--text-tertiary); margin-bottom:14px;">Extra pill buttons shown below your hero — Spotify, shop, socials, anything fans need quick access to. All modes, always visible.</p>
+                    <p style="font-size:13px; color:var(--text-tertiary); margin-bottom:8px;">Extra buttons shown below the hero CTAs on every page view. Add a URL to each one, toggle it on, and drag to reorder.</p>
+
+                    <!-- Search/filter — client-side only, does not affect saved data -->
+                    <div class="al-search-wrap" id="ctaSearchWrap" style="display:none;">
+                        <span class="al-search-icon">🔍</span>
+                        <input type="search" class="al-search-input" id="ctaSearchInput"
+                               placeholder="Filter by label…" autocomplete="off"
+                               oninput="filterCTAList(this.value)">
+                        <p id="ctaSearchNoResults" style="display:none;font-size:12px;color:var(--text-tertiary);margin:8px 0 0;text-align:center;">No links match that search.</p>
+                    </div>
 
                     <!-- Empty state -->
                     <div id="ctaEmptyState" style="text-align:center; padding:20px 16px 4px;">
@@ -15521,18 +15555,22 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
 
             const sorted = Object.entries(ctaState).sort((a, b) => a[1].order - b[1].order);
 
-            // Show/hide empty state + add button
+            // Show/hide empty state + add button + search
             const emptyState = document.getElementById('ctaEmptyState');
             const addBtn = document.getElementById('ctaAddBtn');
+            const searchWrap = document.getElementById('ctaSearchWrap');
+            const searchInput = document.getElementById('ctaSearchInput');
             if (emptyState) emptyState.style.display = sorted.length === 0 ? '' : 'none';
             if (addBtn) addBtn.style.display = sorted.length === 0 ? 'none' : '';
+            if (searchWrap) searchWrap.style.display = sorted.length === 0 ? 'none' : '';
+            if (searchInput) searchInput.value = ''; // reset filter on rebuild
 
             sorted.forEach(([ctaId, data]) => {
                 const hasUrl = !!(data.url && data.url.trim());
                 const pillClass = hasUrl ? '' : ' no-url-pill';
                 const urlLine = hasUrl
-                    ? `<span style="color:#22c55e;">●</span> <span>${escapeHtml(data.url)}</span>`
-                    : `<span style="color:#f59e0b;">●</span> <span style="color:var(--text-tertiary);">No URL yet — tap ✏️ to add</span>`;
+                    ? `<span class="al-url-ok"><span style="color:#22c55e;font-size:9px;line-height:1;">●</span>${escapeHtml(data.url)}</span>`
+                    : `<span class="al-url-missing">● URL missing</span>`;
 
                 const item = document.createElement('div');
                 item.className = 'list-item';
@@ -15541,14 +15579,14 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                 item.style.cssText = `opacity:${data.active ? '1' : '0.45'}; padding:12px 0; border-bottom:1px solid var(--border);`;
 
                 item.innerHTML = `
-                    <span class="drag-handle" style="font-size:18px;cursor:grab;color:var(--text-tertiary);user-select:none;padding:0 4px;">⠿</span>
+                    <span class="drag-handle">⠿</span>
                     <div style="flex:1;min-width:0;">
-                        <span class="ql-item-pill${pillClass}" style="opacity:${data.active ? '1' : '0.5'}">${escapeHtml(data.icon)} ${escapeHtml(data.text)}</span>
+                        <span class="ql-item-pill${pillClass}">${escapeHtml(data.icon)} ${escapeHtml(data.text)}</span>
                         <div class="ql-item-url-status">${urlLine}</div>
                     </div>
-                    <div class="list-item-actions" style="gap:4px;">
-                        <button class="icon-btn" onclick="openCTAEditor('${ctaId}')" title="Edit" style="font-size:15px;padding:6px 8px;">✏️</button>
-                        <div class="switch ${data.active ? 'active' : ''}" style="margin:0 4px;" onclick="event.stopPropagation(); toggleCTASwitch(this.closest('.list-item'), '${ctaId}')"></div>
+                    <div class="list-item-actions">
+                        <button class="icon-btn" onclick="openCTAEditor('${ctaId}')" title="Edit link">✏️</button>
+                        <div class="switch ${data.active ? 'active' : ''}" onclick="event.stopPropagation(); toggleCTASwitch(this.closest('.list-item'), '${ctaId}')"></div>
                     </div>
                 `;
 
@@ -15560,6 +15598,23 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             // Keep diagram pills in sync
             if (typeof updateDiagramButtons === 'function') updateDiagramButtons();
             } catch(e) { console.warn('[rebuildUIFromState]', e); }
+        }
+
+        // Filter Action Links list by label text (client-side only — does not touch saved data)
+        function filterCTAList(query) {
+            const q = (query || '').trim().toLowerCase();
+            const items = document.querySelectorAll('[data-content="ctas"] #ctaList .list-item');
+            let visibleCount = 0;
+            items.forEach(function(item) {
+                if (!q) { item.style.display = ''; visibleCount++; return; }
+                const pill = item.querySelector('.ql-item-pill');
+                const label = pill ? pill.textContent.toLowerCase() : '';
+                const show = label.includes(q);
+                item.style.display = show ? '' : 'none';
+                if (show) visibleCount++;
+            });
+            const noResults = document.getElementById('ctaSearchNoResults');
+            if (noResults) noResults.style.display = (q && visibleCount === 0) ? '' : 'none';
         }
 
         // Render the Mode Map grid (kept for compatibility but no longer called from rebuildUIFromState)
