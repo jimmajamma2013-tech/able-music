@@ -13190,9 +13190,9 @@
                     <p class="editor-subtitle">Manage your tour dates and shows</p>
                 </div>
 
-                <div class="auto-banner" style="background: linear-gradient(135deg, #F05537 0%, #FF6B6B 100%);">
-                    <div class="auto-banner-title">🎫 Import Your Tour</div>
-                    <div class="auto-banner-text">Connect Eventbrite or Bands in Town to automatically sync your tour dates and ticket sales</div>
+                <div class="auto-banner">
+                    <div class="auto-banner-title">🎫 Connect a platform</div>
+                    <div class="auto-banner-text">Link Eventbrite or Bands in Town to sync your tour dates automatically.</div>
                     <div class="auto-banner-actions">
                         <button class="auto-banner-btn" onclick="switchTab('platforms')">
                             Connect Eventbrite
@@ -13209,7 +13209,7 @@
                         <div class="empty-state-icon">🎫</div>
                         <div class="empty-state-title">No upcoming shows</div>
                         <div class="empty-state-text">
-                            Add your tour dates to keep fans updated and enable Gig Mode to automatically showcase shows when they're near
+                            Add tour dates and they'll appear in your profile's Events section.
                         </div>
                         <div class="empty-state-actions">
                             <button class="btn btn-primary" onclick="openAddEventModal()">
@@ -21590,8 +21590,8 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
                             <div style="font-weight:700;font-size:13px;">${e.name}</div>
                             <div style="font-size:11px;color:var(--text-tertiary);">${e.venue}${e.city ? ' · ' + e.city : ''}${e.time ? ' · ' + e.time : ''}</div>
                         </div>
-                        ${e.ticketUrl ? `<a href="${e.ticketUrl.replace(/"/g,'%22')}" target="_blank" style="font-size:11px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;">${ticketLabel} ↗</a>` : ''}
-                        <button onclick="deleteEvent(${e.id})" style="background:none;border:none;color:var(--text-tertiary);cursor:pointer;font-size:16px;padding:4px;flex-shrink:0;" title="Remove">✕</button>
+                        ${e.ticketUrl ? `<a href="${e.ticketUrl.replace(/"/g,'%22')}" target="_blank" class="al-url-ok" style="font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap;font-size:11px;">${ticketLabel} ↗</a>` : ''}
+                        <button onclick="deleteEvent(${e.id})" class="icon-btn delete" style="flex-shrink:0;" title="Remove">✕</button>
                     </div>`;
                 }).join('');
 
