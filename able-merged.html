@@ -5018,6 +5018,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: center;
         }
 
         .upload-placeholder {
@@ -7765,6 +7766,7 @@
             font-weight: 900;
             color: white;
             box-shadow: 0 4px 12px rgba(8, 145, 178, 0.25);
+            overflow: hidden;
         }
 
         .profile-preview .bio-content {
@@ -7924,6 +7926,20 @@
         .profile-preview .able-card:hover {
             transform: translateY(-1px);
             box-shadow: var(--elevation-3);
+        }
+
+        /* Featured Card — mode label chip above the card */
+        .profile-preview .featured-card-label {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: var(--accent-soft);
+            border-radius: var(--radius-full);
+            padding: 2px 8px;
+            margin-bottom: 8px;
         }
 
         /* In dark / contrast modes: lift card off dark background */
@@ -11919,9 +11935,10 @@
                 <div class="form-group">
                     <label class="form-label">
                         <span>Profile Image</span>
-                        <button class="card-action" onclick="document.getElementById('profileImageInput').click()">
-                            Upload Image
-                        </button>
+                        <span style="display:flex;gap:6px;align-items:center;">
+                            <button class="card-action" onclick="document.getElementById('profileImageInput').click()">Upload Image</button>
+                            <button class="card-action" id="removePhotoBtn" onclick="removeProfilePhoto()" style="display:none;">Remove photo</button>
+                        </span>
                     </label>
                     <input type="file" id="profileImageInput" accept="image/*" style="display: none;" onchange="handleProfileImageUpload(this)">
                     <div class="image-upload" id="profileImagePreview" onclick="document.getElementById('profileImageInput').click()" style="cursor: pointer;">
@@ -11929,6 +11946,7 @@
                         <div class="upload-label">Click to upload</div>
                         <div class="upload-hint">Recommended: 400x400px</div>
                     </div>
+                    <p class="form-hint" style="margin-top:6px;">Saved on this device only.</p>
                 </div>
 
                 <div class="form-group">
@@ -14168,7 +14186,10 @@
 
         <!-- Sections Container -->
         <div class="sections-container" id="sectionsContainer">
-            
+
+            <!-- Featured Card — mode-aware highlight; populated by renderFeaturedCard() -->
+            <div id="featuredCard" style="display:none;padding-top:20px;"></div>
+
             <!-- Streaming Section -->
             <section class="section" id="streaming">
                 <div class="section-header-row">
@@ -19134,6 +19155,51 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
             const preview = document.getElementById('profileImagePreview');
             preview.innerHTML = `<img src="${imageData}" alt="Profile" class="upload-preview">`;
             preview.classList.add('has-image');
+            const removeBtn = document.getElementById('removePhotoBtn');
+            if (removeBtn) removeBtn.style.display = '';
+        }
+
+        // Remove profile photo — clears admin preview, persists null, resets phone preview
+        function removeProfilePhoto() {
+            // Reset admin upload box to placeholder state
+            const preview = document.getElementById('profileImagePreview');
+            if (preview) {
+                preview.innerHTML = '<div class="upload-icon">📷</div><div class="upload-label">Click to upload</div><div class="upload-hint">Recommended: 400x400px</div>';
+                preview.classList.remove('has-image');
+            }
+            // Hide the Remove button
+            const removeBtn = document.getElementById('removePhotoBtn');
+            if (removeBtn) removeBtn.style.display = 'none';
+            // Reset file input so the same file can be re-uploaded if needed
+            const input = document.getElementById('profileImageInput');
+            if (input) input.value = '';
+            // Persist: write null profileImage to localStorage
+            try {
+                const raw = localStorage.getItem(PROFILE_KEY);
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    data.profileImage = null;
+                    localStorage.setItem(PROFILE_KEY, JSON.stringify(data));
+                }
+            } catch(e) {}
+            // Immediately reset phone preview avatar to initials
+            try {
+                const profileRoot = document.getElementById('profilePreviewRoot');
+                if (profileRoot) {
+                    const avatarEl = profileRoot.querySelector('.bio-avatar');
+                    if (avatarEl) {
+                        const pRaw = localStorage.getItem(PROFILE_KEY);
+                        const pData = pRaw ? JSON.parse(pRaw) : null;
+                        const name = (pData && pData.artistName) ? pData.artistName : '';
+                        const initials = name
+                            ? name.split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2)
+                            : 'MR';
+                        avatarEl.innerHTML = '';
+                        avatarEl.textContent = initials;
+                    }
+                }
+            } catch(e) {}
+            showToast('Photo removed');
         }
         
         // Save profile
@@ -23090,6 +23156,8 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
 
             // Refresh section action buttons whenever mode changes
             if (typeof updateSectionActionBtns === 'function') updateSectionActionBtns();
+            // Refresh featured card to match new mode
+            if (typeof renderFeaturedCard === 'function') renderFeaturedCard();
         }
 
         // ── Scroll Animation Observer ─────────────────────────
@@ -23498,6 +23566,9 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
 
             // Wire up any lazy embeds that may have been rendered into the preview
             initLazyEmbeds(profileRoot);
+
+            // Refresh featured card (runs after all data sources are fresh)
+            if (typeof renderFeaturedCard === 'function') renderFeaturedCard();
         }
 
         // 1b. Credits Bridge — aggregate collaborators across all releases
@@ -23595,6 +23666,103 @@ https://ko-fi.com/yourname" style="width:100%;box-sizing:border-box;padding:12px
         function _toggleCreditsExpand() {
             _creditsExpanded = !_creditsExpanded;
             safeRender(renderProfileCredits);
+        }
+
+        // 3. Featured Card Bridge — mode-aware highlight above sections
+        // Debug: set window._ableFeaturedDebug = true in console to log decisions.
+        function renderFeaturedCard() {
+            var featuredEl = document.getElementById('featuredCard');
+            if (!featuredEl) return;
+
+            // Read current preview mode from block-3 global
+            var mode = (typeof currentPreviewMode !== 'undefined') ? currentPreviewMode : 'live';
+
+            // Build dedupe set: hero URLs + active quick-action URLs
+            var _heroU  = (typeof _getHeroUrlSet === 'function') ? _getHeroUrlSet() : new Set();
+            var _quickU = new Set(
+                Object.values(typeof ctaState !== 'undefined' ? ctaState : {})
+                    .filter(function(d) { return d.active && d.url && d.url.trim(); })
+                    .map(function(d) { return (typeof _normUrl === 'function') ? _normUrl(d.url) : d.url; })
+            );
+            var _dedupeSet = new Set([..._heroU, ..._quickU]);
+            _dedupeSet.delete('');
+
+            function _isDuped(url) {
+                if (!url) return false;
+                var n = (typeof _normUrl === 'function') ? _normUrl(url) : url.trim();
+                return _dedupeSet.has(n);
+            }
+
+            var html = '';
+
+            if (mode === 'gig') {
+                // Featured = next upcoming event
+                try {
+                    var events = JSON.parse(localStorage.getItem('able_events') || '[]');
+                    var today = new Date(); today.setHours(0, 0, 0, 0);
+                    var upcoming = events
+                        .filter(function(e) { return e.date && new Date(e.date) >= today; })
+                        .sort(function(a, b) { return new Date(a.date) - new Date(b.date); });
+                    var ev = upcoming[0];
+                    if (ev) {
+                        var _d     = new Date(ev.date);
+                        var _mon   = _d.toLocaleString('default', { month: 'short' }).toUpperCase();
+                        var _day   = _d.getDate();
+                        var _venue = ev.venue ? escapeHtml(ev.venue) : '';
+                        var _city  = ev.city  ? ' · ' + escapeHtml(ev.city) : '';
+                        var _ticket = '';
+                        if (ev.ticketUrl && !_isDuped(ev.ticketUrl)) {
+                            var _tLabel = ev.providerTitle || 'Tickets';
+                            _ticket = '<a href="' + ev.ticketUrl.replace(/"/g, '%22') + '" target="_blank"'
+                                + ' class="bento-cta-pill" style="margin-top:0;flex-shrink:0;">'
+                                + escapeHtml(_tLabel) + ' ↗</a>';
+                        }
+                        html = '<span class="featured-card-label">Next Show</span>'
+                            + '<div class="able-card" style="padding:14px;">'
+                            + '<div style="display:flex;align-items:center;gap:12px;">'
+                            + '<div style="text-align:center;min-width:44px;background:var(--accent-soft);border-radius:8px;padding:8px 4px;flex-shrink:0;">'
+                            + '<div style="font-size:9px;font-weight:800;color:var(--accent);">' + _mon + '</div>'
+                            + '<div style="font-size:20px;font-weight:900;line-height:1;">' + _day + '</div>'
+                            + '</div>'
+                            + '<div style="flex:1;min-width:0;">'
+                            + '<div style="font-size:14px;font-weight:800;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">' + escapeHtml(ev.name) + '</div>'
+                            + '<div style="font-size:12px;color:var(--text-tertiary);margin-top:2px;">' + _venue + _city + '</div>'
+                            + '</div>'
+                            + _ticket
+                            + '</div></div>';
+                        if (window._ableFeaturedDebug) console.log('FEATURED: gig → "' + ev.name + '" ' + ev.date
+                            + (ev.ticketUrl && _isDuped(ev.ticketUrl) ? ' [ticket deduped]' : ''));
+                    }
+                } catch(e) { html = ''; }
+
+            } else {
+                // live / pre-release / evergreen → newest music release
+                try {
+                    var releases = JSON.parse(localStorage.getItem('able_music_releases') || '{"releases":[]}').releases || [];
+                    var rel = releases[0];
+                    if (rel) {
+                        var _label   = (mode === 'pre-release') ? 'Coming Soon' : 'Featured Release';
+                        var _eligible = typeof _isEmbedEligible === 'function' && _isEmbedEligible(rel);
+                        var _cardHtml = _eligible && typeof _buildEmbedCard === 'function'
+                            ? _buildEmbedCard(rel)
+                            : (typeof _buildTracklistCard === 'function' ? _buildTracklistCard(rel) : '');
+                        if (_cardHtml) {
+                            html = '<span class="featured-card-label">' + _label + '</span>' + _cardHtml;
+                            if (window._ableFeaturedDebug) console.log('FEATURED: ' + mode + ' → "' + rel.title + '" ('
+                                + (_eligible ? 'embed' : 'tracklist') + ')');
+                        }
+                    }
+                } catch(e) { html = ''; }
+            }
+
+            if (html) {
+                featuredEl.innerHTML = html;
+                featuredEl.style.display = '';
+                if (typeof initLazyEmbeds === 'function') initLazyEmbeds(featuredEl);
+            } else {
+                featuredEl.innerHTML = '';
+                featuredEl.style.display = 'none';
+            }
         }
 
         // 2. Videos Bridge
