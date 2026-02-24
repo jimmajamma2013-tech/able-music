@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create your page — Able</title>
+  <meta name="description" content="Set up your Able artist page in five minutes. Free." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="shared/style.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--page); color: var(--ink); min-height: 100vh; }
+
+    /* ── Shell layout ─────────────────────────────────────── */
+    .ob-shell {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+
+    /* ── Top bar ──────────────────────────────────────────── */
+    .ob-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--surface2);
+    }
+    .ob-brand {
+      font-size: 1rem; font-weight: 800; letter-spacing: -0.02em;
+      text-decoration: none; color: var(--ink);
+    }
+    .ob-step-count {
+      font-size: 0.78rem; color: var(--ink3);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── Progress bar ─────────────────────────────────────── */
+    .ob-progress-track {
+      height: 3px; background: var(--surface2);
+    }
+    .ob-progress-fill {
+      height: 100%; background: var(--accent);
+      transition: width 0.4s var(--ease);
+    }
+
+    /* ── Main content area ────────────────────────────────── */
+    .ob-main {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding: 40px 20px 100px;
+    }
+    .ob-step {
+      display: none; /* JS shows active step */
+      width: 100%; max-width: 440px;
+      animation: stepIn 0.22s var(--ease) both;
+    }
+    .ob-step.active { display: block; }
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .ob-step-eyebrow {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+    }
+    .ob-step-title {
+      font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em;
+      line-height: 1.15; margin-bottom: 8px; color: var(--ink);
+    }
+    .ob-step-sub {
+      font-size: 0.9rem; color: var(--ink2); line-height: 1.5;
+      margin-bottom: 28px;
+    }
+
+    /* ── Form fields ──────────────────────────────────────── */
+    .ob-field { margin-bottom: 16px; }
+    .ob-label {
+      display: block; font-size: 0.82rem; font-weight: 600;
+      color: var(--ink2); margin-bottom: 6px;
+    }
+    .ob-input {
+      width: 100%; padding: 12px 14px;
+      background: var(--surface); border: 1.5px solid var(--surface2);
+      border-radius: var(--r); font-size: 0.95rem; color: var(--ink);
+      font-family: var(--font);
+      transition: border-color var(--t), box-shadow var(--t);
+      outline: none;
+    }
+    .ob-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .ob-input::placeholder { color: var(--ink3); }
+    .ob-handle-prefix {
+      display: flex; align-items: center;
+      background: var(--surface); border: 1.5px solid var(--surface2);
+      border-radius: var(--r); overflow: hidden;
+      transition: border-color var(--t), box-shadow var(--t);
+    }
+    .ob-handle-prefix:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .ob-handle-at {
+      padding: 12px 4px 12px 14px; font-size: 0.95rem;
+      color: var(--ink3); font-weight: 500; white-space: nowrap;
+    }
+    .ob-handle-input {
+      flex: 1; padding: 12px 14px 12px 2px;
+      background: transparent; border: none; outline: none;
+      font-size: 0.95rem; color: var(--ink); font-family: var(--font);
+    }
+    .ob-hint {
+      font-size: 0.75rem; color: var(--ink3); margin-top: 5px;
+    }
+
+    /* ── Mode picker ──────────────────────────────────────── */
+    .ob-mode-grid { display: flex; flex-direction: column; gap: 10px; }
+    .ob-mode-option { display: none; }
+    .ob-mode-label {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; border-radius: var(--r);
+      background: var(--surface); border: 1.5px solid var(--surface2);
+      cursor: pointer; transition: border-color var(--t), background var(--t);
+      user-select: none;
+    }
+    .ob-mode-option:checked + .ob-mode-label {
+      border-color: var(--accent); background: var(--accent-soft);
+    }
+    .ob-mode-dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .ob-mode-text {}
+    .ob-mode-name { font-size: 0.9rem; font-weight: 700; }
+    .ob-mode-desc { font-size: 0.78rem; color: var(--ink2); margin-top: 1px; }
+
+    /* ── Vibe / theme quiz ────────────────────────────────── */
+    .ob-quiz-q { margin-bottom: 20px; }
+    .ob-quiz-q-label {
+      font-size: 0.85rem; font-weight: 600; color: var(--ink2); margin-bottom: 8px;
+    }
+    .ob-quiz-options { display: flex; flex-wrap: wrap; gap: 8px; }
+    .ob-quiz-option { display: none; }
+    .ob-quiz-chip {
+      padding: 7px 14px; border-radius: var(--r-full);
+      background: var(--surface); border: 1.5px solid var(--surface2);
+      font-size: 0.82rem; font-weight: 500; cursor: pointer;
+      transition: border-color var(--t), background var(--t), color var(--t);
+      user-select: none;
+    }
+    .ob-quiz-option:checked + .ob-quiz-chip {
+      background: var(--accent); border-color: var(--accent); color: #fff;
+    }
+
+    /* ── Platform rows ────────────────────────────────────── */
+    .ob-platform-list { display: flex; flex-direction: column; gap: 10px; }
+    .ob-platform-row {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .ob-platform-icon {
+      width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 1rem;
+    }
+    .ob-platform-icon.spotify    { background: #1DB954; }
+    .ob-platform-icon.apple      { background: #fc3c44; }
+    .ob-platform-icon.soundcloud { background: #ff5500; }
+    .ob-platform-icon.youtube    { background: #FF0000; }
+    .ob-platform-icon.bandcamp   { background: #1DA0C3; }
+    .ob-platform-input {
+      flex: 1; padding: 10px 12px;
+      background: var(--surface); border: 1.5px solid var(--surface2);
+      border-radius: var(--r); font-size: 0.85rem; color: var(--ink);
+      font-family: var(--font); outline: none;
+      transition: border-color var(--t), box-shadow var(--t);
+    }
+    .ob-platform-input:focus {
+      border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .ob-platform-input::placeholder { color: var(--ink3); font-size: 0.78rem; }
+
+    /* ── Social rows ──────────────────────────────────────── */
+    .ob-social-list { display: flex; flex-direction: column; gap: 10px; }
+    .ob-social-row {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .ob-social-icon {
+      width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center; font-size: 1rem;
+    }
+
+    /* ── PIN input ────────────────────────────────────────── */
+    .ob-pin-wrap {
+      display: flex; gap: 10px; justify-content: center;
+      margin: 20px 0;
+    }
+    .ob-pin-digit {
+      width: 52px; height: 64px;
+      background: var(--surface); border: 1.5px solid var(--surface2);
+      border-radius: var(--r); font-size: 1.8rem; font-weight: 700;
+      text-align: center; outline: none; font-family: var(--font);
+      color: var(--ink); letter-spacing: -0.02em;
+      transition: border-color var(--t), box-shadow var(--t);
+    }
+    .ob-pin-digit:focus {
+      border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    /* ── Success screen ───────────────────────────────────── */
+    #step-done {
+      text-align: center;
+    }
+    .ob-done-icon {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; margin: 0 auto 20px;
+    }
+
+    /* ── Bottom nav ───────────────────────────────────────── */
+    .ob-bottom {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      padding: 14px 20px 24px;
+      background: var(--page);
+      border-top: 1px solid var(--surface2);
+      display: flex; gap: 10px; align-items: center;
+      max-width: 480px; margin: 0 auto;
+    }
+    .ob-back-btn {
+      width: 44px; height: 44px; border-radius: var(--r-full);
+      background: var(--surface2); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; color: var(--ink2); flex-shrink: 0;
+      transition: background var(--t);
+    }
+    .ob-back-btn:hover { background: var(--surface2); color: var(--ink); }
+    .ob-back-btn:disabled { opacity: 0.3; cursor: default; }
+    .ob-next-btn {
+      flex: 1; padding: 13px 20px;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: var(--r-full);
+      font-size: 0.95rem; font-weight: 700; cursor: pointer;
+      font-family: var(--font);
+      transition: background var(--t), opacity var(--t), transform var(--t);
+    }
+    .ob-next-btn:hover  { background: var(--accent-dark); transform: translateY(-1px); }
+    .ob-next-btn:active { transform: scale(0.98); }
+
+    /* ── Skip link ────────────────────────────────────────── */
+    .ob-skip {
+      text-align: center; margin-top: 12px;
+    }
+    .ob-skip a {
+      font-size: 0.78rem; color: var(--ink3); text-decoration: none;
+    }
+    .ob-skip a:hover { color: var(--ink2); }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --page: #0f0f11; --surface: #1a1a1f; --surface2: #242429;
+        --ink: #f0efee; --ink2: #9a9490; --ink3: #5a5550;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="ob-shell">
+
+    <!-- Top bar -->
+    <div class="ob-topbar">
+      <a href="index.html" class="ob-brand">Able</a>
+      <span class="ob-step-count" id="ob-step-count">Step 1 of 5</span>
+    </div>
+
+    <!-- Progress -->
+    <div class="ob-progress-track">
+      <div class="ob-progress-fill" id="ob-progress" style="width:20%"></div>
+    </div>
+
+    <!-- Steps -->
+    <div class="ob-main">
+
+      <!-- ── STEP 1: Who are you ────────────────────────────── -->
+      <div class="ob-step active" id="step-1">
+        <p class="ob-step-eyebrow">Step 1 of 5</p>
+        <h1 class="ob-step-title">Who are you?</h1>
+        <p class="ob-step-sub">This is what fans see first.</p>
+
+        <div class="ob-field">
+          <label class="ob-label" for="ob-name">Artist name</label>
+          <input class="ob-input" id="ob-name" type="text" placeholder="e.g. Maya Rivers" autocomplete="off" />
+        </div>
+
+        <div class="ob-field">
+          <label class="ob-label" for="ob-handle-input">Your handle</label>
+          <div class="ob-handle-prefix" id="ob-handle-wrap">
+            <span class="ob-handle-at">able.music/</span>
+            <input class="ob-handle-input" id="ob-handle-input" type="text" placeholder="yourname" autocomplete="off" />
+          </div>
+          <p class="ob-hint" id="ob-handle-hint">Your permanent link — choose carefully.</p>
+        </div>
+
+        <div class="ob-field">
+          <label class="ob-label" for="ob-location">Location <span style="font-weight:400;color:var(--ink3)">(optional)</span></label>
+          <input class="ob-input" id="ob-location" type="text" placeholder="e.g. London, UK" autocomplete="off" />
+        </div>
+
+        <div class="ob-field">
+          <label class="ob-label" for="ob-genres">Genres <span style="font-weight:400;color:var(--ink3)">(optional, comma-separated)</span></label>
+          <input class="ob-input" id="ob-genres" type="text" placeholder="e.g. Soul, Electronic, R&B" autocomplete="off" />
+        </div>
+      </div>
+
+      <!-- ── STEP 2: What's happening now ──────────────────── -->
+      <div class="ob-step" id="step-2">
+        <p class="ob-step-eyebrow">Step 2 of 5</p>
+        <h1 class="ob-step-title">What's happening right now?</h1>
+        <p class="ob-step-sub">Pick the moment. Your page will match.</p>
+
+        <div class="ob-mode-grid">
+          <input type="radio" name="ob-mode" id="mode-live"       class="ob-mode-option" value="live" checked />
+          <label class="ob-mode-label" for="mode-live">
+            <span class="ob-mode-dot" style="background:#0891b2"></span>
+            <span class="ob-mode-text">
+              <div class="ob-mode-name">New release out</div>
+              <div class="ob-mode-desc">Music is out now — push people to listen.</div>
+            </span>
+          </label>
+
+          <input type="radio" name="ob-mode" id="mode-prerelease" class="ob-mode-option" value="pre-release" />
+          <label class="ob-mode-label" for="mode-prerelease">
+            <span class="ob-mode-dot" style="background:#7c3aed"></span>
+            <span class="ob-mode-text">
+              <div class="ob-mode-name">Something's coming</div>
+              <div class="ob-mode-desc">Pre-save + Inner Circle sign-up front and centre.</div>
+            </span>
+          </label>
+
+          <input type="radio" name="ob-mode" id="mode-gig"        class="ob-mode-option" value="gig" />
+          <label class="ob-mode-label" for="mode-gig">
+            <span class="ob-mode-dot" style="background:#dc2626"></span>
+            <span class="ob-mode-text">
+              <div class="ob-mode-name">On tour</div>
+              <div class="ob-mode-desc">Tickets button leads. Shows section rises.</div>
+            </span>
+          </label>
+
+          <input type="radio" name="ob-mode" id="mode-evergreen"  class="ob-mode-option" value="evergreen" />
+          <label class="ob-mode-label" for="mode-evergreen">
+            <span class="ob-mode-dot" style="background:#16a34a"></span>
+            <span class="ob-mode-text">
+              <div class="ob-mode-name">Just the music</div>
+              <div class="ob-mode-desc">No push — clean streaming links, catalogue speaks.</div>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ── STEP 3: Your vibe ──────────────────────────────── -->
+      <div class="ob-step" id="step-3">
+        <p class="ob-step-eyebrow">Step 3 of 5</p>
+        <h1 class="ob-step-title">What's your vibe?</h1>
+        <p class="ob-step-sub">Three questions. We'll pick the right theme.</p>
+
+        <div class="ob-quiz-q">
+          <div class="ob-quiz-q-label">Your main genre is closest to…</div>
+          <div class="ob-quiz-options">
+            <input type="radio" name="q-genre" id="q-g1" class="ob-quiz-option" value="electronic" />
+            <label class="ob-quiz-chip" for="q-g1">Electronic / Dance</label>
+            <input type="radio" name="q-genre" id="q-g2" class="ob-quiz-option" value="hiphop" />
+            <label class="ob-quiz-chip" for="q-g2">Hip-Hop / Rap</label>
+            <input type="radio" name="q-genre" id="q-g3" class="ob-quiz-option" value="soul" />
+            <label class="ob-quiz-chip" for="q-g3">Soul / R&B</label>
+            <input type="radio" name="q-genre" id="q-g4" class="ob-quiz-option" value="indie" />
+            <label class="ob-quiz-chip" for="q-g4">Indie / Alt</label>
+            <input type="radio" name="q-genre" id="q-g5" class="ob-quiz-option" value="pop" />
+            <label class="ob-quiz-chip" for="q-g5">Pop</label>
+            <input type="radio" name="q-genre" id="q-g6" class="ob-quiz-option" value="other" />
+            <label class="ob-quiz-chip" for="q-g6">Other</label>
+          </div>
+        </div>
+
+        <div class="ob-quiz-q">
+          <div class="ob-quiz-q-label">Your sound feels…</div>
+          <div class="ob-quiz-options">
+            <input type="radio" name="q-feel" id="q-f1" class="ob-quiz-option" value="warm" />
+            <label class="ob-quiz-chip" for="q-f1">Warm &amp; organic</label>
+            <input type="radio" name="q-feel" id="q-f2" class="ob-quiz-option" value="dark" />
+            <label class="ob-quiz-chip" for="q-f2">Dark &amp; moody</label>
+            <input type="radio" name="q-feel" id="q-f3" class="ob-quiz-option" value="clean" />
+            <label class="ob-quiz-chip" for="q-f3">Clean &amp; minimal</label>
+            <input type="radio" name="q-feel" id="q-f4" class="ob-quiz-option" value="bold" />
+            <label class="ob-quiz-chip" for="q-f4">Bold &amp; loud</label>
+          </div>
+        </div>
+
+        <div class="ob-quiz-q">
+          <div class="ob-quiz-q-label">Your visual identity is…</div>
+          <div class="ob-quiz-options">
+            <input type="radio" name="q-vibe" id="q-v1" class="ob-quiz-option" value="light" />
+            <label class="ob-quiz-chip" for="q-v1">Light &amp; airy</label>
+            <input type="radio" name="q-vibe" id="q-v2" class="ob-quiz-option" value="dark" />
+            <label class="ob-quiz-chip" for="q-v2">Dark &amp; dramatic</label>
+            <input type="radio" name="q-vibe" id="q-v3" class="ob-quiz-option" value="colourful" />
+            <label class="ob-quiz-chip" for="q-v3">Colourful &amp; expressive</label>
+          </div>
+        </div>
+
+        <div id="theme-preview-wrap" style="display:none;margin-top:16px;">
+          <div style="font-size:0.78rem;color:var(--ink3);margin-bottom:6px;">Suggested theme:</div>
+          <div id="theme-preview" style="height:40px;border-radius:var(--r);transition:background 0.3s;"></div>
+          <div id="theme-name" style="font-size:0.8rem;font-weight:600;margin-top:5px;color:var(--accent);"></div>
+        </div>
+      </div>
+
+      <!-- ── STEP 4: Platforms + Social ────────────────────── -->
+      <div class="ob-step" id="step-4">
+        <p class="ob-step-eyebrow">Step 4 of 5</p>
+        <h1 class="ob-step-title">Where can fans find you?</h1>
+        <p class="ob-step-sub">Paste any links you have. Skip the ones you don't use.</p>
+
+        <div style="margin-bottom:20px;">
+          <div class="ob-label" style="margin-bottom:10px;">Music platforms</div>
+          <div class="ob-platform-list">
+            <div class="ob-platform-row">
+              <div class="ob-platform-icon spotify">🎵</div>
+              <input class="ob-platform-input" id="plat-spotify" type="url" placeholder="Spotify artist URL" />
+            </div>
+            <div class="ob-platform-row">
+              <div class="ob-platform-icon apple">🎵</div>
+              <input class="ob-platform-input" id="plat-apple" type="url" placeholder="Apple Music URL" />
+            </div>
+            <div class="ob-platform-row">
+              <div class="ob-platform-icon soundcloud">☁️</div>
+              <input class="ob-platform-input" id="plat-soundcloud" type="url" placeholder="SoundCloud URL" />
+            </div>
+            <div class="ob-platform-row">
+              <div class="ob-platform-icon bandcamp">🎸</div>
+              <input class="ob-platform-input" id="plat-bandcamp" type="url" placeholder="Bandcamp URL" />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="ob-label" style="margin-bottom:10px;">Social <span style="font-weight:400;color:var(--ink3)">(optional)</span></div>
+          <div class="ob-social-list">
+            <div class="ob-social-row">
+              <div class="ob-social-icon">📸</div>
+              <input class="ob-platform-input" id="soc-instagram" type="url" placeholder="Instagram URL" />
+            </div>
+            <div class="ob-social-row">
+              <div class="ob-social-icon">🎵</div>
+              <input class="ob-platform-input" id="soc-tiktok" type="url" placeholder="TikTok URL" />
+            </div>
+            <div class="ob-social-row">
+              <div class="ob-social-icon">🐦</div>
+              <input class="ob-platform-input" id="soc-twitter" type="url" placeholder="X / Twitter URL" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 5: PIN ────────────────────────────────────── -->
+      <div class="ob-step" id="step-5">
+        <p class="ob-step-eyebrow">Step 5 of 5</p>
+        <h1 class="ob-step-title">Set a PIN.</h1>
+        <p class="ob-step-sub">
+          4 digits to unlock edit mode on your page.
+          Fans can't see it. Just you.
+        </p>
+
+        <div class="ob-pin-wrap">
+          <input class="ob-pin-digit" id="pin-0" type="password" inputmode="numeric" maxlength="1" pattern="[0-9]" />
+          <input class="ob-pin-digit" id="pin-1" type="password" inputmode="numeric" maxlength="1" pattern="[0-9]" />
+          <input class="ob-pin-digit" id="pin-2" type="password" inputmode="numeric" maxlength="1" pattern="[0-9]" />
+          <input class="ob-pin-digit" id="pin-3" type="password" inputmode="numeric" maxlength="1" pattern="[0-9]" />
+        </div>
+        <p class="ob-hint" style="text-align:center">Pick something you'll remember. You can change it later in settings.</p>
+      </div>
+
+      <!-- ── DONE ───────────────────────────────────────────── -->
+      <div class="ob-step" id="step-done">
+        <div class="ob-done-icon">✓</div>
+        <h1 class="ob-step-title">Your page is ready.</h1>
+        <p class="ob-step-sub">
+          You can edit everything inline — tap the settings icon on your page, enter your PIN, and make it yours.
+        </p>
+        <a href="able-v2.html" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;">
+          View my page →
+        </a>
+        <div style="text-align:center;margin-top:12px;">
+          <a href="able-v2.html" style="font-size:0.78rem;color:var(--ink3);text-decoration:none">
+            Or open edit mode straight away
+          </a>
+        </div>
+      </div>
+
+    </div><!-- /ob-main -->
+
+    <!-- Bottom nav (hidden on done screen) -->
+    <div class="ob-bottom" id="ob-bottom">
+      <button class="ob-back-btn" id="ob-back" disabled aria-label="Go back">←</button>
+      <button class="ob-next-btn" id="ob-next">Continue →</button>
+    </div>
+
+  </div><!-- /ob-shell -->
+
+  <div id="able-toast" role="status" aria-live="polite"></div>
+
+  <script src="shared/able.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    /* ────────────────────────────────────────────────────────
+       State
+    ──────────────────────────────────────────────────────── */
+    var TOTAL_STEPS = 5;
+    var current     = 1;
+    var quizAnswers = {};
+
+    /* ────────────────────────────────────────────────────────
+       DOM refs
+    ──────────────────────────────────────────────────────── */
+    var nextBtn    = document.getElementById('ob-next');
+    var backBtn    = document.getElementById('ob-back');
+    var progressEl = document.getElementById('ob-progress');
+    var stepCount  = document.getElementById('ob-step-count');
+    var bottomBar  = document.getElementById('ob-bottom');
+
+    /* ────────────────────────────────────────────────────────
+       Navigation
+    ──────────────────────────────────────────────────────── */
+    function showStep (n) {
+      document.querySelectorAll('.ob-step').forEach(function (el) {
+        el.classList.remove('active');
+      });
+      var el = document.getElementById('step-' + n);
+      if (el) el.classList.add('active');
+
+      var pct = Math.round((n / TOTAL_STEPS) * 100);
+      progressEl.style.width = pct + '%';
+      stepCount.textContent  = 'Step ' + n + ' of ' + TOTAL_STEPS;
+      backBtn.disabled = (n === 1);
+      nextBtn.textContent = (n === TOTAL_STEPS) ? 'Finish →' : 'Continue →';
+
+      if (n === 'done') {
+        progressEl.style.width = '100%';
+        stepCount.textContent  = 'Done!';
+        bottomBar.style.display = 'none';
+        document.getElementById('step-done').classList.add('active');
+      }
+    }
+
+    nextBtn.addEventListener('click', function () {
+      if (!validateStep(current)) return;
+      if (current < TOTAL_STEPS) {
+        current++;
+        showStep(current);
+      } else {
+        /* Step 5 — save everything */
+        saveAll();
+      }
+    });
+
+    backBtn.addEventListener('click', function () {
+      if (current > 1) { current--; showStep(current); }
+    });
+
+    /* ────────────────────────────────────────────────────────
+       Validation per step
+    ──────────────────────────────────────────────────────── */
+    function validateStep (n) {
+      if (n === 1) {
+        var name = document.getElementById('ob-name').value.trim();
+        if (!name) { notify('Please enter your artist name'); return false; }
+        return true;
+      }
+      if (n === 5) {
+        var pin = getPIN();
+        if (pin.length !== 4) { notify('Please enter a 4-digit PIN'); return false; }
+        return true;
+      }
+      return true;
+    }
+
+    /* ────────────────────────────────────────────────────────
+       Handle auto-fill from name
+    ──────────────────────────────────────────────────────── */
+    document.getElementById('ob-name').addEventListener('input', function () {
+      var handle = nameToHandle(this.value);
+      document.getElementById('ob-handle-input').value = handle;
+    });
+
+    document.getElementById('ob-handle-input').addEventListener('input', function () {
+      /* sanitise: lowercase, no spaces */
+      this.value = this.value.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+    });
+
+    /* ────────────────────────────────────────────────────────
+       Quiz → theme preview
+    ──────────────────────────────────────────────────────── */
+    var THEME_GRADIENTS = {
+      warm:     'linear-gradient(135deg, #f6f5f2, #e8e4de)',
+      dark:     'linear-gradient(135deg, #1a1a1f, #7c3aed)',
+      minimal:  'linear-gradient(135deg, #f8f8f7, #374151)',
+      bold:     'linear-gradient(135deg, #fff8ee, #ea580c)',
+      night:    'linear-gradient(135deg, #0a0a12, #e11d48)',
+      electric: 'linear-gradient(135deg, #0d0d1a, #22c55e)'
+    };
+
+    function updateThemePreview () {
+      var genre = getRadioVal('q-genre');
+      var feel  = getRadioVal('q-feel');
+      var vibe  = getRadioVal('q-vibe');
+
+      quizAnswers = { genre: genre, feel: feel, vibe: vibe };
+
+      if (!genre && !feel && !vibe) {
+        document.getElementById('theme-preview-wrap').style.display = 'none';
+        return;
+      }
+
+      var theme = quizToTheme(quizAnswers);
+      document.getElementById('theme-preview-wrap').style.display = 'block';
+      document.getElementById('theme-preview').style.background = THEME_GRADIENTS[theme] || THEME_GRADIENTS.warm;
+      document.getElementById('theme-name').textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+    }
+
+    document.querySelectorAll('[name^="q-"]').forEach(function (el) {
+      el.addEventListener('change', updateThemePreview);
+    });
+
+    function getRadioVal (name) {
+      var el = document.querySelector('[name="' + name + '"]:checked');
+      return el ? el.value : '';
+    }
+
+    /* ────────────────────────────────────────────────────────
+       PIN digits — auto-advance
+    ──────────────────────────────────────────────────────── */
+    [0, 1, 2, 3].forEach(function (i) {
+      var el = document.getElementById('pin-' + i);
+      el.addEventListener('input', function () {
+        this.value = this.value.replace(/\D/g, '').slice(-1);
+        if (this.value && i < 3) {
+          document.getElementById('pin-' + (i + 1)).focus();
+        }
+      });
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Backspace' && !this.value && i > 0) {
+          document.getElementById('pin-' + (i - 1)).focus();
+        }
+      });
+    });
+
+    function getPIN () {
+      return [0,1,2,3].map(function(i){ return document.getElementById('pin-'+i).value; }).join('');
+    }
+
+    /* ────────────────────────────────────────────────────────
+       Save everything to localStorage
+    ──────────────────────────────────────────────────────── */
+    function saveAll () {
+      var d = ableGet();
+
+      /* Step 1 */
+      d.artist.name     = document.getElementById('ob-name').value.trim();
+      d.artist.handle   = document.getElementById('ob-handle-input').value.trim() || nameToHandle(d.artist.name);
+      d.artist.location = document.getElementById('ob-location').value.trim();
+      var genreRaw      = document.getElementById('ob-genres').value.trim();
+      d.artist.genres   = genreRaw ? genreRaw.split(',').map(function(g){return g.trim();}).filter(Boolean) : [];
+
+      /* Step 2 — mode */
+      var modeEl = document.querySelector('[name="ob-mode"]:checked');
+      d.currentMode = modeEl ? modeEl.value : 'live';
+
+      /* Step 3 — theme */
+      var theme = quizToTheme(quizAnswers);
+      d.appearance.theme = theme || 'warm';
+
+      /* Step 4 — platforms */
+      d.platforms.spotify    = document.getElementById('plat-spotify').value.trim();
+      d.platforms.apple      = document.getElementById('plat-apple').value.trim();
+      d.platforms.soundcloud = document.getElementById('plat-soundcloud').value.trim();
+      d.platforms.bandcamp   = document.getElementById('plat-bandcamp').value.trim();
+
+      /* Determine primary platform */
+      var order = ['spotify', 'apple', 'soundcloud', 'bandcamp'];
+      for (var i = 0; i < order.length; i++) {
+        if (d.platforms[order[i]]) { d.platforms.primary = order[i]; break; }
+      }
+
+      /* Step 4 — social */
+      d.social.instagram = document.getElementById('soc-instagram').value.trim();
+      d.social.tiktok    = document.getElementById('soc-tiktok').value.trim();
+      d.social.twitter   = document.getElementById('soc-twitter').value.trim();
+
+      /* Step 5 — PIN */
+      d.settings.editPin = getPIN();
+
+      /* Inner circle on by default */
+      d.innerCircle.enabled = true;
+      d.innerCircle.title   = 'Join the Inner Circle';
+      d.innerCircle.desc    = 'First access to new music and shows. Direct from ' + d.artist.name + '.';
+      d.innerCircle.perks   = ['Early access to new music', 'Show presales', 'Exclusive updates'];
+
+      ableSave(d);
+      notify('Page saved!');
+
+      /* Show done screen */
+      showStep('done');
+    }
+
+    /* ────────────────────────────────────────────────────────
+       Init
+    ──────────────────────────────────────────────────────── */
+    showStep(1);
+
+  }());
+  </script>
+</body>
+</html>
