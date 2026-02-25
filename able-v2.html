@@ -1,1388 +1,1711 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Able</title>
-  <meta name="description" content="Your page. Right artist. Right moment." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Maya Rivers · Able</title>
   <style>
-    /* ═══════════════════════════════════════════════════════
-       DESIGN TOKENS — matches able-merged.html exactly
-    ═══════════════════════════════════════════════════════ */
+    /* ── Reset ── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html, body { height:100%; }
+    button, a { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+
+    /* ── CSS Custom Properties ── */
     :root {
-      --bg-primary:   #f7f7f6;
-      --bg-secondary: #ffffff;
-      --bg-tertiary:  #fafaf9;
-      --text-primary:   #0a0a0a;
-      --text-secondary: #525252;
-      --text-tertiary:  #737373;
-      --accent:       #0891b2;
-      --accent-hover: #0e7490;
-      --accent-soft:  #ecfeff;
-      --accent-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
-      --border:       #e7e5e4;
-      --success:      #10b981;
-      --error:        #ef4444;
-      --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
-      --ease-smooth:  cubic-bezier(0.4, 0, 0.2, 1);
-      --shadow-sm:  0 1px 2px rgba(0,0,0,0.04);
-      --shadow-md:  0 4px 12px rgba(0,0,0,0.08);
-      --shadow-lg:  0 10px 30px rgba(0,0,0,0.12);
-      --shadow-glow: 0 0 20px rgba(8,145,178,0.3);
+      --bg-primary:#ffffff; --bg-secondary:#f7f7f7; --bg-tertiary:#eeeeee;
+      --text-primary:#0a0a0a; --text-secondary:#525252; --text-tertiary:#8a8a8a;
+      --accent:#0891b2; --accent-hover:#0e7490; --accent-soft:#ecfeff;
+      --border:#e5e7eb; --card-shadow:0 2px 8px rgba(0,0,0,.08);
+      --success:#10b981; --warning:#f59e0b; --error:#ef4444;
+      --ease-spring:cubic-bezier(.34,1.56,.64,1); --ease-smooth:cubic-bezier(.4,0,.2,1);
+    }
+    body[data-theme="dark"] {
+      --bg-primary:#1a1918; --bg-secondary:#2a2928; --bg-tertiary:#3a3836;
+      --text-primary:#ffffff; --text-secondary:#f0efee; --text-tertiary:#c4bfba;
+      --border:#4f4f56; --accent-soft:rgba(8,145,178,.15);
     }
 
-    /* ── Theme overrides ─────────────────────────────────── */
-    [data-theme="dark"] {
-      --bg-primary:   #1a1918;
-      --bg-secondary: #2a2928;
-      --bg-tertiary:  #3a3836;
-      --text-primary:   #ffffff;
-      --text-secondary: #f0efee;
-      --text-tertiary:  #c4bfba;
-      --border:       #4f4f56;
-      --accent-soft:  #164e63;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
-    }
-    [data-theme="minimal"] {
-      --bg-primary: #f8f8f7; --bg-secondary: #ffffff;
-      --text-primary: #111110; --accent: #374151; --accent-hover: #1f2937;
-      --accent-soft: #f3f4f6;
-    }
-    [data-theme="bold"] {
-      --bg-primary: #fff8ee; --bg-secondary: #ffffff;
-      --accent: #ea580c; --accent-hover: #c2410c;
-      --accent-soft: #fff7ed; --accent-gradient: linear-gradient(135deg,#ea580c,#f97316);
-    }
-    [data-theme="night"] {
-      --bg-primary: #0a0a12; --bg-secondary: #12121e; --bg-tertiary: #1a1a2e;
-      --text-primary: #f5f0ff; --text-secondary: #c4b8e8; --text-tertiary: #8b7db8;
-      --accent: #e11d48; --accent-hover: #be123c;
-      --accent-soft: rgba(225,29,72,0.12); --border: #2a2a3e;
-    }
-    [data-theme="electric"] {
-      --bg-primary: #0d0d1a; --bg-secondary: #141424; --bg-tertiary: #1c1c30;
-      --text-primary: #e8ffe8; --text-secondary: #a8d8a8; --text-tertiary: #6aaa6a;
-      --accent: #22c55e; --accent-hover: #16a34a;
-      --accent-soft: rgba(34,197,94,0.12); --border: #1e2e1e;
-    }
-
-    /* ── Reset ───────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    /* ── Base ── */
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', sans-serif;
-      background: var(--bg-primary); color: var(--text-primary);
-      line-height: 1.65; -webkit-font-smoothing: antialiased;
-      font-feature-settings: 'kern' 1, 'liga' 1;
-      min-height: 100vh;
-      transition: background-color 0.25s ease, color 0.25s ease;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;
+      background:var(--bg-primary); color:var(--text-primary);
+      line-height:1.5; min-height:100%; position:relative;
     }
-
-    /* Paper grain texture */
     body::before {
-      content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      opacity: 0.05; z-index: 0; pointer-events: none;
-      background-image:
-        radial-gradient(circle at 20% 50%, transparent 0%, transparent 50%, rgba(0,0,0,0.05) 100%),
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:-1;
+      opacity:.04;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    /* Container */
-    .container { max-width: 480px; margin: 0 auto; padding: 0 18px; position: relative; z-index: 1; }
-
-    /* ── Scroll progress ─────────────────────────────────── */
-    #pgbar {
-      position: fixed; top: 0; left: 0; z-index: 1000;
-      height: 2px; width: 0%;
-      background: var(--accent);
-      box-shadow: 0 0 8px rgba(8,145,178,0.5);
-      transition: width 0.1s ease-out; pointer-events: none;
+    /* ── Scroll Progress ── */
+    .scroll-progress {
+      position:fixed; top:0; left:0; height:3px;
+      background:linear-gradient(90deg,var(--accent),#06b6d4);
+      width:0%; z-index:200; transition:width .1s ease-out;
+      box-shadow:0 0 8px rgba(8,145,178,.5);
     }
 
-    /* ── Page header ─────────────────────────────────────── */
-    .page-header {
-      position: sticky; top: 0; z-index: 100;
-      background: var(--bg-primary);
-      padding: 10px 0; margin-bottom: 0;
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
+    /* ── Section Nav Dots ── */
+    .section-nav {
+      position:fixed; right:16px; top:50%; transform:translateY(-50%);
+      display:flex; flex-direction:column; gap:8px; z-index:96;
+      opacity:0; transition:opacity .3s ease;
     }
-    .header-row {
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    .section-nav.visible { opacity:1; }
+    .section-dot {
+      width:8px; height:8px; border-radius:50%;
+      background:var(--border); cursor:pointer; transition:all .2s ease;
+      position:relative;
     }
-    .header-title {
-      font-size: 15px; font-weight: 900; color: var(--text-primary);
-      letter-spacing: -0.02em;
-      opacity: 0; transition: opacity 0.3s ease;
+    .section-dot.active, .section-dot:hover { background:var(--accent); transform:scale(1.3); }
+    .section-dot .dot-label {
+      position:absolute; right:16px; top:50%; transform:translateY(-50%);
+      background:var(--bg-secondary); border:1px solid var(--border);
+      padding:3px 8px; border-radius:6px; font-size:11px; font-weight:700;
+      white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .2s;
     }
-    .page-header.scrolled .header-title { opacity: 1; }
-    .header-right { display: flex; gap: 8px; align-items: center; }
-    .header-icon-btn {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: var(--bg-secondary); border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 16px;
-      transition: all 0.2s ease; color: var(--text-secondary);
-    }
-    .header-icon-btn:hover { background: var(--bg-tertiary); transform: scale(1.05); }
-    .header-icon-btn svg { width: 17px; height: 17px; }
+    .section-dot:hover .dot-label { opacity:1; }
 
-    /* ── Hero card (YouTube Shorts style) ────────────────── */
+    /* ── Quick Action Buttons ── */
+    .quick-actions {
+      position:fixed; bottom:100px; right:16px;
+      display:flex; flex-direction:column; gap:10px; z-index:97;
+    }
+    .quick-action-btn {
+      width:48px; height:48px; background:var(--bg-secondary);
+      border:1px solid var(--border); border-radius:50%;
+      box-shadow:0 4px 12px rgba(0,0,0,.1); cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      font-size:18px; transition:all .2s ease; position:relative;
+    }
+    .quick-action-btn:hover { transform:scale(1.1); background:var(--accent); color:white; }
+    .quick-action-btn .tooltip {
+      position:absolute; right:56px; top:50%; transform:translateY(-50%);
+      background:var(--bg-secondary); border:1px solid var(--border);
+      padding:4px 10px; border-radius:8px; font-size:11px; font-weight:700;
+      white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .2s;
+    }
+    .quick-action-btn:hover .tooltip { opacity:1; }
+    @keyframes pulse-attention {
+      0%,100%{box-shadow:0 4px 12px rgba(0,0,0,.08);}
+      50%{box-shadow:0 4px 20px rgba(8,145,178,.5);}
+    }
+    .quick-action-btn.pulse { animation:pulse-attention 2s ease-in-out infinite; }
+
+    /* ── Audio Player ── */
+    .audio-player {
+      position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+      z-index:98; display:flex; align-items:center; gap:12px;
+      background:var(--bg-secondary); border:1px solid var(--border);
+      border-radius:50px; padding:8px 16px 8px 8px;
+      box-shadow:0 8px 32px rgba(0,0,0,.15);
+      backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+      min-width:220px; max-width:320px;
+    }
+    .audio-orb {
+      width:40px; height:40px; border-radius:50%;
+      background:linear-gradient(135deg,var(--accent),#06b6d4);
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; flex-shrink:0; position:relative;
+      box-shadow:0 0 0 0 rgba(8,145,178,.4);
+      transition:all .2s ease;
+    }
+    .audio-orb:hover { transform:scale(1.08); box-shadow:0 0 0 6px rgba(8,145,178,.15); }
+    .audio-orb-wave {
+      display:flex; align-items:center; gap:2px;
+    }
+    .audio-bar {
+      width:3px; background:white; border-radius:2px;
+      animation:wave .8s ease-in-out infinite;
+    }
+    .audio-bar:nth-child(1){height:8px;animation-delay:0s;}
+    .audio-bar:nth-child(2){height:14px;animation-delay:.15s;}
+    .audio-bar:nth-child(3){height:10px;animation-delay:.3s;}
+    .audio-bar:nth-child(4){height:16px;animation-delay:.45s;}
+    .audio-bar:nth-child(5){height:8px;animation-delay:.6s;}
+    @keyframes wave {
+      0%,100%{transform:scaleY(1);}
+      50%{transform:scaleY(.4);}
+    }
+    .audio-info { flex:1; min-width:0; }
+    .audio-track { font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .audio-artist { font-size:11px; color:var(--text-tertiary); }
+    .audio-close {
+      background:none; border:none; color:var(--text-tertiary);
+      font-size:16px; cursor:pointer; padding:4px; border-radius:50%;
+      transition:all .15s;
+    }
+    .audio-close:hover { background:var(--bg-tertiary); color:var(--text-primary); }
+
+    /* ── Container ── */
+    .container { max-width:480px; margin:0 auto; padding:0 18px 140px; }
+    @media(min-width:768px){ .container{ max-width:600px; padding:0 36px 140px; } }
+
+    /* ── Hero Card ── */
     .hero-card {
-      background: #000;
-      margin-left: -18px; margin-right: -18px;
-      width: calc(100% + 36px);
+      background:#000; margin-left:-18px; margin-right:-18px;
+      width:calc(100% + 36px); margin-bottom:0; overflow:hidden;
     }
+    @media(min-width:768px){ .hero-card{ margin-left:-36px; margin-right:-36px; width:calc(100% + 72px); } }
+
+    /* ── Short Container (9:16 reel) ── */
     .short-container {
-      position: relative;
-      aspect-ratio: 9 / 16;
-      background: linear-gradient(160deg, #0a0a0a 0%, #1a1a2e 30%, #16213e 60%, #0f3460 100%);
-      background-size: 250% 250%;
-      animation: heroGradientShift 14s ease infinite;
-      overflow: hidden;
+      position:relative; aspect-ratio:9/16;
+      max-height:88vh;
+      background:linear-gradient(160deg,#0a0a0a 0%,#1a1a2e 30%,#16213e 60%,#0f3460 100%);
+      background-size:250% 250%;
+      animation:heroGradientShift 14s ease infinite;
+      overflow:hidden;
     }
     @keyframes heroGradientShift {
-      0%   { background-position: 0% 0%; }
-      50%  { background-position: 100% 100%; }
-      100% { background-position: 0% 0%; }
+      0%{background-position:0% 0%;}
+      50%{background-position:100% 100%;}
+      100%{background-position:0% 0%;}
     }
-    /* Gradient overlay */
+    .short-container.morning{background:linear-gradient(135deg,#f59e0b 0%,#fbbf24 50%,#06b6d4 100%);}
+    .short-container.afternoon{background:linear-gradient(135deg,#0891b2 0%,#06b6d4 100%);}
+    .short-container.evening{background:linear-gradient(135deg,#7c3aed 0%,#ec4899 50%,#f59e0b 100%);}
+    .short-container.night{background:linear-gradient(135deg,#1e1b4b 0%,#4c1d95 50%,#7c3aed 100%);}
+
+    /* Bottom gradient scrim */
     .short-container::after {
-      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-      height: 72%;
-      background: linear-gradient(to top, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.75) 30%, rgba(0,0,0,0.4) 55%, transparent 100%);
-      pointer-events: none; z-index: 1;
+      content:''; position:absolute; bottom:0; left:0; right:0; height:72%;
+      background:linear-gradient(to top,rgba(0,0,0,.96) 0%,rgba(0,0,0,.75) 30%,rgba(0,0,0,.4) 55%,transparent 100%);
+      pointer-events:none; z-index:1;
     }
-    /* State badge */
-    .short-badges { position: absolute; top: 16px; left: 16px; z-index: 3; }
+
+    .video-placeholder {
+      position:absolute; inset:0; z-index:0;
+      background:linear-gradient(135deg,rgba(0,0,0,.3) 25%,transparent 25%),
+                 linear-gradient(225deg,rgba(0,0,0,.3) 25%,transparent 25%),
+                 linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%),
+                 linear-gradient(315deg,rgba(255,255,255,.15) 25%,transparent 25%);
+      background-size:40px 40px;
+      background-position:0 0,20px 0,20px -20px,0 20px;
+    }
+
+    .short-badges {
+      position:absolute; top:16px; left:16px; display:flex; gap:8px; z-index:3;
+    }
+    .badge {
+      padding:5px 12px; border-radius:20px; font-size:11px;
+      font-weight:800; text-transform:uppercase; letter-spacing:.06em;
+    }
     .badge-state {
-      padding: 5px 11px; border-radius: 20px;
-      font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
-      background: rgba(255,255,255,0.92); color: #0a0a0a;
-      backdrop-filter: blur(10px);
+      background:rgba(255,255,255,.92); color:#0a0a0a;
+      backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
     }
-    /* Right rail engagement */
+    .badge-live { background:var(--error); color:white; }
+    .badge-gig { background:var(--warning); color:white; }
+
+    /* Countdown banner */
+    .countdown-banner {
+      position:absolute; top:56px; left:16px; right:16px;
+      background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.15);
+      backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+      padding:10px 16px; border-radius:14px; z-index:3;
+      display:none; align-items:center; gap:12px;
+    }
+    .countdown-banner.visible { display:flex; }
+    .countdown-label { font-size:10px; font-weight:800; color:rgba(255,255,255,.6); text-transform:uppercase; letter-spacing:.08em; }
+    .countdown-time { font-size:20px; font-weight:900; color:white; font-variant-numeric:tabular-nums; letter-spacing:-.3px; }
+
+    /* Play button */
+    .play-button {
+      position:absolute; top:50%; left:50%; transform:translate(-50%,-55%);
+      width:52px; height:52px; background:rgba(255,255,255,.18);
+      border:2px solid rgba(255,255,255,.5); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; z-index:2; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+      transition:all .25s ease;
+    }
+    .play-button:hover { transform:translate(-50%,-55%) scale(1.08); background:rgba(255,255,255,.3); }
+    .play-icon { width:0; height:0; border-left:15px solid rgba(255,255,255,.9); border-top:9px solid transparent; border-bottom:9px solid transparent; margin-left:3px; }
+
+    /* Engagement buttons — right rail */
     .short-engagement {
-      position: absolute; right: 12px; bottom: 90px; z-index: 3;
-      display: flex; flex-direction: column; align-items: center; gap: 18px;
+      position:absolute; right:12px; bottom:90px; z-index:3;
+      display:flex; flex-direction:column; align-items:center; gap:18px;
     }
     .engagement-btn {
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
-      background: none; border: none; color: white; cursor: pointer;
-      transition: transform 0.2s ease;
+      display:flex; flex-direction:column; align-items:center; gap:4px;
+      background:none; border:none; color:white; cursor:pointer; transition:transform .2s ease;
     }
-    .engagement-btn:hover { transform: scale(1.12); }
+    .engagement-btn:hover { transform:scale(1.12); }
     .engagement-icon {
-      width: 40px; height: 40px; border-radius: 50%;
-      background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.25);
-      backdrop-filter: blur(8px);
-      display: flex; align-items: center; justify-content: center; font-size: 17px;
+      width:40px; height:40px; border-radius:50%;
+      background:rgba(255,255,255,.15); border:1.5px solid rgba(255,255,255,.25);
+      backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+      display:flex; align-items:center; justify-content:center; font-size:17px;
     }
-    .engagement-count {
-      font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9);
-      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-    }
-    /* Bottom info overlay */
+    .engagement-count { font-size:11px; font-weight:700; color:rgba(255,255,255,.9); text-shadow:0 1px 3px rgba(0,0,0,.5); }
+
+    /* Artist info overlay */
     .short-info {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      padding: 16px 72px 22px 16px;
-      z-index: 2; color: white;
-      display: flex; flex-direction: column; gap: 10px;
+      position:absolute; bottom:0; left:0; right:0;
+      padding:16px 72px 22px 16px; z-index:2; color:white;
+      display:flex; flex-direction:column; gap:10px;
     }
-    .short-artist-row { display: flex; align-items: center; gap: 8px; }
+    .short-artist-row { display:flex; align-items:center; gap:8px; }
     .short-avatar-sm {
-      width: 34px; height: 34px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent) 0%, #06b6d4 100%);
-      border: 2px solid rgba(255,255,255,0.8);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 900; color: white; flex-shrink: 0; overflow: hidden;
+      width:34px; height:34px; border-radius:50%;
+      background:linear-gradient(135deg,var(--accent),#06b6d4);
+      border:2px solid rgba(255,255,255,.8);
+      display:flex; align-items:center; justify-content:center;
+      font-size:11px; font-weight:900; color:white; flex-shrink:0; overflow:hidden;
     }
-    .short-avatar-sm img { width: 100%; height: 100%; object-fit: cover; }
-    .short-artist-name-sm {
-      font-size: 14px; font-weight: 700; color: white;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
-    }
+    .short-artist-name-sm { font-size:14px; font-weight:700; text-shadow:0 1px 4px rgba(0,0,0,.5); }
     .short-follow-pill {
-      margin-left: auto; padding: 5px 13px;
-      background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.4);
-      border-radius: 20px; color: white; font-size: 12px; font-weight: 700;
-      cursor: pointer; backdrop-filter: blur(10px);
-      transition: all 0.2s ease; font-family: inherit;
+      margin-left:auto; padding:5px 13px;
+      background:rgba(255,255,255,.15); border:1.5px solid rgba(255,255,255,.4);
+      border-radius:20px; color:white; font-size:12px; font-weight:700; cursor:pointer;
+      backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+      font-family:inherit; transition:all .2s ease;
     }
-    .short-metadata { padding-right: 16px; }
+    .short-follow-pill:hover { background:rgba(255,255,255,.28); }
+    .short-metadata { flex:1; padding-right:16px; }
     .greeting-text {
-      font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.7);
-      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+      font-size:12px; font-weight:700; color:rgba(255,255,255,.7);
+      text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px;
+      text-shadow:0 1px 4px rgba(0,0,0,.5);
     }
     .short-title {
-      font-size: 26px; font-weight: 900; line-height: 1.1; color: white;
-      letter-spacing: -0.5px; text-shadow: 0 2px 12px rgba(0,0,0,0.6);
-    }
-    /* Play button centre */
-    .play-button {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -55%);
-      width: 52px; height: 52px;
-      background: rgba(255,255,255,0.18); border: 2px solid rgba(255,255,255,0.5);
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 2; backdrop-filter: blur(8px);
-      transition: all 0.25s ease;
-    }
-    .play-button:hover { transform: translate(-50%, -55%) scale(1.08); background: rgba(255,255,255,0.3); }
-    .play-icon {
-      width: 0; height: 0;
-      border-left: 15px solid rgba(255,255,255,0.9);
-      border-top: 9px solid transparent; border-bottom: 9px solid transparent;
-      margin-left: 3px;
+      font-size:26px; font-weight:900; line-height:1.1;
+      color:white; letter-spacing:-.5px; text-shadow:0 2px 12px rgba(0,0,0,.6);
     }
 
-    /* ── Hero content (below reel) ───────────────────────── */
+    /* ── Hero Content (below reel) ── */
     .hero-content {
-      background: var(--bg-primary); padding: 20px 18px 24px;
-      border-bottom: 1px solid var(--border);
+      background:var(--bg-primary); padding:20px 18px 24px;
+      border-bottom:1px solid var(--border); margin-bottom:8px;
+      animation:hero-content-fade-in .5s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes hero-content-fade-in {
+      from{opacity:0;transform:translateY(16px);}
+      to{opacity:1;transform:translateY(0);}
     }
     .artist-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+      display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;
     }
-    .artist-name {
-      font-size: 24px; font-weight: 900; letter-spacing: -0.6px;
-      margin-bottom: 2px; line-height: 1.1;
-    }
-    .artist-handle { font-size: 14px; color: var(--text-tertiary); font-weight: 500; }
+    .artist-name { font-size:24px; font-weight:900; letter-spacing:-.6px; margin-bottom:2px; line-height:1.1; }
+    .artist-handle { font-size:14px; color:var(--text-tertiary); font-weight:500; }
     .share-button {
-      width: 46px; height: 46px; border: 1px solid var(--border); border-radius: 50%;
-      background: var(--bg-primary); cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.3s var(--ease-spring);
+      width:46px; height:46px; border:1px solid var(--border); border-radius:50%;
+      background:var(--bg-primary); cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:all .3s cubic-bezier(.34,1.56,.64,1);
     }
-    .share-button:hover { background: var(--bg-tertiary); transform: scale(1.08); border-color: var(--accent); }
-    .share-button svg { width: 18px; height: 18px; stroke: var(--text-secondary); }
-    .cta-group { display: flex; flex-direction: column; gap: 10px; }
+    .share-button:hover { background:var(--bg-tertiary); transform:scale(1.08); border-color:var(--accent); }
+    .share-button.success { background:var(--accent); border-color:var(--accent); }
+    .cta-group { display:flex; flex-direction:column; gap:10px; margin-bottom:4px; }
 
-    /* ── Buttons ─────────────────────────────────────────── */
+    /* ── Buttons ── */
     .btn {
-      padding: 16px 26px; border: none; border-radius: 14px;
-      font-size: 16px; font-weight: 800; cursor: pointer;
-      transition: all 0.2s ease; text-align: center;
-      position: relative; overflow: hidden; font-family: inherit;
-      -webkit-tap-highlight-color: transparent;
-      display: block; width: 100%; text-decoration: none;
+      padding:16px 26px; border:none; border-radius:14px; font-size:16px; font-weight:800;
+      cursor:pointer; text-align:center; position:relative; overflow:hidden;
+      font-family:inherit; letter-spacing:.01em; transition:all .2s ease;
+      -webkit-tap-highlight-color:transparent;
     }
+    .btn:disabled { opacity:.6; cursor:not-allowed; }
     .btn-primary {
-      background: var(--accent-gradient); color: white;
-      font-size: 17px; letter-spacing: 0.02em;
-      box-shadow: 0 4px 20px rgba(8,145,178,0.4), 0 1px 3px rgba(0,0,0,0.1);
+      background:linear-gradient(135deg,var(--accent),var(--accent-hover));
+      color:white; font-size:17px; letter-spacing:.02em;
+      box-shadow:0 4px 20px rgba(8,145,178,.4),0 1px 3px rgba(0,0,0,.1);
     }
     .btn-primary::before {
-      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s ease;
+      content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
+      transition:left .5s ease;
     }
-    .btn-primary:hover { transform: translateY(-2px) scale(1.01); }
-    .btn-primary:hover::before { left: 100%; }
-    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:hover:not(:disabled)::before { left:100%; }
+    .btn-primary:hover:not(:disabled) { transform:translateY(-2px) scale(1.01); box-shadow:0 6px 24px rgba(8,145,178,.35); }
+    .btn-primary:active:not(:disabled) { transform:translateY(1px) scale(.98); }
     .btn-secondary {
-      background: rgba(8,145,178,0.07); color: var(--accent);
-      border: 1.5px solid rgba(8,145,178,0.25);
+      background:rgba(8,145,178,.07); color:var(--accent);
+      border:1.5px solid rgba(8,145,178,.25);
     }
-    .btn-secondary:hover { background: var(--accent-soft); }
+    .btn-secondary:hover:not(:disabled) { background:var(--accent-soft); }
+    .btn-small { padding:8px 16px; font-size:13px; border-radius:10px; font-weight:700; }
 
-    /* ── Sections ────────────────────────────────────────── */
+    /* ── Quick Links Strip ── */
+    .quick-links-strip {
+      display:flex; flex-wrap:nowrap; gap:8px; padding:14px 0 6px;
+      overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch;
+      scrollbar-width:none; -ms-overflow-style:none;
+      mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);
+      -webkit-mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);
+    }
+    .quick-links-strip:empty { display:none; }
+    .quick-links-strip::-webkit-scrollbar { display:none; }
+    .quick-link-pill {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:8px 16px; background:var(--bg-secondary);
+      border:1px solid var(--border); border-radius:50px;
+      font-size:13px; font-weight:600; color:var(--text-primary);
+      cursor:pointer; text-decoration:none; white-space:nowrap;
+      min-height:38px; transition:all .2s ease; flex-shrink:0;
+    }
+    .quick-link-pill:hover { background:var(--bg-tertiary); border-color:var(--accent); transform:translateY(-1px); }
+    .quick-link-pill:active { transform:scale(.95); }
+
+    /* ── Sections Container ── */
+    .sections-container { padding-top:8px; }
+
     .section {
-      padding: 24px 0;
-      border-top: 1px solid var(--border);
-      opacity: 0; transform: translateY(30px);
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      margin-bottom:0; padding:24px 0;
+      opacity:0; transform:translateY(30px);
+      transition:opacity .6s ease-out,transform .6s ease-out;
+      position:relative;
     }
-    .section.visible { opacity: 1; transform: translateY(0); }
-    .section-title {
-      font-size: 22px; font-weight: 900; letter-spacing: -0.5px;
-      margin-bottom: 16px; color: var(--text-primary); line-height: 1.2;
-    }
+    .section + .section { border-top:1px solid var(--border); }
+    .section.animate-in { opacity:1; transform:translateY(0); }
+
     .section-header-row {
-      display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+      display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;
     }
-    .section-action-btn {
-      font-size: 13px; color: var(--accent); font-weight: 600;
-      background: none; border: none; cursor: pointer; font-family: inherit;
+    .section-header-row .section-title { margin-bottom:0; }
+    .section-title {
+      font-size:22px; font-weight:900; letter-spacing:-.5px; margin-bottom:16px;
+      line-height:1.2; color:var(--text-primary);
     }
+    #streaming .section-title { font-size:24px; font-weight:900; letter-spacing:-.6px; }
+    body[data-theme="dark"] .section-title { color:#e0f2fe !important; text-shadow:0 0 20px rgba(8,145,178,.4) !important; }
 
-    /* ── Stream player widget ─────────────────────────────── */
+    /* ── Stream Player Widget ── */
     .stream-player-widget {
-      display: flex; align-items: center; gap: 12px;
-      background: var(--bg-secondary); border-radius: 14px;
-      padding: 12px 14px; margin-bottom: 14px;
-      border: 1px solid var(--border);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      display:flex; align-items:center; gap:12px;
+      background:var(--bg-secondary); border-radius:14px;
+      padding:12px 14px; margin-bottom:14px;
+      border:1px solid var(--border); box-shadow:0 2px 10px rgba(0,0,0,.06);
+      transition:box-shadow .2s ease;
     }
-    .stream-player-art {
-      position: relative; flex-shrink: 0;
-      width: 52px; height: 52px; border-radius: 9px;
-      background: linear-gradient(135deg, var(--accent), #06b6d4);
-      overflow: hidden;
+    .stream-player-widget:hover { box-shadow:0 4px 16px rgba(0,0,0,.1); }
+    .stream-player-art { position:relative; flex-shrink:0; width:52px; height:52px; border-radius:9px; overflow:hidden; }
+    .stream-art-bg { width:100%; height:100%; background:linear-gradient(135deg,#ec4899,#8b5cf6); }
+    .stream-play-btn {
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.4); border:none; cursor:pointer;
+      opacity:0; transition:opacity .2s ease;
     }
-    .stream-player-art img { width: 100%; height: 100%; object-fit: cover; }
-    .stream-art-bg { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-    .stream-player-info { flex: 1; min-width: 0; }
-    .stream-track-name {
-      font-size: 14px; font-weight: 800; letter-spacing: -0.2px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;
-    }
-    .stream-track-sub {
-      font-size: 12px; color: var(--text-tertiary); white-space: nowrap;
-      overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px;
-    }
-    .stream-progress-bar {
-      height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 4px;
-    }
-    .stream-progress-fill { height: 100%; background: var(--accent); width: 38%; border-radius: 2px; }
-    .stream-progress-times { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-tertiary); }
+    .stream-player-widget:hover .stream-play-btn { opacity:1; }
+    .stream-player-info { flex:1; min-width:0; }
+    .stream-track-name { font-size:14px; font-weight:800; letter-spacing:-.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px; }
+    .stream-track-sub { font-size:11.5px; color:var(--text-tertiary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:7px; }
+    .stream-progress-bar { height:3px; background:var(--border); border-radius:2px; overflow:hidden; margin-bottom:4px; }
+    .stream-progress-fill { height:100%; background:var(--accent); border-radius:2px; width:58%; }
+    .stream-progress-times { display:flex; justify-content:space-between; font-size:10px; color:var(--text-tertiary); font-weight:600; }
     .stream-open-link {
-      display: flex; align-items: center; gap: 3px;
-      font-size: 11px; font-weight: 700; color: #1DB954;
-      text-decoration: none; flex-shrink: 0;
-      padding: 6px 10px; background: rgba(29,185,84,0.08);
-      border-radius: 8px; transition: background 0.2s;
+      font-size:11px; font-weight:700; color:#1DB954; text-decoration:none;
+      display:flex; flex-direction:column; align-items:center; gap:3px; flex-shrink:0;
+      padding:4px 6px; border-radius:8px; transition:background .18s ease;
     }
-    .stream-open-link:hover { background: rgba(29,185,84,0.15); }
+    .stream-open-link:hover { background:rgba(29,185,84,.1); }
+    .stream-platforms-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--text-tertiary); margin-bottom:10px; }
 
-    /* ── Streaming pills (horizontal scroll) ─────────────── */
-    .stream-platforms-label {
-      font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.08em; color: var(--text-tertiary); margin-bottom: 8px;
-    }
+    /* ── Streaming Pills ── */
     .streaming-pills-container {
-      display: flex; gap: 8px;
-      overflow-x: auto; overflow-y: hidden;
-      padding: 4px 0 8px;
-      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+      display:flex; gap:8px; overflow-x:auto; overflow-y:hidden;
+      padding:4px 0 8px; -webkit-overflow-scrolling:touch; scrollbar-width:none;
     }
-    .streaming-pills-container::-webkit-scrollbar { display: none; }
+    .streaming-pills-container::-webkit-scrollbar { display:none; }
     .streaming-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 10px 16px;
-      background: var(--bg-secondary); border: 1.5px solid rgba(0,0,0,0.1);
-      border-radius: 20px; text-decoration: none;
-      white-space: nowrap; transition: all 0.2s ease;
-      flex-shrink: 0; box-shadow: 1px 2px 6px rgba(0,0,0,0.04);
+      display:inline-flex; align-items:center; gap:6px;
+      padding:10px 16px; background:var(--bg-secondary);
+      border:1.5px solid rgba(0,0,0,.1); border-radius:20px;
+      text-decoration:none; white-space:nowrap; cursor:pointer; flex-shrink:0;
+      box-shadow:1px 2px 6px rgba(0,0,0,.04); transition:all .2s ease; font-family:inherit;
     }
-    .streaming-pill:hover { transform: translateY(-2px); box-shadow: 1px 4px 10px rgba(0,0,0,0.1); }
-    .pill-icon { font-size: 12px; }
-    .pill-text { font-size: 13px; font-weight: 700; color: var(--text-primary); }
-    .streaming-pill.spotify  .pill-icon { color: #1DB954; }
-    .streaming-pill.apple    .pill-icon { color: #FA243C; }
-    .streaming-pill.soundcloud .pill-icon { color: #FF5500; }
-    .streaming-pill.youtube  .pill-icon { color: #FF0000; }
-    .streaming-pill.bandcamp .pill-icon { color: #629AA9; }
+    .pill-icon { font-size:10px; transition:color .2s ease; }
+    .pill-text { font-size:13px; font-weight:700; color:var(--text-primary); transition:color .2s ease; }
+    .streaming-pill.spotify .pill-icon { color:#1DB954; }
+    .streaming-pill.spotify:hover { background:#1DB954; border-color:#1DB954; transform:translateY(-1px); }
+    .streaming-pill.spotify:hover .pill-icon, .streaming-pill.spotify:hover .pill-text { color:white; }
+    .streaming-pill.apple .pill-icon { color:#FA243C; }
+    .streaming-pill.apple:hover { background:#FA243C; border-color:#FA243C; transform:translateY(-1px); }
+    .streaming-pill.apple:hover .pill-icon, .streaming-pill.apple:hover .pill-text { color:white; }
+    .streaming-pill.youtube .pill-icon { color:#FF0000; }
+    .streaming-pill.youtube:hover { background:#FF0000; border-color:#FF0000; transform:translateY(-1px); }
+    .streaming-pill.youtube:hover .pill-icon, .streaming-pill.youtube:hover .pill-text { color:white; }
+    .streaming-pill.soundcloud .pill-icon { color:#FF5500; }
+    .streaming-pill.soundcloud:hover { background:#FF5500; border-color:#FF5500; transform:translateY(-1px); }
+    .streaming-pill.soundcloud:hover .pill-icon, .streaming-pill.soundcloud:hover .pill-text { color:white; }
+    .streaming-pill.amazon .pill-icon { color:#00A8E1; }
+    .streaming-pill.amazon:hover { background:#00A8E1; border-color:#00A8E1; transform:translateY(-1px); }
+    .streaming-pill.amazon:hover .pill-icon, .streaming-pill.amazon:hover .pill-text { color:white; }
+    .streaming-pill.tidal .pill-icon { color:#000; }
+    .streaming-pill.tidal:hover { background:#000; border-color:#000; transform:translateY(-1px); }
+    .streaming-pill.tidal:hover .pill-icon, .streaming-pill.tidal:hover .pill-text { color:white; }
+    .streaming-pill.bandcamp .pill-icon { color:#629AA9; }
+    .streaming-pill.bandcamp:hover { background:#629AA9; border-color:#629AA9; transform:translateY(-1px); }
+    .streaming-pill.bandcamp:hover .pill-icon, .streaming-pill.bandcamp:hover .pill-text { color:white; }
+    .streaming-pill.deezer .pill-icon { color:#FF0092; }
+    .streaming-pill.deezer:hover { background:#FF0092; border-color:#FF0092; transform:translateY(-1px); }
+    .streaming-pill.deezer:hover .pill-icon, .streaming-pill.deezer:hover .pill-text { color:white; }
+    .streaming-pill:active { transform:scale(.97); }
 
-    /* ── Tracklist (Apple Music style) ───────────────────── */
-    .tracklist-compact {
-      background: var(--bg-secondary); border-radius: 12px;
-      overflow: hidden; border: 1px solid var(--border);
-    }
+    /* ── Tracklist (Apple Music style compact) ── */
+    .tracklist-compact { background:var(--bg-secondary); border-radius:12px; overflow:hidden; border:1px solid var(--border); }
     .track-row {
-      display: grid; grid-template-columns: 32px 1fr auto 40px;
-      align-items: center; gap: 12px;
-      padding: 12px 16px; border-bottom: 1px solid var(--border);
-      cursor: pointer; transition: background 0.2s ease;
+      display:grid; grid-template-columns:32px 1fr auto 40px;
+      align-items:center; gap:12px; padding:12px 16px;
+      border-bottom:1px solid var(--border); cursor:pointer;
+      transition:background .2s ease;
     }
-    .track-row:last-child { border-bottom: none; }
-    .track-row:hover { background: var(--bg-tertiary); }
-    .track-row:hover .track-menu { opacity: 1; }
-    .track-num { font-size: 15px; font-weight: 600; color: var(--text-secondary); text-align: center; font-variant-numeric: tabular-nums; }
-    .track-info { min-width: 0; }
-    .track-name {
-      font-size: 15px; font-weight: 600; color: var(--text-primary);
-      margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .track-artist { font-size: 12px; color: var(--text-tertiary); }
-    .track-duration { font-size: 14px; color: var(--text-tertiary); font-weight: 500; font-variant-numeric: tabular-nums; }
-    .track-menu {
-      width: 32px; height: 32px; border: none; background: transparent;
-      color: var(--text-secondary); font-size: 20px; cursor: pointer;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: all 0.2s ease; font-family: inherit;
-    }
+    .track-row:last-of-type { border-bottom:none; }
+    .track-row:hover { background:var(--bg-tertiary); }
+    .track-row:active { background:var(--accent-soft); }
+    .track-num { font-size:15px; font-weight:700; color:var(--text-tertiary); text-align:center; }
+    .track-info { min-width:0; }
+    .track-name { font-size:14px; font-weight:700; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:6px; }
+    .track-artist { font-size:12px; color:var(--text-tertiary); }
+    .track-feat { font-weight:500; color:var(--text-tertiary); font-size:12px; }
+    .explicit-badge { background:var(--text-tertiary); color:var(--bg-primary); font-size:9px; font-weight:800; padding:1px 4px; border-radius:3px; }
+    .track-duration { font-size:13px; color:var(--text-tertiary); font-weight:600; font-variant-numeric:tabular-nums; }
+    .track-menu { background:none; border:none; color:var(--text-tertiary); font-size:18px; cursor:pointer; padding:4px 8px; border-radius:6px; transition:all .15s; }
+    .track-menu:hover { background:var(--bg-tertiary); color:var(--text-primary); }
+    .tracklist-footer { padding:10px 16px; font-size:12px; color:var(--text-tertiary); font-weight:600; border-top:1px solid var(--border); }
 
-    /* ── Tour cards ──────────────────────────────────────── */
-    .shows-list { display: flex; flex-direction: column; gap: 8px; }
-    .tour-card {
-      background: var(--bg-secondary); border-radius: 14px; padding: 14px 14px 14px 18px;
-      border: 1px solid rgba(0,0,0,0.06);
-      transition: all 0.3s var(--ease-spring);
-      position: relative; overflow: hidden;
-      box-shadow: 1px 2px 6px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.3);
-    }
-    .tour-card:hover {
-      transform: translateY(-2px) scale(1.003);
-      box-shadow: 2px 6px 14px rgba(0,0,0,0.11), 3px 8px 20px rgba(0,0,0,0.07);
-      border-color: var(--accent);
-    }
-    .tour-card-accent {
-      position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 14px 0 0 14px;
-    }
-    .accent-green  { background: #22c55e; }
-    .accent-orange { background: #f59e0b; }
-    .accent-grey   { background: var(--text-tertiary); opacity: 0.4; }
-    .tour-card-body { display: flex; align-items: center; gap: 14px; }
-    .tour-date-block { flex-shrink: 0; text-align: center; min-width: 40px; }
-    .tour-month { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); }
-    .tour-day   { font-size: 24px; font-weight: 900; color: var(--text-primary); line-height: 1; }
-    .tour-divider { width: 1px; height: 36px; background: var(--border); flex-shrink: 0; }
-    .tour-info  { flex: 1; min-width: 0; }
-    .tour-venue { font-size: 15px; font-weight: 700; color: var(--text-primary); }
-    .tour-city  { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
-    .tour-actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .tour-btn {
-      padding: 8px 14px; border-radius: 10px;
-      font-size: 13px; font-weight: 700; text-decoration: none;
-      transition: all 0.2s ease; white-space: nowrap; border: none; cursor: pointer; font-family: inherit;
-    }
-    .tour-btn-ticket {
-      background: var(--accent-gradient); color: white;
-      box-shadow: 0 2px 8px rgba(8,145,178,0.3);
-    }
-    .tour-btn-ticket:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(8,145,178,0.4); }
-    .tour-btn-cal {
-      background: var(--bg-tertiary); color: var(--text-secondary);
-      border: 1px solid var(--border);
-    }
-    .tour-btn-cal:hover { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
-    .shows-empty {
-      text-align: center; padding: 32px; color: var(--text-tertiary);
-      font-size: 14px; background: var(--bg-secondary); border-radius: 14px;
-      border: 1px dashed var(--border);
-    }
+    /* ── Video Collage ── */
+    .video-collage { display:grid; grid-template-columns:1fr; gap:12px; }
+    .video-featured { display:block; text-decoration:none; color:inherit; border-radius:14px; overflow:hidden; position:relative; transform:rotate(var(--rotation,0deg)); transition:all .3s ease; }
+    .video-featured:hover { transform:rotate(0deg) translateY(-4px) scale(1.01); box-shadow:0 12px 32px rgba(0,0,0,.2); }
+    .video-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .video-item { display:block; text-decoration:none; color:inherit; border-radius:10px; overflow:hidden; transform:rotate(var(--rotation,0deg)); transition:all .3s ease; }
+    .video-item:hover { transform:rotate(0deg) translateY(-2px); }
+    .video-thumb { position:relative; aspect-ratio:16/9; overflow:hidden; }
+    .video-placeholder-thumb { width:100%; height:100%; min-height:120px; display:flex; align-items:center; justify-content:center; }
+    .video-featured .video-placeholder-thumb { min-height:220px; }
+    .thumb-pattern { width:100%; height:100%; opacity:.3; background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,.05) 10px,rgba(255,255,255,.05) 20px); }
+    .video-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.3); opacity:0; transition:opacity .2s; }
+    .video-featured:hover .video-overlay, .video-item:hover .video-overlay { opacity:1; }
+    .video-play-btn { width:48px; height:48px; background:rgba(255,255,255,.2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; backdrop-filter:blur(8px); }
+    .video-badge { position:absolute; top:8px; left:8px; padding:3px 8px; border-radius:6px; font-size:10px; font-weight:800; text-transform:uppercase; }
+    .video-badge.new { background:#ec4899; color:white; }
+    .video-badge.live { background:#ef4444; color:white; }
+    .video-time { position:absolute; bottom:8px; right:8px; padding:3px 8px; background:rgba(0,0,0,.7); color:white; border-radius:5px; font-size:11px; font-weight:700; }
+    .video-thumb-img { width:100%; height:100%; object-fit:cover; }
+    .video-info { padding:8px 10px; background:var(--bg-secondary); border-top:1px solid var(--border); }
+    .video-title { font-size:13px; font-weight:700; line-height:1.3; }
+    .video-stats { font-size:11px; color:var(--text-tertiary); margin-top:2px; }
 
-    /* ── Inner Circle / subscribe ─────────────────────────── */
-    .subscribe-card {
-      background: var(--bg-secondary); border-radius: 14px;
-      padding: 24px 20px; border: 1px solid var(--border);
-      text-align: center;
+    /* ── Bio / About ── */
+    .bio-card, .support-card, .subscribe-card, .qr-card {
+      background:var(--bg-secondary); padding:22px 18px; border-radius:16px;
+      box-shadow:0 1px 3px rgba(0,0,0,.05); border:1px solid var(--border);
     }
-    .subscribe-title { font-size: 18px; font-weight: 900; margin-bottom: 6px; }
-    .subscribe-desc  { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
-    .subscribe-perks { list-style: none; text-align: left; display: inline-flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
-    .subscribe-perks li { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
-    .subscribe-perks li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
-    .subscribe-form { display: flex; gap: 8px; }
-    .subscribe-input {
-      flex: 1; padding: 12px 14px;
-      border: 1px solid var(--border); border-radius: 10px;
-      background: var(--bg-primary); color: var(--text-primary);
-      font-size: 14px; font-family: inherit; outline: none;
-      transition: border-color 0.2s ease;
+    .bio-card { display:flex; gap:18px; align-items:flex-start; padding:24px 18px; }
+    .bio-avatar {
+      width:72px; height:72px; border-radius:50%;
+      background:linear-gradient(135deg,var(--accent),#06b6d4);
+      flex-shrink:0; display:flex; align-items:center; justify-content:center;
+      font-size:28px; font-weight:900; color:white;
+      box-shadow:0 4px 12px rgba(8,145,178,.25); overflow:hidden;
     }
-    .subscribe-input:focus { border-color: var(--accent); }
-    .subscribe-input::placeholder { color: var(--text-tertiary); }
-    .subscribe-submit {
-      padding: 12px 18px; border-radius: 10px;
-      background: var(--accent-gradient); color: white;
-      font-size: 14px; font-weight: 700; border: none; cursor: pointer;
-      font-family: inherit; white-space: nowrap;
-      transition: all 0.2s ease;
-    }
-    .subscribe-submit:hover { transform: translateY(-1px); }
-    .subscribe-success {
-      display: none; padding: 14px;
-      background: var(--success); color: white;
-      border-radius: 10px; font-weight: 700; font-size: 14px; text-align: center;
-    }
+    .bio-content { flex:1; min-width:0; }
+    .bio-text { font-size:15px; line-height:1.7; color:var(--text-secondary); margin-bottom:16px; }
+    .bio-tags { display:flex; flex-wrap:wrap; gap:8px; }
+    .tag { padding:6px 14px; background:var(--bg-tertiary); border-radius:18px; font-size:13px; font-weight:700; color:var(--text-secondary); }
 
-    /* ── Merch grid ──────────────────────────────────────── */
-    .merch-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 14px; }
-    .merch-card {
-      background: rgba(253,252,251,0.95); border-radius: 14px;
-      overflow: hidden; border: 1px solid rgba(0,0,0,0.06);
-      transition: all 0.4s var(--ease-spring); cursor: pointer;
-      box-shadow: 1px 3px 10px rgba(0,0,0,0.07);
-      text-decoration: none; display: block;
-    }
-    [data-theme="dark"] .merch-card { background: var(--bg-secondary); }
-    .merch-card:hover {
-      transform: translateY(-4px) scale(1.006);
-      box-shadow: 2px 10px 24px rgba(0,0,0,0.14); border-color: rgba(8,145,178,0.25);
-    }
-    .merch-img { width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--bg-tertiary); }
-    .merch-img-placeholder {
-      width: 100%; aspect-ratio: 1; background: var(--bg-tertiary);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2rem; color: var(--text-tertiary);
-    }
-    .merch-info { padding: 10px 12px; }
-    .merch-name  { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
-    .merch-price { font-size: 13px; font-weight: 600; color: var(--accent); }
-
-    /* ── Support ─────────────────────────────────────────── */
-    .support-card {
-      background: var(--bg-secondary); border-radius: 14px;
-      padding: 20px; border: 1px solid var(--border); text-align: center;
-    }
-    .support-options { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
-    .support-link {
-      display: block; padding: 13px; border-radius: 10px;
-      background: var(--bg-tertiary); border: 1px solid var(--border);
-      color: var(--text-primary); text-decoration: none; font-weight: 700; font-size: 14px;
-      transition: all 0.2s ease;
-    }
-    .support-link:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-
-    /* ── Social ──────────────────────────────────────────── */
-    .social-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    /* ── Social Strip ── */
+    .social-strip { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .social-strip:empty { display:none; }
     .social-pill {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 10px 16px; border-radius: 20px;
-      background: var(--bg-secondary); border: 1.5px solid var(--border);
-      text-decoration: none; color: var(--text-primary);
-      font-size: 14px; font-weight: 600; flex: 1; min-width: 120px;
-      transition: all 0.2s ease; box-shadow: 1px 2px 6px rgba(0,0,0,0.04);
+      display:inline-flex; align-items:center; gap:6px; padding:7px 13px;
+      background:transparent; border:1px solid var(--border); border-radius:20px;
+      font-size:13px; font-weight:600; color:var(--text-secondary);
+      text-decoration:none; cursor:pointer; transition:all .15s ease; white-space:nowrap;
     }
-    .social-pill:hover { border-color: var(--accent); background: var(--accent-soft); transform: translateY(-1px); }
+    .social-pill:hover { color:var(--text-primary); border-color:var(--accent); background:var(--bg-secondary); }
 
-    /* ── Footer ──────────────────────────────────────────── */
-    .page-footer {
-      text-align: center; padding: 32px 18px 48px;
-      border-top: 1px solid var(--border); margin-top: 8px;
+    /* ── Bento Calendar Grid ── */
+    .bento-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(90px,1fr));
+      gap:10px; grid-auto-rows:90px;
     }
-    .footer-cta { margin-bottom: 20px; }
-    .footer-brand { font-size: 13px; color: var(--text-tertiary); margin-bottom: 10px; font-weight: 600; }
-    .footer-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
-    .footer-links a { font-size: 12px; color: var(--text-tertiary); text-decoration: none; }
-    .footer-links a:hover { color: var(--accent); }
+    @media(min-width:500px){ .bento-grid{ grid-template-columns:repeat(4,1fr); grid-auto-rows:110px; } }
+    .bento-tile {
+      background:var(--bg-secondary); border-radius:16px; padding:12px;
+      border:1px solid rgba(0,0,0,.06); cursor:pointer; position:relative; overflow:hidden;
+      transition:all .4s var(--ease-spring); display:flex; flex-direction:column;
+      justify-content:space-between; box-shadow:1px 2px 6px rgba(0,0,0,.05);
+    }
+    .bento-tile:nth-child(odd) { transform:rotate(-.2deg); }
+    .bento-tile:nth-child(even) { transform:rotate(.3deg); }
+    .bento-tile:hover { transform:translateY(-4px) scale(1.01) rotate(0deg) !important; box-shadow:2px 10px 28px rgba(0,0,0,.16); z-index:10; }
+    .bento-tile.size-large { grid-column:span 2; grid-row:span 2; }
+    .bento-tile.size-medium { grid-column:span 2; }
+    .bento-tile.type-date { display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,var(--accent-color,var(--accent)) 0%,rgba(0,0,0,.3) 100%); color:white; }
+    .bento-tile.type-event { background:var(--bg-secondary); }
+    .bento-tile.type-tour { background:linear-gradient(135deg,#0891b2,#06b6d4); color:white; }
+    .bento-date { font-size:14px; font-weight:900; text-align:center; line-height:1.1; }
+    .bento-content { display:flex; flex-direction:column; gap:4px; }
+    .bento-title { font-size:13px; font-weight:900; line-height:1.2; }
+    .bento-tile.size-large .bento-title { font-size:16px; }
+    .bento-subtitle { font-size:11px; opacity:.8; }
+    .bento-time { font-size:11px; opacity:.85; margin-top:2px; }
 
-    /* ── About bio ───────────────────────────────────────── */
-    .about-bio {
-      font-size: 15px; color: var(--text-secondary); line-height: 1.7;
-      white-space: pre-wrap;
+    /* ── Tour Cards ── */
+    .tour-notify-chip {
+      display:flex; align-items:center; gap:10px; padding:10px 14px;
+      background:rgba(8,145,178,.06); border:1px solid rgba(8,145,178,.15);
+      border-radius:10px; margin-bottom:14px; font-size:13px; color:var(--text-secondary);
     }
-    .about-bio.truncated { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
-    .read-more { background: none; border: none; color: var(--accent); font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 0 0; font-family: inherit; display: block; }
+    .tour-notify-chip-text { flex:1; font-weight:600; font-size:12.5px; }
+    .tour-notify-chip-btn {
+      font-size:11.5px; padding:5px 12px; border-radius:8px;
+      background:var(--accent); color:white; border:none; font-weight:700; cursor:pointer; font-family:inherit;
+    }
+    .tour-card {
+      background:var(--bg-secondary); border-radius:14px; padding:12px 12px 12px 18px;
+      border:1px solid rgba(0,0,0,.06); margin-bottom:8px; position:relative; overflow:hidden;
+      box-shadow:1px 2px 6px rgba(0,0,0,.05),inset 0 1px 0 rgba(255,255,255,.3);
+      transition:all .3s var(--ease-spring);
+    }
+    .tour-card:nth-child(odd) { transform:rotate(-.08deg); }
+    .tour-card:nth-child(even) { transform:rotate(.1deg); }
+    .tour-card:hover { transform:translateY(-2px) scale(1.003); border-color:var(--accent); box-shadow:2px 6px 14px rgba(0,0,0,.11); }
+    .tour-card.urgent { border-color:rgba(245,158,11,.4); background:linear-gradient(135deg,var(--bg-secondary) 0%,rgba(245,158,11,.05) 100%); }
+    .tour-card-accent { position:absolute; left:0; top:0; bottom:0; width:4px; border-radius:14px 0 0 14px; }
+    .tour-card-accent.accent-green { background:#22c55e; }
+    .tour-card-accent.accent-orange { background:#f59e0b; }
+    .tour-card-accent.accent-grey { background:var(--text-tertiary); opacity:.4; }
+    .tour-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+    .tour-date-block { display:flex; gap:10px; align-items:center; }
+    .date-box {
+      width:44px; height:44px; background:var(--accent); border-radius:10px;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; flex-shrink:0;
+    }
+    .tour-card.urgent .date-box { background:var(--warning); }
+    .date-month { font-size:10px; font-weight:800; text-transform:uppercase; color:rgba(255,255,255,.8); letter-spacing:.5px; }
+    .date-day { font-size:20px; font-weight:900; color:white; line-height:1; }
+    .tour-info { flex:1; }
+    .tour-city { font-size:16px; font-weight:800; margin-bottom:2px; letter-spacing:-.3px; }
+    .tour-venue { font-size:13px; color:var(--text-secondary); margin-bottom:2px; }
+    .tour-time { font-size:11px; color:var(--text-tertiary); font-weight:600; }
+    .tour-time-capacity { display:flex; align-items:center; gap:6px; }
+    .tour-status { display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+    .status-badge { padding:5px 10px; border-radius:6px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; }
+    .badge-onsale { background:var(--success); color:white; }
+    .badge-soldout { background:var(--error); color:white; }
+    .badge-upcoming { background:var(--warning); color:white; }
+    .badge-limited { background:var(--warning); color:white; }
+    .tour-actions { display:flex; gap:8px; margin-top:12px; }
+    .seat-bar { margin-top:5px; height:3px; background:rgba(245,158,11,.2); border-radius:2px; overflow:hidden; }
+    .seat-bar-fill { height:100%; background:#f59e0b; border-radius:2px; }
+    @keyframes pulse-urgent { 0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.4);} 50%{box-shadow:0 0 0 6px rgba(245,158,11,0);} }
+    .tour-card.urgent .date-box { animation:pulse-urgent 2s ease-in-out infinite; }
+    .past-shows-toggle {
+      text-align:center; padding:12px; font-size:13px; font-weight:700;
+      color:var(--text-secondary); cursor:pointer; border-top:1px solid var(--border);
+      margin-top:8px; border-radius:8px; transition:all .2s ease;
+    }
+    .past-shows-toggle:hover { color:var(--accent); background:var(--bg-secondary); }
+    .past-shows { display:none; padding-top:12px; }
+    .past-shows.visible { display:block; }
+    .past-show { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); }
+    .past-show:last-child { border-bottom:none; }
+    .past-show-city { font-size:14px; font-weight:700; }
+    .past-show-date { font-size:12px; color:var(--text-tertiary); }
 
-    /* ── Credits ─────────────────────────────────────────── */
-    .credits-list { display: flex; flex-direction: column; }
-    .credit-row {
-      display: flex; gap: 10px; padding: 9px 0;
-      border-bottom: 1px solid var(--border); font-size: 14px;
+    /* ── Merch Bento Grid ── */
+    .merch-bento-grid {
+      display:grid; grid-template-columns:repeat(4,1fr); gap:10px; grid-auto-rows:100px;
     }
-    .credit-row:last-child { border-bottom: none; }
-    .credit-role { color: var(--text-tertiary); min-width: 110px; flex-shrink: 0; }
-    .credit-name { color: var(--text-primary); font-weight: 600; }
+    @media(max-width:500px){ .merch-bento-grid{ grid-template-columns:repeat(2,1fr); grid-auto-rows:120px; } }
+    .merch-bento-tile {
+      background:var(--bg-secondary); border-radius:16px; overflow:hidden;
+      border:1px solid rgba(0,0,0,.06); cursor:pointer;
+      transition:all .3s var(--ease-spring); position:relative;
+      display:flex; flex-direction:column; box-shadow:1px 2px 6px rgba(0,0,0,.04);
+    }
+    .merch-bento-tile.size-large { grid-column:span 2; grid-row:span 2; }
+    .merch-bento-tile.size-medium { grid-column:span 2; }
+    .merch-bento-tile:hover { transform:translateY(-2px) scale(1.01); box-shadow:2px 6px 16px rgba(0,0,0,.1); }
+    .merch-bento-image { flex:1; position:relative; min-height:60px; }
+    .merch-bento-info { padding:8px 10px; background:var(--bg-secondary); }
+    .merch-bento-name { font-size:12px; font-weight:800; margin-bottom:2px; line-height:1.2; color:var(--text-primary); }
+    .merch-bento-tile.size-large .merch-bento-name { font-size:14px; }
+    .merch-bento-desc { font-size:10px; color:var(--text-tertiary); margin-bottom:3px; }
+    .merch-bento-price { font-size:13px; font-weight:900; color:var(--accent); }
+    .merch-bento-tile.size-large .merch-bento-price { font-size:15px; }
+    .merch-badge { position:absolute; top:8px; left:8px; padding:3px 8px; border-radius:6px; font-size:9px; font-weight:800; text-transform:uppercase; }
+    .badge-new { background:#10b981; color:white; }
+    .badge-sale { background:#ef4444; color:white; }
 
-    /* ── Edit toolbar ─────────────────────────────────────── */
-    #edit-bar {
-      display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      z-index: 200; background: #0a0a0a; color: #fff;
-      border-radius: 9999px; padding: 11px 22px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-      align-items: center; gap: 14px; font-size: 14px; font-weight: 600;
-      white-space: nowrap;
+    /* ── Activity Feed ── */
+    .activity-feed { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+    .activity-item {
+      display:flex; align-items:center; gap:10px; padding:10px 12px;
+      background:var(--bg-secondary); border:1px solid rgba(0,0,0,.06);
+      border-radius:12px; box-shadow:1px 2px 6px rgba(0,0,0,.04);
+      animation:fadeInUp .5s ease-out;
     }
-    #edit-bar.active { display: flex; }
-    .edit-sep { width: 1px; height: 18px; background: rgba(255,255,255,0.15); }
-    .edit-btn {
-      background: none; border: none; color: #fff; cursor: pointer;
-      font-size: 14px; font-weight: 600; padding: 0; font-family: inherit;
-      opacity: 0.85; transition: opacity 0.15s; display: flex; align-items: center; gap: 5px;
-    }
-    .edit-btn:hover { opacity: 1; }
-    .edit-btn.dim { opacity: 0.45; font-weight: 400; }
-    .edit-label { opacity: 0.45; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+    .activity-icon { font-size:18px; flex-shrink:0; }
+    .activity-text { flex:1; font-size:13px; color:var(--text-secondary); line-height:1.4; }
+    .activity-user { font-weight:700; color:var(--text-primary); }
+    .activity-time { font-size:11px; color:var(--text-tertiary); font-weight:600; flex-shrink:0; }
+    .activity-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:16px; }
+    .stat-item { background:var(--bg-secondary); border:1px solid rgba(0,0,0,.06); border-radius:12px; padding:14px 10px; text-align:center; }
+    .stat-number { font-size:20px; font-weight:900; color:var(--accent); margin-bottom:4px; }
+    .stat-label { font-size:10px; font-weight:700; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:.5px; }
 
-    /* ── PIN modal ───────────────────────────────────────── */
-    #pin-modal {
-      display: none; position: fixed; inset: 0; z-index: 300;
-      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-      align-items: center; justify-content: center;
+    /* ── Artists I Recommend ── */
+    .artists-grid {
+      display:flex; gap:12px; overflow-x:auto; overflow-y:hidden;
+      padding-bottom:12px; scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch; scrollbar-width:thin;
     }
-    #pin-modal.active { display: flex; }
-    .pin-card {
-      background: var(--bg-secondary); border-radius: 20px;
-      padding: 32px 28px; max-width: 300px; width: 90%;
-      box-shadow: 0 24px 48px rgba(0,0,0,0.25); text-align: center;
+    .artist-card {
+      background:var(--bg-secondary); border-radius:16px; padding:20px;
+      border:1px solid var(--border); transition:all .35s var(--ease-spring);
+      display:flex; flex-direction:column; align-items:center; text-align:center;
+      min-width:160px; max-width:160px; scroll-snap-align:start; flex-shrink:0;
     }
-    .pin-title { font-size: 18px; font-weight: 900; margin-bottom: 4px; }
-    .pin-sub   { font-size: 13px; color: var(--text-tertiary); margin-bottom: 22px; }
-    .pin-dots  { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; }
-    .pin-dot {
-      width: 14px; height: 14px; border-radius: 50%;
-      border: 2px solid var(--border); background: transparent;
-      transition: all 0.15s ease;
+    .artist-card:hover { transform:translateY(-4px) scale(1.02); border-color:var(--accent); box-shadow:0 8px 16px rgba(0,0,0,.1); }
+    .artist-avatar {
+      width:80px; height:80px; border-radius:12px;
+      background:linear-gradient(135deg,#06b6d4,#8b5cf6);
+      display:flex; align-items:center; justify-content:center;
+      font-size:28px; font-weight:900; color:white; margin-bottom:12px;
     }
-    .pin-dot.filled { background: var(--accent); border-color: var(--accent); }
-    .pin-numpad { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
-    .pin-key {
-      height: 52px; border-radius: 12px; background: var(--bg-tertiary);
-      border: 1px solid transparent; font-size: 18px; font-weight: 700;
-      cursor: pointer; color: var(--text-primary); font-family: inherit;
-      transition: all 0.12s ease;
+    .artist-card-name { font-size:14px; font-weight:800; margin-bottom:6px; display:flex; align-items:center; justify-content:center; gap:4px; line-height:1.3; }
+    .artist-genre { font-size:11px; color:var(--text-tertiary); margin-bottom:12px; line-height:1.3; }
+    .artist-follow-btn {
+      padding:7px 14px; background:var(--bg-tertiary); border:1px solid var(--border);
+      border-radius:8px; font-size:12px; font-weight:700; cursor:pointer;
+      color:var(--text-primary); width:100%; font-family:inherit; transition:all .2s ease;
     }
-    .pin-key:hover  { background: var(--accent-soft); border-color: var(--accent); }
-    .pin-key:active { transform: scale(0.92); }
-    .pin-error { color: var(--error); font-size: 13px; margin-top: 10px; min-height: 18px; }
+    .artist-follow-btn:hover { background:var(--accent); color:white; border-color:var(--accent); }
 
-    /* ── Toast ───────────────────────────────────────────── */
-    #able-toast {
-      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-      background: #0a0a0a; color: #fff; padding: 10px 20px; border-radius: 9999px;
-      font-size: 14px; font-weight: 600; z-index: 400;
-      opacity: 0; transition: opacity 0.2s ease; pointer-events: none; white-space: nowrap;
+    /* ── Support / Inner Circle ── */
+    .support-card { position:relative; overflow:hidden; }
+    .support-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; }
+    .support-title { font-size:18px; font-weight:800; margin-bottom:4px; }
+    .support-price { font-size:28px; font-weight:900; color:var(--accent); }
+    .support-price span { font-size:14px; font-weight:600; color:var(--text-tertiary); }
+    .scarcity-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; background:rgba(245,158,11,.12); color:var(--warning); border-radius:6px; font-size:11px; font-weight:700; }
+    .support-desc { font-size:14px; color:var(--text-secondary); line-height:1.5; margin-bottom:16px; }
+    .support-list { list-style:none; margin:0 0 16px; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .support-item { font-size:13px; display:flex; align-items:center; gap:8px; color:var(--text-secondary); }
+    .support-item::before { content:"✓"; color:var(--success); font-weight:800; font-size:11px; width:18px; height:18px; background:rgba(16,185,129,.1); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+    /* ── BTS Polaroids ── */
+    .polaroid-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; max-width:400px; margin:0 auto; }
+    @media(min-width:600px){ .polaroid-grid{ grid-template-columns:repeat(4,1fr); max-width:100%; } }
+    .polaroid { background:white; padding:10px; padding-bottom:35px; box-shadow:0 2px 8px rgba(0,0,0,.1),0 8px 16px rgba(0,0,0,.08); transform:rotate(var(--rotation,0deg)); transition:all .4s var(--ease-spring); cursor:pointer; position:relative; }
+    .polaroid:hover { transform:rotate(0deg) translateY(-8px) scale(1.05); box-shadow:0 12px 24px rgba(0,0,0,.15); z-index:10; }
+    .polaroid-photo { aspect-ratio:1; background:linear-gradient(135deg,#f5f5f4,#e7e5e4); display:flex; align-items:center; justify-content:center; font-size:32px; margin-bottom:8px; }
+    .polaroid-caption { text-align:center; font-size:11px; font-weight:600; color:#57534e; font-family:'Courier New',monospace; }
+
+    /* ── Subscribe / Email ── */
+    .subscribe-card { text-align:center; }
+    .subscribe-card h3 { font-size:18px; font-weight:800; margin-bottom:8px; }
+    .subscribe-card p { font-size:14px; color:var(--text-secondary); margin-bottom:20px; line-height:1.5; }
+    .subscribe-form { display:flex; gap:10px; flex-wrap:wrap; }
+    .subscribe-input {
+      flex:1; min-width:200px; padding:14px 16px; border:1.5px solid var(--border);
+      border-radius:12px; font-size:15px; font-family:inherit;
+      background:var(--bg-primary); color:var(--text-primary);
+      transition:border-color .2s;
     }
-    #able-toast.show { opacity: 1; }
+    .subscribe-input:focus { outline:none; border-color:var(--accent); }
+    .subscribe-success { color:var(--success); font-weight:700; font-size:15px; display:none; padding:12px; }
 
-    /* ── Inline edit ─────────────────────────────────────── */
-    [contenteditable="true"] { outline: none; border-bottom: 2px dashed var(--accent); cursor: text; }
-    [contenteditable="true"]:focus { background: var(--accent-soft); border-radius: 4px; padding: 1px 4px; }
+    /* ── QR Section ── */
+    .qr-card { text-align:center; }
+    .qr-label { font-size:13px; font-weight:700; color:var(--text-tertiary); margin-bottom:12px; text-transform:uppercase; letter-spacing:.06em; }
+    canvas#qrCanvas { border:8px solid white; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,.1); margin-bottom:14px; }
+    .qr-url { font-size:16px; font-weight:800; margin-bottom:6px; }
+    .qr-info { font-size:12px; color:var(--text-tertiary); margin-bottom:18px; line-height:1.5; }
 
-    /* ── Responsive ──────────────────────────────────────── */
-    @media (max-width: 380px) {
-      .short-title { font-size: 22px; }
-      .merch-grid  { grid-template-columns: 1fr; }
+    /* ── Footer ── */
+    .page-footer { text-align:center; padding:28px 0; border-top:1px solid var(--border); margin-top:8px; }
+    .footer-release { font-size:18px; font-weight:900; letter-spacing:-.4px; margin-bottom:4px; }
+    .footer-date { font-size:13px; color:var(--text-tertiary); font-weight:600; margin-bottom:20px; }
+    .footer-cta { margin-bottom:20px; }
+    .footer-brand { font-size:12px; color:var(--text-tertiary); }
+    .footer-brand a { color:var(--accent); text-decoration:none; font-weight:700; }
+
+    /* ── Theme Toggle ── */
+    .theme-toggle {
+      position:fixed; top:16px; right:16px; z-index:99;
+      width:44px; height:44px; background:var(--bg-secondary);
+      border:1px solid var(--border); border-radius:50%; cursor:pointer;
+      font-size:18px; display:flex; align-items:center; justify-content:center;
+      box-shadow:0 2px 8px rgba(0,0,0,.1); transition:all .2s ease;
+    }
+    .theme-toggle:hover { transform:scale(1.08); background:var(--bg-tertiary); }
+
+    /* ── Cart Button ── */
+    .cart-button {
+      position:fixed; bottom:20px; right:20px; z-index:99;
+      width:56px; height:56px; background:var(--accent); color:white;
+      border:none; border-radius:50%; font-size:22px; cursor:pointer;
+      box-shadow:0 4px 16px rgba(8,145,178,.4); transition:all .2s ease;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .cart-button:hover { transform:scale(1.08); box-shadow:0 6px 24px rgba(8,145,178,.5); }
+    .cart-count {
+      position:absolute; top:-4px; right:-4px; background:#ef4444; color:white;
+      font-size:11px; font-weight:800; width:20px; height:20px;
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+    }
+
+    /* ── Cart Panel ── */
+    .cart-panel {
+      position:fixed; right:-360px; top:0; bottom:0; width:360px; max-width:100vw;
+      background:var(--bg-primary); border-left:1px solid var(--border);
+      z-index:300; transition:right .35s cubic-bezier(.32,1,.32,1);
+      display:flex; flex-direction:column; box-shadow:-8px 0 32px rgba(0,0,0,.15);
+    }
+    .cart-panel.open { right:0; }
+    .cart-header { display:flex; align-items:center; justify-content:space-between; padding:20px; border-bottom:1px solid var(--border); }
+    .cart-title { font-size:20px; font-weight:900; }
+    .cart-close { background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-secondary); padding:4px 8px; border-radius:8px; }
+    .cart-close:hover { background:var(--bg-tertiary); color:var(--text-primary); }
+    .cart-items { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; }
+    .cart-item { display:flex; gap:12px; align-items:center; padding:12px; background:var(--bg-secondary); border-radius:12px; border:1px solid var(--border); }
+    .cart-item-image { width:56px; height:56px; border-radius:8px; background:linear-gradient(135deg,#a855f7,#ec4899); flex-shrink:0; }
+    .cart-item-info { flex:1; }
+    .cart-item-name { font-size:14px; font-weight:700; margin-bottom:2px; }
+    .cart-item-size { font-size:12px; color:var(--text-tertiary); margin-bottom:4px; }
+    .cart-item-price { font-size:15px; font-weight:800; color:var(--accent); }
+    .cart-item-remove { background:none; border:none; color:var(--text-tertiary); cursor:pointer; font-size:18px; padding:4px; border-radius:6px; transition:all .15s; }
+    .cart-item-remove:hover { background:rgba(239,68,68,.1); color:#ef4444; }
+    .cart-footer { padding:20px; border-top:1px solid var(--border); }
+    .cart-total { display:flex; justify-content:space-between; font-size:18px; font-weight:900; margin-bottom:16px; }
+    .cart-checkout { width:100%; padding:16px; background:linear-gradient(135deg,var(--accent),var(--accent-hover)); color:white; border:none; border-radius:12px; font-size:16px; font-weight:800; cursor:pointer; font-family:inherit; transition:all .2s; }
+    .cart-checkout:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(8,145,178,.4); }
+
+    /* ── Cart Overlay ── */
+    .cart-overlay { position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:299; display:none; backdrop-filter:blur(4px); }
+    .cart-overlay.visible { display:block; }
+
+    /* ── Toast ── */
+    .toast {
+      position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(20px);
+      background:var(--text-primary); color:var(--bg-primary);
+      padding:12px 20px; border-radius:12px; font-size:14px; font-weight:700;
+      z-index:400; opacity:0; transition:all .3s ease; white-space:nowrap;
+      box-shadow:0 4px 16px rgba(0,0,0,.2);
+    }
+    .toast.visible { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* ── Reduced motion ── */
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
     }
   </style>
 </head>
-
 <body>
-  <div id="pgbar"></div>
 
+  <!-- Scroll Progress -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- Section Nav Dots -->
+  <nav class="section-nav" id="sectionNav">
+    <div class="section-dot active" data-section="hero"><span class="dot-label">Top</span></div>
+    <div class="section-dot" data-section="streaming"><span class="dot-label">Music</span></div>
+    <div class="section-dot" data-section="videos"><span class="dot-label">Videos</span></div>
+    <div class="section-dot" data-section="events"><span class="dot-label">Calendar</span></div>
+    <div class="section-dot" data-section="tour"><span class="dot-label">Tour</span></div>
+    <div class="section-dot" data-section="merch"><span class="dot-label">Shop</span></div>
+    <div class="section-dot" data-section="artists"><span class="dot-label">Artists</span></div>
+  </nav>
+
+  <!-- Quick Action Buttons -->
+  <div class="quick-actions">
+    <button class="quick-action-btn pulse" id="backToTop" aria-label="Back to top">↑<span class="tooltip">Back to Top</span></button>
+    <button class="quick-action-btn" id="sharePage" aria-label="Share">📤<span class="tooltip">Share Page</span></button>
+    <button class="quick-action-btn" id="saveForLater" aria-label="Save">🔖<span class="tooltip">Save for Later</span></button>
+  </div>
+
+  <!-- Cart Overlay -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+
+  <!-- Cart Panel -->
+  <div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+      <h2 class="cart-title">Your Cart</h2>
+      <button class="cart-close" id="cartClose">✕</button>
+    </div>
+    <div class="cart-items">
+      <div class="cart-item">
+        <div class="cart-item-image"></div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">Midnight Drive Tee</div>
+          <div class="cart-item-size">Size: M</div>
+          <div class="cart-item-price">$35</div>
+        </div>
+        <button class="cart-item-remove">✕</button>
+      </div>
+      <div class="cart-item">
+        <div class="cart-item-image" style="background:linear-gradient(135deg,#1e3a5f,#0d1b2a);"></div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">Signed Vinyl LP</div>
+          <div class="cart-item-size">180g Limited Edition</div>
+          <div class="cart-item-price">$45</div>
+        </div>
+        <button class="cart-item-remove">✕</button>
+      </div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total"><span>Total</span><span>$80</span></div>
+      <button class="cart-checkout">Checkout</button>
+    </div>
+  </div>
+
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" id="themeToggle">🌙</button>
+
+  <!-- Audio Player -->
+  <div class="audio-player" id="audioPlayer">
+    <div class="audio-orb" id="audioOrb">
+      <div class="audio-orb-wave">
+        <div class="audio-bar"></div><div class="audio-bar"></div>
+        <div class="audio-bar"></div><div class="audio-bar"></div>
+        <div class="audio-bar"></div>
+      </div>
+    </div>
+    <div class="audio-info">
+      <div class="audio-track" id="audioTrack">Midnight Drive</div>
+      <div class="audio-artist" id="audioArtist">Maya Rivers</div>
+    </div>
+    <button class="audio-close" id="audioClose">✕</button>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Cart Button -->
+  <button class="cart-button" id="cartButton" aria-label="Open cart">
+    🛍️<span class="cart-count">2</span>
+  </button>
+
+  <!-- MAIN CONTAINER -->
   <div class="container">
 
-    <!-- ── HEADER ──────────────────────────────────────────── -->
-    <header class="page-header" id="page-header">
-      <div class="header-row">
-        <span class="header-title" id="header-name"></span>
-        <div class="header-right">
-          <button class="header-icon-btn" id="btn-share" aria-label="Share">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <!-- ── HERO ── -->
+    <div class="hero-card" id="hero">
+      <div class="short-container" id="shortContainer">
+        <div class="video-placeholder"></div>
+
+        <!-- State badge -->
+        <div class="short-badges">
+          <span class="badge badge-state" id="stateBadge">Pre-Release</span>
+        </div>
+
+        <!-- Countdown -->
+        <div class="countdown-banner" id="countdownBanner">
+          <div class="countdown-label">Drops In</div>
+          <div class="countdown-time" id="heroCountdownTime">—</div>
+        </div>
+
+        <!-- Play button -->
+        <div class="play-button"><div class="play-icon"></div></div>
+
+        <!-- Right rail engagement -->
+        <div class="short-engagement">
+          <button class="engagement-btn" id="likeBtn">
+            <div class="engagement-icon">♥</div>
+            <span class="engagement-count" id="likeCount">12K</span>
+          </button>
+          <button class="engagement-btn">
+            <div class="engagement-icon">💬</div>
+            <span class="engagement-count">483</span>
+          </button>
+          <button class="engagement-btn" onclick="handleShare()">
+            <div class="engagement-icon">📤</div>
+            <span class="engagement-count">Share</span>
+          </button>
+        </div>
+
+        <!-- Bottom artist info overlay -->
+        <div class="short-info">
+          <div class="short-artist-row">
+            <div class="short-avatar-sm" id="heroAvatarSm">MR</div>
+            <span class="short-artist-name-sm" id="heroArtistSm">Maya Rivers</span>
+            <button class="short-follow-pill" id="followBtn" onclick="handleFollow(this)">Follow</button>
+          </div>
+          <div class="short-metadata">
+            <div class="greeting-text" id="greetingText">DROPPING SOON</div>
+            <h1 class="short-title" id="heroShortTitle">Midnight Drive EP</h1>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA zone below the reel -->
+      <div class="hero-content">
+        <div class="artist-header">
+          <div>
+            <h2 class="artist-name" id="artistName">Maya Rivers</h2>
+            <p class="artist-handle" id="artistHandle">@mayarivers</p>
+          </div>
+          <button class="share-button" id="shareButton" onclick="handleShare()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
               <polyline points="16 6 12 2 8 6"/>
               <line x1="12" y1="2" x2="12" y2="15"/>
             </svg>
           </button>
-          <button class="header-icon-btn" id="btn-edit-unlock" style="display:none" aria-label="Edit">⚙️</button>
+        </div>
+
+        <div class="cta-group">
+          <button class="btn btn-primary" id="mainCta">⏰ Pre-save on Spotify</button>
+          <button class="btn btn-secondary" id="secondaryCta">🔔 Get Notified</button>
+        </div>
+
+        <div class="quick-links-strip" id="quickLinksStrip">
+          <a href="#" class="quick-link-pill">🎧 Listen</a>
+          <a href="#tour" class="quick-link-pill">🎟️ Tour</a>
+          <a href="#merch" class="quick-link-pill">🛍️ Merch</a>
+          <a href="#support" class="quick-link-pill">💝 Join IC</a>
+          <a href="#videos" class="quick-link-pill">🎬 Videos</a>
         </div>
       </div>
-    </header>
+    </div><!-- /hero-card -->
 
-  </div><!-- /container for header -->
+    <!-- ── SECTIONS CONTAINER ── -->
+    <div class="sections-container">
 
-  <!-- ── HERO (full bleed) ───────────────────────────────── -->
-  <div class="hero-card" id="hero-card">
-    <div class="short-container" id="short-container">
-
-      <!-- State badge -->
-      <div class="short-badges">
-        <span class="badge-state" id="hero-badge">Live</span>
-      </div>
-
-      <!-- Play button -->
-      <div class="play-button" id="hero-play-btn">
-        <div class="play-icon"></div>
-      </div>
-
-      <!-- Right rail: engagement -->
-      <div class="short-engagement">
-        <button class="engagement-btn">
-          <div class="engagement-icon">♥</div>
-          <span class="engagement-count">12K</span>
-        </button>
-        <button class="engagement-btn">
-          <div class="engagement-icon">💬</div>
-          <span class="engagement-count">483</span>
-        </button>
-        <button class="engagement-btn" id="engage-share">
-          <div class="engagement-icon">📤</div>
-          <span class="engagement-count">Share</span>
-        </button>
-      </div>
-
-      <!-- Bottom overlay -->
-      <div class="short-info">
-        <div class="short-artist-row">
-          <div class="short-avatar-sm" id="hero-avatar-sm"></div>
-          <span class="short-artist-name-sm" id="hero-artist-sm"></span>
-          <button class="short-follow-pill" id="hero-follow-pill">Follow</button>
+      <!-- ── STREAMING ── -->
+      <section class="section" id="streaming">
+        <div class="section-header-row">
+          <h2 class="section-title">Listen Now</h2>
         </div>
-        <div class="short-metadata">
-          <div class="greeting-text" id="hero-greeting"></div>
-          <h1 class="short-title" id="hero-title">Able Artist</h1>
-        </div>
-      </div>
 
-    </div><!-- /short-container -->
-
-    <!-- CTA zone below reel -->
-    <div class="hero-content" id="hero-content">
-      <div class="artist-header">
-        <div>
-          <div class="artist-name" id="artist-name"></div>
-          <div class="artist-handle" id="artist-handle"></div>
-        </div>
-        <button class="share-button" id="share-btn-hero" aria-label="Share">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-            <polyline points="16 6 12 2 8 6"/>
-            <line x1="12" y1="2" x2="12" y2="15"/>
-          </svg>
-        </button>
-      </div>
-      <div class="cta-group" id="cta-group"></div>
-    </div>
-  </div><!-- /hero-card -->
-
-  <!-- ── SECTIONS ────────────────────────────────────────── -->
-  <div class="container">
-
-    <!-- LISTEN -->
-    <section class="section" id="sec-listen">
-      <div class="section-header-row">
-        <h2 class="section-title">Listen Now</h2>
-      </div>
-      <div id="stream-player-wrap"></div>
-      <div class="stream-platforms-label">Stream everywhere</div>
-      <div class="streaming-pills-container" id="streaming-pills"></div>
-    </section>
-
-    <!-- TRACKLIST -->
-    <section class="section" id="sec-tracklist">
-      <h2 class="section-title" id="tracklist-title">Tracklist</h2>
-      <div class="tracklist-compact" id="tracklist-wrap"></div>
-    </section>
-
-    <!-- CREDITS -->
-    <section class="section" id="sec-credits" style="display:none">
-      <h2 class="section-title">Credits</h2>
-      <div class="credits-list" id="credits-wrap"></div>
-    </section>
-
-    <!-- INNER CIRCLE -->
-    <section class="section" id="sec-inner-circle">
-      <h2 class="section-title" id="ic-title-el">Inner Circle</h2>
-      <div class="subscribe-card">
-        <div class="subscribe-title" id="ic-heading"></div>
-        <div class="subscribe-desc"  id="ic-desc"></div>
-        <ul class="subscribe-perks"  id="ic-perks"></ul>
-        <form id="ic-form" novalidate>
-          <div class="subscribe-form">
-            <input class="subscribe-input" id="ic-email" type="email" placeholder="your@email.com" autocomplete="email" required />
-            <button class="subscribe-submit" type="submit">Join</button>
+        <!-- Featured player widget -->
+        <div class="stream-player-widget">
+          <div class="stream-player-art">
+            <div class="stream-art-bg"></div>
+            <button class="stream-play-btn">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M3 2l10 6-10 6V2z"/></svg>
+            </button>
           </div>
-        </form>
-        <div class="subscribe-success" id="ic-success">✓ You're in the Inner Circle!</div>
-      </div>
-    </section>
+          <div class="stream-player-info">
+            <div class="stream-track-name">Midnight Drive</div>
+            <div class="stream-track-sub">Maya Rivers · Midnight Drive EP</div>
+            <div class="stream-progress-bar"><div class="stream-progress-fill"></div></div>
+            <div class="stream-progress-times"><span>2:34</span><span>4:12</span></div>
+          </div>
+          <a href="#" target="_blank" class="stream-open-link">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#1DB954" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+            Open
+          </a>
+        </div>
 
-    <!-- ABOUT -->
-    <section class="section" id="sec-about">
-      <h2 class="section-title">About</h2>
-      <p class="about-bio truncated" id="about-bio"></p>
-      <button class="read-more" id="read-more" style="display:none">Read more</button>
-    </section>
+        <div class="stream-platforms-label">Stream everywhere</div>
+        <div class="streaming-pills-container">
+          <a href="#" class="streaming-pill spotify"><span class="pill-icon">●</span><span class="pill-text">Spotify</span></a>
+          <a href="#" class="streaming-pill apple"><span class="pill-icon">●</span><span class="pill-text">Apple Music</span></a>
+          <a href="#" class="streaming-pill youtube"><span class="pill-icon">●</span><span class="pill-text">YouTube Music</span></a>
+          <a href="#" class="streaming-pill soundcloud"><span class="pill-icon">●</span><span class="pill-text">SoundCloud</span></a>
+          <a href="#" class="streaming-pill amazon"><span class="pill-icon">●</span><span class="pill-text">Amazon Music</span></a>
+          <a href="#" class="streaming-pill tidal"><span class="pill-icon">●</span><span class="pill-text">Tidal</span></a>
+          <a href="#" class="streaming-pill bandcamp"><span class="pill-icon">●</span><span class="pill-text">Bandcamp</span></a>
+          <a href="#" class="streaming-pill deezer"><span class="pill-icon">●</span><span class="pill-text">Deezer</span></a>
+        </div>
+      </section>
 
-    <!-- SHOWS / TOUR -->
-    <section class="section" id="sec-shows">
-      <div class="section-header-row">
-        <h2 class="section-title">Tour Dates</h2>
-      </div>
-      <div class="shows-list" id="shows-list"></div>
-    </section>
+      <!-- ── TRACKLIST ── -->
+      <section class="section" id="tracklist">
+        <h2 class="section-title">Tracklist</h2>
+        <div class="tracklist-compact">
+          <div class="track-row">
+            <div class="track-num">1</div>
+            <div class="track-info"><div class="track-name">Midnight Drive</div><div class="track-artist">Maya Rivers</div></div>
+            <div class="track-duration">4:12</div>
+            <button class="track-menu">⋮</button>
+          </div>
+          <div class="track-row">
+            <div class="track-num">2</div>
+            <div class="track-info"><div class="track-name">Neon Lights <span class="track-feat">• feat. Nova Vex</span> <span class="explicit-badge">E</span></div><div class="track-artist">Maya Rivers</div></div>
+            <div class="track-duration">3:45</div>
+            <button class="track-menu">⋮</button>
+          </div>
+          <div class="track-row">
+            <div class="track-num">3</div>
+            <div class="track-info"><div class="track-name">Lost in the City</div><div class="track-artist">Maya Rivers</div></div>
+            <div class="track-duration">5:02</div>
+            <button class="track-menu">⋮</button>
+          </div>
+          <div class="track-row">
+            <div class="track-num">4</div>
+            <div class="track-info"><div class="track-name">Fading Out</div><div class="track-artist">Maya Rivers</div></div>
+            <div class="track-duration">3:28</div>
+            <button class="track-menu">⋮</button>
+          </div>
+          <div class="track-row">
+            <div class="track-num">5</div>
+            <div class="track-info"><div class="track-name">Electric Heart <span class="track-feat">• feat. Crystal Lake</span></div><div class="track-artist">Maya Rivers</div></div>
+            <div class="track-duration">4:18</div>
+            <button class="track-menu">⋮</button>
+          </div>
+          <div class="track-row">
+            <div class="track-num">6</div>
+            <div class="track-info"><div class="track-name">Dawn (Outro)</div><div class="track-artist">Maya Rivers</div></div>
+            <div class="track-duration">2:33</div>
+            <button class="track-menu">⋮</button>
+          </div>
+          <div class="tracklist-footer">6 tracks · 23 min</div>
+        </div>
+      </section>
 
-    <!-- MERCH -->
-    <section class="section" id="sec-merch" style="display:none">
-      <h2 class="section-title">Merch</h2>
-      <div class="merch-grid" id="merch-grid"></div>
-      <a href="#" id="merch-shop-link" class="btn btn-secondary" style="display:none">View full shop →</a>
-    </section>
+      <!-- ── VIDEOS ── -->
+      <section class="section" id="videos">
+        <h2 class="section-title">Videos</h2>
+        <div class="video-collage">
+          <a href="https://youtube.com" target="_blank" class="video-featured" style="--rotation:-0.5deg;">
+            <div class="video-thumb">
+              <div class="video-placeholder-thumb" style="background:linear-gradient(135deg,#ec4899,#8b5cf6);"><div class="thumb-pattern"></div></div>
+              <div class="video-overlay"><div class="video-play-btn">▶</div></div>
+              <span class="video-badge new">NEW</span>
+              <span class="video-time">4:32</span>
+            </div>
+            <div class="video-info">
+              <div class="video-title">Midnight Drive — Official Music Video</div>
+              <div class="video-stats">128K views</div>
+            </div>
+          </a>
+          <div class="video-grid">
+            <a href="https://youtube.com" target="_blank" class="video-item" style="--rotation:0.3deg;">
+              <div class="video-thumb">
+                <div class="video-placeholder-thumb" style="background:linear-gradient(135deg,#0891b2,#06b6d4);"><div class="thumb-pattern"></div></div>
+                <div class="video-overlay"><div class="video-play-btn">▶</div></div>
+                <span class="video-time">3:24</span>
+              </div>
+              <div class="video-info"><div class="video-title">Studio Session Vol. 1</div></div>
+            </a>
+            <a href="https://youtube.com" target="_blank" class="video-item" style="--rotation:-0.2deg;">
+              <div class="video-thumb">
+                <div class="video-placeholder-thumb" style="background:linear-gradient(135deg,#f59e0b,#ef4444);"><div class="thumb-pattern"></div></div>
+                <div class="video-overlay"><div class="video-play-btn">▶</div></div>
+                <span class="video-badge live">LIVE</span>
+                <span class="video-time">5:42</span>
+              </div>
+              <div class="video-info"><div class="video-title">Live at The Echo</div></div>
+            </a>
+            <a href="https://youtube.com" target="_blank" class="video-item" style="--rotation:0.4deg;">
+              <div class="video-thumb">
+                <div class="video-placeholder-thumb" style="background:linear-gradient(135deg,#7c3aed,#ec4899);"><div class="thumb-pattern"></div></div>
+                <div class="video-overlay"><div class="video-play-btn">▶</div></div>
+                <span class="video-time">4:12</span>
+              </div>
+              <div class="video-info"><div class="video-title">Neon Lights (Lyric Video)</div></div>
+            </a>
+            <a href="https://youtube.com" target="_blank" class="video-item" style="--rotation:-0.3deg;">
+              <div class="video-thumb">
+                <div class="video-placeholder-thumb" style="background:linear-gradient(135deg,#374151,#1f2937);"><div class="thumb-pattern"></div></div>
+                <div class="video-overlay"><div class="video-play-btn">▶</div></div>
+                <span class="video-time">2:48</span>
+              </div>
+              <div class="video-info"><div class="video-title">Behind The Scenes</div></div>
+            </a>
+          </div>
+        </div>
+      </section>
 
-    <!-- SUPPORT -->
-    <section class="section" id="sec-support" style="display:none">
-      <h2 class="section-title">Support</h2>
-      <div class="support-card">
-        <div class="subscribe-title" id="support-title-el">Support the music</div>
-        <div class="subscribe-desc"  id="support-desc-el">Every contribution keeps the music going.</div>
-        <div class="support-options" id="support-options"></div>
-      </div>
-    </section>
+      <!-- ── ABOUT / BIO ── -->
+      <section class="section" id="bio">
+        <h2 class="section-title">About</h2>
+        <div class="bio-card">
+          <div class="bio-avatar" id="bioAvatar">MR</div>
+          <div class="bio-content">
+            <p class="bio-text" id="bioText">Electronic producer and vocalist blending ambient textures with driving beats. Based in LA, creating immersive soundscapes that bridge underground club culture and cinematic composition.</p>
+            <div class="bio-tags" id="bioTags">
+              <span class="tag">Electronic</span>
+              <span class="tag">Ambient</span>
+              <span class="tag">House</span>
+              <span class="tag">LA</span>
+            </div>
+            <div class="social-strip" id="socialStrip">
+              <a href="#" class="social-pill">📷 Instagram</a>
+              <a href="#" class="social-pill">🐦 Twitter</a>
+              <a href="#" class="social-pill">🎵 TikTok</a>
+              <a href="#" class="social-pill">▶️ YouTube</a>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    <!-- SOCIAL -->
-    <section class="section" id="sec-social">
-      <h2 class="section-title">Follow</h2>
-      <div class="social-grid" id="social-grid"></div>
-    </section>
+      <!-- ── CALENDAR / EVENTS (Bento Grid) ── -->
+      <section class="section" id="events">
+        <h2 class="section-title">What's Next</h2>
+        <div class="bento-grid" id="bentoGrid">
+          <div class="bento-tile size-small type-date" style="--accent-color:#ec4899;">
+            <div class="bento-date">MAR<br>28</div>
+          </div>
+          <div class="bento-tile size-large type-event">
+            <div class="bento-content">
+              <div class="bento-title">Album Release Show</div>
+              <div class="bento-subtitle">The Roxy, LA</div>
+              <div class="bento-time">🎸 8:00 PM</div>
+            </div>
+          </div>
+          <div class="bento-tile size-small type-date" style="--accent-color:#0891b2;">
+            <div class="bento-date">APR<br>05</div>
+          </div>
+          <div class="bento-tile size-medium type-event">
+            <div class="bento-content">
+              <div class="bento-title">Live at Coachella</div>
+              <div class="bento-subtitle">Indio, CA</div>
+            </div>
+          </div>
+          <div class="bento-tile size-medium type-tour">
+            <div class="bento-content">
+              <div class="bento-title">West Coast Tour</div>
+              <div class="bento-subtitle">12 cities</div>
+            </div>
+          </div>
+          <div class="bento-tile size-small type-date" style="--accent-color:#8b5cf6;">
+            <div class="bento-date">MAY<br>12</div>
+          </div>
+        </div>
+      </section>
 
-    <!-- FOOTER -->
+      <!-- ── TOUR DATES ── -->
+      <section class="section" id="tour">
+        <div class="section-header-row">
+          <h2 class="section-title">Tour Dates</h2>
+        </div>
+
+        <div class="tour-notify-chip">
+          <span style="font-size:16px;">🔔</span>
+          <span class="tour-notify-chip-text">Get presale codes &amp; new date alerts</span>
+          <button class="tour-notify-chip-btn" onclick="showToast('✅ You\'re on the list!')">Notify Me</button>
+        </div>
+
+        <!-- On Sale -->
+        <div class="tour-card">
+          <div class="tour-card-accent accent-green"></div>
+          <div class="tour-header">
+            <div class="tour-date-block">
+              <div class="date-box"><span class="date-month">Mar</span><span class="date-day">22</span></div>
+              <div class="tour-info">
+                <div class="tour-city">Los Angeles, CA</div>
+                <div class="tour-venue">📍 The Roxy Theatre</div>
+                <div class="tour-time">Doors 8:00 PM</div>
+              </div>
+            </div>
+            <div class="tour-status"><span class="status-badge badge-onsale">On Sale</span></div>
+          </div>
+          <div class="tour-actions">
+            <button class="btn btn-primary btn-small" style="flex:1;" onclick="showToast('Opening ticket page...')">Get Tickets</button>
+            <button class="btn btn-secondary btn-small" onclick="showToast('✅ RSVP\'d!')">RSVP</button>
+          </div>
+        </div>
+
+        <!-- Limited / urgent -->
+        <div class="tour-card urgent">
+          <div class="tour-card-accent accent-orange"></div>
+          <div class="tour-header">
+            <div class="tour-date-block">
+              <div class="date-box"><span class="date-month">Apr</span><span class="date-day">05</span></div>
+              <div class="tour-info">
+                <div class="tour-city">San Francisco, CA</div>
+                <div class="tour-venue">📍 The Independent</div>
+                <div class="tour-time-capacity">
+                  <span class="tour-time">Doors 7:30 PM</span>
+                  <span style="font-size:10px;font-weight:800;color:#f59e0b;">· 23 left</span>
+                </div>
+                <div class="seat-bar"><div class="seat-bar-fill" style="width:92%;"></div></div>
+              </div>
+            </div>
+            <div class="tour-status"><span class="status-badge badge-limited">Limited</span></div>
+          </div>
+          <div class="tour-actions">
+            <button class="btn btn-primary btn-small" style="flex:1;" onclick="showToast('Opening ticket page...')">Get Tickets</button>
+            <button class="btn btn-secondary btn-small" onclick="showToast('✅ RSVP\'d!')">RSVP</button>
+          </div>
+        </div>
+
+        <!-- Coming soon -->
+        <div class="tour-card">
+          <div class="tour-card-accent accent-grey"></div>
+          <div class="tour-header">
+            <div class="tour-date-block">
+              <div class="date-box" style="background:var(--text-tertiary);"><span class="date-month">Apr</span><span class="date-day">18</span></div>
+              <div class="tour-info">
+                <div class="tour-city">Seattle, WA</div>
+                <div class="tour-venue">📍 Neumos</div>
+                <div class="tour-time">Doors 8:00 PM</div>
+              </div>
+            </div>
+            <div class="tour-status"><span class="status-badge badge-upcoming">Coming Soon</span></div>
+          </div>
+          <div class="tour-actions">
+            <button class="btn btn-secondary btn-small" style="flex:1;" onclick="showToast('✅ We\'ll notify you!')">Get Notified</button>
+          </div>
+        </div>
+
+        <div class="past-shows-toggle" id="pastShowsToggle" onclick="togglePastShows()">Show Past Shows ▼</div>
+        <div class="past-shows" id="pastShows">
+          <div class="past-show">
+            <div class="past-show-info"><div class="past-show-city">Portland, OR — Doug Fir Lounge</div><div class="past-show-date">January 28, 2025</div></div>
+            <span class="status-badge badge-soldout">Sold Out</span>
+          </div>
+          <div class="past-show">
+            <div class="past-show-info"><div class="past-show-city">Denver, CO — Globe Hall</div><div class="past-show-date">January 15, 2025</div></div>
+            <span class="status-badge badge-soldout">Sold Out</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── MERCH ── -->
+      <section class="section" id="merch">
+        <div class="section-header-row"><h2 class="section-title">Merch</h2></div>
+        <div class="merch-bento-grid">
+          <div class="merch-bento-tile size-large" onclick="showToast('Opening store...')">
+            <div class="merch-bento-image" style="background:linear-gradient(135deg,#a855f7,#ec4899);">
+              <span class="merch-badge badge-new">New</span>
+            </div>
+            <div class="merch-bento-info">
+              <div class="merch-bento-name">Midnight Drive Tee</div>
+              <div class="merch-bento-desc">100% Cotton · Multiple colors</div>
+              <div class="merch-bento-price">$35</div>
+            </div>
+          </div>
+          <div class="merch-bento-tile size-medium" onclick="showToast('Opening store...')">
+            <div class="merch-bento-image" style="background:linear-gradient(135deg,#1e3a5f,#0d1b2a);">
+              <span class="merch-badge badge-limited">Limited</span>
+            </div>
+            <div class="merch-bento-info">
+              <div class="merch-bento-name">Signed Vinyl LP</div>
+              <div class="merch-bento-desc">180g · Only 500 copies</div>
+              <div class="merch-bento-price">$45</div>
+            </div>
+          </div>
+          <div class="merch-bento-tile size-small" onclick="showToast('Opening store...')">
+            <div class="merch-bento-image" style="background:linear-gradient(135deg,#374151,#1f2937);">
+              <span class="merch-badge badge-sale">20% Off</span>
+            </div>
+            <div class="merch-bento-info">
+              <div class="merch-bento-name">Tour Hoodie</div>
+              <div class="merch-bento-price">$56</div>
+            </div>
+          </div>
+          <div class="merch-bento-tile size-small" onclick="showToast('Opening store...')">
+            <div class="merch-bento-image" style="background:linear-gradient(135deg,#7c3aed,#4c1d95);"></div>
+            <div class="merch-bento-info">
+              <div class="merch-bento-name">Pin Set</div>
+              <div class="merch-bento-price">$15</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── FAN ACTIVITY ── -->
+      <section class="section" id="activity">
+        <h2 class="section-title">Live Activity</h2>
+        <div class="activity-feed">
+          <div class="activity-item"><div class="activity-icon">🔥</div><div class="activity-text"><span class="activity-user">Sarah</span> from Brooklyn pre-saved</div><div class="activity-time">2m ago</div></div>
+          <div class="activity-item"><div class="activity-icon">💚</div><div class="activity-text"><span class="activity-user">Jake</span> added to playlist</div><div class="activity-time">5m ago</div></div>
+          <div class="activity-item"><div class="activity-icon">🎧</div><div class="activity-text"><span class="activity-user">Emma</span> from LA is listening now</div><div class="activity-time">8m ago</div></div>
+          <div class="activity-item"><div class="activity-icon">⚡</div><div class="activity-text"><span class="activity-user">Marcus</span> shared on Instagram</div><div class="activity-time">12m ago</div></div>
+          <div class="activity-item"><div class="activity-icon">🎵</div><div class="activity-text"><span class="activity-user">Olivia</span> from Seattle pre-saved</div><div class="activity-time">15m ago</div></div>
+        </div>
+        <div class="activity-stats">
+          <div class="stat-item"><div class="stat-number">+247</div><div class="stat-label">Last Hour</div></div>
+          <div class="stat-item"><div class="stat-number">1.2K</div><div class="stat-label">Today</div></div>
+          <div class="stat-item"><div class="stat-number">12</div><div class="stat-label">Cities</div></div>
+        </div>
+      </section>
+
+      <!-- ── ARTISTS I RECOMMEND ── -->
+      <section class="section" id="artists">
+        <h2 class="section-title">Artists I Recommend</h2>
+        <div class="artists-grid">
+          <div class="artist-card">
+            <div class="artist-avatar">NV</div>
+            <div class="artist-info"><div class="artist-card-name">Nova Vex <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="artist-genre">Electronic / Synthwave</div></div>
+            <button class="artist-follow-btn" onclick="showToast('Following Nova Vex!')">Follow</button>
+          </div>
+          <div class="artist-card">
+            <div class="artist-avatar" style="background:linear-gradient(135deg,#ec4899,#f59e0b);">CL</div>
+            <div class="artist-info"><div class="artist-card-name">Crystal Lake</div><div class="artist-genre">Ambient / Downtempo</div></div>
+            <button class="artist-follow-btn" onclick="showToast('Following Crystal Lake!')">Follow</button>
+          </div>
+          <div class="artist-card">
+            <div class="artist-avatar" style="background:linear-gradient(135deg,#10b981,#06b6d4);">MF</div>
+            <div class="artist-info"><div class="artist-card-name">Midnight Flux</div><div class="artist-genre">House / Deep House</div></div>
+            <button class="artist-follow-btn" onclick="showToast('Following Midnight Flux!')">Follow</button>
+          </div>
+          <div class="artist-card">
+            <div class="artist-avatar" style="background:linear-gradient(135deg,#8b5cf6,#ec4899);">AE</div>
+            <div class="artist-info"><div class="artist-card-name">Azure Echo</div><div class="artist-genre">Chillwave / Synth</div></div>
+            <button class="artist-follow-btn" onclick="showToast('Following Azure Echo!')">Follow</button>
+          </div>
+          <div class="artist-card">
+            <div class="artist-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444);">PD</div>
+            <div class="artist-info"><div class="artist-card-name">Pulse Drive</div><div class="artist-genre">Techno / Minimal</div></div>
+            <button class="artist-follow-btn" onclick="showToast('Following Pulse Drive!')">Follow</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── INNER CIRCLE / SUPPORT ── -->
+      <section class="section" id="support">
+        <div class="section-header-row"><h2 class="section-title">Support</h2></div>
+        <div class="support-card">
+          <div class="support-header">
+            <div>
+              <h3 class="support-title">Inner Circle</h3>
+              <span class="scarcity-badge">🔥 23 spots left</span>
+            </div>
+            <div class="support-price">$5<span>/mo</span></div>
+          </div>
+          <p class="support-desc">Exclusive access to unreleased tracks, behind-the-scenes content, and direct connection with Maya.</p>
+          <ul class="support-list">
+            <li class="support-item">Early releases</li>
+            <li class="support-item">Exclusive tracks</li>
+            <li class="support-item">Discord access</li>
+            <li class="support-item">Presale codes</li>
+          </ul>
+          <button class="btn btn-primary" style="width:100%;" onclick="showToast('Joining Inner Circle...')">Join Inner Circle</button>
+        </div>
+      </section>
+
+      <!-- ── BTS POLAROIDS ── -->
+      <section class="section" id="bts">
+        <h2 class="section-title">Behind The Scenes</h2>
+        <div class="polaroid-grid">
+          <div class="polaroid" style="--rotation:-3deg;"><div class="polaroid-photo">📷</div><div class="polaroid-caption">Studio sessions</div></div>
+          <div class="polaroid" style="--rotation:2deg;"><div class="polaroid-photo">🎹</div><div class="polaroid-caption">New gear day</div></div>
+          <div class="polaroid" style="--rotation:-1deg;"><div class="polaroid-photo">🎤</div><div class="polaroid-caption">Recording vocals</div></div>
+          <div class="polaroid" style="--rotation:4deg;"><div class="polaroid-photo">🌃</div><div class="polaroid-caption">Late night vibes</div></div>
+        </div>
+      </section>
+
+      <!-- ── SUBSCRIBE ── -->
+      <section class="section" id="subscribe">
+        <h2 class="section-title">Stay Connected</h2>
+        <div class="subscribe-card">
+          <h3>Get updates direct to your inbox</h3>
+          <p>Be first to know about new music, tour dates, and exclusive drops.</p>
+          <div class="subscribe-form" id="subscribeForm">
+            <input type="email" class="subscribe-input" placeholder="Enter your email" id="subscribeEmail">
+            <button class="btn btn-primary" onclick="handleSubscribe()">Subscribe</button>
+          </div>
+          <div class="subscribe-success" id="subscribeSuccess">✓ You're subscribed! Check your inbox.</div>
+        </div>
+      </section>
+
+      <!-- ── QR ── -->
+      <section class="section" id="qr">
+        <h2 class="section-title">Share</h2>
+        <div class="qr-card">
+          <div class="qr-label">Scan to visit</div>
+          <canvas id="qrCanvas" width="160" height="160"></canvas>
+          <div class="qr-url">able.to/mayarivers</div>
+          <div class="qr-info">Smart QR automatically routes to the right content based on your release timeline</div>
+          <button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="showToast('Downloading QR code...')">Download QR Code</button>
+        </div>
+      </section>
+
+    </div><!-- /sections-container -->
+
+    <!-- ── FOOTER ── -->
     <footer class="page-footer">
-      <div class="footer-cta" id="footer-cta"></div>
-      <div class="footer-brand">Powered by <a href="index.html" style="color:var(--accent);text-decoration:none;font-weight:700;">Able</a></div>
-      <nav class="footer-links">
-        <a href="about.html">About Able</a>
-        <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
-        <a href="start.html">Create your page</a>
-      </nav>
+      <div class="footer-release" id="footerRelease">Midnight Drive EP</div>
+      <div class="footer-date" id="footerDate">Drops March 15, 2025</div>
+      <div class="footer-cta">
+        <button class="btn btn-primary" id="footerCta" onclick="showToast('Opening Spotify pre-save...')">Pre-save on Spotify</button>
+      </div>
+      <div class="footer-brand">Powered by <a href="index.html">Able</a></div>
     </footer>
 
   </div><!-- /container -->
 
-  <!-- ── EDIT TOOLBAR ─────────────────────────────────────── -->
-  <div id="edit-bar">
-    <span class="edit-label">Editing</span>
-    <div class="edit-sep"></div>
-    <button class="edit-btn" id="btn-mode">⚡ Mode: live</button>
-    <div class="edit-sep"></div>
-    <button class="edit-btn" id="btn-settings">⚙ Settings</button>
-    <div class="edit-sep"></div>
-    <button class="edit-btn dim" id="btn-exit-edit">Exit</button>
-  </div>
-
-  <!-- ── PIN MODAL ────────────────────────────────────────── -->
-  <div id="pin-modal" role="dialog" aria-modal="true">
-    <div class="pin-card">
-      <div class="pin-title">Enter your PIN</div>
-      <div class="pin-sub">4-digit PIN to edit this page</div>
-      <div class="pin-dots" id="pin-dots">
-        <div class="pin-dot" id="pd0"></div>
-        <div class="pin-dot" id="pd1"></div>
-        <div class="pin-dot" id="pd2"></div>
-        <div class="pin-dot" id="pd3"></div>
-      </div>
-      <div class="pin-numpad">
-        <button class="pin-key" data-k="1">1</button>
-        <button class="pin-key" data-k="2">2</button>
-        <button class="pin-key" data-k="3">3</button>
-        <button class="pin-key" data-k="4">4</button>
-        <button class="pin-key" data-k="5">5</button>
-        <button class="pin-key" data-k="6">6</button>
-        <button class="pin-key" data-k="7">7</button>
-        <button class="pin-key" data-k="8">8</button>
-        <button class="pin-key" data-k="9">9</button>
-        <button class="pin-key" data-k="del">⌫</button>
-        <button class="pin-key" data-k="0">0</button>
-        <button class="pin-key" data-k="cancel">✕</button>
-      </div>
-      <p class="pin-error" id="pin-error"></p>
-    </div>
-  </div>
-
-  <!-- ── TOAST ─────────────────────────────────────────────── -->
-  <div id="able-toast" role="status" aria-live="polite"></div>
-
-  <!-- Shared JS -->
-  <script src="shared/able.js"></script>
-
   <script>
-  (function () {
-    'use strict';
+    /* ── Data Model ── */
+    var ABLE_KEY = 'able_v2_profile';
+    var ABLE_DEFAULT = {
+      name: 'Maya Rivers',
+      handle: 'mayarivers',
+      location: 'Los Angeles, CA',
+      genres: ['Electronic', 'Ambient', 'House'],
+      bio: 'Electronic producer and vocalist blending ambient textures with driving beats. Based in LA, creating immersive soundscapes that bridge underground club culture and cinematic composition.',
+      mode: 'pre-release',
+      accent: '#0891b2',
+      theme: 'default',
+      releaseDate: null,
+      releaseTitle: 'Midnight Drive EP',
+      streaming: { spotify:'#', apple:'#', youtube:'#', soundcloud:'#', amazon:'#', tidal:'#', bandcamp:'#', deezer:'#' },
+      social: { instagram:'#', twitter:'#', tiktok:'#', youtube:'#' }
+    };
 
-    /* ── Demo seed ──────────────────────────────────────── */
-    function seedDemoIfEmpty () {
-      var p = ableLoad();
-      if (p && p.artist && p.artist.name) return;
-      var d = ableGet();
-      d.artist.name      = 'Maya Rivers';
-      d.artist.handle    = 'mayarivers';
-      d.artist.bio       = 'Maya Rivers is a singer-songwriter from London blending soul, electronic, and R&B into something entirely her own.\n\nHer debut EP "Wavelength" arrived to critical acclaim. She\'s currently finishing her first full-length album, expected later this year.';
-      d.artist.location  = 'London, UK';
-      d.artist.genres    = ['Soul', 'Electronic', 'R&B'];
-      d.appearance.theme = 'warm';
-      d.currentMode      = 'live';
-      d.modes.live.badgeText = 'New EP out now';
-      d.modes.live.primary   = { label: '▶  Stream Wavelength', url: 'https://open.spotify.com', icon: 'play' };
-      d.modes.live.secondary = { label: '🎟  Get Tickets', url: '#sec-shows', icon: 'ticket' };
-      d.platforms.primary    = 'spotify';
-      d.platforms.spotify    = 'https://open.spotify.com';
-      d.platforms.apple      = 'https://music.apple.com';
-      d.platforms.soundcloud = 'https://soundcloud.com';
-      d.innerCircle.enabled  = true;
-      d.innerCircle.title    = 'Join the Inner Circle';
-      d.innerCircle.desc     = 'First access to new music, ticket presales, and things I only share here.';
-      d.innerCircle.perks    = ['Early access to new music', 'Presale tickets & exclusive shows', 'Behind-the-scenes updates'];
-      d.releases = [{
-        id: 'ep-wavelength', type: 'EP', title: 'Wavelength',
-        artUrl: '', year: '2025', primaryUrl: 'https://open.spotify.com',
-        tracks: [
-          { num:1, title:'Golden Hour',  duration:'3:24' },
-          { num:2, title:'Tide',         duration:'3:51' },
-          { num:3, title:'All of It',    duration:'4:02' },
-          { num:4, title:'Breathing',    duration:'2:58' },
-          { num:5, title:'Come Back',    duration:'4:17' }
-        ]
-      }];
-      d.events = [
-        { id:'e1', date:'2026-03-15', venue:'Omeara',  city:'London, UK',     ticketUrl:'#', calendarTitle:'Maya Rivers @ Omeara' },
-        { id:'e2', date:'2026-03-22', venue:'YES',     city:'Manchester, UK', ticketUrl:'#', calendarTitle:'Maya Rivers @ YES' },
-        { id:'e3', date:'2026-04-05', venue:'Stereo',  city:'Glasgow, UK',    ticketUrl:'#', calendarTitle:'Maya Rivers @ Stereo' }
-      ];
-      d.social.instagram = 'https://instagram.com';
-      d.social.tiktok    = 'https://tiktok.com';
-      d.social.twitter   = 'https://twitter.com';
-      d.settings.editPin = '1234';
-      ableSave(d);
+    function ableLoad() {
+      try { return Object.assign({}, ABLE_DEFAULT, JSON.parse(localStorage.getItem(ABLE_KEY) || '{}')); }
+      catch(e) { return Object.assign({}, ABLE_DEFAULT); }
     }
 
-    /* ── Apply theme (warm uses default tokens) ─────────── */
-    function applyTheme (p) {
-      var theme = (p.appearance || {}).theme || 'warm';
-      if (theme !== 'warm') document.body.dataset.theme = theme;
-      else delete document.body.dataset.theme;
-      /* Tint the hero gradient to accent colour for non-warm themes */
-      if (theme === 'bold' || theme === 'night' || theme === 'electric') {
-        /* hero already gets colour from CSS accent via data-theme on body */
-      }
-    }
+    /* ── Mode System ── */
+    function applyMode(mode, data) {
+      var badge = document.getElementById('stateBadge');
+      var mainCta = document.getElementById('mainCta');
+      var secondaryCta = document.getElementById('secondaryCta');
+      var greeting = document.getElementById('greetingText');
+      var footerCta = document.getElementById('footerCta');
 
-    /* ── Render: Hero ───────────────────────────────────── */
-    function renderHero (p) {
-      var a    = p.artist || {};
-      var mode = p.currentMode || 'live';
-      var mCfg = (p.modes || {})[mode] || {};
-
-      /* Header name (shows on scroll) */
-      document.getElementById('header-name').textContent = a.name || 'Artist';
-
-      /* Badge */
-      var badge = document.getElementById('hero-badge');
-      badge.textContent = mCfg.badgeText || mode;
-
-      /* Overlay avatar */
-      var avatarSm = document.getElementById('hero-avatar-sm');
-      if (a.avatarUrl) {
-        avatarSm.innerHTML = '<img src="' + a.avatarUrl + '" alt="' + a.name + '" />';
+      if (mode === 'live') {
+        badge.textContent = 'Out Now'; badge.className = 'badge badge-live';
+        mainCta.textContent = '🎧 Listen Now';
+        secondaryCta.textContent = '📤 Share';
+        greeting.textContent = 'OUT NOW';
+        if (footerCta) footerCta.textContent = 'Listen Now on Spotify';
+      } else if (mode === 'pre-release') {
+        badge.textContent = 'Pre-Release'; badge.className = 'badge badge-state';
+        mainCta.textContent = '⏰ Pre-save on Spotify';
+        secondaryCta.textContent = '🔔 Get Notified';
+        greeting.textContent = 'DROPPING SOON';
+      } else if (mode === 'gig') {
+        badge.textContent = 'Live Tonight'; badge.className = 'badge badge-gig';
+        mainCta.textContent = '🎟️ Get Tickets';
+        secondaryCta.textContent = '📍 Get Directions';
+        greeting.textContent = 'LIVE TONIGHT';
       } else {
-        avatarSm.textContent = (a.name || 'A').charAt(0).toUpperCase();
-      }
-      document.getElementById('hero-artist-sm').textContent = a.name || '';
-
-      /* Greeting + title in overlay */
-      var modeGreetings = { live:'Out Now', 'pre-release':'Coming Soon', gig:'On Tour', evergreen:'Stream The Music' };
-      document.getElementById('hero-greeting').textContent = modeGreetings[mode] || mode.toUpperCase();
-
-      /* Hero title = release title or artist name */
-      var releases = p.releases || [];
-      document.getElementById('hero-title').textContent = releases.length ? releases[0].title : (a.name || 'Able Artist');
-
-      /* Hero play btn → link to primary platform */
-      var playBtn = document.getElementById('hero-play-btn');
-      if ((p.platforms || {}).spotify) {
-        playBtn.addEventListener('click', function () { window.open(p.platforms.spotify, '_blank'); });
-      }
-
-      /* Follow pill → scroll to Inner Circle */
-      document.getElementById('hero-follow-pill').addEventListener('click', function () {
-        var ic = document.getElementById('sec-inner-circle');
-        if (ic) ic.scrollIntoView({ behavior: 'smooth' });
-      });
-
-      /* Below-reel: artist name + handle */
-      document.getElementById('artist-name').textContent   = a.name || '';
-      document.getElementById('artist-handle').textContent = a.handle ? '@' + a.handle : '';
-
-      /* CTA buttons */
-      var ctaWrap = document.getElementById('cta-group');
-      if (mCfg.primary && mCfg.primary.label) {
-        var b1 = document.createElement('a');
-        b1.href = mCfg.primary.url || '#sec-listen';
-        b1.className = 'btn btn-primary'; b1.textContent = mCfg.primary.label;
-        ctaWrap.appendChild(b1);
-      }
-      if (mCfg.secondary && mCfg.secondary.label) {
-        var b2 = document.createElement('a');
-        b2.href = mCfg.secondary.url || '#';
-        b2.className = 'btn btn-secondary'; b2.textContent = mCfg.secondary.label;
-        ctaWrap.appendChild(b2);
-      }
-
-      /* Hero image background */
-      var app = p.appearance || {};
-      if (app.heroStyle === 'image' && a.heroImageUrl) {
-        var sc = document.getElementById('short-container');
-        sc.style.backgroundImage = 'url(' + a.heroImageUrl + ')';
-        sc.style.backgroundSize  = 'cover';
-        sc.style.backgroundPosition = 'center';
-      }
-
-      /* Footer CTA mirrors primary */
-      var footerCta = document.getElementById('footer-cta');
-      if (mCfg.primary) {
-        var fb = document.createElement('a');
-        fb.href = mCfg.primary.url || '#'; fb.className = 'btn btn-primary';
-        fb.textContent = mCfg.primary.label;
-        footerCta.appendChild(fb);
+        badge.textContent = 'Music'; badge.className = 'badge badge-state';
+        mainCta.textContent = '🎧 Listen Now';
+        secondaryCta.textContent = '📤 Share';
+        greeting.textContent = 'AVAILABLE NOW';
+        if (footerCta) footerCta.textContent = 'Listen Now';
       }
     }
 
-    /* ── Render: Listen ─────────────────────────────────── */
-    function renderListen (p) {
-      var plat = p.platforms || {};
-      var releases = p.releases || [];
-      var rel0 = releases[0] || {};
-
-      /* Stream player widget */
-      var playerWrap = document.getElementById('stream-player-wrap');
-      if (rel0.title && plat[plat.primary || 'spotify']) {
-        playerWrap.innerHTML =
-          '<div class="stream-player-widget">' +
-            '<div class="stream-player-art">' +
-              (rel0.artUrl
-                ? '<img src="' + rel0.artUrl + '" alt="' + rel0.title + '" />'
-                : '<div class="stream-art-bg">♪</div>') +
-            '</div>' +
-            '<div class="stream-player-info">' +
-              '<div class="stream-track-name">' + (rel0.tracks && rel0.tracks[0] ? rel0.tracks[0].title : rel0.title) + '</div>' +
-              '<div class="stream-track-sub">' + rel0.title + (p.artist && p.artist.name ? ' · ' + p.artist.name : '') + '</div>' +
-              '<div class="stream-progress-bar"><div class="stream-progress-fill"></div></div>' +
-              '<div class="stream-progress-times"><span>1:24</span><span>' + (rel0.tracks && rel0.tracks[0] ? rel0.tracks[0].duration : '3:30') + '</span></div>' +
-            '</div>' +
-            (plat[plat.primary || 'spotify']
-              ? '<a href="' + plat[plat.primary || 'spotify'] + '" target="_blank" rel="noopener noreferrer" class="stream-open-link"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg> Open</a>'
-              : '') +
-          '</div>';
+    /* ── Countdown ── */
+    function startCountdown(releaseDate) {
+      var banner = document.getElementById('countdownBanner');
+      var timeEl = document.getElementById('heroCountdownTime');
+      if (!releaseDate) { banner.classList.remove('visible'); return; }
+      function update() {
+        var diff = new Date(releaseDate) - Date.now();
+        if (diff <= 0) { banner.classList.remove('visible'); return; }
+        var d = Math.floor(diff / 86400000);
+        var h = Math.floor((diff % 86400000) / 3600000);
+        var m = Math.floor((diff % 3600000) / 60000);
+        var s = Math.floor((diff % 60000) / 1000);
+        timeEl.textContent = d > 0 ? (d + 'd ' + h + 'h ' + m + 'm') : (h + 'h ' + m + 'm ' + s + 's');
+        banner.classList.add('visible');
       }
-
-      /* Streaming pills */
-      var pillsWrap = document.getElementById('streaming-pills');
-      var defs = [
-        { key:'spotify',    label:'Spotify',      cls:'spotify',    icon:'●' },
-        { key:'apple',      label:'Apple Music',  cls:'apple',      icon:'●' },
-        { key:'soundcloud', label:'SoundCloud',   cls:'soundcloud', icon:'●' },
-        { key:'youtube',    label:'YouTube',      cls:'youtube',    icon:'●' },
-        { key:'bandcamp',   label:'Bandcamp',     cls:'bandcamp',   icon:'●' }
-      ];
-      var rendered = 0;
-      defs.forEach(function (d) {
-        if (!plat[d.key]) return;
-        var pill = document.createElement('a');
-        pill.href = plat[d.key]; pill.target = '_blank'; pill.rel = 'noopener noreferrer';
-        pill.className = 'streaming-pill ' + d.cls;
-        pill.innerHTML = '<span class="pill-icon">' + d.icon + '</span><span class="pill-text">' + d.label + '</span>';
-        pillsWrap.appendChild(pill);
-        rendered++;
-      });
-      if (!rendered) document.getElementById('sec-listen').style.display = 'none';
+      update();
+      setInterval(update, 1000);
     }
 
-    /* ── Render: Tracklist ──────────────────────────────── */
-    function renderTracklist (p) {
-      var releases = p.releases || [];
-      if (!releases.length) { document.getElementById('sec-tracklist').style.display = 'none'; return; }
-      var rel = releases[0];
-      document.getElementById('tracklist-title').textContent = rel.title || 'Tracklist';
-      var wrap = document.getElementById('tracklist-wrap');
-      (rel.tracks || []).forEach(function (t) {
-        var row = document.createElement('div');
-        row.className = 'track-row';
-        row.innerHTML =
-          '<div class="track-num">' + t.num + '</div>' +
-          '<div class="track-info"><div class="track-name">' + t.title + '</div>' +
-            '<div class="track-artist">' + ((p.artist||{}).name||'') + '</div></div>' +
-          '<div class="track-duration">' + (t.duration||'') + '</div>' +
-          '<button class="track-menu" aria-label="Options">⋮</button>';
-        if (rel.primaryUrl) {
-          row.addEventListener('click', function (e) {
-            if (!e.target.closest('.track-menu')) window.open(rel.primaryUrl, '_blank');
-          });
-        }
-        wrap.appendChild(row);
-      });
+    /* ── Time of Day Hero Gradient ── */
+    function applyTimeGradient() {
+      var h = new Date().getHours();
+      var c = document.getElementById('shortContainer');
+      if (!c) return;
+      if (h >= 5 && h < 12) c.classList.add('morning');
+      else if (h >= 12 && h < 17) c.classList.add('afternoon');
+      else if (h >= 17 && h < 21) c.classList.add('evening');
+      else c.classList.add('night');
     }
 
-    /* ── Render: Credits ────────────────────────────────── */
-    function renderCredits (p) {
-      var credits = p.credits || [];
-      if (!credits.length) return;
-      document.getElementById('sec-credits').style.display = '';
-      var wrap = document.getElementById('credits-wrap');
-      credits.forEach(function (c) {
-        var row = document.createElement('div');
-        row.className = 'credit-row';
-        row.innerHTML = '<span class="credit-role">' + c.role + '</span><span class="credit-name">' + c.name + '</span>';
-        wrap.appendChild(row);
-      });
-    }
-
-    /* ── Render: Inner Circle ───────────────────────────── */
-    function renderInnerCircle (p) {
-      var ic = p.innerCircle || {};
-      if (!ic.enabled) { document.getElementById('sec-inner-circle').style.display = 'none'; return; }
-      if (ic.title) document.getElementById('ic-heading').textContent = ic.title;
-      if (ic.desc)  document.getElementById('ic-desc').textContent    = ic.desc;
-      var perks = document.getElementById('ic-perks');
-      (ic.perks || []).forEach(function (perk) {
-        var li = document.createElement('li'); li.textContent = perk; perks.appendChild(li);
-      });
-      document.getElementById('ic-form').addEventListener('submit', function (e) {
-        e.preventDefault();
-        var email = document.getElementById('ic-email').value.trim();
-        if (!email || !email.includes('@')) { showToast('Please enter a valid email'); return; }
-        /* TODO: Formspree wire-up */
-        e.target.style.display = 'none';
-        document.getElementById('ic-success').style.display = 'block';
-        showToast('Welcome to the Inner Circle!');
-        var saved = ableGet();
-        if (!saved.innerCircle.subscribers) saved.innerCircle.subscribers = [];
-        saved.innerCircle.subscribers.push({ email: email, ts: Date.now() });
-        ableSave(saved);
-      });
-    }
-
-    /* ── Render: About ──────────────────────────────────── */
-    function renderAbout (p) {
-      var bio = (p.artist || {}).bio || '';
-      if (!bio) { document.getElementById('sec-about').style.display = 'none'; return; }
-      var bioEl = document.getElementById('about-bio');
-      bioEl.textContent = bio;
-      if (bio.length > 280 || bio.split('\n').length > 4) {
-        var btn = document.getElementById('read-more');
-        btn.style.display = 'block';
-        btn.addEventListener('click', function () {
-          bioEl.classList.toggle('truncated');
-          btn.textContent = bioEl.classList.contains('truncated') ? 'Read more' : 'Read less';
-        });
+    /* ── Share ── */
+    function handleShare() {
+      var btn = document.getElementById('shareButton');
+      if (navigator.share) {
+        navigator.share({ title: 'Maya Rivers', url: window.location.href }).catch(function(){});
       } else {
-        bioEl.classList.remove('truncated');
+        navigator.clipboard.writeText(window.location.href).then(function() {
+          showToast('🔗 Link copied!');
+          if (btn) { btn.classList.add('success'); setTimeout(function(){ btn.classList.remove('success'); }, 2000); }
+        }).catch(function(){ showToast('🔗 Share this page: ' + window.location.href); });
       }
     }
 
-    /* ── Render: Shows ──────────────────────────────────── */
-    function renderShows (p) {
-      var wrap  = document.getElementById('shows-list');
-      var today = new Date(new Date().toDateString());
-      var events = (p.events || []).filter(function (ev) { return new Date(ev.date) >= today; });
-      events.sort(function (a, b) { return new Date(a.date) - new Date(b.date); });
-
-      if (!events.length) {
-        wrap.innerHTML = '<div class="shows-empty">No upcoming shows — check back soon.</div>';
-        return;
+    /* ── Follow ── */
+    function handleFollow(btn) {
+      var following = btn.dataset.following === '1';
+      if (following) {
+        btn.textContent = 'Follow'; btn.dataset.following = '0';
+        btn.style.background = 'rgba(255,255,255,.15)';
+        showToast('Unfollowed');
+      } else {
+        btn.textContent = '✓ Following'; btn.dataset.following = '1';
+        btn.style.background = 'rgba(8,145,178,.8)';
+        showToast('✅ You\'re now following Maya Rivers!');
       }
-      events.forEach(function (ev, idx) {
-        var d   = new Date(ev.date);
-        var mon = d.toLocaleString('default', { month:'short' }).toUpperCase();
-        var day = d.getDate();
-        var accentCls = idx === 0 ? 'accent-green' : idx === 1 ? 'accent-orange' : 'accent-grey';
-        var card = document.createElement('div');
-        card.className = 'tour-card';
-        card.innerHTML =
-          '<div class="tour-card-accent ' + accentCls + '"></div>' +
-          '<div class="tour-card-body">' +
-            '<div class="tour-date-block"><div class="tour-month">' + mon + '</div><div class="tour-day">' + day + '</div></div>' +
-            '<div class="tour-divider"></div>' +
-            '<div class="tour-info"><div class="tour-venue">' + ev.venue + '</div><div class="tour-city">' + ev.city + '</div></div>' +
-            '<div class="tour-actions">' +
-              (ev.ticketUrl ? '<a href="' + ev.ticketUrl + '" target="_blank" rel="noopener noreferrer" class="tour-btn tour-btn-ticket">Tickets</a>' : '') +
-              '<a href="' + gcalURL(ev, (p.artist||{}).name||'') + '" target="_blank" rel="noopener noreferrer" class="tour-btn tour-btn-cal">+ Cal</a>' +
-            '</div>' +
-          '</div>';
-        wrap.appendChild(card);
+    }
+
+    /* ── Like ── */
+    (function() {
+      var liked = false;
+      var likeBtn = document.getElementById('likeBtn');
+      var likeCount = document.getElementById('likeCount');
+      if (!likeBtn) return;
+      likeBtn.addEventListener('click', function() {
+        liked = !liked;
+        likeCount.textContent = liked ? '12.1K' : '12K';
+        likeBtn.querySelector('.engagement-icon').textContent = liked ? '❤️' : '♥';
+        if (liked) showToast('❤️ Liked!');
       });
+    })();
+
+    /* ── Toast ── */
+    var toastTimer;
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('visible');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function(){ t.classList.remove('visible'); }, 3000);
     }
 
-    /* ── Render: Merch ──────────────────────────────────── */
-    function renderMerch (p) {
-      var items = p.merch || [];
-      if (!items.length) return;
-      document.getElementById('sec-merch').style.display = '';
-      var grid = document.getElementById('merch-grid');
-      items.forEach(function (item) {
-        var card = document.createElement('a');
-        card.href = item.url || '#'; card.target = '_blank'; card.rel = 'noopener noreferrer';
-        card.className = 'merch-card';
-        card.innerHTML =
-          (item.imageUrl ? '<img src="' + item.imageUrl + '" alt="' + item.name + '" class="merch-img" loading="lazy" />' : '<div class="merch-img-placeholder">👕</div>') +
-          '<div class="merch-info"><div class="merch-name">' + item.name + '</div><div class="merch-price">' + (item.price ? '£' + item.price : '') + '</div></div>';
-        grid.appendChild(card);
-      });
-      var shopLink = document.getElementById('merch-shop-link');
-      if ((p.platforms || {}).bandcamp) { shopLink.href = p.platforms.bandcamp; shopLink.style.display = 'block'; }
+    /* ── Past Shows Toggle ── */
+    function togglePastShows() {
+      var el = document.getElementById('pastShows');
+      var btn = document.getElementById('pastShowsToggle');
+      var open = el.classList.toggle('visible');
+      btn.textContent = open ? 'Hide Past Shows ▲' : 'Show Past Shows ▼';
     }
 
-    /* ── Render: Support ────────────────────────────────── */
-    function renderSupport (p) {
-      var sup = p.support || {};
-      if (!sup.enabled) return;
-      document.getElementById('sec-support').style.display = '';
-      if (sup.title) document.getElementById('support-title-el').textContent = sup.title;
-      if (sup.desc)  document.getElementById('support-desc-el').textContent  = sup.desc;
-      var opts = document.getElementById('support-options');
-      (sup.links || []).forEach(function (lnk) {
-        var a = document.createElement('a');
-        a.href = lnk.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
-        a.className = 'support-link'; a.textContent = lnk.label;
-        opts.appendChild(a);
-      });
-    }
-
-    /* ── Render: Social ─────────────────────────────────── */
-    function renderSocial (p) {
-      var s    = p.social || {};
-      var grid = document.getElementById('social-grid');
-      var nets = [
-        { key:'instagram', label:'Instagram',   icon:'📸' },
-        { key:'tiktok',    label:'TikTok',      icon:'🎵' },
-        { key:'twitter',   label:'X / Twitter', icon:'🐦' },
-        { key:'youtube',   label:'YouTube',     icon:'▶️' },
-        { key:'facebook',  label:'Facebook',    icon:'👤' }
-      ];
-      var rendered = 0;
-      nets.forEach(function (n) {
-        if (!s[n.key]) return;
-        var pill = document.createElement('a');
-        pill.href = s[n.key]; pill.target = '_blank'; pill.rel = 'noopener noreferrer';
-        pill.className = 'social-pill';
-        pill.innerHTML = '<span>' + n.icon + '</span><span>' + n.label + '</span>';
-        grid.appendChild(pill); rendered++;
-      });
-      if (!rendered) document.getElementById('sec-social').style.display = 'none';
-    }
-
-    /* ── Toast helper ───────────────────────────────────── */
-    function showToast (msg) {
-      var t = document.getElementById('able-toast');
-      t.textContent = msg; t.classList.add('show');
-      setTimeout(function () { t.classList.remove('show'); }, 2500);
-    }
-
-    /* ── Share ──────────────────────────────────────────── */
-    function initShare (p) {
-      function doShare () {
-        var data = { title:(p.artist||{}).name||'Able', text:'Check out this artist on Able', url:window.location.href };
-        if (navigator.share) { navigator.share(data).catch(function(){}); }
-        else { navigator.clipboard.writeText(window.location.href).then(function(){ showToast('Link copied!'); }); }
+    /* ── Subscribe ── */
+    function handleSubscribe() {
+      var email = document.getElementById('subscribeEmail');
+      if (!email || !email.value || !email.value.includes('@')) {
+        showToast('Please enter a valid email'); return;
       }
-      document.getElementById('btn-share').addEventListener('click', doShare);
-      document.getElementById('share-btn-hero').addEventListener('click', doShare);
-      document.getElementById('engage-share').addEventListener('click', doShare);
+      document.getElementById('subscribeForm').style.display = 'none';
+      document.getElementById('subscribeSuccess').style.display = 'block';
+      showToast('🎉 Subscribed!');
     }
 
-    /* ── Scroll / sticky header ─────────────────────────── */
-    function initScroll () {
-      var header = document.getElementById('page-header');
-      var pgbar  = document.getElementById('pgbar');
-      window.addEventListener('scroll', function () {
-        var scrolled = window.scrollY > 60;
-        header.classList.toggle('scrolled', scrolled);
-        var pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-        pgbar.style.width = Math.min(pct, 100) + '%';
-      }, { passive: true });
-    }
+    /* ── Cart ── */
+    document.getElementById('cartButton').addEventListener('click', function() {
+      document.getElementById('cartPanel').classList.add('open');
+      document.getElementById('cartOverlay').classList.add('visible');
+    });
+    document.getElementById('cartClose').addEventListener('click', function() {
+      document.getElementById('cartPanel').classList.remove('open');
+      document.getElementById('cartOverlay').classList.remove('visible');
+    });
+    document.getElementById('cartOverlay').addEventListener('click', function() {
+      document.getElementById('cartPanel').classList.remove('open');
+      document.getElementById('cartOverlay').classList.remove('visible');
+    });
 
-    /* ── IntersectionObserver for section fade-in ───────── */
-    function initFadeIn () {
-      if (!window.IntersectionObserver) {
-        document.querySelectorAll('.section').forEach(function(el){ el.classList.add('visible'); });
-        return;
-      }
-      var obs = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-      }, { threshold: 0.1 });
-      document.querySelectorAll('.section').forEach(function (el) { obs.observe(el); });
-    }
+    /* ── Theme Toggle ── */
+    document.getElementById('themeToggle').addEventListener('click', function() {
+      var body = document.body;
+      var isDark = body.dataset.theme === 'dark';
+      body.dataset.theme = isDark ? '' : 'dark';
+      this.textContent = isDark ? '🌙' : '☀️';
+    });
 
-    /* ── Edit mode ──────────────────────────────────────── */
-    function initEditMode (p) {
-      var pin = (p.settings || {}).editPin;
-      if (!pin) return;
-      var unlockBtn = document.getElementById('btn-edit-unlock');
-      unlockBtn.style.display = 'flex';
-      if (ableIsEditMode()) activateEditBar(p);
-      unlockBtn.addEventListener('click', function () {
-        if (ableIsEditMode()) activateEditBar(p); else openPinModal(p);
-      });
-    }
+    /* ── Scroll Progress ── */
+    window.addEventListener('scroll', function() {
+      var s = document.documentElement;
+      var pct = s.scrollTop / (s.scrollHeight - s.clientHeight) * 100;
+      document.getElementById('scrollProgress').style.width = pct + '%';
+    }, { passive: true });
 
-    function openPinModal (p) {
-      var modal   = document.getElementById('pin-modal');
-      var errorEl = document.getElementById('pin-error');
-      var dots    = [0,1,2,3].map(function(i){ return document.getElementById('pd'+i); });
-      var entry   = '';
-      modal.classList.add('active'); errorEl.textContent = '';
-      function updateDots () { dots.forEach(function(d,i){ d.classList.toggle('filled', i < entry.length); }); }
-      var numpad = document.getElementById('pin-numpad') || modal.querySelector('.pin-numpad');
-      var fresh  = numpad.cloneNode(true); numpad.parentNode.replaceChild(fresh, numpad);
-      fresh.addEventListener('click', function (e) {
-        var btn = e.target.closest('[data-k]'); if (!btn) return;
-        var k = btn.dataset.k;
-        if (k === 'cancel') { modal.classList.remove('active'); return; }
-        if (k === 'del')    { entry = entry.slice(0,-1); updateDots(); return; }
-        if (entry.length >= 4) return;
-        entry += k; updateDots();
-        if (entry.length === 4) {
-          if (entry === ((p.settings||{}).editPin||'')) {
-            modal.classList.remove('active');
-            localStorage.setItem(ABLE_EDIT_KEY, 'true');
-            activateEditBar(p); showToast('Edit mode on');
-          } else {
-            errorEl.textContent = 'Incorrect PIN'; entry = ''; updateDots();
-            setTimeout(function(){ errorEl.textContent=''; }, 1500);
+    /* ── Back to Top ── */
+    document.getElementById('backToTop').addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    document.getElementById('sharePage').addEventListener('click', handleShare);
+
+    /* ── Audio Player ── */
+    document.getElementById('audioClose').addEventListener('click', function() {
+      document.getElementById('audioPlayer').style.display = 'none';
+    });
+
+    /* ── Section Scroll-In (IntersectionObserver) ── */
+    (function() {
+      var sections = document.querySelectorAll('.section');
+      var nav = document.getElementById('sectionNav');
+      var dots = nav.querySelectorAll('.section-dot');
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+            var id = entry.target.id;
+            dots.forEach(function(d) {
+              d.classList.toggle('active', d.dataset.section === id);
+            });
           }
+        });
+      }, { threshold: 0.15 });
+
+      sections.forEach(function(s) { observer.observe(s); });
+
+      /* Show/hide section nav on scroll */
+      var scrollObserver = new IntersectionObserver(function(entries) {
+        nav.classList.toggle('visible', !entries[0].isIntersecting);
+      }, { threshold: 0 });
+      scrollObserver.observe(document.getElementById('hero'));
+    })();
+
+    /* ── Nav Dot Click ── */
+    document.querySelectorAll('.section-dot').forEach(function(dot) {
+      dot.addEventListener('click', function() {
+        var id = this.dataset.section;
+        var el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    /* ── Quick Link Smooth Scroll ── */
+    document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+      a.addEventListener('click', function(e) {
+        var id = this.getAttribute('href').slice(1);
+        var el = document.getElementById(id);
+        if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+    });
+
+    /* ── QR Canvas (simple grid pattern placeholder) ── */
+    (function() {
+      var canvas = document.getElementById('qrCanvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var size = 160; var cell = 8;
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, size, size);
+      ctx.fillStyle = '#0a0a0a';
+      for (var i = 0; i < size / cell; i++) {
+        for (var j = 0; j < size / cell; j++) {
+          if (Math.random() > 0.5) ctx.fillRect(i * cell, j * cell, cell, cell);
         }
-      });
-    }
+      }
+      /* Finder patterns */
+      function finder(x, y) {
+        ctx.fillStyle = '#0a0a0a'; ctx.fillRect(x, y, 7*cell, 7*cell);
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(x+cell, y+cell, 5*cell, 5*cell);
+        ctx.fillStyle = '#0a0a0a'; ctx.fillRect(x+2*cell, y+2*cell, 3*cell, 3*cell);
+      }
+      finder(0, 0); finder(size - 7*cell, 0); finder(0, size - 7*cell);
+    })();
 
-    function activateEditBar (p) {
-      var bar  = document.getElementById('edit-bar');
-      bar.classList.add('active');
-      var modes = ['live','pre-release','gig','evergreen'];
-      var modeBtn = document.getElementById('btn-mode');
-      modeBtn.textContent = '⚡ Mode: ' + (p.currentMode||'live');
-      modeBtn.addEventListener('click', function () {
-        var idx = modes.indexOf(p.currentMode||'live');
-        p.currentMode = modes[(idx+1)%modes.length];
-        ableSave(p); showToast('Mode → ' + p.currentMode);
-        setTimeout(function(){ location.reload(); }, 800);
-      });
-      document.getElementById('btn-settings').addEventListener('click', function () {
-        showToast('Settings panel — Session 4');
-      });
-      document.getElementById('btn-exit-edit').addEventListener('click', function () {
-        localStorage.removeItem(ABLE_EDIT_KEY); bar.classList.remove('active');
-        showToast('Edit mode off');
-        setTimeout(function(){ location.reload(); }, 600);
-      });
-      /* Artist name inline edit */
-      var nameEl = document.getElementById('artist-name');
-      nameEl.contentEditable = 'true';
-      nameEl.addEventListener('blur', function () {
-        var val = nameEl.textContent.trim();
-        if (val) { p.artist.name = val; ableSave(p); document.getElementById('header-name').textContent = val; showToast('Saved'); }
-      });
-    }
+    /* ── Init ── */
+    (function init() {
+      var data = ableLoad();
+      applyMode(data.mode, data);
+      applyTimeGradient();
+      if (data.releaseDate && data.mode === 'pre-release') startCountdown(data.releaseDate);
 
-    /* ── Init ───────────────────────────────────────────── */
-    function init () {
-      seedDemoIfEmpty();
-      var p = ableGet();
-      applyTheme(p);
-      document.title = ((p.artist||{}).name||'Able') + ' — Able';
+      /* Apply accent color */
+      if (data.accent && data.accent !== '#0891b2') {
+        document.documentElement.style.setProperty('--accent', data.accent);
+      }
 
-      safeRender('hero',        function(){ renderHero(p); });
-      safeRender('listen',      function(){ renderListen(p); });
-      safeRender('tracklist',   function(){ renderTracklist(p); });
-      safeRender('credits',     function(){ renderCredits(p); });
-      safeRender('innerCircle', function(){ renderInnerCircle(p); });
-      safeRender('about',       function(){ renderAbout(p); });
-      safeRender('shows',       function(){ renderShows(p); });
-      safeRender('merch',       function(){ renderMerch(p); });
-      safeRender('support',     function(){ renderSupport(p); });
-      safeRender('social',      function(){ renderSocial(p); });
-      initShare(p);
-      initEditMode(p);
-      initScroll();
-      initFadeIn();
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
-    } else {
-      init();
-    }
-
-  }());
+      /* Populate from localStorage if data differs from defaults */
+      if (data.name) {
+        document.getElementById('artistName').textContent = data.name;
+        document.getElementById('heroArtistSm').textContent = data.name;
+        var initials = data.name.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+        document.getElementById('heroAvatarSm').textContent = initials;
+        document.getElementById('bioAvatar').textContent = initials;
+      }
+      if (data.handle) document.getElementById('artistHandle').textContent = '@' + data.handle;
+      if (data.bio) document.getElementById('bioText').textContent = data.bio;
+      if (data.releaseTitle) {
+        document.getElementById('heroShortTitle').textContent = data.releaseTitle;
+        document.getElementById('footerRelease').textContent = data.releaseTitle;
+      }
+    })();
   </script>
 </body>
 </html>
