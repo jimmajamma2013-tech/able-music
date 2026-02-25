@@ -1,3 +1,97 @@
+<!--
+================================================================================
+  ABLE MUSIC — v2 PROFILE PAGE  (able-v2.html)
+  Branch: v2-simplified
+  Project root: /Users/jamescuthbert/Desktop/ABLE  MERGED/
+================================================================================
+
+  WHAT THIS FILE IS
+  -----------------
+  This is the main artist profile page — a fully standalone HTML file.
+  It does NOT depend on shared/style.css or shared/able.js (everything is
+  inlined). Think of it as the public-facing page a fan lands on when they
+  visit an artist's Able link (e.g. able.to/mayarivers).
+
+  WHAT ABLE IS
+  ------------
+  A smart artist profile product. Like a Linktree but music-first and
+  mode-aware. It knows what state the artist is in and changes what fans see:
+    • pre-release  → pre-save CTA, countdown timer, "Dropping Soon" badge
+    • live         → "Out Now" badge, Listen Now CTA
+    • gig          → "Live Tonight" badge, Get Tickets CTA
+    • evergreen    → general Listen Now profile
+
+  SOURCE OF TRUTH
+  ---------------
+  able-merged.html (25,000+ lines, in the same folder) is the ORIGINAL product.
+  NEVER edit it. All CSS, HTML structure, and JS patterns in this file were
+  extracted/adapted from able-merged.html. The profile section in that file
+  lives inside <div class="profile-preview" id="profilePreviewRoot"> and all
+  its CSS is prefixed with .profile-preview — we de-scoped it for this file.
+
+  DATA MODEL
+  ----------
+  localStorage key: able_v2_profile
+  Default shape (see ABLE_DEFAULT in the <script> below):
+    name, handle, location, genres[], bio, mode, accent, theme,
+    releaseDate, releaseTitle, streaming{}, social{}
+
+  The onboarding wizard (start.html) writes this key. This page reads it on
+  load and populates: artist name, handle, bio, release title, mode, accent.
+
+  MODES — applyMode(mode, data) wires these up:
+    'pre-release' → ⏰ Pre-save on Spotify / 🔔 Get Notified / DROPPING SOON
+    'live'        → 🎧 Listen Now / 📤 Share / OUT NOW
+    'gig'         → 🎟️ Get Tickets / 📍 Get Directions / LIVE TONIGHT
+    'evergreen'   → 🎧 Listen Now / 📤 Share / AVAILABLE NOW
+
+  SECTIONS IN THIS FILE (13 total)
+  ---------------------------------
+  1.  #streaming  — player widget + 8 platform pills (hover = brand colour)
+  2.  #tracklist  — Apple Music compact style, 6 tracks
+  3.  #videos     — featured video + 4-grid collage with rotation
+  4.  #bio        — avatar, bio text, genre tags, social strip
+  5.  #events     — bento calendar grid (date tiles + event tiles)
+  6.  #tour       — cards with accent bars, scarcity fill bar, past shows
+  7.  #merch      — bento grid with New/Limited/Sale badges
+  8.  #activity   — live fan activity feed + 3 stats
+  9.  #artists    — horizontal scroll artist recommendation cards
+  10. #support    — Inner Circle subscription card ($5/mo)
+  11. #bts        — polaroid photo grid
+  12. #subscribe  — email capture form
+  13. #qr         — canvas-rendered QR code
+
+  OTHER PAGES (in same folder)
+  ----------------------------
+  index.html      — Landing/marketing page (DONE)
+  start.html      — 5-step onboarding wizard (DONE)
+  shared/style.css — Design system used by index + start (NOT by this file)
+  shared/able.js  — Shared utilities used by index + start (NOT by this file)
+
+  STILL TO BUILD
+  --------------
+  • about.html   — About Able page (linked from index.html footer)
+  • login.html   — Artist login
+  • 404.html     — Not found
+  • privacy.html — Privacy policy
+  • terms.html   — Terms of service
+  • Full link audit (every href tested)
+  • Git tag: thursday-ready
+
+  HOW TO CONTINUE IN TERMINAL
+  ----------------------------
+  cd '/Users/jamescuthbert/Desktop/ABLE  MERGED'
+  git branch          # should be v2-simplified
+  git log --oneline -10
+  open able-v2.html   # preview in browser
+
+  RECENT COMMITS (newest first)
+  ------------------------------
+  02dd099  Complete profile rebuild: all sections extracted from original
+  Previous work: index.html, start.html, shared/, initial able-v2 drafts
+
+================================================================================
+-->
 <!doctype html>
 <html lang="en">
 <head>
