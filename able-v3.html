@@ -181,6 +181,337 @@
     /* ── TAB PANELS ──────────────────────────────────────────────── */
     .v3-panel { display: none; }
     .v3-panel.is-active { display: block; }
+
+    /* ── ARTWORK HERO ────────────────────────────────────────────── */
+    .v3-hero {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+      flex-shrink: 0;
+      animation: heroFadeIn 0.4s ease forwards;
+    }
+    @keyframes heroFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .v3-hero__image {
+      position: absolute;
+      inset: 0;
+      background-color: var(--color-card);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .v3-hero__gradient-placeholder {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 25% 70%, rgba(var(--color-accent-rgb),0.4) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 20%, rgba(99,102,241,0.25) 0%, transparent 50%);
+    }
+    .v3-hero__scrim {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--color-bg));
+    }
+    .v3-hero__tag {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 7px;
+      padding: 4px 10px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.85);
+      text-transform: uppercase;
+    }
+    .v3-hero__avatar {
+      position: absolute;
+      bottom: 14px;
+      left: 16px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-accent), #1d4ed8);
+      border: 2px solid rgba(255,255,255,0.2);
+      box-shadow: 0 4px 14px var(--color-accent-glow);
+      object-fit: cover;
+      overflow: hidden;
+    }
+
+    /* ── ARTIST INFO ─────────────────────────────────────────────── */
+    .v3-artist {
+      padding: 14px var(--space-page) 0;
+    }
+    .v3-artist__name {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      color: var(--color-text);
+      line-height: 1.1;
+    }
+    .v3-artist__meta {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+      letter-spacing: 0.3px;
+    }
+    .v3-artist__bio {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      margin-top: 8px;
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .v3-artist__bio.is-expanded {
+      display: block;
+      -webkit-line-clamp: unset;
+    }
+    .v3-artist__bio-toggle {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-accent);
+      margin-top: 4px;
+      display: inline-block;
+      cursor: pointer;
+      padding: 2px 0;
+    }
+
+    /* ── CTA BUTTONS ─────────────────────────────────────────────── */
+    .v3-cta-row {
+      display: flex;
+      gap: 8px;
+      padding: 14px var(--space-page);
+    }
+    .v3-cta {
+      flex: 1;
+      padding: 12px;
+      border-radius: var(--radius-button);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      text-align: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.1s, opacity 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: none;
+      font-family: var(--font);
+    }
+    .v3-cta:active { transform: scale(0.97); }
+    .v3-cta--primary {
+      background: var(--color-accent);
+      color: #fff;
+      box-shadow: 0 4px 18px var(--color-accent-glow);
+    }
+    .v3-cta--primary:hover { opacity: 0.9; }
+    .v3-cta--secondary {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--color-border-mid);
+      color: rgba(255,255,255,0.75);
+    }
+    .v3-cta--secondary:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── QUICK ACTION PILLS ──────────────────────────────────────── */
+    .v3-pills {
+      display: flex;
+      gap: 6px;
+      padding: 0 var(--space-page) 16px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .v3-pills::-webkit-scrollbar { display: none; }
+    .v3-pill {
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-pill);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.1s, color 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      font-family: var(--font);
+    }
+    .v3-pill:hover, .v3-pill:active {
+      background: rgba(255,255,255,0.12);
+      color: var(--color-text);
+    }
+    .v3-pill--overflow {
+      color: var(--color-accent);
+      border-color: rgba(var(--color-accent-rgb),0.25);
+      background: rgba(var(--color-accent-rgb),0.06);
+    }
+
+    /* ── SECTION CARDS ───────────────────────────────────────────── */
+    .v3-section {
+      margin: 0 var(--space-page) var(--space-gap);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      animation: sectionSlideUp 0.3s ease both;
+    }
+    @keyframes sectionSlideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .v3-section:nth-child(1) { animation-delay: 0ms; }
+    .v3-section:nth-child(2) { animation-delay: 80ms; }
+    .v3-section:nth-child(3) { animation-delay: 160ms; }
+    .v3-section:nth-child(4) { animation-delay: 240ms; }
+
+    .v3-section__header {
+      padding: var(--space-card);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .v3-section__title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--color-text);
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .v3-section__title::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      flex-shrink: 0;
+    }
+    .v3-section__action {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-accent);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: var(--font);
+    }
+    .v3-section__footer {
+      padding: 12px;
+      text-align: center;
+      border-top: 1px solid var(--color-border);
+    }
+    .v3-section__footer-link {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-accent);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: var(--font);
+    }
+
+    /* ── MUSIC / TRACK ROWS ──────────────────────────────────────── */
+    .v3-track {
+      padding: 8px var(--space-card);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: background 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .v3-track:active { background: rgba(255,255,255,0.03); }
+    .v3-track__art {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-art);
+      background: linear-gradient(135deg, #1e3a5f, var(--color-accent));
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+    .v3-track__num {
+      width: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .v3-track__info { flex: 1; min-width: 0; }
+    .v3-track__name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .v3-track__meta {
+      font-size: 10px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+    .v3-track__play-wrap {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0;
+    }
+    .v3-track__play {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-accent-subtle);
+      border: 1px solid rgba(var(--color-accent-rgb),0.3);
+      color: var(--color-accent);
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+    .v3-track:hover .v3-track__play {
+      background: rgba(var(--color-accent-rgb),0.25);
+    }
+
+    /* Panel header (used in Music, Events, Merch, Support tabs) */
+    .v3-panel-header {
+      padding: 20px var(--space-page) 12px;
+    }
+    .v3-panel-header h2 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+    }
+    .v3-panel-header p {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: 3px;
+    }
   </style>
 </head>
 <body>
@@ -207,10 +538,118 @@
     <!-- Scroll area (content goes here) -->
     <div class="v3-scroll" id="v3Scroll">
       <div class="v3-panel is-active" id="panel-home" role="tabpanel" aria-labelledby="tab-home">
-        <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Home panel</p>
+        <!-- Artwork Hero -->
+        <div class="v3-hero" id="v3Hero">
+          <div class="v3-hero__image" id="v3HeroImage">
+            <div class="v3-hero__gradient-placeholder"></div>
+          </div>
+          <div class="v3-hero__scrim"></div>
+          <span class="v3-hero__tag" id="v3HeroTag">New Album · Out Now</span>
+          <div class="v3-hero__avatar" id="v3HeroAvatar"></div>
+        </div>
+
+        <!-- Artist Info -->
+        <div class="v3-artist">
+          <h1 class="v3-artist__name" id="v3ArtistName">Artist Name</h1>
+          <p class="v3-artist__meta" id="v3ArtistMeta">London · Hip Hop · Since 2019</p>
+          <p class="v3-artist__bio" id="v3ArtistBio">
+            Genre-blending producer known for cinematic sound design and atmospheric storytelling.
+            Signed to independent label. Debut album out now on all platforms.
+          </p>
+          <span class="v3-artist__bio-toggle" id="v3BioToggle">More</span>
+        </div>
+
+        <!-- Hero CTAs -->
+        <div class="v3-cta-row">
+          <button class="v3-cta v3-cta--primary" id="v3CtaPrimary">▶ Stream Now</button>
+          <button class="v3-cta v3-cta--secondary" id="v3CtaSecondary">🎟 Get Tickets</button>
+        </div>
+
+        <!-- Quick Action Pills -->
+        <div class="v3-pills" id="v3Pills">
+          <button class="v3-pill">🎵 Spotify</button>
+          <button class="v3-pill">🍎 Apple Music</button>
+          <button class="v3-pill">☁ SoundCloud</button>
+          <button class="v3-pill">📺 YouTube</button>
+          <button class="v3-pill v3-pill--overflow" id="v3PillsToggle">+2</button>
+        </div>
+
+        <!-- Section divider -->
+        <div style="height:1px;background:var(--color-border);margin:0 var(--space-page) 16px;"></div>
+
+        <!-- Music Section (Home preview) -->
+        <div class="v3-section">
+          <div class="v3-section__header">
+            <span class="v3-section__title">Latest Music</span>
+            <button class="v3-section__action" data-goto="music">See all</button>
+          </div>
+          <div class="v3-track">
+            <div class="v3-track__art"></div>
+            <div class="v3-track__info">
+              <div class="v3-track__name">New Single Title</div>
+              <div class="v3-track__meta">Single · 2026</div>
+            </div>
+            <div class="v3-track__play-wrap">
+              <div class="v3-track__play">▶</div>
+            </div>
+          </div>
+          <div class="v3-track">
+            <div class="v3-track__art" style="background:linear-gradient(135deg,#1e3a5f,#6366f1);"></div>
+            <div class="v3-track__info">
+              <div class="v3-track__name">Previous EP Title</div>
+              <div class="v3-track__meta">EP · 4 tracks · 2025</div>
+            </div>
+            <div class="v3-track__play-wrap">
+              <div class="v3-track__play">▶</div>
+            </div>
+          </div>
+          <div class="v3-section__footer">
+            <button class="v3-section__footer-link" data-goto="music">Show all 8 releases</button>
+          </div>
+        </div>
       </div>
       <div class="v3-panel" id="panel-music" role="tabpanel" aria-labelledby="tab-music">
-        <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Music panel</p>
+        <div class="v3-panel-header">
+          <h2>Music</h2>
+          <p>8 releases · 42k monthly listeners</p>
+        </div>
+
+        <!-- Featured release card -->
+        <div class="v3-section">
+          <div style="padding:14px;background:var(--color-accent-subtle);border-bottom:1px solid var(--color-border);">
+            <div style="font-size:10px;font-weight:700;color:var(--color-accent);letter-spacing:1px;text-transform:uppercase;">Now Streaming</div>
+            <div style="font-size:16px;font-weight:800;color:var(--color-text);margin-top:4px;letter-spacing:-0.4px;">Debut Album Title</div>
+            <div style="font-size:11px;color:var(--color-text-muted);margin-top:2px;">12 tracks · 38 mins · Released 2026</div>
+            <button class="v3-cta v3-cta--primary" style="margin-top:12px;padding:8px 16px;flex:none;width:auto;font-size:12px;border-radius:var(--radius-button-sm);">▶ Play on Spotify</button>
+          </div>
+          <div class="v3-track">
+            <span class="v3-track__num">1</span>
+            <div class="v3-track__info">
+              <div class="v3-track__name">Track One</div>
+              <div class="v3-track__meta">3:42</div>
+            </div>
+            <div class="v3-track__play-wrap"><div class="v3-track__play">▶</div></div>
+          </div>
+          <div class="v3-track">
+            <span class="v3-track__num">2</span>
+            <div class="v3-track__info">
+              <div class="v3-track__name">Track Two</div>
+              <div class="v3-track__meta">4:01</div>
+            </div>
+            <div class="v3-track__play-wrap"><div class="v3-track__play">▶</div></div>
+          </div>
+          <div class="v3-track">
+            <span class="v3-track__num">3</span>
+            <div class="v3-track__info">
+              <div class="v3-track__name">Track Three</div>
+              <div class="v3-track__meta">3:28</div>
+            </div>
+            <div class="v3-track__play-wrap"><div class="v3-track__play">▶</div></div>
+          </div>
+          <div class="v3-section__footer">
+            <button class="v3-section__footer-link">Show all 12 tracks</button>
+          </div>
+        </div>
       </div>
       <div class="v3-panel" id="panel-events" role="tabpanel" aria-labelledby="tab-events">
         <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Events panel</p>
@@ -264,6 +703,25 @@
     }
     updateClock();
     setInterval(updateClock, 60000);
+
+    // Bio expand/collapse
+    const bioEl = document.getElementById('v3ArtistBio');
+    const bioToggle = document.getElementById('v3BioToggle');
+    if (bioEl && bioToggle) {
+      bioToggle.addEventListener('click', () => {
+        bioEl.classList.toggle('is-expanded');
+        bioToggle.textContent = bioEl.classList.contains('is-expanded') ? 'Less' : 'More';
+      });
+    }
+
+    // "See all" / data-goto navigation
+    document.addEventListener('click', e => {
+      const target = e.target.closest('[data-goto]');
+      if (!target) return;
+      const panel = target.dataset.goto;
+      const tab = document.querySelector(`.v3-tab[data-panel="${panel}"]`);
+      if (tab) tab.click();
+    });
 
     // Tab switching
     const tabs = document.querySelectorAll('.v3-tab');
