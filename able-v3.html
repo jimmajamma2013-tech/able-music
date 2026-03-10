@@ -124,6 +124,49 @@
       -webkit-overflow-scrolling: touch;
       padding-bottom: 80px; /* space for tab bar */
     }
+
+    /* ── BOTTOM TAB BAR ──────────────────────────────────────────────────── */
+    .v3-tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      background: var(--color-tab-bar-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      padding: 10px 8px env(safe-area-inset-bottom, 10px);
+      z-index: 200;
+    }
+    .v3-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 4px 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity 0.1s;
+    }
+    .v3-tab:active { opacity: 0.6; }
+    .v3-tab__icon { font-size: 20px; line-height: 1; }
+    .v3-tab__label {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      letter-spacing: 0.3px;
+      transition: color 0.15s;
+    }
+    .v3-tab.is-active .v3-tab__label { color: var(--color-accent); }
+
+    /* ── TAB PANELS ──────────────────────────────────────────────── */
+    .v3-panel { display: none; }
+    .v3-panel.is-active { display: block; }
   </style>
 </head>
 <body>
@@ -149,8 +192,46 @@
 
     <!-- Scroll area (content goes here) -->
     <div class="v3-scroll" id="v3Scroll">
-      <p style="color:var(--color-text-secondary);padding:20px;font-size:13px;">Content coming next...</p>
-    </div>
+      <div class="v3-panel is-active" id="panel-home">
+        <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Home panel</p>
+      </div>
+      <div class="v3-panel" id="panel-music">
+        <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Music panel</p>
+      </div>
+      <div class="v3-panel" id="panel-events">
+        <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Events panel</p>
+      </div>
+      <div class="v3-panel" id="panel-merch">
+        <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Merch panel</p>
+      </div>
+      <div class="v3-panel" id="panel-support">
+        <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Support panel</p>
+      </div>
+    </div><!-- close .v3-scroll -->
+
+    <!-- Bottom Tab Bar -->
+    <nav class="v3-tab-bar" role="tablist" aria-label="Main navigation">
+      <button class="v3-tab is-active" data-panel="home" role="tab" aria-selected="true">
+        <span class="v3-tab__icon" aria-hidden="true">⌂</span>
+        <span class="v3-tab__label">Home</span>
+      </button>
+      <button class="v3-tab" data-panel="music" role="tab" aria-selected="false">
+        <span class="v3-tab__icon" aria-hidden="true">♪</span>
+        <span class="v3-tab__label">Music</span>
+      </button>
+      <button class="v3-tab" data-panel="events" role="tab" aria-selected="false">
+        <span class="v3-tab__icon" aria-hidden="true">◈</span>
+        <span class="v3-tab__label">Events</span>
+      </button>
+      <button class="v3-tab" data-panel="merch" role="tab" aria-selected="false">
+        <span class="v3-tab__icon" aria-hidden="true">◻</span>
+        <span class="v3-tab__label">Merch</span>
+      </button>
+      <button class="v3-tab" data-panel="support" role="tab" aria-selected="false">
+        <span class="v3-tab__icon" aria-hidden="true">♡</span>
+        <span class="v3-tab__label">Support</span>
+      </button>
+    </nav>
   </div>
 
   <script>
@@ -164,6 +245,30 @@
     }
     updateClock();
     setInterval(updateClock, 60000);
+
+    // Tab switching
+    const tabs = document.querySelectorAll('.v3-tab');
+    const panels = document.querySelectorAll('.v3-panel');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.panel;
+
+        tabs.forEach(t => {
+          t.classList.remove('is-active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        panels.forEach(p => p.classList.remove('is-active'));
+
+        tab.classList.add('is-active');
+        tab.setAttribute('aria-selected', 'true');
+        const panel = document.getElementById('panel-' + target);
+        if (panel) {
+          panel.classList.add('is-active');
+          document.getElementById('v3Scroll').scrollTop = 0;
+        }
+      });
+    });
   </script>
 </body>
 </html>
