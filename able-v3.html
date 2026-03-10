@@ -208,7 +208,7 @@
       inset: 0;
       background:
         radial-gradient(ellipse at 25% 70%, rgba(var(--color-accent-rgb),0.4) 0%, transparent 55%),
-        radial-gradient(ellipse at 80% 20%, rgba(99,102,241,0.25) 0%, transparent 50%);
+        radial-gradient(ellipse at 80% 20%, rgba(var(--color-accent-rgb),0.15) 0%, transparent 50%);
     }
     .v3-hero__scrim {
       position: absolute;
@@ -445,7 +445,7 @@
       width: 36px;
       height: 36px;
       border-radius: var(--radius-art);
-      background: linear-gradient(135deg, #1e3a5f, var(--color-accent));
+      background: linear-gradient(135deg, var(--color-card-raised), var(--color-accent));
       flex-shrink: 0;
       object-fit: cover;
     }
@@ -512,6 +512,11 @@
       color: var(--color-text-muted);
       margin-top: 3px;
     }
+    .v3-divider {
+      height: 1px;
+      background: var(--color-border);
+      margin: 0 var(--space-page) 16px;
+    }
   </style>
 </head>
 <body>
@@ -575,7 +580,7 @@
         </div>
 
         <!-- Section divider -->
-        <div style="height:1px;background:var(--color-border);margin:0 var(--space-page) 16px;"></div>
+        <div class="v3-divider"></div>
 
         <!-- Music Section (Home preview) -->
         <div class="v3-section">
