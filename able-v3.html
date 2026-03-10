@@ -74,7 +74,6 @@
       display: flex;
       flex-direction: column;
       position: relative;
-      overflow: hidden;
       background: var(--color-bg);
     }
 
@@ -164,7 +163,7 @@
       if (el) el.textContent = h + ':' + m;
     }
     updateClock();
-    setInterval(updateClock, 10000);
+    setInterval(updateClock, 60000);
   </script>
 </body>
 </html>
