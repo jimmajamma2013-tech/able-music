@@ -517,6 +517,196 @@
       background: var(--color-border);
       margin: 0 var(--space-page) 16px;
     }
+
+    /* ── EVENT ROWS ──────────────────────────────────────────────── */
+    .v3-event {
+      padding: 10px var(--space-card);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .v3-event__date {
+      width: 38px;
+      height: 38px;
+      background: var(--color-accent-subtle);
+      border: 1px solid rgba(var(--color-accent-rgb),0.2);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .v3-event__date--past {
+      background: rgba(255,255,255,0.04);
+      border-color: var(--color-border);
+    }
+    .v3-event__month {
+      font-size: 7px;
+      font-weight: 700;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1;
+    }
+    .v3-event__date--past .v3-event__month { color: var(--color-text-muted); }
+    .v3-event__day {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--color-text);
+      line-height: 1;
+    }
+    .v3-event__info { flex: 1; min-width: 0; }
+    .v3-event__name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .v3-event__venue {
+      font-size: 10px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+    .v3-event__ticket {
+      background: var(--color-accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: var(--radius-button-sm);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: opacity 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      font-family: var(--font);
+      border: none;
+    }
+    .v3-event__ticket:active { opacity: 0.8; }
+    .v3-event__ticket--past {
+      background: transparent;
+      color: var(--color-text-muted);
+      font-size: 10px;
+      padding: 6px 0;
+      cursor: default;
+    }
+    .v3-event--past { opacity: 0.6; }
+
+    .v3-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0 var(--space-page) 8px;
+    }
+
+    /* ── MERCH BENTO ─────────────────────────────────────────────── */
+    .v3-merch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 0 var(--space-card) var(--space-card);
+    }
+    .v3-merch-item {
+      background: var(--color-card-raised);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .v3-merch-item:hover { border-color: var(--color-border-mid); }
+    .v3-merch-item--featured { grid-column: 1 / -1; }
+    .v3-merch-item__img {
+      width: 100%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, var(--color-card-raised), var(--color-accent-subtle));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+    .v3-merch-item--featured .v3-merch-item__img {
+      aspect-ratio: 2 / 1;
+      font-size: 48px;
+    }
+    .v3-merch-item__body { padding: 10px; }
+    .v3-merch-item__name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .v3-merch-item__price {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+    .v3-merch-item__badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+    .v3-merch-item__badge--new { background: var(--color-accent-subtle); color: var(--color-accent); }
+    .v3-merch-item__badge--ltd { background: rgba(245,158,11,0.12); color: #f59e0b; }
+
+    /* ── THEME: LIGHT ────────────────────────────────────────────── */
+    [data-theme="light"] {
+      --color-bg:             #f8f9ff;
+      --color-card:           #ffffff;
+      --color-card-raised:    #f0f2ff;
+      --color-border:         rgba(0,0,0,0.08);
+      --color-border-mid:     rgba(0,0,0,0.12);
+      --color-text:           #0d0e1a;
+      --color-text-secondary: rgba(13,14,26,0.6);
+      --color-text-muted:     rgba(13,14,26,0.4);
+      --color-tab-bar-bg:     rgba(248,249,255,0.97);
+    }
+
+    /* ── THEME: CONTRAST ─────────────────────────────────────────── */
+    [data-theme="contrast"] {
+      --color-bg:             #000000;
+      --color-card:           #111111;
+      --color-card-raised:    #1a1a1a;
+      --color-border:         rgba(255,255,255,0.12);
+      --color-border-mid:     rgba(255,255,255,0.2);
+      --color-text:           #ffffff;
+      --color-text-secondary: rgba(255,255,255,0.75);
+      --color-text-muted:     rgba(255,255,255,0.5);
+      --color-tab-bar-bg:     rgba(0,0,0,0.98);
+    }
+
+    /* ── THEME: GLASS ────────────────────────────────────────────── */
+    [data-theme="glass"] {
+      --color-card:           rgba(13,14,26,0.55);
+      --color-card-raised:    rgba(24,28,53,0.6);
+      --color-border:         rgba(255,255,255,0.12);
+      --color-tab-bar-bg:     rgba(10,11,22,0.75);
+    }
+    [data-theme="glass"] body {
+      background-color: #0d0e1a;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    [data-theme="glass"] .v3-shell { background: transparent; }
+    [data-theme="glass"] .v3-section {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    [data-theme="glass"] .v3-tab-bar {
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
   </style>
 </head>
 <body>
@@ -612,6 +802,50 @@
             <button class="v3-section__footer-link" data-goto="music">Show all 8 releases</button>
           </div>
         </div>
+
+        <!-- Events Section (Home preview) -->
+        <div class="v3-section">
+          <div class="v3-section__header">
+            <span class="v3-section__title">Upcoming Shows</span>
+            <button class="v3-section__action" data-goto="events">See all</button>
+          </div>
+          <div class="v3-event">
+            <div class="v3-event__date">
+              <span class="v3-event__month">Mar</span>
+              <span class="v3-event__day">28</span>
+            </div>
+            <div class="v3-event__info">
+              <div class="v3-event__name">Fabric, London</div>
+              <div class="v3-event__venue">London, UK · Doors 10pm</div>
+            </div>
+            <button class="v3-event__ticket">Tickets</button>
+          </div>
+          <div class="v3-event">
+            <div class="v3-event__date">
+              <span class="v3-event__month">Apr</span>
+              <span class="v3-event__day">12</span>
+            </div>
+            <div class="v3-event__info">
+              <div class="v3-event__name">Printworks</div>
+              <div class="v3-event__venue">London, UK · All Ages</div>
+            </div>
+            <button class="v3-event__ticket">Tickets</button>
+          </div>
+          <div class="v3-section__footer">
+            <button class="v3-section__footer-link" data-goto="events">View all 3 shows</button>
+          </div>
+        </div>
+
+        <!-- Theme switcher (dev helper) -->
+        <div style="padding:16px var(--space-page) 8px;">
+          <div class="v3-section-label" style="margin-bottom:10px;">Theme preview</div>
+          <div style="display:flex;gap:6px;">
+            <button class="v3-pill" onclick="document.documentElement.setAttribute('data-theme','dark')" style="flex:1;">Dark</button>
+            <button class="v3-pill" onclick="document.documentElement.setAttribute('data-theme','light')" style="flex:1;">Light</button>
+            <button class="v3-pill" onclick="document.documentElement.setAttribute('data-theme','contrast')" style="flex:1;">Contrast</button>
+            <button class="v3-pill" onclick="document.documentElement.setAttribute('data-theme','glass')" style="flex:1;">Glass</button>
+          </div>
+        </div>
       </div>
       <div class="v3-panel" id="panel-music" role="tabpanel" aria-labelledby="tab-music">
         <div class="v3-panel-header">
@@ -657,13 +891,147 @@
         </div>
       </div>
       <div class="v3-panel" id="panel-events" role="tabpanel" aria-labelledby="tab-events">
-        <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Events panel</p>
+        <div class="v3-panel-header">
+          <h2>Shows</h2>
+          <p>3 upcoming · 12 past</p>
+        </div>
+
+        <div class="v3-section-label">Upcoming</div>
+
+        <div class="v3-section" style="margin-top:0;">
+          <div class="v3-event" style="border-top:none;">
+            <div class="v3-event__date">
+              <span class="v3-event__month">Mar</span>
+              <span class="v3-event__day">28</span>
+            </div>
+            <div class="v3-event__info">
+              <div class="v3-event__name">Fabric, London</div>
+              <div class="v3-event__venue">London, UK · Doors 10pm</div>
+            </div>
+            <button class="v3-event__ticket">Tickets</button>
+          </div>
+          <div class="v3-event">
+            <div class="v3-event__date">
+              <span class="v3-event__month">Apr</span>
+              <span class="v3-event__day">12</span>
+            </div>
+            <div class="v3-event__info">
+              <div class="v3-event__name">Printworks</div>
+              <div class="v3-event__venue">London, UK · All Ages</div>
+            </div>
+            <button class="v3-event__ticket">Tickets</button>
+          </div>
+          <div class="v3-event">
+            <div class="v3-event__date" style="background:rgba(139,92,246,0.1);border-color:rgba(139,92,246,0.25);">
+              <span class="v3-event__month" style="color:#8b5cf6;">May</span>
+              <span class="v3-event__day">03</span>
+            </div>
+            <div class="v3-event__info">
+              <div class="v3-event__name">Warehouse Project</div>
+              <div class="v3-event__venue">Manchester, UK</div>
+            </div>
+            <button class="v3-event__ticket" style="background:#8b5cf6;">Tickets</button>
+          </div>
+        </div>
+
+        <div class="v3-section-label" style="margin-top:8px;">Past Shows</div>
+
+        <div class="v3-section v3-event--past" style="margin-top:0;">
+          <div class="v3-event" style="border-top:none;">
+            <div class="v3-event__date v3-event__date--past">
+              <span class="v3-event__month">Feb</span>
+              <span class="v3-event__day">14</span>
+            </div>
+            <div class="v3-event__info">
+              <div class="v3-event__name">Corsica Studios</div>
+              <div class="v3-event__venue">London, UK</div>
+            </div>
+            <span class="v3-event__ticket v3-event__ticket--past">Past</span>
+          </div>
+        </div>
       </div>
       <div class="v3-panel" id="panel-merch" role="tabpanel" aria-labelledby="tab-merch">
-        <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Merch panel</p>
+        <div class="v3-panel-header">
+          <h2>Merch</h2>
+          <p>Official store · Free shipping over £40</p>
+        </div>
+
+        <div class="v3-section" style="margin-top:0;">
+          <div class="v3-section__header">
+            <span class="v3-section__title">Store</span>
+            <a href="#" class="v3-section__action">Visit store →</a>
+          </div>
+          <div class="v3-merch-grid">
+            <div class="v3-merch-item v3-merch-item--featured">
+              <div class="v3-merch-item__img">👕</div>
+              <div class="v3-merch-item__body">
+                <div class="v3-merch-item__name">Tour Hoodie 2026</div>
+                <div class="v3-merch-item__price">£55.00</div>
+                <span class="v3-merch-item__badge v3-merch-item__badge--new">New</span>
+              </div>
+            </div>
+            <div class="v3-merch-item">
+              <div class="v3-merch-item__img">🎸</div>
+              <div class="v3-merch-item__body">
+                <div class="v3-merch-item__name">Tote Bag</div>
+                <div class="v3-merch-item__price">£20.00</div>
+              </div>
+            </div>
+            <div class="v3-merch-item">
+              <div class="v3-merch-item__img">💿</div>
+              <div class="v3-merch-item__body">
+                <div class="v3-merch-item__name">Vinyl LP</div>
+                <div class="v3-merch-item__price">£28.00</div>
+                <span class="v3-merch-item__badge v3-merch-item__badge--ltd">Limited</span>
+              </div>
+            </div>
+            <div class="v3-merch-item">
+              <div class="v3-merch-item__img">🎴</div>
+              <div class="v3-merch-item__body">
+                <div class="v3-merch-item__name">Photo Print</div>
+                <div class="v3-merch-item__price">£15.00</div>
+              </div>
+            </div>
+            <div class="v3-merch-item">
+              <div class="v3-merch-item__img">🧢</div>
+              <div class="v3-merch-item__body">
+                <div class="v3-merch-item__name">5-Panel Cap</div>
+                <div class="v3-merch-item__price">£30.00</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="v3-panel" id="panel-support" role="tabpanel" aria-labelledby="tab-support">
-        <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Support panel</p>
+        <div class="v3-panel-header">
+          <h2>Support</h2>
+          <p>Help the music keep going</p>
+        </div>
+
+        <!-- Inner Circle subscription card -->
+        <div class="v3-section" style="margin-top:0;">
+          <div style="padding:20px var(--space-card);text-align:center;">
+            <div style="width:56px;height:56px;border-radius:50%;background:var(--color-accent-subtle);border:2px solid rgba(var(--color-accent-rgb),0.3);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px;">💙</div>
+            <div style="font-size:18px;font-weight:800;letter-spacing:-0.4px;">Inner Circle</div>
+            <div style="font-size:13px;color:var(--color-text-secondary);margin-top:6px;line-height:1.6;max-width:240px;margin-left:auto;margin-right:auto;">Exclusive demos, behind the scenes, early ticket access and direct messages.</div>
+            <div style="font-size:24px;font-weight:800;color:var(--color-text);margin-top:14px;">£5<span style="font-size:13px;font-weight:500;color:var(--color-text-muted);">/month</span></div>
+            <button class="v3-cta v3-cta--primary" style="width:100%;margin-top:14px;">Join Inner Circle</button>
+            <p style="font-size:11px;color:var(--color-text-muted);margin-top:10px;">Cancel any time · Processed by Stripe</p>
+          </div>
+        </div>
+
+        <!-- One-time tip -->
+        <div class="v3-section">
+          <div class="v3-section__header">
+            <span class="v3-section__title">One-time tip</span>
+          </div>
+          <div style="padding:0 var(--space-card) var(--space-card);display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="v3-pill" style="flex:1;min-width:60px;text-align:center;">☕ £3</button>
+            <button class="v3-pill" style="flex:1;min-width:60px;text-align:center;">🎵 £5</button>
+            <button class="v3-pill" style="flex:1;min-width:60px;text-align:center;">🎸 £10</button>
+            <button class="v3-pill" style="flex:1;min-width:60px;text-align:center;">💿 £20</button>
+          </div>
+        </div>
       </div>
     </div><!-- close .v3-scroll -->
   </div>
