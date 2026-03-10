@@ -164,6 +164,20 @@
     }
     .v3-tab.is-active .v3-tab__label { color: var(--color-accent); }
 
+    /* Active dot indicator */
+    .v3-tab__dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      opacity: 0;
+      transition: opacity 0.15s;
+      margin-top: -1px;
+    }
+    .v3-tab.is-active .v3-tab__dot {
+      opacity: 1;
+    }
+
     /* ── TAB PANELS ──────────────────────────────────────────────── */
     .v3-panel { display: none; }
     .v3-panel.is-active { display: block; }
@@ -192,47 +206,52 @@
 
     <!-- Scroll area (content goes here) -->
     <div class="v3-scroll" id="v3Scroll">
-      <div class="v3-panel is-active" id="panel-home">
+      <div class="v3-panel is-active" id="panel-home" role="tabpanel" aria-labelledby="tab-home">
         <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Home panel</p>
       </div>
-      <div class="v3-panel" id="panel-music">
+      <div class="v3-panel" id="panel-music" role="tabpanel" aria-labelledby="tab-music">
         <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Music panel</p>
       </div>
-      <div class="v3-panel" id="panel-events">
+      <div class="v3-panel" id="panel-events" role="tabpanel" aria-labelledby="tab-events">
         <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Events panel</p>
       </div>
-      <div class="v3-panel" id="panel-merch">
+      <div class="v3-panel" id="panel-merch" role="tabpanel" aria-labelledby="tab-merch">
         <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Merch panel</p>
       </div>
-      <div class="v3-panel" id="panel-support">
+      <div class="v3-panel" id="panel-support" role="tabpanel" aria-labelledby="tab-support">
         <p style="padding:20px;color:var(--color-text-secondary);font-size:13px;">Support panel</p>
       </div>
     </div><!-- close .v3-scroll -->
-
-    <!-- Bottom Tab Bar -->
-    <nav class="v3-tab-bar" role="tablist" aria-label="Main navigation">
-      <button class="v3-tab is-active" data-panel="home" role="tab" aria-selected="true">
-        <span class="v3-tab__icon" aria-hidden="true">⌂</span>
-        <span class="v3-tab__label">Home</span>
-      </button>
-      <button class="v3-tab" data-panel="music" role="tab" aria-selected="false">
-        <span class="v3-tab__icon" aria-hidden="true">♪</span>
-        <span class="v3-tab__label">Music</span>
-      </button>
-      <button class="v3-tab" data-panel="events" role="tab" aria-selected="false">
-        <span class="v3-tab__icon" aria-hidden="true">◈</span>
-        <span class="v3-tab__label">Events</span>
-      </button>
-      <button class="v3-tab" data-panel="merch" role="tab" aria-selected="false">
-        <span class="v3-tab__icon" aria-hidden="true">◻</span>
-        <span class="v3-tab__label">Merch</span>
-      </button>
-      <button class="v3-tab" data-panel="support" role="tab" aria-selected="false">
-        <span class="v3-tab__icon" aria-hidden="true">♡</span>
-        <span class="v3-tab__label">Support</span>
-      </button>
-    </nav>
   </div>
+
+  <!-- Tab bar OUTSIDE shell so fixed positioning isn't clipped by overflow:hidden on desktop -->
+  <nav class="v3-tab-bar" role="tablist" aria-label="Main navigation">
+    <button class="v3-tab is-active" id="tab-home" data-panel="home" role="tab" aria-selected="true" aria-controls="panel-home">
+      <span class="v3-tab__icon" aria-hidden="true">⌂</span>
+      <span class="v3-tab__label">Home</span>
+      <span class="v3-tab__dot" aria-hidden="true"></span>
+    </button>
+    <button class="v3-tab" id="tab-music" data-panel="music" role="tab" aria-selected="false" aria-controls="panel-music">
+      <span class="v3-tab__icon" aria-hidden="true">♪</span>
+      <span class="v3-tab__label">Music</span>
+      <span class="v3-tab__dot" aria-hidden="true"></span>
+    </button>
+    <button class="v3-tab" id="tab-events" data-panel="events" role="tab" aria-selected="false" aria-controls="panel-events">
+      <span class="v3-tab__icon" aria-hidden="true">◈</span>
+      <span class="v3-tab__label">Events</span>
+      <span class="v3-tab__dot" aria-hidden="true"></span>
+    </button>
+    <button class="v3-tab" id="tab-merch" data-panel="merch" role="tab" aria-selected="false" aria-controls="panel-merch">
+      <span class="v3-tab__icon" aria-hidden="true">◻</span>
+      <span class="v3-tab__label">Merch</span>
+      <span class="v3-tab__dot" aria-hidden="true"></span>
+    </button>
+    <button class="v3-tab" id="tab-support" data-panel="support" role="tab" aria-selected="false" aria-controls="panel-support">
+      <span class="v3-tab__icon" aria-hidden="true">♡</span>
+      <span class="v3-tab__label">Support</span>
+      <span class="v3-tab__dot" aria-hidden="true"></span>
+    </button>
+  </nav>
 
   <script>
     // Live clock
