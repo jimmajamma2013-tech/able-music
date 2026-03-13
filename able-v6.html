@@ -940,9 +940,730 @@
     /* === PLATFORM ICON GLYPHS (SVG inline via JS) ============== */
     /* Defined as data URIs in JS PLATFORM_ICONS map */
 
+    /* ============================================================
+       ABLE v6 — Checkpoint 4: Main Content Sections
+       ============================================================ */
+
+    /* === SHARED SECTION STYLES ================================= */
+    .content-section {
+      padding: var(--sp-8) var(--sp-5) var(--sp-6);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: var(--sp-5);
+    }
+
+    .section-title {
+      font-family: var(--font-body);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--color-text);
+      letter-spacing: -0.01em;
+    }
+
+    .section-action {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-accent);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+
+    .section-divider {
+      height: 1px;
+      background: var(--color-border);
+      margin: 0 var(--sp-5);
+    }
+
+    /* Screen reader only */
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* === FAN CAPTURE =========================================== */
+    .fan-capture {
+      margin: var(--sp-4) var(--sp-5);
+      padding: var(--sp-6);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--r-lg);
+    }
+
+    .fan-capture--secondary {
+      margin-top: 0;
+    }
+
+    .fan-capture__heading {
+      font-family: var(--font-d);
+      font-size: var(--text-2xl);
+      font-weight: var(--font-d-weight);
+      font-style: var(--font-d-style);
+      text-transform: var(--font-d-transform);
+      letter-spacing: var(--ls-d);
+      color: var(--color-text);
+      line-height: var(--lh-display);
+      margin-bottom: var(--sp-2);
+    }
+
+    .fan-capture__sub {
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      line-height: var(--lh-body);
+      margin-bottom: var(--sp-4);
+    }
+
+    .fan-capture__form {}
+
+    .fan-capture__field-wrap {
+      display: flex;
+      gap: var(--sp-2);
+    }
+
+    .fan-capture__input {
+      flex: 1;
+      min-height: var(--tap-min);
+      padding: var(--sp-3) var(--sp-4);
+      background: var(--color-surface);
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--r-md);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      color: var(--color-text);
+      outline: none;
+      transition: border-color var(--dur-fast) var(--ease-standard),
+                  box-shadow var(--dur-fast) var(--ease-standard),
+                  background-color var(--dur-fast) var(--ease-standard);
+      -webkit-appearance: none;
+    }
+
+    .fan-capture__input::placeholder {
+      color: var(--color-text-3);
+    }
+
+    /* Focus glow (interaction #6) */
+    .fan-capture__input:focus {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px var(--color-accent-soft);
+    }
+
+    /* Paste flash (interaction #16) */
+    .fan-capture__input.paste-flash {
+      background-color: var(--color-accent-soft);
+    }
+
+    /* Error state (interaction #8) */
+    .fan-capture__input.error {
+      border-color: var(--color-state-live);
+    }
+
+    .fan-capture__btn {
+      flex-shrink: 0;
+      min-height: var(--tap-min);
+      padding: var(--sp-3) var(--sp-5);
+      width: auto;
+    }
+
+    .fan-capture__error {
+      margin-top: var(--sp-2);
+      font-size: var(--text-sm);
+      color: var(--color-state-live);
+    }
+
+    .fan-capture__trust {
+      margin-top: var(--sp-3);
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+      letter-spacing: 0.02em;
+    }
+
+    .fan-capture__echo {
+      padding: var(--sp-4) 0 0;
+    }
+
+    .fan-capture__echo-text {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: var(--sp-1);
+    }
+
+    .fan-capture__echo-confirm {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+    }
+
+    .spinner-svg {
+      display: block;
+    }
+
+    /* === LISTEN SECTION — RELEASES ============================= */
+    .releases-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-4);
+    }
+
+    .release-card {
+      display: flex;
+      gap: var(--sp-4);
+      padding: var(--sp-4);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--r-lg);
+      text-decoration: none;
+      color: inherit;
+      transition: border-color var(--dur-fast) var(--ease-standard);
+    }
+
+    .release-card:hover {
+      border-color: var(--color-accent);
+    }
+
+    .release-card__artwork {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--r-md);
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--color-surface);
+    }
+
+    .release-card__info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--sp-1);
+    }
+
+    .release-card__title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .release-card__meta {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .release-card__tracks {
+      margin-top: var(--sp-2);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .release-track {
+      display: flex;
+      gap: var(--sp-3);
+      padding: var(--sp-1) 0;
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+    }
+
+    .release-track__num {
+      width: 20px;
+      text-align: right;
+      color: var(--color-text-3);
+      flex-shrink: 0;
+    }
+
+    .release-track__title {
+      flex: 1;
+    }
+
+    .release-track__duration {
+      color: var(--color-text-3);
+      flex-shrink: 0;
+    }
+
+    /* === SHOWS SECTION ========================================= */
+    .shows-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .show-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      padding: var(--sp-4);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--r-lg);
+    }
+
+    .show-item__date {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 48px;
+      flex-shrink: 0;
+    }
+
+    .show-item__month {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .show-item__day {
+      font-family: var(--font-d);
+      font-size: var(--text-2xl);
+      font-weight: var(--font-d-weight);
+      color: var(--color-text);
+      line-height: 1;
+      text-transform: var(--font-d-transform);
+      letter-spacing: var(--ls-d);
+    }
+
+    .show-item__info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .show-item__venue {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .show-item__city {
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      margin-top: 2px;
+    }
+
+    .show-item__time {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+    }
+
+    .show-item__cta {
+      flex-shrink: 0;
+    }
+
+    .btn-show {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-2) var(--sp-4);
+      min-height: var(--tap-min);
+      min-width: var(--tap-min);
+      background: var(--color-accent);
+      color: var(--cta-text-color, #fff);
+      border: none;
+      border-radius: var(--r-sm);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity var(--dur-fast) var(--ease-standard),
+                  transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .btn-show--soldout {
+      background: var(--color-surface);
+      color: var(--color-text-3);
+      cursor: default;
+    }
+
+    .show-item__sold-out-badge {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-state-live);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* === SNAP CARDS ============================================ */
+    .snap-cards-section {
+      padding: var(--sp-6) 0;
+    }
+
+    .snap-cards-track {
+      display: flex;
+      gap: var(--sp-3);
+      padding: var(--sp-2) var(--sp-5);
+      overflow-x: auto;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      width: 100%;
+    }
+
+    .snap-cards-track::-webkit-scrollbar { display: none; }
+
+    .snap-card {
+      flex-shrink: 0;
+      width: 240px;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .snap-card__image {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+      background: var(--color-surface);
+    }
+
+    .snap-card__body {
+      padding: var(--sp-4);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .snap-card__title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text);
+      line-height: var(--lh-body);
+    }
+
+    .snap-card__text {
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      line-height: var(--lh-body);
+      flex: 1;
+    }
+
+    .snap-card__cta {
+      display: inline-flex;
+      align-items: center;
+      padding: var(--sp-2) var(--sp-4);
+      min-height: 36px;
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+      border: none;
+      border-radius: var(--r-sm);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      align-self: flex-start;
+      transition: background-color var(--dur-fast) var(--ease-standard),
+                  transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .snap-card__cta:hover {
+      background: var(--color-accent);
+      color: var(--cta-text-color, #fff);
+    }
+
+    /* === MERCH SECTION ========================================= */
+    .merch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-3);
+    }
+
+    .merch-item {
+      display: flex;
+      flex-direction: column;
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color var(--dur-fast) var(--ease-standard),
+                  transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .merch-item:hover { border-color: var(--color-accent); }
+
+    .merch-item__image-wrap {
+      position: relative;
+      aspect-ratio: 1;
+      background: var(--color-surface);
+      overflow: hidden;
+    }
+
+    .merch-item__image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0;
+      transition: opacity var(--dur-slow) var(--ease-decel);
+    }
+
+    .merch-item__image.loaded { opacity: 1; }
+
+    .merch-item__emoji {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+
+    .merch-item__badge {
+      position: absolute;
+      top: var(--sp-2);
+      right: var(--sp-2);
+      padding: 2px var(--sp-2);
+      background: var(--color-accent);
+      color: var(--cta-text-color, #fff);
+      border-radius: var(--r-pill);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .merch-item__info {
+      padding: var(--sp-3);
+    }
+
+    .merch-item__title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .merch-item__price {
+      font-size: var(--text-xs);
+      color: var(--color-text-2);
+      margin-top: 2px;
+    }
+
+    /* === SUPPORT SECTION ======================================= */
+    .support-packs {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .support-pack {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      padding: var(--sp-4) var(--sp-5);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--r-lg);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color var(--dur-fast) var(--ease-standard),
+                  transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .support-pack:hover { border-color: var(--color-accent); }
+
+    .support-pack__emoji {
+      font-size: 28px;
+      flex-shrink: 0;
+      width: 40px;
+      text-align: center;
+    }
+
+    .support-pack__info { flex: 1; min-width: 0; }
+
+    .support-pack__label {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .support-pack__desc {
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .support-pack__price {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--tap-min);
+      padding: var(--sp-2) var(--sp-4);
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--color-accent);
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+    a.support-pack__price {
+      background: var(--color-accent);
+      color: var(--cta-text-color, #fff);
+      border-radius: var(--r-sm);
+    }
+
+    .support-note {
+      margin-top: var(--sp-3);
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
+    /* === CREDITS ACCORDION ===================================== */
+    .credits-section {
+      padding: 0 var(--sp-5) var(--sp-6);
+    }
+
+    .credits-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: var(--sp-4) 0;
+      background: none;
+      border: none;
+      border-top: 1px solid var(--color-border);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text-2);
+      transition: color var(--dur-fast) var(--ease-standard),
+                  transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .credits-toggle:hover { color: var(--color-text); }
+
+    .credits-chevron {
+      width: 18px;
+      height: 18px;
+      transition: transform var(--dur-mid) var(--ease-standard);
+    }
+
+    .credits-toggle[aria-expanded="true"] .credits-chevron {
+      transform: rotate(180deg);
+    }
+
+    .credits-body {
+      padding-bottom: var(--sp-4);
+    }
+
+    .credits-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+
+    .credit-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: var(--sp-2) 0;
+      border-bottom: 1px solid var(--color-border);
+      gap: var(--sp-4);
+    }
+
+    .credit-item:last-child { border-bottom: none; }
+
+    .credit-item__name {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .credit-item__role {
+      font-size: var(--text-sm);
+      color: var(--color-text-3);
+      text-align: right;
+    }
+
+    /* === FOOTER ================================================ */
+    .profile-footer {
+      padding: var(--sp-8) var(--sp-5) var(--sp-6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-3);
+    }
+
+    .footer-able-link {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color var(--dur-fast) var(--ease-standard);
+    }
+
+    .footer-able-link:hover { color: var(--color-text-2); }
+
+    .footer-export {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+      text-align: center;
+    }
+
+    .footer-export-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      color: var(--color-accent);
+      padding: 0;
+      min-height: var(--tap-min);
+      display: inline;
+    }
+
     /* === SECTION: CHECKPOINT 1 PLACEHOLDER ===================== */
     /* Removed — replaced by hero */
     .c1-placeholder { display: none; }
+
+    /* === KEYFRAMES ============================================= */
+    @keyframes shake {
+      0%   { transform: translateX(0); }
+      20%  { transform: translateX(-6px); }
+      40%  { transform: translateX(6px); }
+      60%  { transform: translateX(-4px); }
+      80%  { transform: translateX(4px); }
+      100% { transform: translateX(0); }
+    }
+
+    /* Credits accordion height transition */
+    .credits-body {
+      overflow: hidden;
+      transition: height var(--dur-mid) var(--ease-decel);
+    }
   </style>
 </head>
 <body>
@@ -1081,8 +1802,149 @@
         </button>
       </section>
 
-      <!-- Remaining sections added in Checkpoint 4+ -->
-      <div id="main-content"></div>
+      <!-- ======================================================
+           FAN CAPTURE (screenful 3 — after hero, bio, pills)
+           ====================================================== -->
+      <section class="fan-capture" id="fan-capture" aria-labelledby="fan-capture-heading" hidden>
+        <h2 class="fan-capture__heading" id="fan-capture-heading">Stay close.</h2>
+        <p class="fan-capture__sub" id="fan-capture-sub">I'll only reach out when something's actually happening.</p>
+        <form class="fan-capture__form" id="fan-form" novalidate>
+          <div class="fan-capture__field-wrap">
+            <label for="fan-email" class="sr-only">Email address</label>
+            <input class="fan-capture__input" id="fan-email"
+                   type="email" inputmode="email"
+                   autocomplete="email" autocapitalize="off"
+                   placeholder="your@email.com"
+                   aria-required="true"
+                   aria-describedby="fan-error">
+            <button class="fan-capture__btn btn-primary pressable" type="submit"
+                    id="fan-submit" aria-label="Join the list">
+              <span class="fan-submit-label">I'm in</span>
+              <span class="fan-submit-spinner" aria-hidden="true" hidden>
+                <svg class="spinner-svg" viewBox="0 0 24 24" fill="none" width="18" height="18">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"
+                          stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="32">
+                    <animate attributeName="stroke-dashoffset" values="32;0" dur="0.6s" repeatCount="indefinite"/>
+                    <animateTransform attributeName="transform" type="rotate"
+                                      from="0 12 12" to="360 12 12" dur="0.9s" repeatCount="indefinite"/>
+                  </circle>
+                </svg>
+              </span>
+              <span class="fan-submit-check" aria-hidden="true" hidden>✓</span>
+            </button>
+          </div>
+          <p class="fan-capture__error" id="fan-error" role="alert" aria-live="polite" hidden></p>
+        </form>
+        <p class="fan-capture__trust" id="fan-trust">Just <span id="fan-artist-name">the artist</span>. No spam.</p>
+        <div class="fan-capture__echo" id="fan-echo" hidden>
+          <p class="fan-capture__echo-text" id="fan-echo-text"></p>
+          <p class="fan-capture__echo-confirm">Check your email to confirm.</p>
+        </div>
+      </section>
+
+      <!-- ======================================================
+           LISTEN SECTION
+           ====================================================== -->
+      <section class="content-section" id="listen-section" aria-labelledby="listen-heading" hidden>
+        <header class="section-header">
+          <h2 class="section-title" id="listen-heading">Listen</h2>
+        </header>
+        <div class="releases-list" id="releases-list"></div>
+      </section>
+
+      <!-- ======================================================
+           SHOWS SECTION
+           ====================================================== -->
+      <section class="content-section" id="shows-section" aria-labelledby="shows-heading" hidden>
+        <header class="section-header">
+          <h2 class="section-title" id="shows-heading">Shows</h2>
+        </header>
+        <div class="shows-list" id="shows-list"></div>
+      </section>
+
+      <!-- ======================================================
+           SNAP CARDS (horizontal scroll)
+           ====================================================== -->
+      <section class="snap-cards-section" id="snap-cards-section" aria-label="Updates" hidden>
+        <div class="snap-cards-track" id="snap-cards-track"></div>
+      </section>
+
+      <!-- ======================================================
+           MERCH SECTION
+           ====================================================== -->
+      <section class="content-section" id="merch-section" aria-labelledby="merch-heading" hidden>
+        <header class="section-header">
+          <h2 class="section-title" id="merch-heading">Merch</h2>
+          <a class="section-action" id="merch-shop-link" href="#" target="_blank" rel="noopener noreferrer" hidden>
+            Shop all
+          </a>
+        </header>
+        <div class="merch-grid" id="merch-grid"></div>
+      </section>
+
+      <!-- ======================================================
+           SUPPORT SECTION
+           ====================================================== -->
+      <section class="content-section" id="support-section" aria-labelledby="support-heading" hidden>
+        <header class="section-header">
+          <h2 class="section-title" id="support-heading">Support</h2>
+        </header>
+        <div class="support-packs" id="support-packs"></div>
+        <p class="support-note">0% taken by ABLE. Stripe fee only.</p>
+      </section>
+
+      <!-- ======================================================
+           CREDITS (collapsed accordion)
+           ====================================================== -->
+      <section class="credits-section" id="credits-section" aria-labelledby="credits-toggle" hidden>
+        <button class="credits-toggle pressable" id="credits-toggle"
+                aria-expanded="false" aria-controls="credits-body">
+          <span>Credits</span>
+          <svg class="credits-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="credits-body" id="credits-body" hidden>
+          <ul class="credits-list" id="credits-list" role="list"></ul>
+        </div>
+      </section>
+
+      <!-- ======================================================
+           SECONDARY FAN CAPTURE (bottom catch-all)
+           ====================================================== -->
+      <section class="fan-capture fan-capture--secondary" id="fan-capture-2"
+               aria-labelledby="fan-capture-2-heading" hidden>
+        <h2 class="fan-capture__heading" id="fan-capture-2-heading">Stay close.</h2>
+        <p class="fan-capture__sub">Your list. I'll look after it.</p>
+        <form class="fan-capture__form" id="fan-form-2" novalidate>
+          <div class="fan-capture__field-wrap">
+            <label for="fan-email-2" class="sr-only">Email address</label>
+            <input class="fan-capture__input" id="fan-email-2"
+                   type="email" inputmode="email"
+                   autocomplete="email" autocapitalize="off"
+                   placeholder="your@email.com"
+                   aria-required="true">
+            <button class="fan-capture__btn btn-primary pressable" type="submit"
+                    aria-label="Join the list">
+              <span>I'm in</span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ======================================================
+           FOOTER
+           ====================================================== -->
+      <footer class="profile-footer" id="profile-footer">
+        <a class="footer-able-link" id="footer-able"
+           href="https://able.fm" target="_blank" rel="noopener noreferrer" hidden>
+          Made with ABLE
+        </a>
+        <p class="footer-export" id="footer-export" hidden>
+          Your list. <button class="footer-export-btn pressable" id="footer-export-btn">Export any time.</button>
+        </p>
+      </footer>
 
     </main>
 
@@ -1227,11 +2089,180 @@
 
     // === PROFILE =================================================
 
+    const DEMO_PROFILE = {
+      name: 'LUNA',
+      genre: 'Electronic',
+      location: 'London',
+      bio: 'Beats built in the dark. Music for late nights and early mornings. New album out now.',
+      theme: 'dark',
+      vibe: 'electronic',
+      tier: 'free',
+      topCard: {
+        type: 'artwork',
+        artworkUrl: 'https://images.unsplash.com/photo-1614680376408-81e91ffe3db7?w=800&q=80',
+        title: 'Echo Chamber',
+        releaseType: 'Album'
+      },
+      platforms: [
+        { name: 'Spotify', url: 'https://spotify.com', type: 'streaming' },
+        { name: 'Apple Music', url: 'https://music.apple.com', type: 'streaming' },
+        { name: 'SoundCloud', url: 'https://soundcloud.com', type: 'streaming' },
+        { name: 'Instagram', url: 'https://instagram.com', type: 'social' },
+        { name: 'Bandcamp', url: 'https://bandcamp.com', type: 'store' },
+      ],
+      ctas: [
+        { label: 'Stream now', url: 'https://spotify.com', type: 'primary' },
+      ],
+      releases: [
+        {
+          title: 'Echo Chamber',
+          type: 'Album',
+          releaseDate: '2026-01-15',
+          artworkUrl: 'https://images.unsplash.com/photo-1614680376408-81e91ffe3db7?w=400&q=80',
+          streamUrl: 'https://spotify.com',
+          tracks: [
+            { title: 'Liminal', duration: '4:12' },
+            { title: 'Glass City', duration: '3:48' },
+            { title: 'Deep Water', duration: '5:03' },
+            { title: 'Signal Loss', duration: '3:22' },
+            { title: 'Corridor', duration: '6:01' },
+            { title: 'Static', duration: '4:44' },
+          ],
+          credits: [
+            { name: 'LUNA', role: 'Production, Mixing' },
+            { name: 'James Reid', role: 'Mastering' },
+          ]
+        },
+        {
+          title: 'Liminal (Single)',
+          type: 'Single',
+          releaseDate: '2025-11-20',
+          artworkUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80',
+          streamUrl: 'https://spotify.com',
+          tracks: [
+            { title: 'Liminal', duration: '4:12' },
+            { title: 'Liminal (Instrumental)', duration: '4:12' },
+          ],
+          credits: []
+        }
+      ],
+      events: [
+        {
+          venue: 'Fabric',
+          city: 'London',
+          country: 'UK',
+          date: new Date(Date.now() + 12 * 86400000).toISOString(),
+          time: '22:00',
+          ticketUrl: 'https://fabriclondon.com',
+          soldOut: false
+        },
+        {
+          venue: 'De School',
+          city: 'Amsterdam',
+          country: 'NL',
+          date: new Date(Date.now() + 28 * 86400000).toISOString(),
+          time: '23:00',
+          ticketUrl: 'https://deschool.nl',
+          soldOut: false
+        },
+        {
+          venue: 'Berghain',
+          city: 'Berlin',
+          country: 'DE',
+          date: new Date(Date.now() + 45 * 86400000).toISOString(),
+          time: '00:00',
+          ticketUrl: 'https://berghain.de',
+          soldOut: true
+        }
+      ],
+      snapCards: [
+        {
+          published: true,
+          sortOrder: 1,
+          imageUrl: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&q=80',
+          title: 'New video out now',
+          body: 'The Liminal video — shot in a derelict power station in East London.',
+          ctaLabel: 'Watch',
+          ctaUrl: 'https://youtube.com'
+        },
+        {
+          published: true,
+          sortOrder: 2,
+          title: 'Tour dates dropped',
+          body: 'Spring run across London, Amsterdam, Berlin. Tickets below.',
+          ctaLabel: 'Get tickets',
+          ctaUrl: 'https://fabriclondon.com'
+        }
+      ],
+      merch: {
+        storeUrl: 'https://bandcamp.com',
+        items: [
+          {
+            title: 'Echo Chamber LP',
+            price: 22,
+            currency: '£',
+            badge: 'New',
+            emoji: '💿',
+            url: 'https://bandcamp.com'
+          },
+          {
+            title: 'Liminal Tee',
+            price: 35,
+            currency: '£',
+            url: 'https://bandcamp.com'
+          },
+          {
+            title: 'Logo Hoodie',
+            price: 65,
+            currency: '£',
+            url: 'https://bandcamp.com'
+          },
+          {
+            title: 'Tote Bag',
+            price: 15,
+            currency: '£',
+            url: 'https://bandcamp.com'
+          }
+        ]
+      },
+      support: {
+        packs: [
+          {
+            emoji: '☕',
+            label: 'Buy me a coffee',
+            description: 'Keep the studio lights on.',
+            price: 3,
+            currency: '£',
+            url: 'https://buymeacoffee.com'
+          },
+          {
+            emoji: '🎧',
+            label: 'Support a track',
+            description: 'Help fund the next release.',
+            price: 10,
+            currency: '£',
+            url: 'https://buymeacoffee.com'
+          },
+          {
+            emoji: '🎤',
+            label: 'Studio patron',
+            description: 'Monthly access to work-in-progress.',
+            price: 5,
+            currency: '£',
+            url: 'https://patreon.com'
+          }
+        ]
+      },
+      credits: []
+    }
+
     function getProfile() {
       try {
-        return JSON.parse(localStorage.getItem('able_v3_profile') || '{}')
+        const stored = JSON.parse(localStorage.getItem('able_v3_profile') || 'null')
+        // Return stored profile if it has a name, else fall back to demo
+        return (stored && stored.name) ? stored : DEMO_PROFILE
       } catch (_) {
-        return {}
+        return DEMO_PROFILE
       }
     }
 
@@ -1768,6 +2799,573 @@
       return map[src] || (['instagram','tiktok','youtube','qr','email','other'].includes(src) ? src : 'direct')
     }
 
+    // === CHECKPOINT 4: MAIN CONTENT RENDERING ====================
+
+    // --- Fan capture -------------------------------------------
+
+    function renderFanCapture(profile) {
+      const fc1 = document.getElementById('fan-capture')
+      const fc2 = document.getElementById('fan-capture-2')
+      if (!fc1 || !fc2) return
+
+      // Set artist name in trust lines
+      const nameEl = document.getElementById('fan-artist-name')
+      if (nameEl && profile.name) nameEl.textContent = profile.name
+
+      // If fan already signed up this session, show echo state
+      const fans = JSON.parse(localStorage.getItem('able_fans') || '[]')
+      const alreadySigned = fans.length > 0
+
+      if (alreadySigned) {
+        const form = document.getElementById('fan-form')
+        const echo = document.getElementById('fan-echo')
+        if (form) form.hidden = true
+        if (echo) {
+          echo.hidden = false
+          const echoText = document.getElementById('fan-echo-text')
+          if (echoText) echoText.textContent = `You're on the list.`
+        }
+      }
+
+      fc1.hidden = false
+      fc2.hidden = false
+    }
+
+    function initFanForms() {
+      function handleFanForm(formId, emailId, submitId) {
+        const form = document.getElementById(formId)
+        if (!form) return
+
+        form.addEventListener('submit', function(e) {
+          e.preventDefault()
+          const emailInput = document.getElementById(emailId)
+          const submitBtn = document.getElementById(submitId)
+          const errorEl = document.getElementById('fan-error')
+          const email = emailInput ? emailInput.value.trim() : ''
+
+          // Validate
+          const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+          if (!emailRx.test(email)) {
+            if (emailInput) {
+              emailInput.classList.add('error')
+              emailInput.setAttribute('aria-invalid', 'true')
+              // Shake animation
+              emailInput.style.animation = 'shake 0.35s var(--ease-spring)'
+              emailInput.addEventListener('animationend', () => {
+                emailInput.style.animation = ''
+              }, { once: true })
+            }
+            if (errorEl) {
+              errorEl.textContent = 'Please enter a valid email.'
+              errorEl.hidden = false
+            }
+            return
+          }
+
+          // Clear error
+          if (emailInput) {
+            emailInput.classList.remove('error')
+            emailInput.removeAttribute('aria-invalid')
+          }
+          if (errorEl) errorEl.hidden = true
+
+          // Optimistic UI — spinner
+          if (submitBtn) {
+            const label = submitBtn.querySelector('.fan-submit-label')
+            const spinner = submitBtn.querySelector('.fan-submit-spinner')
+            if (label) label.hidden = true
+            if (spinner) spinner.hidden = false
+            submitBtn.disabled = true
+          }
+
+          // Write to localStorage (double_opted_in: false — confirmed via email later)
+          try {
+            const fans = JSON.parse(localStorage.getItem('able_fans') || '[]')
+            fans.push({
+              id: crypto.randomUUID(),
+              email,
+              ts: Date.now(),
+              source: getUtmSource(),
+              double_opted_in: false
+            })
+            localStorage.setItem('able_fans', JSON.stringify(fans))
+          } catch (_) {}
+
+          // Simulate async (real: Supabase call in Phase 2)
+          setTimeout(() => {
+            // Switch to checkmark
+            if (submitBtn) {
+              const spinner = submitBtn.querySelector('.fan-submit-spinner')
+              const check = submitBtn.querySelector('.fan-submit-check')
+              if (spinner) spinner.hidden = true
+              if (check) check.hidden = false
+            }
+
+            // After brief pause, show echo state
+            setTimeout(() => {
+              const echoSection = document.getElementById('fan-capture')
+              const formEl = document.getElementById('fan-form')
+              const echoEl = document.getElementById('fan-echo')
+              if (formEl) formEl.hidden = true
+              if (echoEl) {
+                echoEl.hidden = false
+                const echoText = document.getElementById('fan-echo-text')
+                if (echoText) echoText.textContent = `You're on the list.`
+              }
+              // Also hide secondary form
+              const fc2form = document.getElementById('fan-form-2')
+              if (fc2form) fc2form.hidden = true
+            }, 600)
+          }, 800)
+        })
+
+        // Remove error state on input
+        const emailInput = document.getElementById(emailId)
+        if (emailInput) {
+          emailInput.addEventListener('input', function() {
+            this.classList.remove('error')
+            this.removeAttribute('aria-invalid')
+            const errorEl = document.getElementById('fan-error')
+            if (errorEl) errorEl.hidden = true
+          })
+          // Paste flash feedback
+          emailInput.addEventListener('paste', function() {
+            this.classList.add('paste-flash')
+            setTimeout(() => this.classList.remove('paste-flash'), 500)
+          })
+        }
+      }
+
+      handleFanForm('fan-form', 'fan-email', 'fan-submit')
+
+      // Secondary form (simplified — no spinner/check in its markup)
+      const form2 = document.getElementById('fan-form-2')
+      if (form2) {
+        form2.addEventListener('submit', function(e) {
+          e.preventDefault()
+          const emailInput = document.getElementById('fan-email-2')
+          const email = emailInput ? emailInput.value.trim() : ''
+          const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+          if (!emailRx.test(email)) {
+            if (emailInput) {
+              emailInput.classList.add('error')
+              emailInput.style.animation = 'shake 0.35s var(--ease-spring)'
+              emailInput.addEventListener('animationend', () => {
+                emailInput.style.animation = ''
+              }, { once: true })
+            }
+            return
+          }
+          try {
+            const fans = JSON.parse(localStorage.getItem('able_fans') || '[]')
+            fans.push({
+              id: crypto.randomUUID(),
+              email,
+              ts: Date.now(),
+              source: getUtmSource(),
+              double_opted_in: false
+            })
+            localStorage.setItem('able_fans', JSON.stringify(fans))
+          } catch (_) {}
+          form2.hidden = true
+          // Show brief confirmation
+          const confirmP = document.createElement('p')
+          confirmP.className = 'fan-capture__echo-text'
+          confirmP.style.marginTop = 'var(--sp-4)'
+          confirmP.textContent = `You're on the list.`
+          form2.parentNode.appendChild(confirmP)
+        })
+
+        const emailInput2 = document.getElementById('fan-email-2')
+        if (emailInput2) {
+          emailInput2.addEventListener('input', function() {
+            this.classList.remove('error')
+            this.style.animation = ''
+          })
+        }
+      }
+    }
+
+    // --- Listen section ----------------------------------------
+
+    function renderListenSection(profile) {
+      const section = document.getElementById('listen-section')
+      const list = document.getElementById('releases-list')
+      if (!section || !list) return
+
+      const releases = profile.releases || []
+      if (!releases.length) return
+
+      list.innerHTML = ''
+      releases.forEach((rel, i) => {
+        const card = document.createElement('article')
+        card.className = 'release-card pressable'
+        card.setAttribute('role', 'listitem')
+
+        const type = rel.type || 'Single'
+        const year = rel.releaseDate ? new Date(rel.releaseDate).getFullYear() : ''
+        const tracks = rel.tracks || []
+
+        card.innerHTML = `
+          ${rel.artworkUrl
+            ? `<img class="release-card__artwork" src="${rel.artworkUrl}"
+                    alt="${rel.title || 'Release'} artwork"
+                    width="72" height="72" loading="lazy">`
+            : `<div class="release-card__artwork" aria-hidden="true"></div>`
+          }
+          <div class="release-card__info">
+            <h3 class="release-card__title">${rel.title || 'Untitled'}</h3>
+            <p class="release-card__meta">${type}${year ? ` · ${year}` : ''}${tracks.length ? ` · ${tracks.length} track${tracks.length !== 1 ? 's' : ''}` : ''}</p>
+            ${tracks.length ? `<div class="release-card__tracks" aria-label="Track listing">
+              ${tracks.slice(0, 5).map((t, ti) =>
+                `<div class="release-track">
+                  <span class="release-track__num">${ti + 1}</span>
+                  <span class="release-track__title">${t.title || `Track ${ti + 1}`}</span>
+                  ${t.duration ? `<span class="release-track__duration">${t.duration}</span>` : ''}
+                </div>`
+              ).join('')}
+              ${tracks.length > 5 ? `<div class="release-track"><span class="release-track__title" style="color:var(--color-text-3)">+${tracks.length - 5} more</span></div>` : ''}
+            </div>` : ''}
+          </div>
+        `
+
+        // Tap to open stream URL
+        if (rel.streamUrl) {
+          card.setAttribute('tabindex', '0')
+          card.addEventListener('click', () => {
+            trackClick(rel.title || 'Release', 'stream', 'listen')
+            window.open(rel.streamUrl, '_blank', 'noopener,noreferrer')
+          })
+          card.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click() }
+          })
+        }
+
+        list.appendChild(card)
+      })
+
+      section.hidden = false
+    }
+
+    // --- Shows section -----------------------------------------
+
+    function renderShowsSection(profile) {
+      const section = document.getElementById('shows-section')
+      const list = document.getElementById('shows-list')
+      if (!section || !list) return
+
+      const events = (profile.events || []).filter(ev => {
+        const d = ev.date ? new Date(ev.date) : null
+        return d && d > new Date()
+      }).sort((a, b) => new Date(a.date) - new Date(b.date))
+
+      if (!events.length) return
+
+      list.innerHTML = ''
+      events.forEach(ev => {
+        const item = document.createElement('div')
+        item.className = 'show-item'
+
+        const date = new Date(ev.date)
+        const dayStr = date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
+        const timeStr = ev.time || date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+
+        item.innerHTML = `
+          <div class="show-item__date" aria-label="${dayStr}">
+            <span class="show-item__month">${date.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}</span>
+            <span class="show-item__day">${date.getDate()}</span>
+          </div>
+          <div class="show-item__info">
+            <p class="show-item__venue">${ev.venue || 'TBC'}</p>
+            <p class="show-item__city">${[ev.city, ev.country].filter(Boolean).join(', ') || ''}</p>
+            <p class="show-item__time">${timeStr}</p>
+          </div>
+          <div class="show-item__cta">
+            ${ev.soldOut
+              ? `<span class="show-item__sold-out-badge">Sold out</span>`
+              : ev.ticketUrl
+                ? `<a class="btn-show pressable"
+                      href="${ev.ticketUrl}" target="_blank" rel="noopener noreferrer"
+                      aria-label="Buy tickets for ${ev.venue || 'show'} on ${dayStr}"
+                      onclick="trackClick('${(ev.venue || 'show').replace(/'/g, "\\'")}','ticket','shows')">
+                     Tickets
+                   </a>`
+                : ''
+            }
+          </div>
+        `
+        list.appendChild(item)
+      })
+
+      section.hidden = false
+    }
+
+    // --- Snap cards --------------------------------------------
+
+    function renderSnapCards(profile) {
+      const section = document.getElementById('snap-cards-section')
+      const track = document.getElementById('snap-cards-track')
+      if (!section || !track) return
+
+      const cards = (profile.snapCards || [])
+        .filter(c => c.published !== false)
+        .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+
+      if (!cards.length) return
+
+      track.innerHTML = ''
+      cards.forEach(card => {
+        const el = document.createElement('article')
+        el.className = 'snap-card pressable'
+        el.setAttribute('role', 'listitem')
+
+        const hasImg = Boolean(card.imageUrl)
+        el.innerHTML = `
+          ${hasImg ? `<img class="snap-card__image" src="${card.imageUrl}"
+                            alt="${card.alt || card.title || ''}"
+                            loading="lazy" width="200" height="200">` : ''}
+          <div class="snap-card__body">
+            ${card.title ? `<h3 class="snap-card__title">${card.title}</h3>` : ''}
+            ${card.body ? `<p class="snap-card__text">${card.body}</p>` : ''}
+            ${card.ctaLabel && card.ctaUrl
+              ? `<a class="snap-card__cta pressable"
+                    href="${card.ctaUrl}" target="_blank" rel="noopener noreferrer"
+                    onclick="trackClick('${(card.ctaLabel).replace(/'/g, "\\'")}','snap','snap-cards')">
+                   ${card.ctaLabel}
+                 </a>`
+              : ''}
+          </div>
+        `
+        track.appendChild(el)
+      })
+
+      section.hidden = false
+    }
+
+    // --- Merch section -----------------------------------------
+
+    function renderMerchSection(profile) {
+      const section = document.getElementById('merch-section')
+      const grid = document.getElementById('merch-grid')
+      if (!section || !grid) return
+
+      const merch = profile.merch || {}
+      const items = merch.items || []
+      if (!items.length) return
+
+      // Show "Shop all" link if storeUrl provided
+      const shopLink = document.getElementById('merch-shop-link')
+      if (shopLink && merch.storeUrl) {
+        shopLink.href = merch.storeUrl
+        shopLink.hidden = false
+      }
+
+      grid.innerHTML = ''
+      items.forEach(item => {
+        const el = document.createElement('article')
+        el.className = 'merch-item pressable'
+
+        const priceStr = item.price != null
+          ? (item.currency || '£') + Number(item.price).toFixed(2)
+          : ''
+
+        el.innerHTML = `
+          <div class="merch-item__image-wrap">
+            ${item.imageUrl
+              ? `<img class="merch-item__image loaded" src="${item.imageUrl}"
+                      alt="${item.title || 'Merch item'}"
+                      width="160" height="160" loading="lazy">`
+              : item.emoji
+                ? `<div class="merch-item__emoji" aria-hidden="true">${item.emoji}</div>`
+                : ''
+            }
+            ${item.badge ? `<span class="merch-item__badge">${item.badge}</span>` : ''}
+          </div>
+          <div class="merch-item__info">
+            <p class="merch-item__title">${item.title || 'Item'}</p>
+            ${priceStr ? `<p class="merch-item__price">${priceStr}</p>` : ''}
+          </div>
+        `
+
+        if (item.url) {
+          el.setAttribute('tabindex', '0')
+          el.setAttribute('role', 'button')
+          el.setAttribute('aria-label', `${item.title || 'Item'} — ${priceStr}. Open in shop.`)
+          el.addEventListener('click', () => {
+            trackClick(item.title || 'Merch', 'merch', 'merch-section')
+            window.open(item.url, '_blank', 'noopener,noreferrer')
+          })
+          el.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click() }
+          })
+        }
+
+        grid.appendChild(el)
+      })
+
+      section.hidden = false
+    }
+
+    // --- Support section ---------------------------------------
+
+    function renderSupportSection(profile) {
+      const section = document.getElementById('support-section')
+      const packsEl = document.getElementById('support-packs')
+      if (!section || !packsEl) return
+
+      const support = profile.support || {}
+      const packs = support.packs || []
+      if (!packs.length) return
+
+      packsEl.innerHTML = ''
+      packs.forEach(pack => {
+        const el = document.createElement('div')
+        el.className = 'support-pack pressable'
+
+        const priceStr = pack.price != null
+          ? (pack.currency || '£') + Number(pack.price).toFixed(2)
+          : ''
+
+        el.innerHTML = `
+          <span class="support-pack__emoji" aria-hidden="true">${pack.emoji || '❤️'}</span>
+          <div class="support-pack__info">
+            <p class="support-pack__label">${pack.label || 'Support'}</p>
+            ${pack.description ? `<p class="support-pack__desc">${pack.description}</p>` : ''}
+          </div>
+          ${priceStr && pack.url
+            ? `<a class="btn-primary pressable support-pack__price"
+                  href="${pack.url}" target="_blank" rel="noopener noreferrer"
+                  aria-label="${pack.label || 'Support'} — ${priceStr}"
+                  onclick="trackClick('${(pack.label || 'Support').replace(/'/g, "\\'")}','support','support-section')">
+                 ${priceStr}
+               </a>`
+            : priceStr
+              ? `<span class="support-pack__price">${priceStr}</span>`
+              : ''
+          }
+        `
+        packsEl.appendChild(el)
+      })
+
+      section.hidden = false
+    }
+
+    // --- Credits section ---------------------------------------
+
+    function renderCreditsSection(profile) {
+      const section = document.getElementById('credits-section')
+      const list = document.getElementById('credits-list')
+      if (!section || !list) return
+
+      // Collect credits from all releases
+      const releases = profile.releases || []
+      const credits = []
+      releases.forEach(rel => {
+        (rel.credits || []).forEach(credit => {
+          if (!credits.find(c => c.name === credit.name && c.role === credit.role)) {
+            credits.push({ ...credit, release: rel.title })
+          }
+        })
+      })
+      // Also top-level credits
+      ;(profile.credits || []).forEach(credit => {
+        if (!credits.find(c => c.name === credit.name && c.role === credit.role)) {
+          credits.push(credit)
+        }
+      })
+
+      if (!credits.length) return
+
+      list.innerHTML = ''
+      credits.forEach(credit => {
+        const li = document.createElement('li')
+        li.className = 'credit-item'
+        li.innerHTML = `
+          <span class="credit-item__name">${credit.name}</span>
+          <span class="credit-item__role">${credit.role || 'Contributor'}</span>
+        `
+        list.appendChild(li)
+      })
+
+      section.hidden = false
+    }
+
+    function initCreditsToggle() {
+      const toggle = document.getElementById('credits-toggle')
+      const body = document.getElementById('credits-body')
+      if (!toggle || !body) return
+
+      toggle.addEventListener('click', () => {
+        const isOpen = toggle.getAttribute('aria-expanded') === 'true'
+        toggle.setAttribute('aria-expanded', String(!isOpen))
+        body.hidden = isOpen
+
+        if (!isOpen) {
+          // Animate height open
+          body.style.height = '0'
+          body.hidden = false
+          requestAnimationFrame(() => {
+            body.style.height = body.scrollHeight + 'px'
+            body.addEventListener('transitionend', () => {
+              body.style.height = ''
+            }, { once: true })
+          })
+        } else {
+          body.style.height = body.scrollHeight + 'px'
+          requestAnimationFrame(() => {
+            body.style.height = '0'
+            body.addEventListener('transitionend', () => {
+              body.hidden = true
+              body.style.height = ''
+            }, { once: true })
+          })
+        }
+      })
+    }
+
+    // --- Footer ------------------------------------------------
+
+    function renderFooter(profile) {
+      const footerAble = document.getElementById('footer-able')
+      const footerExport = document.getElementById('footer-export')
+
+      // "Made with ABLE" — free tier only
+      if (footerAble) {
+        footerAble.hidden = (profile.tier && profile.tier !== 'free')
+      }
+
+      // Fan list export — show if any fans captured
+      if (footerExport) {
+        const fans = JSON.parse(localStorage.getItem('able_fans') || '[]')
+        footerExport.hidden = fans.length === 0
+      }
+    }
+
+    function initFooterExport() {
+      const btn = document.getElementById('footer-export-btn')
+      if (!btn) return
+
+      btn.addEventListener('click', () => {
+        try {
+          const fans = JSON.parse(localStorage.getItem('able_fans') || '[]')
+          if (!fans.length) return
+
+          const header = 'email,ts,source,double_opted_in'
+          const rows = fans.map(f =>
+            [f.email, f.ts, f.source || 'direct', f.double_opted_in ? '1' : '0'].join(',')
+          )
+          const csv = [header, ...rows].join('\n')
+          const blob = new Blob([csv], { type: 'text/csv' })
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = 'able-fans.csv'
+          a.click()
+          URL.revokeObjectURL(url)
+        } catch (_) {}
+      })
+    }
+
     // === INIT ====================================================
 
     function init() {
@@ -1802,10 +3400,25 @@
       revealHeroName()
       renderPills(profile)
 
+      // Render main content sections (Checkpoint 4)
+      renderFanCapture(profile)
+      renderListenSection(profile)
+      renderShowsSection(profile)
+      renderSnapCards(profile)
+      renderMerchSection(profile)
+      renderSupportSection(profile)
+      renderCreditsSection(profile)
+      renderFooter(profile)
+
+      // Wire interactions (Checkpoint 4)
+      initFanForms()
+      initCreditsToggle()
+      initFooterExport()
+
       // Track page view
       trackView()
 
-      // Expose globals for Checkpoint 3+ to use
+      // Expose globals
       window.ABLE = {
         getProfile,
         applyDerivedTokens,
