@@ -1619,6 +1619,18 @@ BANNED:     Commerce cards for artists the fan doesn't follow
 
 **ABLE never positions the professional discovery system as a marketplace, a platform for freelancers, or a competitor to SoundBetter/Fiverr.** It is a credit trail that leads somewhere real. Professionals are found through music people already love.
 
+**Why the marketplace model fails (primary research, 2026):**
+SoundBetter's documented failure modes — study these and design against every one:
+- **Visibility-as-subscription**: search ranking favours paid $99/mo premium listings over proven performance. A globally top-100-ranked engineer can be suppressed below lesser-credentialed colleagues who pay more. The indignity: your work doesn't earn your visibility — your wallet does.
+- **Certification opacity**: "Certified Pro" tier has criteria nobody can satisfy despite years of attempts. Criteria never published. Destroys trust from the professionals the platform most needs.
+- **Race to the bottom**: price is visible before quality. Established engineers at £500–£1,500/mix compete on the same surface as £30 operators. Buyers without knowledge use price as a quality proxy — in the wrong direction.
+- **Review hostage-taking**: a single 3-star review from an uninformed client who submitted a poorly recorded demo can suppress search rank. Established engineers avoid platforms where their reputation is held by client quality they can't control.
+- **Wrong problem solved**: mid-tier professionals (£50k–£200k/year) have already solved discovery. Their problem is workload management and rate-setting. Filter-based search is built for buyers who don't know who they want — the opposite of how real hiring works.
+
+**The right analogue is Working Not Working** (before Fiverr's acquisition destroyed it): invite-only creative talent network, quality-gatekept at entry, work-quality-first in the feed, no price comparison. Brands and art directors formed quality judgement before reading a profile. Rate negotiated after desire was established — the correct order. ABLE's credits trail achieves the same inversion without a gate: you discover quality through music you already love, then find the person who made it.
+
+**Session musician hiring is demo-reel-first, not profile-first.** Session players are hired for how they sound on a specific instrument in a specific genre. The demo reel is the job application — the profile is almost irrelevant. ABLE's Studio mode for session musicians should have the audio demo embedded above everything else: first thing heard, last thing forgotten. Credits list is secondary. Bio is tertiary. Rate card is never primary.
+
 ---
 
 **Three professional types — different needs, different profiles:**
@@ -3371,7 +3383,7 @@ All emails must sound like they were written by a person in the music industry, 
 
 ---
 
-*Build prompt version: 5.3 — Updated 2026-03-13.*
+*Build prompt version: 5.4 — Updated 2026-03-13. This version adds: SoundBetter failure mode analysis (visibility-as-subscription, certification opacity, race-to-the-bottom, review hostage-taking, wrong problem solved), Working Not Working as quality-trail proof of concept, session musician demo-reel-first principle. Previous 5.3: Part IV discovery/ecosystem/integrations/AI, Part V micro-interactions library (100 entries). Previous 5.2: professional discovery system. Previous 5.1/5.0: see inline version notes.*
 
 *Version 5.3 additions: Part IV — Discovery, Growth, Ecosystem & Integrations: 5-tier product build hierarchy (work top-down rule), velocity-based leaderboards, globe heatmap spec, launch squad system, "Artists I'm Digging" cross-discovery graph, fan Amplifier badge, QR code spec, Campaign Mode UTM, organic growth flywheel, Ablers referral programme (3 tiers: 20%/25%/30%), Rooms + Stage Can (£1–50 tipping), AI co-host architecture, press pack spec (`able.fm/name/press`, Apple Memories-style), Story Mode via Creatomate/Bannerbear, Industry Mode, Community Fund (3% take, quarterly vote), Support a Cause snap card (Stripe Connect split), Music Map with Spotify "sounds like", data portability above-fold placement rule, collaboration discovery card (artist-only layer), exact recommendation notification copy, integration priority matrix, Linktree importer as #1 conversion tool, API reliability warnings (Instagram deprecated late 2024, Spotify May 2024 removals, PledgeMusic defunct), full AI tool assessment (ElevenLabs highest value, OpenAI Whisper, LANDR, LALAL.AI, ACE-Step licence warning, AudioCraft CC-BY-NC hard blocker, Suno/Udio RIAA litigation), agent architecture principle. Part V — Micro-Interactions Reference (100-entry library distilled): 4 canonical easing curves, GPU performance rules (opacity+transform in loops only, ::before glow trick), must-build priority matrix (20 interactions, 3 phases), key implementation patterns (staggered bloom 2-system architecture, skeleton shimmer unison rule, fan confirmation copy, campaign state crossfade, gig mode flash once-per-session, asymmetric sheet easing, iOS :active fix), ambient state rules (glow breathing cycle speeds, pre-release urgency interpolation formula). Also: AI context persistence (artist_context in Supabase from day 1), workflow-layer AI (predictive surfacing not generative), annual transparency report architecture, 10-pattern anti-pattern list.*
 
