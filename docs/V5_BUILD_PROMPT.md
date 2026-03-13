@@ -2279,6 +2279,76 @@ Admin panel → "Top card" section:
 
 **Sam Altman — the blank page is the largest barrier:** The wizard must pre-fill every field from the best available data. An artist should never see a blank form. The Spotify import means they confirm data, not create it. The bio writer provides 3 options, not an empty textarea. The vibe selector shows their music's genre. ABLE removes the blank page from artist setup.
 
+### From quantitative research (USER_RESEARCH.md — build numbers, not feelings):
+
+**Fan type breakdown — every UI decision should serve the right tier:**
+
+| Type | % of audience | Behaviour | Conversion trigger |
+|---|---|---|---|
+| **Casual listener** | ~80% | Discovered via algorithm, 3–10 streams, won't visit bio link unprompted | Nothing ABLE can do; capture them if they arrive |
+| **Dedicated fan** | 15–18% | Follows on 2+ platforms, visits bio within 48h of release announcement, buys tickets and physical | Personal framing: "be first to know when I announce shows" vs "subscribe" |
+| **Superfan** | 2–5% | Seen live multiple times, owns merch, notifications on, will travel, buys everything direct | Direct support option; confirmation the artist knows they exist |
+| **Discovery fan** | variable | Actively hunts new music (r/indieheads, Bandcamp Friday, music press), converts to Dedicated fast | A landing experience that pays off the quality that sent them |
+
+**Superfan data:** 2% of monthly listeners drive 18% of total streams and 50% of ticket sales (Spotify super-listener data). 20% of US listeners qualify as superfans and spend 4× more (Luminate 2025). Goldman Sachs values the global superfan opportunity at $4.3 billion annually (2026).
+
+**The KAMAUU ratio:** 1,756 Patreon followers, 116 paid members (~6.6%). For ABLE: a 100-fan email list where 6 people buy a support pack at £5/month = £360/year. 1,000 such artists = real product traction.
+
+---
+
+**Discovery channels — ranked by fan-to-lasting-relationship conversion:**
+
+1. Friend / word of mouth — highest; personal trust transfer
+2. Editorial playlist (RADAR, Fresh Finds, BBC Introducing) — high; curated trust
+3. Support slot at a live show — high; captive, warm audience
+4. TikTok / Instagram Reels — high reach, **lowest conversion** without follow-up mechanism
+5. Algorithmic (Spotify Radio, YouTube suggested) — wide reach, lowest intent
+6. Music press / blogs (DIY, Line of Best Fit, Clash) — smaller reach, deeply converted readers
+7. Bandcamp Friday — niche, buyers are already true fans
+
+**Critical implication:** "TikTok is the biggest discovery channel in 2024–2026 but has the worst conversion to lasting fan relationship. The bio link is the critical bridge. ABLE must convert TikTok-referred visitors faster than any competitor. UTM source matching (`?src=tiktok` → TikTok embed on top card) directly addresses this."
+
+---
+
+**Artist priorities — design to serve these in this order:**
+
+1. A page that looks like *them*, immediately, without a design degree
+2. To know the people who found them can find them again (they own the email list)
+3. To not feel like they're running a business every time they log in
+4. Clarity on what's actually working (simple, honest analytics)
+5. Tools to do what they already do, better (releases, tickets, merch, support)
+
+**What makes artists leave:** if ABLE starts feeling like Patreon (too monetisation-forward), if the language shifts to "grow your audience" and "maximise conversions," if the data is used without consent, or if the platform changes rules in ways that disadvantage them.
+
+---
+
+**Upgrade copy — the gold lock pattern requires specific value, never generic:**
+
+| Trigger | Wrong | Right |
+|---|---|---|
+| Approaching fan cap | "Upgrade to collect more fans" | "You've had 87 sign-ups. Your free limit is 100. Upgrade to keep capturing." |
+| Analytics depth | "See more analytics" | "Your release dropped 3 days ago. Upgrade to see what your top fans clicked." |
+| Superfan detection | "Upgrade to identify superfans" | "3 fans spent over 90 seconds on your page. Upgrade to see who they are." |
+| Manchester show | "Upgrade to message fans" | "You have 23 fans in Manchester. Upgrade to send them a message before your show." |
+
+**Business target:** 2,000 artists on Artist tier (£9/mo) = £18,000 MRR. Every feature should be evaluated against: does it help the artist identify and serve their 1,000 deepest fans? Feature velocity is irrelevant if it doesn't serve that relationship.
+
+---
+
+**Industry professional signal checklist — what they look for when they land on an ABLE page:**
+
+*Booking agents / promoters:* up-to-date social follower counts, Spotify monthly listeners, past live history, evidence of ticket sales, mobile-friendly page to forward to venue buyers.
+
+*A&R (independent label):* monthly listeners trajectory, TikTok engagement rate, live show attendance, quality of fanbase, direct fan relationships. Values 1,500 dedicated fans over 50,000 passive listeners.
+
+*Sync licensing supervisors:* fast audio sample, rights clarity, ISRC codes, PRO registration, professional visual presence.
+
+*Music journalists:* press shots, biography that tells a story (not a CV), embeddable audio, artist's own words, direct contact. BBC Introducing DJs play based on what they find when they look the artist up.
+
+*Playlist curators:* completed Spotify profile with artist pick, bio, upcoming events. Genre accuracy. Pre-release pitching 7+ days ahead. 40,000+ active curators on SubmitHub.
+
+*Implications for able-v5.html:* The page must serve these industry visitors without being designed for them. A professional enough bio, a complete release with streams/Spotify link, an up-to-date shows section — these already satisfy industry requirements if done well. No "Industry" toggle needed in v5. ABLE must just be professionally presented.
+
 ---
 
 ## PHASE 12 — FAN FEED (fan.html)
