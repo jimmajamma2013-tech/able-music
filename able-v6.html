@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- Eager: DM Sans (body, all vibes) + Barlow Condensed (display) — Latin subset only -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Barlow+Condensed:wght@700&display=swap&subset=latin">
+  <!-- Eager: DM Sans (body) + Barlow Condensed (display) — Latin subset only -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap">
 
   <!-- Meta -->
   <meta name="description" content="Artist profile powered by ABLE">
@@ -53,7 +53,7 @@
       /* Radii */
       --r-pill: 999px;
       /* --r-sm/md/lg/xl computed by applyDerivedTokens() — defaults below */
-      --r-sm: 4px; --r-md: 8px; --r-lg: 16px; --r-xl: 24px;
+      --r-sm: 8px; --r-md: 12px; --r-lg: 20px; --r-xl: 28px;
 
       /* Vibe letter spacing defaults (overridden per vibe) */
       --ls-d:     0em;
@@ -76,16 +76,16 @@
       --color-state-pre:  #fbbf24;
       --color-state-live: #ef4444;
       --color-state-gig:  #8b1e1e;
-      --color-state-prof: #06b6d4;
+      --color-state-prof: #e07b3a;
 
       /* Ambient colour — overridden by canvas extraction (§3.6) */
       --color-ambient: 0,0,0;
 
       /* Accent defaults — overridden by applyDerivedTokens() */
-      --color-accent:      #7ec88a;
-      --color-accent-rgb:  126,200,138;
-      --color-accent-glow: rgba(126,200,138,0.35);
-      --color-accent-soft: rgba(126,200,138,0.12);
+      --color-accent:      #e07b3a;
+      --color-accent-rgb:  224,123,58;
+      --color-accent-glow: rgba(224,123,58,0.30);
+      --color-accent-soft: rgba(224,123,58,0.10);
 
       /* Tab bar height (used for scroll padding) */
       --tab-bar-height: 64px;
@@ -93,16 +93,16 @@
 
     /* === §3.2 THEME TOKENS ====================================== */
     [data-theme="dark"] {
-      --color-bg:          #0d0e1a;
-      --color-surface:     #111427;
-      --color-card:        #12152a;
-      --color-card-raised: #1a1e38;
-      --color-border:      rgba(255,255,255,0.10);
+      --color-bg:          #080808;
+      --color-surface:     #0f0f0f;
+      --color-card:        #141414;
+      --color-card-raised: #1c1c1c;
+      --color-border:      rgba(255,255,255,0.08);
       --color-text:        #f0ede8;
-      --color-text-2:      rgba(240,237,232,0.65);
-      --color-text-3:      rgba(240,237,232,0.50); /* min 4.5:1 on dark bg */
-      --color-overlay:     rgba(13,14,26,0.7);
-      --shadow-card:       0 2px 16px rgba(0,0,0,0.4);
+      --color-text-2:      rgba(240,237,232,0.60);
+      --color-text-3:      rgba(240,237,232,0.38);
+      --color-overlay:     rgba(8,8,8,0.80);
+      --shadow-card:       0 4px 24px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04);
     }
 
     [data-theme="light"] {
@@ -112,9 +112,9 @@
       --color-card-raised: #f8f5f2;
       --color-border:      rgba(0,0,0,0.08);
       --color-text:        #0d0e1a;
-      --color-text-2:      rgba(13,14,26,0.65);
-      --color-text-3:      rgba(13,14,26,0.55); /* min 4.5:1 on light bg */
-      --color-overlay:     rgba(240,237,232,0.7);
+      --color-text-2:      rgba(13,14,26,0.60);
+      --color-text-3:      rgba(13,14,26,0.38);
+      --color-overlay:     rgba(240,237,232,0.85);
       --shadow-card:       0 2px 16px rgba(0,0,0,0.08);
     }
 
@@ -229,7 +229,7 @@
       font-size: var(--text-base);
       line-height: var(--lh-body);
       color: var(--color-text);
-      background-color: #0d0e1a; /* fallback before shell theme loads */
+      background-color: #080808; /* fallback before shell theme loads */
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
@@ -238,7 +238,7 @@
     /* Desktop backdrop — dark surround behind the phone shell */
     @media (min-width: 500px) {
       body {
-        background-color: #080810;
+        background-color: #050505;
         display: flex;
         align-items: flex-start;
         justify-content: center;
@@ -279,7 +279,7 @@
 
     @media (min-width: 500px) {
       #app-shell {
-        box-shadow: 0 0 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 32px 120px rgba(0,0,0,0.9);
       }
     }
 
@@ -320,14 +320,15 @@
       max-width: 430px;
       height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom, 0px));
       padding-bottom: env(safe-area-inset-bottom, 0px);
-      background-color: var(--color-surface);
-      border-top: 1px solid var(--color-border);
+      background-color: rgba(8,8,8,0.96);
+      border-top: 1px solid rgba(255,255,255,0.07);
       display: flex;
       align-items: center;
       justify-content: space-around;
       z-index: 100;
       transition: transform var(--dur-mid) var(--ease-accel);
       will-change: transform;
+      box-shadow: 0 -1px 0 rgba(255,255,255,0.04), 0 -16px 48px rgba(0,0,0,0.5);
     }
 
     /* Glass tab bar gets backdrop blur */
@@ -436,12 +437,12 @@
     .hero {
       position: relative;
       width: 100%;
-      /* Top card: 1:1 square on narrow, slightly shorter on wider */
-      aspect-ratio: 1 / 1;
-      max-height: 430px;
+      /* Cinematic ratio — headlining poster energy */
+      aspect-ratio: 3 / 4;
+      max-height: 560px;
       overflow: hidden;
       flex-shrink: 0;
-      background-color: var(--color-card);
+      background-color: #0a0a0a;
     }
 
     /* Artwork image — lazy loaded with blur-up */
@@ -522,25 +523,41 @@
       inset: 0;
       background: radial-gradient(
         ellipse at 50% 100%,
-        rgba(var(--color-ambient), 0.5) 0%,
-        transparent 70%
+        rgba(var(--color-ambient), 0.45) 0%,
+        transparent 65%
       );
       pointer-events: none;
     }
 
-    /* Bottom scrim for text readability */
+    /* Top vignette — editorial depth, frames the image from above */
+    .hero__top-vignette {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 30%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    [data-theme="light"] .hero__top-vignette {
+      display: none;
+    }
+
+    /* Bottom scrim for text readability — cinematic, poster-like */
     .hero__scrim {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 55%;
+      height: 70%;
       background: linear-gradient(
         to bottom,
         transparent 0%,
-        rgba(0,0,0,0.15) 30%,
-        rgba(0,0,0,0.65) 75%,
-        rgba(0,0,0,0.85) 100%
+        rgba(0,0,0,0.08) 20%,
+        rgba(0,0,0,0.45) 50%,
+        rgba(0,0,0,0.82) 80%,
+        rgba(0,0,0,0.95) 100%
       );
       pointer-events: none;
     }
@@ -550,8 +567,9 @@
       background: linear-gradient(
         to bottom,
         transparent 0%,
-        rgba(240,237,232,0.3) 50%,
-        rgba(240,237,232,0.9) 100%
+        rgba(240,237,232,0.2) 40%,
+        rgba(240,237,232,0.85) 80%,
+        rgba(240,237,232,0.97) 100%
       );
     }
 
@@ -615,7 +633,7 @@
       .state-dot { animation: none; }
     }
 
-    /* Artist name */
+    /* Artist name — poster-grade type treatment */
     .hero__name {
       font-family: var(--font-d);
       font-size: var(--text-hero);
@@ -624,8 +642,8 @@
       text-transform: var(--font-d-transform);
       letter-spacing: var(--ls-d);
       line-height: var(--lh-tight);
-      color: var(--color-text);
-      text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6), 0 8px 32px rgba(0,0,0,0.5);
       /* Reveal animation (interaction #3) — fires after fonts.ready */
       opacity: 0;
       transform: translateY(12px);
@@ -652,12 +670,16 @@
     }
 
     .hero__tag {
-      font-size: var(--text-sm);
-      font-weight: 400;
-      color: var(--color-text-2);
-      letter-spacing: var(--ls-label);
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       line-height: var(--lh-label);
+    }
+
+    [data-theme="light"] .hero__tag {
+      color: var(--color-text-2);
     }
 
     .hero__tag-sep {
@@ -757,79 +779,79 @@
 
     /* === HERO CTAs ============================================== */
     .hero-ctas {
-      padding: var(--sp-4) var(--sp-5);
+      padding: var(--sp-5) var(--sp-5) var(--sp-3);
       display: flex;
       flex-direction: column;
       gap: var(--sp-3);
     }
 
-    /* Primary CTA — full width, accent fill */
+    /* Primary CTA — dominant, full width, tall, bold
+       Authority §3.5: --r-sm for hero CTAs (pill = consumer app; small radius = premium confidence) */
     .btn-primary {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: var(--sp-2);
       width: 100%;
-      min-height: 56px;
+      min-height: 60px;
       padding: var(--sp-4) var(--sp-6);
       background-color: var(--color-accent);
-      color: #fff;
+      color: var(--cta-text-color, #fff);
       border: none;
       border-radius: var(--r-sm);
       font-family: var(--font-body);
       font-size: var(--text-base);
-      font-weight: 600;
-      letter-spacing: 0.01em;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
       cursor: pointer;
       text-decoration: none;
       text-align: center;
-      box-shadow: 0 4px 20px var(--color-accent-glow);
+      box-shadow: 0 4px 24px var(--color-accent-glow);
       transition: box-shadow var(--dur-fast) var(--ease-standard),
                   transform var(--dur-fast) var(--ease-spring);
     }
 
-    /* Light text on dark accents, dark text on light accents
-       JS sets --cta-text-color based on accent luminance */
-    .btn-primary { color: var(--cta-text-color, #fff); }
-
     .btn-primary:hover {
-      box-shadow: 0 6px 28px var(--color-accent-glow);
+      box-shadow: 0 8px 40px var(--color-accent-glow);
     }
 
-    /* Secondary CTA — ghost outline */
+    /* Secondary CTA — quiet, clearly subordinate, authority §3.5 */
     .btn-secondary {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: var(--sp-2);
       width: 100%;
-      min-height: 56px;
-      padding: var(--sp-4) var(--sp-6);
+      min-height: 48px;
+      padding: var(--sp-3) var(--sp-6);
       background: transparent;
-      color: var(--color-text);
-      border: 1.5px solid rgba(255,255,255,0.18);
+      color: var(--color-text-2);
+      border: 1px solid rgba(255,255,255,0.14);
       border-radius: var(--r-sm);
       font-family: var(--font-body);
-      font-size: var(--text-base);
-      font-weight: 500;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       cursor: pointer;
       text-decoration: none;
       text-align: center;
       transition: border-color var(--dur-fast) var(--ease-standard),
+                  color var(--dur-fast) var(--ease-standard),
                   transform var(--dur-fast) var(--ease-spring);
     }
 
     .btn-secondary:hover {
-      border-color: var(--color-accent);
-      color: var(--color-accent);
+      border-color: rgba(var(--color-accent-rgb), 0.5);
+      color: var(--color-text);
     }
 
-    [data-theme="light"] .btn-secondary { border-color: rgba(0,0,0,0.18); color: var(--color-text); }
-    [data-theme="contrast"] .btn-secondary { border-color: rgba(255,255,255,0.3); }
+    [data-theme="light"] .btn-secondary { border-color: rgba(0,0,0,0.12); }
+    [data-theme="contrast"] .btn-secondary { border-color: rgba(255,255,255,0.2); }
 
-    /* CTA § note on glass theme */
     [data-theme="glass"] .btn-secondary {
-      border-color: rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.15);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
@@ -838,51 +860,47 @@
        ABLE v6 — Checkpoint 3: CTA Architecture
        ============================================================ */
 
-    /* === QUICK ACTION PILLS ==================================== */
+    /* === PLATFORM TILES (replaces pills) ======================= */
     .pills-section {
-      padding: var(--sp-4) 0 var(--sp-2);
+      padding: var(--sp-5) var(--sp-5) var(--sp-2);
+    }
+
+    /* Wrapping div still present — now unused */
+    .pills-track-wrap { overflow: visible; }
+
+    /* Grid of platform tiles */
+    .pills-track {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-3);
+      width: 100%;
+    }
+
+    @media (min-width: 340px) {
+      .pills-track { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    /* Individual platform tile — crisp, editorial */
+    .pill {
       display: flex;
       flex-direction: column;
-      gap: var(--sp-3);
-    }
-
-    .pills-track-wrap {
-      overflow-x: auto;
-      overflow-y: visible;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      padding: var(--sp-2) var(--sp-5);
-      /* Allow pill box-shadows to show */
-      margin: -var(--sp-2) 0;
-    }
-    .pills-track-wrap::-webkit-scrollbar { display: none; }
-
-    .pills-track {
-      display: flex;
-      gap: var(--sp-2);
-      width: max-content;
       align-items: center;
-    }
-
-    /* Individual pill */
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--sp-2);
-      padding: var(--sp-2) var(--sp-4);
-      min-height: var(--tap-min);
-      min-width: var(--tap-min);
+      justify-content: center;
+      gap: 6px;
+      padding: var(--sp-4) var(--sp-2);
+      min-height: 72px;
       background-color: var(--color-card);
       border: 1px solid var(--color-border);
-      border-radius: var(--r-pill);
+      border-radius: var(--r-sm);
       font-family: var(--font-body);
-      font-size: var(--text-sm);
-      font-weight: 500;
-      color: var(--color-text-2);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-3);
       text-decoration: none;
       cursor: pointer;
-      white-space: nowrap;
-      flex-shrink: 0;
+      text-align: center;
       transition: color var(--dur-fast) var(--ease-standard),
                   border-color var(--dur-fast) var(--ease-standard),
                   background-color var(--dur-fast) var(--ease-standard),
@@ -891,47 +909,55 @@
 
     .pill:hover,
     .pill:focus-visible {
-      color: var(--color-accent);
-      border-color: var(--color-accent);
-      background-color: var(--color-accent-soft);
+      color: var(--color-text);
+      border-color: rgba(var(--color-accent-rgb), 0.4);
+      background-color: rgba(var(--color-accent-rgb), 0.06);
     }
 
     .pill.pressing {
       transform: scale(0.95);
     }
 
-    /* Pill icon */
+    /* Platform icon — larger in tile mode */
     .pill__icon {
-      width: 16px;
-      height: 16px;
+      width: 26px;
+      height: 26px;
       flex-shrink: 0;
-      opacity: 0.7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* Glass pill */
+    .pill__icon svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    /* Glass tile */
     [data-theme="glass"] .pill {
-      background-color: rgba(255,255,255,0.06);
+      background-color: rgba(255,255,255,0.07);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
 
     /* Overflow "more" button */
     .pills-more {
-      align-self: flex-start;
-      margin-left: var(--sp-5);
-      display: inline-flex;
+      margin-top: var(--sp-3);
+      display: flex;
       align-items: center;
+      justify-content: center;
       gap: var(--sp-2);
-      padding: var(--sp-1) var(--sp-3);
-      height: 32px;
+      padding: var(--sp-3) var(--sp-4);
+      min-height: var(--tap-min);
       background: transparent;
       border: 1px solid var(--color-border);
       border-radius: var(--r-pill);
       font-family: var(--font-body);
-      font-size: var(--text-xs);
+      font-size: var(--text-sm);
       font-weight: 600;
       color: var(--color-accent);
       cursor: pointer;
+      width: 100%;
       letter-spacing: 0.02em;
       transition: background-color var(--dur-fast) var(--ease-standard),
                   transform var(--dur-fast) var(--ease-spring);
@@ -941,39 +967,44 @@
       background-color: var(--color-accent-soft);
     }
 
-    /* === PLATFORM ICON GLYPHS (SVG inline via JS) ============== */
-    /* Defined as data URIs in JS PLATFORM_ICONS map */
-
     /* ============================================================
        ABLE v6 — Checkpoint 4: Main Content Sections
        ============================================================ */
 
     /* === SHARED SECTION STYLES ================================= */
     .content-section {
-      padding: var(--sp-8) var(--sp-5) var(--sp-6);
+      padding: var(--sp-10) var(--sp-5) var(--sp-6);
     }
 
     .section-header {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      margin-bottom: var(--sp-5);
+      margin-bottom: var(--sp-6);
+      /* Accent rule above — editorial marker */
+      padding-top: var(--sp-4);
+      border-top: 2px solid var(--color-accent);
     }
 
     .section-title {
-      font-family: var(--font-body);
-      font-size: var(--text-xl);
-      font-weight: 600;
+      font-family: var(--font-d);
+      font-size: var(--text-3xl);
+      font-weight: var(--font-d-weight);
+      font-style: var(--font-d-style);
+      text-transform: var(--font-d-transform);
+      letter-spacing: var(--ls-d);
+      line-height: var(--lh-display);
       color: var(--color-text);
-      letter-spacing: -0.01em;
     }
 
     .section-action {
-      font-size: var(--text-sm);
-      font-weight: 500;
+      font-size: var(--text-xs);
+      font-weight: 600;
       color: var(--color-accent);
       text-decoration: none;
-      letter-spacing: 0.01em;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      flex-shrink: 0;
     }
 
     .section-divider {
@@ -999,7 +1030,8 @@
       padding: var(--sp-6);
       background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-radius: var(--r-lg);
+      border-top: 2px solid var(--color-accent);
+      border-radius: var(--r-sm);
     }
 
     .fan-capture--secondary {
@@ -1113,127 +1145,267 @@
     .releases-list {
       display: flex;
       flex-direction: column;
-      gap: var(--sp-4);
+      gap: var(--sp-5);
     }
 
+    /* Full-bleed album card — editorial music object */
     .release-card {
       display: flex;
-      gap: var(--sp-4);
-      padding: var(--sp-4);
+      flex-direction: column;
       background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-radius: var(--r-lg);
-      text-decoration: none;
+      border-radius: var(--r-sm);
+      overflow: hidden;
       color: inherit;
-      transition: border-color var(--dur-fast) var(--ease-standard);
+      transition: transform var(--dur-fast) var(--ease-spring),
+                  box-shadow var(--dur-fast) var(--ease-standard);
     }
 
     .release-card:hover {
-      border-color: var(--color-accent);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      transform: translateY(-3px);
+    }
+
+    /* Large artwork — full width, ~70% of card height */
+    .release-card__artwork-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: var(--color-surface);
+      overflow: hidden;
     }
 
     .release-card__artwork {
-      width: 72px;
-      height: 72px;
-      border-radius: var(--r-md);
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      flex-shrink: 0;
+      display: block;
       background: var(--color-surface);
+      transition: transform var(--dur-slow) var(--ease-decel);
     }
 
+    .release-card:hover .release-card__artwork {
+      transform: scale(1.03);
+    }
+
+    /* Platform badge — top right corner of artwork */
+    .release-card__platform-badge {
+      position: absolute;
+      top: var(--sp-3);
+      right: var(--sp-3);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: 6px var(--sp-3);
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: var(--r-pill);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #fff;
+      text-decoration: none;
+      transition: background var(--dur-fast);
+    }
+
+    .release-card__platform-badge svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .release-card__platform-badge:hover {
+      background: rgba(0,0,0,0.9);
+    }
+
+    /* Info row below artwork */
     .release-card__info {
-      flex: 1;
-      min-width: 0;
+      padding: var(--sp-4) var(--sp-5);
       display: flex;
       flex-direction: column;
-      justify-content: center;
       gap: var(--sp-1);
     }
 
     .release-card__title {
-      font-size: var(--text-base);
-      font-weight: 600;
+      font-size: var(--text-lg);
+      font-weight: 700;
       color: var(--color-text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      line-height: 1.2;
     }
 
     .release-card__meta {
       font-size: var(--text-xs);
       color: var(--color-text-3);
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
     }
 
+    /* Track list below info — each row has artwork */
     .release-card__tracks {
       margin-top: var(--sp-2);
+      border-top: 1px solid var(--color-border);
       display: flex;
       flex-direction: column;
-      gap: 2px;
     }
 
     .release-track {
       display: flex;
+      align-items: center;
       gap: var(--sp-3);
-      padding: var(--sp-1) 0;
+      padding: var(--sp-3) 0;
+      border-bottom: 1px solid var(--color-border);
       font-size: var(--text-sm);
       color: var(--color-text-2);
+      cursor: pointer;
+      transition: background-color var(--dur-fast), padding-left var(--dur-fast);
+    }
+
+    .release-track:last-child { border-bottom: none; }
+
+    .release-track:hover {
+      background-color: var(--color-accent-soft);
+      padding-left: var(--sp-2);
+    }
+
+    /* Track artwork thumbnail */
+    .release-track__art {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--r-sm);
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--color-surface);
     }
 
     .release-track__num {
-      width: 20px;
-      text-align: right;
+      width: 24px;
+      text-align: center;
       color: var(--color-text-3);
       flex-shrink: 0;
+      font-size: var(--text-xs);
+      font-weight: 600;
     }
 
     .release-track__title {
       flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 500;
     }
 
     .release-track__duration {
       color: var(--color-text-3);
       flex-shrink: 0;
+      font-size: var(--text-xs);
     }
 
-    /* === SHOWS SECTION ========================================= */
+    /* Inline embed player */
+    .release-embed {
+      overflow: hidden;
+      background: var(--color-surface);
+    }
+
+    .release-embed iframe {
+      width: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Embed toggle button */
+    .release-card__embed-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sp-2);
+      width: 100%;
+      padding: var(--sp-3) var(--sp-5);
+      min-height: var(--tap-min);
+      background: var(--color-accent-soft);
+      color: var(--color-accent);
+      border: none;
+      border-top: 1px solid var(--color-border);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color var(--dur-fast),
+                  transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .release-card__embed-btn:hover {
+      background: var(--color-accent);
+      color: var(--cta-text-color, #fff);
+    }
+
+    /* External link as secondary CTA */
+    .release-card__ext {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sp-2);
+      padding: var(--sp-3) var(--sp-5);
+      min-height: var(--tap-min);
+      border-top: 1px solid var(--color-border);
+      font-size: var(--text-sm);
+      color: var(--color-text-3);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color var(--dur-fast);
+    }
+
+    .release-card__ext:hover { color: var(--color-text); }
+
+    /* === SHOWS SECTION — editorial event cards ================= */
     .shows-list {
       display: flex;
       flex-direction: column;
-      gap: var(--sp-3);
+      gap: var(--sp-2);
     }
 
     .show-item {
       display: flex;
-      align-items: center;
-      gap: var(--sp-4);
-      padding: var(--sp-4);
+      align-items: stretch;
+      gap: 0;
       background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-radius: var(--r-lg);
+      border-radius: var(--r-sm);
+      overflow: hidden;
+      transition: transform var(--dur-fast) var(--ease-spring),
+                  box-shadow var(--dur-fast) var(--ease-standard);
     }
 
+    .show-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+    }
+
+    /* Date column — accent-filled block */
     .show-item__date {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-width: 48px;
+      min-width: 64px;
       flex-shrink: 0;
+      padding: var(--sp-4) var(--sp-3);
+      background: rgba(var(--color-accent-rgb), 0.10);
+      border-right: 1px solid rgba(var(--color-accent-rgb), 0.2);
+      gap: 2px;
     }
 
     .show-item__month {
-      font-size: var(--text-xs);
-      font-weight: 600;
+      font-size: 10px;
+      font-weight: 700;
       color: var(--color-accent);
-      letter-spacing: 0.08em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
     }
 
     .show-item__day {
       font-family: var(--font-d);
-      font-size: var(--text-2xl);
+      font-size: var(--text-3xl);
       font-weight: var(--font-d-weight);
       color: var(--color-text);
       line-height: 1;
@@ -1241,14 +1413,20 @@
       letter-spacing: var(--ls-d);
     }
 
+    /* Info + CTA row */
     .show-item__info {
       flex: 1;
       min-width: 0;
+      padding: var(--sp-4) var(--sp-4);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 3px;
     }
 
     .show-item__venue {
       font-size: var(--text-base);
-      font-weight: 600;
+      font-weight: 700;
       color: var(--color-text);
       white-space: nowrap;
       overflow: hidden;
@@ -1258,16 +1436,20 @@
     .show-item__city {
       font-size: var(--text-sm);
       color: var(--color-text-2);
-      margin-top: 2px;
+      letter-spacing: 0.01em;
     }
 
     .show-item__time {
       font-size: var(--text-xs);
       color: var(--color-text-3);
+      letter-spacing: 0.04em;
     }
 
     .show-item__cta {
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      padding: var(--sp-3);
     }
 
     .btn-show {
@@ -1276,14 +1458,16 @@
       justify-content: center;
       padding: var(--sp-2) var(--sp-4);
       min-height: var(--tap-min);
-      min-width: var(--tap-min);
+      min-width: 72px;
       background: var(--color-accent);
       color: var(--cta-text-color, #fff);
       border: none;
-      border-radius: var(--r-sm);
+      border-radius: 2px;
       font-family: var(--font-body);
-      font-size: var(--text-sm);
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       text-decoration: none;
       cursor: pointer;
       transition: opacity var(--dur-fast) var(--ease-standard),
@@ -1327,7 +1511,7 @@
       width: 240px;
       background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-radius: var(--r-lg);
+      border-radius: var(--r-sm);
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -1399,12 +1583,18 @@
       flex-direction: column;
       background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-radius: var(--r-lg);
+      border-radius: var(--r-sm);
       overflow: hidden;
       text-decoration: none;
       color: inherit;
       transition: border-color var(--dur-fast) var(--ease-standard),
+                  box-shadow var(--dur-fast) var(--ease-standard),
                   transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .merch-item:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      transform: translateY(-2px);
     }
 
     .merch-item:hover { border-color: var(--color-accent); }
@@ -1483,11 +1673,12 @@
       padding: var(--sp-4) var(--sp-5);
       background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-radius: var(--r-lg);
+      border-radius: var(--r-sm);
       cursor: pointer;
       text-decoration: none;
       color: inherit;
       transition: border-color var(--dur-fast) var(--ease-standard),
+                  box-shadow var(--dur-fast) var(--ease-standard),
                   transform var(--dur-fast) var(--ease-spring);
     }
 
@@ -1517,23 +1708,36 @@
       text-overflow: ellipsis;
     }
 
+    /* Price as text only (no url) */
     .support-pack__price {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: var(--tap-min);
-      padding: var(--sp-2) var(--sp-4);
       font-size: var(--text-base);
       font-weight: 700;
       color: var(--color-accent);
       flex-shrink: 0;
-      text-decoration: none;
     }
-    a.support-pack__price {
+
+    /* Price as a button (has url) — auto width, won't blow out layout */
+    .support-pack__price-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: var(--sp-2) var(--sp-4);
+      min-height: 40px;
+      min-width: 64px;
       background: var(--color-accent);
       color: var(--cta-text-color, #fff);
-      border-radius: var(--r-sm);
+      border-radius: var(--r-pill);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: opacity var(--dur-fast) var(--ease-standard),
+                  transform var(--dur-fast) var(--ease-spring);
     }
+
+    .support-pack__price-btn:hover { opacity: 0.88; }
 
     .support-note {
       margin-top: var(--sp-3);
@@ -1653,6 +1857,74 @@
     /* Removed — replaced by hero */
     .c1-placeholder { display: none; }
 
+    /* === ON-PAGE EDITING ======================================= */
+    /* Shown when artist is viewing their own profile (has localStorage profile) */
+    .editable-hint {
+      position: relative;
+    }
+
+    /* Floating edit bar at top of page */
+    #edit-bar {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      padding: var(--sp-3) var(--sp-5);
+      background: rgba(var(--color-accent-rgb), 0.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: var(--cta-text-color, #fff);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-3);
+    }
+
+    #edit-bar.visible {
+      display: flex;
+    }
+
+    .edit-bar__label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      opacity: 0.85;
+      letter-spacing: 0.05em;
+    }
+
+    .edit-bar__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: var(--sp-2) var(--sp-4);
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: var(--r-pill);
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      color: currentColor;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background var(--dur-fast);
+      white-space: nowrap;
+    }
+
+    .edit-bar__btn:hover { background: rgba(0,0,0,0.35); }
+
+    /* Editable field highlight on hover (edit mode) */
+    .able-edit-mode [data-editable] {
+      outline: 2px dashed rgba(var(--color-accent-rgb), 0.5);
+      outline-offset: 2px;
+      border-radius: var(--r-sm);
+      cursor: text;
+    }
+
+    .able-edit-mode [data-editable]:hover {
+      outline-color: var(--color-accent);
+      background: var(--color-accent-soft);
+    }
+
     /* === KEYFRAMES ============================================= */
     @keyframes shake {
       0%   { transform: translateX(0); }
@@ -1770,6 +2042,15 @@
     <!-- iOS safe area top -->
     <div id="status-bar" aria-hidden="true"></div>
 
+    <!-- On-page edit bar (shown if artist owns this profile) -->
+    <div id="edit-bar" role="banner" aria-label="Edit your profile">
+      <span class="edit-bar__label">Your profile</span>
+      <div style="display:flex;gap:var(--sp-2)">
+        <a class="edit-bar__btn pressable" href="admin.html" aria-label="Open dashboard">Dashboard</a>
+        <button class="edit-bar__btn pressable" id="edit-toggle-btn" aria-pressed="false">Edit page</button>
+      </div>
+    </div>
+
     <!-- Main scroll area -->
     <main id="scroll-container" tabindex="-1" aria-label="Artist profile"
           role="tabpanel" aria-labelledby="tab-home">
@@ -1804,6 +2085,9 @@
 
         <!-- Ambient gradient overlay -->
         <div class="hero__ambient" aria-hidden="true"></div>
+
+        <!-- Top vignette — cinematic editorial framing -->
+        <div class="hero__top-vignette" aria-hidden="true"></div>
 
         <!-- Bottom scrim -->
         <div class="hero__scrim" aria-hidden="true"></div>
@@ -2129,25 +2413,25 @@
       root.style.setProperty('--color-accent-rgb',  `${r},${g},${b}`)
       root.style.setProperty('--color-accent-glow', `rgba(${r},${g},${b},0.35)`)
       root.style.setProperty('--color-accent-soft', `rgba(${r},${g},${b},0.12)`)
-      root.style.setProperty('--r-sm',  `${Math.round(4  * rMult)}px`)
-      root.style.setProperty('--r-md',  `${Math.round(8  * rMult)}px`)
-      root.style.setProperty('--r-lg',  `${Math.round(16 * rMult)}px`)
-      root.style.setProperty('--r-xl',  `${Math.round(24 * rMult)}px`)
+      root.style.setProperty('--r-sm',  `${Math.round(8  * rMult)}px`)
+      root.style.setProperty('--r-md',  `${Math.round(12 * rMult)}px`)
+      root.style.setProperty('--r-lg',  `${Math.round(20 * rMult)}px`)
+      root.style.setProperty('--r-xl',  `${Math.round(28 * rMult)}px`)
     }
 
     // === §3.1 VIBE CONFIGURATION ==================================
 
     const VIBES = {
-      electronic: { font: 'Barlow Condensed', googleFont: null,                              accent: '#06b6d4', rMult: 0.6 },
+      electronic: { font: 'Barlow Condensed', googleFont: null,                              accent: '#4fc3f7', rMult: 0.6 },
       hiphop:     { font: 'Oswald',           googleFont: 'Oswald:wght@700',                 accent: '#f4b942', rMult: 0.7 },
       rnb:        { font: 'Cormorant Garamond',googleFont: 'Cormorant+Garamond:ital,wght@1,600', accent: '#e06b7a', rMult: 1.2 },
       indie:      { font: 'Space Grotesk',    googleFont: 'Space+Grotesk:wght@700',          accent: '#7ec88a', rMult: 1.0 },
-      pop:        { font: 'Barlow Condensed', googleFont: null,                              accent: '#9b7cf4', rMult: 1.4 },
+      pop:        { font: 'Barlow Condensed', googleFont: null,                              accent: '#f06292', rMult: 1.4 },
       rock:       { font: 'Oswald',           googleFont: 'Oswald:wght@700',                 accent: '#e05242', rMult: 0.6 },
       acoustic:   { font: 'Lora',             googleFont: 'Lora:wght@700',                   accent: '#d4a96a', rMult: 1.3 },
     }
 
-    const _loadedFonts = new Set(['Barlow Condensed', 'DM Sans'])
+    const _loadedFonts = new Set(['Barlow Condensed', 'Plus Jakarta Sans'])
 
     function loadVibeFont(vibe) {
       const cfg = VIBES[vibe]
@@ -2185,20 +2469,23 @@
       location: 'London',
       bio: 'Beats built in the dark. Music for late nights and early mornings. New album out now.',
       theme: 'dark',
-      vibe: 'electronic',
+      vibe: 'rock',
       tier: 'free',
       topCard: {
         type: 'artwork',
-        artworkUrl: 'https://images.unsplash.com/photo-1614680376408-81e91ffe3db7?w=800&q=80',
+        artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
         title: 'Echo Chamber',
         releaseType: 'Album'
       },
       platforms: [
-        { name: 'Spotify', url: 'https://spotify.com', type: 'streaming' },
-        { name: 'Apple Music', url: 'https://music.apple.com', type: 'streaming' },
-        { name: 'SoundCloud', url: 'https://soundcloud.com', type: 'streaming' },
-        { name: 'Instagram', url: 'https://instagram.com', type: 'social' },
-        { name: 'Bandcamp', url: 'https://bandcamp.com', type: 'store' },
+        { label: 'Spotify',      url: 'https://spotify.com',        type: 'spotify' },
+        { label: 'SoundCloud',   url: 'https://soundcloud.com',      type: 'soundcloud' },
+        { label: 'YouTube',      url: 'https://youtube.com',         type: 'youtube' },
+        { label: 'Apple Music',  url: 'https://music.apple.com',     type: 'apple' },
+        { label: 'TikTok',       url: 'https://tiktok.com',          type: 'tiktok' },
+        { label: 'Instagram',    url: 'https://instagram.com',       type: 'instagram' },
+        { label: 'Bandcamp',     url: 'https://bandcamp.com',        type: 'bandcamp' },
+        { label: 'Mixcloud',     url: 'https://mixcloud.com',        type: 'mixcloud' },
       ],
       ctas: [
         { label: 'Stream now', url: 'https://spotify.com', type: 'primary' },
@@ -2207,16 +2494,17 @@
         {
           title: 'Echo Chamber',
           type: 'Album',
+          platform: 'Spotify',
           releaseDate: '2026-01-15',
-          artworkUrl: 'https://images.unsplash.com/photo-1614680376408-81e91ffe3db7?w=400&q=80',
-          streamUrl: 'https://spotify.com',
+          artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
+          streamUrl: 'https://open.spotify.com/album/example',
           tracks: [
-            { title: 'Liminal', duration: '4:12' },
-            { title: 'Glass City', duration: '3:48' },
-            { title: 'Deep Water', duration: '5:03' },
-            { title: 'Signal Loss', duration: '3:22' },
-            { title: 'Corridor', duration: '6:01' },
-            { title: 'Static', duration: '4:44' },
+            { title: 'Liminal', duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
+            { title: 'Glass City', duration: '3:48', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
+            { title: 'Deep Water', duration: '5:03', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
+            { title: 'Signal Loss', duration: '3:22', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
+            { title: 'Corridor', duration: '6:01', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
+            { title: 'Static', duration: '4:44', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
           ],
           credits: [
             { name: 'LUNA', role: 'Production, Mixing' },
@@ -2224,14 +2512,15 @@
           ]
         },
         {
-          title: 'Liminal (Single)',
+          title: 'Liminal',
           type: 'Single',
+          platform: 'SoundCloud',
           releaseDate: '2025-11-20',
-          artworkUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80',
-          streamUrl: 'https://spotify.com',
+          artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=800&q=80',
+          streamUrl: 'https://soundcloud.com/example/liminal',
           tracks: [
-            { title: 'Liminal', duration: '4:12' },
-            { title: 'Liminal (Instrumental)', duration: '4:12' },
+            { title: 'Liminal', duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=100&q=60' },
+            { title: 'Liminal (Instrumental)', duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=100&q=60' },
           ],
           credits: []
         }
@@ -2522,6 +2811,8 @@
       instagram:   `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>`,
       twitter:     `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.732-8.837L1.548 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
       facebook:    `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`,
+      mixcloud:    `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 7.85c-.1 0-.2.007-.298.014C16.6 5.67 14.34 4 11.66 4a6.14 6.14 0 00-5.944 4.57c-.114-.014-.228-.02-.344-.02a3.49 3.49 0 00-3.49 3.49A3.49 3.49 0 005.37 15.53h12.153a3.84 3.84 0 000-7.68z"/></svg>`,
+      bandcamp:    `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M0 18.75l7.437-13.5H24l-7.438 13.5z"/></svg>`,
       dice:        `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r="1.5" fill="white"/><circle cx="16" cy="8" r="1.5" fill="white"/><circle cx="8" cy="16" r="1.5" fill="white"/><circle cx="16" cy="16" r="1.5" fill="white"/><circle cx="12" cy="12" r="1.5" fill="white"/></svg>`,
       link:        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
     }
@@ -2534,6 +2825,7 @@
       if (u.includes('apple'))      return PLATFORM_ICONS.apple
       if (u.includes('youtube'))    return PLATFORM_ICONS.youtube
       if (u.includes('soundcloud')) return PLATFORM_ICONS.soundcloud
+      if (u.includes('mixcloud'))   return PLATFORM_ICONS.mixcloud
       if (u.includes('bandcamp'))   return PLATFORM_ICONS.bandcamp
       if (u.includes('tiktok'))     return PLATFORM_ICONS.tiktok
       if (u.includes('instagram'))  return PLATFORM_ICONS.instagram
@@ -2608,6 +2900,37 @@
       }
     }
 
+    // Platform brand colours for hover effect (recognisable identity)
+    const PLATFORM_BRAND_COLORS = {
+      spotify:    '#1DB954',
+      apple:      '#fc3c44',
+      youtube:    '#FF0000',
+      soundcloud: '#FF5500',
+      mixcloud:   '#5000FF',
+      bandcamp:   '#1DA0C3',
+      tiktok:     '#EE1D52',
+      instagram:  '#E1306C',
+      twitter:    '#1DA1F2',
+      facebook:   '#1877F2',
+      dice:       '#FF4400',
+    }
+
+    function getPlatformBrandColor(type, url) {
+      if (PLATFORM_BRAND_COLORS[type]) return PLATFORM_BRAND_COLORS[type]
+      const u = (url || '').toLowerCase()
+      if (u.includes('spotify'))    return PLATFORM_BRAND_COLORS.spotify
+      if (u.includes('apple'))      return PLATFORM_BRAND_COLORS.apple
+      if (u.includes('youtube'))    return PLATFORM_BRAND_COLORS.youtube
+      if (u.includes('soundcloud')) return PLATFORM_BRAND_COLORS.soundcloud
+      if (u.includes('mixcloud'))   return PLATFORM_BRAND_COLORS.mixcloud
+      if (u.includes('bandcamp'))   return PLATFORM_BRAND_COLORS.bandcamp
+      if (u.includes('tiktok'))     return PLATFORM_BRAND_COLORS.tiktok
+      if (u.includes('instagram'))  return PLATFORM_BRAND_COLORS.instagram
+      if (u.includes('twitter') || u.includes('x.com')) return PLATFORM_BRAND_COLORS.twitter
+      if (u.includes('facebook'))   return PLATFORM_BRAND_COLORS.facebook
+      return null
+    }
+
     function buildPill(platform) {
       const a = document.createElement('a')
       a.className = 'pill pressable'
@@ -2615,7 +2938,9 @@
       a.target = '_blank'
       a.rel = 'noopener noreferrer'
       a.setAttribute('role', 'listitem')
-      a.setAttribute('aria-label', platform.label)
+      a.setAttribute('aria-label', platform.label || platform.name)
+
+      const brandColor = getPlatformBrandColor(platform.type, platform.url)
 
       const icon = document.createElement('span')
       icon.className = 'pill__icon'
@@ -2623,12 +2948,28 @@
       icon.setAttribute('aria-hidden', 'true')
 
       const label = document.createElement('span')
-      label.textContent = platform.label
+      label.className = 'pill__label'
+      label.textContent = platform.label || platform.name
 
       a.appendChild(icon)
       a.appendChild(label)
 
-      a.addEventListener('click', () => trackClick(platform.label, 'pill'))
+      // On hover: show brand colour instead of generic accent
+      if (brandColor) {
+        a.addEventListener('mouseenter', () => {
+          a.style.setProperty('--tile-brand', brandColor)
+          a.style.color = brandColor
+          a.style.borderColor = brandColor + '55'
+          a.style.backgroundColor = brandColor + '15'
+        })
+        a.addEventListener('mouseleave', () => {
+          a.style.color = ''
+          a.style.borderColor = ''
+          a.style.backgroundColor = ''
+        })
+      }
+
+      a.addEventListener('click', () => trackClick(platform.label || platform.name, 'platform'))
 
       return a
     }
@@ -3113,6 +3454,42 @@
 
     // --- Listen section ----------------------------------------
 
+    // Build an embed URL from a stream URL (Spotify, SoundCloud, YouTube, Mixcloud)
+    function buildEmbedUrl(streamUrl) {
+      if (!streamUrl) return null
+      const u = streamUrl
+
+      // Spotify: https://open.spotify.com/... → https://open.spotify.com/embed/...
+      if (u.includes('open.spotify.com')) {
+        return u.replace('open.spotify.com/', 'open.spotify.com/embed/')
+      }
+
+      // YouTube: watch?v=ID → embed/ID
+      const ytMatch = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]+)/)
+      if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`
+
+      // SoundCloud: pass as soundcloud widget
+      if (u.includes('soundcloud.com')) {
+        return `https://w.soundcloud.com/player/?url=${encodeURIComponent(u)}&color=%23${''}&auto_play=false&show_artwork=true&visual=true&show_comments=false`
+      }
+
+      // Mixcloud: /user/show/ → widget
+      if (u.includes('mixcloud.com')) {
+        return `https://www.mixcloud.com/widget/iframe/?hide_cover=1&light=0&feed=${encodeURIComponent(u)}`
+      }
+
+      return null
+    }
+
+    function getEmbedHeight(streamUrl) {
+      if (!streamUrl) return 152
+      if (streamUrl.includes('spotify')) return 232
+      if (streamUrl.includes('youtube') || streamUrl.includes('youtu.be')) return 200
+      if (streamUrl.includes('soundcloud')) return 166
+      if (streamUrl.includes('mixcloud')) return 120
+      return 152
+    }
+
     function renderListenSection(profile) {
       const section = document.getElementById('listen-section')
       const list = document.getElementById('releases-list')
@@ -3124,46 +3501,108 @@
       list.innerHTML = ''
       releases.forEach((rel, i) => {
         const card = document.createElement('article')
-        card.className = 'release-card pressable'
+        card.className = 'release-card'
         card.setAttribute('role', 'listitem')
 
         const type = rel.type || 'Single'
         const year = rel.releaseDate ? new Date(rel.releaseDate).getFullYear() : ''
         const tracks = rel.tracks || []
+        // Try embedUrl from data, else try to build from streamUrl
+        const embedUrl = rel.embedUrl || buildEmbedUrl(rel.streamUrl)
+        const embedHeight = getEmbedHeight(rel.streamUrl || rel.embedUrl)
+        const artworkSrc = rel.artworkUrl || ''
 
-        card.innerHTML = `
-          ${rel.artworkUrl
-            ? `<img class="release-card__artwork" src="${rel.artworkUrl}"
-                    alt="${rel.title || 'Release'} artwork"
-                    width="72" height="72" loading="lazy">`
-            : `<div class="release-card__artwork" aria-hidden="true"></div>`
-          }
-          <div class="release-card__info">
-            <h3 class="release-card__title">${rel.title || 'Untitled'}</h3>
-            <p class="release-card__meta">${type}${year ? ` · ${year}` : ''}${tracks.length ? ` · ${tracks.length} track${tracks.length !== 1 ? 's' : ''}` : ''}</p>
-            ${tracks.length ? `<div class="release-card__tracks" aria-label="Track listing">
-              ${tracks.slice(0, 5).map((t, ti) =>
-                `<div class="release-track">
-                  <span class="release-track__num">${ti + 1}</span>
+        // Build tracks list — each track shows artwork if available
+        const tracksHtml = tracks.length
+          ? `<div class="release-card__tracks" aria-label="Track listing">
+              ${tracks.slice(0, 5).map((t, ti) => {
+                const trackArt = t.artworkUrl || artworkSrc
+                return `<div class="release-track" role="button" tabindex="0"
+                    ${t.streamUrl ? `onclick="window.open('${t.streamUrl.replace(/'/g,"\\'")}','_blank','noopener,noreferrer')"` : ''}
+                    ${t.streamUrl ? `aria-label="Play ${t.title || 'Track'}"` : ''}>
+                  ${trackArt ? `<img class="release-track__art" src="${trackArt}" alt="" loading="lazy" aria-hidden="true">` : `<span class="release-track__num">${ti + 1}</span>`}
                   <span class="release-track__title">${t.title || `Track ${ti + 1}`}</span>
                   ${t.duration ? `<span class="release-track__duration">${t.duration}</span>` : ''}
                 </div>`
-              ).join('')}
-              ${tracks.length > 5 ? `<div class="release-track"><span class="release-track__title" style="color:var(--color-text-3)">+${tracks.length - 5} more</span></div>` : ''}
-            </div>` : ''}
+              }).join('')}
+              ${tracks.length > 5 ? `<div class="release-track"><span class="release-track__title" style="color:var(--color-text-3)">+${tracks.length - 5} more tracks</span></div>` : ''}
+            </div>`
+          : ''
+
+        // Platform badge label
+        const platformLabel = rel.platform || (rel.streamUrl
+          ? (rel.streamUrl.includes('spotify') ? 'Spotify'
+            : rel.streamUrl.includes('soundcloud') ? 'SoundCloud'
+            : rel.streamUrl.includes('mixcloud') ? 'Mixcloud'
+            : rel.streamUrl.includes('youtube') || rel.streamUrl.includes('youtu.be') ? 'YouTube'
+            : rel.streamUrl.includes('apple') ? 'Apple Music'
+            : 'Stream')
+          : '')
+        const platformIcon = platformLabel ? getPlatformIcon(platformLabel.toLowerCase().replace(' ',''), rel.streamUrl || '') : ''
+
+        card.innerHTML = `
+          <div class="release-card__artwork-wrap">
+            ${artworkSrc
+              ? `<img class="release-card__artwork" src="${artworkSrc}"
+                      alt="${rel.title || 'Release'} artwork"
+                      loading="lazy">`
+              : `<div class="release-card__artwork" aria-hidden="true" style="aspect-ratio:1;background:var(--color-surface)"></div>`
+            }
+            ${(platformLabel && rel.streamUrl)
+              ? `<a class="release-card__platform-badge pressable"
+                    href="${rel.streamUrl}" target="_blank" rel="noopener noreferrer"
+                    onclick="event.stopPropagation();trackClick('${(rel.title||'Release').replace(/'/g,"\\'")}','stream','listen')">
+                   ${platformIcon ? `<span aria-hidden="true">${platformIcon}</span>` : ''}
+                   ${platformLabel}
+                 </a>`
+              : ''
+            }
           </div>
+          <div class="release-card__info">
+            <h3 class="release-card__title">${rel.title || 'Untitled'}</h3>
+            <p class="release-card__meta">${type}${year ? ` · ${year}` : ''}${tracks.length ? ` · ${tracks.length} track${tracks.length !== 1 ? 's' : ''}` : ''}</p>
+            ${tracksHtml}
+          </div>
+          ${embedUrl
+            ? `<button class="release-card__embed-btn pressable" aria-label="Play ${rel.title || 'release'} inline">
+                 ▶ Play inline
+               </button>
+               <div class="release-embed" hidden>
+                 <iframe src="" height="${embedHeight}" title="${rel.title || 'Music player'}"
+                         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                         loading="lazy" scrolling="no"></iframe>
+               </div>`
+            : rel.streamUrl
+              ? `<a class="release-card__ext pressable" href="${rel.streamUrl}" target="_blank" rel="noopener noreferrer"
+                    onclick="trackClick('${(rel.title||'Release').replace(/'/g,"\\'")}','stream','listen')">
+                   Open in ${platformLabel || 'streaming app'} ↗
+                 </a>`
+              : ''
+          }
         `
 
-        // Tap to open stream URL
-        if (rel.streamUrl) {
-          card.setAttribute('tabindex', '0')
-          card.addEventListener('click', () => {
-            trackClick(rel.title || 'Release', 'stream', 'listen')
-            window.open(rel.streamUrl, '_blank', 'noopener,noreferrer')
-          })
-          card.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click() }
-          })
+        // Inline embed toggle
+        if (embedUrl) {
+          const btn = card.querySelector('.release-card__embed-btn')
+          const embedDiv = card.querySelector('.release-embed')
+          const iframe = embedDiv ? embedDiv.querySelector('iframe') : null
+
+          if (btn && embedDiv && iframe) {
+            btn.addEventListener('click', e => {
+              e.stopPropagation()
+              const open = !embedDiv.hidden
+              if (open) {
+                embedDiv.hidden = true
+                iframe.src = ''
+                btn.innerHTML = '▶ Play inline'
+              } else {
+                embedDiv.hidden = false
+                iframe.src = embedUrl
+                btn.innerHTML = '✕ Close player'
+                trackClick(rel.title || 'Release', 'embed', 'listen')
+              }
+            })
+          }
         }
 
         list.appendChild(card)
@@ -3358,7 +3797,7 @@
             ${pack.description ? `<p class="support-pack__desc">${pack.description}</p>` : ''}
           </div>
           ${priceStr && pack.url
-            ? `<a class="btn-primary pressable support-pack__price"
+            ? `<a class="pressable support-pack__price-btn"
                   href="${pack.url}" target="_blank" rel="noopener noreferrer"
                   aria-label="${pack.label || 'Support'} — ${priceStr}"
                   onclick="trackClick('${(pack.label || 'Support').replace(/'/g, "\\'")}','support','support-section')">
@@ -3542,10 +3981,10 @@
       const cards = document.querySelectorAll(selectors.join(','))
       if (!cards.length) return
 
-      // Prep all cards
+      // Prep all cards — start at 0.25 so they're never invisible, just dimmed
       cards.forEach(card => {
-        card.style.opacity = '0'
-        card.style.transform = 'translateY(16px)'
+        card.style.opacity = '0.25'
+        card.style.transform = 'translateY(12px)'
         card.style.transition = 'none'
       })
 
@@ -3752,6 +4191,9 @@
       // Track page view
       trackView()
 
+      // On-page edit bar — show if artist owns this profile (has localStorage data)
+      initEditBar(profile)
+
       // Expose globals
       window.ABLE = {
         getProfile,
@@ -3766,6 +4208,64 @@
         getUtmSource,
         shell,
       }
+    }
+
+    // === ON-PAGE EDITING =========================================
+
+    function initEditBar(profile) {
+      const editBar = document.getElementById('edit-bar')
+      const editToggleBtn = document.getElementById('edit-toggle-btn')
+      const shell = document.getElementById('app-shell')
+      if (!editBar || !editToggleBtn) return
+
+      // Show edit bar only if the artist has a locally-stored profile (ie they're the owner)
+      // OR if ?edit=1 is in the URL
+      const isOwner = Boolean(localStorage.getItem('able_v3_profile') && profile.name) || new URLSearchParams(window.location.search).get('edit') === '1'
+      if (!isOwner) return
+
+      editBar.classList.add('visible')
+
+      let editMode = false
+
+      editToggleBtn.addEventListener('click', () => {
+        editMode = !editMode
+        editToggleBtn.setAttribute('aria-pressed', String(editMode))
+        editToggleBtn.textContent = editMode ? 'Done editing' : 'Edit page'
+
+        if (editMode) {
+          shell.classList.add('able-edit-mode')
+          // Make bio, name, platform text inline-editable
+          const editables = [
+            document.getElementById('hero-name'),
+            document.getElementById('bio-text'),
+          ]
+          editables.forEach(el => {
+            if (!el) return
+            el.setAttribute('data-editable', 'true')
+            el.contentEditable = 'true'
+            el.dataset.originalText = el.textContent
+          })
+        } else {
+          shell.classList.remove('able-edit-mode')
+          // Save edits back to localStorage profile
+          const nameEl = document.getElementById('hero-name')
+          const bioEl = document.getElementById('bio-text')
+          try {
+            const stored = JSON.parse(localStorage.getItem('able_v3_profile') || '{}')
+            if (nameEl && nameEl.contentEditable === 'true') {
+              stored.name = nameEl.textContent.trim()
+              nameEl.contentEditable = 'false'
+              nameEl.removeAttribute('data-editable')
+            }
+            if (bioEl && bioEl.contentEditable === 'true') {
+              stored.bio = bioEl.textContent.trim()
+              bioEl.contentEditable = 'false'
+              bioEl.removeAttribute('data-editable')
+            }
+            localStorage.setItem('able_v3_profile', JSON.stringify(stored))
+          } catch (_) {}
+        }
+      })
     }
 
     // Run after DOM ready
