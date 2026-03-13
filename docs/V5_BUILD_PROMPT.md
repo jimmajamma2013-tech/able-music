@@ -1316,9 +1316,9 @@ Build this into the product. Build it into the homepage. Say it simply. Mean it 
 
 ---
 
-*Research basis: docs/USER_RESEARCH.md, docs/DESIGN_RESEARCH_2026.md, docs/VISUAL_SYSTEM.md (authoritative for font specs), docs/brainstorms/2026-03-13-top-minds-insights.md, docs/INTEGRATIONS_AND_AI_RESEARCH.md, docs/MASTER_PLAN.md (Section 16), docs/PLATFORM_STRATEGY.md, docs/PRODUCT_HIERARCHY_AND_TRUST.md. Full micro-interaction library: docs/micro-interactions/ (9 files, 100 interactions). Design brainstorms: .superpowers/brainstorm/12988-1773342870/ (onboarding, fan-feed, full-product, top-card, states, hero-treatment, colour-mockups). Screenshots: v3-home.png, review-home-dark.png, review-glass.png, review-light.png, review-support.png.*
+*Research basis: docs/USER_RESEARCH.md, docs/DESIGN_RESEARCH_2026.md, docs/VISUAL_SYSTEM.md (authoritative for font specs), docs/brainstorms/2026-03-13-top-minds-insights.md, docs/INTEGRATIONS_AND_AI_RESEARCH.md, docs/MASTER_PLAN.md (Section 16), docs/PLATFORM_STRATEGY.md, docs/PRODUCT_HIERARCHY_AND_TRUST.md, docs/PROFESSIONAL_DISCOVERY.md (authoritative for all Studio mode / credits / professional discovery decisions). Full micro-interaction library: docs/micro-interactions/ (9 files, 100 interactions). Design brainstorms: .superpowers/brainstorm/12988-1773342870/ (onboarding, fan-feed, full-product, top-card, states, hero-treatment, colour-mockups). Screenshots: v3-home.png, review-home-dark.png, review-glass.png, review-light.png, review-support.png.*
 
-*Build prompt version: 5.0 — Updated 2026-03-13. This version adds: multi-role single login (artist/fan/freelancer), shop & commerce architecture (Etsy/POD/associated products), fan feed commerce integration, freelancer profile full spec, landing page 3-persona spec, wizard all entry angles, complete CTA library with copy, embed hierarchy, editorial section on what's editable on profile vs admin, bio writer detailed spec, all pages map. Previous: ABLE design DNA, CTA border-radius signal, 20+ micro-interactions, backend stack, vibe corrections, admin slide-up model.*
+*Build prompt version: 5.2 — Updated 2026-03-13. This version adds: professional discovery system (artist-first Studio mode framing, credits as discovery graph, IMDb model, 3 professional types, credit verification, "People in my world", what ABLE does NOT build — full spec in docs/PROFESSIONAL_DISCOVERY.md). Previous 5.1: Living QR, GDPR consent schema, geo-aware events, smart link expiry, sold-out waitlist, auto-Spotify state switching. Previous 5.0: multi-role single login, shop architecture, fan feed commerce, freelancer profile spec, landing page 3-persona spec, wizard all entry angles, complete CTA library, embed hierarchy, bio writer detailed spec. Previous: ABLE design DNA, CTA border-radius signal, 20+ micro-interactions, backend stack, vibe corrections, admin slide-up model.*
 
 ---
 
@@ -1541,83 +1541,148 @@ BANNED:     Commerce cards for artists the fan doesn't follow
 
 ---
 
-### 2.5 — Freelancer profile specification
+### 2.5 — Professional discovery and Studio profile
 
-**The name:** The freelancer side of ABLE is called "ABLE Studio" internally. On the profile it's simply shown as an additional mode — no separate branding. The artist doesn't become a different person. They show more of themselves.
+**Full spec:** `docs/PROFESSIONAL_DISCOVERY.md` is the authoritative document for this entire system. Read it before building anything in Section 2.5. What follows is a summary of the key principles and implementation notes for the build.
 
-**Freelancer profile sections (within the artist's profile, on mode toggle):**
+---
+
+**The fundamental framing:** Studio mode is not a "freelancer product." It is an additional face of an artist. The primary identity is always the artist. Someone who produces for other artists is an artist who also produces — not a freelancer who also makes music. The toggle is understated, not prominent. Fans mostly don't tap it. Industry people do.
+
+**ABLE never positions the professional discovery system as a marketplace, a platform for freelancers, or a competitor to SoundBetter/Fiverr.** It is a credit trail that leads somewhere real. Professionals are found through music people already love.
+
+---
+
+**Three professional types — different needs, different profiles:**
+
+**Type 1 — Artist who also freelances (primary case)**
+The most common. A producer who releases their own music. A session musician who also has a band. Full ABLE artist profile + Studio mode toggle (`?mode=studio`). Same handle, same photo, different face of the same person. Discovery path: their credits on other artists' releases → click → lands on Studio mode automatically.
+
+**Type 2 — Freelancer without own releases (studio-only profile)**
+A mixing engineer who only mixes for others. No artist sections (no Listen tab, no Shows, no campaign states). Profile is: header + bio + credits + portfolio links + rates + contact. Can "Add artist profile" at any time.
+
+**Type 3 — Industry professional (manager, booking agent, lawyer, A&R)**
+Contact card only. Name, role, which artists they work with (links to ABLE profiles), contact email. Artist creates it by listing their team. The professional can claim and edit it. Not a full profile — just findability. Shown in a small "Team" section on the artist profile footer. Fans mostly don't engage with it.
+
+---
+
+**Credit verification — 3 levels:**
+
+| Level | Display | How earned |
+|---|---|---|
+| Unverified | "Produced by Maya Beats" (no mark) | Artist adds manually |
+| Peer-confirmed | "Produced by Maya Beats ✓" (linked) | Professional taps Confirm in dashboard |
+| Metadata-verified | "Produced by Maya Beats ✓✓" | ISRC match via distributor |
+
+Peer-confirm flow: artist adds credit + professional's ABLE handle → professional gets notification → one-tap confirm → credit becomes ✓ and links to their Studio profile. **Never auto-confirm. Never sell verification. The ✓ means the professional themselves confirmed it.**
+
+---
+
+**The discovery mechanism — credits as graph edges:**
+
+Each credit is a directed edge. Following an edge takes you from music you love → the person who made it → their other work → other artists they've worked with → more music you might love. This is discovery through quality trails, not search through listings.
+
+**ABLE has no "search for a producer" feature.** This is not a bug — it is the design. If you want to find a producer, start with music you love and see who made it. This keeps discovery intentional and quality-driven.
+
+---
+
+**Studio profile sections (within artist's profile, on `?mode=studio`):**
 
 **Section 1: Studio header**
-- Same profile photo, name, location
-- New: role tag chips — "Producer" / "Mixer" / "Songwriter" / "Session Guitar"
-- New: availability badge — "Available for sessions" (green) / "Booking from [month]" (amber) / "Not taking bookings" (dimmed)
-- Booking CTA: "Book [Name]" → opens contact/enquiry modal or Calendly link
+- Same profile photo, name, location as artist profile
+- Role chips: "Producer · Songwriter · Mixer" (set in admin, can stack up to 3)
+- Availability badge: "Available" (green) / "Booking from [Month]" (amber) / "Closed" (dimmed)
+- Contact CTA: "Work with [Name] →" — opens email client (subject pre-filled: "Enquiry — found you via ABLE") OR Calendly link
 
-**Section 2: Credits (the core value)**
-- Populated automatically from artist's release credits
-- Verified credits (peer-confirmed ✓) shown first
-- Format: "[Role] — [Track/Release] — [Artist Name]" — links to that artist's ABLE profile
-- Unverified: shown without ✓, with prompt "Did you work on this? [Confirm →]"
-- Credits are the portfolio. Real work beats a portfolio website.
+**Section 2: Credits — the portfolio**
+- Auto-populated from peer-confirmed credits across all ABLE artist profiles
+- Verified (✓) credits shown first, then unverified
+- Format: `✓ [Role] — "[Release]" — [Artist] ([Year])` — links to that artist's release on ABLE
+- Unverified credits show as plain text — not linked, no ✓
+- Prompt on unverified: "Is this correct? [Confirm →]"
+- **The portfolio writes itself.** A producer credited on 12 ABLE artist profiles has a 12-release portfolio with zero manual work.
 
 **Section 3: Portfolio highlights**
-- Max 6 cards
-- Each card: artwork, track/project name, artist, role, year
-- Optional embed (same Spotify/SoundCloud embed types as artist profile)
-- In artist's own voice: "My favourite mix from last year." — not a list of specs
+- Max 4 cards (not 6 — curated, not comprehensive)
+- Each card: artwork + title + artist + role + year — taps through to that artist's release on ABLE
+- In the professional's own voice: "My favourite mix from last year." — never a spec sheet
 
-**Section 4: Rate card**
-- Optional — many producers prefer "Enquire" over public rates
+**Section 4: Rate card (optional)**
+- Many professionals prefer "Enquire" over public rates — that's correct
 - If shown: Day rate / Half-day / Project rate / Per-track
-- Price in GBP (or per-artist currency), pro tier unlocks custom currency
-- Note field: "I work remotely. Happy to travel for larger projects."
+- Note field in their voice: "I work remotely. Happy to travel for larger projects."
+- Never label it "Pricing" or "Services" — label it "Working with me"
 
-**Section 5: Artist recommendations**
-- Populated from artists who have credits with this freelancer
-- "Artists I've worked with" — up to 8 pills
-- Only ABLE artist profiles — not generic name drops
-- Each pill links to that artist's profile
-- This is reciprocal discovery — the freelancer is discoverable from those artists' pages, and those artists are discoverable from the freelancer's page
+**Section 5: People in my world**
+- The artist's curated signal of who they trust — **always the artist's choice, never auto-populated**
+- Up to 8 entries: other artists, producers/engineers/session musicians they'd work with again, booking agent/manager, visual artists who made work for them
+- Never more than 8 — this is curation, not a directory
+- Can link to ABLE profiles (artist or studio) or show name + role only
+- Section header: "People I rate" / "People I make things with" / "In my world" — artist chooses, or no header
+- **Never:** "Recommended Artists" / "My Team" / "Collaborators" — admin labels, not human language
+- Why this matters for discovery: if 5 artists you follow all list the same producer in their "People in my world," that's a strong trust signal. You found them through three degrees of trust, not a search.
 
 **Section 6: Fan capture (unchanged)**
-- Same "Stay close." form — fans can sign up to hear about the producer's own releases too
-- Label change: "Stay close to [Name]'s music." — because the producer may also release their own music
+- Same "Stay close." form — fans can follow a producer's own releases too
 
-**What the freelancer profile looks like to a fan discovering it:**
+---
+
+**What the Studio profile looks like:**
 ```
-[Header] Danny L Harle
-Producer · Songwriter · Mixer
-South London — Available for sessions
+[Header]
+[Photo]  Danny L Harle
+         Producer · Songwriter · Mixer
+         South London  |  Available for sessions
+         "Work with Danny →"
 
-[Bio] I make pop records with people who care about pop music. I also make strange
-club music under the name Danny L Harle. I try to keep the two worlds separate,
-mostly unsuccessfully.
-
-[Booking CTA] "Work with Danny →"
+[Bio]
+"I make pop records with people who care about pop music. I also make
+strange club music. I try to keep the two worlds separate, mostly
+unsuccessfully."
 
 [Credits]
-Produced — "Carolina" — Caroline Polachek ✓
-Produced — "So Hot You're Hurting My Feelings" — Caroline Polachek ✓
-Mixed — "Chalk" — Chalk ✓
-Produced — "My New Single" — Danny L Harle (own)
+✓ Produced "So Hot You're Hurting My Feelings" — Caroline Polachek (2023)
+✓ Produced "Bunny Is a Rider" — Caroline Polachek (2022)
+✓ Mixed "Chalk" — Chalk (2025)
+  Produced "Home Session" — Arima Ederra (unverified — not yet on ABLE)
+[Show more credits →]
 
-[Portfolio] 6 track cards
+[Portfolio highlights] — 4 cards
 
-[Rate card] Enquire
+[Working with me]
+Day rate: £600  |  Half-day: £350  |  Project: Enquire
+"I work primarily with indie, pop, and alternative artists."
 
-[Also releases music as: DANNY L HARLE →] (links to artist profile)
+[People in my world]
+[pill: Caroline Polachek →]  [pill: Danny L Harle (own) →]  ...
+
+[Also see: Danny's music →] (links to artist profile)
 ```
 
-**Artist → Freelancer toggle on the profile:**
-- Small toggle button near the top of the profile: "Studio mode" — visible only if the artist has freelancer mode enabled
-- On tap: the profile crossfades to the freelancer view. Same header, different body content.
-- The tab bar changes: "Music" → "Credits", "Shows" → "Portfolio", "Shop" → "Rates"
-- The page state tag shows role instead of campaign state: "Producer" chip
+---
+
+**Artist → Studio toggle UI:**
+- On artist profile: small "Studio" pill near the bio/role tags — understated, not a nav item
+- On studio profile: small "Music" pill — "See [Name]'s releases →"
+- Crossfade transition (300ms, opacity) — same person, different face
+- Tab bar shift: Music → Credits, Shows → Portfolio, Shop → Rates
+- **No separate signup.** Studio mode is activated from within an existing ABLE account.
 
 **URL pattern:**
-- `/@dannyharle` → artist profile
-- `/@dannyharle?mode=studio` → freelancer/studio profile
-- Both are shareable URLs — a booker sends `?mode=studio` to another booker
+- `/@dannyharle` → artist profile (default, always)
+- `/@dannyharle?mode=studio` → studio profile
+- Both shareable — a booker sends `?mode=studio` to other bookers. A fan shares the artist URL.
+
+---
+
+**What ABLE deliberately does NOT build for professional discovery:**
+- No ratings or reviews (the credit + artist endorsement is more meaningful than 47 five-stars)
+- No "search for a producer" feature (discovery through quality trails only)
+- No in-platform messaging (email and Calendly prevent ABLE becoming a support obligation)
+- No contracts or payment processing for services (ABLE makes the introduction; the transaction is theirs)
+- No "apply to a brief" / job board (marketplace positioning — the opposite of what ABLE is)
+- No "top professionals" or "featured" rankings (favours activity over quality)
+- No commission (professionals keep everything; ABLE charges subscription, not transaction fees)
 
 ---
 
@@ -2429,9 +2494,15 @@ Add `type: "gear"` to the snap card schema. Renders as a list of up to 5 items (
 
 ---
 
-*Build prompt version: 5.0 — Updated 2026-03-13.*
+*Build prompt version: 5.2 — Updated 2026-03-13.*
+
+*Version 5.2 additions: Professional discovery system — complete rewrite of Section 2.5 with artist-first framing (Studio mode = additional face of artist, not separate freelancer product), 3 professional types (artist-who-freelances / freelancer-only / industry-card), credit verification 3-level system (unverified / peer-confirmed ✓ / metadata-verified ✓✓ via ISRC), "People in my world" section spec, discovery graph model (credits as directed edges, not search listings), what ABLE deliberately does NOT build (no ratings, no search, no commission, no marketplace positioning). Full spec in `docs/PROFESSIONAL_DISCOVERY.md`.*
+
+*Version 5.1 additions: Living QR code (always points to current CTA, no reprint), revenue attribution per CTA tap, geo-aware event surfacing (150-mile radius, "Near you" chip), smart link expiry (ticket CTAs auto-expire when event.date < now), sold-out waitlist (same fan capture form, different label), GDPR consent schema (email, ts, source, consent, consentMethod, jurisdiction), auto-Spotify state switching (backend polls Spotify API daily), setlist mode (single-track focus, show-night only), pre-save → fan capture pipeline (fan saves = fan captured).*
 
 *Version 5.0 additions: multi-role single login (artist/fan/freelancer as profile modes on one account), shop & commerce architecture (5 integration paths: external link cards → Fourthwall connect → Shopify Storefront API → Everpress campaign model → Printful POD; Fourthwall is the recommended first real integration as it already powers Spotify's merch shelf), fan feed commerce (1-in-5 rule, 4 commerce card types, Instagram Shopping + Substack + Spotify Artist Picks research basis), complete freelancer profile spec (credits auto-populate from releases, rate card, portfolio, artist connections, Studio mode toggle on same URL), landing page 3-persona spec (artist/fan/freelancer, dark/light modes, full copy direction, no-lock-in promise placement), wizard all 5 entry angles (Spotify import/Linktree importer/manual/fan-upgrade/freelancer-only), complete CTA library (copy by vibe and state), embed hierarchy (top card source matching via UTM params, Listen section options, all embed types), what's editable where (in-place vs admin panel vs dedicated section), bio writer detailed spec (3-variant output, input collection flow, Claude haiku-4-5 API prompt, 5/day rate limit), "Things I'm Into" snap card type for gear/affiliate links (Geniuslink routing), Phase 15 shop build plan, scarcity rules (authentic vs dark patterns).*
+
+*Professional discovery research basis: `docs/PROFESSIONAL_DISCOVERY.md` (authoritative spec), IMDb credits model (passive documentation → active discovery with "here's how to hire me"), SoundBetter/Fiverr analysis (what to avoid: race to bottom, rating anxiety, application process degradation), Spotify "Behind the Song" credits, Apple Music credits display, AllMusic/Discogs credits infrastructure, music industry informal hiring practices (referrals > search), graph-based discovery (Dribbble, LinkedIn, Behance), DistroKid/TuneCore ISRC metadata verification.*
 
 *Commerce research basis: Printful API (full REST, 120 req/min, own checkout required), Fourthwall (best music-native integration, Spotify shelf proven), Redbubble (external link only — no API), Everpress (campaign model, authentic to music culture), Shopify Storefront API (public read), Instagram Shopping (product tags inside content not separate), Substack (paywall-as-honest-acknowledgement model), Spotify Artist Pick + Merch Shelf (proven integration patterns), Linktree/Beacons/Stan.store analysis (what's tacky vs authentic), Geniuslink (international affiliate routing).*
 
