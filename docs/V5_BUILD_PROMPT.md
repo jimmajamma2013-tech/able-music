@@ -132,16 +132,26 @@ HANDOFF.md       — current state notes
 - Pricing: Free / Silver £7/mo / Gold £19/mo (3 tiers — needs updating to 4-tier model in CLAUDE.md)
 
 **admin.html (dashboard — already built, 12 tabs):**
-- Tabs: Home · Profile · Music · Shows · Snap Cards · Connections · Merch · Support · Analytics · Fans · Send to fans · Settings
-- Home greeting: "Good to see you, [Name]." (exact wording — preserve this)
-- Broadcast tab (Send to fans): Gold-locked — compose + send
+- Tabs: Home · Profile · Music · Events · Merch · Support · Snap Cards · Fans · Connections · Analytics · Broadcast (Send to fans) · Settings
+- Home greeting: "Good to see you. Here's how your page is performing." (exact — do not change)
+- Home upgrade nudge (free tier): "You're on the free plan. Unlock fan broadcasts, analytics, and the full CRM." — not generic "Upgrade" language
+- Campaign HQ exact copy (preserve verbatim in v5):
+  - Release title placeholder: `Release title — e.g. 'Dissolve' (Single)`
+  - Auto-hint text: `Before the date → Pre-release · On the date → Live · 14 days later → Profile`
+  - Gig mode hint: `Flip this on show day — puts tickets front and centre. Auto-expires in 24 hrs.`
+  - State override buttons: `Auto` (default active) / `Pre-release` / `Live` / `Profile`
+- Broadcast (gold-locked) copy: "Send directly to your fans' inboxes. **47% avg open rate — 10× better than social reach.**" — this stat appears in two places (broadcast lock + fans page). Preserve it.
+- Fan level terminology (already in admin — 4 levels): `superfan` (green badge) / `supporter` (amber) / `fan` (gray) / `listener` (subtle). Note: PLATFORM_STRATEGY.md specifies 5 levels with "Inner Circle" as level 5. V5 must add this 5th level. The 4-level taxonomy is: Listener → Fan → Supporter → Superfan.
+- Connections page — Instagram status: "No embed API available · Link-out only" (marked Limited/disabled). Do not attempt Instagram iframe embeds — they are not possible. All other platforms functional.
+- ADMIN_PRESETS (8 canonical accent hex values — preserve in v5): `['#f4b942','#e05242','#e06b7a','#7ec88a','#9b7cf4','#06b6d4','#f97316','#ffffff']`
+- Supabase client (already configured in admin.html — use same pattern in v5): `window.supabase.createClient(SB_URL, SB_KEY)` — Supabase JS CDN loaded, no npm required
 - Gold lock pattern: blurred preview + overlay with specific value prop (not generic "Upgrade")
 - localStorage keys used: `able_profile`, `able_v3_profile`, `able_fans`, `able_clicks`, `able_views`, `able_gig_expires`
 
-**localStorage key clarification (important for v5):**
-- `able_profile` — wizard output from start.html — basic setup
-- `able_v3_profile` — full profile from able-v3.html and admin.html — the authoritative key
-- In v5: `able_v3_profile` is the single source of truth. Wizard output must write to it, not `able_profile`. Do not rename — Supabase/D1 migration maps 1:1.
+**localStorage key clarification (updated after code audit):**
+- `able_v3_profile` — the authoritative key. start.html writes to this (confirmed). admin.html reads and writes this. able-v3.html reads this. All three are in sync.
+- `able_profile` — legacy key still written by start.html alongside `able_v3_profile`. Admin reads both for backwards compat. In v5: phase out `able_profile` — write only to `able_v3_profile`. Do not rename — Supabase migration maps 1:1.
+- `able_artist_id` — UUID auto-generated on first load. Maps to Supabase `profiles.id`. Never overwrite if exists.
 
 **v3 implementation status (from code audit — what v5 must ADD vs what already works):**
 
