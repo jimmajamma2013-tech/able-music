@@ -2790,6 +2790,52 @@ Add `type: "gear"` to the snap card schema. Renders as a list of up to 5 items (
 - 60 seconds from start to "Your page is ready" — this is a hard target
 - If Spotify import fails: graceful fallback to manual Entry 3 — never show an error that blocks progress
 
+### From brainstorm archives — platform completeness requirements (not in earlier spec):
+
+**Performance targets (non-negotiable for conversion):**
+- **LCP < 2.5 seconds** on mobile (Core Web Vitals Good threshold). The fan arrived from a reel — every 100ms of load time bleeds conversion. Profile hero image and primary CTA must be above-the-fold content.
+- **CLS = 0** (no layout shift). Never load content that shifts what the fan sees as they're about to tap.
+- **First meaningful paint**: artist name and primary CTA must render before any dynamic data resolves. Pre-render from `localStorage` immediately, update in background.
+
+**Accessibility (WCAG 2.1 AA minimum):**
+- All text contrast must meet 4.5:1 (body) and 3:1 (large text) against their background
+- All interactive elements must have visible focus rings (not just browser default)
+- Tap targets 44px × 44px minimum (already in spec — mention here as compliance requirement, not just UX)
+- Fan capture form must work with keyboard navigation and screen readers
+- Campaign state changes must be announced to `aria-live` regions — a screen reader user arriving in gig mode should understand "Tonight's show" context without seeing the visual indicator
+
+**Autosave model (important architecture decision):**
+- **Autosave to localStorage**: every form change in admin saves immediately to `able_v3_profile`. No "Save" button for local state — it just saves.
+- **Manual "Apply to live page" button**: pushes localStorage state to Supabase/D1. The button communicates intentionality — "I've reviewed my changes and I'm ready to publish."
+- **Offline-first**: profile always readable from localStorage even when API is unavailable. Writes queue locally, sync on reconnect.
+
+**Transactional emails (when backend lands — architecture decision now):**
+1. **Magic link** — "Your sign-in link for ABLE. Tap to continue." One line, no branding bloat.
+2. **Welcome** — sent after first profile published. Contains: profile URL, link to admin, one-sentence suggestion ("Try sharing in your next story").
+3. **Weekly stats digest** — sent every Monday. Subject: "Your ABLE page this week, [Name]." Content: views, fans, top CTA click. Only sent if artist has >0 activity.
+4. **Fan notification** — when fan signs up, if artist has notifications enabled. "Someone just signed up on your page." (Rate-limit to max 3/day to prevent noise.)
+All emails must sound like they were written by a person in the music industry, not by a platform.
+
+**Pricing model additions (not in main tier spec):**
+- **Annual billing option**: 2 months free (equivalent to ~17% discount). Always surface this — annual payers have 6x lower churn.
+- **Geographic pricing (PPP-adjusted)**: UK/EU/US = full price. India, Brazil, Nigeria, etc. = 40–60% reduction. Independent artists in Lagos and Nairobi are the same audience. Same pricing is unfair and loses the market.
+- **Student/emerging artist discount**: 50% off Artist tier for artists with < 1,000 monthly Spotify listeners. Auto-applies, no verification required (honour system). Artists graduate out automatically when they cross the threshold. Purpose: get artists onto paid tier before they're big, build loyalty early.
+
+**Internationalisation foundation (build v5 to support, even if not shipped in v5):**
+- All UI strings externalised to a JSON locale object — never hardcoded English strings in JS or HTML
+- Date, time, currency via `Intl` API — never hand-format these
+- CSS uses logical properties (`margin-inline-start` not `margin-left`) — RTL-safe from day one
+- `dir="rtl"` on `<html>` for Arabic, Hebrew, Farsi artists — the audience exists
+- Target: 8 languages in first year post-launch (EN, FR, DE, ES, PT, AR, SW, HI)
+
+**Fan experience features for the roadmap (not v5 scope but architecture must support):**
+- **Returning fan personalisation**: detect return visit via localStorage. "Welcome back — [Artist] dropped something new since you were last here." Requires storing last-visit timestamp and comparing against last release date.
+- **Fan guestbook**: 280-character fan messages, artist approves each, scrolling ticker on artist page. Architecture: simple moderation queue in Supabase. Opt-in by artist. Tone: fan wall at a gig, not a comment section.
+- **Fan share card post-pre-save**: after a fan pre-saves, offer a beautiful shareable card (artist artwork + "I'm ready for [Release]") for Stories/WhatsApp. Generates a static OG image. Zero friction — one tap to download or share.
+- **Multi-platform pre-save**: one tap pre-saves on Spotify + Apple Music + Amazon simultaneously. Requires OAuth for each. High-value — reduces 3 actions to 1.
+
+**Native app decision:** PWA first. Installable to home screen, offline-capable, push notifications. Native iOS/Android only after 10,000 active artists. Never before. The PWA is genuinely good enough.
+
 ---
 
 *Build prompt version: 5.2 — Updated 2026-03-13.*
