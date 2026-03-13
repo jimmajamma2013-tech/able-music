@@ -15,22 +15,43 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:           #090910;
-      --bg-mid:       #0f0f18;
-      --card:         #141420;
-      --card-raised:  #1a1a28;
-      --border:       rgba(255,255,255,0.07);
-      --border-mid:   rgba(255,255,255,0.13);
-      --accent:       #f4b942;
-      --accent-rgb:   244,185,66;
-      --accent-glow:  rgba(244,185,66,0.28);
-      --text:         #e8eaf2;
-      --text-2:       rgba(232,234,242,0.55);
-      --text-3:       rgba(232,234,242,0.3);
-      --font:         'DM Sans', system-ui, sans-serif;
-      --font-d:       'Barlow Condensed', 'DM Sans', sans-serif;
-      --spring:       cubic-bezier(0.34,1.56,0.64,1);
-      --ease:         cubic-bezier(0.25,0.46,0.45,0.94);
+      /* ── FOUNDATION ── */
+      --bg:            #0e0d0b;
+      --bg-mid:        #141210;
+      --card:          #1c1a17;
+      --card-raised:   #242220;
+
+      /* ── BORDER ── */
+      --border:        rgba(255,252,240,0.08);
+      --border-mid:    rgba(255,252,240,0.14);
+      --border-strong: rgba(255,252,240,0.22);
+
+      /* ── ACCENT ── */
+      --accent:        #c9b76c;
+      --accent-rgb:    201,183,108;
+      --accent-glow:   rgba(201,183,108,0.11);
+      --accent-dim:    rgba(201,183,108,0.10);
+      --accent-border: rgba(201,183,108,0.22);
+
+      /* ── TEXT ── */
+      --text:          #e4dfd2;
+      --text-2:        rgba(228,223,210,0.58);
+      --text-3:        rgba(228,223,210,0.35);
+      --text-4:        rgba(228,223,210,0.20);
+
+      /* ── STATE PASTELS ── */
+      --state-live:    #b87870;
+      --state-pre:     #b8a860;
+      --state-gig:     #b89068;
+      --state-stream:  #6890b0;
+      --state-ok:      #78a880;
+      --state-pro:     #9870a8;
+
+      /* ── TYPE ── */
+      --font:          'DM Sans', system-ui, sans-serif;
+      --font-d:        'Barlow Condensed', 'DM Sans', sans-serif;
+      --spring:        cubic-bezier(0.34,1.56,0.64,1);
+      --ease:          cubic-bezier(0.25,0.46,0.45,0.94);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -75,7 +96,7 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 200;
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 28px; height: 58px;
-      background: rgba(9,9,16,0.92);
+      background: rgba(14,13,11,0.94);
       backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       border-bottom: 1px solid var(--border);
     }
@@ -88,9 +109,9 @@
     .nav__link { font-size: 13px; font-weight: 600; color: var(--text-2); padding: 7px 13px; border-radius: 8px; transition: color 0.15s; }
     .nav__link:hover { color: var(--text); }
     .nav__cta {
-      font-size: 13px; font-weight: 700; background: var(--accent); color: #1a1200;
+      font-size: 13px; font-weight: 700; background: var(--accent); color: #100d06;
       padding: 8px 18px; border-radius: 8px;
-      box-shadow: 0 2px 12px rgba(var(--accent-rgb),0.35);
+      box-shadow: 0 1px 8px rgba(var(--accent-rgb),0.18);
       transition: opacity 0.15s, transform 0.2s var(--spring);
     }
     .nav__cta:hover { opacity: 0.88; transform: scale(1.03); }
@@ -175,13 +196,13 @@
       animation: heroIn 0.7s var(--ease) 0.35s both;
     }
     .btn-primary {
-      font-size: 15px; font-weight: 700; background: var(--accent); color: #fff;
+      font-size: 15px; font-weight: 700; background: var(--accent); color: #100d06;
       padding: 14px 28px; border-radius: 12px;
-      box-shadow: 0 6px 28px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 12px var(--accent-glow);
       transition: opacity 0.15s, transform 0.3s var(--spring);
       display: inline-flex; align-items: center; gap: 6px;
     }
-    .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
     .btn-ghost {
       font-size: 15px; font-weight: 600; color: var(--text-2);
       padding: 14px 24px; border-radius: 12px;
@@ -354,8 +375,8 @@
     /* Colour swatch demo */
     .colour-swatches { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
     .swatch {
-      width: 32px; height: 32px; border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.15);
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1.5px solid rgba(255,252,240,0.12);
     }
     /* State demo */
     .state-pills { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
@@ -435,7 +456,7 @@
     .pricing-card__features li.off::before { content: '—'; color: var(--text-3); font-weight: 400; }
     .btn-outline { width: 100%; padding: 13px; border-radius: 10px; font-size: 14px; font-weight: 700; text-align: center; border: 1px solid var(--border-mid); color: var(--text-2); background: rgba(255,255,255,0.03); transition: background 0.15s, color 0.15s, border-color 0.15s; display: block; }
     .btn-outline:hover { background: rgba(255,255,255,0.06); color: var(--text); border-color: rgba(255,255,255,0.2); }
-    .btn-accent { width: 100%; padding: 13px; border-radius: 10px; font-size: 14px; font-weight: 700; text-align: center; background: var(--accent); color: #1a1200; box-shadow: 0 6px 24px var(--accent-glow); transition: opacity 0.15s, transform 0.2s var(--spring); display: block; }
+    .btn-accent { width: 100%; padding: 13px; border-radius: 10px; font-size: 14px; font-weight: 700; text-align: center; background: var(--accent); color: #100d06; box-shadow: 0 2px 10px var(--accent-glow); transition: opacity 0.15s, transform 0.2s var(--spring); display: block; }
     .btn-accent:hover { opacity: 0.9; transform: translateY(-1px); }
 
     /* ── QUOTE ────────────────────────────────────────────────── */
@@ -652,7 +673,7 @@
         <div class="hero__demo-row">
           <div class="hero__demo-label">Colour</div>
           <div class="hero__demo-colours">
-            <button class="demo-colour is-active" data-demo-colour="#f4b942" style="--c:#f4b942"></button>
+            <button class="demo-colour is-active" data-demo-colour="#c9b76c" style="--c:#c9b76c;border-color:rgba(255,255,255,0.4);"></button>
             <button class="demo-colour" data-demo-colour="#a855f7" style="--c:#a855f7"></button>
             <button class="demo-colour" data-demo-colour="#ec4899" style="--c:#ec4899"></button>
             <button class="demo-colour" data-demo-colour="#10b981" style="--c:#10b981"></button>
@@ -702,12 +723,12 @@
         </div>
         <!-- CTAs -->
         <div class="ph-cr" style="padding:6px 7px 4px;gap:5px;">
-          <button class="ph-cp" style="background:#f4b942;box-shadow:0 2px 8px rgba(244,185,66,0.4);">Stream Now</button>
+          <button class="ph-cp" style="background:#c9b76c;box-shadow:0 2px 6px rgba(201,183,108,0.18);">Stream Now</button>
           <button class="ph-cs" style="border-color:rgba(255,255,255,0.12);">Tickets</button>
         </div>
         <!-- Spotify native embed -->
         <div class="ph-spotify">
-          <div class="ph-sp-art" style="background:linear-gradient(135deg,#f4b942 0%,#92400e 100%);"></div>
+          <div class="ph-sp-art" style="background:linear-gradient(135deg,#c9b76c 0%,#5a3e18 100%);"></div>
           <div class="ph-sp-info">
             <div class="ph-sp-track">Resonance</div>
             <div class="ph-sp-artist">Nova Wave · Single 2026</div>
@@ -731,10 +752,10 @@
           <div class="ph-pill">Spotify</div>
           <div class="ph-pill">Apple</div>
           <div class="ph-pill">SoundCloud</div>
-          <div class="ph-pill" style="color:#f4b942;border-color:rgba(244,185,66,0.3);opacity:1;">+1</div>
+          <div class="ph-pill" style="color:#c9b76c;border-color:rgba(201,183,108,0.22);opacity:1;">+1</div>
         </div>
         <div class="ph-tabs" style="background:rgba(9,9,15,0.97);border-top:1px solid rgba(255,255,255,0.08);">
-          <div class="ph-tab"><span class="ph-ti">⌂</span><span class="ph-tl on" style="color:#f4b942;">Home</span></div>
+          <div class="ph-tab"><span class="ph-ti">⌂</span><span class="ph-tl on" style="color:#c9b76c;">Home</span></div>
           <div class="ph-tab"><span class="ph-ti">♪</span><span class="ph-tl">Music</span></div>
           <div class="ph-tab"><span class="ph-ti">◈</span><span class="ph-tl">Events</span></div>
           <div class="ph-tab"><span class="ph-ti">◻</span><span class="ph-tl">Merch</span></div>
@@ -804,14 +825,14 @@
           <div class="hero-feature__visual">
             <div style="font-size:11px;color:var(--text-3);margin-bottom:8px;">Artist accent examples</div>
             <div class="colour-swatches">
-              <div class="swatch" style="background:#f4b942;" title="Cyan"></div>
-              <div class="swatch" style="background:#a855f7;" title="Violet"></div>
-              <div class="swatch" style="background:#ec4899;" title="Pink"></div>
-              <div class="swatch" style="background:#f59e0b;" title="Amber"></div>
-              <div class="swatch" style="background:#10b981;" title="Emerald"></div>
-              <div class="swatch" style="background:#f97316;" title="Coral"></div>
-              <div class="swatch" style="background:#e11d48;" title="Rose"></div>
-              <div class="swatch" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6);" title="Custom"></div>
+              <div class="swatch" style="background:#c9b76c;" title="Pale gold"></div>
+              <div class="swatch" style="background:#8870a8;" title="Dusty violet"></div>
+              <div class="swatch" style="background:#b87880;" title="Dusty rose"></div>
+              <div class="swatch" style="background:#a89060;" title="Warm taupe"></div>
+              <div class="swatch" style="background:#7aaa68;" title="Sage"></div>
+              <div class="swatch" style="background:#5898b0;" title="Steel cyan"></div>
+              <div class="swatch" style="background:#ae6060;" title="Muted red"></div>
+              <div class="swatch" style="background:#d8d0c0;" title="Off-white"></div>
             </div>
           </div>
         </div>
@@ -822,10 +843,10 @@
           <div class="hero-feature__visual">
             <div style="font-size:11px;color:var(--text-3);margin-bottom:8px;">Page states</div>
             <div class="state-pills">
-              <span class="state-pill" style="background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.25);">Pre-release</span>
-              <span class="state-pill" style="background:rgba(239,68,68,0.12);color:#ef4444;border:1px solid rgba(239,68,68,0.25);">● Live now</span>
-              <span class="state-pill" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);">Profile</span>
-              <span class="state-pill" style="background:rgba(251,115,22,0.12);color:#fb923c;border:1px solid rgba(251,115,22,0.25);">On tonight</span>
+              <span class="state-pill" style="background:rgba(184,168,96,0.10);color:var(--state-pre);border:1px solid rgba(184,168,96,0.20);">Pre-release</span>
+              <span class="state-pill" style="background:rgba(184,120,112,0.10);color:var(--state-live);border:1px solid rgba(184,120,112,0.20);">● Live now</span>
+              <span class="state-pill" style="background:rgba(255,252,240,0.05);color:var(--text-3);border:1px solid rgba(255,252,240,0.08);">Profile</span>
+              <span class="state-pill" style="background:rgba(184,144,104,0.10);color:var(--state-gig);border:1px solid rgba(184,144,104,0.20);">On tonight</span>
             </div>
           </div>
         </div>
