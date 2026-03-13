@@ -692,6 +692,8 @@ function computeState(profile) {
 
 **State stored in `able_v3_profile` localStorage key — never rename this key.**
 
+**Auto-Spotify state switching (future backend feature — design for it now):** When backend is available, ABLE polls the Spotify API daily (via a scheduled Worker). If a new release is detected: auto-switch to "live" state, update top card artwork, extract new ambient colour from artwork. Artist wakes up and their page has already updated. This is the "always correct" promise. In localStorage v5: artist can manually set `stateOverride: "auto"` to signal that they want auto-switching when the backend lands.
+
 **Visual changes per state:**
 
 | Element | Profile | Pre-release | Live | Gig |
@@ -718,8 +720,12 @@ The slide-up admin panel contains:
 - Theme selector (Dark / Light / Glass / Contrast)
 - Vibe selector (7 options — live preview)
 - CTA editor (primary + secondary)
-- Fan count (counts up animation from stats)
+- Fan count (counts up animation from stats) — exact number ("127 fans"), never approximations
 - "View fan list" → separate bottom sheet
+- **Living QR Code**: a QR code that always points to the artist's current most important action — tickets when touring, stream when live, pre-save when building. Never needs reprinting. Artist prints it on: merch, setlist backdrops, venue posters, social graphics. QR code is just `able.fm/@handle` — the profile's smart state switching makes it contextually correct.
+- **Revenue attribution**: show which CTA drove which action. "Stream Now → 3,400 Spotify opens this week." "Tickets → 89 opens." Not conversions (ABLE can't track purchases on external sites) but opens are a strong proxy. This is what artists can't get from Linktree.
+- **On desktop (>768px)**: admin is split-screen — left = edit forms (all sections), right = live mobile preview updating as they type. Slide-up pattern still applies on mobile. Desktop unlocks the full editor view.
+- **"View as fan"**: toggle between edit mode (dashed borders, edit icons) and fan view (exactly what fans see). One tap. No page reload.
 
 This means `able-v5.html` contains both the public profile AND the authenticated admin panel as a single file — URL-based auth state determines what's visible.
 
@@ -924,6 +930,9 @@ Build sections in order. After each section: Playwright screenshot at 375px and 
 - Max display: 6 events in bento grid (overflow behind "See all shows" link)
 - Empty state: "Nothing booked right now — check back soon." in `--color-text-3`, muted
 - In gig state: tonight's show moves to position 2 on the page (after top card)
+- **Geo-aware surfacing**: if fan's geolocation is available (browser permission), the nearest upcoming show within 150 miles floats to the top with a "Near you" chip. Non-blocking — geolocation is optional. "There's a show near you in Manchester on Saturday."
+- **Smart link expiry**: ticket links auto-expire post-show (detect when `event.date < now` and mark as past — no longer show "Tickets" CTA, replace with "Stream the music" for that event). No dead links ever.
+- **Sold-out waitlist**: if ticketing provider returns sold-out status (DICE API, Eventbrite API), swap "Get tickets" for "Join waitlist" — passes fan email to provider's waitlist.
 
 **3.7 — Snap cards** (artist updates)
 - Horizontal scroll carousel
@@ -949,6 +958,9 @@ Build sections in order. After each section: Playwright screenshot at 375px and 
 - Email input: `autocomplete="email"`, accent focus glow, paste flash
 - Submit button: "Stay close." — spinner on submit, checkmark on success, confetti burst, email echo
 - `prefers-reduced-motion`: skip confetti, show static success state
+- **GDPR compliance** (non-negotiable for EU fans): below the input, always show "By signing up you're joining [Artist Name]'s list, managed by ABLE. We'll handle your data with care." Consent checkbox if required by jurisdiction (auto-detect for .eu domains or `navigator.language` EU locales). Store: `{ email, ts, source, consent: true, consentMethod: "checkbox|implied", jurisdiction: "EU|UK|other" }`.
+- **Pre-save to fan capture pipeline**: if fan arrives in pre-release state, the fan capture can act as a "notify me when it drops" — submit email → tagged as `source: "presave"` → fan gets email on release day (if artist sends it). This is opt-in fan communication, not auto-email.
+- **Fan source tracking**: always store `source` in the fan record (where they came from: `direct | tiktok | ig | yt | email | qr`). This is the `?src=` param from the link. Artists see which channel drives the most loyal fans.
 
 **3.11 — Credits section** (collapsed by default)
 - "Credits" collapsed accordion below fan capture
@@ -960,7 +972,14 @@ Build sections in order. After each section: Playwright screenshot at 375px and 
 - "[Artist Name] is into:" followed by up to 5 artist pills
 - ABLE artists: link to their profiles. Non-ABLE: plain text name.
 
-**3.13 — Footer**
+**3.13 — Setlist mode** (optional, future — note here for architecture)
+- Artist activates during or after a live show. Profile transforms to show setlist.
+- Each track: clickable → stream it (opens Spotify/Apple Music/etc.)
+- Fans scan the QR code during or after the show to see what was played + stream it
+- Post-show engagement that extends the gig state meaningfully
+- Not in v5 scope but the data model must support it: each release has a boolean `inCurrentSetlist` flag
+
+**3.14 — Footer**
 - "Made with ABLE" in `--color-text-3`, `--text-xs`
 - Hidden on Artist Pro tier (white-label)
 - "Your fan list — exported any time. No lock-in." — the ownership promise, always visible
