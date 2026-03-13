@@ -71,9 +71,13 @@ Replace all language referencing "First Meaningful Paint" or "FMP" with the thre
 - **INP** (Interaction to Next Paint) — responsiveness
 - **CLS** (Cumulative Layout Shift) — layout stability
 
-### 2.7 Backend — Supabase for v1, Cloudflare for v2
+### 2.7 Backend — Supabase for v1 (final)
 
-`admin.html` already has Supabase JS CDN configured and working. The Cloudflare Pages + D1 + R2 + Workers recommendation in V5_BUILD_PROMPT.md Section 1.15 is the correct v2 infrastructure path for scale. For v6 v1 launch: **Supabase is the backend**. localStorage maps 1:1 to Supabase tables. Do not build Cloudflare infrastructure for v6 — plan the data model to make the future migration clean.
+`admin.html` already has Supabase JS CDN configured and working. **Supabase is the v1 backend.** localStorage maps 1:1 to Supabase tables. Do not build Cloudflare D1 infrastructure for v6 v1.
+
+Stack: Supabase (PostgreSQL + Auth + Storage + Edge Functions) · Netlify (static hosting) · Stripe (payments) · Resend (email delivery).
+
+Cloudflare Workers + D1 + R2 is the documented v2 scale path. It remains architecturally valid. It is not the current implementation target. BACKEND_SCHEMA.md has been updated to reflect PostgreSQL/Supabase for v1, with migration notes for Cloudflare D1 if needed later.
 
 ### 2.8 Fan capture placement — after hero, not above fold
 
@@ -85,7 +89,17 @@ The V5_RESEARCH_ADDENDUM listed "Barlow Condensed or Nunito" for Pop. Resolved: 
 
 ### 2.10 Electronic r-mult — 0.6, not 0.8
 
-V5_BUILD_PROMPT.md showed r-mult 0.8 for Electronic. V5_RESEARCH_ADDENDUM showed 0.6. VISUAL_SYSTEM.md is authoritative: **0.6** for Electronic. Sharper corners, more precision.
+V5_BUILD_PROMPT.md showed r-mult 0.8 for Electronic. V5_RESEARCH_ADDENDUM showed 0.6. The canonical table in Section 3.1 is the final truth: **0.6** for Electronic. Sharper corners, more precision.
+
+### 2.11 Body font — DM Sans, not Plus Jakarta Sans
+
+VISUAL_SYSTEM.md, V5_MASTER_BRIEF.md, and individual vibe entries in those docs specify "Plus Jakarta Sans" as the body font. That was the original design intent. It was superseded when `admin.html` was built with Plus Jakarta Sans and the profile page was differentiated. **The artist profile page (`able-v6.html`) uses DM Sans as body font.** Plus Jakarta Sans remains the admin dashboard body font. They are separate files with separate tokens — do not conflate them. Remove "Plus Jakarta Sans" from any active v6 vibe spec. It belongs to the admin layer only.
+
+### 2.12 Backend — Supabase is v1. Cloudflare D1 is not v1.
+
+Section 2.7 states Supabase for v1. BACKEND_SCHEMA.md was written with a different stack decision (Cloudflare D1 + Workers). This is resolved: **Supabase is the v1 backend. Cloudflare D1 is not the v1 backend.** The SQL schema in BACKEND_SCHEMA.md has been updated to PostgreSQL (Supabase). Cloudflare D1 remains a technically valid v2 migration path when scale demands it, but it is not the active v1 decision.
+
+Rationale for keeping Supabase: `admin.html` already has `@supabase/supabase-js` configured and working. The localStorage → Supabase migration is the same flush-and-sync operation regardless of which database is behind it. Supabase's Row Level Security (RLS) gives GDPR compliance properties that would otherwise require custom Worker middleware. Starting with what is already configured is the correct call.
 
 ---
 
@@ -103,7 +117,9 @@ V5_BUILD_PROMPT.md showed r-mult 0.8 for Electronic. V5_RESEARCH_ADDENDUM showed
 | Rock/Metal | Oswald | 700, uppercase | `#e05242` red | 0.6 | 0.08em |
 | Acoustic/Folk | Lora | 700, serif | `#d4a96a` ochre | 1.3 | 0.01em |
 
-Body font (all vibes): **DM Sans**, `font-display: swap`.
+Body font (all vibes): **DM Sans**, `font-display: swap`. (Plus Jakarta Sans is the admin dashboard body font — different file, different token. Do not mix.)
+
+> **ls-display note:** Values are positive (open) for condensed/uppercase fonts because condensed + uppercase + tight tracking reads as compressed. 0.06em on Barlow Condensed uppercase creates the "precision grid" feel. Negative tracking is wrong for this pairing. V5_MASTER_BRIEF.md listed negative values (`-0.02em`) which are superseded by the values in this table.
 
 Font loading rule: load only the active vibe's display font + DM Sans on initial render. In demo/specimen mode, load all. Never preload all 7 display fonts on a live profile.
 
@@ -202,6 +218,8 @@ Glass theme law: there must be a real background behind the glass surfaces — a
   --color-state-live: #ef4444;
   --color-state-gig:  #8b1e1e;  /* deep red — gig only, nowhere else */
   --color-state-prof: #06b6d4;
+
+  --color-ambient:    0,0,0;    /* overridden by canvas artwork extraction — see §3.6 */
 }
 ```
 
@@ -224,6 +242,32 @@ function applyDerivedTokens(root, accentHex, rMult) {
 ### 3.5 CTA border-radius rule
 
 Hero CTAs: `border-radius: var(--r-sm)` (4–8px depending on vibe). NOT `--r-pill`. Pill radius on primary CTAs signals "consumer app." Small radius signals premium confidence. Pills (`--r-pill: 999px`) are for Quick Action pills only.
+
+### 3.6 Artwork ambient colour — Phase 1
+
+`--color-ambient` is set by canvas extraction from the hero artwork. This is not a nice-to-have — it is the single strongest differentiator in the design system. The hero background gradient bleeds the artwork's dominant colour into the page atmosphere. Every artist's page feels unique without custom work.
+
+**Implementation:**
+```js
+function extractAmbientColour(imgEl, root) {
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')
+  canvas.width = 4; canvas.height = 4
+  ctx.drawImage(imgEl, 0, 0, 4, 4)
+  const d = ctx.getImageData(0, 0, 4, 4).data
+  // Average the 16 pixels, bias toward saturation
+  let r=0,g=0,b=0
+  for (let i=0; i<d.length; i+=4) { r+=d[i]; g+=d[i+1]; b+=d[i+2] }
+  const n = d.length/4
+  root.style.setProperty('--color-ambient', `${Math.round(r/n)},${Math.round(g/n)},${Math.round(b/n)}`)
+}
+```
+
+Usage: `background: radial-gradient(ellipse at top, rgba(var(--color-ambient),0.25) 0%, transparent 65%)`
+
+**If no artwork:** `--color-ambient` defaults to `0,0,0` (set in `:root`). Background renders as flat dark. No error state, no broken gradient. The feature degrades cleanly.
+
+**Fire after:** hero image loads (`img.onload` or `IntersectionObserver`). Run once per profile load. Do not block rendering. Canvas must be same-origin or CORS-enabled.
 
 ---
 
@@ -377,7 +421,9 @@ Fan capture secondary position: bottom of page above footer (deliberate catch-al
 // able_artist_id — UUID, auto-generated on first load, never overwrite
 ```
 
-Source taxonomy (frozen): `direct | instagram | tiktok | youtube | qr | email | other`
+Source taxonomy (frozen — do not change after v6 ships): `direct | instagram | tiktok | youtube | qr | email | other`
+
+> **v3 source taxonomy conflict:** v3 used `reel | story | post | bio | direct | email`. These values are superseded. v6 uses platform-level granularity. Any migration from v3 localStorage data should map: `reel → instagram`, `story → instagram`, `post → instagram`, `bio → direct`. The v6 taxonomy is more accurate and aligns with UTM `?src=` parameter values.
 
 ### 6.3 Campaign state machine
 
@@ -583,7 +629,11 @@ These stop the five missing operational docs from staying abstract.
 
 **Email:** ABLE-controlled sending domain. Display name = artist name. One-click unsubscribe. Plain-text-first. Custom artist domains = Phase 2.
 
-**SEO:** Canonical URL = ABLE page URL for v1. Custom domains = Phase 2 (v1 architecture must not block them). Structured data: artist + event schema. OG image = deterministic hero-based per profile. State-specific OG = Phase 2.
+**SEO:** Canonical URL = ABLE page URL for v1. Custom domains = Phase 2 (v1 architecture must not block them). Structured data: artist + event schema. OG image = deterministic hero-based per profile (static generation at Netlify function layer). State-specific OG = Phase 2.
+
+**"Made with ABLE" footer:** Free tier profiles show a subtle `var(--color-text-3)` footer line: "Made with ABLE". This is not a banner — it is one quiet line. Removed on Artist tier and above. This is the primary organic viral loop for ABLE discovery — a fan lands on a profile, sees it, becomes an artist themselves. Build it into the page structure from day one. Free tier = visible. Any paid tier = hidden. No exceptions.
+
+**QR code (Phase 1 — admin only):** Every artist gets a custom-coloured QR code in their admin panel. Colour matches their accent. One-tap download as PNG. Destination URL: `able.fm/[handle]?src=qr`. This maps to the `qr` source value in the frozen source taxonomy. QR codes at gigs are the highest-converting offline touchpoint (data: artists who use them see 3–5× higher sign-up rates at live shows). Build the QR generation into admin.html — not into the public profile. Use a library like `qrcode.js` (CDN) — no server round-trip needed for generation.
 
 **Trust and safety:** First 5 externally-visible credits per new professional-facing profile enter confirmation workflow before being treated as trusted. Clear reportable flow for abuse/impersonation/bad links before public rollout. No public rating system in v1.
 
@@ -661,8 +711,58 @@ These are explicitly out of scope for the initial v6 build. Architecture must no
 - Custom artist URLs — Phase 2
 - Setlist mode — Phase 2
 - Social commerce (Fourthwall/Shopify connect) — Phase 2 (external link cards only in v1)
+- Linktree importer — Phase 2 (high value for onboarding but not blocking v1 launch; v1: manual link entry)
+- Mailchimp/Kit export sync — Phase 2
 - Printful POD integration — Phase 3
 - Cloudflare edge migration — Phase 2 infrastructure
+
+---
+
+## 17. The conduit principle
+
+**Added: 2026-03-13. Status: ACTIVE. Supersedes any earlier section that implies ABLE should feel like a link aggregator.**
+
+ABLE is not a directory of links. It is not a platform that traps. It is the cleanest, most natural bridge between the artist and the deeper platform experience. Every design and build decision should ask: does this bring the fan closer to the content, or does it push them away to a link?
+
+### 17.1 Embeds over links — default rule
+
+If content can be experienced inside the page, it must be. Linking out is the fallback, not the default.
+
+| Content type | Conduit behaviour |
+|---|---|
+| Spotify track | Iframe auto-loads. No play button required. |
+| Spotify album/playlist | Iframe auto-loads at 352px height. |
+| YouTube video | Thumbnail with YT-branded play button. Tap → 16:9 inline iframe with autoplay. |
+| SoundCloud / Mixcloud | Artwork + play overlay. Tap → embed expands in-card. |
+| Merch items | Product image dominates. Price overlays the image. External link only when tapped. |
+| Events with ticketUrl | Ticket CTA is a full-height accent stripe on the card — it IS the action, not a footnote. |
+| Snap cards | Square native-post feel (1:1 image). CTA spans full card width at bottom. |
+
+### 17.2 Platform native feel — implementation rules
+
+- **Spotify embeds**: no artwork card, no "Play inline" text button. The Spotify iframe IS the visual. Track = 152px, album/playlist = 352px (inferred from URL shape `/track/`, `/album/`, `/playlist/`).
+- **YouTube in hero** (`topCard.type = 'video'`): auto-generate thumbnail from `img.youtube.com/vi/{id}/maxresdefault.jpg` if no posterUrl. Use the YouTube red rectangle play icon, not a generic circle play.
+- **YouTube in listen section**: same treatment. Thumbnail → YT badge → tap → 16:9 iframe with autoplay=1.
+- **Event cards with `venueImageUrl`**: full-bleed image behind the card, `rgba(0,0,0,0.60+)` gradient overlay, content floats above it. Cards without an image: editorial text card, date column, accent-filled ticket stripe at full card height.
+- **Merch with `imageUrl`**: price overlays the image bottom-left (`linear-gradient(to top, rgba(0,0,0,0.72), transparent)`). Price is NOT shown again in the info row below.
+- **Support packs**: never `--r-pill` on price buttons. `--r-sm` only. Pill = consumer app. Small radius = precision confidence.
+
+### 17.3 What "conduit" means for copy
+
+The language must never suggest ABLE is an intermediary layer. The artist is not "using ABLE to share links." The fan is not "visiting the artist's ABLE page." They are close to the artist. The page is the artist.
+
+- Never: "Stream on Spotify" as a link that opens a new tab and leaves
+- Always: "Play this" / "Listen" with inline playback where possible
+- Never: event cards that are just rows of text data
+- Always: event cards that feel like the ticket is already in your hand
+
+### 17.4 Landing page and all other pages
+
+The conduit principle applies to every ABLE file, not just `able-v6.html`:
+
+- **`landing.html`**: the phone mockup must show real native embeds — a Spotify widget, a YouTube thumbnail, an event card with a full-bleed venue image. Not placeholder screenshots.
+- **`start.html`**: onboarding copy should set the expectation of embeds, not links. "Your music plays here" not "Add your streaming links."
+- **`admin.html`**: when an artist enters a Spotify URL, show them a live preview of what the embed looks like. Make the conduit feel tangible at setup time.
 
 ---
 
