@@ -1984,6 +1984,83 @@
       text-align: right;
     }
 
+    /* === RECOMMENDATIONS ======================================= */
+    .recs-section {
+      padding: 0 0 var(--sp-8);
+    }
+
+    .recs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      padding: 0 var(--sp-5);
+    }
+
+    /* Each recommendation — minimal, editorial, one row */
+    .rec-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      padding: var(--sp-4) 0;
+      border-bottom: 1px solid var(--color-border);
+      text-decoration: none;
+      color: inherit;
+      transition: opacity var(--dur-fast) var(--ease-standard);
+    }
+
+    .rec-item:last-child { border-bottom: none; }
+    .rec-item:hover { opacity: 0.72; }
+
+    .rec-item__avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--r-sm);
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--color-surface);
+    }
+
+    .rec-item__avatar-placeholder {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--r-sm);
+      background: rgba(var(--color-accent-rgb), 0.12);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .rec-item__info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .rec-item__name {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rec-item__note {
+      font-size: var(--text-sm);
+      color: var(--color-text-3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+
+    .rec-item__arrow {
+      flex-shrink: 0;
+      color: var(--color-text-3);
+      font-size: var(--text-sm);
+    }
+
     /* === FOOTER ================================================ */
     .profile-footer {
       padding: var(--sp-8) var(--sp-5) var(--sp-6);
@@ -2453,6 +2530,16 @@
       </section>
 
       <!-- ======================================================
+           RECOMMENDATIONS — artist's picks (optional)
+           ====================================================== -->
+      <section class="recs-section" id="recs-section" aria-labelledby="recs-heading" hidden>
+        <header class="section-header" style="margin: 0 var(--sp-5) var(--sp-5);">
+          <h2 class="section-title" id="recs-heading">Worth hearing</h2>
+        </header>
+        <ul class="recs-list" id="recs-list" role="list"></ul>
+      </section>
+
+      <!-- ======================================================
            SECONDARY FAN CAPTURE (bottom catch-all)
            ====================================================== -->
       <section class="fan-capture fan-capture--secondary" id="fan-capture-2"
@@ -2590,11 +2677,11 @@
     // === §3.1 VIBE CONFIGURATION ==================================
 
     const VIBES = {
-      electronic: { font: 'Barlow Condensed', googleFont: null,                              accent: '#4fc3f7', rMult: 0.6 },
+      electronic: { font: 'Barlow Condensed', googleFont: null,                              accent: '#06b6d4', rMult: 0.6 },
       hiphop:     { font: 'Oswald',           googleFont: 'Oswald:wght@700',                 accent: '#f4b942', rMult: 0.7 },
       rnb:        { font: 'Cormorant Garamond',googleFont: 'Cormorant+Garamond:ital,wght@1,600', accent: '#e06b7a', rMult: 1.2 },
       indie:      { font: 'Space Grotesk',    googleFont: 'Space+Grotesk:wght@700',          accent: '#7ec88a', rMult: 1.0 },
-      pop:        { font: 'Barlow Condensed', googleFont: null,                              accent: '#f06292', rMult: 1.4 },
+      pop:        { font: 'Barlow Condensed', googleFont: null,                              accent: '#9b7cf4', rMult: 1.4 },
       rock:       { font: 'Oswald',           googleFont: 'Oswald:wght@700',                 accent: '#e05242', rMult: 0.6 },
       acoustic:   { font: 'Lora',             googleFont: 'Lora:wght@700',                   accent: '#d4a96a', rMult: 1.3 },
     }
@@ -2800,7 +2887,26 @@
           }
         ]
       },
-      credits: []
+      credits: [],
+      recommendations: [
+        {
+          name: 'Burial',
+          note: 'Taught me how to use silence.',
+          avatarUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=88&q=80',
+          url: 'https://youtube.com'
+        },
+        {
+          name: 'Actress',
+          note: 'The most alien music from the UK.',
+          avatarUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=88&q=80',
+          url: 'https://soundcloud.com'
+        },
+        {
+          name: 'Shackleton',
+          note: 'Bass as architecture.',
+          url: 'https://bandcamp.com'
+        }
+      ]
     }
 
     function getProfile() {
@@ -2924,8 +3030,12 @@
         requestAnimationFrame(() => {
           const y = scrollEl.scrollTop
           if (y - lastY > 0 && y > THRESHOLD) {
+            // Hide: fast accel exit
+            tabBar.style.transition = `transform 200ms var(--ease-accel)`
             tabBar.classList.add('tab-bar--hidden')
           } else if (lastY - y > 0) {
+            // Reveal: gentle decel entry
+            tabBar.style.transition = `transform 200ms var(--ease-decel)`
             tabBar.classList.remove('tab-bar--hidden')
           }
           lastY = y
@@ -4133,6 +4243,43 @@
       })
     }
 
+    // --- Recommendations ---------------------------------------
+
+    function renderRecommendations(profile) {
+      const section = document.getElementById('recs-section')
+      const list = document.getElementById('recs-list')
+      if (!section || !list) return
+
+      const recs = (profile.recommendations || []).slice(0, 5)
+      if (!recs.length) return
+
+      list.innerHTML = ''
+      recs.forEach(rec => {
+        const el = document.createElement('li')
+        const href = rec.url || (rec.ableHandle ? `https://able.fm/${rec.ableHandle}` : null)
+
+        el.innerHTML = `
+          <a class="rec-item pressable"
+             ${href ? `href="${href}" target="_blank" rel="noopener noreferrer"` : ''}
+             aria-label="${rec.name}${rec.note ? ` — ${rec.note}` : ''}">
+            ${rec.avatarUrl
+              ? `<img class="rec-item__avatar" src="${rec.avatarUrl}"
+                      alt="${rec.name}" loading="lazy" width="44" height="44">`
+              : `<div class="rec-item__avatar-placeholder" aria-hidden="true">🎵</div>`
+            }
+            <div class="rec-item__info">
+              <p class="rec-item__name">${rec.name}</p>
+              ${rec.note ? `<p class="rec-item__note">${rec.note}</p>` : ''}
+            </div>
+            ${href ? `<span class="rec-item__arrow" aria-hidden="true">↗</span>` : ''}
+          </a>
+        `
+        list.appendChild(el)
+      })
+
+      section.hidden = false
+    }
+
     // --- Footer ------------------------------------------------
 
     function renderFooter(profile) {
@@ -4419,6 +4566,7 @@
       renderMerchSection(profile)
       renderSupportSection(profile)
       renderCreditsSection(profile)
+      renderRecommendations(profile)
       renderFooter(profile)
 
       // Wire interactions (Checkpoint 4)
