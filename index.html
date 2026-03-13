@@ -3,391 +3,565 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Able — Your page. Right artist. Right moment.</title>
-  <meta name="description" content="One link that always says the right thing. Able auto-updates when you drop music, announce a tour, or go quiet. Free for artists." />
+  <title>Able — Your page. Right moment.</title>
+  <meta name="description" content="One link that always says the right thing. Drops music, announces a tour, goes quiet — your page knows. Free for artists." />
+  <meta property="og:title" content="Able — Your page. Right moment." />
+  <meta property="og:description" content="The artist profile that converts. One link. Every platform. Your fans, your data." />
+  <meta property="og:type" content="website" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="shared/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet" />
 
   <style>
-    /* ── Landing-specific tokens ──────────────────────────── */
+    /* ── Tokens ─────────────────────────────────────────────── */
     :root {
-      --max-w: 480px;
-      --lp-accent: #0891b2;
+      --bg:          #0d0e1a;
+      --card:        #12152a;
+      --card-raised: #181c35;
+      --border:      rgba(255,255,255,0.08);
+      --border-mid:  rgba(255,255,255,0.14);
+      --accent:      #06b6d4;
+      --accent-glow: rgba(6,182,212,0.30);
+      --accent-soft: rgba(6,182,212,0.08);
+      --gold:        #f0b429;
+      --gold-dark:   #c88f0a;
+      --gold-glow:   rgba(240,180,41,0.35);
+      --gold-soft:   rgba(240,180,41,0.10);
+      --text:        #ffffff;
+      --text-sec:    rgba(255,255,255,0.55);
+      --text-muted:  rgba(255,255,255,0.30);
+      --font:        'DM Sans', system-ui, sans-serif;
+      --r:           14px;
+      --r-lg:        20px;
+      --r-full:      999px;
+      --spring-bounce: cubic-bezier(0.34,1.56,0.64,1);
+      --spring-out:    cubic-bezier(0.25,0.46,0.45,0.94);
+      --spring-fast:   cubic-bezier(0.16,1,0.3,1);
+      --max-w:       900px;
     }
 
-    /* ── Reset for landing ────────────────────────────────── */
+    /* ── Reset ──────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font); background: var(--page); color: var(--ink); }
-    a { color: inherit; }
-    img { display: block; max-width: 100%; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
 
-    /* ── Nav ──────────────────────────────────────────────── */
+    /* ── Noise texture overlay ─────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      opacity: 0.4;
+    }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
     .lp-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,14,26,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .lp-nav-inner {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 24px; max-width: 900px; margin: 0 auto;
+      padding: 14px 24px; max-width: var(--max-w); margin: 0 auto;
     }
     .lp-nav-brand {
-      font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em;
-      text-decoration: none; color: var(--ink);
-      display: flex; align-items: center; gap: 6px;
+      font-size: 1.1rem; font-weight: 800; letter-spacing: -0.03em;
+      display: flex; align-items: center; gap: 8px; color: var(--text);
     }
-    .lp-nav-brand .able-dot {
-      width: 8px; height: 8px; border-radius: 50%; background: var(--lp-accent);
-      display: inline-block;
+    .able-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+      animation: pulse-dot 2.5s ease-in-out infinite;
     }
-    .lp-nav-links { display: flex; align-items: center; gap: 12px; }
+    @keyframes pulse-dot {
+      0%,100% { opacity: 1; box-shadow: 0 0 8px var(--accent-glow); }
+      50%      { opacity: 0.6; box-shadow: 0 0 4px var(--accent-glow); }
+    }
+    .lp-nav-links { display: flex; align-items: center; gap: 4px; }
     .lp-nav-links a {
-      font-size: 0.88rem; font-weight: 500; text-decoration: none;
-      color: var(--ink2); padding: 6px 8px;
+      font-size: 0.87rem; font-weight: 500; color: var(--text-sec);
+      padding: 7px 12px; border-radius: var(--r-full);
+      transition: color 200ms var(--spring-out), background 200ms var(--spring-out);
     }
-    .lp-nav-links a:hover { color: var(--ink); }
+    .lp-nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
     .lp-nav-cta {
-      background: var(--ink); color: #fff !important;
-      padding: 8px 16px !important; border-radius: var(--r-full) !important;
-      font-weight: 600 !important; font-size: 0.85rem !important;
-      transition: opacity var(--t);
+      background: var(--accent) !important;
+      color: #0d0e1a !important;
+      font-weight: 700 !important;
+      box-shadow: 0 4px 16px rgba(6,182,212,0.3) !important;
+      transition: transform 200ms var(--spring-bounce), box-shadow 200ms var(--spring-out) !important;
     }
-    .lp-nav-cta:hover { opacity: 0.82; }
+    .lp-nav-cta:hover {
+      transform: translateY(-1px) scale(1.02) !important;
+      box-shadow: 0 6px 24px rgba(6,182,212,0.4) !important;
+      background: var(--accent) !important;
+      color: #0d0e1a !important;
+    }
 
-    /* ── HERO ─────────────────────────────────────────────── */
+    /* ── HERO ────────────────────────────────────────────────── */
     .lp-hero {
+      position: relative; z-index: 1;
       text-align: center;
-      padding: 64px 24px 56px;
-      max-width: 680px;
+      padding: 80px 24px 0;
+      max-width: 700px;
       margin: 0 auto;
     }
-    .lp-hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 4px 14px; border-radius: var(--r-full);
-      border: 1px solid var(--surface2);
-      background: var(--surface);
-      font-size: 0.75rem; font-weight: 600; color: var(--ink2);
-      letter-spacing: 0.04em; text-transform: uppercase;
-      margin-bottom: 24px;
+    /* Ambient glow behind hero */
+    .lp-hero::before {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(6,182,212,0.12) 0%, transparent 70%);
+      pointer-events: none; z-index: -1;
     }
-    .lp-hero-eyebrow .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--lp-accent); animation: pulse 2s infinite;
+    .lp-eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 5px 16px; border-radius: var(--r-full);
+      border: 1px solid var(--border-mid);
+      background: rgba(6,182,212,0.06);
+      font-size: 0.72rem; font-weight: 600; color: var(--accent);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 28px;
     }
-    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
-
+    .lp-eyebrow .dot {
+      width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
+      animation: pulse-dot 2s infinite;
+    }
     .lp-hero h1 {
-      font-size: clamp(2.4rem, 8vw, 3.8rem);
-      font-weight: 900; letter-spacing: -0.04em; line-height: 1.05;
-      margin-bottom: 20px; color: var(--ink);
+      font-size: clamp(2.8rem, 9vw, 5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.0;
+      margin-bottom: 22px;
+      color: var(--text);
     }
     .lp-hero h1 em {
-      font-style: normal; color: var(--lp-accent);
+      font-style: normal;
+      background: linear-gradient(135deg, var(--gold) 0%, #fde68a 50%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     .lp-hero-sub {
-      font-size: 1.05rem; color: var(--ink2); line-height: 1.6;
-      max-width: 440px; margin: 0 auto 32px;
+      font-size: 1.1rem; color: var(--text-sec); line-height: 1.65;
+      max-width: 460px; margin: 0 auto 36px;
     }
     .lp-hero-actions {
       display: flex; flex-wrap: wrap; gap: 12px;
       justify-content: center; align-items: center;
+      margin-bottom: 64px;
     }
-    .lp-btn-main {
+    .btn-gold {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--ink); color: #fff;
-      padding: 14px 28px; border-radius: var(--r-full);
-      font-size: 1rem; font-weight: 700; text-decoration: none;
-      transition: opacity var(--t), transform var(--t);
-      letter-spacing: -0.01em;
+      background: var(--accent);
+      color: #0d0e1a;
+      padding: 15px 32px; border-radius: var(--r-full);
+      font-size: 1rem; font-weight: 700; letter-spacing: -0.01em;
+      box-shadow: 0 8px 28px rgba(6,182,212,0.32);
+      transition: transform 240ms var(--spring-bounce), box-shadow 200ms var(--spring-out);
     }
-    .lp-btn-main:hover { opacity: 0.85; transform: translateY(-1px); }
-    .lp-btn-ghost {
+    .btn-gold:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 12px 36px rgba(6,182,212,0.42);
+    }
+    .btn-ghost {
       display: inline-flex; align-items: center; gap: 6px;
-      color: var(--ink2); font-size: 0.9rem; font-weight: 500;
-      text-decoration: none; padding: 8px 4px;
+      color: var(--text-sec); font-size: 0.92rem; font-weight: 500;
+      padding: 10px 6px;
+      transition: color 200ms;
     }
-    .lp-btn-ghost:hover { color: var(--ink); }
+    .btn-ghost:hover { color: var(--text); }
 
-    /* ── PHONE MOCKUP ─────────────────────────────────────── */
+    /* ── PHONE MOCKUP ────────────────────────────────────────── */
     .lp-mockup-wrap {
+      position: relative; z-index: 1;
       display: flex; justify-content: center;
-      padding: 40px 24px 0; overflow: hidden;
+      padding: 0 24px;
+    }
+    .lp-mockup-wrap::before {
+      content: '';
+      position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
+      width: 500px; height: 200px;
+      background: radial-gradient(ellipse, rgba(6,182,212,0.12) 0%, transparent 70%);
+      pointer-events: none;
     }
     .lp-phone {
-      width: min(260px, 62vw);
-      background: var(--surface);
-      border-radius: 28px;
-      border: 1px solid var(--surface2);
-      box-shadow: 0 24px 64px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+      width: min(280px, 68vw);
+      background: var(--card);
+      border-radius: 32px;
+      border: 1px solid var(--border-mid);
+      box-shadow:
+        0 40px 80px rgba(0,0,0,0.6),
+        0 8px 24px rgba(0,0,0,0.3),
+        0 0 0 1px rgba(255,255,255,0.04) inset;
       overflow: hidden;
-      position: relative;
     }
-    .lp-phone::before {
-      /* status bar notch */
-      content: '';
-      display: block;
-      height: 6px;
-      background: var(--surface2);
-      margin: 10px auto;
-      width: 60px;
-      border-radius: var(--r-full);
+    .ph-notch {
+      height: 6px; background: var(--border);
+      width: 64px; border-radius: 3px;
+      margin: 12px auto 0;
     }
-    .lp-phone-inner { padding: 0 0 16px; }
-    /* mini profile preview inside phone */
-    .ph-hero {
-      text-align: center; padding: 12px 16px 10px;
-      border-bottom: 1px solid var(--surface2);
+    .ph-inner { padding: 0 0 20px; }
+    /* Top card */
+    .ph-top-card {
+      margin: 12px 14px 0;
+      background: var(--card-raised);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      overflow: hidden;
     }
-    .ph-avatar {
-      width: 44px; height: 44px; border-radius: 50%;
-      background: linear-gradient(135deg, #0891b2, #7c3aed);
-      margin: 0 auto 6px;
-      display: flex; align-items: center; justify-content: center;
-      color: #fff; font-size: 1rem; font-weight: 700;
+    .ph-artwork {
+      height: 110px;
+      background: linear-gradient(135deg, #1a1040 0%, #0d2040 40%, #081a30 100%);
+      position: relative; display: flex; align-items: flex-end;
+    }
+    .ph-artwork-gradient {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(13,14,26,0.9) 0%, transparent 60%);
+    }
+    .ph-artwork-content {
+      position: relative; z-index: 1; padding: 10px 12px; width: 100%;
     }
     .ph-badge {
-      display: inline-flex; align-items: center; gap: 3px;
-      background: var(--lp-accent); color: #fff;
-      font-size: 0.52rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
-      padding: 2px 7px; border-radius: 20px; margin-bottom: 4px;
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--accent); color: #fff;
+      font-size: 0.5rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 2px 8px; border-radius: var(--r-full);
+      margin-bottom: 4px;
     }
-    .ph-badge .dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.7); }
-    .ph-name { font-size: 0.85rem; font-weight: 800; letter-spacing: -0.02em; }
-    .ph-location { font-size: 0.6rem; color: var(--ink3); margin-top: 2px; }
-    .ph-genres { display: flex; gap: 4px; justify-content: center; margin: 6px 0; }
-    .ph-genre { font-size: 0.55rem; background: var(--surface2); padding: 2px 6px; border-radius: 20px; color: var(--ink2); }
-    .ph-btn {
+    .ph-badge .dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.8); }
+    .ph-track-name { font-size: 0.72rem; font-weight: 700; color: #fff; letter-spacing: -0.01em; }
+    .ph-artist-name { font-size: 0.58rem; color: rgba(255,255,255,0.6); margin-top: 1px; }
+    .ph-ctas { padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+    .ph-cta-primary {
       display: block; text-align: center;
-      background: var(--lp-accent); color: #fff;
-      font-size: 0.65rem; font-weight: 700; padding: 6px 12px;
-      border-radius: 20px; margin: 8px 16px 4px; text-decoration: none;
+      background: var(--gold); color: #0d0e1a;
+      font-size: 0.62rem; font-weight: 700; padding: 7px 12px;
+      border-radius: var(--r-full);
+      box-shadow: 0 4px 12px rgba(240,180,41,0.4);
     }
-    .ph-btn2 {
+    .ph-cta-secondary {
       display: block; text-align: center;
-      background: var(--surface2); color: var(--ink2);
-      font-size: 0.65rem; font-weight: 600; padding: 5px 12px;
-      border-radius: 20px; margin: 0 16px;
+      background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7);
+      font-size: 0.6rem; font-weight: 600; padding: 6px 12px;
+      border-radius: var(--r-full);
+      border: 1px solid var(--border);
     }
-    .ph-section { padding: 8px 16px; border-bottom: 1px solid var(--surface2); }
-    .ph-section-label { font-size: 0.52rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); margin-bottom: 5px; }
+    /* Artist strip */
+    .ph-artist-strip {
+      padding: 10px 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .ph-avatar {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.62rem; font-weight: 700; color: #fff;
+    }
+    .ph-artist-info .ph-name { font-size: 0.68rem; font-weight: 700; }
+    .ph-artist-info .ph-loc { font-size: 0.54rem; color: var(--text-muted); }
+    .ph-pills { display: flex; gap: 4px; padding: 0 14px 10px; }
+    .ph-pill {
+      font-size: 0.5rem; font-weight: 600;
+      background: var(--accent-soft); color: var(--accent);
+      border: 1px solid rgba(6,182,212,0.25);
+      padding: 2px 8px; border-radius: var(--r-full);
+    }
+    /* Mini sections */
+    .ph-section {
+      padding: 8px 14px; border-top: 1px solid var(--border);
+    }
+    .ph-section-label {
+      font-size: 0.48rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;
+    }
     .ph-platform {
       display: flex; align-items: center; gap: 6px;
-      padding: 5px 0; font-size: 0.6rem; font-weight: 600; color: var(--ink);
+      padding: 4px 0; font-size: 0.58rem; font-weight: 500; color: var(--text-sec);
     }
-    .ph-plat-dot { width: 20px; height: 20px; border-radius: 5px; flex-shrink: 0; }
+    .ph-plat-dot { width: 18px; height: 18px; border-radius: 5px; flex-shrink: 0; }
     .ph-show {
-      display: flex; align-items: center; gap: 6px;
-      padding: 5px 0; font-size: 0.6rem; color: var(--ink);
+      display: flex; align-items: center; gap: 6px; padding: 4px 0;
     }
-    .ph-show-date { font-weight: 800; font-size: 0.7rem; width: 20px; text-align: center; color: var(--lp-accent); }
+    .ph-show-date {
+      font-size: 0.65rem; font-weight: 800; color: var(--accent);
+      width: 20px; text-align: center;
+    }
     .ph-show-info { flex: 1; }
-    .ph-show-venue { font-weight: 600; font-size: 0.6rem; }
-    .ph-show-city  { font-size: 0.55rem; color: var(--ink3); }
-    .ph-ticket { font-size: 0.55rem; background: var(--lp-accent); color: #fff; padding: 2px 6px; border-radius: 20px; font-weight: 600; }
+    .ph-show-venue { font-size: 0.58rem; font-weight: 600; color: var(--text); }
+    .ph-show-city  { font-size: 0.5rem; color: var(--text-muted); }
+    .ph-ticket {
+      font-size: 0.48rem; font-weight: 700;
+      background: var(--accent); color: #fff;
+      padding: 2px 7px; border-radius: var(--r-full);
+    }
+    /* Tab bar */
+    .ph-tabs {
+      display: flex; border-top: 1px solid var(--border);
+      margin-top: 4px; padding: 6px 0 4px;
+    }
+    .ph-tab {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+      font-size: 0.44rem; color: var(--text-muted); font-weight: 500;
+    }
+    .ph-tab.active { color: var(--accent); }
+    .ph-tab-icon { width: 14px; height: 14px; opacity: 0.5; }
+    .ph-tab.active .ph-tab-icon { opacity: 1; }
+    .ph-tab-dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: var(--accent); margin-top: 1px;
+    }
 
-    /* ── SECTION SHARED ───────────────────────────────────── */
+    /* ── SOCIAL PROOF BAR ────────────────────────────────────── */
+    .proof-bar {
+      position: relative; z-index: 1;
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 28px;
+      padding: 40px 24px 56px; max-width: var(--max-w); margin: 0 auto;
+    }
+    .proof-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.82rem; color: var(--text-muted);
+    }
+    .proof-item strong { color: var(--text-sec); font-weight: 600; }
+    .proof-icon { font-size: 1rem; }
+
+    /* ── SECTION SHARED ──────────────────────────────────────── */
     .lp-section {
+      position: relative; z-index: 1;
       padding: 64px 24px;
-      max-width: 900px; margin: 0 auto;
+      max-width: var(--max-w); margin: 0 auto;
     }
-    .lp-section-label {
+    .section-eyebrow {
       font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--lp-accent);
-      margin-bottom: 10px;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 12px;
     }
-    .lp-section-title {
-      font-size: clamp(1.6rem, 5vw, 2.4rem);
-      font-weight: 800; letter-spacing: -0.03em; line-height: 1.15;
-      margin-bottom: 14px; color: var(--ink);
+    .section-title {
+      font-size: clamp(1.7rem, 5vw, 2.6rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.1;
+      margin-bottom: 16px; color: var(--text);
     }
-    .lp-section-sub {
-      font-size: 0.95rem; color: var(--ink2); line-height: 1.6;
-      max-width: 480px;
+    .section-sub {
+      font-size: 0.98rem; color: var(--text-sec); line-height: 1.65;
+      max-width: 500px;
     }
 
-    /* ── MODES ────────────────────────────────────────────── */
-    .modes-grid {
+    /* ── DIVIDER ─────────────────────────────────────────────── */
+    .lp-divider {
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-mid), transparent);
+      max-width: var(--max-w); margin: 0 auto;
+    }
+
+    /* ── MOMENT CARDS ────────────────────────────────────────── */
+    .moments-grid {
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: 12px; margin-top: 32px;
+      gap: 10px; margin-top: 32px;
     }
-    .mode-card {
-      background: var(--surface); border: 1px solid var(--surface2);
-      border-radius: var(--r); padding: 18px 16px;
-      transition: border-color var(--t), box-shadow var(--t);
+    .moment-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 20px 18px;
+      transition: border-color 250ms var(--spring-out), box-shadow 250ms var(--spring-out), transform 250ms var(--spring-out);
     }
-    .mode-card:hover {
-      border-color: var(--lp-accent);
-      box-shadow: 0 4px 16px rgba(8,145,178,0.1);
+    .moment-card:hover {
+      border-color: var(--border-mid);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      transform: translateY(-2px);
     }
-    .mode-badge {
+    .moment-badge {
       display: inline-flex; align-items: center; gap: 5px;
       padding: 3px 10px; border-radius: var(--r-full);
-      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em;
-      text-transform: uppercase; margin-bottom: 10px;
-      color: #fff;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em;
+      text-transform: uppercase; margin-bottom: 12px; color: #fff;
     }
-    .mode-badge .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.7); }
-    .mode-badge.live        { background: #0891b2; }
-    .mode-badge.prerelease  { background: #7c3aed; }
-    .mode-badge.gig         { background: #dc2626; }
-    .mode-badge.evergreen   { background: #16a34a; }
-    .mode-card-title  { font-size: 0.92rem; font-weight: 700; margin-bottom: 4px; }
-    .mode-card-sub    { font-size: 0.8rem; color: var(--ink2); line-height: 1.4; }
-    .mode-card-cta    { font-size: 0.75rem; font-weight: 600; color: var(--lp-accent); margin-top: 8px; }
+    .moment-badge .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.7); }
+    .moment-badge.live        { background: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+    .moment-badge.prerelease  { background: #f59e0b; box-shadow: 0 0 10px rgba(245,158,11,0.35); }
+    .moment-badge.tour        { background: #ef4444; box-shadow: 0 0 10px rgba(239,68,68,0.35); }
+    .moment-badge.evergreen   { background: #10b981; box-shadow: 0 0 10px rgba(16,185,129,0.35); }
+    .moment-card-title  { font-size: 0.92rem; font-weight: 700; margin-bottom: 5px; }
+    .moment-card-sub    { font-size: 0.79rem; color: var(--text-sec); line-height: 1.5; }
+    .moment-card-cta    { font-size: 0.75rem; font-weight: 600; color: var(--accent); margin-top: 10px; }
 
-    /* ── HOW IT WORKS ─────────────────────────────────────── */
-    .steps-list {
-      margin-top: 32px; display: flex; flex-direction: column; gap: 0;
-    }
+    /* ── HOW IT WORKS ────────────────────────────────────────── */
+    .steps { display: flex; flex-direction: column; gap: 0; margin-top: 36px; }
     .step {
-      display: flex; gap: 18px; align-items: flex-start;
-      padding: 20px 0; border-bottom: 1px solid var(--surface2);
+      display: flex; gap: 20px; align-items: flex-start;
+      padding: 22px 0; border-bottom: 1px solid var(--border);
     }
     .step:last-child { border-bottom: none; }
     .step-num {
-      width: 32px; height: 32px; border-radius: 50%;
-      background: var(--lp-accent); color: #fff;
+      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+      background: var(--accent-soft); border: 1px solid rgba(6,182,212,0.3);
+      color: var(--accent);
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.82rem; font-weight: 800; flex-shrink: 0;
+      font-size: 0.85rem; font-weight: 800;
     }
-    .step-content {}
-    .step-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
-    .step-desc  { font-size: 0.85rem; color: var(--ink2); line-height: 1.5; }
+    .step-title { font-size: 0.97rem; font-weight: 700; margin-bottom: 5px; }
+    .step-desc  { font-size: 0.85rem; color: var(--text-sec); line-height: 1.55; }
 
-    /* ── FEATURES GRID ────────────────────────────────────── */
+    /* ── FEATURES ────────────────────────────────────────────── */
     .features-grid {
       display: grid; grid-template-columns: 1fr 1fr;
-      gap: 12px; margin-top: 32px;
+      gap: 10px; margin-top: 32px;
     }
     .feature-card {
-      background: var(--surface); border: 1px solid var(--surface2);
-      border-radius: var(--r); padding: 18px 16px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 20px 18px;
+      transition: border-color 200ms, transform 200ms var(--spring-out);
     }
-    .feature-icon { font-size: 1.4rem; margin-bottom: 8px; }
-    .feature-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
-    .feature-desc  { font-size: 0.8rem; color: var(--ink2); line-height: 1.45; }
+    .feature-card:hover { border-color: var(--border-mid); transform: translateY(-2px); }
+    .feature-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--accent-soft); border: 1px solid rgba(6,182,212,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; margin-bottom: 12px;
+    }
+    .feature-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 5px; }
+    .feature-desc  { font-size: 0.8rem; color: var(--text-sec); line-height: 1.5; }
 
-    /* ── THEMES STRIP ─────────────────────────────────────── */
-    .themes-strip {
-      display: flex; gap: 10px; margin-top: 28px;
-      overflow-x: auto; padding-bottom: 4px;
+    /* ── PRO FEATURE (gold-locked visual) ────────────────────── */
+    .feature-card.gold {
+      border-color: rgba(240,180,41,0.25);
+      background: linear-gradient(135deg, var(--card) 0%, rgba(240,180,41,0.04) 100%);
     }
-    .theme-swatch {
-      flex-shrink: 0; width: 52px; height: 52px; border-radius: 12px;
-      border: 2px solid transparent; cursor: default;
-      position: relative; overflow: hidden;
-      transition: transform var(--t), border-color var(--t);
+    .feature-card.gold:hover { border-color: rgba(240,180,41,0.45); }
+    .feature-card.gold .feature-icon {
+      background: var(--gold-soft);
+      border-color: rgba(240,180,41,0.25);
     }
-    .theme-swatch:hover { transform: scale(1.08); border-color: var(--ink); }
-    .theme-swatch-label {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      font-size: 0.48rem; font-weight: 700; text-align: center;
-      padding: 3px 0; background: rgba(0,0,0,0.4); color: #fff;
-      text-transform: uppercase; letter-spacing: 0.05em;
+    .gold-pro-badge {
+      display: inline-block;
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--gold);
+      background: var(--gold-soft);
+      border: 1px solid rgba(240,180,41,0.25);
+      padding: 2px 8px; border-radius: var(--r-full); margin-bottom: 8px;
     }
-    .ts-warm     { background: linear-gradient(135deg, #f6f5f2, #0891b2); }
-    .ts-dark     { background: linear-gradient(135deg, #0f0f11, #7c3aed); }
-    .ts-minimal  { background: linear-gradient(135deg, #f8f8f7, #374151); }
-    .ts-bold     { background: linear-gradient(135deg, #fff8ee, #ea580c); }
-    .ts-night    { background: linear-gradient(135deg, #0a0a12, #e11d48); }
-    .ts-electric { background: linear-gradient(135deg, #0d0d1a, #22c55e); }
 
-    /* ── QUOTE / SOCIAL PROOF ─────────────────────────────── */
+    /* ── QUOTE ───────────────────────────────────────────────── */
     .lp-quote {
-      background: var(--surface); border: 1px solid var(--surface2);
-      border-radius: calc(var(--r) * 1.5); padding: 28px 24px;
-      text-align: center; margin-top: 32px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 32px 28px;
+      text-align: center; margin-top: 36px;
+      position: relative; overflow: hidden;
+    }
+    .lp-quote::before {
+      content: '"';
+      position: absolute; top: -20px; left: 20px;
+      font-size: 8rem; font-weight: 800;
+      color: var(--accent); opacity: 0.06;
+      line-height: 1; pointer-events: none;
     }
     .lp-quote blockquote {
-      font-size: 1.05rem; font-weight: 600; line-height: 1.5;
-      color: var(--ink); margin-bottom: 12px;
-      font-style: italic;
+      font-size: 1.05rem; font-weight: 500; line-height: 1.6;
+      color: var(--text); margin-bottom: 14px; font-style: italic;
+      position: relative; z-index: 1;
     }
-    .lp-quote cite {
-      font-size: 0.82rem; color: var(--ink3); font-style: normal;
-    }
+    .lp-quote cite { font-size: 0.82rem; color: var(--text-muted); font-style: normal; }
 
-    /* ── CTA BANNER ───────────────────────────────────────── */
+    /* ── CTA BANNER ──────────────────────────────────────────── */
     .lp-cta-banner {
-      background: var(--ink); color: #fff;
-      border-radius: calc(var(--r) * 1.5); padding: 48px 28px;
-      text-align: center; margin: 0 24px;
-      max-width: calc(900px - 48px);
+      position: relative; z-index: 1; overflow: hidden;
+      background: linear-gradient(135deg, #0d1628 0%, #0d1a2a 100%);
+      border: 1px solid var(--border-mid);
+      border-radius: var(--r-lg);
+      padding: 56px 32px;
+      text-align: center;
+      margin: 0 24px;
+      max-width: calc(var(--max-w) - 48px);
       margin-left: auto; margin-right: auto;
-      margin-bottom: 0;
+    }
+    .lp-cta-banner::before {
+      content: '';
+      position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+      width: 500px; height: 300px;
+      background: radial-gradient(ellipse, rgba(6,182,212,0.07) 0%, rgba(240,180,41,0.04) 50%, transparent 70%);
+      pointer-events: none;
     }
     .lp-cta-banner h2 {
-      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      font-size: clamp(1.7rem, 5vw, 2.4rem);
       font-weight: 800; letter-spacing: -0.03em;
-      margin-bottom: 10px; line-height: 1.15;
+      margin-bottom: 12px; line-height: 1.1;
+      position: relative; z-index: 1;
+    }
+    .lp-cta-banner h2 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--gold), #fde68a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     .lp-cta-banner p {
-      color: rgba(255,255,255,0.65); font-size: 0.92rem;
-      margin-bottom: 28px; line-height: 1.5;
+      color: var(--text-sec); font-size: 0.95rem;
+      margin-bottom: 32px; line-height: 1.5;
+      position: relative; z-index: 1;
     }
-    .lp-cta-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: #fff; color: var(--ink);
-      padding: 14px 32px; border-radius: var(--r-full);
-      font-size: 1rem; font-weight: 700; text-decoration: none;
-      transition: opacity var(--t), transform var(--t);
-    }
-    .lp-cta-btn:hover { opacity: 0.9; transform: translateY(-1px); }
     .lp-cta-fine {
-      font-size: 0.75rem; color: rgba(255,255,255,0.4);
-      margin-top: 14px;
+      font-size: 0.75rem; color: var(--text-muted);
+      margin-top: 14px; position: relative; z-index: 1;
     }
 
-    /* ── FOOTER ───────────────────────────────────────────── */
+    /* ── FOOTER ──────────────────────────────────────────────── */
     .lp-footer {
-      padding: 40px 24px 48px; text-align: center;
-      border-top: 1px solid var(--surface2); margin-top: 64px;
+      position: relative; z-index: 1;
+      padding: 40px 24px 56px; text-align: center;
+      border-top: 1px solid var(--border); margin-top: 64px;
     }
     .lp-footer-brand {
-      font-size: 1rem; font-weight: 800; margin-bottom: 6px;
-      letter-spacing: -0.02em;
+      font-size: 1rem; font-weight: 800; letter-spacing: -0.02em;
+      margin-bottom: 6px; color: var(--text);
+      display: flex; align-items: center; justify-content: center; gap: 6px;
     }
-    .lp-footer-tag  { font-size: 0.78rem; color: var(--ink3); margin-bottom: 16px; }
-    .lp-footer-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
-    .lp-footer-links a { font-size: 0.78rem; color: var(--ink3); text-decoration: none; }
-    .lp-footer-links a:hover { color: var(--lp-accent); }
+    .lp-footer-tag  { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 20px; }
+    .lp-footer-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .lp-footer-links a {
+      font-size: 0.78rem; color: var(--text-muted);
+      transition: color 200ms;
+    }
+    .lp-footer-links a:hover { color: var(--accent); }
 
-    /* ── Responsive ───────────────────────────────────────── */
-    @media (max-width: 480px) {
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 520px) {
       .lp-nav-links a:not(.lp-nav-cta) { display: none; }
-      .modes-grid   { grid-template-columns: 1fr; }
-      .features-grid { grid-template-columns: 1fr; }
-      .lp-hero { padding: 48px 20px 40px; }
-    }
-
-    /* Dark mode auto-adapt */
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --page: #0f0f11; --surface: #1a1a1f; --surface2: #242429;
-        --ink: #f0efee; --ink2: #9a9490; --ink3: #5a5550;
-      }
+      .moments-grid   { grid-template-columns: 1fr; }
+      .features-grid  { grid-template-columns: 1fr; }
+      .lp-hero        { padding: 56px 20px 0; }
+      .lp-hero h1     { font-size: 2.6rem; }
+      .lp-phone       { width: min(260px, 78vw); }
+      .proof-bar      { gap: 16px; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ── NAV ────────────────────────────────────────────────── -->
-  <nav>
-    <div class="lp-nav">
+  <!-- ── NAV ─────────────────────────────────────────────────── -->
+  <nav class="lp-nav">
+    <div class="lp-nav-inner">
       <a href="index.html" class="lp-nav-brand">
         <span class="able-dot"></span>Able
       </a>
       <div class="lp-nav-links">
-        <a href="about.html">About</a>
-        <a href="able-v2.html">Example</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="able-v3.html">See example</a>
         <a href="start.html" class="lp-nav-cta">Get started free</a>
       </div>
     </div>
   </nav>
 
-  <!-- ── HERO ───────────────────────────────────────────────── -->
+  <!-- ── HERO ────────────────────────────────────────────────── -->
   <section class="lp-hero">
-    <div class="lp-hero-eyebrow">
+    <div class="lp-eyebrow">
       <span class="dot"></span>
       Free for artists
     </div>
@@ -397,32 +571,50 @@
       Drops music, announces a tour, goes quiet — your page knows.
     </p>
     <div class="lp-hero-actions">
-      <a href="start.html" class="lp-btn-main">Create your page free →</a>
-      <a href="able-v2.html" class="lp-btn-ghost">See an example</a>
+      <a href="start.html" class="btn-gold">Create your page free →</a>
+      <a href="able-v3.html" class="btn-ghost">See an example</a>
     </div>
   </section>
 
-  <!-- ── PHONE MOCKUP ───────────────────────────────────────── -->
+  <!-- ── PHONE MOCKUP ─────────────────────────────────────────── -->
   <div class="lp-mockup-wrap">
     <div class="lp-phone">
-      <div class="lp-phone-inner">
+      <div class="ph-notch"></div>
+      <div class="ph-inner">
 
-        <div class="ph-hero">
-          <div class="ph-avatar">M</div>
-          <div>
-            <div class="ph-badge"><span class="dot"></span>New EP out now</div>
+        <!-- Top card -->
+        <div class="ph-top-card">
+          <div class="ph-artwork">
+            <!-- Subtle album art gradient -->
+            <div style="position:absolute;inset:0;background:linear-gradient(135deg,#1e0a3c 0%,#0a1a3e 50%,#0a2a1e 100%);"></div>
+            <div class="ph-artwork-gradient"></div>
+            <div class="ph-artwork-content">
+              <div class="ph-badge"><span class="dot"></span>Out now</div>
+              <div class="ph-track-name">Wavelength</div>
+              <div class="ph-artist-name">Maya Rivers · EP · 2024</div>
+            </div>
           </div>
-          <div class="ph-name">Maya Rivers</div>
-          <div class="ph-location">London, UK</div>
-          <div class="ph-genres">
-            <span class="ph-genre">Soul</span>
-            <span class="ph-genre">Electronic</span>
-            <span class="ph-genre">R&B</span>
+          <div class="ph-ctas">
+            <div class="ph-cta-primary">✦ Stream Wavelength</div>
+            <div class="ph-cta-secondary">Get tickets</div>
           </div>
-          <a class="ph-btn">Stream Wavelength</a>
-          <div class="ph-btn2">Get tickets</div>
         </div>
 
+        <!-- Artist strip -->
+        <div class="ph-artist-strip">
+          <div class="ph-avatar">M</div>
+          <div class="ph-artist-info">
+            <div class="ph-name">Maya Rivers</div>
+            <div class="ph-loc">London, UK</div>
+          </div>
+        </div>
+        <div class="ph-pills">
+          <div class="ph-pill">Soul</div>
+          <div class="ph-pill">Electronic</div>
+          <div class="ph-pill">R&amp;B</div>
+        </div>
+
+        <!-- Platforms -->
         <div class="ph-section">
           <div class="ph-section-label">Listen</div>
           <div class="ph-platform">
@@ -435,6 +627,7 @@
           </div>
         </div>
 
+        <!-- Shows -->
         <div class="ph-section">
           <div class="ph-section-label">Shows</div>
           <div class="ph-show">
@@ -455,146 +648,179 @@
           </div>
         </div>
 
+        <!-- Tab bar -->
+        <div class="ph-tabs">
+          <div class="ph-tab active">
+            <svg class="ph-tab-icon" viewBox="0 0 18 18" fill="currentColor"><path d="M9 2L2 8h2v7h4v-4h2v4h4V8h2z"/></svg>
+            Home
+            <div class="ph-tab-dot"></div>
+          </div>
+          <div class="ph-tab">
+            <svg class="ph-tab-icon" viewBox="0 0 18 18" fill="currentColor"><path d="M13 2v8.27A3 3 0 1014 13V5h2V2h-3zM5 16a2 2 0 110-4 2 2 0 010 4z"/></svg>
+            Music
+          </div>
+          <div class="ph-tab">
+            <svg class="ph-tab-icon" viewBox="0 0 18 18" fill="currentColor"><rect x="2" y="4" width="14" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="5" y="2" width="2" height="4" rx="1"/><rect x="11" y="2" width="2" height="4" rx="1"/><line x1="2" y1="8" x2="16" y2="8" stroke="currentColor" stroke-width="1.5"/></svg>
+            Events
+          </div>
+          <div class="ph-tab">
+            <svg class="ph-tab-icon" viewBox="0 0 18 18" fill="currentColor"><path d="M13 7V5a4 4 0 00-8 0v2H3l1 10h10l1-10h-2zm-6-2a2 2 0 014 0v2H7V5z"/></svg>
+            Merch
+          </div>
+          <div class="ph-tab">
+            <svg class="ph-tab-icon" viewBox="0 0 18 18" fill="currentColor"><path d="M9 2C6.24 2 4 4.24 4 7c0 4.5 5 9 5 9s5-4.5 5-9c0-2.76-2.24-5-5-5zm0 6.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
+            Support
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 
-  <!-- ── MODES ──────────────────────────────────────────────── -->
+  <!-- ── PROOF BAR ─────────────────────────────────────────────── -->
+  <div class="proof-bar">
+    <div class="proof-item"><span class="proof-icon">⚡</span> Set up in <strong>5 minutes</strong></div>
+    <div class="proof-item"><span class="proof-icon">🔒</span> <strong>Your</strong> fan data, always</div>
+    <div class="proof-item"><span class="proof-icon">🎨</span> <strong>4 themes</strong> included free</div>
+    <div class="proof-item"><span class="proof-icon">💳</span> No card required</div>
+  </div>
+
+  <div class="lp-divider"></div>
+
+  <!-- ── THE MOMENT SYSTEM ─────────────────────────────────────── -->
   <div class="lp-section">
-    <p class="lp-section-label">The moment system</p>
-    <h2 class="lp-section-title">One tap. Everything updates.</h2>
-    <p class="lp-section-sub">
-      Tell Able what's happening right now. Your page, CTA, and message all shift to match — without touching a thing.
+    <p class="section-eyebrow">The moment system</p>
+    <h2 class="section-title">One tap. Everything shifts.</h2>
+    <p class="section-sub">
+      Tell Able what's happening right now. Your page, CTA, and headline all update to match — without touching a line of code.
     </p>
 
-    <div class="modes-grid">
-      <div class="mode-card">
-        <div class="mode-badge live"><span class="dot"></span>Live</div>
-        <div class="mode-card-title">New release out</div>
-        <div class="mode-card-sub">Hero pushes the listen button. Everything points to the new music.</div>
-        <div class="mode-card-cta">Stream now →</div>
+    <div class="moments-grid">
+      <div class="moment-card">
+        <div class="moment-badge live"><span class="dot"></span>Live</div>
+        <div class="moment-card-title">New release out</div>
+        <div class="moment-card-sub">Hero pushes the stream button. Everything points to the new music.</div>
+        <div class="moment-card-cta">Stream now →</div>
       </div>
-      <div class="mode-card">
-        <div class="mode-badge prerelease"><span class="dot"></span>Pre-release</div>
-        <div class="mode-card-title">Something's coming</div>
-        <div class="mode-card-sub">Build the moment. Pre-save button front and centre, Inner Circle sign-up featured.</div>
-        <div class="mode-card-cta">Pre-save now →</div>
+      <div class="moment-card">
+        <div class="moment-badge prerelease"><span class="dot"></span>Pre-release</div>
+        <div class="moment-card-title">Something's coming</div>
+        <div class="moment-card-sub">Build the moment. Pre-save front and centre. Countdown running.</div>
+        <div class="moment-card-cta">Pre-save now →</div>
       </div>
-      <div class="mode-card">
-        <div class="mode-badge gig"><span class="dot"></span>On tour</div>
-        <div class="mode-card-title">Tour mode</div>
-        <div class="mode-card-sub">Ticket button leads. Shows section rises. Calendar links auto-generate.</div>
-        <div class="mode-card-cta">Get tickets →</div>
+      <div class="moment-card">
+        <div class="moment-badge tour"><span class="dot"></span>On tour</div>
+        <div class="moment-card-title">Tour mode</div>
+        <div class="moment-card-sub">Ticket button leads. Shows section rises. Calendar links auto-generate.</div>
+        <div class="moment-card-cta">Get tickets →</div>
       </div>
-      <div class="mode-card">
-        <div class="mode-badge evergreen"><span class="dot"></span>Evergreen</div>
-        <div class="mode-card-title">Just the music</div>
-        <div class="mode-card-sub">No push, no pressure. Clean streaming links. The catalogue speaks for itself.</div>
-        <div class="mode-card-cta">Stream →</div>
+      <div class="moment-card">
+        <div class="moment-badge evergreen"><span class="dot"></span>Evergreen</div>
+        <div class="moment-card-title">Just the music</div>
+        <div class="moment-card-sub">No push, no pressure. Clean streaming links. The catalogue speaks.</div>
+        <div class="moment-card-cta">Stream →</div>
       </div>
     </div>
   </div>
 
-  <!-- ── HOW IT WORKS ───────────────────────────────────────── -->
-  <div class="lp-section" style="padding-top:0">
-    <p class="lp-section-label">How it works</p>
-    <h2 class="lp-section-title">Set up in five minutes.</h2>
+  <div class="lp-divider"></div>
 
-    <div class="steps-list">
+  <!-- ── HOW IT WORKS ──────────────────────────────────────────── -->
+  <div class="lp-section" id="how-it-works">
+    <p class="section-eyebrow">How it works</p>
+    <h2 class="section-title">Set up in five minutes.</h2>
+
+    <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
-        <div class="step-content">
+        <div>
           <div class="step-title">Tell us who you are</div>
-          <div class="step-desc">Name, genre, location. Answer three questions about your vibe and we'll pick your theme.</div>
+          <div class="step-desc">Name, genre, location. Answer a few questions about your vibe and we'll suggest your theme.</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <div class="step-content">
-          <div class="step-title">Set your moment</div>
-          <div class="step-desc">Drop your Spotify link, pick the mode that matches right now — live, pre-release, tour, or evergreen.</div>
+        <div>
+          <div class="step-title">Add your music &amp; links</div>
+          <div class="step-desc">Drop in a Spotify, YouTube, or SoundCloud URL. We fetch the artwork and fill the rest.</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <div class="step-content">
+        <div>
+          <div class="step-title">Set your moment</div>
+          <div class="step-desc">Pick the mode that matches right now — live, pre-release, tour, or evergreen. Page updates instantly.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
           <div class="step-title">Share one link</div>
-          <div class="step-desc">able.music/yourname. It goes in your bio. Every time something changes, tap to update — link stays the same.</div>
+          <div class="step-desc">Your Able URL goes in your bio. Every time something changes, you tap to update — the link never does.</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ── FEATURES GRID ──────────────────────────────────────── -->
-  <div class="lp-section" style="padding-top:0">
-    <p class="lp-section-label">Everything included</p>
-    <h2 class="lp-section-title">Not a link tree. Your page.</h2>
-    <p class="lp-section-sub">Every feature an independent artist needs, designed to work together.</p>
+  <div class="lp-divider"></div>
+
+  <!-- ── FEATURES ──────────────────────────────────────────────── -->
+  <div class="lp-section">
+    <p class="section-eyebrow">Everything included</p>
+    <h2 class="section-title">Not a link tree. Your page.</h2>
+    <p class="section-sub">Every feature an independent artist needs, designed to work together — not bolted on.</p>
 
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon">✉️</div>
-        <div class="feature-title">Inner Circle</div>
-        <div class="feature-desc">Email list you own. Not rented from a platform that can cut you off.</div>
+        <div class="feature-title">Fan email capture</div>
+        <div class="feature-desc">Your list, your data. Not rented from a platform that can cut you off tomorrow.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🗓</div>
         <div class="feature-title">Shows + calendar</div>
-        <div class="feature-desc">Add a date, fans get a Google Calendar link and Apple download. One click to save.</div>
+        <div class="feature-desc">Add a date, fans get a one-tap Google Calendar or Apple link. Never miss a show.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🎵</div>
-        <div class="feature-title">All platforms, one place</div>
-        <div class="feature-desc">Spotify, Apple Music, SoundCloud, Bandcamp — fans go to their preferred one directly.</div>
+        <div class="feature-title">Every platform</div>
+        <div class="feature-desc">Spotify, Apple Music, SoundCloud, Bandcamp — fans land on their preferred one.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🛍</div>
         <div class="feature-title">Merch section</div>
-        <div class="feature-desc">Link your Bandcamp or Shopify. Your best sellers, front and centre.</div>
+        <div class="feature-desc">Link your Bandcamp or Shopify. Best sellers, front and centre, with real images.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🎨</div>
-        <div class="feature-title">Six themes</div>
-        <div class="feature-desc">Warm, dark, minimal, bold, night, electric. Each one a complete visual identity.</div>
+        <div class="feature-title">Four themes</div>
+        <div class="feature-desc">Dark, Light, Contrast, Glass. Each one a complete visual identity — not a colour swap.</div>
       </div>
-      <div class="feature-card">
+      <div class="feature-card gold">
+        <div class="gold-pro-badge">✦ Pro</div>
         <div class="feature-icon">📊</div>
         <div class="feature-title">Fan analytics</div>
-        <div class="feature-desc">See who's visiting, what they're clicking, and when. No dashboard clutter.</div>
+        <div class="feature-desc">See who's visiting, what they're clicking, where they came from. No dashboard noise.</div>
+      </div>
+      <div class="feature-card gold">
+        <div class="gold-pro-badge">✦ Pro</div>
+        <div class="feature-icon">📣</div>
+        <div class="feature-title">Email broadcasts</div>
+        <div class="feature-desc">Send directly to your fan list. Not an algorithm. Not a boost. Just you and them.</div>
+      </div>
+      <div class="feature-card gold">
+        <div class="gold-pro-badge">✦ Pro</div>
+        <div class="feature-icon">💝</div>
+        <div class="feature-title">Support packs</div>
+        <div class="feature-desc">Let fans support you directly. Coffee, exclusive download, or superfan tier — you choose.</div>
       </div>
     </div>
   </div>
 
-  <!-- ── THEMES ──────────────────────────────────────────────── -->
-  <div class="lp-section" style="padding-top:0">
-    <p class="lp-section-label">Your identity</p>
-    <h2 class="lp-section-title">Looks like you, not a template.</h2>
-    <p class="lp-section-sub">Answer three quick questions — we'll suggest the theme that fits. Change it any time.</p>
+  <div class="lp-divider"></div>
 
-    <div class="themes-strip">
-      <div class="theme-swatch ts-warm">
-        <div class="theme-swatch-label">Warm</div>
-      </div>
-      <div class="theme-swatch ts-dark">
-        <div class="theme-swatch-label">Dark</div>
-      </div>
-      <div class="theme-swatch ts-minimal">
-        <div class="theme-swatch-label">Minimal</div>
-      </div>
-      <div class="theme-swatch ts-bold">
-        <div class="theme-swatch-label">Bold</div>
-      </div>
-      <div class="theme-swatch ts-night">
-        <div class="theme-swatch-label">Night</div>
-      </div>
-      <div class="theme-swatch ts-electric">
-        <div class="theme-swatch-label">Electric</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── QUOTE ───────────────────────────────────────────────── -->
-  <div class="lp-section" style="padding-top:0">
+  <!-- ── QUOTE ─────────────────────────────────────────────────── -->
+  <div class="lp-section" style="padding-top:40px">
     <div class="lp-quote">
       <blockquote>
         "I updated my bio link once six months ago and it still works perfectly.
@@ -604,24 +830,29 @@
     </div>
   </div>
 
-  <!-- ── CTA BANNER ─────────────────────────────────────────── -->
-  <div class="lp-cta-banner">
-    <h2>Your page is one<br />link away.</h2>
-    <p>Free for independent artists. No card required.</p>
-    <a href="start.html" class="lp-cta-btn">Create your page free →</a>
-    <p class="lp-cta-fine">Takes about five minutes.</p>
+  <!-- ── CTA BANNER ───────────────────────────────────────────── -->
+  <div class="lp-section" style="padding-bottom:80px">
+    <div class="lp-cta-banner">
+      <h2>Your page is one<br /><em>link away.</em></h2>
+      <p>Free for independent artists. No card required.<br />Takes about five minutes.</p>
+      <a href="start.html" class="btn-gold">Create your page free →</a>
+      <p class="lp-cta-fine">✦ Upgrade to Pro any time for analytics, broadcasts &amp; support packs</p>
+    </div>
   </div>
 
-  <!-- ── FOOTER ──────────────────────────────────────────────── -->
+  <!-- ── FOOTER ───────────────────────────────────────────────── -->
   <footer class="lp-footer">
-    <div class="lp-footer-brand">Able</div>
+    <div class="lp-footer-brand">
+      <span class="able-dot"></span>Able
+    </div>
     <div class="lp-footer-tag">Your page. Right artist. Right moment.</div>
     <nav class="lp-footer-links">
       <a href="about.html">About</a>
+      <a href="able-v3.html">Example</a>
       <a href="privacy.html">Privacy</a>
       <a href="terms.html">Terms</a>
       <a href="start.html">Create your page</a>
-      <a href="login.html">Log in</a>
+      <a href="admin.html">Log in</a>
     </nav>
   </footer>
 

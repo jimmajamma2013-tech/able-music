@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — ABLE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #09090f;
+  --bg-mid:  #0e0f18;
+  --card:    rgba(255,255,255,.055);
+  --card-hv: rgba(255,255,255,.08);
+  --border:  rgba(255,255,255,.09);
+  --bm:      rgba(255,255,255,.18);
+  --text:    #f0ece4;
+  --t2:      rgba(240,236,228,.52);
+  --t3:      rgba(240,236,228,.3);
+  --acc:     #f4b942;
+  --acc-rgb: 244,185,66;
+  --font:    'Plus Jakarta Sans', sans-serif;
+  --font-d:  'Barlow Condensed', sans-serif;
+  --spring:  cubic-bezier(0.34,1.56,0.64,1);
+  --ease:    cubic-bezier(0.25,0.46,0.45,0.94);
+  --sidebar: 220px;
+  --topbar:  56px;
+}
+
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+html { font-size:16px; }
+body {
+  background:var(--bg); color:var(--text);
+  font-family:var(--font); min-height:100vh;
+  display:flex;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width:var(--sidebar); flex-shrink:0;
+  background:var(--bg-mid); border-right:1px solid var(--border);
+  display:flex; flex-direction:column;
+  position:fixed; top:0; left:0; bottom:0; z-index:100;
+}
+.sb-logo {
+  padding:18px 20px 16px;
+  font-family:var(--font-d); font-size:22px; font-weight:700;
+  letter-spacing:.08em; color:var(--text);
+  border-bottom:1px solid var(--border);
+}
+.sb-logo span { color:var(--acc); }
+
+.sb-artist {
+  display:flex; align-items:center; gap:10px;
+  padding:14px 16px; margin:12px 12px 0;
+  border-radius:12px; background:var(--card); cursor:pointer;
+  transition:background .16s;
+}
+.sb-artist:hover { background:var(--card-hv); }
+.sb-av {
+  width:36px; height:36px; border-radius:10px; flex-shrink:0;
+  background:linear-gradient(135deg, var(--acc), #e05242);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-d); font-size:15px; font-weight:700; color:#121a24;
+}
+.sb-artist-info { flex:1; min-width:0; }
+.sb-artist-name { font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sb-artist-url  { font-size:10px; color:var(--t3); }
+
+.sb-nav { flex:1; padding:16px 12px; display:flex; flex-direction:column; gap:2px; }
+.sb-item {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 12px; border-radius:10px; font-size:13px; font-weight:500;
+  color:var(--t2); cursor:pointer; transition:all .14s; text-decoration:none;
+  border:none; background:none; font-family:var(--font); text-align:left; width:100%;
+}
+.sb-item:hover { background:var(--card); color:var(--text); }
+.sb-item.on { background:rgba(var(--acc-rgb),.12); color:var(--acc); }
+.sb-item svg { flex-shrink:0; opacity:.7; }
+.sb-item.on svg { opacity:1; }
+.sb-divider { height:1px; background:var(--border); margin:8px 0; }
+.sb-section { font-size:9.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--t3); padding:6px 12px 4px; }
+
+.sb-footer { padding:16px; border-top:1px solid var(--border); }
+.sb-view-btn {
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  width:100%; padding:10px; border-radius:10px; font-size:12px; font-weight:600;
+  background:rgba(var(--acc-rgb),.12); color:var(--acc);
+  border:1px solid rgba(var(--acc-rgb),.25); cursor:pointer;
+  font-family:var(--font); transition:all .16s; text-decoration:none;
+}
+.sb-view-btn:hover { background:rgba(var(--acc-rgb),.2); }
+
+/* ── MAIN AREA ── */
+.main {
+  margin-left:var(--sidebar); flex:1;
+  display:flex; flex-direction:column; min-height:100vh;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  height:var(--topbar); display:flex; align-items:center; justify-content:space-between;
+  padding:0 28px; border-bottom:1px solid var(--border);
+  background:var(--bg); position:sticky; top:0; z-index:50;
+}
+.topbar-title { font-size:16px; font-weight:600; color:var(--text); }
+.topbar-actions { display:flex; align-items:center; gap:10px; }
+.tb-btn {
+  padding:7px 16px; border-radius:100px; font-size:12px; font-weight:600;
+  cursor:pointer; font-family:var(--font); transition:all .16s;
+}
+.tb-btn-ghost { background:none; border:1.5px solid var(--border); color:var(--t2); }
+.tb-btn-ghost:hover { border-color:var(--bm); color:var(--text); }
+.tb-btn-acc { background:var(--acc); border:none; color:#121a24; box-shadow:0 3px 12px rgba(var(--acc-rgb),.3); }
+.tb-btn-acc:hover { transform:translateY(-1px); box-shadow:0 5px 18px rgba(var(--acc-rgb),.4); }
+
+/* ── PAGE CONTENT ── */
+.page { padding:28px; display:none; }
+.page.active { display:block; }
+
+/* ── STAT CARDS ── */
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:28px; }
+.stat-card {
+  padding:18px 20px; border-radius:14px;
+  background:var(--card); border:1px solid var(--border);
+}
+.stat-label { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--t3); margin-bottom:8px; }
+.stat-value { font-size:28px; font-weight:700; font-family:var(--font-d); letter-spacing:.02em; color:var(--text); }
+.stat-delta { font-size:11px; color:var(--t3); margin-top:4px; }
+.stat-delta.up { color:#7ec88a; }
+.stat-delta.dn { color:#e05242; }
+
+/* ── SECTION GRID ── */
+.section-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.section-grid.wide { grid-template-columns:2fr 1fr; }
+.dash-card {
+  border-radius:16px; background:var(--card); border:1px solid var(--border);
+  overflow:hidden;
+}
+.dc-head {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 18px 14px; border-bottom:1px solid var(--border);
+}
+.dc-title { font-size:13px; font-weight:600; color:var(--text); }
+.dc-action {
+  font-size:11px; font-weight:500; color:var(--acc);
+  cursor:pointer; background:none; border:none; font-family:var(--font);
+  padding:4px 10px; border-radius:100px;
+  background:rgba(var(--acc-rgb),.1); transition:background .14s;
+}
+.dc-action:hover { background:rgba(var(--acc-rgb),.2); }
+.dc-body { padding:16px 18px; }
+
+/* ── PROFILE EDIT ── */
+.field-row { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
+.field-label { font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--t3); }
+.field-input {
+  width:100%; padding:10px 13px; border-radius:10px;
+  background:rgba(255,255,255,.05); border:1.5px solid var(--border);
+  color:var(--text); font-size:13px; font-family:var(--font);
+  transition:border-color .16s; outline:none;
+}
+.field-input:focus { border-color:var(--acc); }
+.field-textarea { resize:vertical; min-height:72px; line-height:1.5; }
+
+/* ── ACCENT SWATCHES ── */
+.swatch-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.swatch {
+  width:28px; height:28px; border-radius:50%; cursor:pointer;
+  border:2px solid transparent; transition:all .16s; flex-shrink:0;
+}
+.swatch.on { border-color:#fff; transform:scale(1.15); }
+
+/* ── CTA MODE CARDS ── */
+.mode-cards { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.mode-card {
+  padding:12px; border-radius:12px; border:1.5px solid var(--border);
+  cursor:pointer; transition:all .16s; background:rgba(255,255,255,.03);
+}
+.mode-card:hover { border-color:var(--bm); }
+.mode-card.on { border-color:var(--acc); background:rgba(var(--acc-rgb),.07); }
+.mc-label { font-size:12px; font-weight:600; color:var(--text); margin-bottom:2px; }
+.mc-hint { font-size:10px; color:var(--t3); }
+.mode-card.on .mc-hint { color:rgba(var(--acc-rgb),.6); }
+/* gig mode special */
+.mode-card.gig-mode { border-color:rgba(244,100,66,.4); background:rgba(244,100,66,.06); }
+.mode-card.gig-mode .mc-label { color:#f46442; }
+.mode-card.gig-mode.on { border-color:#f46442; background:rgba(244,100,66,.12); }
+
+/* ── CONNECT CARDS ── */
+.connect-list { display:flex; flex-direction:column; gap:8px; }
+.connect-item {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 14px; border-radius:12px;
+  background:rgba(255,255,255,.04); border:1px solid var(--border);
+}
+.ci-logo { width:32px; height:32px; border-radius:8px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; }
+.ci-body { flex:1; min-width:0; }
+.ci-name { font-size:13px; font-weight:600; color:var(--text); }
+.ci-status { font-size:10px; color:var(--t3); }
+.ci-btn {
+  padding:6px 14px; border-radius:100px; font-size:11px; font-weight:600;
+  cursor:pointer; font-family:var(--font); transition:all .16s;
+}
+.ci-btn-connect { background:rgba(var(--acc-rgb),.12); color:var(--acc); border:1px solid rgba(var(--acc-rgb),.25); }
+.ci-btn-connect:hover { background:rgba(var(--acc-rgb),.22); }
+.ci-btn-connected { background:rgba(120,200,138,.1); color:#7ec88a; border:1px solid rgba(120,200,138,.25); cursor:default; }
+
+/* ── SNAP CARDS EDITOR ── */
+.snap-list { display:flex; flex-direction:column; gap:8px; }
+.snap-item {
+  display:flex; align-items:center; gap:12px;
+  padding:11px 14px; border-radius:12px;
+  background:rgba(255,255,255,.04); border:1px solid var(--border);
+  cursor:grab;
+}
+.snap-handle { color:var(--t3); cursor:grab; }
+.snap-body { flex:1; min-width:0; }
+.snap-eyebrow { font-size:9.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--acc); }
+.snap-label { font-size:12px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.snap-actions { display:flex; gap:6px; }
+.snap-btn {
+  padding:5px 10px; border-radius:8px; font-size:11px; font-weight:500;
+  border:1px solid var(--border); background:none; color:var(--t2);
+  cursor:pointer; font-family:var(--font); transition:all .14s;
+}
+.snap-btn:hover { border-color:var(--bm); color:var(--text); }
+.snap-btn.del:hover { border-color:rgba(224,82,66,.5); color:#e05242; }
+.snap-add-btn {
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  width:100%; padding:10px; border-radius:12px; font-size:12px; font-weight:500;
+  border:1.5px dashed var(--border); color:var(--t3); background:none;
+  cursor:pointer; font-family:var(--font); transition:all .16s;
+}
+.snap-add-btn:hover { border-color:var(--bm); color:var(--t2); }
+
+/* ── ADMIN CONTENT MANAGEMENT ── */
+.admin-add-btn {
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  width:100%; max-width:560px; padding:11px; border-radius:12px;
+  font-size:12px; font-weight:600; letter-spacing:.04em;
+  border:1.5px dashed var(--border); color:var(--acc); background:rgba(var(--acc-rgb),.06);
+  cursor:pointer; font-family:var(--font); transition:all .16s; margin-top:4px;
+}
+.admin-add-btn:hover { border-color:var(--acc); background:rgba(var(--acc-rgb),.12); }
+.admin-empty {
+  font-size:12px; color:var(--t3); padding:20px 0 8px;
+  text-align:center;
+}
+.admin-release-card .dc-body { display:flex; flex-direction:column; gap:4px; }
+.admin-track-row {
+  display:flex; align-items:center; gap:6px; padding:5px 0;
+  border-bottom:1px solid var(--border);
+}
+.admin-track-row:last-child { border-bottom:none; }
+.track-num {
+  font-size:10px; font-weight:700; color:var(--t3);
+  min-width:18px; text-align:right; flex-shrink:0;
+}
+
+/* ── ACTIVITY FEED ── */
+.activity-list { display:flex; flex-direction:column; gap:0; }
+.activity-item {
+  display:flex; align-items:center; gap:12px;
+  padding:10px 0; border-bottom:1px solid var(--border);
+}
+.activity-item:last-child { border-bottom:none; }
+.ai-dot { width:8px; height:8px; border-radius:50%; background:var(--acc); flex-shrink:0; opacity:.7; }
+.ai-dot.view { background:#7ec88a; }
+.ai-dot.click { background:var(--acc); }
+.ai-dot.share { background:#9b7cf4; }
+.ai-body { flex:1; font-size:12px; color:var(--t2); }
+.ai-body strong { color:var(--text); font-weight:600; }
+.ai-time { font-size:10px; color:var(--t3); }
+
+/* ── PAGE HEADER ── */
+.page-header { margin-bottom:24px; }
+.page-title { font-size:22px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.page-sub { font-size:13px; color:var(--t2); }
+
+/* ── THEME TOGGLE ── */
+.theme-row { display:flex; gap:8px; flex-wrap:wrap; }
+.theme-chip {
+  padding:7px 14px; border-radius:100px; font-size:12px; font-weight:500;
+  border:1.5px solid var(--border); color:var(--t2); background:none;
+  cursor:pointer; font-family:var(--font); transition:all .14s;
+}
+.theme-chip:hover { border-color:var(--bm); color:var(--text); }
+.theme-chip.on { border-color:var(--acc); background:rgba(var(--acc-rgb),.1); color:var(--acc); }
+
+/* ── CAMPAIGN HQ ── */
+.campaign-hq {
+  border-radius:16px; background:var(--card); border:1px solid var(--border);
+  overflow:hidden; margin-bottom:20px;
+}
+.chq-head {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 18px 12px; border-bottom:1px solid var(--border);
+}
+.chq-title { font-size:13px; font-weight:600; color:var(--text); }
+.chq-state-pill {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 12px; border-radius:100px; font-size:11px; font-weight:700;
+  letter-spacing:.02em; transition:all .2s;
+}
+.chq-state-pill.profile  { background:rgba(var(--acc-rgb),.12); color:var(--acc); border:1px solid rgba(var(--acc-rgb),.25); }
+.chq-state-pill.pre      { background:rgba(251,191,36,.12); color:#fbbf24; border:1px solid rgba(251,191,36,.25); }
+.chq-state-pill.live     { background:rgba(239,68,68,.12); color:#ef4444; border:1px solid rgba(239,68,68,.25); }
+.chq-state-pill.gig      { background:rgba(244,100,66,.12); color:#f46442; border:1px solid rgba(244,100,66,.25); }
+.chq-state-pill.pre::before,
+.chq-state-pill.live::before {
+  content:''; width:6px; height:6px; border-radius:50%; flex-shrink:0;
+}
+.chq-state-pill.live::before { background:#ef4444; animation:livePulse2 1.2s ease-in-out infinite; }
+.chq-state-pill.pre::before  { background:#fbbf24; }
+@keyframes livePulse2 { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+.chq-body { padding:16px 18px; }
+.chq-release-row {
+  display:grid; grid-template-columns:1fr auto; gap:10px;
+  align-items:end; margin-bottom:14px;
+}
+.chq-release-title {
+  width:100%; padding:10px 13px; border-radius:10px;
+  background:rgba(255,255,255,.05); border:1.5px solid var(--border);
+  color:var(--text); font-size:13px; font-family:var(--font);
+  transition:border-color .16s; outline:none;
+}
+.chq-release-title:focus { border-color:var(--acc); }
+.chq-date-picker {
+  display:flex; gap:8px; margin-bottom:14px;
+}
+.chq-date-picker input {
+  flex:1; padding:10px 13px; border-radius:10px;
+  background:rgba(255,255,255,.05); border:1.5px solid var(--border);
+  color:var(--text); font-size:12px; font-family:var(--font);
+  transition:border-color .16s; outline:none;
+  color-scheme:dark;
+}
+.chq-date-picker input:focus { border-color:var(--acc); }
+.chq-auto-hint {
+  font-size:10px; color:var(--t3); line-height:1.5;
+  margin-bottom:14px; padding:8px 12px; border-radius:8px;
+  background:rgba(255,255,255,.03); border:1px solid var(--border);
+}
+.chq-auto-hint strong { color:var(--t2); }
+.chq-states { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+.chq-state-btn {
+  flex:1; min-width:80px; padding:9px 10px; border-radius:10px; text-align:center;
+  font-size:11px; font-weight:600; cursor:pointer; font-family:var(--font);
+  border:1.5px solid var(--border); background:none; color:var(--t3);
+  transition:all .16s;
+}
+.chq-state-btn:hover { border-color:var(--bm); color:var(--text); }
+.chq-state-btn.on { border-color:var(--acc); background:rgba(var(--acc-rgb),.1); color:var(--acc); }
+.chq-state-btn.auto { font-style:italic; }
+
+.chq-divider { height:1px; background:var(--border); margin:14px 0; }
+
+/* Gig mode toggle strip */
+.gig-strip {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 14px; border-radius:12px;
+  background:rgba(244,100,66,.06); border:1.5px solid rgba(244,100,66,.25);
+  cursor:pointer; transition:all .2s;
+}
+.gig-strip:hover { background:rgba(244,100,66,.1); }
+.gig-strip.active { background:rgba(244,100,66,.14); border-color:#f46442; }
+.gig-dot { width:10px; height:10px; border-radius:50%; background:rgba(244,100,66,.4); flex-shrink:0; transition:background .2s; }
+.gig-strip.active .gig-dot { background:#f46442; animation:livePulse2 1.2s ease-in-out infinite; }
+.gig-info { flex:1; }
+.gig-label { font-size:12px; font-weight:700; color:#f46442; }
+.gig-hint { font-size:10px; color:var(--t3); margin-top:1px; }
+.gig-toggle {
+  width:40px; height:22px; border-radius:100px; border:none; cursor:pointer;
+  background:rgba(244,100,66,.2); position:relative; flex-shrink:0;
+  transition:background .2s;
+}
+.gig-toggle::after {
+  content:''; position:absolute; top:3px; left:3px;
+  width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,.4);
+  transition:transform .2s cubic-bezier(0.34,1.56,0.64,1), background .2s;
+}
+.gig-strip.active .gig-toggle { background:#f46442; }
+.gig-strip.active .gig-toggle::after { transform:translateX(18px); background:#fff; }
+
+/* ── GOLD LOCK (Pro upgrade teaser) ── */
+.gold-lock {
+  position:relative; border-radius:16px; overflow:hidden;
+}
+.gold-lock-overlay {
+  position:absolute; inset:0; z-index:10;
+  background:linear-gradient(180deg, transparent 0%, rgba(9,9,15,.7) 30%, rgba(9,9,15,.96) 60%, var(--bg) 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+  padding:24px 20px 20px;
+  pointer-events:auto;
+}
+.gold-lock-overlay .glo-badge {
+  display:flex; align-items:center; gap:6px;
+  padding:5px 14px; border-radius:100px; font-size:11px; font-weight:700;
+  background:linear-gradient(135deg,#f4b942,#e05242); color:#fff;
+  margin-bottom:10px;
+  box-shadow:0 4px 16px rgba(244,185,66,.3);
+}
+.gold-lock-overlay .glo-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:4px; text-align:center; }
+.gold-lock-overlay .glo-sub { font-size:12px; color:var(--t2); text-align:center; margin-bottom:14px; }
+.gold-lock-overlay .glo-btn {
+  padding:10px 24px; border-radius:100px; font-size:13px; font-weight:700;
+  background:linear-gradient(135deg,#f4b942,#f97316); color:#fff; border:none;
+  cursor:pointer; font-family:var(--font);
+  box-shadow:0 4px 18px rgba(244,185,66,.35);
+  transition:transform .15s cubic-bezier(0.34,1.56,0.64,1), box-shadow .15s;
+}
+.gold-lock-overlay .glo-btn:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(244,185,66,.5); }
+.gold-lock .gold-blur { filter:blur(3px); pointer-events:none; user-select:none; }
+
+/* Tier badge in topbar */
+.tier-badge {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:4px 11px; border-radius:100px; font-size:11px; font-weight:700;
+  background:rgba(244,185,66,.12); color:#f4b942;
+  border:1px solid rgba(244,185,66,.25);
+  cursor:pointer; transition:all .16s;
+}
+.tier-badge:hover { background:rgba(244,185,66,.2); }
+
+/* Upgrade nudge bar */
+.upgrade-bar {
+  margin:0 28px 20px; padding:12px 16px; border-radius:12px;
+  background:linear-gradient(135deg, rgba(244,185,66,.1), rgba(244,100,66,.08));
+  border:1px solid rgba(244,185,66,.2);
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+.upgrade-bar-text { font-size:12px; color:var(--t2); }
+.upgrade-bar-text strong { color:var(--text); }
+.upgrade-bar-btn {
+  padding:6px 16px; border-radius:100px; font-size:11px; font-weight:700;
+  background:linear-gradient(135deg,#f4b942,#f97316); color:#fff; border:none;
+  cursor:pointer; font-family:var(--font); white-space:nowrap;
+  box-shadow:0 2px 10px rgba(244,185,66,.3); transition:all .14s;
+}
+.upgrade-bar-btn:hover { transform:translateY(-1px); }
+
+/* ── REAL-TIME STATS ── */
+.stat-live-dot {
+  width:6px; height:6px; border-radius:50%; background:#7ec88a;
+  display:inline-block; margin-right:4px;
+  animation:livePulse2 2s ease-in-out infinite;
+}
+
+/* ── MOBILE NAV ── */
+.mobile-nav {
+  display:none; position:fixed; bottom:0; left:0; right:0;
+  background:rgba(9,9,15,.95); backdrop-filter:blur(20px);
+  border-top:1px solid var(--border); padding:8px 4px 20px;
+  display:none; justify-content:space-around; z-index:200;
+}
+.mn-item {
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  font-size:9.5px; font-weight:600; color:var(--t3);
+  cursor:pointer; padding:4px 12px; border-radius:10px;
+  transition:color .14s; border:none; background:none; font-family:var(--font);
+}
+.mn-item.on { color:var(--acc); }
+
+/* ── RESPONSIVE ── */
+@media (max-width:960px) {
+  .stats-row { grid-template-columns:1fr 1fr; }
+  .section-grid, .section-grid.wide { grid-template-columns:1fr; }
+}
+@media (max-width:700px) {
+  .sidebar { display:none; }
+  .main { margin-left:0; }
+  .mobile-nav { display:flex; }
+  .main { padding-bottom:80px; }
+  .page { padding:20px 16px; }
+  .stats-row { grid-template-columns:1fr 1fr; gap:10px; }
+  .mode-cards { grid-template-columns:1fr; }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sb-logo">ABLE<span>.</span></div>
+
+  <div class="sb-artist">
+    <div class="sb-av" id="sbAv">N</div>
+    <div class="sb-artist-info">
+      <div class="sb-artist-name" id="sbName">Your Artist Name</div>
+      <div class="sb-artist-url" id="sbUrl">able.fm/artist</div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-section">Overview</div>
+    <button class="sb-item on" onclick="showPage('home')">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M8 1L2 6.5h1.5v7H6v-4h4v4h2.5v-7H14z"/></svg>
+      Home
+    </button>
+    <button class="sb-item" onclick="showPage('analytics')">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M1 13h2v-5H1zM5 13h2V7H5zM9 13h2V4H9zM13 13h2V1h-2z"/></svg>
+      Analytics
+    </button>
+
+    <div class="sb-divider"></div>
+    <div class="sb-section">Content</div>
+
+    <button class="sb-item" onclick="showPage('profile')">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><circle cx="8" cy="5" r="3.5"/><path d="M1 14c0-3.9 3.1-7 7-7s7 3.1 7 7z"/></svg>
+      Profile
+    </button>
+    <button class="sb-item" onclick="showPage('music')">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M10 1.5v9.5C9.3 10.7 8.7 10.5 8 10.5c-1.4 0-2.5.7-2.5 1.5S6.6 13.5 8 13.5s2.5-.7 2.5-1.5V4.8l5-1.1V1.5H10z"/></svg>
+      Music
+    </button>
+    <button class="sb-item" onclick="showPage('events')">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><rect x="1" y="3" width="14" height="12" rx="2"/><rect x="4.5" y="1" width="2" height="4" rx="1"/><rect x="9.5" y="1" width="2" height="4" rx="1"/><rect x="1" y="7" width="14" height="1.5" fill-opacity=".3"/></svg>
+      Events
+    </button>
+    <button class="sb-item" onclick="showPage('merch')">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M12.5 5H11c0-1.7-1.3-3-3-3S5 3.3 5 5H3.5C2.7 5 2 5.7 2 6.5v7C2 14.3 2.7 15 3.5 15h9c.8 0 1.5-.7 1.5-1.5v-7C14 5.7 13.3 5 12.5 5zm-7 0c0-1.1.9-2 2-2s2 .9 2 2z"/></svg>
+      Merch
+    </button>
+    <button class="sb-item" onclick="showPage('support')">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm.9 10.6H7.1V9.4h1.8v2.2zm0-3.5H7.1V4.4h1.8v3.7z"/></svg>
+      Support
+    </button>
+    <button class="sb-item" onclick="showPage('snaps')">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><rect x="1" y="4" width="6" height="11" rx="1.5"/><rect x="9" y="1" width="6" height="14" rx="1.5"/></svg>
+      Snap Cards
+    </button>
+
+    <button class="sb-item" onclick="showPage('fans')">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M5.5 8C3.6 8 2 6.4 2 4.5S3.6 1 5.5 1 9 2.6 9 4.5 7.4 8 5.5 8zm0 1C2.5 9 0 11 0 14h11c0-3-2.5-5-5.5-5zM13 8v-2M12 7h2"/><circle cx="13" cy="4.5" r="2"/></svg>
+      Fans
+    </button>
+
+    <div class="sb-divider"></div>
+    <div class="sb-section">Settings</div>
+
+    <button class="sb-item" onclick="showPage('connect')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" width="15" height="15"><path d="M10 5.5a3.5 3.5 0 010 5M13 3a7 7 0 010 10M6 5.5a3.5 3.5 0 000 5M3 3a7 7 0 000 10"/></svg>
+      Connections
+    </button>
+    <button class="sb-item" onclick="showPage('settings')">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 10.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7z"/></svg>
+      Settings
+    </button>
+  </nav>
+
+  <div class="sb-footer">
+    <a class="sb-view-btn" href="able-v3.html" target="_blank">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M1 7a6 6 0 1012 0A6 6 0 001 7z"/><path d="M7 4v3l2 2"/></svg>
+      View live page
+    </a>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-title" id="topbarTitle">Overview</div>
+    <div class="topbar-actions">
+      <span class="tier-badge" onclick="showPage('settings')" title="Upgrade plan">✦ Free</span>
+      <button class="tb-btn tb-btn-ghost" onclick="window.open('able-v3.html','_blank')">View page</button>
+    </div>
+  </div>
+
+  <!-- ── HOME PAGE ── -->
+  <div class="page active" id="page-home">
+    <div class="page-header">
+      <div class="page-title" id="homeGreeting">Good to see you.</div>
+      <div class="page-sub">Here's how your page is performing.</div>
+    </div>
+
+    <!-- Upgrade nudge — shown for free tier -->
+    <div class="upgrade-bar" id="upgradeBar">
+      <div class="upgrade-bar-text"><strong>You're on the free plan.</strong> Unlock fan broadcasts, analytics, and the full CRM.</div>
+      <button class="upgrade-bar-btn" onclick="showPage('settings')">Upgrade to Pro →</button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Page views</div>
+        <div class="stat-value" id="statViews">—</div>
+        <div class="stat-delta" id="statViewsDelta"> </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Link clicks</div>
+        <div class="stat-value" id="statClicks">—</div>
+        <div class="stat-delta" id="statClickRate"> </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Fans joined</div>
+        <div class="stat-value" id="statFans">—</div>
+        <div class="stat-delta up" id="statFansDelta"> </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Your CTR vs avg</div>
+        <div class="stat-value" id="statCtr">—</div>
+        <div class="stat-delta">industry avg 4.2%</div>
+      </div>
+    </div>
+
+    <!-- Campaign HQ -->
+    <div class="campaign-hq" id="campaignHQ">
+      <div class="chq-head">
+        <div class="chq-title">Campaign HQ</div>
+        <span class="chq-state-pill profile" id="chqStatePill">Profile</span>
+      </div>
+      <div class="chq-body">
+        <div class="chq-release-row">
+          <input class="chq-release-title" id="chqReleaseTitle" type="text" placeholder="Release title — e.g. 'Dissolve' (Single)">
+        </div>
+        <div class="chq-date-picker">
+          <input type="datetime-local" id="chqReleaseDate" title="Release date &amp; time">
+        </div>
+        <div class="chq-auto-hint" id="chqAutoHint">
+          Set a release date and ABLE automatically switches your page:<br>
+          <strong>Before the date</strong> → Pre-release (pre-save CTA) &nbsp;·&nbsp;
+          <strong>On the date</strong> → Live (stream CTA) &nbsp;·&nbsp;
+          <strong>14 days later</strong> → Profile
+        </div>
+
+        <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;">Override page state</div>
+        <div class="chq-states">
+          <button class="chq-state-btn auto on" data-state="">Auto</button>
+          <button class="chq-state-btn" data-state="pre-release">Pre-release</button>
+          <button class="chq-state-btn" data-state="live">Live</button>
+          <button class="chq-state-btn" data-state="profile">Profile</button>
+        </div>
+
+        <div class="chq-divider"></div>
+
+        <!-- Gig mode -->
+        <div class="gig-strip" id="gigStrip" onclick="toggleGigHQ()">
+          <div class="gig-dot"></div>
+          <div class="gig-info">
+            <div class="gig-label">Gig tonight</div>
+            <div class="gig-hint" id="gigHint">Flip this on show day — puts tickets front and centre. Auto-expires in 24 hrs.</div>
+          </div>
+          <button class="gig-toggle" id="gigToggle" aria-label="Toggle gig mode"></button>
+        </div>
+
+        <div style="margin-top:14px;">
+          <button class="tb-btn tb-btn-acc" style="width:100%;" onclick="saveCampaignHQ()">Apply to live page →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-grid">
+
+      <!-- Recent activity — now driven by real click data -->
+      <div class="dash-card">
+        <div class="dc-head">
+          <div class="dc-title"><span class="stat-live-dot"></span>Live activity</div>
+        </div>
+        <div class="dc-body">
+          <div class="activity-list" id="activityFeed">
+            <!-- populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="dash-card">
+        <div class="dc-head"><div class="dc-title">Quick actions</div></div>
+        <div class="dc-body" style="display:flex;flex-direction:column;gap:8px;">
+          <button class="tb-btn tb-btn-ghost" style="text-align:left;width:100%;justify-content:flex-start;" onclick="showPage('profile')">
+            ✏ Edit profile &amp; look
+          </button>
+          <button class="tb-btn tb-btn-ghost" style="text-align:left;width:100%;justify-content:flex-start;" onclick="showPage('snaps')">
+            🃏 Manage snap cards
+          </button>
+          <button class="tb-btn tb-btn-ghost" style="text-align:left;width:100%;justify-content:flex-start;" onclick="showPage('fans')">
+            👥 View fans
+          </button>
+          <a class="tb-btn tb-btn-ghost" href="able-v3.html" target="_blank" style="text-align:left;width:100%;justify-content:flex-start;display:flex;">
+            ↗ View live page
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── PROFILE PAGE ── -->
+  <div class="page" id="page-profile">
+    <div class="page-header">
+      <div class="page-title">Profile</div>
+      <div class="page-sub">What fans see on your page.</div>
+    </div>
+    <div class="section-grid">
+      <div class="dash-card">
+        <div class="dc-head"><div class="dc-title">Basic info</div></div>
+        <div class="dc-body">
+          <div class="field-row">
+            <div class="field-label">Artist name</div>
+            <input class="field-input" type="text" id="adminName" placeholder="Your artist name">
+          </div>
+          <div class="field-row">
+            <div class="field-label">Genre / style</div>
+            <input class="field-input" type="text" id="adminGenre" placeholder="e.g. Electronic · London">
+          </div>
+          <div class="field-row">
+            <div class="field-label">Bio</div>
+            <textarea class="field-input field-textarea" id="adminBio" placeholder="One line about you…"></textarea>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="dash-card" style="margin-bottom:16px;">
+          <div class="dc-head"><div class="dc-title">Streaming links</div></div>
+          <div class="dc-body">
+            <div class="field-row">
+              <div class="field-label">Spotify</div>
+              <input class="field-input" type="url" id="plSpotify" placeholder="open.spotify.com/artist/…" oninput="savePlatformLinks()">
+            </div>
+            <div class="field-row">
+              <div class="field-label">Apple Music</div>
+              <input class="field-input" type="url" id="plApple" placeholder="music.apple.com/…" oninput="savePlatformLinks()">
+            </div>
+            <div class="field-row">
+              <div class="field-label">SoundCloud</div>
+              <input class="field-input" type="url" id="plSoundcloud" placeholder="soundcloud.com/…" oninput="savePlatformLinks()">
+            </div>
+            <div class="field-row" style="margin-bottom:0;">
+              <div class="field-label">YouTube</div>
+              <input class="field-input" type="url" id="plYoutube" placeholder="youtube.com/@…" oninput="savePlatformLinks()">
+            </div>
+          </div>
+        </div>
+        <div class="dash-card" style="margin-bottom:16px;">
+          <div class="dc-head"><div class="dc-title">Accent colour</div></div>
+          <div class="dc-body">
+            <div class="swatch-row" id="adminSwatches"></div>
+            <div class="field-row">
+              <div class="field-label">Custom</div>
+              <input class="field-input" type="color" id="adminAccent" value="#f4b942" style="height:36px;padding:4px 6px;">
+            </div>
+          </div>
+        </div>
+        <div class="dash-card">
+          <div class="dc-head"><div class="dc-title">Theme</div></div>
+          <div class="dc-body">
+            <div class="theme-row">
+              <button class="theme-chip on">Dark</button>
+              <button class="theme-chip">Light</button>
+              <button class="theme-chip">Mid</button>
+              <button class="theme-chip">Glass</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MUSIC PAGE ── -->
+  <div class="page" id="page-music">
+    <div class="page-header">
+      <div class="page-title">Music</div>
+      <div class="page-sub">Releases shown on your page. Fans see tracklists, embeds, or both.</div>
+    </div>
+    <div id="adminMusicList"></div>
+    <button class="admin-add-btn" onclick="addRelease()">
+      <svg viewBox="0 0 12 12" fill="currentColor" width="14" height="14"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Add release
+    </button>
+  </div>
+
+  <!-- ── EVENTS PAGE ── -->
+  <div class="page" id="page-events">
+    <div class="page-header">
+      <div class="page-title">Shows</div>
+      <div class="page-sub">Your upcoming and past gigs. Ticket links open directly for fans.</div>
+    </div>
+    <div id="adminEventsList"></div>
+    <button class="admin-add-btn" onclick="addEvent()">
+      <svg viewBox="0 0 12 12" fill="currentColor" width="14" height="14"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Add show
+    </button>
+  </div>
+
+  <!-- ── SNAP CARDS PAGE ── -->
+  <div class="page" id="page-snaps">
+    <div class="page-header">
+      <div class="page-title">Snap Cards</div>
+      <div class="page-sub">Contextual moments shown on your page. Drag to reorder.</div>
+    </div>
+    <div class="dash-card" style="max-width:600px;">
+      <div class="dc-head">
+        <div class="dc-title">Active cards</div>
+        <button class="dc-action">+ New card</button>
+      </div>
+      <div class="dc-body">
+        <div class="snap-list" id="snapList">
+          <div class="snap-item">
+            <div class="snap-handle"><svg viewBox="0 0 10 14" fill="currentColor" width="10" height="14" opacity=".4"><circle cx="3" cy="3" r="1.2"/><circle cx="7" cy="3" r="1.2"/><circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="3" cy="11" r="1.2"/><circle cx="7" cy="11" r="1.2"/></svg></div>
+            <div class="snap-body">
+              <div class="snap-eyebrow">New Release</div>
+              <div class="snap-label">My debut album is out now on all platforms.</div>
+            </div>
+            <div class="snap-actions">
+              <button class="snap-btn">Edit</button>
+              <button class="snap-btn del">×</button>
+            </div>
+          </div>
+          <div class="snap-item">
+            <div class="snap-handle"><svg viewBox="0 0 10 14" fill="currentColor" width="10" height="14" opacity=".4"><circle cx="3" cy="3" r="1.2"/><circle cx="7" cy="3" r="1.2"/><circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="3" cy="11" r="1.2"/><circle cx="7" cy="11" r="1.2"/></svg></div>
+            <div class="snap-body">
+              <div class="snap-eyebrow">Live This Week</div>
+              <div class="snap-label">Catching me at Fabric, London — March 28.</div>
+            </div>
+            <div class="snap-actions">
+              <button class="snap-btn">Edit</button>
+              <button class="snap-btn del">×</button>
+            </div>
+          </div>
+          <div class="snap-item">
+            <div class="snap-handle"><svg viewBox="0 0 10 14" fill="currentColor" width="10" height="14" opacity=".4"><circle cx="3" cy="3" r="1.2"/><circle cx="7" cy="3" r="1.2"/><circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="3" cy="11" r="1.2"/><circle cx="7" cy="11" r="1.2"/></svg></div>
+            <div class="snap-body">
+              <div class="snap-eyebrow">Limited Drop</div>
+              <div class="snap-label">New merch just landed. Limited run.</div>
+            </div>
+            <div class="snap-actions">
+              <button class="snap-btn">Edit</button>
+              <button class="snap-btn del">×</button>
+            </div>
+          </div>
+        </div>
+        <button class="snap-add-btn" style="margin-top:10px;">
+          <svg viewBox="0 0 12 12" fill="currentColor" width="12" height="12"><path d="M6 1v10M1 6h10"/></svg>
+          Add snap card
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONNECTIONS PAGE ── -->
+  <div class="page" id="page-connect">
+    <div class="page-header">
+      <div class="page-title">Connections</div>
+      <div class="page-sub">Import and sync your content from other platforms.</div>
+    </div>
+    <div class="dash-card" style="max-width:560px;">
+      <div class="dc-head"><div class="dc-title">Platforms</div></div>
+      <div class="dc-body">
+        <div class="connect-list">
+          <div class="connect-item">
+            <div class="ci-logo" style="background:#1DB954;color:#000;">S</div>
+            <div class="ci-body">
+              <div class="ci-name">Spotify</div>
+              <div class="ci-status">Import tracks, albums, playlists · 30s preview for non-subscribers</div>
+            </div>
+            <button class="ci-btn ci-btn-connect">Connect</button>
+          </div>
+          <div class="connect-item">
+            <div class="ci-logo" style="background:#FF0000;color:#fff;">▶</div>
+            <div class="ci-body">
+              <div class="ci-name">YouTube</div>
+              <div class="ci-status">Import videos, playlists · Full embed, no restrictions</div>
+            </div>
+            <button class="ci-btn ci-btn-connect">Connect</button>
+          </div>
+          <div class="connect-item">
+            <div class="ci-logo" style="background:#FF6600;color:#fff;">BC</div>
+            <div class="ci-body">
+              <div class="ci-name">Bandcamp</div>
+              <div class="ci-status">Full player embed · Artist controls pricing</div>
+            </div>
+            <button class="ci-btn ci-btn-connect">Connect</button>
+          </div>
+          <div class="connect-item">
+            <div class="ci-logo" style="background:#ff5500;color:#fff;">SC</div>
+            <div class="ci-body">
+              <div class="ci-name">SoundCloud</div>
+              <div class="ci-status">Full waveform embed · No restrictions</div>
+            </div>
+            <button class="ci-btn ci-btn-connect">Connect</button>
+          </div>
+          <div class="connect-item">
+            <div class="ci-logo" style="background:#1a1a1a;color:#fff;font-size:10px;">BST</div>
+            <div class="ci-body">
+              <div class="ci-name">Bandsintown</div>
+              <div class="ci-status">Auto-sync tour dates · Show calendar widget</div>
+            </div>
+            <button class="ci-btn ci-btn-connect">Connect</button>
+          </div>
+          <div class="connect-item">
+            <div class="ci-logo" style="background:#010101;color:#fff;font-size:10px;">TK</div>
+            <div class="ci-body">
+              <div class="ci-name">TikTok</div>
+              <div class="ci-status">Video embeds · Business account needed for import</div>
+            </div>
+            <button class="ci-btn ci-btn-connect">Connect</button>
+          </div>
+          <div class="connect-item">
+            <div class="ci-logo" style="background:#E4405F;color:#fff;">IG</div>
+            <div class="ci-body">
+              <div class="ci-name">Instagram</div>
+              <div class="ci-status" style="color:#e05242;">No embed API available · Link-out only</div>
+            </div>
+            <button class="ci-btn" style="background:rgba(255,255,255,.06);color:var(--t3);border:1px solid var(--border);cursor:default;">Limited</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MERCH PAGE ── -->
+  <div class="page" id="page-merch">
+    <div class="page-header">
+      <div class="page-title">Merch</div>
+      <div class="page-sub">Add your store URL and featured items. Works with Bandcamp, Shopify, or any link.</div>
+    </div>
+    <div class="dash-card" style="max-width:560px;margin-bottom:16px;">
+      <div class="dc-head"><div class="dc-title">Store URL</div></div>
+      <div class="dc-body">
+        <div class="field-row">
+          <div class="field-label">Your merch store link</div>
+          <input class="field-input" type="url" id="merchShopUrl" placeholder="bandcamp.com/… or yourshop.com" oninput="saveMerchShopUrl()">
+        </div>
+        <p style="font-size:11px;color:var(--t3);margin-top:-4px;line-height:1.5;">Paste any store URL. Fans see a "Visit store →" link on your merch tab.</p>
+      </div>
+    </div>
+    <div id="adminMerchList"></div>
+    <button class="admin-add-btn" onclick="addMerchItem()">
+      <svg viewBox="0 0 12 12" fill="currentColor" width="14" height="14"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Add item
+    </button>
+  </div>
+
+  <!-- ── SUPPORT PAGE ── -->
+  <div class="page" id="page-support">
+    <div class="page-header">
+      <div class="page-title">Support</div>
+      <div class="page-sub">Let fans support you directly. Subscriptions, tips, or one-off packs — no middleman.</div>
+    </div>
+    <div class="dash-card" style="max-width:560px;margin-bottom:16px;">
+      <div class="dc-head">
+        <div class="dc-title">Support enabled</div>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" id="supportEnabled" onchange="toggleSupportEnabled(this.checked)" style="width:16px;height:16px;accent-color:var(--acc);">
+          <span style="font-size:12px;color:var(--t2);">Show support tab on your page</span>
+        </label>
+      </div>
+      <div class="dc-body">
+        <p style="font-size:11px;color:var(--t3);line-height:1.5;">Support packs appear as the last tab on your profile. Fans can buy directly — your link, your platform, your money.</p>
+      </div>
+    </div>
+    <div id="adminSupportList"></div>
+    <button class="admin-add-btn" onclick="addSupportPack()">
+      <svg viewBox="0 0 12 12" fill="currentColor" width="14" height="14"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Add support pack
+    </button>
+  </div>
+
+  <!-- ── ANALYTICS PAGE ── -->
+  <div class="page" id="page-analytics">
+    <div class="page-header">
+      <div class="page-title">Analytics</div>
+      <div class="page-sub">How fans are finding and using your page.</div>
+    </div>
+    <!-- Basic stats (free) -->
+    <div class="stats-row" style="margin-bottom:20px;">
+      <div class="stat-card"><div class="stat-label">Page views</div><div class="stat-value" id="aStatViews">—</div><div class="stat-delta up" id="aStatViewsD"> </div></div>
+      <div class="stat-card"><div class="stat-label">Link clicks</div><div class="stat-value" id="aStatClicks">—</div><div class="stat-delta" id="aStatCtr"> </div></div>
+      <div class="stat-card"><div class="stat-label">Fans joined</div><div class="stat-value" id="aStatFans">—</div><div class="stat-delta up" id="aStatFansD"> </div></div>
+      <div class="stat-card"><div class="stat-label">Click rate</div><div class="stat-value" id="aStatRate">—</div><div class="stat-delta">vs 4.2% industry avg</div></div>
+    </div>
+    <!-- Free: top CTAs clicked -->
+    <div class="dash-card" style="margin-bottom:20px;">
+      <div class="dc-head"><div class="dc-title">Top actions taken</div><span style="font-size:10px;color:var(--t3);">Last 7 days</span></div>
+      <div class="dc-body">
+        <div id="topClicksList" style="display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:12px;color:var(--t3);">No clicks recorded yet — share your page to start seeing data.</div>
+        </div>
+      </div>
+    </div>
+    <!-- Pro: source heatmap locked -->
+    <div class="gold-lock">
+      <div class="dash-card gold-blur">
+        <div class="dc-head"><div class="dc-title">Traffic sources &amp; heatmap</div></div>
+        <div class="dc-body">
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="font-size:12px;color:var(--t2);width:100px;">Instagram</div>
+              <div style="flex:1;height:8px;border-radius:100px;background:var(--border);overflow:hidden;"><div style="height:100%;width:42%;background:var(--acc);border-radius:100px;"></div></div>
+              <div style="font-size:12px;color:var(--text);width:36px;text-align:right;">42%</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="font-size:12px;color:var(--t2);width:100px;">TikTok</div>
+              <div style="flex:1;height:8px;border-radius:100px;background:var(--border);overflow:hidden;"><div style="height:100%;width:28%;background:var(--acc);border-radius:100px;opacity:.7;"></div></div>
+              <div style="font-size:12px;color:var(--text);width:36px;text-align:right;">28%</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="font-size:12px;color:var(--t2);width:100px;">Direct</div>
+              <div style="flex:1;height:8px;border-radius:100px;background:var(--border);overflow:hidden;"><div style="height:100%;width:18%;background:var(--acc);border-radius:100px;opacity:.5;"></div></div>
+              <div style="font-size:12px;color:var(--text);width:36px;text-align:right;">18%</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="font-size:12px;color:var(--t2);width:100px;">YouTube</div>
+              <div style="flex:1;height:8px;border-radius:100px;background:var(--border);overflow:hidden;"><div style="height:100%;width:12%;background:var(--acc);border-radius:100px;opacity:.4;"></div></div>
+              <div style="font-size:12px;color:var(--text);width:36px;text-align:right;">12%</div>
+            </div>
+            <div style="height:80px;border-radius:10px;background:rgba(255,255,255,.04);margin-top:4px;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:10px;color:var(--t3);">Fan location heatmap</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gold-lock-overlay">
+        <div class="glo-badge">
+          <svg viewBox="0 0 12 12" fill="currentColor" width="11" height="11"><path d="M9.5 5H9V3.5a3 3 0 00-6 0V5h-.5A1.5 1.5 0 001 6.5v4A1.5 1.5 0 002.5 12h7A1.5 1.5 0 0011 10.5v-4A1.5 1.5 0 009.5 5zm-5-1.5a1.5 1.5 0 013 0V5h-3V3.5z"/></svg>
+          Artist Pro
+        </div>
+        <div class="glo-title">Traffic sources &amp; fan heatmap</div>
+        <div class="glo-sub">See exactly where your fans are coming from. Target your next campaign.</div>
+        <button class="glo-btn">Upgrade to Artist Pro — £19/mo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FANS / CRM PAGE ── -->
+  <div class="page" id="page-fans">
+    <div class="page-header">
+      <div class="page-title">Fans</div>
+      <div class="page-sub">The people who showed up. Your list, your relationship — no algorithm in the way.</div>
+    </div>
+
+    <div class="stats-row" style="margin-bottom:20px;">
+      <div class="stat-card"><div class="stat-label">Total fans</div><div class="stat-value">94</div><div class="stat-delta up">↑ 23 this week</div></div>
+      <div class="stat-card"><div class="stat-label">Superfans</div><div class="stat-value">12</div><div class="stat-delta">12.8% of list</div></div>
+      <div class="stat-card"><div class="stat-label">Avg open rate</div><div class="stat-value">47%</div><div class="stat-delta up">vs 22% industry</div></div>
+      <div class="stat-card"><div class="stat-label">Top source</div><div class="stat-value" style="font-size:18px;">Instagram</div><div class="stat-delta">41 fans</div></div>
+    </div>
+
+    <div class="section-grid wide" style="margin-bottom:20px;">
+      <div class="dash-card">
+        <div class="dc-head">
+          <div class="dc-title">Fan list</div>
+          <div style="display:flex;gap:8px;">
+            <button class="dc-action" onclick="exportFans()">Export CSV</button>
+            <button class="dc-action" onclick="showPage('broadcast')">Send email</button>
+          </div>
+        </div>
+        <div class="dc-body" style="padding:0;">
+          <div style="display:flex;gap:8px;padding:12px 18px;border-bottom:1px solid var(--border);">
+            <input style="flex:1;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);font-size:12px;font-family:var(--font);outline:none;" placeholder="Search fans…" oninput="filterFans(this.value)">
+            <select style="padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--t2);font-size:12px;font-family:var(--font);outline:none;" onchange="filterFanLevel(this.value)">
+              <option value="">All fans</option>
+              <option value="superfan">Superfans</option>
+              <option value="supporter">Supporters</option>
+              <option value="fan">Fans</option>
+              <option value="listener">Listeners</option>
+            </select>
+          </div>
+          <table style="width:100%;border-collapse:collapse;" id="fanTable">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border);">
+                <th style="padding:10px 18px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);">Fan</th>
+                <th style="padding:10px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);">Level</th>
+                <th style="padding:10px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);">Source</th>
+                <th style="padding:10px 18px;text-align:right;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);">Joined</th>
+              </tr>
+            </thead>
+            <tbody id="fanTableBody">
+              <!-- populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div class="dash-card" style="margin-bottom:16px;">
+          <div class="dc-head"><div class="dc-title">Superfan perks</div><button class="dc-action">Edit</button></div>
+          <div class="dc-body">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+                <div style="width:8px;height:8px;border-radius:50%;background:#7ec88a;flex-shrink:0;"></div>
+                <span style="color:var(--t2);">Early access to ticket sales</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+                <div style="width:8px;height:8px;border-radius:50%;background:#7ec88a;flex-shrink:0;"></div>
+                <span style="color:var(--t2);">Exclusive voice notes</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0;"></div>
+                <span style="color:var(--t3);">Private listening party — set up</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0;"></div>
+                <span style="color:var(--t3);">Name in credits — set up</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dash-card">
+          <div class="dc-head"><div class="dc-title">Support packs</div><button class="dc-action">+ New pack</button></div>
+          <div class="dc-body">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="padding:10px 12px;border-radius:10px;background:rgba(var(--acc-rgb),.07);border:1px solid rgba(var(--acc-rgb),.2);">
+                <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">Inner Circle — £5/mo</div>
+                <div style="font-size:10px;color:var(--t3);">Instrumentals · Voice notes · Early access</div>
+              </div>
+              <button class="snap-add-btn">
+                <svg viewBox="0 0 12 12" fill="currentColor" width="12" height="12"><path d="M6 1v10M1 6h10"/></svg>
+                Create a support pack
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BROADCAST PAGE ── -->
+  <div class="page" id="page-broadcast">
+    <div class="page-header">
+      <div class="page-title">Send to fans</div>
+      <div class="page-sub">Direct to inbox. No algorithm.</div>
+    </div>
+    <!-- Gold lock wrapper -->
+    <div class="gold-lock" style="max-width:860px;">
+      <div class="section-grid gold-blur">
+        <div class="dash-card">
+          <div class="dc-head"><div class="dc-title">Compose</div></div>
+          <div class="dc-body">
+            <div class="field-row">
+              <div class="field-label">Subject</div>
+              <input class="field-input" type="text" placeholder="Something worth opening…" disabled>
+            </div>
+            <div class="field-row">
+              <div class="field-label">Message</div>
+              <textarea class="field-input field-textarea" style="min-height:120px;" placeholder="Write like you're texting a close friend who happens to love your music…" disabled></textarea>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:4px;opacity:.4;">
+              <button class="tb-btn tb-btn-ghost" disabled>Preview</button>
+              <button class="tb-btn tb-btn-acc" disabled>Send to fans →</button>
+            </div>
+          </div>
+        </div>
+        <div class="dash-card">
+          <div class="dc-head"><div class="dc-title">Audience</div></div>
+          <div class="dc-body">
+            <div style="display:flex;flex-direction:column;gap:8px;opacity:.5;">
+              <div style="padding:10px 12px;border-radius:10px;border:1px solid var(--border);">
+                <div style="font-size:12px;font-weight:600;color:var(--text);">All fans</div>
+                <div style="font-size:10px;color:var(--t3);">Everyone who signed up</div>
+              </div>
+              <div style="padding:10px 12px;border-radius:10px;border:1px solid var(--border);">
+                <div style="font-size:12px;font-weight:600;color:var(--text);">Superfans only</div>
+                <div style="font-size:10px;color:var(--t3);">Most engaged fans</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Lock overlay -->
+      <div class="gold-lock-overlay">
+        <div class="glo-badge">
+          <svg viewBox="0 0 12 12" fill="currentColor" width="11" height="11"><path d="M9.5 5H9V3.5a3 3 0 00-6 0V5h-.5A1.5 1.5 0 001 6.5v4A1.5 1.5 0 002.5 12h7A1.5 1.5 0 0011 10.5v-4A1.5 1.5 0 009.5 5zm-5-1.5a1.5 1.5 0 013 0V5h-3V3.5z"/></svg>
+          Artist Pro
+        </div>
+        <div class="glo-title">Email broadcasts</div>
+        <div class="glo-sub">Send directly to your fans' inboxes. 47% avg open rate — 10× better than social reach.</div>
+        <button class="glo-btn">Upgrade to Artist Pro — £19/mo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SETTINGS PAGE ── -->
+  <div class="page" id="page-settings">
+    <div class="page-header">
+      <div class="page-title">Settings</div>
+      <div class="page-sub">Page URL, privacy, and account.</div>
+    </div>
+    <div class="dash-card" style="max-width:480px;">
+      <div class="dc-head"><div class="dc-title">Your ABLE URL</div></div>
+      <div class="dc-body">
+        <div class="field-row">
+          <div class="field-label">Slug</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="font-size:13px;color:var(--t3);">able.fm/</span>
+            <input class="field-input" type="text" placeholder="yourname" style="flex:1;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── MOBILE NAV ── -->
+<nav class="mobile-nav">
+  <button class="mn-item on" onclick="showPage('home')">
+    <svg viewBox="0 0 14 14" fill="currentColor" width="18" height="18"><path d="M7 1L1 6.5h1.5v6H5.5V9h3v3.5H11v-6H12.5z"/></svg>
+    Home
+  </button>
+  <button class="mn-item" onclick="showPage('profile')">
+    <svg viewBox="0 0 14 14" fill="currentColor" width="18" height="18"><circle cx="7" cy="4.5" r="3"/><path d="M1 13c0-3.3 2.7-6 6-6s6 2.7 6 6z"/></svg>
+    Profile
+  </button>
+  <button class="mn-item" onclick="showPage('snaps')">
+    <svg viewBox="0 0 14 14" fill="currentColor" width="18" height="18"><rect x="1" y="4" width="5" height="9" rx="1.5"/><rect x="8" y="1" width="5" height="12" rx="1.5"/></svg>
+    Snaps
+  </button>
+  <button class="mn-item" onclick="showPage('analytics')">
+    <svg viewBox="0 0 14 14" fill="currentColor" width="18" height="18"><path d="M1 12h2V8H1zM5 12h2V6H5zM9 12h2V4H9zM12 12h2V2h-2z"/></svg>
+    Stats
+  </button>
+</nav>
+
+<script>
+/* ── SUPABASE ── */
+const SB_URL = 'https://jgspraqrnjrerzhnnhtb.supabase.co';
+const SB_KEY = 'sb_publishable_pRmYph3-GYIeZEeKyY1_sg_5sOPkQp_';
+const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null;
+
+function getArtistId() {
+  let id = localStorage.getItem('able_artist_id');
+  if (!id) { id = crypto.randomUUID(); localStorage.setItem('able_artist_id', id); }
+  return id;
+}
+
+async function syncProfile(data) {
+  if (!sb) return;
+  try {
+    await sb.from('profiles').upsert({
+      id: getArtistId(), data,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'id' });
+  } catch(e) {}
+}
+
+async function syncFans(fans) {
+  if (!sb || !fans.length) return;
+  try {
+    const artist_id = getArtistId();
+    const rows = fans.map(f => ({ artist_id, email: f.email, source: f.source || 'direct', created_at: new Date(f.ts || Date.now()).toISOString() }));
+    await sb.from('fans').upsert(rows, { onConflict: 'artist_id,email', ignoreDuplicates: true });
+  } catch(e) {}
+}
+
+/* ── CONSTANTS ── */
+const V3_KEY      = 'able_v3_profile';
+const FANS_KEY    = 'able_fans';
+const CLICKS_KEY  = 'able_clicks';
+const VIEWS_KEY   = 'able_views';
+const GIG_KEY     = 'able_gig_expires';
+
+/* ── NAV ── */
+const PAGE_TITLES = {
+  home:'Overview', profile:'Profile', music:'Music',
+  events:'Events', merch:'Merch', support:'Support',
+  snaps:'Snap Cards', connect:'Connections', settings:'Settings',
+  analytics:'Analytics', fans:'Fans', broadcast:'Send to fans',
+};
+
+/* ── FAN TABLE ── */
+const DEMO_FANS = [
+  { email:'jamie@example.com',    level:'superfan',  source:'Instagram reel', ts: Date.now()-86400000*2  },
+  { email:'maya.k@gmail.com',     level:'supporter', source:'TikTok bio',     ts: Date.now()-86400000*5  },
+  { email:'tomw@outlook.com',     level:'fan',       source:'Direct',         ts: Date.now()-86400000*8  },
+  { email:'asha.r@hotmail.com',   level:'fan',       source:'Instagram reel', ts: Date.now()-86400000*12 },
+  { email:'carlos.m@gmail.com',   level:'listener',  source:'YouTube',        ts: Date.now()-86400000*18 },
+  { email:'priya.s@example.com',  level:'superfan',  source:'Instagram bio',  ts: Date.now()-86400000*22 },
+  { email:'dan.t@gmail.com',      level:'listener',  source:'Direct',         ts: Date.now()-86400000*30 },
+  { email:'lea.f@example.com',    level:'supporter', source:'TikTok bio',     ts: Date.now()-86400000*35 },
+];
+
+const LEVEL_STYLES = {
+  superfan:  { label:'Superfan',  bg:'rgba(var(--acc-rgb),.15)',  color:'var(--acc)' },
+  supporter: { label:'Supporter', bg:'rgba(126,200,138,.12)',     color:'#7ec88a' },
+  fan:       { label:'Fan',       bg:'rgba(255,255,255,.07)',      color:'var(--t2)' },
+  listener:  { label:'Listener',  bg:'rgba(255,255,255,.04)',      color:'var(--t3)' },
+};
+
+function renderFanTable(fans) {
+  const tbody = document.getElementById('fanTableBody');
+  if (!tbody) return;
+  // Merge demo + real
+  const real = JSON.parse(localStorage.getItem('able_fans') || '[]');
+  const all = [...fans, ...real.map(f => ({ email:f.email, level:'listener', source:f.source||'Direct', ts:f.ts }))];
+  tbody.innerHTML = all.map(f => {
+    const ls = LEVEL_STYLES[f.level] || LEVEL_STYLES.listener;
+    const date = new Date(f.ts).toLocaleDateString('en-GB', {day:'numeric',month:'short'});
+    return `<tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:10px 18px;font-size:12px;color:var(--text);">${f.email}</td>
+      <td style="padding:10px 8px;"><span style="padding:3px 10px;border-radius:100px;font-size:10px;font-weight:600;background:${ls.bg};color:${ls.color};">${ls.label}</span></td>
+      <td style="padding:10px 8px;font-size:11px;color:var(--t3);">${f.source}</td>
+      <td style="padding:10px 18px;font-size:11px;color:var(--t3);text-align:right;">${date}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterFans(q) {
+  const rows = document.querySelectorAll('#fanTableBody tr');
+  rows.forEach(r => {
+    r.style.display = r.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+  });
+}
+function filterFanLevel(level) {
+  const rows = document.querySelectorAll('#fanTableBody tr');
+  rows.forEach(r => {
+    r.style.display = (!level || r.textContent.toLowerCase().includes(level)) ? '' : 'none';
+  });
+}
+function exportFans() {
+  const real = JSON.parse(localStorage.getItem('able_fans') || '[]');
+  const all = [...DEMO_FANS, ...real.map(f => ({ email:f.email, level:'listener', source:f.source||'Direct', ts:f.ts }))];
+  const csv = 'Email,Level,Source,Joined\n' + all.map(f =>
+    `${f.email},${f.level},${f.source},${new Date(f.ts).toISOString().slice(0,10)}`
+  ).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'able-fans.csv';
+  a.click();
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.mn-item').forEach(b => b.classList.remove('on'));
+  const pg = document.getElementById('page-'+id);
+  if (pg) pg.classList.add('active');
+  document.querySelectorAll('[onclick="showPage(\''+id+'\')"]').forEach(b => b.classList.add('on'));
+  document.getElementById('topbarTitle').textContent = PAGE_TITLES[id] || id;
+  window.scrollTo(0,0);
+  // Render dynamic pages on navigate
+  if (id === 'music')   renderAdminMusic();
+  if (id === 'events')  renderAdminEvents();
+  if (id === 'merch')   renderAdminMerch();
+  if (id === 'support') renderAdminSupport();
+}
+
+/* mode cards handled by Campaign HQ */
+
+/* ── ACCENT SWATCHES ── */
+const ADMIN_PRESETS = ['#f4b942','#e05242','#e06b7a','#7ec88a','#9b7cf4','#06b6d4','#f97316','#ffffff'];
+const swWrap = document.getElementById('adminSwatches');
+if (swWrap) {
+  ADMIN_PRESETS.forEach(hex => {
+    const sw = document.createElement('div');
+    sw.className = 'swatch' + (hex === '#f4b942' ? ' on' : '');
+    sw.style.background = hex;
+    sw.onclick = () => {
+      swWrap.querySelectorAll('.swatch').forEach(s => s.classList.remove('on'));
+      sw.classList.add('on');
+      document.getElementById('adminAccent').value = hex;
+    };
+    swWrap.appendChild(sw);
+  });
+}
+
+/* ── THEME CHIPS ── */
+document.querySelectorAll('.theme-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    chip.closest('.theme-row').querySelectorAll('.theme-chip').forEach(c => c.classList.remove('on'));
+    chip.classList.add('on');
+  });
+});
+
+/* gig mode handled by Campaign HQ toggleGigHQ() */
+
+/* ── HELPERS ── */
+function safeLS(key, fallback) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
+}
+function setLS(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+}
+function relTime(ts) {
+  const diff = Date.now() - ts;
+  if (diff < 60000)  return 'just now';
+  if (diff < 3600000) return Math.floor(diff/60000) + 'm ago';
+  if (diff < 86400000) return Math.floor(diff/3600000) + 'h ago';
+  return Math.floor(diff/86400000) + 'd ago';
+}
+
+/* ── CAMPAIGN HQ ── */
+function initCampaignHQ() {
+  const data = safeLS(V3_KEY, {});
+  const titleEl = document.getElementById('chqReleaseTitle');
+  const dateEl  = document.getElementById('chqReleaseDate');
+  if (titleEl && data.release?.title) titleEl.value = data.release.title;
+  if (dateEl && data.releaseDate) {
+    const d = new Date(data.releaseDate);
+    const local = new Date(d - d.getTimezoneOffset()*60000).toISOString().slice(0,16);
+    dateEl.value = local;
+  }
+  const override = data.stateOverride || '';
+  document.querySelectorAll('.chq-state-btn').forEach(btn => {
+    btn.classList.toggle('on', btn.dataset.state === override);
+  });
+  updateChqPill(computeEffectiveState(data));
+
+  // Check gig mode
+  const gigExp = safeLS(GIG_KEY, 0);
+  if (gigExp && Date.now() < gigExp) {
+    setGigActive(true);
+  }
+}
+
+function computeEffectiveState(data) {
+  const gigExp = safeLS(GIG_KEY, 0);
+  if (gigExp && Date.now() < gigExp) return 'gig';
+  if (data.stateOverride) return data.stateOverride;
+  if (data.releaseDate) {
+    const now = new Date(), rel = new Date(data.releaseDate);
+    if (now < rel) return 'pre-release';
+    if ((now - rel)/86400000 < 14) return 'live';
+    return 'profile';
+  }
+  return data.pageState || 'live';
+}
+
+function updateChqPill(state) {
+  const pill = document.getElementById('chqStatePill');
+  if (!pill) return;
+  const MAP = {
+    'profile':     ['profile',  'Profile'],
+    'pre-release': ['pre',      'Pre-release'],
+    'live':        ['live',     '● Live'],
+    'gig':         ['gig',      '🔴 Gig tonight'],
+  };
+  const [cls, lbl] = MAP[state] || MAP['profile'];
+  pill.className = 'chq-state-pill ' + cls;
+  pill.textContent = lbl;
+}
+
+document.querySelectorAll('.chq-state-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.chq-state-btn').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    // Live preview of what state the pill shows
+    const data = safeLS(V3_KEY, {});
+    const override = btn.dataset.state;
+    const previewData = { ...data, stateOverride: override || null };
+    updateChqPill(computeEffectiveState(previewData));
+  });
+});
+
+function saveCampaignHQ() {
+  const data    = safeLS(V3_KEY, {});
+  const titleEl = document.getElementById('chqReleaseTitle');
+  const dateEl  = document.getElementById('chqReleaseDate');
+  const activeBtn = document.querySelector('.chq-state-btn.on');
+  const override  = activeBtn ? (activeBtn.dataset.state || null) : null;
+  const releaseDate = dateEl?.value ? new Date(dateEl.value).toISOString() : (data.releaseDate || null);
+  const releaseTitle = titleEl?.value.trim() || data.release?.title || 'New Release';
+
+  const updated = {
+    ...data,
+    stateOverride: override,
+    releaseDate,
+    release: { ...(data.release || {}), title: releaseTitle },
+  };
+  setLS(V3_KEY, updated);
+  syncProfile(updated); // async fire-and-forget to Supabase
+  updateChqPill(computeEffectiveState(updated));
+
+  // Visual save feedback
+  const btn = document.querySelector('[onclick="saveCampaignHQ()"]');
+  if (btn) { btn.textContent = '✓ Saved'; setTimeout(() => btn.textContent = 'Apply to live page →', 1800); }
+}
+
+/* ── GIG MODE ── */
+function toggleGigHQ() {
+  const strip = document.getElementById('gigStrip');
+  const isActive = strip.classList.contains('active');
+  setGigActive(!isActive);
+}
+function setGigActive(on) {
+  const strip = document.getElementById('gigStrip');
+  const hint  = document.getElementById('gigHint');
+  if (!strip) return;
+  strip.classList.toggle('active', on);
+  if (on) {
+    const exp = Date.now() + 86400000;
+    setLS(GIG_KEY, exp);
+    if (hint) hint.textContent = 'Active — expires in 24 hrs. Your tickets CTA is front and centre.';
+    updateChqPill('gig');
+  } else {
+    setLS(GIG_KEY, 0);
+    if (hint) hint.textContent = 'Flip this on show day — puts tickets front and centre. Auto-expires in 24 hrs.';
+    const data = safeLS(V3_KEY, {});
+    updateChqPill(computeEffectiveState(data));
+  }
+}
+
+/* ── MUSIC MANAGEMENT ── */
+function renderAdminMusic() {
+  const el = document.getElementById('adminMusicList');
+  if (!el) return;
+  const data = safeLS(V3_KEY, {});
+  const releases = data.releases || [];
+  if (!releases.length) {
+    el.innerHTML = `<div class="admin-empty">No releases yet — add your first one below.</div>`;
+    return;
+  }
+  el.innerHTML = releases.map((rel, i) => `
+    <div class="dash-card admin-release-card" style="max-width:560px;margin-bottom:12px;" data-rid="${rel.id}">
+      <div class="dc-head">
+        <div class="dc-title">${rel.title || 'Untitled'} <span style="font-weight:400;color:var(--t3);font-size:11px;">${rel.type||''} ${rel.year||''}</span></div>
+        <button class="snap-btn del" onclick="removeRelease('${rel.id}')" title="Remove">×</button>
+      </div>
+      <div class="dc-body">
+        <div class="field-row">
+          <div class="field-label">Release title</div>
+          <input class="field-input" value="${rel.title||''}" oninput="updateReleaseField('${rel.id}','title',this.value)" placeholder="Album / EP / Single title">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+          <div class="field-row" style="margin:0">
+            <div class="field-label">Type</div>
+            <select class="field-input" onchange="updateReleaseField('${rel.id}','type',this.value)">
+              ${['Single','EP','Album','Mixtape','Compilation'].map(t=>`<option${rel.type===t?' selected':''}>${t}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field-row" style="margin:0">
+            <div class="field-label">Year</div>
+            <input class="field-input" value="${rel.year||new Date().getFullYear()}" oninput="updateReleaseField('${rel.id}','year',this.value)" placeholder="2026">
+          </div>
+          <div class="field-row" style="margin:0">
+            <div class="field-label">Show as</div>
+            <select class="field-input" onchange="updateReleaseField('${rel.id}','displayMode',this.value)">
+              ${[['tracklist','Tracklist'],['embed','Embed'],['both','Both']].map(([v,l])=>`<option value="${v}"${rel.displayMode===v?' selected':''}>${l}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-label">Stream link (Spotify, YouTube, SoundCloud, Apple Music)</div>
+          <input class="field-input" type="url" value="${rel.platformUrl||''}" oninput="updateReleaseField('${rel.id}','platformUrl',this.value)" placeholder="open.spotify.com/album/… or youtu.be/…">
+        </div>
+        <div class="field-label" style="margin-bottom:6px;">Tracklist <span style="font-weight:400;color:var(--t3);">(${(rel.tracks||[]).length} tracks)</span></div>
+        <div id="tracks-${rel.id}">
+          ${(rel.tracks||[]).map((t,ti)=>`
+            <div class="admin-track-row" data-ti="${ti}">
+              <span class="track-num">${t.num}</span>
+              <input class="field-input" value="${t.title}" oninput="updateTrack('${rel.id}',${ti},'title',this.value)" placeholder="Track title" style="flex:1;">
+              <input class="field-input" value="${t.duration||''}" oninput="updateTrack('${rel.id}',${ti},'duration',this.value)" placeholder="3:42" style="width:56px;">
+              <button class="snap-btn del" onclick="removeTrack('${rel.id}',${ti})" title="Remove">×</button>
+            </div>`).join('')}
+        </div>
+        <button class="dc-action" style="margin-top:6px;" onclick="addTrack('${rel.id}')">+ Add track</button>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;">
+          <button class="ci-btn ci-btn-connect" onclick="saveAllMusic()">Save music</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function addRelease() {
+  const data = safeLS(V3_KEY, {});
+  const releases = data.releases || [];
+  releases.unshift({ id: 'r'+Date.now(), title: 'New Release', type: 'Single', year: String(new Date().getFullYear()), displayMode: 'tracklist', platformUrl: '', tracks: [], credits: [] });
+  setLS(V3_KEY, { ...data, releases });
+  syncProfile({ ...data, releases });
+  renderAdminMusic();
+}
+
+function removeRelease(rid) {
+  const data = safeLS(V3_KEY, {});
+  const releases = (data.releases||[]).filter(r => r.id !== rid);
+  setLS(V3_KEY, { ...data, releases });
+  syncProfile({ ...data, releases });
+  renderAdminMusic();
+}
+
+function updateReleaseField(rid, field, value) {
+  const data = safeLS(V3_KEY, {});
+  const releases = (data.releases||[]).map(r => r.id===rid ? {...r, [field]: value} : r);
+  setLS(V3_KEY, { ...data, releases });
+}
+
+function addTrack(rid) {
+  const data = safeLS(V3_KEY, {});
+  const releases = (data.releases||[]).map(r => {
+    if (r.id !== rid) return r;
+    const tracks = [...(r.tracks||[]), { num: (r.tracks||[]).length+1, title: '', duration: '' }];
+    return { ...r, tracks };
+  });
+  setLS(V3_KEY, { ...data, releases });
+  renderAdminMusic();
+}
+
+function removeTrack(rid, ti) {
+  const data = safeLS(V3_KEY, {});
+  const releases = (data.releases||[]).map(r => {
+    if (r.id !== rid) return r;
+    const tracks = (r.tracks||[]).filter((_,i) => i !== ti).map((t,i) => ({...t, num: i+1}));
+    return { ...r, tracks };
+  });
+  setLS(V3_KEY, { ...data, releases });
+  renderAdminMusic();
+}
+
+function updateTrack(rid, ti, field, value) {
+  const data = safeLS(V3_KEY, {});
+  const releases = (data.releases||[]).map(r => {
+    if (r.id !== rid) return r;
+    const tracks = (r.tracks||[]).map((t,i) => i===ti ? {...t, [field]: value} : t);
+    return { ...r, tracks };
+  });
+  setLS(V3_KEY, { ...data, releases });
+}
+
+function saveAllMusic() {
+  const data = safeLS(V3_KEY, {});
+  syncProfile(data);
+  const btn = event.target;
+  btn.textContent = '✓ Saved'; btn.style.background='#16a34a';
+  setTimeout(() => { btn.textContent = 'Save music'; btn.style.background=''; }, 2000);
+}
+
+/* ── EVENTS MANAGEMENT ── */
+function renderAdminEvents() {
+  const el = document.getElementById('adminEventsList');
+  if (!el) return;
+  const data = safeLS(V3_KEY, {});
+  const events = (data.events||[]).slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
+  if (!events.length) {
+    el.innerHTML = `<div class="admin-empty">No shows yet — add your first one below.</div>`;
+    return;
+  }
+  const now = new Date(); now.setHours(0,0,0,0);
+  el.innerHTML = events.map(ev => {
+    const isPast = new Date(ev.date) < now;
+    return `<div class="dash-card" style="max-width:560px;margin-bottom:10px;${isPast?'opacity:0.65':''}">
+      <div class="dc-head">
+        <div class="dc-title">${ev.venue} <span style="font-weight:400;color:var(--t3);font-size:11px;">${ev.city} · ${ev.date}</span> ${isPast?'<span style="font-size:10px;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;margin-left:4px;color:var(--t3)">Past</span>':''}</div>
+        <button class="snap-btn del" onclick="removeEvent('${ev.id}')" title="Remove">×</button>
+      </div>
+      <div class="dc-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div class="field-row" style="margin:0"><div class="field-label">Venue</div><input class="field-input" value="${ev.venue||''}" oninput="updateEventField('${ev.id}','venue',this.value)" placeholder="Fabric, London"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">City</div><input class="field-input" value="${ev.city||''}" oninput="updateEventField('${ev.id}','city',this.value)" placeholder="London, UK"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+          <div class="field-row" style="margin:0"><div class="field-label">Date</div><input class="field-input" type="date" value="${ev.date||''}" oninput="updateEventField('${ev.id}','date',this.value)"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Doors / time</div><input class="field-input" value="${ev.time||''}" oninput="updateEventField('${ev.id}','time',this.value)" placeholder="Doors 10pm"></div>
+        </div>
+        <div class="field-row" style="margin-top:8px;">
+          <div class="field-label">Ticket URL (Dice, Eventbrite, RA, Ticketmaster…)</div>
+          <input class="field-input" type="url" value="${ev.ticketUrl||''}" oninput="updateEventField('${ev.id}','ticketUrl',this.value)" placeholder="dice.fm/event/…">
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2);cursor:pointer;">
+            <input type="checkbox" ${ev.soldOut?'checked':''} onchange="updateEventField('${ev.id}','soldOut',this.checked)"> Sold out
+          </label>
+          <button class="ci-btn ci-btn-connect" style="margin-left:auto;" onclick="saveAllEvents()">Save shows</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addEvent() {
+  const data = safeLS(V3_KEY, {});
+  const events = data.events || [];
+  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
+  events.unshift({ id: 'ev'+Date.now(), venue: '', city: '', date: tomorrow.toISOString().split('T')[0], time: '', ticketUrl: '', soldOut: false });
+  setLS(V3_KEY, { ...data, events });
+  syncProfile({ ...data, events });
+  renderAdminEvents();
+}
+
+function removeEvent(id) {
+  const data = safeLS(V3_KEY, {});
+  const events = (data.events||[]).filter(e => e.id !== id);
+  setLS(V3_KEY, { ...data, events });
+  syncProfile({ ...data, events });
+  renderAdminEvents();
+}
+
+function updateEventField(id, field, value) {
+  const data = safeLS(V3_KEY, {});
+  const events = (data.events||[]).map(e => e.id===id ? {...e, [field]: value} : e);
+  setLS(V3_KEY, { ...data, events });
+}
+
+function saveAllEvents() {
+  const data = safeLS(V3_KEY, {});
+  syncProfile(data);
+  const btn = event.target;
+  btn.textContent = '✓ Saved'; btn.style.background='#16a34a';
+  setTimeout(() => { btn.textContent = 'Save shows'; btn.style.background=''; }, 2000);
+}
+
+/* ── MERCH MANAGEMENT ── */
+function renderAdminMerch() {
+  const el = document.getElementById('adminMerchList');
+  if (!el) return;
+  const data = safeLS(V3_KEY, {});
+  const merch = data.merch || {};
+  const items = merch.items || [];
+
+  // Populate shop URL field
+  const shopInput = document.getElementById('merchShopUrl');
+  if (shopInput) shopInput.value = merch.shopUrl || '';
+
+  if (!items.length) {
+    el.innerHTML = `<div class="admin-empty">No items yet — add your first one below.</div>`;
+    return;
+  }
+  el.innerHTML = items.map((item, i) => `
+    <div class="dash-card" style="max-width:560px;margin-bottom:10px;">
+      <div class="dc-head">
+        <div class="dc-title">${item.title||'Item'} <span style="color:var(--t3);font-weight:400;">${item.price||''}</span></div>
+        <button class="snap-btn del" onclick="removeMerchItem('${item.id}')" title="Remove">×</button>
+      </div>
+      <div class="dc-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div class="field-row" style="margin:0"><div class="field-label">Item name</div><input class="field-input" value="${item.title||''}" oninput="updateMerchField('${item.id}','title',this.value)" placeholder="Tour Hoodie 2026"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Price</div><input class="field-input" value="${item.price||''}" oninput="updateMerchField('${item.id}','price',this.value)" placeholder="£25"></div>
+        </div>
+        <div class="field-row" style="margin-top:8px;">
+          <div class="field-label">Product URL (direct link to item)</div>
+          <input class="field-input" type="url" value="${item.url||''}" oninput="updateMerchField('${item.id}','url',this.value)" placeholder="bandcamp.com/merch/…">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;">
+          <div class="field-row" style="margin:0"><div class="field-label">Image URL</div><input class="field-input" type="url" value="${item.imageUrl||''}" oninput="updateMerchField('${item.id}','imageUrl',this.value)" placeholder="https://…"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Emoji (fallback)</div><input class="field-input" value="${item.emoji||'🎵'}" oninput="updateMerchField('${item.id}','emoji',this.value)" maxlength="4" style="width:60px;"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Badge</div><select class="field-input" onchange="updateMerchField('${item.id}','badge',this.value)"><option value="">None</option><option${item.badge==='New'?' selected':''}>New</option><option${item.badge==='Limited'?' selected':''}>Limited</option></select></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:10px;padding-top:8px;border-top:1px solid var(--border);">
+          <button class="ci-btn ci-btn-connect" onclick="saveAllMerch()">Save merch</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function saveMerchShopUrl() {
+  const url = document.getElementById('merchShopUrl')?.value || '';
+  const data = safeLS(V3_KEY, {});
+  const merch = { ...(data.merch||{}), shopUrl: url };
+  setLS(V3_KEY, { ...data, merch });
+}
+
+function addMerchItem() {
+  const data = safeLS(V3_KEY, {});
+  const merch = data.merch || {};
+  const items = [...(merch.items||[]), { id: 'm'+Date.now(), title: '', price: '', url: '', imageUrl: '', emoji: '🎵', badge: '' }];
+  setLS(V3_KEY, { ...data, merch: { ...merch, items } });
+  syncProfile({ ...data, merch: { ...merch, items } });
+  renderAdminMerch();
+}
+
+function removeMerchItem(id) {
+  const data = safeLS(V3_KEY, {});
+  const merch = data.merch || {};
+  const items = (merch.items||[]).filter(m => m.id !== id);
+  setLS(V3_KEY, { ...data, merch: { ...merch, items } });
+  syncProfile({ ...data, merch: { ...merch, items } });
+  renderAdminMerch();
+}
+
+function updateMerchField(id, field, value) {
+  const data = safeLS(V3_KEY, {});
+  const merch = data.merch || {};
+  const items = (merch.items||[]).map(m => m.id===id ? {...m, [field]: value} : m);
+  setLS(V3_KEY, { ...data, merch: { ...merch, items } });
+}
+
+function saveAllMerch() {
+  const url = document.getElementById('merchShopUrl')?.value || '';
+  const data = safeLS(V3_KEY, {});
+  const merch = { ...(data.merch||{}), shopUrl: url };
+  const updated = { ...data, merch };
+  setLS(V3_KEY, updated);
+  syncProfile(updated);
+  const btn = event.target;
+  btn.textContent = '✓ Saved'; btn.style.background='#16a34a';
+  setTimeout(() => { btn.textContent = 'Save merch'; btn.style.background=''; }, 2000);
+}
+
+/* ── SUPPORT MANAGEMENT ── */
+function renderAdminSupport() {
+  const el = document.getElementById('adminSupportList');
+  if (!el) return;
+  const data = safeLS(V3_KEY, {});
+  const support = data.support || {};
+  const packs = support.packs || [];
+
+  // Sync checkbox state
+  const cb = document.getElementById('supportEnabled');
+  if (cb) cb.checked = !!support.enabled;
+
+  if (!packs.length) {
+    el.innerHTML = `<div class="admin-empty">No packs yet — add your first one below.</div>`;
+    return;
+  }
+
+  el.innerHTML = packs.map((pack) => `
+    <div class="dash-card admin-release-card" style="max-width:560px;margin-bottom:12px;" data-pid="${pack.id}">
+      <div class="dc-head">
+        <div class="dc-title">${pack.emoji || '💝'} ${pack.label || 'Untitled pack'} <span style="font-weight:400;color:var(--t3);font-size:11px;">${pack.price ? '£'+pack.price : ''}</span></div>
+        <button class="snap-btn del" onclick="removeSupportPack('${pack.id}')" title="Remove">×</button>
+      </div>
+      <div class="dc-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div class="field-row" style="margin:0;">
+            <div class="field-label">Label</div>
+            <input class="field-input" value="${pack.label||''}" oninput="updateSupportField('${pack.id}','label',this.value)" placeholder="Buy me a coffee">
+          </div>
+          <div class="field-row" style="margin:0;">
+            <div class="field-label">Emoji</div>
+            <input class="field-input" value="${pack.emoji||'💝'}" oninput="updateSupportField('${pack.id}','emoji',this.value)" placeholder="💝" style="width:70px;">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-label">Description (what fans get / what it means)</div>
+          <input class="field-input" value="${pack.description||''}" oninput="updateSupportField('${pack.id}','description',this.value)" placeholder="Keep the lights on for another month">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+          <div class="field-row" style="margin:0;">
+            <div class="field-label">Price (£)</div>
+            <input class="field-input" type="number" min="1" value="${pack.price||''}" oninput="updateSupportField('${pack.id}','price',this.value)" placeholder="5">
+          </div>
+          <div class="field-row" style="margin:0;">
+            <div class="field-label">Type</div>
+            <select class="field-input" onchange="updateSupportField('${pack.id}','type',this.value)">
+              <option value="tip"${pack.type==='tip'?' selected':''}>One-off tip</option>
+              <option value="subscription"${pack.type==='subscription'?' selected':''}>Subscription</option>
+              <option value="pack"${pack.type==='pack'?' selected':''}>Pack / bundle</option>
+            </select>
+          </div>
+          <div class="field-row" style="margin:0;">
+            <div class="field-label">Quantity limit</div>
+            <input class="field-input" type="number" min="0" value="${pack.limit||''}" oninput="updateSupportField('${pack.id}','limit',this.value)" placeholder="Unlimited">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-label">Payment link (Ko-fi, Patreon, PayPal, Stripe, etc.)</div>
+          <input class="field-input" type="url" value="${pack.url||''}" oninput="updateSupportField('${pack.id}','url',this.value)" placeholder="ko-fi.com/yourname or pay.stripe.com/…">
+        </div>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;">
+          <button class="ci-btn ci-btn-connect" onclick="saveAllSupport()">Save support</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleSupportEnabled(enabled) {
+  const data = safeLS(V3_KEY, {});
+  const support = { ...(data.support||{}), enabled };
+  const updated = { ...data, support };
+  setLS(V3_KEY, updated);
+  syncProfile(updated);
+}
+
+function addSupportPack() {
+  const data = safeLS(V3_KEY, {});
+  const support = data.support || {};
+  const packs = [...(support.packs||[]), {
+    id: 'sp'+Date.now(), label: 'Buy me a coffee', emoji: '☕',
+    description: 'Keep the music coming.', price: '5', type: 'tip', url: '', limit: ''
+  }];
+  const updated = { ...data, support: { ...support, packs } };
+  setLS(V3_KEY, updated);
+  syncProfile(updated);
+  renderAdminSupport();
+}
+
+function removeSupportPack(id) {
+  const data = safeLS(V3_KEY, {});
+  const support = data.support || {};
+  const packs = (support.packs||[]).filter(p => p.id !== id);
+  const updated = { ...data, support: { ...support, packs } };
+  setLS(V3_KEY, updated);
+  syncProfile(updated);
+  renderAdminSupport();
+}
+
+function updateSupportField(id, field, value) {
+  const data = safeLS(V3_KEY, {});
+  const support = data.support || {};
+  const packs = (support.packs||[]).map(p => p.id===id ? {...p, [field]: value} : p);
+  setLS(V3_KEY, { ...data, support: { ...support, packs } });
+}
+
+function saveAllSupport() {
+  const data = safeLS(V3_KEY, {});
+  syncProfile(data);
+  const btn = event.target;
+  btn.textContent = '✓ Saved'; btn.style.background='#16a34a';
+  setTimeout(() => { btn.textContent = 'Save support'; btn.style.background=''; }, 2000);
+}
+
+/* ── REAL STATS FROM LOCALSTORAGE ── */
+function loadRealStats() {
+  const views  = safeLS(VIEWS_KEY,  []);
+  const clicks = safeLS(CLICKS_KEY, []);
+  const fans   = safeLS(FANS_KEY,   []);
+
+  const now = Date.now();
+  const week = 7*86400000;
+
+  const viewsTotal  = views.length;
+  const viewsWeek   = views.filter(v => now - v.ts < week).length;
+  const clicksTotal = clicks.length;
+  const clicksWeek  = clicks.filter(c => now - c.ts < week).length;
+  const fansTotal   = fans.length;
+  const fansWeek    = fans.filter(f => now - f.ts < week).length;
+  const ctr         = viewsTotal > 0 ? ((clicksTotal/viewsTotal)*100).toFixed(1)+'%' : '—';
+
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  const cls = (id, c) => { const el = document.getElementById(id); if (el) el.className = 'stat-delta' + (c?' '+c:''); };
+
+  // Home stats
+  set('statViews',      viewsTotal  || '—');
+  set('statViewsDelta', viewsWeek   ? '↑ ' + viewsWeek + ' this week' : 'No data yet');
+  set('statClicks',     clicksTotal || '—');
+  set('statClickRate',  ctr !== '—' ? ctr + ' click rate' : 'No clicks yet');
+  set('statFans',       fansTotal   || '—');
+  set('statFansDelta',  fansWeek    ? '↑ ' + fansWeek + ' this week' : 'No fans yet');
+  set('statCtr',        ctr);
+  if (clicksTotal && viewsTotal) {
+    const rate = (clicksTotal/viewsTotal)*100;
+    cls('statClickRate', rate > 4.2 ? 'up' : '');
+    cls('statCtr', rate > 4.2 ? 'up' : 'dn');
+  }
+
+  // Analytics page stats (mirrors home)
+  set('aStatViews',  viewsTotal  || '—');
+  set('aStatViewsD', viewsWeek   ? '↑ ' + viewsWeek + ' this week' : ' ');
+  set('aStatClicks', clicksTotal || '—');
+  set('aStatCtr',    ctr !== '—' ? ctr + ' CTR' : ' ');
+  set('aStatFans',   fansTotal   || '—');
+  set('aStatFansD',  fansWeek    ? '↑ ' + fansWeek + ' this week' : ' ');
+  set('aStatRate',   ctr);
+
+  // Fan stats
+  set('statFansTotal', fansTotal  || '0');
+
+  // Top clicks list
+  const topList = document.getElementById('topClicksList');
+  if (topList && clicksTotal > 0) {
+    const counts = {};
+    clicks.forEach(c => { counts[c.label] = (counts[c.label]||0)+1; });
+    const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0,5);
+    const maxCount = sorted[0]?.[1] || 1;
+    topList.innerHTML = sorted.map(([label, count]) => `
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="font-size:12px;color:var(--t2);min-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${label}</div>
+        <div style="flex:1;height:7px;border-radius:100px;background:var(--border);overflow:hidden;">
+          <div style="height:100%;width:${(count/maxCount*100).toFixed(0)}%;background:var(--acc);border-radius:100px;"></div>
+        </div>
+        <div style="font-size:12px;color:var(--text);width:30px;text-align:right;">${count}</div>
+      </div>`).join('');
+  }
+}
+
+/* ── LIVE ACTIVITY FEED ── */
+function loadActivityFeed() {
+  const feed = document.getElementById('activityFeed');
+  if (!feed) return;
+  const clicks = safeLS(CLICKS_KEY, []);
+  const views  = safeLS(VIEWS_KEY,  []);
+  const fans   = safeLS(FANS_KEY,   []);
+
+  const events = [
+    ...clicks.map(c => ({ type: 'click', label: c.label, source: c.source, ts: c.ts })),
+    ...views.slice(0,10).map(v => ({ type: 'view', source: v.source, ts: v.ts })),
+    ...fans.map(f => ({ type: 'fan', ts: f.ts, source: f.source })),
+  ].sort((a,b) => b.ts - a.ts).slice(0, 8);
+
+  if (!events.length) {
+    feed.innerHTML = '<div style="font-size:12px;color:var(--t3);padding:4px 0;">No activity yet. Share your page to start seeing data.</div>';
+    return;
+  }
+
+  feed.innerHTML = events.map(e => {
+    const dot   = e.type === 'view' ? 'view' : e.type === 'fan' ? 'share' : 'click';
+    const label = e.type === 'click'  ? `<strong>${e.label}</strong> tapped`
+                : e.type === 'fan'    ? `Fan from <strong>${e.source||'direct'}</strong>`
+                :                       `Visit from <strong>${e.source||'direct'}</strong>`;
+    return `<div class="activity-item">
+      <div class="ai-dot ${dot}"></div>
+      <div class="ai-body">${label}</div>
+      <div class="ai-time">${relTime(e.ts)}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ── FANS PAGE — real count update ── */
+function updateFanPageStats() {
+  const fans = safeLS(FANS_KEY, []);
+  const total = fans.length;
+  // Update count in broadcast button
+  const sendBtn = document.querySelector('.tb-btn-acc[onclick]');
+  const allFans = total + DEMO_FANS.length; // combined
+  document.querySelectorAll('.page').forEach(p => {
+    const btn = p.querySelector('button.tb-btn-acc');
+    if (btn && btn.textContent.includes('fans')) {
+      btn.textContent = `Send to ${allFans} fans →`;
+    }
+  });
+}
+
+/* ── LOAD STATE FROM LOCALSTORAGE ── */
+window.addEventListener('DOMContentLoaded', () => {
+  // Hydrate from v3 profile key (wizard or admin saves)
+  const v3data = safeLS(V3_KEY, {});
+  const wizData = safeLS('able_profile', {}); // wizard key fallback
+
+  const name   = v3data.name   || wizData.name   || 'Your Artist Name';
+  const accent = v3data.accent || wizData.accent  || null;
+  const bio    = v3data.bio    || wizData.bio     || '';
+  const genre  = v3data.genres?.[0] || wizData.genre || '';
+
+  document.getElementById('sbAv').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('sbName').textContent = name;
+  document.getElementById('sbUrl').textContent = `able.fm/${name.toLowerCase().replace(/[^a-z0-9]+/g,'-')}`;
+
+  if (document.getElementById('adminName')) document.getElementById('adminName').value = name;
+  if (document.getElementById('adminBio') && bio) document.getElementById('adminBio').value = bio;
+  if (document.getElementById('adminGenre') && genre) document.getElementById('adminGenre').value = genre;
+
+  // Greet by name
+  const greeting = document.getElementById('homeGreeting');
+  if (greeting && name !== 'Your Artist Name') greeting.textContent = `Good to see you, ${name.split(' ')[0]}.`;
+
+  if (accent) {
+    document.documentElement.style.setProperty('--acc', accent);
+    try {
+      const rgb = accent.match(/\w\w/g).slice(0,3).map(h=>parseInt(h,16)).join(',');
+      document.documentElement.style.setProperty('--acc-rgb', rgb);
+    } catch(e) {}
+    const accEl = document.getElementById('adminAccent');
+    if (accEl) accEl.value = accent;
+  }
+
+  renderFanTable(DEMO_FANS);
+  initCampaignHQ();
+  loadRealStats();
+  loadActivityFeed();
+  updateFanPageStats();
+  renderAdminMusic();
+  renderAdminEvents();
+  renderAdminMerch();
+  renderAdminSupport();
+  hydratePlatformFields(v3data);
+
+  // Refresh activity every 30s (catches clicks from profile in another tab)
+  setInterval(() => { loadRealStats(); loadActivityFeed(); }, 30000);
+
+  // Wire profile page Save button
+  wireProfileSave();
+});
+
+/* ── PROFILE PAGE SAVE ── */
+/* ── PLATFORM LINKS ── */
+function savePlatformLinks() {
+  const data = safeLS(V3_KEY, {});
+  const platforms = [
+    { label: 'Spotify',     type: 'spotify',    url: document.getElementById('plSpotify')?.value.trim()   || '' },
+    { label: 'Apple Music', type: 'apple',      url: document.getElementById('plApple')?.value.trim()     || '' },
+    { label: 'SoundCloud',  type: 'soundcloud', url: document.getElementById('plSoundcloud')?.value.trim()|| '' },
+    { label: 'YouTube',     type: 'youtube',    url: document.getElementById('plYoutube')?.value.trim()   || '' },
+  ];
+  setLS(V3_KEY, { ...data, platforms });
+}
+
+function hydratePlatformFields(data) {
+  const platforms = data.platforms || [];
+  const find = (type) => (platforms.find(p => p.type === type) || {}).url || '';
+  const setV = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+  setV('plSpotify',   find('spotify'));
+  setV('plApple',     find('apple'));
+  setV('plSoundcloud',find('soundcloud'));
+  setV('plYoutube',   find('youtube'));
+}
+
+function wireProfileSave() {
+  // Find the profile page Save button (topbar "Save changes" equivalent)
+  const profilePage = document.getElementById('page-profile');
+  if (!profilePage) return;
+
+  // Add save button to profile page if not already there
+  const existing = profilePage.querySelector('.profile-save-btn');
+  if (!existing) {
+    const saveRow = document.createElement('div');
+    saveRow.style.cssText = 'margin-top:16px;';
+    saveRow.innerHTML = `<button class="tb-btn tb-btn-acc profile-save-btn" onclick="saveProfilePage()" style="width:100%;max-width:300px;">Save profile changes →</button>`;
+    profilePage.appendChild(saveRow);
+  }
+}
+
+function saveProfilePage() {
+  const data = safeLS(V3_KEY, {});
+  const name  = document.getElementById('adminName')?.value.trim();
+  const bio   = document.getElementById('adminBio')?.value.trim();
+  const genre = document.getElementById('adminGenre')?.value.trim();
+  const accent = document.getElementById('adminAccent')?.value;
+
+  const platforms = [
+    { label: 'Spotify',     type: 'spotify',    url: document.getElementById('plSpotify')?.value.trim()    || '' },
+    { label: 'Apple Music', type: 'apple',      url: document.getElementById('plApple')?.value.trim()      || '' },
+    { label: 'SoundCloud',  type: 'soundcloud', url: document.getElementById('plSoundcloud')?.value.trim() || '' },
+    { label: 'YouTube',     type: 'youtube',    url: document.getElementById('plYoutube')?.value.trim()    || '' },
+  ];
+  const updated = {
+    ...data,
+    name:      name   || data.name,
+    bio:       bio    || data.bio,
+    accent:    accent || data.accent,
+    genres:    genre ? [genre] : data.genres,
+    location:  data.location,
+    platforms,
+  };
+  setLS(V3_KEY, updated);
+  syncProfile(updated);
+
+  // Update sidebar
+  if (updated.name) {
+    document.getElementById('sbAv').textContent = updated.name.charAt(0).toUpperCase();
+    document.getElementById('sbName').textContent = updated.name;
+    document.getElementById('sbUrl').textContent = `able.fm/${updated.name.toLowerCase().replace(/[^a-z0-9]+/g,'-')}`;
+    const greeting = document.getElementById('homeGreeting');
+    if (greeting) greeting.textContent = `Good to see you, ${updated.name.split(' ')[0]}.`;
+  }
+  if (updated.accent) {
+    document.documentElement.style.setProperty('--acc', updated.accent);
+    try {
+      const rgb = updated.accent.match(/\w\w/g).slice(0,3).map(h=>parseInt(h,16)).join(',');
+      document.documentElement.style.setProperty('--acc-rgb', rgb);
+    } catch(e) {}
+  }
+
+  const btn = document.querySelector('.profile-save-btn');
+  if (btn) { btn.textContent = '✓ Saved'; setTimeout(() => btn.textContent = 'Save profile changes →', 1800); }
+}
+</script>
+</body>
+</html>

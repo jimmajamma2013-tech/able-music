@@ -10,7 +10,7 @@
 
 **Design Spec:** `docs/superpowers/specs/2026-03-10-able-v3-design.md`
 
-**Reference file:** `able-v2.html` — v2 pattern library. Read it for JS patterns (localStorage, mode switching, applyMode). Do NOT copy its CSS — v3 has its own token system.
+**Reference file:** `able-merged.html` — canonical source. Read it for JS patterns (localStorage, mode switching, applyMode, safeRender, applyAppearanceToRoot). Do NOT copy its CSS — v3 has its own token system.
 
 ---
 
@@ -1626,7 +1626,7 @@ git commit -m "feat(v3): all 4 themes — dark, light, contrast, glass with toke
 **Files:**
 - Modify: `able-v3.html`
 
-The data model mirrors v2's `able_v2_profile`. Read it and populate the profile.
+The data model mirrors `able-merged.html`'s localStorage patterns. Read it for the key structure and `safeRender` pattern. v3 uses its own key `able_v3_profile`.
 
 - [ ] **Step 14.1: Add the data model and read/render logic**
 
@@ -1828,7 +1828,7 @@ git commit -m "feat(v3): v3 complete — iOS shell, artwork hero, 5 tabs, 4 them
 |---|---|---|
 | `able-v3.html` | Create | Entire v3 build — self-contained, no external deps except Google Fonts |
 | `docs/superpowers/specs/2026-03-10-able-v3-design.md` | Exists | Approved design spec — reference throughout |
-| `able-v2.html` | Read-only reference | JS patterns for localStorage, mode switching |
+| `able-merged.html` | Read-only reference | JS patterns for localStorage, mode switching, safeRender, applyAppearanceToRoot |
 
 ---
 
