@@ -143,6 +143,64 @@ HANDOFF.md       — current state notes
 - `able_v3_profile` — full profile from able-v3.html and admin.html — the authoritative key
 - In v5: `able_v3_profile` is the single source of truth. Wizard output must write to it, not `able_profile`. Do not rename — Supabase/D1 migration maps 1:1.
 
+**v3 implementation status (from code audit — what v5 must ADD vs what already works):**
+
+| Component | v3 status | v5 action |
+|---|---|---|
+| 4 themes (Dark/Light/Mid/Glass) | ✓ Complete | Preserve and extend |
+| 8 accent presets + dynamic CSS var updates | ✓ Complete | Preserve, add hex picker |
+| State system (profile/pre-release/live/gig) + auto-switch | ✓ Complete | Preserve exactly |
+| Top card (artwork/video/embed) | ✓ Complete | Extend with UTM source matching |
+| Music, Events, Merch, Support panels | ✓ Complete | Extend with Section 3 spec |
+| Fan email capture + localStorage | ✓ Complete | Add GDPR schema fields |
+| Snap cards (4 hardcoded) | ✓ Complete | Make dynamic (artist-editable) |
+| Click/view tracking | ✓ Complete | Extend click type taxonomy |
+| Gig mode 24hr expiry | ✓ Complete | Preserve exactly |
+| **7-vibe genre CSS overrides** | **✗ Not built** | **v5 Phase 3 — first new build** |
+| **Studio/freelancer mode** | **✗ Not built** | **v5 Phase 13** |
+| **fan.html (fan dashboard)** | **✗ Not built** | **v5 Phase 12** |
+| **Superfan scoring + tier UI** | **✗ Not built** | **v5 Phase 9+** |
+
+**Definitive `able_v3_profile` schema (from v3 code — V5 must match this exactly):**
+
+The v3 `V3_DEFAULTS` object is the data model. Do not invent new field names — use these:
+```javascript
+{
+  name, handle, location, genres: [],
+  bio, accent, theme, heroTag,
+  pageState,           // 'live' | 'pre-release' | 'profile' | 'gig'
+  stateOverride,       // null | explicit state
+  releaseDate,         // ISO string | null
+  release: { title, type, trackCount, year },
+  ctaPrimary: { label, url },
+  ctaSecondary: { label, url },
+  topCard: { type, videoUrl, embedUrl },
+  platforms: [{ label, url, type }],      // max 8
+  releases: [{ id, title, type, year, artworkUrl, displayMode, platformUrl,
+               tracks: [{ num, title, duration }],
+               credits: [{ name, role }] }],
+  events: [{ id, venue, city, date, time, ticketUrl, soldOut }],
+  merch: { shopUrl, provider, items: [{ id, title, price, imageUrl, url, emoji, badge }] },
+  support: { enabled, packs: [{ id, label, description, price, url, type, emoji }] }
+}
+```
+
+**`able_fans` schema — source values in v3 vs v5 (reconcile this):**
+- **v3 uses:** `source: 'direct'|'reel'|'story'|'post'|'bio'|'email'`
+- **v5 plan uses:** `?src=tiktok|ig|yt|email|qr` (UTM params)
+- **Resolution for v5:** Map UTM values to v3 source values on capture. `?src=tiktok` → `source: 'reel'` (or keep as `source: 'tiktok'` — but commit to one schema). Add new values without removing old ones. The Supabase migration must handle both.
+
+**`able_clicks` type taxonomy — preserve these exact type values in v5:**
+`'primary_cta' | 'secondary_cta' | 'pill' | 'snap_card' | 'platform' | 'merch_item'`
+— these are the click categories shown in admin analytics. Never change after v5 ships.
+
+**`able_clicks` and `able_views` limits (built into v3 — preserve in v5):**
+- `able_clicks`: max 200 entries (FIFO — oldest removed when at limit)
+- `able_views`: max 500 entries (same pattern)
+- When backend lands, flush to Supabase on page unload, then clear localStorage
+
+---
+
 **Do not proceed to Phase 1 until all files above are read.**
 
 ---
