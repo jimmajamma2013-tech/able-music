@@ -2265,6 +2265,57 @@ Admin panel → "Top card" section:
 
 ---
 
+### Implementation precision: rules from DESIGN_RESEARCH_2026.md with no wiggle room:
+
+**Never animate `box-shadow` directly.** Shadow animation on Android causes dropped frames. Instead, place shadow on a `::before` or `::after` pseudo-element and animate its `opacity`. Only animate `transform` and `opacity` at 60fps on mid-range Android.
+
+**`data-theme` attribute for theme switching — not class toggles.** Theme change = one DOM attribute change on `<body>`. All 4 theme tokens defined as CSS variable overrides on `[data-theme="dark"]`, `[data-theme="light"]` etc. Never scattered class toggling.
+
+**Fluid typography with `clamp()` — no breakpoint jumps:**
+```css
+artist name: font-size: clamp(2.5rem, 8vw, 5rem)
+section titles: clamp(1.25rem, 4vw, 2rem)
+body: clamp(0.875rem, 2vw, 1rem)
+```
+At 375px the name fills the hero. At 430px it's slightly larger. Never a sudden jump.
+
+**Bento grid (events/merch): `auto-fill` not hardcoded widths:**
+```css
+grid-template-columns: repeat(auto-fill, minmax(160px, 1fr))
+```
+At 375px: 2 columns. At 600px+: 3 columns. Never `width: calc(50% - 8px)`.
+
+**Staggered entrance animations — 60ms delay between items:**
+First platform pill / track card / event card = 0ms delay. Each subsequent = 60ms more. Max ~360ms for 6th item. Spring easing `(0.34,1.56,0.64,1)`, 300ms duration per item. Creates "bloom" — page arrives, not "blinks in all at once."
+
+**Fan capture form — exact HTML attributes for 45% better mobile conversion:**
+```html
+<input type="email" autocomplete="email" inputmode="email">
+```
+Single field, single button, full width. No confirm-email field. No name field unless artist explicitly requests it. Name field halves conversion.
+
+**Doherty Threshold (400ms):** CTA tap feedback must start within 100ms — scale to `0.97` immediately on `touchstart`, spring back on `touchend`. Never wait for async operations before showing feedback. Animate immediately, load in background.
+
+**Von Restorff Effect — gig mode must be unmissable.** In gig mode, one element on the profile must be so visually distinct from the normal layout that a fan arriving at 7pm understands the artist is playing tonight within 2 seconds, without reading text. A pulsing accent dot, full-bleed accent strip, or large "tonight" badge — not a subtle colour change.
+
+**Fan capture success state — never generic.** "Success" toast is wrong. The success state should show: "You're on [Artist Name]'s list." Uses recognition (fan sees their email echoed back or sees the artist's name), not recall. "You're in" is sufficient. Never: "Thank you for subscribing!"
+
+**Stats copy framing (admin.html and analytics):** Never raw numbers in isolation. Not "247 fan sign-ups." Instead: "247 people chose to give you their email — they're in your corner." Not "1,200 views." Instead: "1,200 people landed on your page from social this month." The number earns meaning through context.
+
+**Accent colour derivation from one token (Material Design 3 logic applied):** From `--color-accent`, derive all tonal variants at build time or via CSS:
+- CTA button background = `--color-accent`
+- Active tab indicator = `--color-accent`
+- Platform pill active border = `rgba(accent, 0.4)`
+- Section divider dot = `--color-accent`
+- Focus ring = `rgba(accent, 0.6)` outline
+Never hand-code these separately. All derive from the one `--color-accent` variable.
+
+**Touch target rules (non-negotiable):** Min 44px × 44px hit target. Adjacent targets: min 8px spacing. Primary hero CTA: min 56px height (not 44px — this is the primary action). Secondary CTAs: 48px. Verify with `outline: 1px solid red` in dev mode before shipping.
+
+**Progress indicator on wizard (Goal-Gradient Effect):** Show "Step 2 of 4" progress bar that fills visually. As artist approaches completion, completion button becomes more prominent (bolder border, slightly larger — not a different colour, just more weight). Motivation increases as goal approaches.
+
+---
+
 ### From top-minds-insights.md (160 entries, 400+ sources):
 
 **Kevin Kelly's 1,000 True Fans (updated to 100 True Fans):** In 2023 Kelly updated the thesis: 100 fans spending £1,000/year is sufficient. Fan depth beats fan breadth. Every product decision must serve the relationship between the artist and their 100–1,000 deepest fans. Feature velocity is irrelevant if it doesn't serve this relationship.
@@ -2348,6 +2399,16 @@ Admin panel → "Top card" section:
 *Playlist curators:* completed Spotify profile with artist pick, bio, upcoming events. Genre accuracy. Pre-release pitching 7+ days ahead. 40,000+ active curators on SubmitHub.
 
 *Implications for able-v5.html:* The page must serve these industry visitors without being designed for them. A professional enough bio, a complete release with streams/Spotify link, an up-to-date shows section — these already satisfy industry requirements if done well. No "Industry" toggle needed in v5. ABLE must just be professionally presented.
+
+---
+
+### From strategy research (the frames that explain why ABLE's architecture is the way it is):
+
+**Clayton Christensen — Jobs to Be Done.** The job artists hire ABLE for is not "have a link in bio." It is: "Convert the attention I'm getting on social into something I own — a fan relationship that doesn't depend on the algorithm staying kind." The workarounds that reveal this job: copying Linktree links from notes apps, tracking sign-ups in Instagram DMs, manually switching bio links on release day. Each workaround is ABLE's feature list written by artists themselves.
+
+**Ben Thompson — Aggregation Theory.** Spotify doesn't own music — it owns the listening moment. Instagram doesn't own artists — it owns the attention moment. Aggregators extract value from artists by sitting between them and their fans. ABLE is the artist's escape valve. Structurally analogous to Substack vs. Medium, Shopify vs. Amazon, Bandcamp vs. Spotify. The moat is the switching cost: 2,000 fan emails collected through ABLE is 2,000 direct relationships the artist would lose by leaving. That's the defensibility.
+
+**Li Jin — 100 True Fans (updated from Kelly's 1,000).** 100 fans paying £50/year is more achievable and more sustainable than 1,000 paying £5. The support pack system is the product answer. An artist with 100 fans on a £5/month support pack earns £500/month from their music without streaming, without a label, without a sync deal. The Support tab is not the last tab — for this segment of artist, it's the most important.
 
 ---
 
