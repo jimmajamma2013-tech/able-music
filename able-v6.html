@@ -10,8 +10,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- Eager: DM Sans (body, all vibes) + Barlow Condensed (Electronic, Pop — default shell) -->
+  <!-- Eager: DM Sans (body, all vibes) + Barlow Condensed (display) — Latin subset only -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Barlow+Condensed:wght@700&display=swap&subset=latin">
+
+  <!-- Meta -->
+  <meta name="description" content="Artist profile powered by ABLE">
+  <meta name="robots" content="index,follow">
 
   <style>
     /* ============================================================
@@ -95,8 +99,8 @@
       --color-card-raised: #1a1e38;
       --color-border:      rgba(255,255,255,0.10);
       --color-text:        #f0ede8;
-      --color-text-2:      rgba(240,237,232,0.6);
-      --color-text-3:      rgba(240,237,232,0.35);
+      --color-text-2:      rgba(240,237,232,0.65);
+      --color-text-3:      rgba(240,237,232,0.50); /* min 4.5:1 on dark bg */
       --color-overlay:     rgba(13,14,26,0.7);
       --shadow-card:       0 2px 16px rgba(0,0,0,0.4);
     }
@@ -108,8 +112,8 @@
       --color-card-raised: #f8f5f2;
       --color-border:      rgba(0,0,0,0.08);
       --color-text:        #0d0e1a;
-      --color-text-2:      rgba(13,14,26,0.6);
-      --color-text-3:      rgba(13,14,26,0.35);
+      --color-text-2:      rgba(13,14,26,0.65);
+      --color-text-3:      rgba(13,14,26,0.55); /* min 4.5:1 on light bg */
       --color-overlay:     rgba(240,237,232,0.7);
       --shadow-card:       0 2px 16px rgba(0,0,0,0.08);
     }
@@ -121,8 +125,8 @@
       --color-card-raised: rgba(255,255,255,0.12);
       --color-border:      rgba(255,255,255,0.12);
       --color-text:        #f0ede8;
-      --color-text-2:      rgba(240,237,232,0.7);
-      --color-text-3:      rgba(240,237,232,0.4);
+      --color-text-2:      rgba(240,237,232,0.75);
+      --color-text-3:      rgba(240,237,232,0.55); /* glass bg varies; safe floor */
       --backdrop:          blur(28px) saturate(180%);
     }
 
@@ -133,8 +137,8 @@
       --color-card-raised: #1a1a1a;
       --color-border:      rgba(255,255,255,0.2);
       --color-text:        #ffffff;
-      --color-text-2:      rgba(255,255,255,0.8);
-      --color-text-3:      rgba(255,255,255,0.5);
+      --color-text-2:      rgba(255,255,255,0.85);
+      --color-text-3:      rgba(255,255,255,0.65); /* min 4.5:1 on pure black */
       --shadow-card:       0 2px 16px rgba(0,0,0,0.8);
     }
 
@@ -866,7 +870,7 @@
       align-items: center;
       gap: var(--sp-2);
       padding: var(--sp-2) var(--sp-4);
-      height: 36px;
+      min-height: var(--tap-min);
       min-width: var(--tap-min);
       background-color: var(--color-card);
       border: 1px solid var(--color-border);
@@ -1767,7 +1771,8 @@
     <div id="status-bar" aria-hidden="true"></div>
 
     <!-- Main scroll area -->
-    <main id="scroll-container" tabindex="-1" aria-label="Artist profile">
+    <main id="scroll-container" tabindex="-1" aria-label="Artist profile"
+          role="tabpanel" aria-labelledby="tab-home">
 
       <!-- ======================================================
            HERO / TOP CARD
@@ -1837,7 +1842,7 @@
       <!-- ======================================================
            COUNTDOWN (pre-release state only)
            ====================================================== -->
-      <div class="countdown" id="countdown" aria-label="Time until release" role="timer" aria-live="off">
+      <div class="countdown" id="countdown" aria-label="Time until release" role="timer" aria-live="polite" aria-atomic="false">
         <div class="countdown__unit">
           <span class="countdown__num" id="cd-days">00</span>
           <span class="countdown__label">Days</span>
@@ -2037,7 +2042,7 @@
     <nav id="tab-bar" role="tablist" aria-label="Profile sections">
 
       <button class="tab-btn pressable" role="tab" aria-selected="true"
-              aria-controls="panel-home" data-tab="home" id="tab-home">
+              aria-controls="scroll-container" data-tab="home" id="tab-home">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
           <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -2048,7 +2053,7 @@
       </button>
 
       <button class="tab-btn pressable" role="tab" aria-selected="false"
-              aria-controls="panel-music" data-tab="music" id="tab-music">
+              aria-controls="listen-section" data-tab="music" id="tab-music">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
           <path d="M9 18V5l12-2v13"/>
@@ -2060,7 +2065,7 @@
       </button>
 
       <button class="tab-btn pressable" role="tab" aria-selected="false"
-              aria-controls="panel-shows" data-tab="shows" id="tab-shows">
+              aria-controls="shows-section" data-tab="shows" id="tab-shows">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -2073,7 +2078,7 @@
       </button>
 
       <button class="tab-btn pressable" role="tab" aria-selected="false"
-              aria-controls="panel-merch" data-tab="merch" id="tab-merch">
+              aria-controls="merch-section" data-tab="merch" id="tab-merch">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
           <circle cx="9" cy="21" r="1"/>
@@ -2085,7 +2090,7 @@
       </button>
 
       <button class="tab-btn pressable" role="tab" aria-selected="false"
-              aria-controls="panel-support" data-tab="support" id="tab-support">
+              aria-controls="support-section" data-tab="support" id="tab-support">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
@@ -2394,15 +2399,50 @@
       const tabs = shell.querySelectorAll('.tab-btn')
       const scrollEl = document.getElementById('scroll-container')
 
+      // Tab → section map
+      const TAB_SECTIONS = {
+        home:    null, // scroll to top
+        music:   'listen-section',
+        shows:   'shows-section',
+        merch:   'merch-section',
+        support: 'support-section',
+      }
+
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
+          const tabId = tab.dataset.tab
           if (tab.getAttribute('aria-selected') === 'true') {
-            // Already active: scroll to top (interaction #11)
             scrollEl.scrollTo({ top: 0, behavior: 'smooth' })
             return
           }
-          tabs.forEach(t => t.setAttribute('aria-selected', 'false'))
+          tabs.forEach(t => {
+            t.setAttribute('aria-selected', 'false')
+            t.setAttribute('tabindex', '-1')
+          })
           tab.setAttribute('aria-selected', 'true')
+          tab.setAttribute('tabindex', '0')
+
+          // Scroll to section
+          const sectionId = TAB_SECTIONS[tabId]
+          if (sectionId) {
+            const section = document.getElementById(sectionId)
+            if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          } else {
+            scrollEl.scrollTo({ top: 0, behavior: 'smooth' })
+          }
+        })
+
+        // Keyboard: arrow key navigation within tablist
+        tab.addEventListener('keydown', e => {
+          const tabArr = Array.from(tabs)
+          const idx = tabArr.indexOf(tab)
+          if (e.key === 'ArrowRight' && idx < tabArr.length - 1) {
+            tabArr[idx + 1].focus()
+            tabArr[idx + 1].click()
+          } else if (e.key === 'ArrowLeft' && idx > 0) {
+            tabArr[idx - 1].focus()
+            tabArr[idx - 1].click()
+          }
         })
 
         // Press scale (interaction #1)
@@ -3654,6 +3694,9 @@
     function init() {
       const shell = document.getElementById('app-shell')
       const profile = getProfile()
+
+      // Set page title with artist name
+      if (profile.name) document.title = `${profile.name} — ABLE`
 
       // Apply theme
       const theme = profile.theme || 'dark'
