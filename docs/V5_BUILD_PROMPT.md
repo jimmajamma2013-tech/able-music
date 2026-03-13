@@ -3101,6 +3101,192 @@ Add `type: "gear"` to the snap card schema. Renders as a list of up to 5 items (
 
 ---
 
+## PART V — MICRO-INTERACTIONS REFERENCE
+
+*Source: `docs/micro-interactions/` — 9 files, 100 entries. This section extracts the implementation-critical patterns. Full reference with CSS/JS code in the source files.*
+
+---
+
+### V.1 — The Four Easing Curves (ALL animations use exactly these)
+
+```css
+--ease-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);   /* Bounce entrance, popups, CTAs */
+--ease-decel:     cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Content sliding in, panels rising */
+--ease-accel:     cubic-bezier(0.55, 0, 1, 0.45);       /* Exits and dismissals */
+--ease-standard:  cubic-bezier(0.4, 0.0, 0.2, 1.0);     /* State changes, colour shifts */
+```
+
+**Spring for entrances. Acceleration for exits.** An element that enters with spring and exits with acceleration feels like it has mass and direction. An element that exits with spring (overshoots past the viewport and returns) looks like a bug.
+
+---
+
+### V.2 — GPU Performance Rules (Non-Negotiable)
+
+**Only animate these two properties in any loop or scroll handler:**
+- `transform` (translate, scale, rotate) — GPU compositor, no repaint
+- `opacity` — GPU compositor, no repaint
+
+**Never animate these in loops:**
+- `box-shadow` — triggers repaint
+- `backdrop-filter` — triggers composited layer re-render (expensive in loops)
+- `filter: blur()` — repaints the entire composited layer
+- `width`, `height`, `top`, `left` — triggers layout
+
+**The glow animation trick (for CTA glow, gig badge pulse, ambient breathe):**
+```css
+/* WRONG: animates box-shadow directly */
+@keyframes wrong { 0% { box-shadow: 0 0 0 0 rgba(acc, 0.5); } 70% { box-shadow: 0 0 0 12px rgba(acc, 0); } }
+
+/* RIGHT: animate opacity on a pseudo-element */
+.cta-primary::before {
+  content: '';
+  position: absolute; inset: -4px;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(var(--color-accent-rgb), 0.4), transparent 70%);
+  opacity: 0;
+  transition: opacity 300ms var(--ease-decel);
+}
+.cta-primary:hover::before { opacity: 1; }
+```
+
+**iOS `:active` fix:** CSS `:active` doesn't fire on iOS without a `touchstart` listener. Either add `document.addEventListener('touchstart', () => {})` (empty listener) or use JavaScript to toggle a `.pressing` class.
+
+**`prefers-reduced-motion`:** Every looping animation must stop. Every entrance animation is optional. The `prefers-reduced-motion: reduce` media query should skip animations entirely, not slow them down.
+
+---
+
+### V.3 — Must-Build Micro-Interactions (Priority Matrix)
+
+From the 100-item library — these are the builds that deliver the most quality per line of code:
+
+| # | Interaction | Impact | Complexity | Build phase |
+|---|---|---|---|---|
+| 16 | Scale-down on press (0.97) | Mandatory press feel | Low | v5 Phase 1 |
+| 61 | Email focus glow (accent border + shadow) | Fan capture conversion | Low | v5 Phase 1 |
+| 3  | Lazy image load with opacity fade-in | Performance (LCP) | Low | v5 Phase 1 |
+| 85 | Fan email shown back in confirmation | Peak-end rule, trust | Low | v5 Phase 1 |
+| 36 | Live state pulsing dot ("Out Now") | State communication | Low | v5 Phase 1 |
+| 47 | Hero name reveal (slide up on load) | Opening impression | Low | v5 Phase 1 |
+| 99 | Scroll-to-top on active tab re-tap | Mobile convention | Low | v5 Phase 1 |
+| 7  | Scroll-triggered card entrances | Below-fold polish | Medium | v5 Phase 2 |
+| 46 | Staggered page bloom on load | First 2 seconds quality | Medium | v5 Phase 2 |
+| 64 | Submit button: text→spinner→checkmark | Form UX | Medium | v5 Phase 2 |
+| 31 | Tab bar sliding dot indicator | Navigation quality | Medium | v5 Phase 2 |
+| 32 | Campaign state crossfade (hero) | State communication | Medium | v5 Phase 2 |
+| 71 | Shimmer skeleton (all in unison) | Loading perception | Medium | v5 Phase 2 |
+| 50 | Bottom sheet slide-up + backdrop | Modal pattern | Medium | v5 Phase 2 |
+| 79 | Fan signup confetti (accent colours) | Peak moment delight | Medium | v5 Phase 2 |
+| 34 | Gig mode activation flash (once/session) | Most dramatic state | Low | v5 Phase 3 |
+| 35 | Countdown digit flip (pre-release) | Pre-release engagement | High | v5 Phase 3 |
+| 25 | Swipe-to-dismiss panels | Native mobile feel | High | v5 Phase 3 |
+| 83 | Copy-link flash ("Copied!") | Admin daily use | Low | v5 admin |
+
+---
+
+### V.4 — Key Implementation Patterns
+
+**Staggered card bloom (two separate systems):**
+```js
+// System 1: initial bloom for above-fold elements on page load
+const elements = ['.v3-hero', '.platform-pill', '.music-card', ...];
+elements.forEach((sel, groupIdx) => {
+  document.querySelectorAll(sel).forEach((el, i) => {
+    el.style.transitionDelay = `${(groupIdx * 100) + (i * 60)}ms`;
+    el.classList.add('will-animate');
+  });
+});
+requestAnimationFrame(() => {
+  document.querySelectorAll('.will-animate').forEach(el => el.classList.add('visible'));
+});
+// IMPORTANT: hero transition-delay = 0ms. NEVER stagger above-fold content.
+
+// System 2: IntersectionObserver for below-fold elements
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => e.isIntersecting && e.target.classList.add('visible'));
+}, { threshold: 0.1 });
+items.forEach(el => obs.observe(el));
+// Don't replay on reload: check sessionStorage.getItem('hasScrolled')
+```
+
+**Skeleton shimmer (all elements in unison — no per-element delay offset):**
+```css
+.skeleton {
+  background: linear-gradient(90deg, var(--color-card) 25%, var(--color-card-raised) 50%, var(--color-card) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  animation-delay: 0s; /* CRITICAL: no per-element delay — all in unison */
+}
+```
+
+**Fan signup confirmation copy:**
+```html
+We've got you — <span class="confirm-email">[email]</span> is on [Artist]'s list.
+I'll reach out when something's actually happening.
+```
+The email shown back (in accent highlight) + "when something's actually happening" (artist voice promising no spam) = the most important post-conversion copy on the platform.
+
+**Campaign state crossfade:**
+```js
+function transitionState(newState) {
+  heroContent.style.opacity = '0'; // fade out over 300ms
+  setTimeout(() => {
+    applyState(newState);
+    heroContent.style.opacity = '1'; // fade in over 300ms
+  }, 300);
+  // Also tween --color-ambient via JS if changing state atmosphere
+}
+```
+
+**Gig mode flash (once per session):**
+```js
+function activateGigMode() {
+  if (sessionStorage.getItem('gigFlashFired')) return;
+  const flash = document.querySelector('.gig-flash');
+  flash.classList.add('active');
+  setTimeout(() => flash.classList.remove('active'), 100);
+  setTimeout(() => applyState('gig'), 150);
+  sessionStorage.setItem('gigFlashFired', '1');
+}
+```
+
+**Bottom sheet — entry spring / exit acceleration (asymmetric easing):**
+```css
+.bottom-sheet { transform: translateY(100%); transition: transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+.bottom-sheet.open { transform: translateY(0); }
+.bottom-sheet.closing { transform: translateY(100%); transition: transform 250ms cubic-bezier(0.55, 0, 1, 0.45); }
+```
+
+**iOS `:active` workaround:**
+```js
+// Add once to document — enables CSS :active on iOS Safari
+document.addEventListener('touchstart', () => {});
+```
+
+---
+
+### V.5 — Ambient & State Rules
+
+- **Glow breathes at 4s cycle** (0.12→0.18 opacity) on Hero. In gig mode: 2.5s cycle, 0.15→0.25 opacity.
+- **Pre-release countdown urgency:** ambient intensity increases linearly as release date approaches: `intensity = 0.12 + (0.16 * (1 - daysRemaining / 14))`
+- **Glass theme card press:** `backdrop-filter: blur(28px) → blur(36px)` on `:active` (acceptable on single press, not in loops)
+- **Overscroll tint (2 lines, free):** `html { background-color: color-mix(in srgb, var(--color-bg) 85%, var(--color-accent) 15%); }` — accent colour briefly peeks through iOS rubber-band bounce
+- **Night mode shift:** DO NOT implement time-based ambient shifts on the artist profile. The artist's profile reflects the artist's identity, not the time of day.
+- **Equaliser animation on platform pill:** Only show when real Spotify "currently playing" API data is available. Never fabricate data.
+
+---
+
+### V.6 — Things NOT in the Micro-Interactions Library (Closed Questions)
+
+- **Page-edge scroll progress bar** — skip on artist profile (communicates "content to get through", wrong register)
+- **Scroll-velocity blur** (`filter: blur()`) — GPU cost too high, skip entirely
+- **Double-tap heart** — don't build without backend (hollow gesture without persistence)
+- **Long-press preview** (link peek) — too complex, not needed; platform logos are sufficient signifiers
+- **Force-touch/3D Touch patterns** — Android doesn't support them; design for the lowest common denominator
+- **Time-based ambient shifts** — artist profile is the artist's expression, not ABLE's responsive environment
+- **Parallax artwork (0.7x scroll rate)** — test on mid-range Android before committing; remove if below 60fps
+
+---
+
 ## UPDATED NON-NEGOTIABLE CONSTRAINTS (v5.0 additions)
 
 **Multi-role:**
