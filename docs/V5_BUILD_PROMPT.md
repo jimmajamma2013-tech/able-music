@@ -2608,6 +2608,324 @@ Never hand-code these separately. All derive from the one `--color-accent` varia
 
 ---
 
+## PART IV — DISCOVERY, GROWTH, ECOSYSTEM & INTEGRATIONS
+
+*Source documents: `docs/DISCOVERY_AND_GROWTH.md`, `docs/ECOSYSTEM_AND_PARTNERSHIPS.md`, `docs/PRODUCT_HIERARCHY_AND_TRUST.md`, `docs/INTEGRATIONS_AND_AI_RESEARCH.md`*
+
+---
+
+### IV.1 — Product Build Hierarchy (BUILD IN THIS ORDER)
+
+Not all features are equal. Work top-down. A beautiful press pack is worthless if fan capture is broken.
+
+**Tier 1 — Foundation (non-negotiable, must be perfect before anything else):**
+1. The profile page — fast, mobile-perfect, beautiful, conversion-focused. This IS the product.
+2. Fan email capture — the most valuable thing ABLE gives an artist. Algorithm-proof owned audience.
+3. CTA conversion — one obvious action, no clutter.
+
+**Tier 2 — Dashboard (why they pay):**
+4. Analytics — who's clicking, where they're coming from, what's working
+5. Fan list / CRM — their actual fans, not social followers
+6. Profile editing — snap cards, content, theme, links — fast and intuitive
+7. Connections — Spotify, Bandsintown, YouTube plugged in and working
+
+**Tier 3 — Depth (why they stay long-term):**
+8. Superfan system — knowing who their real fans are
+9. Support packs — direct fan monetisation without a middleman
+10. Campaign states — pre-release / release / profile / gig mode
+11. Broadcasts — direct email to their fan list
+
+**Tier 4 — Community & Discovery (organic growth):**
+12. "Artists I Recommend" — light, genuine, powerful
+13. Collaboration signals — who's worth working with
+14. Credits on releases — the freelancer discovery layer
+15. Rooms / Stage Can — deeper fan connection (future)
+
+**Tier 5 — Ecosystem (makes ABLE the centre of an artist's world):**
+16. Press pack (`able.fm/name/press`)
+17. Story mode — repostable content
+18. Referral programme (Ablers)
+19. Industry mode — being found by labels/managers/bookers
+20. Grant & funding discovery
+
+---
+
+### IV.2 — Discovery & Growth Mechanics
+
+**Velocity-based leaderboards (never size-based):**
+- Artist leaderboards: rising artists this week (new fans ÷ baseline), most active in [genre], most-supported (by number of support pack buyers, NOT revenue). Never show raw revenue, follower counts, or anything that embarrasses smaller artists.
+- Key insight: "A 200-fan artist who gained 40 fans this week is more interesting than a 10k-fan artist who gained 5." Surface momentum, not incumbency.
+- Fan leaderboards (per-artist, opt-in): top supporters by superfan level, longest-standing fans, top sharers. Display first name + avatar initial only. Never full names without consent. Artist can manually pin a "fan of the month."
+- All leaderboards: opt-in, filterable by genre / location / tier.
+
+**Globe heatmap:**
+- Artist-facing (Pro): globe/map showing email sign-ups by location (IP-based, approximate). City-level zoom for Pro. "You have fans in 12 cities. Book there." — actionable nudge.
+- ABLE-wide (public, opt-in): real-time globe on the ABLE homepage. Artists as nodes, fan clusters as heat areas. Powerful story for the landing page — shows the platform is alive.
+- Technical: D3 / Globe.gl / Three.js. Privacy: only aggregated heatmap, never individual fan locations.
+
+**Launch Squad:**
+- Artist creates a launch squad from their superfans (manually selected or auto-suggested top-tier fans)
+- Squad gets: early listen link, shareable card pack, suggested captions per platform, countdown reminder
+- On release day: one-tap options (stream it, share the card, repost the reel, leave a comment)
+- Artist sees squad activity: who shared, when, what drove
+- Squad members get: Launch Squad badge, "Helped launch [release]" on their fan profile
+- Artist can add a personal voice note thank-you for squad members
+- Not algorithmic, not transactional — the closest thing to genuine fan community mobilisation
+
+**"Artists I'm Digging" — organic cross-discovery:**
+- Artist adds up to 5 artists they're recommending (max 5 — prevents link farm)
+- Copy: "Who are you listening to right now?" NOT "Recommend artists"
+- Each recommendation: avatar + name + optional one-line "why" (artist-written)
+- When Artist A recommends Artist B → B gets notified → B's page shows "Recommended by [Artist A]"
+- Cross-fan discovery: fan of A clicks B's link and signs up → tagged in B's fan list as "Referred by [Artist A]"
+- Artist B can see: "3 of your new fans came from [Artist A]'s recommendation" — measurable discovery graph
+- Collab pages: two ABLE artists release a collab → both profiles update simultaneously → "Add collaborator" button on the snap card generates a joint page reaching both fan lists
+
+**Fan sharing mechanic (Amplifier badge):**
+- Fan shares artist's page with their fan ID embedded in the URL
+- If 3+ new fans sign up via their share → they get an "Amplifier" badge on their fan profile
+- Artist sees: "Top 5 fans who brought you new fans this month"
+- Fans compete to be the best amplifier. Viral by design.
+
+**QR code (physical growth):**
+- Every artist gets a custom QR code matching their accent colour
+- Available in dashboard → Share as SVG + PNG download
+- Artist Pro: animated QR for screens / Stories
+- "Scan to follow" at gigs is the single highest-converting offline touchpoint
+
+**Campaign Mode (UTM — Artist Pro):**
+- When `utm_source=ig_ad` (or similar paid source) is detected on arrival, hero CTA and fan sign-up card are foregrounded even more
+- Signals ABLE understands professional campaign usage
+
+**Organic growth flywheel:**
+```
+Artist joins → page + QR generated
+→ Shares: bio link, stories card, reel caption
+→ Fan signs up via link / QR / recommendation
+→ Fan sees "Artists near you" → discovers more ABLE artists
+→ Artist A recommends Artist B → B notified → joins
+→ Artist credits freelancer → freelancer gets referred sign-ups
+→ Launch squad mobilisation → earned media spike
+→ ABLE surfaces rising artist on globe / directory → more fans
+```
+Growth is earned, not bought. Every component of the loop compounds.
+
+---
+
+### IV.3 — Ecosystem & Partnerships
+
+**Ablers — Referral Programme:**
+- Every artist + approved Abler gets a unique referral code: `able.fm/ref/[code]`
+- When someone signs up via that link and becomes a paid subscriber → Abler earns recurring commission
+- Payout: Stripe Connect or PayPal, monthly, minimum £20 threshold
+- Abler dashboard: clicks, conversions, earnings, pending payouts
+
+| Tier | Qualification | Commission |
+|---|---|---|
+| Fan Abler | Any signed-up ABLE artist | 20% for 6 months |
+| Creator Abler | 100+ referrals or 10k+ social reach | 25% for 12 months |
+| Partner Abler | Approved influencer, blog, music school | 30% for 12 months + co-marketing |
+
+Natural Ablers: music YouTubers/TikTokers ("music biz tip" content), music production schools and tutors, indie music blogs, music venue social accounts, managers with small rosters.
+
+**Rooms — Lightweight Community Spaces (Artist Pro, Tier 4):**
+- Artist posts "dispatches": voice notes, text, photos; fans react + reply (text only, curated model, no toxic reply chains)
+- "Stage Can" — tipping interface inside a Room (£1–£50 per tip with optional message). Artist sees tips in dashboard; can acknowledge during a live dispatch (radio call-in style).
+- Private: entry floor = email sign-up (fan must have signed up first)
+- Rooms for early-career: ABLE surfaces "New artist rooms" — under 6 months on platform, under 500 fans — for fans who want to find someone before everyone else does
+- AI in Rooms (near-term): voice note transcription (OpenAI Whisper — $0.006/min), tone coach, room starter prompts based on upcoming shows/releases/engagement
+- AI co-host (12–18 months): Claude API with artist profile context, answers fan questions on pre-approved topics, clearly labelled as "ABLE assistant" — NEVER impersonates the artist. Design architecture to support this now.
+
+**Press Pack (`able.fm/name/press`) — Artist Pro:**
+- Public URL generated from existing profile data. No extra work for the artist.
+- Auto-populated: artist photo, bio, genre/vibe, latest release, top tracks (Spotify), upcoming shows, contact/booking CTA, social links, stats. Artist manually adds press quotes if they have them.
+- Design: Apple Memories-style scroll — full-bleed sections, each a "chapter", animated elements, music snippets play with controls
+- "Download PDF" generates a clean 2-page print-ready version
+- Competitor: Presskit.to (direct competitor, weak). ABLE's version is stronger because it auto-populates from existing data.
+- Growth mechanic: industry people open press pack → discover ABLE → some are artists or managers → they join.
+
+**Story Mode — "Apple Memories for Artists" (Artist Pro):**
+- Auto-generated 1080×1920 MP4 from artist data: photo + track artwork/title + 30-second Spotify preview + upcoming show date + bio quote + fan count stat
+- Styles: Cinematic / Minimal / Bold / Warm (mapping to vibe preset)
+- Pre-generated caption: "New music is out. Come find me. [link]"
+- **Recommended: Creatomate or Bannerbear API** (JSON-driven, music-adjacent templates, ~$0.01–$0.10 per render). Build native canvas version later.
+
+**Industry Mode (Tier 5, future):**
+- Artists opt-in to "Interested in representation" flag (invisible on fan-facing page)
+- Industry accounts get a Discovery dashboard: filter by genre, location, fan count, engagement rate, flag status
+- ABLE's pitch to industry: "Verified profiles with actual fan data — not inflated social metrics. 400 genuine fans with support pack purchases > 40k followers who don't engage."
+- Industry pays separately (add-on or separate tier)
+
+**ABLE Community Fund (Tier 5, future):**
+- ABLE takes ~3% of tip/support pack revenue → community fund
+- Quarterly: community votes on which ABLE artist receives a grant from the fund
+- Creates news story, community engagement, costs ABLE very little
+
+**"Support a Cause" Snap Card:**
+- Artist adds a charity; snap card shows: "I'm supporting [Charity Name] — every tip this month goes to them"
+- Configurable split (10%, 50%, 100%) via Stripe Connect; ABLE sends receipts to both fan and artist
+- Charity partners to approach: War Child UK, Help Musicians UK, The Ivors Academy, Choose Love, EarthPercent (Brian Eno's climate charity — strong music-industry signal)
+
+**Music Map (Tier 4):**
+- Fan use: "Show me indie artists in Bristol" — map + list view, filter by genre + "playing near me soon"
+- Artist use: "Who's in my scene?" — discover other ABLE artists in their city, collab discovery
+- "Sounds like" discovery: artist pastes Spotify artist URL → ABLE fetches related artists → surfaces similar ABLE artists via `related-artists` endpoint
+- Technical: Mapbox GL JS (free tier: 50k map loads/month) or Leaflet (open source). City-level only, never exact address.
+
+---
+
+### IV.4 — Trust & Credibility
+
+**Data portability — the single most important trust signal:**
+> "Every artist on ABLE owns their fan data. Every fan list is exportable. No lock-in. Ever."
+- Must appear above the fold on desktop, within 1 scroll on mobile on the landing page
+- This is what makes music industry journalists write about ABLE and turns cautious artists into advocates
+- "Export your full fan list as CSV at any time" — visible on every tier, in every plan comparison
+
+**No fake numbers, ever:**
+- Never show inflated follower counts. "Fan sign-ups" not "followers."
+- Early access framing: "In early access. Join the first 500 artists." — honest, creates scarcity without lying. Not "10,000+ artists" until it's true.
+- Fan count on a profile: only shown if artist opts in, and only ever the real number
+- Real integrations: if broken, show nothing. Never show stale data. "Connected via Spotify [timestamp]" is more credible than any badge.
+
+**ABLE public roadmap + monthly changelog:**
+- Simple public roadmap page: what's being built, what's shipped
+- Monthly changelog: small, honest, specific ("We fixed the tab bar on iOS 16. We added Bandsintown sync.")
+- Notion / Linear model — artists who can see the product being built in public trust the people building it
+
+**"Also on ABLE" nudge (free tier — tasteful):**
+- Small "Powered by ABLE — made for artists" below fan capture on free tier pages
+- Pro/Artist: can remove it. Not a badge of shame — a subtle, respectful whisper.
+
+**Industry recognition targets:**
+- Music Week — UK trade publication most important to industry professionals
+- Help Musicians UK — official partnership = immediate trust signal for UK artists
+- Featured Artist Coalition (FAC) — artists' rights body; partnership = credibility with serious artists
+- DIY Magazine / Loud And Quiet — read by indie artists and their fans
+- SXSW / The Great Escape / Liverpool Sound City — physical presence signals legitimacy
+
+**Collaboration discovery card (logged-in ABLE artists ONLY — never visible to fans):**
+```
+┌─────────────────────────────────────────────┐
+│  🎵 Open to collabs                          │
+│  Based in: Manchester  Genre: Indie/Alt      │
+│  Activity: Released 3 weeks ago              │
+│  Listeners: ~12k/mo (Spotify)                │
+│  On ABLE: 8 months · 340 fans               │
+│  Credits: Mixed by Studio Zero ✓             │
+│  [ Send a collab message ]                   │
+└─────────────────────────────────────────────┘
+```
+- "Open to collabs" flag: opt-in, off by default, can specify type (feature/production/video/photography/sync)
+- Collab messages via ABLE internal messaging — no email addresses shared until both respond
+- Never shown on fan-facing page — professional layer, not social feed
+
+**Recommendation notification (exact copy — when recommending an artist not on ABLE):**
+```
+Subject: [Artist A] is recommending you on ABLE
+
+[Artist A] added you to the "Artists I'm Digging" section of their ABLE profile.
+Their fans can now find you from their page.
+
+ABLE is where independent artists put their music, shows, and fan sign-ups in one place.
+If you're not on ABLE yet, claim your page and the recommendation will link directly to your profile.
+
+[Claim able.fm/yourname →]
+```
+Frame it as recognition, not a sign-up pitch. Never "You've been added! Join now!"
+
+---
+
+### IV.5 — Integration Priority Matrix
+
+**Three integrations that deliver maximum value fastest:**
+Spotify + Bandsintown + YouTube → profile auto-populates ~70% before artist types a single word.
+
+**Build now (real API, high value):**
+| Integration | What ABLE pulls | Tier |
+|---|---|---|
+| Spotify Web API | Artist photo, name, top tracks, monthly listeners | Artist |
+| YouTube Data API v3 | Latest video, thumbnail, view count, embed | Free |
+| Bandsintown API | All upcoming events → auto-populate Events section | Artist |
+| Mailchimp API | Export fans + sync new sign-ups to audience | Artist Pro |
+| Kit (ConvertKit) API | Same as Mailchimp | Artist Pro |
+| Kickstarter API | Live funding %, days remaining, backer count → progress bar snap card | Artist |
+
+**Build next:**
+SoundCloud API (track embeds + play counts), Shopify Storefront API + Big Cartel API (merch product cards with live price + buy button), Beehiiv API (push fans to newsletter), Patreon API (patron count on profile), Songkick API (secondary to Bandsintown).
+
+**ABLE builds natively — do not integrate:**
+- Pre-save links: Spotify API + ABLE fan capture = better than Hypeddit/Toneden. Build native.
+- Email broadcasts: ABLE owns the artist-fan relationship — externalising breaks the trust model
+- Analytics dashboard: this is the moat — own it completely
+- Press pack: all data already in ABLE; just a render layer
+- Fan CRM & superfan scoring: the core product — never outsource
+
+**Link paste only (API not worth the effort):**
+All distribution platforms, Apple Music, Tidal, Bandcamp (intentionally closed API), Instagram (Basic Display API deprecated late 2024), TikTok (high friction), X/Twitter (rate-limited since 2023), all PROs, all sync platforms, X.
+
+**Affiliate links only (no API, real revenue):**
+SubmitHub, Groover, Musosoup, Playlist Push, Songtrust, Sentric, Music Gateway, LANDR, Pirate Studios.
+
+**Linktree importer — build this:**
+Artist pastes `linktree.ee/username` → ABLE parses links and imports as CTAs. No API needed (public HTML). This is the single best "why switch" conversion tool — the muscle-memory override for the majority of ABLE's target acquisition.
+
+**RA (Resident Advisor):** Make this a first-class link type in the CTA builder. An RA profile link is a credibility signal in the electronic/club scene — it should look intentional, not generic.
+
+**PRS for Music onboarding prompt:** In the wizard, ask "Are you registered with [PRS/ASCAP/BMI based on country]?" with plain-English explanation and link. Most emerging artists are not registered and lose royalties. One of the most genuinely helpful things ABLE can do at zero technical cost.
+
+**API reliability warnings (verify before building):**
+- Spotify (May 2024): removed audio features and recommendations endpoints without warning. Verify that `GET /artists/{id}`, top tracks, and monthly listeners endpoints remain on the free tier before building.
+- Instagram: Basic Display API deprecated late 2024. Graph API requires business account + app review — too much friction. Link paste is the only viable approach.
+- Twitter/X: free tier severely rate-limited since 2023. Not viable for integration.
+- PledgeMusic: DEFUNCT since 2019. Remove from all ABLE documentation.
+- Toneden: repositioned away from artists toward brands. Build pre-save natively instead.
+
+---
+
+### IV.6 — AI Tool Assessment
+
+**The line ABLE must not cross:**
+- Right side of the line: AI that assists the artist's voice — copy, captions, bios, campaign suggestions, mastering, transcription
+- Wrong side: AI that replaces the artist's music creation
+- "Artist Before Label" — the artists using ABLE create original work. Features that replace that creation are off-brand at a values level.
+
+**Approved AI integrations (ranked by artist value × feasibility × alignment):**
+
+| Priority | Feature | Technology | Notes | Tier |
+|---|---|---|---|---|
+| 1 | Bio writer | Claude Haiku | 3 variants, never auto-save, 5/day rate limit | Free (limited) / Artist |
+| 2 | CTA copy variants | Claude Haiku | "Stream Now" → 3 variants in artist's tone | Artist |
+| 3 | Caption pack on publish | Claude Haiku | Snap card publish → 3 IG/TikTok captions | Artist |
+| 4 | Rooms transcription | OpenAI Whisper ($0.006/min) | Voice note → auto-transcribed text | Artist Pro |
+| 5 | Story Mode music | MusicGen / Beatoven API | Background instrumental for Story Mode video | Artist Pro |
+| 6 | AI mastering | LANDR (B2B partnership) | Upload track → mastered version | Artist Pro |
+| 7 | Voice cloning for dispatches | ElevenLabs API | 30-second sample → spoken content in artist's voice | Artist Pro |
+| 8 | Stem separation | LALAL.AI (~$9.99/mo) | Vocals/drums/bass separation for fan exclusives | Artist Pro |
+| 9 | Release campaign planner | Claude Haiku | Release date → 6-week content calendar | Artist Pro |
+| 10 | Superfan scoring | Internal ML | Engagement pattern analysis | Label tier |
+
+**ElevenLabs — highest value AI integration:**
+Production-grade API, self-serve. Capabilities: voice cloning (30-second sample), TTS with emotional control, voice isolator, sound effects, transcription with time-aligned transcripts. Use case: "Generate a spoken intro in your own voice for your Room dispatches." Serves artist expression rather than replacing it.
+
+**Hard blockers:**
+- Meta AudioCraft / MusicGen: code is MIT but **model weights are CC-BY-NC 4.0 (non-commercial)**. Cannot use commercially in any production context. Monitor for licence changes.
+- Suno AI / Udio: no public API, both named in RIAA copyright lawsuit (2024), output licensing unclear for commercial use. Do not plan around these.
+
+**ACE-Step (2025, open source):** Most capable open-source music model as of writing. Up to 4 minutes in ~20 seconds, 19 language vocal generation, voice cloning, lyric editing, remixing. Available on Replicate. **Verify licence before commercial use** — check repo LICENSE file directly.
+
+**What NOT to build with AI:**
+| Feature | Why |
+|---|---|
+| AI song generation | Off-brand at values level + RIAA litigation exposure |
+| AI lyric writing | If ever built: "suggestion tool" framing mandatory, never ghost-writer |
+| Auto-publishing AI output | Always show as suggestion. Never auto-apply. |
+| AI "sounds like" comparisons | Reductive and offensive to serious musicians |
+
+**Agent architecture principle:** "The artist's profile + fan data is the context window. The richer the data in ABLE, the more useful every agent feature becomes." Every structured data point collected (fan list, click history, superfan score, event attendance, release metadata) is also building the future agent's knowledge base. Design for this from day one.
+
+---
+
 ## PHASE 12 — FAN FEED (fan.html)
 
 *Build after able-v5.html is complete. The fan feed depends on artists existing in the system.*
