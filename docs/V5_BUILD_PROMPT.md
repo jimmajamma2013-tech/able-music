@@ -2333,6 +2333,23 @@ Admin panel → "Top card" section:
 
 ---
 
+### Design patterns ABLE must NEVER do (anti-patterns from DESIGN_RESEARCH_2026.md):
+
+1. **Three+ CTA zones competing** — the 3-zone architecture with strict caps exists because this is catastrophic for conversion. If anything on the page competes with the primary CTA, nothing wins.
+2. **Glass effect on scrollable content** — `backdrop-filter: blur()` on elements that scroll causes dropped frames on Android. Glass only on fixed/sticky elements (tab bar, floating panels). Scrolling sections use `--color-card`, not glass.
+3. **Pure black `#000000` backgrounds** — too harsh; feels low-quality on displays. Use `--color-bg: #0d0e1a`. This rule applies to every surface: the shell, panels, drawers, overlays.
+4. **Generic placeholder copy** — "Enter your name" / "Your bio here" / "Add your link" are lazy. Every placeholder is specific: "e.g. Maya Beats" / "I make indie records in East London" / "https://open.spotify.com/…"
+5. **Horizontal scroll traps** — snap card carousels must not capture native vertical scroll. `overflow-x: auto; -webkit-overflow-scrolling: touch;` with clear visual affordance (partial next card visible).
+6. **Top-right dismiss buttons on mobile** — thumbs reach bottom-right (right-handed) or bottom-left (left-handed). Close/dismiss goes at the bottom of panels, or use a drag handle at the top. Top-right is the hardest reach on a phone.
+7. **More than two disclosure levels** — "Show more" → "Show even more" destroys hierarchy trust. Max one level of disclosure per section.
+8. **Loading states that delay animation start** — never wait for data before starting a transition. Show skeleton screen immediately, animate, reveal real content behind.
+9. **Identical visual weight on all interactive elements** — if "Stream Now" and "Follow on Instagram" look the same size and weight, the page communicates nothing. Primary CTAs must be visually dominant.
+10. **Animations serving the designer, not the user** — every animation must reduce cognitive load or communicate state change. "Cool entrance effect" that makes the fan wait longer to find the Spotify link is wrong.
+
+**Thumb-zone rule (directly affects conversion):** The lower 60% of a mobile screen is the thumb zone — reachable without shifting grip. Primary hero CTA must be in this zone on first load. Artist name and artwork earn attention at top; CTA converts at thumb level.
+
+---
+
 ### Implementation precision: rules from DESIGN_RESEARCH_2026.md with no wiggle room:
 
 **Never animate `box-shadow` directly.** Shadow animation on Android causes dropped frames. Instead, place shadow on a `::before` or `::after` pseudo-element and animate its `opacity`. Only animate `transform` and `opacity` at 60fps on mid-range Android.
@@ -2576,6 +2593,18 @@ Never hand-code these separately. All derive from the one `--color-accent` varia
 **Ben Thompson — Aggregation Theory.** Spotify doesn't own music — it owns the listening moment. Instagram doesn't own artists — it owns the attention moment. Aggregators extract value from artists by sitting between them and their fans. ABLE is the artist's escape valve. Structurally analogous to Substack vs. Medium, Shopify vs. Amazon, Bandcamp vs. Spotify. The moat is the switching cost: 2,000 fan emails collected through ABLE is 2,000 direct relationships the artist would lose by leaving. That's the defensibility.
 
 **Li Jin — 100 True Fans (updated from Kelly's 1,000).** 100 fans paying £50/year is more achievable and more sustainable than 1,000 paying £5. The support pack system is the product answer. An artist with 100 fans on a £5/month support pack earns £500/month from their music without streaming, without a label, without a sync deal. The Support tab is not the last tab — for this segment of artist, it's the most important.
+
+**The streaming economics argument — use this in landing page copy (from MASTER_PLAN.md):** An independent artist with 50,000 monthly Spotify listeners earns approximately £150–200/month from streams. The same artist with 500 fans on their ABLE email list who buy £15 tickets earns £7,500 from one show. This is ABLE's central story, stated plainly. Use it somewhere in the landing page — in the "How it works" section or the proof band. It makes the value proposition concrete.
+
+**Shopify's "Arm the rebels" framing — ABLE's equivalent:** Tobi Lütke framed Shopify as arming independent merchants against Amazon's dominance. The same framing applies to ABLE: arming independent artists against streaming's economics, label system's gatekeeping, and algorithm-dependency. "Artist Before Label" is already this frame — lean into it. An artist choosing ABLE makes a statement about what they value. That identity is worth building.
+
+**Pre-release as vulnerability premium:** Jack Conte's research: fans who see the creative process — studio diaries, the story behind the album, work in progress — pay more and stay longer than fans who only see the finished product. The pre-release state is ABLE's vulnerability premium feature. An artist who uses the pre-release countdown to share "I recorded this in my bedroom after losing my job" is showing the creative process. The fans who pre-save after seeing that are the truest fans. Design the pre-release state to encourage this — a short text field ("What's the story behind this?") that shows as a snap card during the countdown.
+
+**AI context persistence (when AI features land):** Store a compressed "artist context" object in Supabase — genre, tone, key phrases from their bio, recent releases, upcoming events. Pass this to every Claude API call (bio-writing, caption generator, etc.). The bio writer that has seen three previous bios and knows the artist's tone sounds far more like them than one starting fresh. Architecture decision: add `artist_context` field to `profiles` table from day one, even if AI features are post-v5.
+
+**Workflow-layer AI (admin dashboard):** The most valuable AI in admin is not generative — it's predictive and surfacing. "Your gig mode expires in 2 hours." "47 new fans this week — highest in 3 months." "Your pre-release countdown ends tomorrow — have you prepared your announcement?" This is the AI model that makes artists feel the dashboard is on their side, not just storing data.
+
+**Transparency as trust infrastructure:** Publish an annual ABLE transparency report: what ABLE made, what it paid artists (in aggregate), what it built. Ghost does this as a non-profit. Bandcamp's "82% to artists" is their product. ABLE's equivalent: clear, published, specific commitments. "We took X% of support pack purchases. Artists took the rest. Here's how many artists earned money through ABLE this year." This is a product decision, not just a PR one.
 
 ---
 
