@@ -2402,6 +2402,105 @@ Never hand-code these separately. All derive from the one `--color-accent` varia
 
 ---
 
+### From VISUAL_SYSTEM.md — per-vibe copy tone and accent suggestions (not yet in CSS spec above):
+
+**Copy tone per vibe — all CTAs and snap card copy must match this register:**
+
+| Vibe | CTA register | Example |
+|---|---|---|
+| Electronic | Minimal, action-only | "Hear it" / "On now" |
+| Hip Hop | Direct, possessive | "Get the tape" / "Stream it" |
+| R&B | Intimate, inviting | "Come listen" / "It's out" |
+| Indie | Low-key, genuine | "New one's up" / "Come if you're near" |
+| Pop | Energetic, inclusive | "Stream now" / "We're going on tour" |
+| Rock | Blunt, no fluff | "Tickets" / "New record out" |
+| Acoustic | Warm, personal | "New song — hope it finds you well" |
+
+**Accent colour suggestions per vibe — wizard Step 2 reorders swatches:**
+
+| Vibe | Suggested accents (front-loaded order) |
+|---|---|
+| Electronic | Cyan, Amber, White, Indigo |
+| Hip Hop | Gold, Red, White, Amber |
+| R&B | Rose, Gold, Lavender, White |
+| Indie | Sage, Muted Rose, White, Amber |
+| Pop | Indigo, Rose, Cyan, Amber |
+| Rock | Red, White, Amber, Black |
+| Acoustic | Ochre, Sage, Rose, White |
+
+---
+
+### From COPY_AND_DESIGN_PHILOSOPHY.md — rules not yet in the design spec above:
+
+**Deep red `#8b1e1e` — urgency and live states ONLY.** This colour is not in the design system for general use. It appears *only* when: "On tonight." / "Sold out." / "Doors open." / "Last few tickets." If red only appears when there's a show tonight or something urgent, it *means* something. A fan who has seen this once will register it immediately next time. Never use decoratively, never for system messages, never for errors. Reserve it entirely for live/urgency context.
+
+**MBTI personality profiles — full version (the 5 types ABLE is built for):**
+
+*INFP — The Mediator (singer-songwriters, bedroom pop, folk, R&B):* Deeply authentic, allergic to anything performative. Hates the word "monetise." Will leave a tool that makes them feel like they're running a business rather than making art. Responds to honesty, warmth, understatement. Worst thing: make them feel like a content creator.
+
+*INFJ — The Advocate (indie, art-pop, electronic with emotional depth):* Visionary and private. Suspicious of shortcuts. ABLE has to earn their trust slowly — no hype, no hyperbole. They respond to the idea that ABLE understands *why* they make music, not just how to distribute it.
+
+*ENFP — The Campaigner (pop, dance, high-energy performers):* Enthusiastic, relationship-driven, hates being boxed in. Will use a tool to its fullest if it gives them freedom. Needs to see personality in the product — can't feel corporate. ABLE should feel like something an ENFP would build for themselves.
+
+*ISFP — The Adventurer (visual artists who also make music, genre-fluid):* Aesthetic-first. If it doesn't look right, they won't use it regardless of functionality. ABLE must look beautiful enough that using it feels like part of their creative practice, not a separate business task.
+
+*INTJ — The Architect (producers, electronic artists, instrumentalists):* Strategic, independent, self-built. Doesn't need hand-holding but needs to feel in control. Responds to precision and capability. Will read the docs if the docs are good. Doesn't need warmth — needs clarity and power.
+
+**"Superfans" is internal language — never appear in copy facing fans or artists.** Artists don't want to think about "superfans." They want to think about their most dedicated listeners. The word "superfans" is fine in internal documentation; never use it on the product, on the landing page, or in admin copy. Say instead: "your most dedicated listeners," "people who show up," "your inner circle" (in the artist's own voice).
+
+**Fan sign-up confirmation copy — in the artist's voice:** "You're in. I'll keep it close." — not "Thank you for subscribing." Not "You've been added to the list." The confirmation echoes the artist's voice, not ABLE's admin language.
+
+**The 6 things fans want (PLATFORM_STRATEGY.md — design every fan-facing feature against these):**
+1. Closeness — the feeling that the artist knows they exist
+2. First — hearing things before general release
+3. Exclusive — access to things no one else can get
+4. Easy way to support — that doesn't feel transactional or shameful
+5. Notification — when there's a show near them, a new drop, anything
+6. Connection with other fans — the community that forms around an artist
+
+---
+
+### From PLATFORM_STRATEGY.md — superfan system and support packs (core product logic):
+
+**Superfan 5 levels — the product's core differentiator:**
+
+| Level | Name | How earned |
+|---|---|---|
+| 1 | Listener | Signed up, visited the page |
+| 2 | Fan | Clicked a CTA, came back at least once |
+| 3 | Supporter | Bought something (merch, ticket, tip) |
+| 4 | Superfan | Multiple purchases, shared the page, opened every email |
+| 5 | Inner Circle | Artist manually added, OR unlocked via exclusive support tier |
+
+**Artist-customisable names** — these 5 levels can be renamed by the artist. An indie artist might call level 5 "The list." An R&B artist might call it "The room." The default names are functional labels; the named versions are personal ones.
+
+**Superfan rewards (artist chooses from this list — not a default set):**
+- Early access to ticket sales (before general public)
+- Exclusive content unlock (lyrics, voice notes, instrumentals, stems)
+- Private listening party invites
+- Name in credits (thank you note on release)
+- DM access window (artist-controlled, time-limited)
+- Physical mail (postcard, signed print — fulfilled by artist)
+
+**Superfan mobilisation (Launch Squad):** Artist sets a goal: "I need 50 fans to share this today." ABLE creates a shareable asset for each fan. Fan who shares gets a badge and moves up a tier. Artist can see who shared and where traffic came from. "Support this drop" — fans can pledge before release to create social proof for the artist.
+
+**Support pack types with price guidance:**
+
+| Pack type | Price range | What it is |
+|---|---|---|
+| One-time drop | £3–£25 | Tied to a specific release — buy once, access that release's extras |
+| Monthly supporter | £5–£15/month | Ongoing access — ongoing access as long as subscription continues |
+| Lifetime fan | £30–£100 one-off | Everything forever — artist's choice what "everything" means |
+
+**What artists can put in a support pack (the full list to build UI for):**
+- *Audio:* Full instrumental tracks, stems, voice notes about process, early demos, unreleased B-sides
+- *Text:* Handwritten lyrics (photo), liner notes, track-by-track breakdown, chord sheets
+- *Video:* Studio sessions, director's cuts, behind the scenes
+- *Access:* Private group (Discord/WhatsApp), early show RSVP, one DM reply window
+- *Physical:* Limited print, signed insert (fulfilled by artist — ABLE does not handle fulfilment)
+
+---
+
 ### From strategy research (the frames that explain why ABLE's architecture is the way it is):
 
 **Clayton Christensen — Jobs to Be Done.** The job artists hire ABLE for is not "have a link in bio." It is: "Convert the attention I'm getting on social into something I own — a fan relationship that doesn't depend on the algorithm staying kind." The workarounds that reveal this job: copying Linktree links from notes apps, tracking sign-ups in Instagram DMs, manually switching bio links on release day. Each workaround is ABLE's feature list written by artists themselves.
