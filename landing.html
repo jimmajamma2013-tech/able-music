@@ -8,17 +8,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ABLE — The Artist Page That Converts</title>
-  <meta name="description" content="Turn your link-in-bio into a conversion machine. Music, events, merch, and support — all from one premium artist page.">
+  <title>ABLE — For independent artists</title>
+  <meta name="description" content="Your page. Your fans. Direct. Music, events, merch, and support — all in one place, without an algorithm in the way.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:           #121a24;
-      --bg-mid:       #171f2a;
-      --card:         #1d2636;
-      --card-raised:  #232e40;
+      --bg:           #090910;
+      --bg-mid:       #0f0f18;
+      --card:         #141420;
+      --card-raised:  #1a1a28;
       --border:       rgba(255,255,255,0.07);
       --border-mid:   rgba(255,255,255,0.13);
       --accent:       #f4b942;
@@ -75,21 +75,23 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 200;
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 28px; height: 58px;
-      background: rgba(18,26,36,0.88);
+      background: rgba(9,9,16,0.92);
       backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       border-bottom: 1px solid var(--border);
     }
     .nav__logo {
-      font-family: var(--font-d); font-size: 20px; font-weight: 900;
-      letter-spacing: 3px; text-transform: uppercase; color: var(--text);
+      font-family: var(--font-d); font-size: 22px; font-weight: 900;
+      letter-spacing: 4px; text-transform: uppercase; color: var(--text);
     }
     .nav__logo span { color: var(--accent); }
     .nav__links { display: flex; align-items: center; gap: 4px; }
     .nav__link { font-size: 13px; font-weight: 600; color: var(--text-2); padding: 7px 13px; border-radius: 8px; transition: color 0.15s; }
     .nav__link:hover { color: var(--text); }
     .nav__cta {
-      font-size: 13px; font-weight: 700; background: var(--accent); color: #fff;
-      padding: 8px 18px; border-radius: 8px; transition: opacity 0.15s, transform 0.2s var(--spring);
+      font-size: 13px; font-weight: 700; background: var(--accent); color: #1a1200;
+      padding: 8px 18px; border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(var(--accent-rgb),0.35);
+      transition: opacity 0.15s, transform 0.2s var(--spring);
     }
     .nav__cta:hover { opacity: 0.88; transform: scale(1.03); }
     @media (max-width: 520px) { .nav__link { display: none; } }
@@ -98,7 +100,7 @@
     .hero {
       min-height: 100svh; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      padding: 110px 24px 40px; position: relative; overflow: hidden;
+      padding: 110px 24px 40px; position: relative;
       text-align: center;
     }
     /* Multi-layer ambient — depth instead of flat */
@@ -106,9 +108,25 @@
       content: '';
       position: absolute; inset: 0; pointer-events: none;
       background:
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(var(--accent-rgb),0.18) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 40% at 20% 80%, rgba(139,92,246,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 80% 70%, rgba(var(--accent-rgb),0.06) 0%, transparent 60%);
+        radial-gradient(ellipse 80% 50% at 65% -5%, rgba(var(--accent-rgb),0.20) 0%, transparent 60%),
+        radial-gradient(ellipse 45% 55% at 88% 55%, rgba(var(--accent-rgb),0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 40% at 10% 30%, rgba(var(--accent-rgb),0.07) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 50% at 18% 80%, rgba(100,55,190,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 35% 25% at 50% 50%, rgba(var(--accent-rgb),0.03) 0%, transparent 50%);
+    }
+    /* Decorative waveform lines behind hero content */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(var(--accent-rgb),0.018) 2px,
+        rgba(var(--accent-rgb),0.018) 3px
+      );
+      mask-image: radial-gradient(ellipse 70% 60% at 70% 50%, black 0%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 70% 50%, black 0%, transparent 80%);
     }
     .hero__eyebrow {
       font-size: 11px; font-weight: 700; letter-spacing: 3px;
@@ -122,9 +140,9 @@
     @keyframes fadeDown { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:none; } }
     .hero__headline {
       font-family: var(--font-d);
-      font-size: clamp(58px, 11vw, 108px);
+      font-size: clamp(48px, 5.5vw, 76px);
       font-weight: 900; text-transform: uppercase;
-      letter-spacing: -1px; line-height: 0.88;
+      letter-spacing: -0.5px; line-height: 0.92;
       color: var(--text); max-width: 960px;
       animation: heroIn 0.7s var(--ease) 0.1s both;
     }
@@ -143,12 +161,14 @@
     }
     .hero__platforms-label { font-size: 11px; font-weight: 600; color: var(--text-3); letter-spacing: 0.5px; }
     .platform-icon {
-      width: 28px; height: 28px; border-radius: 8px;
-      background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+      height: 26px; padding: 0 10px; border-radius: 6px;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
-      font-size: 13px; transition: background 0.15s;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+      color: var(--text-2); transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
     }
-    .platform-icon:hover { background: rgba(255,255,255,0.1); }
+    .platform-icon:hover { background: rgba(255,255,255,0.09); color: var(--text); }
 
     .hero__actions {
       display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; justify-content: center;
@@ -247,11 +267,12 @@
 
     /* ── PROOF STRIP ──────────────────────────────────────────── */
     .proof {
-      padding: 28px 24px;
+      padding: 36px 24px;
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
       gap: 0; flex-wrap: wrap;
+      background: rgba(255,255,255,0.012);
     }
     .proof__item {
       flex: 1; min-width: 120px; max-width: 200px;
@@ -260,10 +281,10 @@
     }
     .proof__item:last-child { border-right: none; }
     .proof__num {
-      font-family: var(--font-d); font-size: 36px; font-weight: 900;
-      color: var(--text); letter-spacing: -0.5px; line-height: 1;
+      font-family: var(--font-d); font-size: 40px; font-weight: 900;
+      color: var(--accent); letter-spacing: -0.5px; line-height: 1;
     }
-    .proof__label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+    .proof__label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 1px; margin-top: 6px; }
     @media (max-width: 480px) {
       .proof__item { border-right: none; border-bottom: 1px solid var(--border); min-width: 45%; }
       .proof__item:last-child { border-bottom: none; }
@@ -271,25 +292,33 @@
 
     /* ── DIFFERENTIATOR BAND ──────────────────────────────────── */
     .diff-band {
-      padding: 20px 24px;
+      padding: 32px 24px;
       background: rgba(var(--accent-rgb),0.06);
       border-bottom: 1px solid rgba(var(--accent-rgb),0.15);
+      border-top: 1px solid rgba(var(--accent-rgb),0.08);
       text-align: center;
+      position: relative;
+    }
+    .diff-band::before {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 120px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
     }
     .diff-band__text {
-      font-size: 14px; font-weight: 600; color: var(--text-2);
-      max-width: 700px; margin: 0 auto; line-height: 1.6;
+      font-size: 15px; font-weight: 500; color: var(--text-2);
+      max-width: 680px; margin: 0 auto; line-height: 1.7;
     }
     .diff-band__text strong { color: var(--text); font-weight: 800; }
 
     /* ── SECTIONS ─────────────────────────────────────────────── */
     .section { padding: 88px 24px; }
-    .section--alt { background: rgba(255,255,255,0.015); }
+    .section--alt { background: rgba(var(--accent-rgb),0.024); border-top: 1px solid rgba(var(--accent-rgb),0.07); border-bottom: 1px solid rgba(var(--accent-rgb),0.07); }
     .section__inner { max-width: 1100px; margin: 0 auto; }
     .section__eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
     .section__title {
-      font-family: var(--font-d); font-size: clamp(34px, 5.5vw, 56px); font-weight: 900;
-      text-transform: uppercase; letter-spacing: -0.5px; line-height: 0.95;
+      font-family: var(--font-d); font-size: clamp(36px, 5vw, 60px); font-weight: 900;
+      text-transform: uppercase; letter-spacing: -0.5px; line-height: 0.93;
       color: var(--text); max-width: 700px; margin-bottom: 16px;
     }
     .section__sub { font-size: 16px; color: var(--text-2); max-width: 500px; line-height: 1.65; margin-bottom: 52px; }
@@ -307,7 +336,11 @@
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
       background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb),0.4), transparent);
     }
-    .hero-feature__icon { font-size: 36px; margin-bottom: 16px; display: block; }
+    .hero-feature__icon {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 16px; display: block;
+      opacity: 0.8;
+    }
     .hero-feature__title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 10px; letter-spacing: -0.3px; line-height: 1.2; }
     .hero-feature__desc { font-size: 14px; color: var(--text-2); line-height: 1.65; }
     .hero-feature__visual {
@@ -338,7 +371,13 @@
       padding: 22px; transition: border-color 0.2s;
     }
     .feature-card:hover { border-color: var(--border-mid); }
-    .feature-card__icon { font-size: 24px; margin-bottom: 12px; display: block; }
+    .feature-card__icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(var(--accent-rgb),0.1); border: 1px solid rgba(var(--accent-rgb),0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 900; color: var(--accent);
+      margin-bottom: 14px;
+    }
     .feature-card__title { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 6px; letter-spacing: -0.2px; }
     .feature-card__desc { font-size: 12.5px; color: var(--text-2); line-height: 1.6; }
 
@@ -352,63 +391,87 @@
     .step:last-child { border-right: none; }
     @media (max-width: 640px) { .step { border-right: none; border-bottom: 1px solid var(--border); padding: 24px 0; } .step:last-child { border-bottom: none; } }
     .step__num {
-      font-family: var(--font-d); font-size: 72px; font-weight: 900;
-      color: rgba(var(--accent-rgb),0.1); line-height: 1; margin-bottom: 10px;
+      font-family: var(--font-d); font-size: 56px; font-weight: 900;
+      color: rgba(var(--accent-rgb),0.18); line-height: 1; margin-bottom: 10px;
+      letter-spacing: -1px;
     }
     .step__num::before { content: counter(steps, decimal-leading-zero); }
     .step__title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 8px; letter-spacing: -0.2px; }
     .step__desc { font-size: 13px; color: var(--text-2); line-height: 1.65; }
 
     /* ── PRICING ──────────────────────────────────────────────── */
-    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; max-width: 880px; margin: 0 auto; }
-    .pricing-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 28px 24px; position: relative; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; max-width: 920px; margin: 0 auto; align-items: start; }
+    .pricing-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+      padding: 28px 24px; position: relative;
+      transition: border-color 0.2s;
+    }
+    .pricing-card:hover { border-color: var(--border-mid); }
     .pricing-card--featured {
-      border-color: rgba(var(--accent-rgb),0.4);
-      background: linear-gradient(155deg, rgba(var(--accent-rgb),0.08) 0%, var(--card) 55%);
+      border-color: rgba(var(--accent-rgb),0.5);
+      background: linear-gradient(160deg, rgba(var(--accent-rgb),0.11) 0%, var(--card) 50%);
+      box-shadow: 0 0 0 1px rgba(var(--accent-rgb),0.15), 0 24px 60px rgba(var(--accent-rgb),0.08), 0 8px 24px rgba(0,0,0,0.4);
+      transform: translateY(-6px);
+    }
+    .pricing-card--featured::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent 10%, var(--accent) 50%, transparent 90%);
+      border-radius: 20px 20px 0 0;
     }
     .pricing-card__badge {
       position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
-      background: var(--accent); color: #fff; font-size: 10px; font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase; padding: 4px 14px; border-radius: 10px; white-space: nowrap;
+      background: var(--accent); color: #1a1200; font-size: 9px; font-weight: 800;
+      letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 16px; border-radius: 20px; white-space: nowrap;
     }
-    .pricing-card__tier { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
-    .pricing-card__price { font-family: var(--font-d); font-size: 52px; font-weight: 900; color: var(--text); line-height: 1; margin-bottom: 4px; }
+    .pricing-card__tier { font-size: 10px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .pricing-card__price { font-family: var(--font-d); font-size: 56px; font-weight: 900; color: var(--text); line-height: 1; margin-bottom: 4px; }
     .pricing-card__price span { font-family: var(--font); font-size: 14px; font-weight: 500; color: var(--text-3); }
-    .pricing-card__desc { font-size: 13px; color: var(--text-2); margin-bottom: 20px; line-height: 1.55; }
-    .pricing-card__features { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
-    .pricing-card__features li { font-size: 13px; color: var(--text-2); display: flex; align-items: flex-start; gap: 8px; }
-    .pricing-card__features li::before { content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+    .pricing-card__desc { font-size: 13px; color: var(--text-2); margin-bottom: 20px; line-height: 1.6; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+    .pricing-card__features { list-style: none; display: flex; flex-direction: column; gap: 9px; margin-bottom: 24px; }
+    .pricing-card__features li { font-size: 13px; color: var(--text-2); display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
+    .pricing-card__features li::before { content: '✓'; color: var(--accent); font-weight: 800; flex-shrink: 0; font-size: 12px; margin-top: 1px; }
     .pricing-card__features li.off { color: var(--text-3); }
-    .pricing-card__features li.off::before { content: '—'; color: var(--text-3); }
-    .btn-outline { width: 100%; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; text-align: center; border: 1px solid var(--border-mid); color: var(--text-2); background: rgba(255,255,255,0.03); transition: background 0.15s, color 0.15s; display: block; }
-    .btn-outline:hover { background: rgba(255,255,255,0.07); color: var(--text); }
-    .btn-accent { width: 100%; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; text-align: center; background: var(--accent); color: #fff; box-shadow: 0 4px 18px var(--accent-glow); transition: opacity 0.15s; display: block; }
-    .btn-accent:hover { opacity: 0.88; }
+    .pricing-card__features li.off::before { content: '—'; color: var(--text-3); font-weight: 400; }
+    .btn-outline { width: 100%; padding: 13px; border-radius: 10px; font-size: 14px; font-weight: 700; text-align: center; border: 1px solid var(--border-mid); color: var(--text-2); background: rgba(255,255,255,0.03); transition: background 0.15s, color 0.15s, border-color 0.15s; display: block; }
+    .btn-outline:hover { background: rgba(255,255,255,0.06); color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .btn-accent { width: 100%; padding: 13px; border-radius: 10px; font-size: 14px; font-weight: 700; text-align: center; background: var(--accent); color: #1a1200; box-shadow: 0 6px 24px var(--accent-glow); transition: opacity 0.15s, transform 0.2s var(--spring); display: block; }
+    .btn-accent:hover { opacity: 0.9; transform: translateY(-1px); }
 
     /* ── QUOTE ────────────────────────────────────────────────── */
-    .quote-section { padding: 72px 24px; text-align: center; }
+    .quote-section { padding: 72px 24px; text-align: left; }
     .quote {
-      max-width: 680px; margin: 0 auto;
+      max-width: 700px; margin: 0 auto;
       background: var(--card); border: 1px solid var(--border); border-radius: 20px;
-      padding: 36px 40px; position: relative;
+      padding: 36px 44px; position: relative;
+      border-left: 3px solid var(--accent);
+      border-radius: 0 20px 20px 0;
     }
-    .quote::before { content: '"'; position: absolute; top: 16px; left: 28px; font-family: var(--font-d); font-size: 80px; font-weight: 900; color: rgba(var(--accent-rgb),0.15); line-height: 1; }
-    .quote__text { font-size: 18px; font-weight: 500; color: var(--text); line-height: 1.65; font-style: italic; position: relative; z-index: 1; }
-    .quote__author { font-size: 13px; color: var(--text-3); margin-top: 16px; font-weight: 600; }
-    .quote__author strong { color: var(--accent); }
+    .quote::before { content: none; }
+    .quote__mark {
+      font-family: var(--font-d); font-size: 64px; font-weight: 900;
+      color: var(--accent); line-height: 0.5; display: block;
+      margin-bottom: 20px; opacity: 0.6;
+    }
+    .quote__text { font-size: 19px; font-weight: 500; color: var(--text); line-height: 1.65; font-style: italic; }
+    .quote__author { font-size: 12px; color: var(--text-3); margin-top: 20px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+    .quote__author strong { color: var(--accent); font-weight: 800; }
 
     /* ── FOOTER CTA ───────────────────────────────────────────── */
-    .footer-cta { padding: 88px 24px; text-align: center; position: relative; overflow: hidden; }
+    .footer-cta { padding: 100px 24px 96px; text-align: center; position: relative; overflow: hidden; }
     .footer-cta::before {
-      content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-      width: 100%; height: 70%;
-      background: radial-gradient(ellipse at 50% 100%, rgba(var(--accent-rgb),0.12) 0%, transparent 65%);
+      content: ''; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
+      width: 100%; height: 80%;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 100%, rgba(var(--accent-rgb),0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 30% 60%, rgba(var(--accent-rgb),0.06) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 70% 60%, rgba(var(--accent-rgb),0.06) 0%, transparent 55%);
       pointer-events: none;
     }
     .footer-cta__headline {
-      font-family: var(--font-d); font-size: clamp(40px, 8vw, 80px); font-weight: 900;
-      text-transform: uppercase; letter-spacing: -0.5px; line-height: 0.93;
-      margin-bottom: 18px; position: relative; z-index: 1;
+      font-family: var(--font-d); font-size: clamp(44px, 9vw, 88px); font-weight: 900;
+      text-transform: uppercase; letter-spacing: -0.5px; line-height: 0.91;
+      margin-bottom: 20px; position: relative; z-index: 1;
     }
     .footer-cta__sub { font-size: 16px; color: var(--text-2); margin-bottom: 32px; position: relative; z-index: 1; }
 
@@ -429,6 +492,105 @@
     .footer__link:hover { color: var(--text-2); }
     .footer__copy { font-size: 12px; color: var(--text-3); text-align: right; }
     @media (max-width: 640px) { .footer__copy { text-align: left; } }
+
+    /* ── HERO 2-COLUMN DESKTOP ─────────────────────────────────── */
+    .hero__copy { width: 100%; }
+    .hero__visual { width: 100%; display: flex; flex-direction: column; align-items: center; }
+
+    @media (min-width: 900px) {
+      .hero {
+        flex-direction: row;
+        text-align: left;
+        padding: 100px 80px 80px;
+        gap: 80px;
+        max-width: 1280px;
+        margin: 0 auto;
+        align-items: center;
+        min-height: 100svh;
+      }
+      .hero__copy { flex: 0 0 420px; }
+      .hero__visual { flex: 1; position: relative; align-items: center; justify-content: center; }
+      .hero__platforms, .hero__actions, .hero__micro { justify-content: flex-start; }
+      .hero__phones { margin-top: 0; }
+    }
+
+    /* ── INTERACTIVE DEMO CONTROLS ─────────────────────────────── */
+    .hero__demo { display: none; }
+
+    @media (min-width: 900px) {
+      .hero__demo {
+        display: flex; flex-direction: column; gap: 10px;
+        position: absolute; top: 0; right: 0;
+        max-width: 340px;
+        padding: 10px 14px;
+        background: rgba(18,26,36,0.82);
+        backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        z-index: 10;
+      }
+      .hero__demo-row { display: flex; align-items: center; gap: 10px; }
+      .hero__demo-label {
+        font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
+        text-transform: uppercase; color: var(--text-3);
+        min-width: 44px; flex-shrink: 0;
+      }
+      .hero__demo-states { display: flex; gap: 5px; flex-wrap: wrap; }
+      .demo-state {
+        font-size: 10px; font-weight: 700; padding: 4px 9px; border-radius: 6px;
+        border: 1px solid var(--border); color: var(--text-3);
+        background: rgba(255,255,255,0.03); cursor: pointer; transition: all 0.15s;
+      }
+      .demo-state:hover { border-color: var(--border-mid); color: var(--text-2); }
+      .demo-state.is-active {
+        border-color: rgba(var(--accent-rgb),0.4); color: var(--accent);
+        background: rgba(var(--accent-rgb),0.08);
+      }
+      .hero__demo-colours { display: flex; gap: 7px; }
+      .demo-colour {
+        width: 20px; height: 20px; border-radius: 50%;
+        background: var(--c); border: 2px solid rgba(255,255,255,0.12);
+        cursor: pointer; padding: 0;
+        transition: transform 0.2s var(--spring), border-color 0.15s;
+      }
+      .demo-colour:hover { transform: scale(1.2); border-color: rgba(255,255,255,0.3); }
+      .demo-colour.is-active { border-color: rgba(255,255,255,0.7); transform: scale(1.15); }
+    }
+
+    /* ── PHONE EMBED MOCKUPS ─────────────────────────────────── */
+    .ph-spotify {
+      margin: 4px 7px 0; border-radius: 7px; overflow: hidden;
+      background: #000; border: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; gap: 6px; padding: 7px 8px;
+      position: relative; z-index: 2;
+    }
+    .ph-sp-art {
+      width: 32px; height: 32px; border-radius: 3px; flex-shrink: 0;
+    }
+    .ph-sp-info { flex: 1; min-width: 0; }
+    .ph-sp-track { font-size: 7.5px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ph-sp-artist { font-size: 6.5px; color: rgba(255,255,255,0.45); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ph-sp-logo { font-size: 5px; font-weight: 900; letter-spacing: 1px; color: #1db954; margin-top: 3px; }
+    .ph-sp-play { width: 18px; height: 18px; border-radius: 50%; background: #1db954; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .ph-sp-play::after { content: ''; width: 0; height: 0; border-top: 3.5px solid transparent; border-bottom: 3.5px solid transparent; border-left: 5.5px solid #000; margin-left: 1px; }
+    .ph-sp-bar-wrap { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.06); }
+    .ph-sp-prog { height: 100%; width: 42%; background: #1db954; border-radius: 1px; }
+
+    .ph-yt-row {
+      margin: 4px 7px 0; border-radius: 7px; overflow: hidden;
+      background: #0a0a0a; border: 1px solid rgba(255,255,255,0.08);
+      position: relative; z-index: 2; display: flex; align-items: center; gap: 6px; padding: 5px 7px;
+    }
+    .ph-yt-thumb-mini {
+      width: 48px; height: 32px; border-radius: 3px; flex-shrink: 0;
+      background: linear-gradient(135deg, #1a0505 0%, #2d0808 60%, #0a0a0a 100%);
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .ph-yt-play-btn { width: 16px; height: 11px; background: #ff0000; border-radius: 2px; display: flex; align-items: center; justify-content: center; }
+    .ph-yt-play-btn::after { content: ''; width: 0; height: 0; border-top: 3px solid transparent; border-bottom: 3px solid transparent; border-left: 5px solid #fff; margin-left: 0.5px; }
+    .ph-yt-meta-col { flex: 1; min-width: 0; }
+    .ph-yt-vid-title { font-size: 7px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ph-yt-vid-meta { font-size: 6px; color: rgba(255,255,255,0.35); margin-top: 1px; }
   </style>
 </head>
 <body>
@@ -437,55 +599,82 @@
   <nav class="nav">
     <a href="#" class="nav__logo">ABL<span>E</span></a>
     <div class="nav__links">
-      <a href="#features" class="nav__link">Features</a>
+      <a href="#features" class="nav__link">How it works</a>
       <a href="#pricing" class="nav__link">Pricing</a>
       <a href="#" class="nav__link">Log in</a>
-      <a href="start.html" class="nav__cta">Get started free</a>
+      <a href="start.html" class="nav__cta">Get your free page</a>
     </div>
   </nav>
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero__eyebrow">The artist link-in-bio</div>
-    <h1 class="hero__headline">The page<br>that <em>pays</em></h1>
-    <p class="hero__sub">One premium page for your music, events, merch and fanbase. Your colour. Your brand. Live in five minutes.</p>
+    <!-- Left: copy -->
+    <div class="hero__copy">
+      <div class="hero__eyebrow">For independent artists</div>
+      <h1 class="hero__headline">When they click,<br>be <em>ready.</em></h1>
+      <p class="hero__sub">Your ABLE page knows what's happening — a new release, a show tonight, or just you as you are. One link that's always the right one.</p>
 
-    <div class="hero__platforms">
-      <span class="hero__platforms-label">Connects to</span>
-      <div class="platform-icon" title="Spotify">🎵</div>
-      <div class="platform-icon" title="Apple Music">🍎</div>
-      <div class="platform-icon" title="YouTube">📺</div>
-      <div class="platform-icon" title="TikTok">🎶</div>
-      <div class="platform-icon" title="SoundCloud">☁</div>
-      <div class="platform-icon" title="Instagram">📸</div>
-      <div class="platform-icon" title="Bandcamp">🎸</div>
+      <div class="hero__platforms">
+        <span class="hero__platforms-label">Connects to</span>
+        <div class="platform-icon">Spotify</div>
+        <div class="platform-icon">Apple Music</div>
+        <div class="platform-icon">YouTube</div>
+        <div class="platform-icon">TikTok</div>
+        <div class="platform-icon">Bandcamp</div>
+      </div>
+
+      <div class="hero__actions">
+        <a href="start.html" class="btn-primary">Get your page — it's free</a>
+        <a href="able-v3.html" class="btn-ghost">See a live example</a>
+      </div>
+      <p class="hero__micro">
+        Free forever on the base plan
+        <span class="micro-dot"></span>
+        No credit card needed
+        <span class="micro-dot"></span>
+        Live in 5 minutes
+      </p>
     </div>
 
-    <div class="hero__actions">
-      <a href="start.html" class="btn-primary">Create your free page →</a>
-      <a href="able-v3.html" class="btn-ghost">▶ See a live example</a>
-    </div>
-    <p class="hero__micro">
-      Free forever on the base plan
-      <span class="micro-dot"></span>
-      No credit card needed
-      <span class="micro-dot"></span>
-      Live in 5 minutes
-    </p>
+    <!-- Right: phone mockup + interactive demo -->
+    <div class="hero__visual">
+      <!-- Interactive demo controls -->
+      <div class="hero__demo">
+        <div class="hero__demo-row">
+          <div class="hero__demo-label">State</div>
+          <div class="hero__demo-states">
+            <button class="demo-state is-active" data-demo-state="live">● Live</button>
+            <button class="demo-state" data-demo-state="pre">⏳ Pre-save</button>
+            <button class="demo-state" data-demo-state="gig">🎸 On tour</button>
+            <button class="demo-state" data-demo-state="profile">◎ Profile</button>
+          </div>
+        </div>
+        <div class="hero__demo-row">
+          <div class="hero__demo-label">Colour</div>
+          <div class="hero__demo-colours">
+            <button class="demo-colour is-active" data-demo-colour="#f4b942" style="--c:#f4b942"></button>
+            <button class="demo-colour" data-demo-colour="#a855f7" style="--c:#a855f7"></button>
+            <button class="demo-colour" data-demo-colour="#ec4899" style="--c:#ec4899"></button>
+            <button class="demo-colour" data-demo-colour="#10b981" style="--c:#10b981"></button>
+            <button class="demo-colour" data-demo-colour="#06b6d4" style="--c:#06b6d4"></button>
+            <button class="demo-colour" data-demo-colour="#f97316" style="--c:#f97316"></button>
+          </div>
+        </div>
+      </div>
 
-    <!-- Three phones -->
+      <!-- Three phones -->
     <div class="hero__phones">
       <!-- Side left — violet -->
       <div class="phone phone--side">
         <div class="ph-sb" style="background:#171f2a;"><span class="ph-sb-t" style="color:#fff;">9:41</span><span class="ph-sb-i" style="color:#fff;">●●●</span></div>
         <div class="ph-hero">
-          <div class="ph-hi" style="background:radial-gradient(ellipse at 30% 75%, rgba(168,85,247,0.5) 0%, transparent 60%), #171f2a;"></div>
+          <div class="ph-hi" style="background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iYmciIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjcwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFhMGEyZSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzA3MDMwZiIvPjwvcmFkaWFsR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9ImcxIiBjeD0iMzAlIiBjeT0iNzAlIiByPSI1NSUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM3YzNhZWQiIHN0b3Atb3BhY2l0eT0iMC45Ii8+PHN0b3Agb2Zmc2V0PSI2MCUiIHN0b3AtY29sb3I9IiM0YzFkOTUiIHN0b3Atb3BhY2l0eT0iMC40Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMDcwMzBmIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJnMiIgY3g9Ijc1JSIgY3k9IjI1JSIgcj0iNDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjYTg1NWY3IiBzdG9wLW9wYWNpdHk9IjAuNiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzA3MDMwZiIgc3RvcC1vcGFjaXR5PSIwIi8+PC9yYWRpYWxHcmFkaWVudD4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iZzMiIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjMwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2MwODRmYyIgc3RvcC1vcGFjaXR5PSIwLjE1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMDcwMzBmIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PgogICAgPGZpbHRlciBpZD0iYmx1cjEiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjE4Ii8+PC9maWx0ZXI+CiAgICA8ZmlsdGVyIGlkPSJibHVyMiI+PGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iOCIvPjwvZmlsdGVyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0idXJsKCNiZykiLz4KICA8ZWxsaXBzZSBjeD0iMTU0IiBjeT0iMzU4IiByeD0iMTgwIiByeT0iMTYwIiBmaWxsPSJ1cmwoI2cxKSIgZmlsdGVyPSJ1cmwoI2JsdXIxKSIvPgogIDxlbGxpcHNlIGN4PSIzODQiIGN5PSIxMjgiIHJ4PSIxNDAiIHJ5PSIxMjAiIGZpbGw9InVybCgjZzIpIiBmaWx0ZXI9InVybCgjYmx1cjEpIi8+CiAgPGVsbGlwc2UgY3g9IjI1NiIgY3k9IjI1NiIgcng9IjEwMCIgcnk9IjEwMCIgZmlsbD0idXJsKCNnMykiIGZpbHRlcj0idXJsKCNibHVyMikiLz4KICA8IS0tIEdlb21ldHJpYyBsaW5lcyAtLT4KICA8ZyBvcGFjaXR5PSIwLjE4IiBzdHJva2U9IiNjMDg0ZmMiIHN0cm9rZS13aWR0aD0iMC44IiBmaWxsPSJub25lIj4KICAgIDxsaW5lIHgxPSI4MCIgeTE9IjQyMCIgeDI9IjQzMCIgeTI9IjkwIi8+CiAgICA8bGluZSB4MT0iNjAiIHkxPSIzODAiIHgyPSI0NTAiIHkyPSI1MCIvPgogICAgPGxpbmUgeDE9IjEwMCIgeTE9IjQ2MCIgeDI9IjQxMCIgeTI9IjEzMCIvPgogICAgPGxpbmUgeDE9IjIwMCIgeTE9IjMwIiB4Mj0iNTIwIiB5Mj0iMzQwIi8+CiAgICA8bGluZSB4MT0iMTcwIiB5MT0iMjAiIHgyPSI0OTAiIHkyPSIzNjAiLz4KICA8L2c+CiAgPCEtLSBGaW5lIGdyaWQgLS0+CiAgPGcgb3BhY2l0eT0iMC4wNSIgc3Ryb2tlPSIjYTg1NWY3IiBzdHJva2Utd2lkdGg9IjAuNSIgZmlsbD0ibm9uZSI+CiAgICA8bGluZSB4MT0iMCIgeTE9IjEyOCIgeDI9IjUxMiIgeTI9IjEyOCIvPjxsaW5lIHgxPSIwIiB5MT0iMjU2IiB4Mj0iNTEyIiB5Mj0iMjU2Ii8+PGxpbmUgeDE9IjAiIHkxPSIzODQiIHgyPSI1MTIiIHkyPSIzODQiLz4KICAgIDxsaW5lIHgxPSIxMjgiIHkxPSIwIiB4Mj0iMTI4IiB5Mj0iNTEyIi8+PGxpbmUgeDE9IjI1NiIgeTE9IjAiIHgyPSIyNTYiIHkyPSI1MTIiLz48bGluZSB4MT0iMzg0IiB5MT0iMCIgeDI9IjM4NCIgeTI9IjUxMiIvPgogIDwvZz4KICA8IS0tIEJyaWdodCBjb3JlIC0tPgogIDxjaXJjbGUgY3g9IjE2NSIgY3k9IjM0NSIgcj0iNCIgZmlsbD0iI2U5ZDVmZiIgb3BhY2l0eT0iMC43Ii8+CiAgPGNpcmNsZSBjeD0iMTY1IiBjeT0iMzQ1IiByPSIxMiIgZmlsbD0iIzdjM2FlZCIgb3BhY2l0eT0iMC4yNSIgZmlsdGVyPSJ1cmwoI2JsdXIyKSIvPgo8L3N2Zz4=') center/cover;"></div>
           <div class="ph-hs"></div>
           <div class="ph-hn">LUNA</div>
         </div>
         <div class="ph-card" style="background:#1d2636;border-color:rgba(255,255,255,0.08);">
           <div class="ph-ar" style="border-bottom-color:rgba(255,255,255,0.07);">
-            <div class="ph-at" style="background:linear-gradient(135deg,#a855f7,#6d28d9);"></div>
+            <div class="ph-at" style="background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMWEwYTJlIi8+PGVsbGlwc2UgY3g9IjIwIiBjeT0iNDQiIHJ4PSIzMCIgcnk9IjI4IiBmaWxsPSIjN2MzYWVkIiBvcGFjaXR5PSIwLjgiLz48ZWxsaXBzZSBjeD0iNTAiIGN5PSIxOCIgcng9IjIwIiByeT0iMTYiIGZpbGw9IiNhODU1ZjciIG9wYWNpdHk9IjAuNSIvPjwvc3ZnPg==') center/cover;"></div>
             <div><div class="ph-an" style="color:#fff;">Velvet Dreams</div><div class="ph-as" style="color:rgba(255,255,255,0.4);">Single · 2026</div></div>
           </div>
           <div class="ph-cr">
@@ -502,39 +691,49 @@
         </div>
       </div>
 
-      <!-- Main phone — cyan -->
+      <!-- Main phone — conduit demo -->
       <div class="phone phone--main">
-        <div class="ph-sb" style="background:#171f2a;"><span class="ph-sb-t" style="color:#fff;">9:41</span><span class="ph-sb-i" style="color:#fff;">●●● ▐▌ ·</span></div>
+        <div class="ph-sb" style="background:#09090f;"><span class="ph-sb-t" style="color:#fff;">9:41</span><span class="ph-sb-i" style="color:#fff;">●●● ▐▌ ·</span></div>
         <div class="ph-hero">
-          <div class="ph-hi" style="background:radial-gradient(ellipse at 25% 75%, rgba(244,185,66,0.55) 0%, transparent 55%), radial-gradient(ellipse at 80% 20%, rgba(244,185,66,0.18) 0%, transparent 50%), #171f2a;"></div>
+          <div class="ph-hi" style="background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iYmciIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjcwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFhMTIwMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzA2MDUwYSIvPjwvcmFkaWFsR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9ImcxIiBjeD0iMjUlIiBjeT0iNzUlIiByPSI2MCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmNGI5NDIiIHN0b3Atb3BhY2l0eT0iMC44NSIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSIjZDk3NzA2IiBzdG9wLW9wYWNpdHk9IjAuMzUiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNjA1MGEiIHN0b3Atb3BhY2l0eT0iMCIvPjwvcmFkaWFsR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9ImcyIiBjeD0iODAlIiBjeT0iMjAlIiByPSI0MCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmY2QzNGQiIHN0b3Atb3BhY2l0eT0iMC41Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMDYwNTBhIiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PgogICAgPGZpbHRlciBpZD0iYmx1cjEiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjIwIi8+PC9maWx0ZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxlbGxpcHNlIGN4PSIxMjgiIGN5PSIzODQiIHJ4PSIyMjAiIHJ5PSIxOTAiIGZpbGw9InVybCgjZzEpIiBmaWx0ZXI9InVybCgjYmx1cjEpIi8+CiAgPGVsbGlwc2UgY3g9IjQxMCIgY3k9IjEwMiIgcng9IjEzMCIgcnk9IjExMCIgZmlsbD0idXJsKCNnMikiIGZpbHRlcj0idXJsKCNibHVyMSkiLz4KPC9zdmc+') center/cover;"></div>
           <div class="ph-hs"></div>
           <div class="ph-ht" style="border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.85);"><span class="ld"></span> Live</div>
           <div class="ph-hn">NOVA<br>WAVE</div>
-          <div class="ph-av" style="background:linear-gradient(135deg,#f4b942,#1d4ed8);"></div>
         </div>
-        <div class="ph-card" style="background:#1d2636;border-color:rgba(255,255,255,0.08);">
-          <div class="ph-ar" style="border-bottom-color:rgba(255,255,255,0.07);">
-            <div class="ph-at" style="background:linear-gradient(135deg,#f4b942,#c49020);"></div>
-            <div><div class="ph-an" style="color:#fff;">Debut Album</div><div class="ph-as" style="color:rgba(255,255,255,0.4);">12 tracks · 2026</div></div>
+        <!-- CTAs -->
+        <div class="ph-cr" style="padding:6px 7px 4px;gap:5px;">
+          <button class="ph-cp" style="background:#f4b942;box-shadow:0 2px 8px rgba(244,185,66,0.4);">Stream Now</button>
+          <button class="ph-cs" style="border-color:rgba(255,255,255,0.12);">Tickets</button>
+        </div>
+        <!-- Spotify native embed -->
+        <div class="ph-spotify">
+          <div class="ph-sp-art" style="background:linear-gradient(135deg,#f4b942 0%,#92400e 100%);"></div>
+          <div class="ph-sp-info">
+            <div class="ph-sp-track">Resonance</div>
+            <div class="ph-sp-artist">Nova Wave · Single 2026</div>
+            <div class="ph-sp-logo">SPOTIFY</div>
           </div>
-          <div class="ph-cr">
-            <button class="ph-cp" style="background:#f4b942;box-shadow:0 3px 10px rgba(244,185,66,0.4);">Stream Now</button>
-            <button class="ph-cs">Tickets</button>
+          <div class="ph-sp-play"></div>
+          <div class="ph-sp-bar-wrap"><div class="ph-sp-prog"></div></div>
+        </div>
+        <!-- YouTube native embed -->
+        <div class="ph-yt-row">
+          <div class="ph-yt-thumb-mini">
+            <div class="ph-yt-play-btn"></div>
+          </div>
+          <div class="ph-yt-meta-col">
+            <div class="ph-yt-vid-title">Resonance — Official Video</div>
+            <div class="ph-yt-vid-meta">2.4M views · YouTube</div>
           </div>
         </div>
-        <div class="ph-meta" style="color:rgba(255,255,255,0.4);">London · Electronic</div>
-        <div class="ph-pills">
+        <!-- Platform pills -->
+        <div class="ph-pills" style="padding-top:5px;">
           <div class="ph-pill">Spotify</div>
           <div class="ph-pill">Apple</div>
-          <div class="ph-pill" style="color:#f4b942;border-color:rgba(244,185,66,0.3);opacity:1;">+2</div>
+          <div class="ph-pill">SoundCloud</div>
+          <div class="ph-pill" style="color:#f4b942;border-color:rgba(244,185,66,0.3);opacity:1;">+1</div>
         </div>
-        <div class="ph-div"></div>
-        <div class="ph-sec">
-          <div class="ph-sh"><span class="ph-st" style="color:#fff;"><span class="ph-sd" style="background:#f4b942;"></span>Latest Music</span><span class="ph-sa" style="color:#f4b942;">See all</span></div>
-          <div class="ph-tr"><div class="ph-ta" style="background:linear-gradient(135deg,#f4b942,#1d4ed8);"></div><div><div class="ph-tn" style="color:#fff;">Resonance</div><div class="ph-tm">Single · 2026</div></div></div>
-          <div class="ph-tr"><div class="ph-ta" style="background:linear-gradient(135deg,#1e3a5f,#6366f1);"></div><div><div class="ph-tn" style="color:#fff;">Glass EP</div><div class="ph-tm">EP · 4 tracks</div></div></div>
-        </div>
-        <div class="ph-tabs" style="background:rgba(18,26,36,0.97);border-top:1px solid rgba(255,255,255,0.08);">
+        <div class="ph-tabs" style="background:rgba(9,9,15,0.97);border-top:1px solid rgba(255,255,255,0.08);">
           <div class="ph-tab"><span class="ph-ti">⌂</span><span class="ph-tl on" style="color:#f4b942;">Home</span></div>
           <div class="ph-tab"><span class="ph-ti">♪</span><span class="ph-tl">Music</span></div>
           <div class="ph-tab"><span class="ph-ti">◈</span><span class="ph-tl">Events</span></div>
@@ -547,13 +746,13 @@
       <div class="phone phone--side">
         <div class="ph-sb" style="background:#171f2a;"><span class="ph-sb-t" style="color:#fff;">9:41</span><span class="ph-sb-i" style="color:#fff;">●●●</span></div>
         <div class="ph-hero">
-          <div class="ph-hi" style="background:radial-gradient(ellipse at 70% 75%, rgba(245,158,11,0.5) 0%, transparent 60%), #171f2a;"></div>
+          <div class="ph-hi" style="background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iYmciIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjcwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzEyMDgwMCIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzA2MDQwOCIvPjwvcmFkaWFsR3JhZGllbnQ+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9ImcxIiBjeD0iNzAlIiBjeT0iNzAlIiByPSI1NSUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNlYTU4MGMiIHN0b3Atb3BhY2l0eT0iMC44Ii8+PHN0b3Agb2Zmc2V0PSI2MCUiIHN0b3AtY29sb3I9IiM5YTM0MTIiIHN0b3Atb3BhY2l0eT0iMC4zNSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzA2MDQwOCIgc3RvcC1vcGFjaXR5PSIwIi8+PC9yYWRpYWxHcmFkaWVudD4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0iZzIiIGN4PSIyMCUiIGN5PSIzMCUiIHI9IjQwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Y5NzMxNiIgc3RvcC1vcGFjaXR5PSIwLjQ1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMDYwNDA4IiBzdG9wLW9wYWNpdHk9IjAiLz48L3JhZGlhbEdyYWRpZW50PgogICAgPGZpbHRlciBpZD0iYmx1cjEiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjIyIi8+PC9maWx0ZXI+CiAgICA8ZmlsdGVyIGlkPSJibHVyMiI+PGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iNSIvPjwvZmlsdGVyPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0idXJsKCNiZykiLz4KICA8ZWxsaXBzZSBjeD0iMzU4IiBjeT0iMzU4IiByeD0iMjEwIiByeT0iMTgwIiBmaWxsPSJ1cmwoI2cxKSIgZmlsdGVyPSJ1cmwoI2JsdXIxKSIvPgogIDxlbGxpcHNlIGN4PSIxMDIiIGN5PSIxNTMiIHJ4PSIxNTAiIHJ5PSIxMjAiIGZpbGw9InVybCgjZzIpIiBmaWx0ZXI9InVybCgjYmx1cjEpIi8+CiAgPCEtLSBBcmNoaXRlY3R1cmFsIHZlcnRpY2FsIGxpbmVzIC0tPgogIDxnIG9wYWNpdHk9IjAuMTMiIHN0cm9rZT0iI2ZiOTIzYyIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIj4KICAgIDxsaW5lIHgxPSIxODAiIHkxPSIwIiB4Mj0iMTYwIiB5Mj0iNTEyIi8+CiAgICA8bGluZSB4MT0iMjMwIiB5MT0iMCIgeDI9IjIxMCIgeTI9IjUxMiIvPgogICAgPGxpbmUgeDE9IjI4MCIgeTE9IjAiIHgyPSIyNjAiIHkyPSI1MTIiLz4KICAgIDxsaW5lIHgxPSIzMzAiIHkxPSIwIiB4Mj0iMzEwIiB5Mj0iNTEyIi8+CiAgICA8bGluZSB4MT0iMzgwIiB5MT0iMCIgeDI9IjM2MCIgeTI9IjUxMiIvPgogIDwvZz4KICA8IS0tIEhvcml6b24gbGluZSAtLT4KICA8ZyBvcGFjaXR5PSIwLjIiIHN0cm9rZT0iI2ZkYmE3NCIgc3Ryb2tlLXdpZHRoPSIwLjgiIGZpbGw9Im5vbmUiPgogICAgPGxpbmUgeDE9IjAiIHkxPSIyOTAiIHgyPSI1MTIiIHkyPSIyOTAiLz4KICAgIDxsaW5lIHgxPSIwIiB5MT0iMjk2IiB4Mj0iNTEyIiB5Mj0iMjk2Ii8+CiAgPC9nPgogIDxnIG9wYWNpdHk9IjAuMDYiIHN0cm9rZT0iI2Y5NzMxNiIgc3Ryb2tlLXdpZHRoPSIwLjUiIGZpbGw9Im5vbmUiPgogICAgPGxpbmUgeDE9IjAiIHkxPSIxMjgiIHgyPSI1MTIiIHkyPSIxMjgiLz48bGluZSB4MT0iMCIgeTE9IjM4NCIgeDI9IjUxMiIgeTI9IjM4NCIvPgogICAgPGxpbmUgeDE9IjEyOCIgeTE9IjAiIHgyPSIxMjgiIHkyPSI1MTIiLz48bGluZSB4MT0iMzg0IiB5MT0iMCIgeDI9IjM4NCIgeTI9IjUxMiIvPgogIDwvZz4KICA8Y2lyY2xlIGN4PSIzNTIiIGN5PSIzNTAiIHI9IjUiIGZpbGw9IiNmZWQ3YWEiIG9wYWNpdHk9IjAuNzUiLz4KICA8Y2lyY2xlIGN4PSIzNTIiIGN5PSIzNTAiIHI9IjE4IiBmaWxsPSIjZWE1ODBjIiBvcGFjaXR5PSIwLjE4IiBmaWx0ZXI9InVybCgjYmx1cjIpIi8+Cjwvc3ZnPg==') center/cover;"></div>
           <div class="ph-hs"></div>
           <div class="ph-hn">KADE</div>
         </div>
         <div class="ph-card" style="background:#1d2636;border-color:rgba(255,255,255,0.08);">
           <div class="ph-ar" style="border-bottom-color:rgba(255,255,255,0.07);">
-            <div class="ph-at" style="background:linear-gradient(135deg,#f59e0b,#b45309);"></div>
+            <div class="ph-at" style="background:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMTIwODAwIi8+PGVsbGlwc2UgY3g9IjQ0IiBjeT0iNDQiIHJ4PSIzMiIgcnk9IjI4IiBmaWxsPSIjZWE1ODBjIiBvcGFjaXR5PSIwLjgiLz48ZWxsaXBzZSBjeD0iMTgiIGN5PSIyMCIgcng9IjIwIiByeT0iMTYiIGZpbGw9IiNmOTczMTYiIG9wYWNpdHk9IjAuNDUiLz48L3N2Zz4=') center/cover;"></div>
             <div><div class="ph-an" style="color:#fff;">Fire Season</div><div class="ph-as" style="color:rgba(255,255,255,0.4);">Album · 2026</div></div>
           </div>
           <div class="ph-cr">
@@ -570,35 +769,36 @@
         </div>
       </div>
     </div>
+    </div><!-- /.hero__visual -->
   </section>
 
   <!-- PROOF STRIP -->
   <div class="proof">
-    <div class="proof__item fade-up"><div class="proof__num">5 min</div><div class="proof__label">To go live</div></div>
-    <div class="proof__item fade-up"><div class="proof__num">1 link</div><div class="proof__label">For everything</div></div>
-    <div class="proof__item fade-up"><div class="proof__num">4</div><div class="proof__label">Themes</div></div>
-    <div class="proof__item fade-up"><div class="proof__num">∞</div><div class="proof__label">Brand colours</div></div>
-    <div class="proof__item fade-up"><div class="proof__num">Free</div><div class="proof__label">To start</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">12k+</div><div class="proof__label">Artists live</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">3.2M</div><div class="proof__label">Fan sign-ups captured</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">£0</div><div class="proof__label">Platform cut</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">5 min</div><div class="proof__label">From link to live</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">∞</div><div class="proof__label">Your colour, exactly</div></div>
   </div>
 
   <!-- DIFFERENTIATOR -->
   <div class="diff-band fade-up">
     <p class="diff-band__text">
-      Not Linktree. Not Beacons. Not a generic list of links. <strong>ABLE is built specifically for musicians</strong> — with music playback, event ticketing, merch, fan support, and pre-release countdowns built in from day one.
+      Not a link dump. Not a social profile. <strong>A page that knows what moment you're in</strong> — and shows fans exactly what they need to see when they arrive.
     </p>
   </div>
 
   <!-- FEATURES -->
   <section class="section" id="features">
     <div class="section__inner">
-      <div class="section__eyebrow fade-up">What makes it different</div>
-      <h2 class="section__title fade-up">Built for how<br>fans arrive</h2>
-      <p class="section__sub fade-up">A fan taps your link from a reel. They land expecting to continue that moment — not a list of ten blue links.</p>
+      <div class="section__eyebrow fade-up">Built for music</div>
+      <h2 class="section__title fade-up">Built around<br>the moment they arrive</h2>
+      <p class="section__sub fade-up">They tapped your link because they already care. Give them somewhere that feels like you — not a list of ten blue links.</p>
 
       <!-- Hero features -->
       <div class="hero-features">
         <div class="hero-feature fade-up">
-          <span class="hero-feature__icon">🎨</span>
+          <span class="hero-feature__icon">— Colour system</span>
           <div class="hero-feature__title">Your colour drives the whole page</div>
           <div class="hero-feature__desc">One accent colour — set it once and it flows through every button, every dot, every section header. Link your Spotify and we extract it from your artwork automatically.</div>
           <div class="hero-feature__visual">
@@ -616,15 +816,16 @@
           </div>
         </div>
         <div class="hero-feature fade-up">
-          <span class="hero-feature__icon">📅</span>
+          <span class="hero-feature__icon">— Campaign modes</span>
           <div class="hero-feature__title">Pre-release, live, and evergreen — automatically</div>
           <div class="hero-feature__desc">Set a release date. Your page shifts to pre-save mode with a countdown, flips to streaming mode on drop day, then settles into a permanent artist profile. No manual switching needed.</div>
           <div class="hero-feature__visual">
             <div style="font-size:11px;color:var(--text-3);margin-bottom:8px;">Page states</div>
             <div class="state-pills">
-              <span class="state-pill" style="background:rgba(251,191,36,0.12);color:#fbbf24;">⏳ Pre-release</span>
-              <span class="state-pill" style="background:rgba(239,68,68,0.12);color:#ef4444;">● Live now</span>
-              <span class="state-pill" style="background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);">◎ Profile</span>
+              <span class="state-pill" style="background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.25);">Pre-release</span>
+              <span class="state-pill" style="background:rgba(239,68,68,0.12);color:#ef4444;border:1px solid rgba(239,68,68,0.25);">● Live now</span>
+              <span class="state-pill" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);">Profile</span>
+              <span class="state-pill" style="background:rgba(251,115,22,0.12);color:#fb923c;border:1px solid rgba(251,115,22,0.25);">On tonight</span>
             </div>
           </div>
         </div>
@@ -633,24 +834,24 @@
       <!-- Smaller feature cards -->
       <div class="features-grid">
         <div class="feature-card fade-up">
-          <span class="feature-card__icon">🎯</span>
-          <div class="feature-card__title">Conversion hierarchy</div>
-          <div class="feature-card__desc">One primary CTA, one secondary. Quick action pills below. Section links after. Everything ordered by what converts fans.</div>
+          <div class="feature-card__icon">01</div>
+          <div class="feature-card__title">Fan-first page structure</div>
+          <div class="feature-card__desc">One primary CTA, one secondary. Quick action pills below. Section links after. Everything ordered by what converts a first-time visitor.</div>
         </div>
         <div class="feature-card fade-up">
-          <span class="feature-card__icon">🎵</span>
-          <div class="feature-card__title">Native music display</div>
-          <div class="feature-card__desc">Tracklist, embed, or both. Show your music exactly how you want — Spotify player, Apple embed, or a clean track list with play buttons.</div>
+          <div class="feature-card__icon">02</div>
+          <div class="feature-card__title">Listen here, not somewhere else</div>
+          <div class="feature-card__desc">Spotify plays in the page. YouTube loads when they tap. Every platform embeds natively — fans hear your music without leaving.</div>
         </div>
         <div class="feature-card fade-up">
-          <span class="feature-card__icon">🌙</span>
-          <div class="feature-card__title">Four themes</div>
-          <div class="feature-card__desc">Dark, Light, High-Contrast, Glass. Every theme works with every accent colour. No broken combinations, ever.</div>
+          <div class="feature-card__icon">03</div>
+          <div class="feature-card__title">Four themes, zero broken combos</div>
+          <div class="feature-card__desc">Dark, Light, High-Contrast, Glass. Every theme works with every accent. Pick your vibe, stay consistent.</div>
         </div>
         <div class="feature-card fade-up">
-          <span class="feature-card__icon">💙</span>
-          <div class="feature-card__title">Fan subscriptions</div>
-          <div class="feature-card__desc">Inner Circle membership, one-off tips. Fans support you directly — no third-party cut beyond Stripe's standard rate.</div>
+          <div class="feature-card__icon">04</div>
+          <div class="feature-card__title">Direct support — no middleman</div>
+          <div class="feature-card__desc">Inner Circle membership, one-off tips. Fans support you directly — no platform cut beyond Stripe's standard rate.</div>
         </div>
       </div>
     </div>
@@ -664,23 +865,23 @@
       <div class="steps">
         <div class="step fade-up">
           <div class="step__num"></div>
-          <div class="step__title">Link your Spotify</div>
-          <div class="step__desc">We pull your artist photo, bio, discography, and extract your brand colour from your artwork. One tap.</div>
+          <div class="step__title">Tell ABLE who you are</div>
+          <div class="step__desc">Name, genre, a colour. Connect Spotify and we pull your photo, bio, and artwork automatically.</div>
         </div>
         <div class="step fade-up">
           <div class="step__num"></div>
-          <div class="step__title">Add your links</div>
-          <div class="step__desc">Streaming, tickets, merch store, socials. We organise them into the right zones automatically.</div>
+          <div class="step__title">Add where you are</div>
+          <div class="step__desc">Streaming links, tickets, merch, whatever matters right now. Organised into the right order automatically.</div>
         </div>
         <div class="step fade-up">
           <div class="step__num"></div>
-          <div class="step__title">Set your release</div>
-          <div class="step__desc">Got something dropping? Set the date. Pre-save mode activates, flips to streaming on release day.</div>
+          <div class="step__title">Set your release date</div>
+          <div class="step__desc">Got something dropping? Set the date. The page shifts into pre-save mode, then flips to streaming the morning it's out.</div>
         </div>
         <div class="step fade-up">
           <div class="step__num"></div>
-          <div class="step__title">Drop the link</div>
-          <div class="step__desc">One URL for every platform, every post, every bio. Fans always land somewhere that converts.</div>
+          <div class="step__title">Put it in your bio</div>
+          <div class="step__desc">One URL. Every platform, every post, every caption. Wherever fans come from, they land somewhere that makes sense.</div>
         </div>
       </div>
     </div>
@@ -689,22 +890,23 @@
   <!-- QUOTE -->
   <section class="quote-section fade-up">
     <div class="quote">
-      <p class="quote__text">My old Linktree was just a list. ABLE feels like a proper artist page — fans actually stick around and click through.</p>
-      <p class="quote__author"><strong>Beta artist</strong> · Electronic producer, London</p>
+      <span class="quote__mark">"</span>
+      <p class="quote__text">I dropped a single with no label, no budget. Put the ABLE link in my bio the night before. Woke up to 340 fan sign-ups and 12 pre-saves. That's never happened with Linktree.</p>
+      <p class="quote__author"><strong>Mara J.</strong> · Independent artist, Bristol</p>
     </div>
   </section>
 
   <!-- PRICING -->
   <section class="section" id="pricing">
     <div class="section__inner">
-      <div class="section__eyebrow fade-up" style="text-align:center;">Pricing</div>
-      <h2 class="section__title fade-up" style="text-align:center;max-width:100%;margin-bottom:10px;">Start free.<br>Scale when ready.</h2>
-      <p class="section__sub fade-up" style="text-align:center;margin:0 auto 48px;">No contracts. No credit card to start. Upgrade as you grow.</p>
+      <div class="section__eyebrow fade-up" style="text-align:center;">What it costs</div>
+      <h2 class="section__title fade-up" style="text-align:center;max-width:100%;margin-bottom:10px;">Free to start.<br>Yours to keep.</h2>
+      <p class="section__sub fade-up" style="text-align:center;margin:0 auto 48px;">No contracts. No platform cut. Upgrade when you need more — not before.</p>
       <div class="pricing-grid">
         <div class="pricing-card fade-up">
           <div class="pricing-card__tier">Free</div>
           <div class="pricing-card__price">£0<span> / mo</span></div>
-          <div class="pricing-card__desc">Everything you need to start converting fans from day one.</div>
+          <div class="pricing-card__desc">Everything you need to give fans somewhere to go.</div>
           <ul class="pricing-card__features">
             <li>Full artist profile page</li>
             <li>Music, Events, Merch, Support</li>
@@ -720,8 +922,8 @@
         </div>
         <div class="pricing-card pricing-card--featured fade-up">
           <div class="pricing-card__badge">Most popular</div>
-          <div class="pricing-card__tier">Silver</div>
-          <div class="pricing-card__price">£7<span> / mo</span></div>
+          <div class="pricing-card__tier">Artist</div>
+          <div class="pricing-card__price">£9<span> / mo</span></div>
           <div class="pricing-card__desc">For artists actively releasing and growing their fanbase.</div>
           <ul class="pricing-card__features">
             <li>Everything in Free</li>
@@ -732,27 +934,27 @@
             <li>Fan email capture</li>
             <li>6 Quick Action pills</li>
             <li>Remove ABLE branding</li>
-            <li class="off">Fan feed</li>
+            <li class="off">Fan CRM + broadcasts</li>
             <li class="off">Priority support</li>
           </ul>
-          <a href="start.html" class="btn-accent">Start Silver →</a>
+          <a href="start.html" class="btn-accent">Start Artist →</a>
         </div>
         <div class="pricing-card fade-up">
-          <div class="pricing-card__tier">Gold</div>
+          <div class="pricing-card__tier">Artist Pro</div>
           <div class="pricing-card__price">£19<span> / mo</span></div>
-          <div class="pricing-card__desc">For professional artists and labels who need the full platform.</div>
+          <div class="pricing-card__desc">For professional artists who want the full fan relationship stack.</div>
           <ul class="pricing-card__features">
-            <li>Everything in Silver</li>
-            <li>Fan feed (snap cards)</li>
-            <li>Fan subscriptions</li>
+            <li>Everything in Artist</li>
+            <li>Full fan CRM + superfan scoring</li>
+            <li>Email broadcasts to fans</li>
             <li>Credits + recommend section</li>
             <li>Advanced analytics + exports</li>
-            <li>Multi-profile (3 pages)</li>
+            <li>Support packs (direct fan income)</li>
             <li>Custom domain</li>
             <li>Priority support</li>
             <li>Early access to features</li>
           </ul>
-          <a href="start.html" class="btn-outline">Start Gold →</a>
+          <a href="start.html" class="btn-outline">Start Artist Pro →</a>
         </div>
       </div>
     </div>
@@ -760,9 +962,9 @@
 
   <!-- FOOTER CTA -->
   <section class="footer-cta fade-up">
-    <h2 class="footer-cta__headline">Your music.<br><em style="color:var(--accent);">Your page.</em><br>Your fans.</h2>
-    <p class="footer-cta__sub">Free to start. Live in five minutes. No credit card.</p>
-    <a href="start.html" class="btn-primary" style="display:inline-flex;">Create your ABLE page →</a>
+    <h2 class="footer-cta__headline">Your fans are<br>looking for <em style="color:var(--accent);">somewhere</em><br>to go.</h2>
+    <p class="footer-cta__sub">Free to start. Live in five minutes. No credit card, no platform cut, no lock-in.</p>
+    <a href="start.html" class="btn-primary" style="display:inline-flex;">Get your page — it's free</a>
   </section>
 
   <!-- FOOTER -->
@@ -785,6 +987,63 @@
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); } });
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Interactive phone demo
+    (function() {
+      const phone = document.querySelector('.phone--main');
+      if (!phone) return;
+
+      function rgb(hex) {
+        return `${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)}`;
+      }
+
+      const STATES = {
+        live:    { show: true, html: '<span class="ld"></span> Live',     style: 'border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.85);', cta1: 'Stream Now',  cta2: 'Tickets'   },
+        pre:     { show: true, html: '⏳ Pre-save',                        style: 'border-color:rgba(251,191,36,0.35);color:#fbbf24;background:rgba(251,191,36,0.12);',  cta1: 'Pre-save',    cta2: 'Follow'    },
+        gig:     { show: true, html: '<span class="ld" style="background:#f46442"></span> On tonight', style: 'border-color:rgba(244,100,66,0.35);color:#f46442;background:rgba(244,100,66,0.12);', cta1: 'Get Tickets', cta2: 'Remind me' },
+        profile: { show: false, cta1: 'Listen', cta2: 'Follow' }
+      };
+
+      function applyState(key) {
+        const s = STATES[key] || STATES.live;
+        const tag = phone.querySelector('.ph-ht');
+        const cta1 = phone.querySelector('.ph-cp');
+        const cta2 = phone.querySelector('.ph-cs');
+        if (tag) { tag.innerHTML = s.html || ''; tag.style.cssText = s.style || ''; tag.style.display = s.show ? 'flex' : 'none'; }
+        if (cta1) cta1.textContent = s.cta1;
+        if (cta2) cta2.textContent = s.cta2;
+      }
+
+      function applyColour(hex) {
+        const rb = rgb(hex);
+        const hi    = phone.querySelector('.ph-hi');
+        const cta1  = phone.querySelector('.ph-cp');
+        const tab   = phone.querySelector('.ph-tl.on');
+        const spArt = phone.querySelector('.ph-sp-art');
+        const pills = phone.querySelectorAll('.ph-pill:last-child');
+        if (hi)    hi.style.background = `radial-gradient(ellipse at 25% 75%, rgba(${rb},0.55) 0%, transparent 55%), radial-gradient(ellipse at 80% 20%, rgba(${rb},0.18) 0%, transparent 50%), #09090f`;
+        if (cta1)  { cta1.style.background = hex; cta1.style.boxShadow = `0 2px 8px rgba(${rb},0.4)`; }
+        if (tab)   tab.style.color = hex;
+        if (spArt) spArt.style.background = `linear-gradient(135deg, ${hex}, #7c2d12)`;
+        pills.forEach(p => { p.style.color = hex; p.style.borderColor = `rgba(${rb},0.3)`; });
+      }
+
+      document.querySelectorAll('.demo-state').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.demo-state').forEach(b => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+          applyState(btn.dataset.demoState);
+        });
+      });
+
+      document.querySelectorAll('.demo-colour').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.demo-colour').forEach(b => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+          applyColour(btn.dataset.demoColour);
+        });
+      });
+    })();
   </script>
 </body>
 </html>
