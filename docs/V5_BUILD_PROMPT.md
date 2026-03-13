@@ -114,6 +114,35 @@ CLAUDE.md        — project rules, data architecture, design tokens, copy const
 HANDOFF.md       — current state notes
 ```
 
+### What already exists — do not duplicate, do build on:
+
+**start.html (wizard — already built):**
+- 4 steps + done: name/vibe/bio/Spotify → colour picker → theme grid → hero+secondary CTA → done screen
+- Writes to `able_profile` localStorage key (separate from `able_v3_profile` — see note below)
+- Vibes available: electronic, indie, hiphop, pop, rnb, folk, ambient, experimental
+- Done screen: generated URL + copy button + WhatsApp/Twitter/SMS share + dashboard link
+- Hero CTA categories: Stream/Listen / Connect / Engage / Shop
+
+**landing.html (marketing page — already built, has good bones):**
+- Hero headline confirmed: "When they click, be **ready.**" — do not change this
+- Proof strip: 12k+ artists / 3.2M fan sign-ups / £0 platform cut / 5 min setup
+- 2 hero feature cards (colour system, campaign modes) + 4 numbered feature cards
+- Real artist quote: "I dropped a single with no label, no budget. Put the ABLE link in my bio the night before. Woke up to 340 fan sign-ups and 12 pre-saves." — Mara J., Bristol
+- Preserved copy: "One link that's always the right one" / "No algorithm in the way"
+- Pricing: Free / Silver £7/mo / Gold £19/mo (3 tiers — needs updating to 4-tier model in CLAUDE.md)
+
+**admin.html (dashboard — already built, 12 tabs):**
+- Tabs: Home · Profile · Music · Shows · Snap Cards · Connections · Merch · Support · Analytics · Fans · Send to fans · Settings
+- Home greeting: "Good to see you, [Name]." (exact wording — preserve this)
+- Broadcast tab (Send to fans): Gold-locked — compose + send
+- Gold lock pattern: blurred preview + overlay with specific value prop (not generic "Upgrade")
+- localStorage keys used: `able_profile`, `able_v3_profile`, `able_fans`, `able_clicks`, `able_views`, `able_gig_expires`
+
+**localStorage key clarification (important for v5):**
+- `able_profile` — wizard output from start.html — basic setup
+- `able_v3_profile` — full profile from able-v3.html and admin.html — the authoritative key
+- In v5: `able_v3_profile` is the single source of truth. Wizard output must write to it, not `able_profile`. Do not rename — Supabase/D1 migration maps 1:1.
+
 **Do not proceed to Phase 1 until all files above are read.**
 
 ---
