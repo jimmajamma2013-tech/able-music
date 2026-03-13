@@ -1188,6 +1188,48 @@
       transform: scale(1.03);
     }
 
+    /* Play overlay — centred on artwork, appears on hover or always visible */
+    .release-card__play-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.28);
+      opacity: 0;
+      transition: opacity var(--dur-fast) var(--ease-standard);
+      cursor: pointer;
+      border: none;
+      width: 100%;
+      padding: 0;
+    }
+
+    .release-card__play-overlay svg {
+      width: 56px;
+      height: 56px;
+      filter: drop-shadow(0 2px 12px rgba(0,0,0,0.6));
+    }
+
+    /* Always show a subtle play hint — full opacity on hover */
+    .release-card__artwork-wrap:hover .release-card__play-overlay,
+    .release-card__play-overlay:focus-visible {
+      opacity: 1;
+    }
+
+    /* If the card has an embed, show the overlay at 60% opacity by default */
+    .release-card--has-embed .release-card__play-overlay {
+      opacity: 0.6;
+    }
+
+    .release-card--has-embed .release-card__artwork-wrap:hover .release-card__play-overlay {
+      opacity: 1;
+    }
+
+    /* Hide the old button once overlay exists */
+    .release-card--has-embed .release-card__embed-btn {
+      display: none;
+    }
+
     /* Platform badge — top right corner of artwork */
     .release-card__platform-badge {
       position: absolute;
@@ -1311,6 +1353,56 @@
       width: 100%;
       border: none;
       display: block;
+    }
+
+    /* Native Spotify embed — iframe shows immediately, no artwork */
+    .release-card__spotify-embed {
+      overflow: hidden;
+      background: #000;
+      line-height: 0;
+    }
+    .release-card__spotify-embed iframe {
+      width: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* YouTube — thumbnail with branded play button */
+    .release-card__yt-badge {
+      position: absolute;
+      bottom: var(--sp-3);
+      right: var(--sp-3);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #fff;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    /* YouTube expand — 16:9 iframe fills full width */
+    .release-card__yt-expand {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      background: #000;
+    }
+    .release-card__yt-expand iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
     }
 
     /* Embed toggle button */
@@ -3501,18 +3593,27 @@
       list.innerHTML = ''
       releases.forEach((rel, i) => {
         const card = document.createElement('article')
-        card.className = 'release-card'
-        card.setAttribute('role', 'listitem')
 
         const type = rel.type || 'Single'
         const year = rel.releaseDate ? new Date(rel.releaseDate).getFullYear() : ''
         const tracks = rel.tracks || []
-        // Try embedUrl from data, else try to build from streamUrl
         const embedUrl = rel.embedUrl || buildEmbedUrl(rel.streamUrl)
         const embedHeight = getEmbedHeight(rel.streamUrl || rel.embedUrl)
         const artworkSrc = rel.artworkUrl || ''
 
-        // Build tracks list — each track shows artwork if available
+        // Platform detection
+        const streamUrl = rel.streamUrl || ''
+        const isSpotify = streamUrl.includes('spotify')
+        const ytIdMatch = streamUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]+)/)
+        const youtubeId = ytIdMatch ? ytIdMatch[1] : null
+        const isYouTube = !!youtubeId
+        const ytThumb = youtubeId ? `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg` : null
+        const spotifyH = streamUrl.match(/\/(playlist|album)\//) ? 352 : 152
+
+        card.className = 'release-card' + ((embedUrl && !isSpotify) ? ' release-card--has-embed' : '')
+        card.setAttribute('role', 'listitem')
+
+        // Build tracks list
         const tracksHtml = tracks.length
           ? `<div class="release-card__tracks" aria-label="Track listing">
               ${tracks.slice(0, 5).map((t, ti) => {
@@ -3529,28 +3630,68 @@
             </div>`
           : ''
 
-        // Platform badge label
-        const platformLabel = rel.platform || (rel.streamUrl
-          ? (rel.streamUrl.includes('spotify') ? 'Spotify'
-            : rel.streamUrl.includes('soundcloud') ? 'SoundCloud'
-            : rel.streamUrl.includes('mixcloud') ? 'Mixcloud'
-            : rel.streamUrl.includes('youtube') || rel.streamUrl.includes('youtu.be') ? 'YouTube'
-            : rel.streamUrl.includes('apple') ? 'Apple Music'
+        // Platform badge label (for non-YouTube, non-Spotify cards)
+        const platformLabel = rel.platform || (streamUrl
+          ? (isSpotify ? 'Spotify'
+            : streamUrl.includes('soundcloud') ? 'SoundCloud'
+            : streamUrl.includes('mixcloud') ? 'Mixcloud'
+            : isYouTube ? 'YouTube'
+            : streamUrl.includes('apple') ? 'Apple Music'
             : 'Stream')
           : '')
-        const platformIcon = platformLabel ? getPlatformIcon(platformLabel.toLowerCase().replace(' ',''), rel.streamUrl || '') : ''
+        const platformIcon = platformLabel ? getPlatformIcon(platformLabel.toLowerCase().replace(' ',''), streamUrl) : ''
 
-        card.innerHTML = `
-          <div class="release-card__artwork-wrap">
+        // Build the media section based on platform
+        let mediaHtml
+        if (isSpotify && embedUrl) {
+          // Spotify: auto-load the iframe — it looks like Spotify natively
+          mediaHtml = `<div class="release-card__spotify-embed">
+            <iframe src="${embedUrl}&theme=0" height="${spotifyH}"
+                    title="${rel.title || 'Music player'}"
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"></iframe>
+          </div>`
+        } else if (isYouTube && ytThumb) {
+          // YouTube: thumbnail with branded play button, click expands 16:9 iframe
+          mediaHtml = `<div class="release-card__artwork-wrap">
+            <img class="release-card__artwork" src="${ytThumb}"
+                 onerror="this.src='https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg'"
+                 alt="${rel.title || 'Video'} thumbnail" loading="lazy">
+            <button class="release-card__play-overlay pressable" aria-label="Watch ${(rel.title || 'video').replace(/'/g,"\\'")} inline">
+              <svg width="68" height="48" viewBox="0 0 68 48" fill="none" aria-hidden="true">
+                <rect width="68" height="48" rx="10" fill="#FF0000"/>
+                <path d="M27 14l24 10-24 10V14z" fill="white"/>
+              </svg>
+            </button>
+            <div class="release-card__yt-badge" aria-hidden="true">
+              <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                <rect width="10" height="8" rx="1.5" fill="#FF0000"/>
+                <path d="M4 2l3 2-3 2V2z" fill="white"/>
+              </svg>
+              YouTube
+            </div>
+          </div>
+          <div class="release-embed" hidden>
+            <div class="release-card__yt-expand">
+              <iframe src="" title="${rel.title || 'Video player'}"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowfullscreen loading="lazy"></iframe>
+            </div>
+          </div>`
+        } else {
+          // SoundCloud / Mixcloud / generic — artwork + play overlay or external link
+          mediaHtml = `<div class="release-card__artwork-wrap">
             ${artworkSrc
               ? `<img class="release-card__artwork" src="${artworkSrc}"
-                      alt="${rel.title || 'Release'} artwork"
-                      loading="lazy">`
+                      alt="${rel.title || 'Release'} artwork" loading="lazy">`
               : `<div class="release-card__artwork" aria-hidden="true" style="aspect-ratio:1;background:var(--color-surface)"></div>`
             }
-            ${(platformLabel && rel.streamUrl)
+            ${embedUrl ? `<button class="release-card__play-overlay pressable" aria-label="Play ${(rel.title || 'release').replace(/'/g,"\\'")} inline">
+              <svg viewBox="0 0 24 24" fill="white" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            </button>` : ''}
+            ${(platformLabel && streamUrl && !embedUrl)
               ? `<a class="release-card__platform-badge pressable"
-                    href="${rel.streamUrl}" target="_blank" rel="noopener noreferrer"
+                    href="${streamUrl}" target="_blank" rel="noopener noreferrer"
                     onclick="event.stopPropagation();trackClick('${(rel.title||'Release').replace(/'/g,"\\'")}','stream','listen')">
                    ${platformIcon ? `<span aria-hidden="true">${platformIcon}</span>` : ''}
                    ${platformLabel}
@@ -3558,47 +3699,43 @@
               : ''
             }
           </div>
+          ${embedUrl
+            ? `<div class="release-embed" hidden>
+                 <iframe src="" height="${embedHeight}" title="${rel.title || 'Music player'}"
+                         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                         loading="lazy" scrolling="no"></iframe>
+               </div>`
+            : streamUrl
+              ? `<a class="release-card__ext pressable" href="${streamUrl}" target="_blank" rel="noopener noreferrer"
+                    onclick="trackClick('${(rel.title||'Release').replace(/'/g,"\\'")}','stream','listen')">
+                   Open in ${platformLabel || 'streaming app'} ↗
+                 </a>`
+              : ''
+          }`
+        }
+
+        card.innerHTML = `
+          ${mediaHtml}
           <div class="release-card__info">
             <h3 class="release-card__title">${rel.title || 'Untitled'}</h3>
             <p class="release-card__meta">${type}${year ? ` · ${year}` : ''}${tracks.length ? ` · ${tracks.length} track${tracks.length !== 1 ? 's' : ''}` : ''}</p>
             ${tracksHtml}
           </div>
-          ${embedUrl
-            ? `<button class="release-card__embed-btn pressable" aria-label="Play ${rel.title || 'release'} inline">
-                 ▶ Play inline
-               </button>
-               <div class="release-embed" hidden>
-                 <iframe src="" height="${embedHeight}" title="${rel.title || 'Music player'}"
-                         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                         loading="lazy" scrolling="no"></iframe>
-               </div>`
-            : rel.streamUrl
-              ? `<a class="release-card__ext pressable" href="${rel.streamUrl}" target="_blank" rel="noopener noreferrer"
-                    onclick="trackClick('${(rel.title||'Release').replace(/'/g,"\\'")}','stream','listen')">
-                   Open in ${platformLabel || 'streaming app'} ↗
-                 </a>`
-              : ''
-          }
         `
 
-        // Inline embed toggle
-        if (embedUrl) {
-          const btn = card.querySelector('.release-card__embed-btn')
+        // Wire embed toggle (YouTube + other embeds — not Spotify which auto-loads)
+        if (embedUrl && !isSpotify) {
+          const overlay = card.querySelector('.release-card__play-overlay')
           const embedDiv = card.querySelector('.release-embed')
           const iframe = embedDiv ? embedDiv.querySelector('iframe') : null
 
-          if (btn && embedDiv && iframe) {
-            btn.addEventListener('click', e => {
+          if (overlay && embedDiv && iframe) {
+            overlay.addEventListener('click', e => {
               e.stopPropagation()
-              const open = !embedDiv.hidden
-              if (open) {
-                embedDiv.hidden = true
-                iframe.src = ''
-                btn.innerHTML = '▶ Play inline'
-              } else {
+              if (embedDiv.hidden) {
                 embedDiv.hidden = false
-                iframe.src = embedUrl
-                btn.innerHTML = '✕ Close player'
+                iframe.src = isYouTube ? `https://www.youtube.com/embed/${youtubeId}?autoplay=1` : embedUrl
+                overlay.style.display = 'none'
                 trackClick(rel.title || 'Release', 'embed', 'listen')
               }
             })
