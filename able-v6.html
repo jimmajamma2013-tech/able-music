@@ -2607,6 +2607,37 @@
       line-height: 1.4;
     }
 
+    /* AI helper in edit panel */
+    .ep-ai-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: var(--r-pill);
+      font-size: 10px; font-weight: 700; letter-spacing: 0.03em;
+      color: var(--color-accent);
+      border: 1px solid rgba(var(--color-accent-rgb), 0.25);
+      background: rgba(var(--color-accent-rgb), 0.06);
+      cursor: pointer; margin-top: 4px;
+      transition: background var(--dur-fast), border-color var(--dur-fast);
+    }
+    .ep-ai-btn:hover { background: rgba(var(--color-accent-rgb), 0.12); }
+    .ep-ai-draft {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; padding: 10px 12px;
+      font-size: 12px; color: var(--color-text);
+      line-height: 1.5; margin-top: 6px;
+      white-space: pre-wrap; display: none;
+    }
+    .ep-ai-draft.visible { display: block; }
+    .ep-ai-draft.loading { color: var(--color-text-3); font-style: italic; }
+    .ep-ai-use {
+      display: inline-block; margin-top: 6px;
+      padding: 5px 14px; border-radius: 6px;
+      font-size: 11px; font-weight: 700;
+      background: var(--color-accent); color: #000;
+      border: none; cursor: pointer;
+    }
+    .ep-ai-use:disabled { opacity: 0.4; cursor: not-allowed; }
+
     .ep-dash-link {
       display: block;
       text-align: center;
@@ -5418,6 +5449,9 @@
           <div class="ep-field">
             <label class="ep-label" for="ep-bio">Bio</label>
             <textarea class="ep-input" id="ep-bio" rows="3" placeholder="A few lines about you and your music">${escHtml(p.bio||'')}</textarea>
+            <button class="ep-ai-btn" type="button" id="ep-bio-ai-btn">✦ Suggest a bio</button>
+            <div class="ep-ai-draft loading" id="ep-bio-ai-draft">Generating…</div>
+            <button class="ep-ai-use" id="ep-bio-ai-use" disabled>Use this →</button>
           </div>
 
           <div class="ep-field">
@@ -5492,6 +5526,53 @@
           accentInput.addEventListener('input', () => {
             swatch.style.background = accentInput.value
             hexLabel.textContent    = accentInput.value
+          })
+        }
+
+        // ── Bio AI helper ────────────────────────────────────────────
+        const epBioAiBtn  = body.querySelector('#ep-bio-ai-btn')
+        const epBioAiDraft = body.querySelector('#ep-bio-ai-draft')
+        const epBioAiUse  = body.querySelector('#ep-bio-ai-use')
+        let _epBioDraft = ''
+
+        function epBioTemplates(vibe, name) {
+          const t = {
+            electronic: ['{n} makes club music for people who close their eyes.', 'Producer, sound designer. Quiet studio, loud mixes.'],
+            hiphop:     ['{n}. Rapper, writer, producer. Everything made from scratch.', 'Bars and beats. All original, all intentional.'],
+            rnb:        ['{n} writes about love, grief, and the space in between.', 'Soul music. Real feelings, real production.'],
+            indie:      ['Songs about ordinary things that turn out to be everything.', '{n} — indie music made in the margins.'],
+            pop:        ['{n} makes pop songs people still remember three days later.', 'Big hooks, real feelings. Pop done with intention.'],
+            rock:       ['{n}. Guitar-driven, heavy where it counts.', 'Loud music made carefully. Volume as a choice, not a default.'],
+            acoustic:   ['Just a voice, a guitar, and things worth saying.', '{n} — folk music with its feet on the ground.'],
+          }
+          const pool = t[vibe] || t['indie']
+          return pool[Math.floor(Math.random() * pool.length)].replace(/{n}/g, name || 'Artist')
+        }
+
+        if (epBioAiBtn) {
+          epBioAiBtn.addEventListener('click', () => {
+            epBioAiDraft.classList.add('visible', 'loading')
+            epBioAiDraft.textContent = 'Generating…'
+            epBioAiUse.disabled = true
+            _epBioDraft = ''
+            setTimeout(() => {
+              const name = body.querySelector('#ep-name')?.value.trim() || p.name || ''
+              const vibe = body.querySelector('[data-vibe].active')?.dataset.vibe || p.vibe || 'indie'
+              _epBioDraft = epBioTemplates(vibe, name)
+              epBioAiDraft.classList.remove('loading')
+              epBioAiDraft.textContent = _epBioDraft
+              epBioAiUse.disabled = false
+            }, 500)
+          })
+        }
+
+        if (epBioAiUse) {
+          epBioAiUse.addEventListener('click', () => {
+            if (!_epBioDraft) return
+            const textarea = body.querySelector('#ep-bio')
+            if (textarea) textarea.value = _epBioDraft
+            epBioAiDraft.classList.remove('visible')
+            epBioAiUse.disabled = true
           })
         }
 
