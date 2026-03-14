@@ -2445,7 +2445,8 @@
       display: flex;
       flex-direction: column;
       transform: translateY(100%);
-      transition: transform var(--dur-mid) cubic-bezier(0.25,0.46,0.45,0.94);
+      /* Entry: spring 350ms — set in JS. Default is exit timing. */
+      transition: transform 250ms var(--ease-accel);
       overflow: hidden;
     }
     #edit-panel.open { transform: translateY(0); }
@@ -5757,6 +5758,8 @@
       function openPanel() {
         const p = getProfile()
         buildPanel(p)
+        // Entry: spring 350ms (asymmetric — exit uses ease-accel 250ms via CSS default)
+        panel.style.transition = 'transform 350ms var(--ease-spring)'
         backdrop.classList.add('open')
         panel.classList.add('open')
         shell.classList.add('panel-open')
@@ -5771,6 +5774,8 @@
       }
 
       function closePanel() {
+        // Exit: accel 250ms (faster than entry)
+        panel.style.transition = 'transform 250ms var(--ease-accel)'
         backdrop.classList.remove('open')
         panel.classList.remove('open')
         shell.classList.remove('panel-open')
