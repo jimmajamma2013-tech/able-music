@@ -2028,7 +2028,7 @@ function renderAdminMusic() {
 function addRelease() {
   const data = safeLS(V3_KEY, {});
   const releases = data.releases || [];
-  releases.unshift({ id: 'r'+Date.now(), title: 'New Release', type: 'Single', year: String(new Date().getFullYear()), displayMode: 'tracklist', platformUrl: '', tracks: [], credits: [] });
+  releases.unshift({ id: 'r'+Date.now(), title: 'New Release', type: 'Single', year: String(new Date().getFullYear()), displayMode: 'both', platformUrl: '', tracks: [], credits: [] });
   setLS(V3_KEY, { ...data, releases });
   syncProfile({ ...data, releases });
   renderAdminMusic();
@@ -2053,12 +2053,21 @@ function updateReleaseField(rid, field, value) {
 function showEmbedPreview(rid, url) {
   const el = document.getElementById('embed-prev-' + rid);
   if (!el) return;
-  const embedUrl = spotifyEmbedUrl(url);
-  if (!embedUrl) { el.style.display = 'none'; el.innerHTML = ''; return; }
-  const isTrack = embedUrl.includes('/track/');
-  const h = isTrack ? 152 : 352;
-  el.style.display = 'block';
-  el.innerHTML = `<iframe src="${embedUrl}" height="${h}" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+  const spotify = spotifyEmbedUrl(url);
+  if (spotify) {
+    const h = spotify.includes('/track/') ? 152 : 352;
+    el.style.display = 'block';
+    el.innerHTML = `<iframe src="${spotify}" height="${h}" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+    return;
+  }
+  const yt = youtubeEmbedUrl(url);
+  if (yt) {
+    el.style.display = 'block';
+    el.innerHTML = `<iframe src="${yt}" height="200" style="aspect-ratio:16/9;height:auto;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+    return;
+  }
+  el.style.display = 'none';
+  el.innerHTML = '';
 }
 
 function spotifyEmbedUrl(raw) {
@@ -2067,10 +2076,19 @@ function spotifyEmbedUrl(raw) {
     const url = raw.startsWith('http') ? raw : 'https://' + raw;
     const u = new URL(url);
     if (!u.hostname.includes('spotify.com')) return null;
-    // /track/ID, /album/ID, /playlist/ID
     const m = u.pathname.match(/\/(track|album|playlist)\/([a-zA-Z0-9]+)/);
     if (!m) return null;
     return `https://open.spotify.com/embed/${m[1]}/${m[2]}?utm_source=generator`;
+  } catch { return null; }
+}
+
+function youtubeEmbedUrl(raw) {
+  if (!raw) return null;
+  try {
+    const url = raw.startsWith('http') ? raw : 'https://' + raw;
+    const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]+)/);
+    if (!m) return null;
+    return `https://www.youtube.com/embed/${m[1]}`;
   } catch { return null; }
 }
 
@@ -2915,9 +2933,10 @@ function saveProfilePage() {
     platforms,
     topCard:   {
       ...(data.topCard || {}),
-      artworkUrl: artworkUrl || data.topCard?.artworkUrl || '',
-      videoUrl:   videoUrl   || data.topCard?.videoUrl   || '',
-      type:       videoUrl   ? 'video' : (artworkUrl ? 'artwork' : data.topCard?.type || ''),
+      // Field value is authoritative — empty string clears the stored value
+      artworkUrl: artworkUrl,
+      videoUrl:   videoUrl,
+      type:       videoUrl   ? 'video' : (artworkUrl ? 'artwork' : ''),
     },
     ctaPrimary:   { label: ctaPrimaryLabel || data.ctaPrimary?.label || 'Stream Now',  url: ctaPrimaryUrl   || data.ctaPrimary?.url   || '' },
     ctaSecondary: { label: ctaSecLabel     || data.ctaSecondary?.label || '',           url: ctaSecUrl       || data.ctaSecondary?.url  || '' },
