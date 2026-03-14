@@ -3419,11 +3419,83 @@
       transition: top 0.15s;
     }
     .skip-link:focus { top: 8px; }
+
+    /* ── Owner context bar ────────────────────────────────────────── */
+    #owner-bar {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 9999;
+      height: 38px;
+      background: rgba(9,9,15,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(244,185,66,0.25);
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      gap: 8px;
+      max-width: 430px;
+      margin: 0 auto;
+    }
+    #owner-bar.visible { display: flex; }
+    .owner-bar__back {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: #f4b942;
+      text-decoration: none;
+      opacity: 0.9;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+    .owner-bar__back:hover { opacity: 1; }
+    .owner-bar__label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      flex: 1;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .owner-bar__share {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.6);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+    .owner-bar__share:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    /* Push app shell down when owner bar is visible */
+    body.has-owner-bar #app-shell { margin-top: 38px; }
   </style>
 </head>
 <body>
 
   <a class="skip-link" href="#scroll-container">Skip to content</a>
+
+  <!-- Owner context bar — visible only to the artist who owns this profile -->
+  <div id="owner-bar" role="navigation" aria-label="Artist admin navigation">
+    <a class="owner-bar__back" href="admin.html">
+      <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" width="10" height="10"><path d="M7 5H3M5 3l-2 2 2 2"/></svg>
+      Dashboard
+    </a>
+    <span class="owner-bar__label" id="owner-bar-label">Your public page</span>
+    <button class="owner-bar__share" id="owner-bar-share" aria-label="Copy profile link">
+      Share ↗
+    </button>
+  </div>
 
   <!-- Glass full-bleed blurred background (glass theme only) -->
   <div id="glass-bg" aria-hidden="true"></div>
@@ -7084,6 +7156,30 @@
       // Show FAB only if artist owns this profile (has their own localStorage data)
       const isOwner = Boolean(localStorage.getItem('able_v3_profile') && profile.name)
       if (!isOwner) return
+
+      // Owner context bar — dashboard link + share button
+      const ownerBar = document.getElementById('owner-bar')
+      if (ownerBar) {
+        ownerBar.classList.add('visible')
+        document.body.classList.add('has-owner-bar')
+        // Label
+        const barLabel = document.getElementById('owner-bar-label')
+        if (barLabel && profile.name) barLabel.textContent = `${profile.name}\u2019s page`
+        // Share button — copy URL to clipboard
+        const shareBtn = document.getElementById('owner-bar-share')
+        if (shareBtn) {
+          shareBtn.addEventListener('click', () => {
+            const url = window.location.href.split('?')[0]
+            navigator.clipboard.writeText(url).then(() => {
+              const orig = shareBtn.textContent
+              shareBtn.textContent = 'Copied ✓'
+              setTimeout(() => { shareBtn.textContent = orig }, 2000)
+            }).catch(() => {
+              prompt('Copy your profile link:', url)
+            })
+          })
+        }
+      }
 
       fab.classList.add('visible')
 
