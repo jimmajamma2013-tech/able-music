@@ -7230,15 +7230,17 @@
 
         const THEMES = ['dark','light','glass','contrast']
         const VIBES  = ['electronic','hiphop','rnb','indie','pop','rock','acoustic']
+        const VIBE_LABELS = { electronic:'Electronic', hiphop:'Hip Hop', rnb:'R&B / Soul', indie:'Indie / Alt', pop:'Pop', rock:'Rock / Metal', acoustic:'Acoustic / Folk' }
+        const THEME_LABELS = { dark:'Dark', light:'Light', glass:'Glass', contrast:'Contrast' }
 
         const themeChips = THEMES.map(t => {
           const on = (p.theme||'dark')===t
-          return `<button class="ep-chip${on?' active':''}" data-theme="${t}" aria-pressed="${on}">${t[0].toUpperCase()+t.slice(1)}</button>`
+          return `<button class="ep-chip${on?' active':''}" data-theme="${t}" aria-pressed="${on}">${THEME_LABELS[t]||t}</button>`
         }).join('')
 
         const vibeChips = VIBES.map(v => {
           const on = (p.vibe||'indie')===v
-          return `<button class="ep-chip${on?' active':''}" data-vibe="${v}" aria-pressed="${on}">${v[0].toUpperCase()+v.slice(1)}</button>`
+          return `<button class="ep-chip${on?' active':''}" data-vibe="${v}" aria-pressed="${on}">${VIBE_LABELS[v]||v}</button>`
         }).join('')
 
         body.innerHTML = `
