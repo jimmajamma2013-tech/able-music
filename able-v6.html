@@ -6425,8 +6425,11 @@
         const el = document.createElement('article')
         el.className = 'merch-item pressable'
 
-        const priceStr = item.price != null
-          ? (item.currency || '£') + Number(item.price).toFixed(2)
+        // price may be "£25", "25", "9.99" — strip leading currency symbol before parsing
+        const priceRaw = String(item.price || '').replace(/^[£$€¥]/, '').trim()
+        const priceNum = parseFloat(priceRaw)
+        const priceStr = (item.price != null && item.price !== '' && !isNaN(priceNum) && priceNum > 0)
+          ? (item.currency || '£') + priceNum.toFixed(2)
           : ''
 
         el.innerHTML = `
@@ -6498,8 +6501,10 @@
         const el = document.createElement('div')
         el.className = 'support-pack pressable'
 
-        const priceStr = pack.price != null
-          ? (pack.currency || '£') + Number(pack.price).toFixed(2)
+        const packPriceRaw = String(pack.price || '').replace(/^[£$€¥]/, '').trim()
+        const packPriceNum = parseFloat(packPriceRaw)
+        const priceStr = (pack.price != null && pack.price !== '' && !isNaN(packPriceNum) && packPriceNum > 0)
+          ? (pack.currency || '£') + packPriceNum.toFixed(2)
           : ''
 
         const safePackUrl = pack.url && isSafeUrl(pack.url) ? escHtml(pack.url) : ''

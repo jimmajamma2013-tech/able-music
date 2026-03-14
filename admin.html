@@ -2183,7 +2183,7 @@ function renderAdminMerch() {
       <div class="dc-body">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
           <div class="field-row" style="margin:0"><div class="field-label">Item name</div><input class="field-input" value="${escHtml(item.title||'')}" oninput="updateMerchField('${item.id}','title',this.value)" placeholder="Tour Hoodie 2026"></div>
-          <div class="field-row" style="margin:0"><div class="field-label">Price</div><input class="field-input" value="${escHtml(item.price||'')}" oninput="updateMerchField('${item.id}','price',this.value)" placeholder="£25"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Price</div><input class="field-input" type="number" min="0" step="0.01" value="${escHtml(item.price||'')}" oninput="updateMerchField('${item.id}','price',this.value)" placeholder="25.00"></div>
         </div>
         <div class="field-row" style="margin-top:8px;">
           <div class="field-label">Product URL (direct link to item)</div>
