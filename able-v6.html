@@ -4095,8 +4095,10 @@
           country: 'UK',
           date: new Date(Date.now() + 12 * 86400000).toISOString(),
           time: '22:00',
+          setTime: '23:30',
           ticketUrl: 'https://fabriclondon.com',
-          soldOut: false
+          soldOut: false,
+          venueImageUrl: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80'
         },
         {
           venue: 'De School',
@@ -5338,7 +5340,7 @@
       const config = {
         'pre-release':  { cls: 'hero__state-chip--pre',        text: 'Coming soon' },
         'live':         { cls: 'hero__state-chip--live',        text: 'Out now'     },
-        'gig':          { cls: 'hero__state-chip--gig',         text: 'On tonight'  },
+        'gig':          { cls: 'hero__state-chip--gig',         text: customText || 'On tonight'  },
         'near-future':  { cls: 'hero__state-chip--near-future', text: customText || '' },
         'profile':      { cls: 'hero__state-chip--profile',     text: ''            },
       }[state] || { cls: 'hero__state-chip--profile', text: '' }
@@ -5563,11 +5565,38 @@
         loadHeroArtwork(artworkSrc, shell)
       }
 
+      // Gig state: venue photo + enriched chip text
+      if (state === 'gig' && !hasVideo) {
+        var gigEvent = (profile.events || []).find(function(e) {
+          var d = new Date(e.date).getTime()
+          var now = Date.now()
+          return d > now - 86400000 && d < now + 86400000
+        })
+        // If no event within 24h, use first event as stand-in for demo/testing
+        if (!gigEvent) gigEvent = (profile.events || [])[0]
+        if (gigEvent && gigEvent.venueImageUrl) {
+          loadHeroArtwork(gigEvent.venueImageUrl, shell)
+          // Dim venue photo slightly for readability
+          const artEl = document.getElementById('hero-artwork')
+          if (artEl) artEl.style.filter = 'brightness(0.72)'
+        }
+        // Will be used for chip text below
+        var gigChipEvent = gigEvent
+      }
+
       // State chip — check for State 4 (near-future world map moment)
       // Runs before applyStateChip so it can override 'profile' state with a near-future chip
       var chipState = state
       var chipCustomText = undefined
-      if (state === 'profile') {
+      if (state === 'gig') {
+        // Enrich gig chip with venue + set time
+        if (typeof gigChipEvent !== 'undefined' && gigChipEvent) {
+          var timeStr = gigChipEvent.setTime || gigChipEvent.time || ''
+          chipCustomText = timeStr
+            ? `On tonight \u2014 ${gigChipEvent.venue}, ${gigChipEvent.city} \u2014 ${timeStr}`
+            : `On tonight \u2014 ${gigChipEvent.venue}, ${gigChipEvent.city}`
+        }
+      } else if (state === 'profile') {
         // Build moments early enough to check for near-future moment
         var moments4 = buildWorldMapMoments(profile)
         var featured4 = selectFeaturedMoment(moments4)
