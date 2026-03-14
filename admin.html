@@ -939,7 +939,7 @@ body {
   </nav>
 
   <div class="sb-footer">
-    <a class="sb-view-btn" href="able-v6.html" target="_blank">
+    <a class="sb-view-btn" href="able-v7.html" target="_blank">
       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M1 7a6 6 0 1012 0A6 6 0 001 7z"/><path d="M7 4v3l2 2"/></svg>
       View live page
     </a>
@@ -954,21 +954,27 @@ body {
     <div class="topbar-title" id="topbarTitle">Overview</div>
     <div class="topbar-actions">
       <span class="tier-badge" onclick="showPage('settings')" title="Upgrade plan">✦ Free</span>
-      <button class="tb-btn tb-btn-ghost" onclick="window.open('able-v6.html','_blank')">View page</button>
+      <a class="tb-btn tb-btn-acc" href="able-v7.html" target="_blank" style="text-decoration:none;">View live page ↗</a>
     </div>
   </div>
 
   <!-- ── HOME PAGE ── -->
   <div class="page active" id="page-home">
-    <div class="page-header">
-      <div class="page-title" id="homeGreeting">Good to see you.</div>
-      <div class="page-sub">Here's how your page is performing.</div>
+    <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+      <div>
+        <div class="page-title" id="homeGreeting">Good to see you.</div>
+        <div class="page-sub" id="homeSub">Your page, your list, your relationship.</div>
+      </div>
+      <div style="flex-shrink:0;text-align:right;">
+        <div style="font-size:12px;font-weight:600;color:var(--text);" id="homePageUrl"></div>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px;" id="homeMemberSince"></div>
+      </div>
     </div>
 
     <!-- Upgrade nudge — shown for free tier -->
     <div class="upgrade-bar" id="upgradeBar">
-      <div class="upgrade-bar-text"><strong>You're on the free plan.</strong> Unlock fan broadcasts, analytics, and the full CRM.</div>
-      <button class="upgrade-bar-btn" onclick="showPage('settings')">Upgrade to Pro →</button>
+      <div class="upgrade-bar-text"><strong>Free plan.</strong> Add broadcasts, full analytics, and the fan CRM when you're ready.</div>
+      <button class="upgrade-bar-btn" onclick="showPage('settings')">See what's included →</button>
     </div>
 
     <div class="stats-row">
@@ -1037,44 +1043,6 @@ body {
         <div style="margin-top:14px;">
           <button class="tb-btn tb-btn-acc" style="width:100%;" onclick="saveCampaignHQ()">Apply to live page →</button>
         </div>
-      </div>
-    </div>
-
-    <!-- ── PROFILE IDENTITY CARD ── -->
-    <div class="identity-card" id="identityCard">
-      <div class="identity-card__title">Profile Identity</div>
-
-      <div class="identity-row">
-        <span class="identity-row__label">Sound</span>
-        <span class="identity-row__value" id="idGenreVal">—</span>
-        <button class="identity-row__change" onclick="identityChangeGenre()">Change →</button>
-      </div>
-      <div class="identity-row">
-        <span class="identity-row__label">Feel</span>
-        <span class="identity-row__value" id="idFeelVal">—</span>
-        <button class="identity-row__change" id="feelChangeBtn" onclick="identityChangeFeel()">Change →</button>
-      </div>
-      <div class="feel-picker" id="feelPicker" hidden>
-        <button class="feel-option" data-feel="intimate-raw"     onclick="selectFeel(this)">Stripped back</button>
-        <button class="feel-option" data-feel="intimate-refined" onclick="selectFeel(this)">Warm and cinematic</button>
-        <button class="feel-option" data-feel="bold-raw"         onclick="selectFeel(this)">Underground and direct</button>
-        <button class="feel-option" data-feel="bold-refined"     onclick="selectFeel(this)">Clean and confident</button>
-      </div>
-
-      <div class="identity-nudges" id="identityNudges">
-        <button class="nudge-btn" data-nudge="darkness"  data-dir="1"  onclick="applyNudge(this)">Darker</button>
-        <button class="nudge-btn" data-nudge="spacing"   data-dir="1"  onclick="applyNudge(this)">More space</button>
-        <button class="nudge-btn" data-nudge="sharpness" data-dir="-1" onclick="applyNudge(this)">Softer</button>
-        <button class="nudge-btn" data-nudge="contrast"  data-dir="1"  onclick="applyNudge(this)">Bolder</button>
-        <button class="nudge-btn" data-nudge="warmth"    data-dir="1"  onclick="applyNudge(this)">Warmer</button>
-      </div>
-      <p class="identity-nudge-hint" id="nudgeHint"></p>
-
-      <div class="identity-preview" id="identityPreview">
-        <div class="identity-preview__accent" id="idPrevAccent"></div>
-        <div class="identity-preview__feel"   id="idPrevFeel"></div>
-        <div class="identity-preview__name"   id="idPrevName"></div>
-        <div class="identity-preview__label">Profile preview</div>
       </div>
     </div>
 
@@ -1174,7 +1142,7 @@ body {
             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14"><circle cx="5" cy="4" r="2.5"/><path d="M1 12c0-2.2 1.8-4 4-4s4 1.8 4 4"/><circle cx="11" cy="5" r="2"/><path d="M9.5 12c0-1.4.9-2.6 2-3"/></svg>
             View fans
           </button>
-          <a class="tb-btn tb-btn-ghost" href="able-v6.html" target="_blank" style="text-align:left;width:100%;justify-content:flex-start;display:flex;gap:10px;">
+          <a class="tb-btn tb-btn-ghost" href="able-v7.html" target="_blank" style="text-align:left;width:100%;justify-content:flex-start;display:flex;gap:10px;">
             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14"><path d="M5 2H2v10h10V9M9 2h3v3M7 7l5-5"/></svg>
             View live page
           </a>
@@ -1190,6 +1158,45 @@ body {
       <div class="page-title">Profile</div>
       <div class="page-sub">What fans see on your page.</div>
     </div>
+
+    <!-- ── PROFILE IDENTITY CARD ── -->
+    <div class="identity-card" id="identityCard" style="max-width:600px;margin-bottom:16px;">
+      <div class="identity-card__title">Identity</div>
+
+      <div class="identity-row">
+        <span class="identity-row__label">Sound</span>
+        <span class="identity-row__value" id="idGenreVal">—</span>
+        <button class="identity-row__change" onclick="identityChangeGenre()">Change →</button>
+      </div>
+      <div class="identity-row">
+        <span class="identity-row__label">Feel</span>
+        <span class="identity-row__value" id="idFeelVal">—</span>
+        <button class="identity-row__change" id="feelChangeBtn" onclick="identityChangeFeel()">Change →</button>
+      </div>
+      <div class="feel-picker" id="feelPicker" hidden>
+        <button class="feel-option" data-feel="intimate-raw"     onclick="selectFeel(this)">Stripped back</button>
+        <button class="feel-option" data-feel="intimate-refined" onclick="selectFeel(this)">Warm and cinematic</button>
+        <button class="feel-option" data-feel="bold-raw"         onclick="selectFeel(this)">Underground and direct</button>
+        <button class="feel-option" data-feel="bold-refined"     onclick="selectFeel(this)">Clean and confident</button>
+      </div>
+
+      <div class="identity-nudges" id="identityNudges">
+        <button class="nudge-btn" data-nudge="darkness"  data-dir="1"  onclick="applyNudge(this)">Darker</button>
+        <button class="nudge-btn" data-nudge="spacing"   data-dir="1"  onclick="applyNudge(this)">More space</button>
+        <button class="nudge-btn" data-nudge="sharpness" data-dir="-1" onclick="applyNudge(this)">Softer</button>
+        <button class="nudge-btn" data-nudge="contrast"  data-dir="1"  onclick="applyNudge(this)">Bolder</button>
+        <button class="nudge-btn" data-nudge="warmth"    data-dir="1"  onclick="applyNudge(this)">Warmer</button>
+      </div>
+      <p class="identity-nudge-hint" id="nudgeHint"></p>
+
+      <div class="identity-preview" id="identityPreview">
+        <div class="identity-preview__accent" id="idPrevAccent"></div>
+        <div class="identity-preview__feel"   id="idPrevFeel"></div>
+        <div class="identity-preview__name"   id="idPrevName"></div>
+        <div class="identity-preview__label">Profile preview</div>
+      </div>
+    </div>
+
     <div class="section-grid">
       <div>
         <div class="dash-card" style="margin-bottom:16px;">
@@ -1336,7 +1343,7 @@ body {
   <div class="page" id="page-music">
     <div class="page-header">
       <div class="page-title">Music</div>
-      <div class="page-sub">Releases shown on your page. Fans see tracklists, embeds, or both.</div>
+      <div class="page-sub">Add a Spotify, YouTube, SoundCloud, or Bandcamp URL — artwork and title fill in automatically.</div>
     </div>
     <div id="adminMusicList"></div>
     <button class="admin-add-btn" onclick="addRelease()">
@@ -2228,7 +2235,7 @@ function renderAdminMusic() {
   const data = safeLS(V3_KEY, {});
   const releases = data.releases || [];
   if (!releases.length) {
-    el.innerHTML = `<div class="admin-empty">No releases yet — add your first one below.</div>`;
+    el.innerHTML = `<div class="admin-empty">No releases yet. Paste a Spotify, YouTube, SoundCloud, or Bandcamp URL below — title and artwork fill in automatically.</div>`;
     return;
   }
   el.innerHTML = releases.map((rel, i) => `
@@ -3541,6 +3548,21 @@ window.addEventListener('DOMContentLoaded', () => {
   // Greet by name
   const greeting = document.getElementById('homeGreeting');
   if (greeting && name !== 'Your Artist Name') greeting.textContent = `Good to see you, ${name.split(' ')[0]}.`;
+
+  // Page URL + Member Since
+  const pageUrlEl = document.getElementById('homePageUrl');
+  if (pageUrlEl && name !== 'Your Artist Name') pageUrlEl.textContent = `able.fm/${handle}`;
+  const memberSinceEl = document.getElementById('homeMemberSince');
+  if (memberSinceEl) {
+    const joinedKey = 'able_joined';
+    if (!localStorage.getItem(joinedKey)) localStorage.setItem(joinedKey, new Date().toISOString().slice(0,7));
+    const ym = localStorage.getItem(joinedKey) || '';
+    if (ym) {
+      const [y,m] = ym.split('-');
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      memberSinceEl.textContent = `Member since ${months[parseInt(m)-1]} ${y}`;
+    }
+  }
 
   if (accent) {
     document.documentElement.style.setProperty('--acc', accent);
