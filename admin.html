@@ -986,7 +986,11 @@ body {
             </div>
             <div class="field-row">
               <div class="field-label">Genre / style</div>
-              <input class="field-input" type="text" id="adminGenre" placeholder="e.g. Electronic · London">
+              <input class="field-input" type="text" id="adminGenre" placeholder="e.g. Electronic, Indie, Hip-Hop">
+            </div>
+            <div class="field-row">
+              <div class="field-label">Location</div>
+              <input class="field-input" type="text" id="adminLocation" placeholder="e.g. London, Berlin, New York">
             </div>
             <div class="field-row">
               <div class="field-label">Bio</div>
@@ -1032,9 +1036,21 @@ body {
               <div class="field-label">SoundCloud</div>
               <input class="field-input" type="url" id="plSoundcloud" placeholder="soundcloud.com/…" oninput="savePlatformLinks()">
             </div>
-            <div class="field-row" style="margin-bottom:0;">
+            <div class="field-row">
               <div class="field-label">YouTube</div>
               <input class="field-input" type="url" id="plYoutube" placeholder="youtube.com/@…" oninput="savePlatformLinks()">
+            </div>
+            <div class="field-row">
+              <div class="field-label">TikTok</div>
+              <input class="field-input" type="url" id="plTiktok" placeholder="tiktok.com/@…" oninput="savePlatformLinks()">
+            </div>
+            <div class="field-row">
+              <div class="field-label">Instagram</div>
+              <input class="field-input" type="url" id="plInstagram" placeholder="instagram.com/…" oninput="savePlatformLinks()">
+            </div>
+            <div class="field-row" style="margin-bottom:0;">
+              <div class="field-label">Bandcamp</div>
+              <input class="field-input" type="url" id="plBandcamp" placeholder="yourname.bandcamp.com" oninput="savePlatformLinks()">
             </div>
           </div>
         </div>
@@ -2559,6 +2575,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('adminName')) document.getElementById('adminName').value = name;
   if (document.getElementById('adminBio') && bio) document.getElementById('adminBio').value = bio;
   if (document.getElementById('adminGenre') && genre) document.getElementById('adminGenre').value = genre;
+  if (document.getElementById('adminLocation') && v3data.location) document.getElementById('adminLocation').value = v3data.location;
 
   // Hydrate CTA fields
   const ctaP = v3data.ctaPrimary   || {};
@@ -2660,12 +2677,17 @@ function downloadQR() {
 /* ── PLATFORM LINKS ── */
 function savePlatformLinks() {
   const data = safeLS(V3_KEY, {});
-  const platforms = [
+  const raw = [
     { label: 'Spotify',     type: 'spotify',    url: document.getElementById('plSpotify')?.value.trim()   || '' },
     { label: 'Apple Music', type: 'apple',      url: document.getElementById('plApple')?.value.trim()     || '' },
     { label: 'SoundCloud',  type: 'soundcloud', url: document.getElementById('plSoundcloud')?.value.trim()|| '' },
     { label: 'YouTube',     type: 'youtube',    url: document.getElementById('plYoutube')?.value.trim()   || '' },
+    { label: 'TikTok',      type: 'tiktok',     url: document.getElementById('plTiktok')?.value.trim()    || '' },
+    { label: 'Instagram',   type: 'instagram',  url: document.getElementById('plInstagram')?.value.trim() || '' },
+    { label: 'Bandcamp',    type: 'bandcamp',   url: document.getElementById('plBandcamp')?.value.trim()  || '' },
   ];
+  // Only save platforms that have a URL
+  const platforms = raw.filter(p => p.url);
   setLS(V3_KEY, { ...data, platforms });
 }
 
@@ -2677,6 +2699,9 @@ function hydratePlatformFields(data) {
   setV('plApple',     find('apple'));
   setV('plSoundcloud',find('soundcloud'));
   setV('plYoutube',   find('youtube'));
+  setV('plTiktok',    find('tiktok'));
+  setV('plInstagram', find('instagram'));
+  setV('plBandcamp',  find('bandcamp'));
 }
 
 function wireProfileSave() {
@@ -2696,18 +2721,23 @@ function wireProfileSave() {
 
 function saveProfilePage() {
   const data = safeLS(V3_KEY, {});
-  const name  = document.getElementById('adminName')?.value.trim();
-  const bio   = document.getElementById('adminBio')?.value.trim();
-  const genre = document.getElementById('adminGenre')?.value.trim();
-  const accent = document.getElementById('adminAccent')?.value;
-  const theme = document.querySelector('.theme-chip.on')?.dataset.theme || data.theme || 'dark';
+  const name     = document.getElementById('adminName')?.value.trim();
+  const bio      = document.getElementById('adminBio')?.value.trim();
+  const genre    = document.getElementById('adminGenre')?.value.trim();
+  const location = document.getElementById('adminLocation')?.value.trim();
+  const accent   = document.getElementById('adminAccent')?.value;
+  const theme    = document.querySelector('.theme-chip.on')?.dataset.theme || data.theme || 'dark';
 
-  const platforms = [
+  const rawPlatforms = [
     { label: 'Spotify',     type: 'spotify',    url: document.getElementById('plSpotify')?.value.trim()    || '' },
     { label: 'Apple Music', type: 'apple',      url: document.getElementById('plApple')?.value.trim()      || '' },
     { label: 'SoundCloud',  type: 'soundcloud', url: document.getElementById('plSoundcloud')?.value.trim() || '' },
     { label: 'YouTube',     type: 'youtube',    url: document.getElementById('plYoutube')?.value.trim()    || '' },
+    { label: 'TikTok',      type: 'tiktok',     url: document.getElementById('plTiktok')?.value.trim()     || '' },
+    { label: 'Instagram',   type: 'instagram',  url: document.getElementById('plInstagram')?.value.trim()  || '' },
+    { label: 'Bandcamp',    type: 'bandcamp',   url: document.getElementById('plBandcamp')?.value.trim()   || '' },
   ];
+  const platforms = rawPlatforms.filter(p => p.url);
   const ctaPrimaryLabel = document.getElementById('adminCtaPrimaryLabel')?.value.trim();
   const ctaPrimaryUrl   = document.getElementById('adminCtaPrimaryUrl')?.value.trim();
   const ctaSecLabel     = document.getElementById('adminCtaSecLabel')?.value.trim();
@@ -2715,12 +2745,12 @@ function saveProfilePage() {
 
   const updated = {
     ...data,
-    name:      name   || data.name,
-    bio:       bio    || data.bio,
-    accent:    accent || data.accent,
+    name:      name     || data.name,
+    bio:       bio      || data.bio,
+    accent:    accent   || data.accent,
     theme,
-    genres:    genre ? [genre] : data.genres,
-    location:  data.location,
+    genres:    genre    ? [genre]    : data.genres,
+    location:  location || data.location,
     platforms,
     ctaPrimary:   { label: ctaPrimaryLabel || data.ctaPrimary?.label || 'Stream Now',  url: ctaPrimaryUrl   || data.ctaPrimary?.url   || '' },
     ctaSecondary: { label: ctaSecLabel     || data.ctaSecondary?.label || '',           url: ctaSecUrl       || data.ctaSecondary?.url  || '' },
