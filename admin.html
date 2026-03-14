@@ -2976,6 +2976,7 @@ function ywRenderMomentList(profile) {
       + '<div class="yw-moment-title">' + title.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>'
       + accessTag
       + (isFeatured ? '<div class="yw-moment-featured">● In hero</div>' : '')
+      + (m.isAuto ? '' : '<button class="snap-btn del" style="margin-left:8px;flex-shrink:0;font-size:11px;" onclick="removeMoment(\'' + m.id + '\')" title="Remove">×</button>')
       + '</div>'
   }).join('')
 
@@ -3116,6 +3117,13 @@ function ywSaveMoment() {
   setLS(V3_KEY, p)
   ywRenderMomentList(p)
   ywToggleAddForm(false)
+}
+
+function removeMoment(id) {
+  var p = safeLS(V3_KEY, {})
+  p.moments = (p.moments || []).filter(function(m) { return m.id !== id })
+  setLS(V3_KEY, p)
+  ywRenderMomentList(p)
 }
 
 /* ── LOAD STATE FROM LOCALSTORAGE ── */
