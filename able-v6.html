@@ -874,45 +874,40 @@
 
     /* === PLATFORM TILES (replaces pills) ======================= */
     .pills-section {
-      padding: var(--sp-5) var(--sp-5) var(--sp-4);
+      padding: var(--sp-4) var(--sp-5) var(--sp-4);
     }
 
     /* Wrapping div still present — now unused */
     .pills-track-wrap { overflow: visible; }
 
-    /* Grid of platform tiles */
+    /* 2-column grid of horizontal platform objects — not a launcher grid */
     .pills-track {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--sp-3);
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-2);
       width: 100%;
     }
 
-    @media (min-width: 340px) {
-      .pills-track { grid-template-columns: repeat(4, 1fr); }
-    }
-
-    /* Individual platform tile — crisp, editorial */
+    /* Individual platform object — horizontal, editorial, reads as a curated list */
     .pill {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: var(--sp-4) var(--sp-2);
-      min-height: 72px;
-      /* Slightly more present than pure transparent — reads as a product object, not a grid tile */
-      background-color: rgba(255,255,255,0.055);
-      border: 1px solid rgba(255,255,255,0.08);
+      justify-content: flex-start;
+      gap: var(--sp-3);
+      padding: var(--sp-3) var(--sp-4);
+      min-height: 52px;
+      background-color: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
       border-radius: var(--r-md);
       font-family: var(--font-body);
-      font-size: 11px;
+      font-size: var(--text-sm);
       font-weight: 500;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
       color: var(--color-text-2);
       text-decoration: none;
       cursor: pointer;
-      text-align: center;
+      text-align: left;
       transition: color var(--dur-fast) var(--ease-standard),
                   border-color var(--dur-fast) var(--ease-standard),
                   background-color var(--dur-fast) var(--ease-standard),
@@ -922,23 +917,23 @@
     .pill:hover,
     .pill:focus-visible {
       color: var(--color-text);
-      border-color: rgba(var(--color-accent-rgb), 0.22);
-      background-color: rgba(255,255,255,0.09);
+      border-color: rgba(var(--color-accent-rgb), 0.25);
+      background-color: rgba(255,255,255,0.07);
     }
 
     .pill.pressing {
-      transform: scale(0.95);
+      transform: scale(0.97);
     }
 
-    /* Platform icon — refined size, more elegant, less launcher-grid */
+    /* Platform icon */
     .pill__icon {
-      width: 22px;
-      height: 22px;
+      width: 26px;
+      height: 26px;
       flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      opacity: 0.8;
+      opacity: 0.75;
       transition: opacity var(--dur-fast) var(--ease-standard);
     }
 
@@ -946,8 +941,8 @@
     .pill:focus-visible .pill__icon { opacity: 1; }
 
     .pill__icon svg {
-      width: 22px;
-      height: 22px;
+      width: 26px;
+      height: 26px;
     }
 
     /* Glass tile */
@@ -963,17 +958,17 @@
     /* Light fan-capture--secondary — same swap */
     [data-theme="light"] .fan-capture--secondary { border-color: rgba(0,0,0,0.08); }
 
-    /* Light tiles — flip to dark-on-cream */
+    /* Light tiles — dark-on-cream */
     [data-theme="light"] .pill {
-      background-color: rgba(0,0,0,0.04);
-      border-color: rgba(0,0,0,0.10);
+      background-color: rgba(0,0,0,0.035);
+      border-color: rgba(0,0,0,0.09);
     }
     [data-theme="light"] .pill:hover,
     [data-theme="light"] .pill:focus-visible {
-      background-color: rgba(0,0,0,0.08);
+      background-color: rgba(0,0,0,0.07);
       border-color: rgba(var(--color-accent-rgb), 0.3);
     }
-    [data-theme="light"] .pill .pill__icon { opacity: 0.7; }
+    [data-theme="light"] .pill .pill__icon { opacity: 0.65; }
     [data-theme="light"] .pill:hover .pill__icon { opacity: 1; }
     [data-theme="light"] .pills-more:hover {
       background-color: rgba(0,0,0,0.04);
@@ -1018,13 +1013,13 @@
 
     /* Primary sections (Listen, Shows) breathe more */
     .content-section--primary {
-      padding-top: calc(var(--sp-10) + var(--sp-4));
+      padding-top: calc(var(--sp-10) + var(--sp-6));
     }
 
-    /* Secondary sections (Merch, Support) step back */
+    /* Secondary sections (Merch, Support) step back — tighter, quieter */
     .content-section--secondary {
-      padding-top: var(--sp-8);
-      padding-bottom: var(--sp-4);
+      padding-top: var(--sp-6);
+      padding-bottom: var(--sp-3);
     }
 
     .section-header {
@@ -1037,18 +1032,18 @@
       border-top: 1px solid rgba(var(--color-accent-rgb), 0.38);
     }
 
-    /* Secondary section header — quieter hierarchy */
+    /* Secondary section header — quieter, more recessive */
     .section-header--secondary {
       border-top-width: 1px;
-      border-top-color: rgba(255,255,255,0.06);
-      padding-top: var(--sp-4);
-      margin-bottom: var(--sp-5);
+      border-top-color: rgba(255,255,255,0.045);
+      padding-top: var(--sp-3);
+      margin-bottom: var(--sp-4);
     }
     .section-header--secondary .section-title {
-      font-size: var(--text-xl);
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      opacity: 0.75;
+      font-size: var(--text-lg);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      opacity: 0.60;
     }
 
     .section-title {
@@ -1820,9 +1815,9 @@
     }
 
     .merch-item:hover {
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-      transform: translateY(-2px);
-      border-color: var(--color-accent);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+      transform: translateY(-1px);
+      border-color: rgba(var(--color-accent-rgb), 0.45);
     }
 
     .merch-item__image-wrap {
@@ -1997,7 +1992,7 @@
 
     /* === CREDITS ACCORDION ===================================== */
     .credits-section {
-      padding: 0 var(--sp-5) var(--sp-6);
+      padding: 0 var(--sp-5) var(--sp-4);
     }
 
     .credits-toggle {
@@ -2005,20 +2000,21 @@
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      padding: var(--sp-4) 0;
+      padding: var(--sp-3) 0;
       background: none;
       border: none;
-      border-top: 1px solid var(--color-border);
+      border-top: 1px solid rgba(255,255,255,0.04);
       cursor: pointer;
       font-family: var(--font-body);
-      font-size: var(--text-base);
-      font-weight: 600;
-      color: var(--color-text-2);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-text-3);
+      letter-spacing: 0.04em;
       transition: color var(--dur-fast) var(--ease-standard),
                   transform var(--dur-fast) var(--ease-spring);
     }
 
-    .credits-toggle:hover { color: var(--color-text); }
+    .credits-toggle:hover { color: var(--color-text-2); }
 
     .credits-chevron {
       width: 18px;
@@ -2749,7 +2745,7 @@
           <h2 class="section-title" id="support-heading">Support</h2>
         </header>
         <div class="support-packs" id="support-packs"></div>
-        <p class="support-note">0% taken by ABLE. Stripe fee only.</p>
+        <p class="support-note">Goes directly to you. A small card fee is all that's taken.</p>
       </section>
 
       <!-- ======================================================
