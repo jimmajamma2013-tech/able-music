@@ -36,11 +36,11 @@
     Cache-Control = "public, max-age=0, must-revalidate"
 
 # ── Redirects ────────────────────────────────────────────────────
-# Root → new landing page
+# Root → new landing page (301 overrides physical index.html)
 [[redirects]]
   from   = "/"
   to     = "/landing.html"
-  status = 200
+  status = 301
 
 # Supabase auth callback (magic link lands here)
 [[redirects]]
