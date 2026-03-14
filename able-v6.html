@@ -779,14 +779,14 @@
     .hero__state-chip--profile { display: none; }
     .hero__state-chip--near-future {
       background: rgba(255,255,255,0.10);
-      color: var(--color-text-1);
+      color: var(--color-text);
       border: 1px solid rgba(255,255,255,0.18);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
     [data-theme="light"] .hero__state-chip--near-future {
       background: rgba(0,0,0,0.07);
-      color: var(--color-text-1);
+      color: var(--color-text);
       border: 1px solid rgba(0,0,0,0.12);
     }
     .hero__state-chip--near-future:hover { background: rgba(255,255,255,0.15); }
@@ -1314,12 +1314,25 @@
 
     /* === FAN CAPTURE =========================================== */
     .fan-capture {
-      margin: var(--sp-2) var(--sp-5) var(--sp-5);
+      margin: var(--sp-8) var(--sp-5) var(--sp-5);
       padding: var(--sp-6);
       background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-top: 3px solid rgba(var(--color-accent-rgb), 0.7);
+      border: 1px solid rgba(var(--color-accent-rgb), 0.18);
+      border-top: 2px solid rgba(var(--color-accent-rgb), 0.55);
       border-radius: var(--r-md);
+      position: relative;
+      /* Ambient accent halo — draws the eye to the conversion moment */
+      box-shadow:
+        0 4px 32px rgba(0,0,0,0.5),
+        0 0 72px rgba(var(--color-accent-rgb), 0.09),
+        0 0 0 0.5px rgba(var(--color-accent-rgb), 0.12);
+    }
+
+    /* Light mode: warm ambient instead of dark */
+    [data-theme="light"] .fan-capture {
+      box-shadow:
+        0 2px 16px rgba(0,0,0,0.07),
+        0 0 48px rgba(var(--color-accent-rgb), 0.06);
     }
 
     .fan-capture--secondary {
@@ -1358,7 +1371,8 @@
 
     .fan-capture__field-wrap {
       display: flex;
-      gap: var(--sp-2);
+      flex-direction: column;
+      gap: var(--sp-3);
     }
 
     .fan-capture__input {
@@ -1402,7 +1416,9 @@
       flex-shrink: 0;
       min-height: var(--tap-min);
       padding: var(--sp-3) var(--sp-5);
-      width: auto;
+      width: 100%;
+      font-size: var(--text-base);
+      letter-spacing: 0.01em;
     }
 
     .fan-capture__error {
@@ -1412,26 +1428,64 @@
     }
 
     .fan-capture__trust {
-      margin-top: var(--sp-3);
-      font-size: var(--text-xs);
-      color: var(--color-text-3);
-      letter-spacing: 0.02em;
+      margin-top: var(--sp-4);
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      letter-spacing: 0.01em;
+      line-height: 1.5;
     }
 
     .fan-capture__echo {
-      padding: var(--sp-4) 0 0;
+      padding: var(--sp-2) 0 0;
+      animation: echo-reveal var(--dur-slow) var(--ease-decel) both;
+    }
+
+    @keyframes echo-reveal {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .fan-capture__echo-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(var(--color-accent-rgb), 0.12);
+      color: var(--color-accent);
+      margin-bottom: var(--sp-4);
+      /* Subtle pulse after reveal */
+      animation: echo-icon-pop var(--dur-slow) var(--ease-spring) 120ms both;
+    }
+
+    @keyframes echo-icon-pop {
+      from { opacity: 0; transform: scale(0.6); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .fan-capture__echo-icon svg {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
     }
 
     .fan-capture__echo-text {
-      font-size: var(--text-sm);
-      font-weight: 500;
+      font-family: var(--font-d);
+      font-size: var(--text-2xl);
+      font-weight: var(--font-d-weight);
+      font-style: var(--font-d-style);
+      text-transform: var(--font-d-transform);
+      letter-spacing: var(--ls-d);
       color: var(--color-text);
-      margin-bottom: var(--sp-1);
+      line-height: 1.05;
+      margin-bottom: var(--sp-3);
     }
 
     .fan-capture__echo-confirm {
-      font-size: var(--text-xs);
-      color: var(--color-text-3);
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      line-height: 1.6;
     }
 
     .spinner-svg {
@@ -2005,7 +2059,7 @@
       font-size: 32px;
       font-weight: 700;
       letter-spacing: -0.02em;
-      color: var(--color-text-1);
+      color: var(--color-text);
       line-height: 1;
     }
 
@@ -2110,7 +2164,7 @@
       line-height: 1;
       margin-bottom: 4px;
     }
-    .wm-cell--has-moment .wm-date-num { color: var(--color-text-1); }
+    .wm-cell--has-moment .wm-date-num { color: var(--color-text); }
 
     .wm-dots {
       display: flex;
@@ -2232,7 +2286,7 @@
       font-size: 22px;
       font-weight: 700;
       line-height: 1.15;
-      color: var(--color-text-1);
+      color: var(--color-text);
       margin-bottom: var(--sp-2);
     }
 
@@ -2307,7 +2361,7 @@
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.10);
       border-radius: var(--r-sm);
-      color: var(--color-text-1);
+      color: var(--color-text);
       font-size: var(--text-sm);
       padding: var(--sp-3);
       resize: none;
@@ -2320,7 +2374,7 @@
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.10);
       border-radius: var(--r-sm);
-      color: var(--color-text-1);
+      color: var(--color-text);
       font-size: var(--text-sm);
       padding: 0 var(--sp-3);
       min-height: var(--tap-min);
@@ -2416,7 +2470,7 @@
       object-fit: cover; flex-shrink: 0;
       font-size: 1.25rem; display: flex; align-items: center; justify-content: center;
     }
-    .cc-sheet__name { font-size: 1rem; font-weight: 600; color: var(--color-text-1); }
+    .cc-sheet__name { font-size: 1rem; font-weight: 600; color: var(--color-text); }
     .cc-sheet__price { font-size: 0.8125rem; color: var(--color-text-3); margin-top: 1px; }
 
     .cc-sheet__intro {
@@ -2429,7 +2483,7 @@
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.10);
       border-radius: var(--r-md);
-      color: var(--color-text-1);
+      color: var(--color-text);
       font: inherit; font-size: 0.9375rem;
       padding: 12px 14px; margin-bottom: var(--sp-3);
       transition: border-color var(--dur-fast) var(--ease-decel);
@@ -3002,7 +3056,7 @@
       z-index: 200;
       background: rgba(14,13,11,0.92);
       border: 1px solid rgba(var(--color-accent-rgb), 0.35);
-      color: var(--color-text-1);
+      color: var(--color-text);
       font-size: 13px;
       font-family: var(--font);
       padding: 6px 12px;
@@ -3416,7 +3470,7 @@
     /* Skip-link — keyboard accessibility */
     .skip-link {
       position: absolute; top: -100%; left: 8px; z-index: 9999;
-      background: var(--color-surface); color: var(--color-text-1);
+      background: var(--color-surface); color: var(--color-text);
       padding: 8px 16px; border-radius: var(--r-md);
       font-size: var(--text-sm); font-weight: 600;
       border: 2px solid var(--color-accent);
@@ -3713,8 +3767,14 @@
         </form>
         <p class="fan-capture__trust" id="fan-trust">Just <span id="fan-artist-name">the artist</span>. No spam.</p>
         <div class="fan-capture__echo" id="fan-echo" hidden>
+          <div class="fan-capture__echo-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
           <p class="fan-capture__echo-text" id="fan-echo-text"></p>
-          <p class="fan-capture__echo-confirm">Check your email to confirm.</p>
+          <p class="fan-capture__echo-confirm">Check your email — there's a quick confirm waiting.</p>
         </div>
       </section>
 
