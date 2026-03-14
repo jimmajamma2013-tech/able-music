@@ -786,6 +786,30 @@
       pointer-events: none;
     }
 
+    /* H17 — State-specific ambient glow tint (pre-release amber, live warm red) */
+    /* Only overrides when artwork hasn't provided a colour (--color-ambient stays 0,0,0 = neutral) */
+    [data-campaign-state="pre-release"] .hero__ambient {
+      background: radial-gradient(
+        ellipse at 50% 100%,
+        rgba(251,191,36,0.22) 0%,
+        transparent 65%
+      );
+    }
+    [data-campaign-state="live"] .hero__ambient {
+      background: radial-gradient(
+        ellipse at 50% 100%,
+        rgba(220,60,50,0.20) 0%,
+        transparent 65%
+      );
+    }
+    [data-campaign-state="gig"] .hero__ambient {
+      background: radial-gradient(
+        ellipse at 50% 100%,
+        rgba(var(--color-ambient), 0.55) 0%,
+        transparent 65%
+      );
+    }
+
     /* Top vignette — editorial depth, frames the image from above */
     .hero__top-vignette {
       position: absolute;
@@ -872,14 +896,14 @@
     .hero__state-chip--profile { display: none; }
     .hero__state-chip--near-future {
       background: rgba(255,255,255,0.10);
-      color: var(--color-text-1);
+      color: var(--color-text);
       border: 1px solid rgba(255,255,255,0.18);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
     [data-theme="light"] .hero__state-chip--near-future {
       background: rgba(0,0,0,0.07);
-      color: var(--color-text-1);
+      color: var(--color-text);
       border: 1px solid rgba(0,0,0,0.12);
     }
     .hero__state-chip--near-future:hover { background: rgba(255,255,255,0.15); }
@@ -889,6 +913,8 @@
 
     /* Artist name — poster-grade type treatment */
     .hero__name {
+      position: relative; /* required for H4 gloss ::after */
+      overflow: hidden;   /* clip gloss sweep to text bounds */
       font-family: var(--font-d);
       font-size: var(--text-hero);
       font-weight: var(--font-d-weight);
@@ -1409,7 +1435,8 @@
     .fan-capture {
       margin: var(--sp-2) var(--sp-5) var(--sp-5);
       padding: var(--sp-6);
-      background: var(--color-card);
+      /* H8 — Very low accent tint draws eye; barely perceptible warmth */
+      background: color-mix(in srgb, var(--color-card) 94%, var(--color-accent) 6%);
       border: 1px solid var(--color-border);
       border-top: 3px solid rgba(var(--color-accent-rgb), 0.7);
       border-radius: var(--r-md);
@@ -1489,6 +1516,14 @@
     /* Error state (interaction #8) */
     .fan-capture__input.error {
       border-color: var(--color-state-live);
+    }
+
+    /* E7 — Autofill override: prevents iOS/Safari yellow wash on dark theme */
+    .fan-capture__input:-webkit-autofill,
+    .fan-capture__input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 100px var(--color-surface) inset;
+      -webkit-text-fill-color: var(--color-text);
+      caret-color: var(--color-text);
     }
 
     .fan-capture__btn {
@@ -1897,6 +1932,172 @@
 
     .release-card__ext:hover { color: var(--color-text); }
 
+    /* Inline watch toggle — secondary text link under artwork */
+    .release-card__watch-inline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sp-2);
+      padding: var(--sp-2) var(--sp-5);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-3);
+      background: none;
+      border: none;
+      border-top: 1px solid var(--color-border);
+      width: 100%;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: color var(--dur-fast);
+    }
+    .release-card__watch-inline:hover { color: var(--color-text); }
+
+    /* Expand (pop-out) button — top-right of artwork */
+    .release-card__expand-btn {
+      position: absolute;
+      top: 8px; right: 8px; z-index: 5;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.68);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.85);
+      font-size: 12px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: scale(0.82);
+      transition: opacity 0.15s, transform 0.2s var(--ease-spring), background 0.15s;
+      font-family: var(--font-body);
+    }
+    .release-card__artwork-wrap:hover .release-card__expand-btn,
+    .release-card__expand-btn:focus-visible { opacity: 1; transform: scale(1); }
+    @media (hover: none) {
+      .release-card__expand-btn { opacity: 0.75; transform: scale(1); }
+    }
+    .release-card__expand-btn:hover { background: rgba(0,0,0,0.88); color: #fff; }
+
+    /* ABLE-player card (on-brand Spotify alternative) */
+    .release-card__able-player {
+      display: flex; align-items: center;
+      gap: var(--sp-4);
+      padding: var(--sp-4) var(--sp-5);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .release-card__able-art {
+      width: 52px; height: 52px; border-radius: 6px;
+      flex-shrink: 0; background: var(--color-surface); overflow: hidden;
+    }
+    .release-card__able-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .release-card__able-meta { flex: 1; min-width: 0; }
+    .release-card__able-track {
+      font-size: var(--text-sm); font-weight: 700; color: var(--color-text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px;
+    }
+    .release-card__able-artist { font-size: 11px; color: var(--color-text-3); }
+    .release-card__able-actions {
+      display: flex; align-items: center; gap: var(--sp-2); flex-shrink: 0;
+    }
+    .release-card__able-play {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--color-accent); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.2s var(--ease-spring), opacity 0.15s;
+    }
+    .release-card__able-play:hover { transform: scale(1.09); opacity: 0.88; }
+    .release-card__able-play svg { fill: var(--cta-text-color, #fff); width: 14px; height: 14px; margin-left: 2px; }
+    .release-card__able-open {
+      font-size: 11px; font-weight: 600; color: var(--color-text-3);
+      background: none; border: none; cursor: pointer;
+      font-family: var(--font-body); padding: 4px 2px;
+      transition: color var(--dur-fast);
+    }
+    .release-card__able-open:hover { color: var(--color-text); }
+
+    /* ── MEDIA LIGHTBOX ──────────────────────────────────────── */
+    .media-lightbox {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s var(--ease-decel);
+    }
+    .media-lightbox.active { opacity: 1; pointer-events: all; }
+    .media-lightbox__inner {
+      position: relative; width: 100%; max-width: 920px;
+      background: #000; border-radius: 14px; overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.08);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.3s var(--ease-spring);
+    }
+    .media-lightbox.active .media-lightbox__inner { transform: none; }
+    .media-lightbox__aspect { position: relative; padding-bottom: 56.25%; height: 0; }
+    .media-lightbox__aspect iframe {
+      position: absolute; inset: 0; width: 100%; height: 100%; border: none;
+    }
+    .media-lightbox__bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px; background: #0e0e0e;
+    }
+    .media-lightbox__title {
+      font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6);
+      flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .media-lightbox__actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .media-lightbox__btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 11px; border-radius: 6px;
+      font-size: 11px; font-weight: 600;
+      cursor: pointer; border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.65);
+      transition: background 0.15s, color 0.15s; font-family: var(--font-body);
+      text-decoration: none;
+    }
+    .media-lightbox__btn:hover { background: rgba(255,255,255,0.11); color: #fff; }
+    .media-lightbox__btn--close { padding: 5px 9px; font-size: 14px; }
+
+    /* ── MEDIA PiP ───────────────────────────────────────────── */
+    .media-pip {
+      position: fixed; bottom: 84px; right: 14px;
+      width: 248px; z-index: 8500;
+      border-radius: 12px; overflow: hidden;
+      background: #000;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.12);
+      transform: translateY(30px) scale(0.92); opacity: 0; pointer-events: none;
+      transition: transform 0.32s var(--ease-spring), opacity 0.2s var(--ease-decel);
+    }
+    .media-pip.active { transform: none; opacity: 1; pointer-events: all; }
+    .media-pip__aspect { position: relative; padding-bottom: 56.25%; height: 0; }
+    .media-pip__aspect iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+    .media-pip__bar {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 10px; background: #111;
+    }
+    .media-pip__expand {
+      width: 22px; height: 22px; border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
+      font-size: 10px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-family: var(--font-body);
+      transition: background 0.15s;
+    }
+    .media-pip__expand:hover { background: rgba(255,255,255,0.12); }
+    .media-pip__title {
+      font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.55);
+      flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .media-pip__close {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
+      font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-family: var(--font-body); transition: background 0.15s;
+    }
+    .media-pip__close:hover { background: rgba(255,255,255,0.14); color: #fff; }
+
     /* === SHOWS SECTION — event cards =========================== */
     .shows-list {
       display: flex;
@@ -2098,7 +2299,7 @@
       font-size: 32px;
       font-weight: 700;
       letter-spacing: -0.02em;
-      color: var(--color-text-1);
+      color: var(--color-text);
       line-height: 1;
     }
 
@@ -2203,7 +2404,7 @@
       line-height: 1;
       margin-bottom: 4px;
     }
-    .wm-cell--has-moment .wm-date-num { color: var(--color-text-1); }
+    .wm-cell--has-moment .wm-date-num { color: var(--color-text); }
 
     .wm-dots {
       display: flex;
@@ -2325,7 +2526,7 @@
       font-size: 22px;
       font-weight: 700;
       line-height: 1.15;
-      color: var(--color-text-1);
+      color: var(--color-text);
       margin-bottom: var(--sp-2);
     }
 
@@ -2400,25 +2601,25 @@
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.10);
       border-radius: var(--r-sm);
-      color: var(--color-text-1);
+      color: var(--color-text);
       font-size: var(--text-sm);
       padding: var(--sp-3);
       resize: none;
       min-height: 90px;
       margin-bottom: var(--sp-2);
-      font-family: var(--font);
+      font-family: var(--font-body);
     }
     .wm-panel__enquiry-email {
       width: 100%; box-sizing: border-box;
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.10);
       border-radius: var(--r-sm);
-      color: var(--color-text-1);
+      color: var(--color-text);
       font-size: var(--text-sm);
       padding: 0 var(--sp-3);
       min-height: var(--tap-min);
       margin-bottom: var(--sp-3);
-      font-family: var(--font);
+      font-family: var(--font-body);
     }
     .wm-panel__enquiry-hint {
       font-size: 11px;
@@ -2509,7 +2710,7 @@
       object-fit: cover; flex-shrink: 0;
       font-size: 1.25rem; display: flex; align-items: center; justify-content: center;
     }
-    .cc-sheet__name { font-size: 1rem; font-weight: 600; color: var(--color-text-1); }
+    .cc-sheet__name { font-size: 1rem; font-weight: 600; color: var(--color-text); }
     .cc-sheet__price { font-size: 0.8125rem; color: var(--color-text-3); margin-top: 1px; }
 
     .cc-sheet__intro {
@@ -2522,7 +2723,7 @@
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.10);
       border-radius: var(--r-md);
-      color: var(--color-text-1);
+      color: var(--color-text);
       font: inherit; font-size: 0.9375rem;
       padding: 12px 14px; margin-bottom: var(--sp-3);
       transition: border-color var(--dur-fast) var(--ease-decel);
@@ -3095,9 +3296,9 @@
       z-index: 200;
       background: rgba(14,13,11,0.92);
       border: 1px solid rgba(var(--color-accent-rgb), 0.35);
-      color: var(--color-text-1);
+      color: var(--color-text);
       font-size: 13px;
-      font-family: var(--font);
+      font-family: var(--font-body);
       padding: 6px 12px;
       border-radius: var(--r-md);
       white-space: nowrap;
@@ -3530,6 +3731,29 @@
       pointer-events: none;
     }
 
+    /* H4 — Artist name gloss pass (once on load, dark + glass themes only) */
+    @keyframes gloss-pass {
+      0%   { background-position: -200% center; }
+      100% { background-position: 300% center; }
+    }
+    .hero__name.revealed::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.28) 50%, transparent 100%);
+      background-size: 200% 100%;
+      background-position: -200% center;
+      animation: gloss-pass 900ms var(--ease-decel) 300ms 1 forwards;
+      pointer-events: none;
+    }
+    /* Only dark + glass themes — light theme doesn't need the gloss */
+    [data-theme="light"] .hero__name.revealed::after,
+    [data-theme="contrast"] .hero__name.revealed::after { display: none; }
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .hero__name.revealed::after { display: none; }
+    }
+
     /* #10 — Live pulsing dot (gig state chip) */
     @keyframes pulse-dot {
       0%, 100% { opacity: 1; transform: scale(1); }
@@ -3595,7 +3819,7 @@
     /* Skip-link — keyboard accessibility */
     .skip-link {
       position: absolute; top: -100%; left: 8px; z-index: 9999;
-      background: var(--color-surface); color: var(--color-text-1);
+      background: var(--color-surface); color: var(--color-text);
       padding: 8px 16px; border-radius: var(--r-md);
       font-size: var(--text-sm); font-weight: 600;
       border: 2px solid var(--color-accent);
@@ -4160,6 +4384,39 @@
 
   </div><!-- /#app-shell -->
 
+  <!-- MEDIA LIGHTBOX — must be in DOM before main script runs -->
+  <div class="media-lightbox" id="media-lightbox" role="dialog" aria-modal="true" aria-label="Video player">
+    <div class="media-lightbox__inner" id="media-lightbox-inner">
+      <div class="media-lightbox__aspect">
+        <iframe id="media-lightbox-iframe" src="" title="Media"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
+      </div>
+      <div class="media-lightbox__bar">
+        <span class="media-lightbox__title" id="media-lightbox-title"></span>
+        <div class="media-lightbox__actions">
+          <a class="media-lightbox__btn" id="media-lightbox-ext" href="#" target="_blank" rel="noopener noreferrer">↗ YouTube</a>
+          <button class="media-lightbox__btn" id="media-lightbox-pip" aria-label="Float player">⊡ Float</button>
+          <button class="media-lightbox__btn media-lightbox__btn--close" id="media-lightbox-close" aria-label="Close player">✕</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEDIA PiP — must be in DOM before main script runs -->
+  <div class="media-pip" id="media-pip">
+    <div class="media-pip__aspect">
+      <iframe id="media-pip-iframe" src="" title="Media"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen></iframe>
+    </div>
+    <div class="media-pip__bar">
+      <button class="media-pip__expand" id="media-pip-expand" aria-label="Expand player">⤡</button>
+      <span class="media-pip__title" id="media-pip-title"></span>
+      <button class="media-pip__close" id="media-pip-close" aria-label="Close player">✕</button>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script>
     'use strict';
@@ -4340,17 +4597,27 @@
         {
           title: 'Liminal',
           type: 'Single',
-          platform: 'SoundCloud',
+          platform: 'Spotify',
+          displayStyle: 'able-player',
           releaseDate: '2025-11-20',
           artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=800&q=80',
-          // SoundCloud embed — Bicep's Glue (working real embed)
-          streamUrl: 'https://soundcloud.com/bicep-music/glue',
-          tracks: [
-            { title: 'Liminal',              duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=100&q=60' },
-            { title: 'Liminal (Instrumental)',duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=100&q=60' },
-          ],
+          streamUrl: 'https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh',
+          artist: 'LUNA',
           credits: [
             { name: 'LUNA', role: 'Production, Mixing, Mastering' }
+          ]
+        },
+        {
+          title: 'Corridor (Live Session)',
+          type: 'Video',
+          platform: 'YouTube',
+          releaseDate: '2025-09-01',
+          artworkUrl: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80',
+          // Real YouTube video — Rick Astley Never Gonna Give You Up (safe placeholder)
+          streamUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          credits: [
+            { name: 'LUNA', role: 'Performance' },
+            { name: 'James Reid', role: 'Film, Edit' },
           ]
         }
       ],
@@ -5836,6 +6103,8 @@
     function renderHero(profile) {
       const shell = document.getElementById('app-shell')
       const state = computeState(profile)
+      // H17 — stamp state on shell so CSS can drive state-specific ambient tints
+      shell.dataset.campaignState = state
 
       // Artist name
       const nameEl = document.getElementById('hero-name')
@@ -6216,7 +6485,7 @@
               }, { once: true })
             }
             if (errorEl) {
-              errorEl.textContent = 'Please enter a valid email.'
+              errorEl.textContent = "That doesn't look like a valid email."
               errorEl.hidden = false
             }
             return
@@ -6463,25 +6732,53 @@
         let mediaHtml
         const safeStreamUrl = streamUrl && isSafeUrl(streamUrl) ? escHtml(streamUrl) : ''
         const safeEmbedUrl  = embedUrl  && isSafeUrl(embedUrl)  ? escHtml(embedUrl)  : ''
-        if (isSpotify && safeEmbedUrl) {
-          // Spotify: auto-load the iframe — it looks like Spotify natively
+        const displayStyle = rel.displayStyle || 'native'  // 'native' | 'able-player'
+        if (isSpotify && safeEmbedUrl && displayStyle !== 'able-player') {
+          // Spotify native — auto-load the iframe in Spotify's own look
           mediaHtml = `<div class="release-card__spotify-embed">
             <iframe src="${safeEmbedUrl}?utm_source=generator&theme=0" height="${spotifyH}"
                     title="${escHtml(rel.title || 'Music player')}"
                     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                     loading="lazy"></iframe>
           </div>`
+        } else if (isSpotify && displayStyle === 'able-player') {
+          // ABLE player — on-brand card, matches the profile theme
+          const artSrc = artworkSrc ? escHtml(artworkSrc) : ''
+          const trackTitle = escHtml(rel.title || 'Untitled')
+          const artistName = escHtml(rel.artist || '')
+          mediaHtml = `<div class="release-card__able-player">
+            <div class="release-card__able-art">
+              ${artSrc ? `<img src="${artSrc}" alt="${trackTitle} artwork" loading="lazy">` : ''}
+            </div>
+            <div class="release-card__able-meta">
+              <div class="release-card__able-track">${trackTitle}</div>
+              ${artistName ? `<div class="release-card__able-artist">${artistName}</div>` : ''}
+            </div>
+            <div class="release-card__able-actions">
+              ${safeStreamUrl ? `<a class="release-card__able-play pressable" href="${safeStreamUrl}" target="_blank" rel="noopener noreferrer" aria-label="Play on Spotify">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              </a>
+              <a class="release-card__able-open" href="${safeStreamUrl}" target="_blank" rel="noopener noreferrer">Spotify ↗</a>` : ''}
+            </div>
+          </div>`
         } else if (isYouTube && ytThumb) {
-          // YouTube: thumbnail with branded play button, click expands 16:9 iframe
-          mediaHtml = `<div class="release-card__artwork-wrap">
+          // YouTube: thumbnail → play opens lightbox; expand btn → also lightbox; inline option below
+          const ytEmbed = `https://www.youtube.com/embed/${youtubeId}?autoplay=1`
+          const ytExtUrl = safeStreamUrl
+          mediaHtml = `<div class="release-card__artwork-wrap"
+                             data-yt-embed="${escHtml(ytEmbed)}"
+                             data-yt-ext="${ytExtUrl}"
+                             data-yt-title="${escHtml(rel.title || '')}">
             <img class="release-card__artwork" src="${escHtml(ytThumb)}"
                  alt="${escHtml(rel.title || 'Video')} thumbnail" loading="lazy">
-            <button class="release-card__play-overlay pressable" aria-label="Watch ${escHtml(rel.title || 'video')} inline">
+            <button class="release-card__play-overlay pressable js-yt-lightbox"
+                    aria-label="Watch ${escHtml(rel.title || 'video')}">
               <svg width="68" height="48" viewBox="0 0 68 48" fill="none" aria-hidden="true">
                 <rect width="68" height="48" rx="10" fill="#FF0000"/>
                 <path d="M27 14l24 10-24 10V14z" fill="white"/>
               </svg>
             </button>
+            <button class="release-card__expand-btn js-yt-lightbox" aria-label="Expand ${escHtml(rel.title || 'video')}">⤡</button>
             <div class="release-card__yt-badge" aria-hidden="true">
               <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
                 <rect width="10" height="8" rx="1.5" fill="#FF0000"/>
@@ -6496,7 +6793,9 @@
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowfullscreen loading="lazy"></iframe>
             </div>
-          </div>`
+          </div>
+          <button class="release-card__watch-inline js-yt-inline">Watch inline ↓</button>
+          ${ytExtUrl ? `<a class="release-card__ext pressable" href="${ytExtUrl}" target="_blank" rel="noopener noreferrer">Watch on YouTube ↗</a>` : ''}`
         } else {
           // SoundCloud / Mixcloud / generic — artwork + play overlay or external link
           mediaHtml = `<div class="release-card__artwork-wrap">
@@ -6609,18 +6908,54 @@
           })
         })
 
-        // Wire embed toggle (YouTube + other embeds — not Spotify which auto-loads)
-        if (embedUrl && !isSpotify) {
-          const overlay = card.querySelector('.release-card__play-overlay')
-          const embedDiv = card.querySelector('.release-embed')
-          const iframe = embedDiv ? embedDiv.querySelector('iframe') : null
+        // Wire embed interactions
+        if (isYouTube && youtubeId) {
+          // Lightbox openers (play overlay + expand button)
+          const wrap   = card.querySelector('.release-card__artwork-wrap')
+          const ytEmb  = wrap ? wrap.dataset.ytEmbed : `https://www.youtube.com/embed/${youtubeId}?autoplay=1`
+          const ytExt  = wrap ? wrap.dataset.ytExt  : (streamUrl || '')
+          const ytTit  = wrap ? wrap.dataset.ytTitle : (rel.title || '')
 
+          card.querySelectorAll('.js-yt-lightbox').forEach(btn => {
+            btn.addEventListener('click', e => {
+              e.stopPropagation()
+              if (window.openMediaLightbox) {
+                window.openMediaLightbox(ytEmb, ytTit, ytExt)
+                trackClick(rel.title || 'Release', 'lightbox', 'listen')
+              }
+            })
+          })
+
+          // Watch inline toggle
+          const inlineBtn = card.querySelector('.js-yt-inline')
+          const embedDiv  = card.querySelector('.release-embed')
+          const iframe    = embedDiv ? embedDiv.querySelector('iframe') : null
+          if (inlineBtn && embedDiv && iframe) {
+            inlineBtn.addEventListener('click', e => {
+              e.stopPropagation()
+              if (embedDiv.hidden) {
+                embedDiv.hidden = false
+                iframe.src = ytEmb
+                inlineBtn.textContent = 'Close ↑'
+                trackClick(rel.title || 'Release', 'inline', 'listen')
+              } else {
+                embedDiv.hidden = true
+                iframe.src = ''
+                inlineBtn.textContent = 'Watch inline ↓'
+              }
+            })
+          }
+        } else if (embedUrl && !isSpotify) {
+          // SoundCloud / Mixcloud / generic embed
+          const overlay  = card.querySelector('.release-card__play-overlay')
+          const embedDiv = card.querySelector('.release-embed')
+          const iframe   = embedDiv ? embedDiv.querySelector('iframe') : null
           if (overlay && embedDiv && iframe) {
             overlay.addEventListener('click', e => {
               e.stopPropagation()
               if (embedDiv.hidden) {
                 embedDiv.hidden = false
-                iframe.src = isYouTube ? `https://www.youtube.com/embed/${youtubeId}?autoplay=1` : embedUrl
+                iframe.src = embedUrl
                 overlay.style.display = 'none'
                 trackClick(rel.title || 'Release', 'embed', 'listen')
               }
@@ -7372,8 +7707,11 @@
         a: Math.random() * 0.5 + 0.1
       }))
 
+      // Only resize on window resize, not every frame
+      const onResize = () => { canvas.width = W(); canvas.height = H() }
+      window.addEventListener('resize', onResize, { passive: true })
+
       const draw = () => {
-        canvas.width = W(); canvas.height = H()
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         ctx.fillStyle = '#0d0e1a'
         ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -7956,7 +8294,79 @@
     }
 
     // CHECKPOINT 1 COMPLETE — Shell + tokens
+
+    // ── MEDIA LIGHTBOX / PiP ─────────────────────────────────────────
+    ;(function() {
+      const lightbox   = document.getElementById('media-lightbox')
+      const lbInner    = document.getElementById('media-lightbox-inner')
+      const lbIframe   = document.getElementById('media-lightbox-iframe')
+      const lbTitle    = document.getElementById('media-lightbox-title')
+      const lbExt      = document.getElementById('media-lightbox-ext')
+      const lbPipBtn   = document.getElementById('media-lightbox-pip')
+      const lbClose    = document.getElementById('media-lightbox-close')
+      const pip        = document.getElementById('media-pip')
+      const pipIframe  = document.getElementById('media-pip-iframe')
+      const pipTitle   = document.getElementById('media-pip-title')
+      const pipExpand  = document.getElementById('media-pip-expand')
+      const pipClose   = document.getElementById('media-pip-close')
+      if (!lightbox || !pip) return
+
+      let _src = '', _title = '', _ext = ''
+
+      function openLightbox(src, title, extUrl) {
+        _src = src; _title = title || ''; _ext = extUrl || ''
+        lbIframe.src = src
+        lbTitle.textContent = _title
+        lbExt.href = _ext
+        lbExt.style.display = _ext ? '' : 'none'
+        lightbox.classList.add('active')
+        document.body.style.overflow = 'hidden'
+        setTimeout(() => lbClose.focus(), 50)
+      }
+
+      function closeLightbox(stopVideo) {
+        lightbox.classList.remove('active')
+        document.body.style.overflow = ''
+        if (stopVideo !== false) lbIframe.src = ''
+      }
+
+      function openPip(src, title, extUrl) {
+        _src = src; _title = title || ''; _ext = extUrl || ''
+        pipIframe.src = src
+        pipTitle.textContent = _title
+        pip.classList.add('active')
+        closeLightbox(false)
+      }
+
+      function closePip() {
+        pip.classList.remove('active')
+        pipIframe.src = ''
+      }
+
+      // Expose globally for music card wiring
+      window.openMediaLightbox = openLightbox
+      window.openMediaPip      = openPip
+
+      // Controls
+      lbClose.addEventListener('click', closeLightbox)
+      lbPipBtn.addEventListener('click', () => openPip(_src, _title, _ext))
+      pipClose.addEventListener('click', closePip)
+      pipExpand.addEventListener('click', () => {
+        const s = pipIframe.src || _src
+        openLightbox(s, _title, _ext)
+        closePip()
+      })
+
+      // Backdrop click
+      lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox() })
+
+      // Escape key
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && lightbox.classList.contains('active')) closeLightbox()
+      })
+    })()
   </script>
+
 
 </body>
 </html>
