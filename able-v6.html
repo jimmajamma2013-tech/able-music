@@ -17,6 +17,20 @@
   <meta name="description" content="Artist profile powered by ABLE">
   <meta name="robots" content="index,follow">
 
+  <!-- Open Graph -->
+  <meta property="og:type"        content="profile">
+  <meta property="og:site_name"   content="ABLE">
+  <meta property="og:title"       id="og-title"       content="Artist on ABLE">
+  <meta property="og:description" id="og-description" content="Music, events, and more — direct from the artist.">
+  <meta property="og:url"         id="og-url"         content="">
+  <meta property="og:image"       id="og-image"       content="">
+  <meta name="twitter:card"       content="summary_large_image">
+  <meta name="twitter:title"      id="tw-title"       content="Artist on ABLE">
+  <meta name="twitter:description" id="tw-description" content="Music, events, and more — direct from the artist.">
+
+  <!-- Structured data (populated by JS after profile load) -->
+  <script type="application/ld+json" id="structured-data">{}</script>
+
   <style>
     /* ============================================================
        ABLE v6 — Checkpoint 1: Shell + Design System Tokens
@@ -4523,6 +4537,56 @@
 
     // === INIT ====================================================
 
+    // === SEO / STRUCTURED DATA (§12) =============================
+
+    function injectSEO(profile) {
+      const name = profile.name || 'Artist'
+      const bio  = profile.bio  || 'Music, events, and more — direct from the artist.'
+      const handle = (profile.handle || name).toLowerCase().replace(/[^a-z0-9]+/g, '-')
+      const url  = `https://able.fm/${handle}`
+      const art  = profile.topCard?.artworkUrl || ''
+
+      const setMeta = (id, val) => { const el = document.getElementById(id); if (el) el.setAttribute('content', val); }
+      setMeta('og-title',       `${name} on ABLE`)
+      setMeta('og-description', bio)
+      setMeta('og-url',         url)
+      setMeta('og-image',       art)
+      setMeta('tw-title',       `${name} on ABLE`)
+      setMeta('tw-description', bio)
+      document.title = `${name} — ABLE`
+
+      // JSON-LD: MusicGroup + upcoming Event entries
+      const schema = {
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'MusicGroup',
+            name,
+            description: bio,
+            url,
+            image: art || undefined,
+            genre: profile.genres || [],
+          },
+          ...(profile.events || [])
+            .filter(e => e.date && new Date(e.date) > new Date())
+            .map(e => ({
+              '@type': 'Event',
+              name: `${name} at ${e.venue || 'Venue TBC'}`,
+              startDate: e.date,
+              location: {
+                '@type': 'Place',
+                name: e.venue || '',
+                address: e.city || '',
+              },
+              performer: { '@type': 'MusicGroup', name },
+              url: e.ticketUrl || url,
+            })),
+        ],
+      }
+      const el = document.getElementById('structured-data')
+      if (el) el.textContent = JSON.stringify(schema)
+    }
+
     function init() {
       const shell = document.getElementById('app-shell')
       const profile = getProfile()
@@ -4584,6 +4648,9 @@
 
       // Track page view
       trackView()
+
+      // SEO: populate OG tags + JSON-LD from profile (§12)
+      injectSEO(profile)
 
       // On-page edit bar — show if artist owns this profile (has localStorage data)
       initEditBar(profile)
