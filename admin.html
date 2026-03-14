@@ -2922,14 +2922,20 @@ function saveProfilePage() {
   const ctaSecLabel     = document.getElementById('adminCtaSecLabel')?.value.trim();
   const ctaSecUrl       = document.getElementById('adminCtaSecUrl')?.value.trim();
 
+  // For optional fields: if the input element exists, its value is authoritative
+  // (allows clearing); for name, always fall back to prevent a blank profile.
+  const bioEl      = document.getElementById('adminBio')
+  const genreEl    = document.getElementById('adminGenre')
+  const locationEl = document.getElementById('adminLocation')
+
   const updated = {
     ...data,
     name:      name     || data.name,
-    bio:       bio      || data.bio,
+    bio:       bioEl      ? bio      : data.bio,
     accent:    accent   || data.accent,
     theme,
-    genres:    genre    ? [genre]    : data.genres,
-    location:  location || data.location,
+    genres:    genreEl   ? (genre ? [genre] : []) : data.genres,
+    location:  locationEl ? location : data.location,
     platforms,
     topCard:   {
       ...(data.topCard || {}),
