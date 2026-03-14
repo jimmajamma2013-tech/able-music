@@ -2141,6 +2141,15 @@
 
     .support-pack__price-btn:hover { opacity: 0.88; }
 
+    /* Artist's own words above support packs */
+    .support-intro {
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      line-height: 1.55;
+      margin-bottom: var(--sp-4);
+      padding: 0 var(--sp-5);
+    }
+
     .support-note {
       margin-top: var(--sp-3);
       font-size: var(--text-xs);
@@ -2953,7 +2962,7 @@
         <header class="section-header section-header--secondary">
           <h2 class="section-title" id="merch-heading">Merch</h2>
           <a class="section-action" id="merch-shop-link" href="#" target="_blank" rel="noopener noreferrer" hidden>
-            Shop all
+            See everything
           </a>
         </header>
         <div class="merch-grid" id="merch-grid"></div>
@@ -4812,6 +4821,21 @@
       const support = profile.support || {}
       const packs = support.packs || []
       if (!packs.length) return
+
+      // Artist-customizable section title and optional intro
+      const headingEl = document.getElementById('support-heading')
+      if (headingEl && support.title) headingEl.textContent = support.title
+
+      // Optional intro text — artist's own words above the packs
+      if (support.intro) {
+        const existingIntro = section.querySelector('.support-intro')
+        if (!existingIntro) {
+          const intro = document.createElement('p')
+          intro.className = 'support-intro'
+          intro.textContent = support.intro
+          packsEl.parentNode.insertBefore(intro, packsEl)
+        }
+      }
 
       packsEl.innerHTML = ''
       packs.forEach(pack => {
