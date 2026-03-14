@@ -2515,9 +2515,15 @@ function renderSnapCardsList() {
             <div class="field-label">Body text <span style="font-weight:400;color:var(--t3);">(optional)</span></div>
             <textarea class="field-input" id="sce-body-${card.id}" rows="2" style="resize:none;" placeholder="A bit more detail…">${escHtml(card.body||'')}</textarea>
           </div>
-          <div class="field-row" style="margin:0;">
-            <div class="field-label">Image URL <span style="font-weight:400;color:var(--t3);">(optional)</span></div>
-            <input class="field-input" type="url" id="sce-img-${card.id}" value="${escHtml(card.imageUrl||'')}" placeholder="https://…/photo.jpg">
+          <div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;">
+            <div class="field-row" style="margin:0;">
+              <div class="field-label">Image URL <span style="font-weight:400;color:var(--t3);">(optional)</span></div>
+              <input class="field-input" type="url" id="sce-img-${card.id}" value="${escHtml(card.imageUrl||'')}" placeholder="https://…/photo.jpg">
+            </div>
+            <div class="field-row" style="margin:0;">
+              <div class="field-label">Alt text</div>
+              <input class="field-input" id="sce-alt-${card.id}" value="${escHtml(card.alt||'')}" placeholder="Describe the image">
+            </div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <div class="field-row" style="margin:0;">
@@ -2599,6 +2605,7 @@ function saveSnapCard(id) {
       title:    document.getElementById('sce-title-' + id)?.value.trim()    || '',
       body:     document.getElementById('sce-body-' + id)?.value.trim()     || '',
       imageUrl: document.getElementById('sce-img-' + id)?.value.trim()      || '',
+      alt:      document.getElementById('sce-alt-' + id)?.value.trim()      || '',
       ctaLabel: document.getElementById('sce-ctalabel-' + id)?.value.trim() || '',
       ctaUrl:   document.getElementById('sce-ctaurl-' + id)?.value.trim()   || '',
     }
