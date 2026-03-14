@@ -908,7 +908,7 @@
       justify-content: center;
       gap: var(--sp-2);
       width: 100%;
-      min-height: 60px;
+      min-height: 56px;
       padding: var(--sp-4) var(--sp-6);
       background-color: var(--color-accent);
       color: var(--cta-text-color, #fff);
@@ -938,8 +938,8 @@
       justify-content: center;
       gap: var(--sp-2);
       width: 100%;
-      min-height: 48px;
-      padding: var(--sp-3) var(--sp-6);
+      min-height: 56px;
+      padding: var(--sp-4) var(--sp-6);
       background: transparent;
       color: var(--color-text-2);
       border: 1px solid rgba(255,255,255,0.14);
@@ -3335,7 +3335,7 @@
           platform: 'Spotify',
           releaseDate: '2026-01-15',
           artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
-          streamUrl: 'https://open.spotify.com/album/2ODvWsOgouMbaA5xf0RkJe',
+          streamUrl: 'https://open.spotify.com/album/5aIBFKBCFPW1NF4KblVkbp',
           tracks: [
             { title: 'Liminal',     duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
             { title: 'Glass City',  duration: '3:48', artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=100&q=60' },
@@ -4294,11 +4294,10 @@
       const nameEl = document.getElementById('fan-artist-name')
       if (nameEl && profile.name) nameEl.textContent = profile.name
 
-      // If fan already signed up this session, show echo state
-      const fans = safeLS('able_fans', [])
-      const alreadySigned = fans.length > 0
+      // If this visitor signed up in this browser session, show echo state
+      const myEmail = sessionStorage.getItem('able_this_fan_email')
 
-      if (alreadySigned) {
+      if (myEmail) {
         const form = document.getElementById('fan-form')
         const echo = document.getElementById('fan-echo')
         if (form) form.hidden = true
@@ -4306,11 +4305,8 @@
           echo.hidden = false
           const echoText = document.getElementById('fan-echo-text')
           if (echoText) {
-            const lastEmail = fans[fans.length - 1]?.email || ''
             const artistName = profile.name || 'this artist'
-            echoText.textContent = lastEmail
-              ? `We've got you — ${lastEmail} is on ${artistName}'s list.`
-              : `You're on ${artistName}'s list.`
+            echoText.textContent = `We've got you — ${myEmail} is on ${artistName}'s list.`
           }
         }
       }
@@ -4377,6 +4373,7 @@
               double_opted_in: false
             })
             localStorage.setItem('able_fans', JSON.stringify(fans))
+            sessionStorage.setItem('able_this_fan_email', email)
           } catch (_) {}
 
           // Simulate async (real: Supabase call in Phase 2)
@@ -4457,6 +4454,7 @@
               double_opted_in: false
             })
             localStorage.setItem('able_fans', JSON.stringify(fans))
+            sessionStorage.setItem('able_this_fan_email', email)
           } catch (_) {}
           form2.hidden = true
           // Show brief confirmation
@@ -4585,7 +4583,7 @@
         if (isSpotify && safeEmbedUrl) {
           // Spotify: auto-load the iframe — it looks like Spotify natively
           mediaHtml = `<div class="release-card__spotify-embed">
-            <iframe src="${safeEmbedUrl}&theme=0" height="${spotifyH}"
+            <iframe src="${safeEmbedUrl}?utm_source=generator&theme=0" height="${spotifyH}"
                     title="${escHtml(rel.title || 'Music player')}"
                     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                     loading="lazy"></iframe>
