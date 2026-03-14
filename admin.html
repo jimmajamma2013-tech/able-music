@@ -1648,9 +1648,25 @@ body {
 
     <div class="stats-row" style="margin-bottom:20px;">
       <div class="stat-card"><div class="stat-label">Total fans</div><div class="stat-value" id="fanStatTotal">—</div><div class="stat-delta up" id="fanStatWeek"> </div></div>
-      <div class="stat-card"><div class="stat-label">Superfans</div><div class="stat-value">12</div><div class="stat-delta">12.8% of list</div></div>
-      <div class="stat-card"><div class="stat-label">Avg open rate</div><div class="stat-value">47%</div><div class="stat-delta up">vs 22% industry</div></div>
-      <div class="stat-card"><div class="stat-label">Top source</div><div class="stat-value" style="font-size:18px;">Instagram</div><div class="stat-delta">41 fans</div></div>
+      <div class="stat-card" style="position:relative;overflow:hidden;">
+        <div class="stat-label">Superfans</div>
+        <div class="stat-value" style="filter:blur(6px);user-select:none;" aria-hidden="true">8</div>
+        <div class="stat-delta" style="filter:blur(4px);user-select:none;" aria-hidden="true">9.4% of list</div>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;" onclick="showPage('settings')" title="Upgrade to unlock">
+          <svg viewBox="0 0 12 12" fill="currentColor" width="10" height="10" style="color:var(--acc);opacity:.8;"><path d="M9.5 5H9V3.5a3 3 0 00-6 0V5h-.5A1.5 1.5 0 001 6.5v4A1.5 1.5 0 002.5 12h7A1.5 1.5 0 0011 10.5v-4A1.5 1.5 0 009.5 5zm-5-1.5a1.5 1.5 0 013 0V5h-3V3.5z"/></svg>
+          <span style="font-size:9px;font-weight:700;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;">Pro</span>
+        </div>
+      </div>
+      <div class="stat-card" style="position:relative;overflow:hidden;">
+        <div class="stat-label">Avg open rate</div>
+        <div class="stat-value" style="filter:blur(6px);user-select:none;" aria-hidden="true">47%</div>
+        <div class="stat-delta" style="filter:blur(4px);user-select:none;" aria-hidden="true">vs 22% industry</div>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;" onclick="showPage('settings')" title="Upgrade to unlock">
+          <svg viewBox="0 0 12 12" fill="currentColor" width="10" height="10" style="color:var(--acc);opacity:.8;"><path d="M9.5 5H9V3.5a3 3 0 00-6 0V5h-.5A1.5 1.5 0 001 6.5v4A1.5 1.5 0 002.5 12h7A1.5 1.5 0 0011 10.5v-4A1.5 1.5 0 009.5 5zm-5-1.5a1.5 1.5 0 013 0V5h-3V3.5z"/></svg>
+          <span style="font-size:9px;font-weight:700;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;">Pro</span>
+        </div>
+      </div>
+      <div class="stat-card"><div class="stat-label">Top source</div><div class="stat-value" id="fanStatTopSource" style="font-size:18px;">—</div><div class="stat-delta" id="fanStatTopSourceCount"> </div></div>
     </div>
 
     <div class="section-grid wide" style="margin-bottom:20px;">
@@ -1692,41 +1708,22 @@ body {
 
       <div>
         <div class="dash-card" style="margin-bottom:16px;">
-          <div class="dc-head"><div class="dc-title">Superfan perks</div><button class="dc-action">Edit</button></div>
-          <div class="dc-body">
+          <div class="dc-head"><div class="dc-title">Superfan scoring</div></div>
+          <div class="dc-body" style="padding:14px 16px;">
             <div style="display:flex;flex-direction:column;gap:8px;">
-              <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
-                <div style="width:8px;height:8px;border-radius:50%;background:#7ec88a;flex-shrink:0;"></div>
-                <span style="color:var(--t2);">Early access to ticket sales</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
-                <div style="width:8px;height:8px;border-radius:50%;background:#7ec88a;flex-shrink:0;"></div>
-                <span style="color:var(--t2);">Exclusive voice notes</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
-                <div style="width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0;"></div>
-                <span style="color:var(--t3);">Private listening party — set up</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
-                <div style="width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0;"></div>
-                <span style="color:var(--t3);">Name in credits — set up</span>
+              <p style="font-size:12px;color:var(--t2);line-height:1.5;margin:0;">ABLE scores your fans automatically — based on how often they show up, click, support, and engage. Your most dedicated listeners surface to the top.</p>
+              <div style="margin-top:4px;padding:10px 12px;border-radius:10px;background:rgba(var(--acc-rgb),.07);border:1px solid rgba(var(--acc-rgb),.2);">
+                <div style="font-size:11px;font-weight:700;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">Artist Pro</div>
+                <div style="font-size:12px;color:var(--t2);line-height:1.5;">See individual fan scores, filter by tier, and set exclusive perks for your top supporters.</div>
+                <button onclick="showPage('settings')" style="margin-top:10px;font-size:11px;font-weight:700;color:var(--acc);background:none;border:none;cursor:pointer;padding:0;font-family:var(--font);">Upgrade to unlock →</button>
               </div>
             </div>
           </div>
         </div>
-        <div class="dash-card">
-          <div class="dc-head"><div class="dc-title">Support packs</div><button class="dc-action">+ New pack</button></div>
-          <div class="dc-body">
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              <div style="padding:10px 12px;border-radius:10px;background:rgba(var(--acc-rgb),.07);border:1px solid rgba(var(--acc-rgb),.2);">
-                <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;">Inner Circle — £5/mo</div>
-                <div style="font-size:10px;color:var(--t3);">Instrumentals · Voice notes · Early access</div>
-              </div>
-              <button class="snap-add-btn">
-                <svg viewBox="0 0 12 12" fill="currentColor" width="12" height="12"><path d="M6 1v10M1 6h10"/></svg>
-                Create a support pack
-              </button>
-            </div>
+        <div class="dash-card" id="fanSupportPacksCard">
+          <div class="dc-head"><div class="dc-title">Support packs</div><button class="dc-action" onclick="showPage('support')">Manage →</button></div>
+          <div class="dc-body" id="fanSupportPacksList">
+            <div style="font-size:12px;color:var(--t3);">No support packs set up yet. Add them from the Support page.</div>
           </div>
         </div>
       </div>
@@ -1979,9 +1976,53 @@ function filterFanLevel(level) {
     r.style.display = (!level || r.textContent.toLowerCase().includes(level)) ? '' : 'none';
   });
 }
+function renderFanList() {
+  const real = JSON.parse(localStorage.getItem('able_fans') || '[]');
+  if (real.length > 0) {
+    // Real fans exist — show only real data, no demo noise
+    renderFanTable([]);
+  } else {
+    // No real fans yet — show demo rows with clear example-data notice
+    renderFanTable(DEMO_FANS);
+    const tbody = document.getElementById('fanTableBody');
+    if (tbody) {
+      const note = document.createElement('tr');
+      note.innerHTML = `<td colspan="5" style="padding:10px 18px;font-size:11px;color:var(--acc);font-weight:600;letter-spacing:.02em;background:rgba(var(--acc-rgb),.06);border-bottom:1px solid var(--border);">Example data — share your page to get your first real fans.</td>`;
+      tbody.insertBefore(note, tbody.firstChild);
+    }
+  }
+}
+
+function renderFanSupportPacksSummary() {
+  const listEl = document.getElementById('fanSupportPacksList');
+  if (!listEl) return;
+  const packs = safeLS(V3_KEY, {}).supportPacks || [];
+  const enabled = packs.filter(p => p.enabled !== false);
+  if (!enabled.length) {
+    listEl.innerHTML = '<div style="font-size:12px;color:var(--t3);">No support packs set up yet. Add them from the Support page.</div>';
+    return;
+  }
+  const sym = { GBP:'£', USD:'$', EUR:'€' };
+  listEl.innerHTML = enabled.map(p => {
+    const cur = sym[p.currency] || p.currency || '£';
+    const priceStr = p.price ? `${cur}${p.price}${p.type === 'subscription' ? '/mo' : ''}` : '';
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--text);">${escHtml(p.name || 'Support pack')}</div>
+        ${p.perks ? `<div style="font-size:10px;color:var(--t3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;">${escHtml(p.perks)}</div>` : ''}
+      </div>
+      <div style="font-size:12px;font-weight:600;color:var(--acc);flex-shrink:0;margin-left:10px;">${escHtml(priceStr)}</div>
+    </div>`;
+  }).join('') + `<button class="snap-add-btn" style="margin-top:8px;" onclick="showPage('support')">
+    <svg viewBox="0 0 12 12" fill="currentColor" width="12" height="12"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    Manage support packs
+  </button>`;
+}
+
 function exportFans() {
   const real = JSON.parse(localStorage.getItem('able_fans') || '[]');
-  const all = [...DEMO_FANS, ...real.map(f => ({ email:f.email, level:'listener', source:f.source||'Direct', ts:f.ts }))];
+  if (!real.length) { alert('No fans yet — share your page to get started.'); return; }
+  const all = real.map(f => ({ email:f.email, level:'listener', source:f.source||'Direct', ts:f.ts }));
   const csv = 'Email,Level,Source,Joined\n' + all.map(f =>
     `${f.email},${f.level},${f.source},${new Date(f.ts).toISOString().slice(0,10)}`
   ).join('\n');
@@ -2008,6 +2049,7 @@ function showPage(id) {
   if (id === 'snaps')     renderSnapCardsList();
   if (id === 'connect')   renderRecsList();
   if (id === 'analytics') { loadRealStats(); loadActivityFeed(); }
+  if (id === 'fans')      { loadRealStats(); renderFanSupportPacksSummary(); renderFanList(); }
 }
 
 /* mode cards handled by Campaign HQ */
@@ -3036,6 +3078,20 @@ function loadRealStats() {
   set('fanStatTotal',  fansTotal  || '—');
   set('fanStatWeek',   fansWeek   ? '↑ ' + fansWeek + ' this week' : ' ');
 
+  // Top fan source — calculated from real sign-up data
+  if (fansTotal > 0) {
+    const srcCounts = {};
+    fans.forEach(f => {
+      const src = (f.source || 'direct').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+      srcCounts[src] = (srcCounts[src] || 0) + 1;
+    });
+    const topSrc = Object.entries(srcCounts).sort((a,b) => b[1]-a[1])[0];
+    if (topSrc) {
+      set('fanStatTopSource', topSrc[0]);
+      set('fanStatTopSourceCount', topSrc[1] + ' fan' + (topSrc[1] !== 1 ? 's' : ''));
+    }
+  }
+
   // Fan cap progress bar (§9.1) — show once first fan signs up
   const CAP = 100;
   const capBar = document.getElementById('fanCapBar');
@@ -3106,7 +3162,7 @@ function updateFanPageStats() {
   const total = fans.length;
   // Update count in broadcast button
   const sendBtn = document.querySelector('.tb-btn-acc[onclick]');
-  const allFans = total + DEMO_FANS.length; // combined
+  const allFans = total; // real fans only
   document.querySelectorAll('.page').forEach(p => {
     const btn = p.querySelector('button.tb-btn-acc');
     if (btn && btn.textContent.includes('fans')) {
@@ -3391,7 +3447,8 @@ window.addEventListener('DOMContentLoaded', () => {
     c.classList.toggle('on', c.dataset.theme === savedTheme);
   });
 
-  renderFanTable(DEMO_FANS);
+  renderFanList();
+  renderFanSupportPacksSummary();
   initCampaignHQ();
   loadRealStats();
   loadActivityFeed();
