@@ -2252,6 +2252,133 @@
       border-color: rgba(0,0,0,0.10);
     }
 
+    /* === CLOSE CIRCLE ========================================== */
+
+    /* Lock-ring on World Map cells (supporter-only moments) */
+    .wm-dot--locked {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      border: 1.5px solid currentColor;
+      opacity: 0.45;
+      background: transparent !important;
+    }
+
+    /* Hero entry point — quiet tertiary link below hero CTAs */
+    .close-circle-hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: var(--sp-3);
+      gap: 4px;
+    }
+    .close-circle-hero__link {
+      font: var(--font-sans);
+      font-size: 0.8125rem; /* 13px */
+      color: var(--color-text-3);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: color var(--dur-fast) var(--ease-decel);
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    .close-circle-hero__link:hover { color: var(--color-text-2); }
+    .close-circle-hero__link--active {
+      color: var(--color-accent);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    /* Join sheet (half-sheet modal) */
+    .cc-sheet-backdrop {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,0);
+      transition: background var(--dur-norm) var(--ease-decel);
+      display: none;
+    }
+    .cc-sheet-backdrop.open { background: rgba(0,0,0,0.55); }
+
+    .cc-sheet {
+      position: fixed;
+      bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%);
+      width: 100%; max-width: 430px;
+      background: var(--color-card);
+      border-radius: 20px 20px 0 0;
+      padding: var(--sp-5) var(--sp-5) calc(var(--sp-5) + env(safe-area-inset-bottom, 0px));
+      z-index: 301;
+      transition: transform 350ms cubic-bezier(0.34,1.56,0.64,1);
+      outline: none;
+    }
+    .cc-sheet.open { transform: translateX(-50%) translateY(0); }
+
+    [data-theme="light"] .cc-sheet { background: #fff; }
+
+    .cc-sheet__drag { width: 36px; height: 4px; border-radius: 2px;
+      background: rgba(255,255,255,0.15); margin: 0 auto var(--sp-4); }
+    [data-theme="light"] .cc-sheet__drag { background: rgba(0,0,0,0.12); }
+
+    .cc-sheet__artist {
+      display: flex; align-items: center; gap: var(--sp-3);
+      margin-bottom: var(--sp-4);
+    }
+    .cc-sheet__avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      object-fit: cover; flex-shrink: 0;
+      font-size: 1.25rem; display: flex; align-items: center; justify-content: center;
+    }
+    .cc-sheet__name { font-size: 1rem; font-weight: 600; color: var(--color-text-1); }
+    .cc-sheet__price { font-size: 0.8125rem; color: var(--color-text-3); margin-top: 1px; }
+
+    .cc-sheet__intro {
+      font-size: 0.875rem; color: var(--color-text-2);
+      margin-bottom: var(--sp-4); line-height: 1.5;
+    }
+
+    .cc-sheet__input {
+      width: 100%; box-sizing: border-box;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--r-md);
+      color: var(--color-text-1);
+      font: inherit; font-size: 0.9375rem;
+      padding: 12px 14px; margin-bottom: var(--sp-3);
+      transition: border-color var(--dur-fast) var(--ease-decel);
+    }
+    .cc-sheet__input:focus {
+      outline: none;
+      border-color: var(--color-accent);
+    }
+    [data-theme="light"] .cc-sheet__input {
+      background: rgba(0,0,0,0.04);
+      border-color: rgba(0,0,0,0.12);
+    }
+
+    .cc-sheet__submit {
+      width: 100%;
+      background: var(--color-accent);
+      color: #fff;
+      border: none; border-radius: var(--r-md);
+      font: inherit; font-size: 1rem; font-weight: 600;
+      padding: 14px; cursor: pointer;
+      transition: opacity var(--dur-fast) var(--ease-decel);
+      margin-bottom: var(--sp-2);
+    }
+    .cc-sheet__submit:hover { opacity: 0.88; }
+    .cc-sheet__submit:active { transform: scale(0.98); }
+
+    .cc-sheet__terms {
+      font-size: 0.75rem; color: var(--color-text-3);
+      text-align: center; line-height: 1.4;
+    }
+
+    /* Reduced-motion */
+    @media (prefers-reduced-motion: reduce) {
+      .cc-sheet { transition-duration: 100ms; }
+      .cc-sheet-backdrop { transition-duration: 100ms; }
+    }
+
     /* === SNAP CARDS ============================================ */
     .snap-cards-section {
       padding: var(--sp-6) 0;
@@ -3364,6 +3491,14 @@
         </a>
       </div>
 
+      <!-- Close Circle hero entry point (shown when enabled + not supporter) -->
+      <div class="close-circle-hero" id="cc-hero-entry" hidden>
+        <button class="close-circle-hero__link pressable" id="cc-hero-btn"
+                aria-haspopup="dialog" aria-controls="cc-sheet">
+          Join the close circle →
+        </button>
+      </div>
+
       <!-- ======================================================
            QUICK ACTION PILLS
            Horizontal scroll, max 4 visible + overflow toggle
@@ -3476,6 +3611,31 @@
         </div>
       </div>
       <div class="edit-backdrop" id="wm-backdrop" style="display:none;" aria-hidden="true"></div>
+
+      <!-- ======================================================
+           CLOSE CIRCLE JOIN SHEET
+           ====================================================== -->
+      <div class="cc-sheet-backdrop" id="cc-backdrop" aria-hidden="true"></div>
+      <div class="cc-sheet" id="cc-sheet" role="dialog" aria-modal="true"
+           aria-labelledby="cc-sheet-title" tabindex="-1" hidden>
+        <div class="cc-sheet__drag" aria-hidden="true"></div>
+        <div class="cc-sheet__artist">
+          <div class="cc-sheet__avatar" id="cc-avatar" aria-hidden="true">♪</div>
+          <div>
+            <div class="cc-sheet__name" id="cc-artist-name"></div>
+            <div class="cc-sheet__price" id="cc-price"></div>
+          </div>
+        </div>
+        <p class="cc-sheet__intro" id="cc-intro" id="cc-sheet-title"></p>
+        <label class="sr-only" for="cc-email">Email address</label>
+        <input class="cc-sheet__input" id="cc-email" type="email"
+               inputmode="email" autocomplete="email" autocapitalize="off"
+               placeholder="your@email.com" aria-required="true">
+        <button class="cc-sheet__submit pressable" id="cc-submit">
+          Join the close circle
+        </button>
+        <p class="cc-sheet__terms" id="cc-terms"></p>
+      </div>
 
       <!-- ======================================================
            LISTEN SECTION
@@ -3921,6 +4081,40 @@
           }
         ]
       },
+      closeCircle: {
+        enabled: true,
+        monthlyAmount: 5,
+        currency: '£',
+        introText: 'Get closer to LUNA\'s music. Early access, close circle sessions, and more.'
+      },
+      moments: [
+        {
+          id: 'demo-m1',
+          type: 'early_access',
+          title: 'Echo Chamber — early access',
+          date: new Date(Date.now() + 3 * 86400000).toISOString().slice(0,10),
+          access: 'supporter',
+          active: true,
+          teaserText: 'Close circle hears this first'
+        },
+        {
+          id: 'demo-m2',
+          type: 'livestream',
+          title: 'Close circle listening session',
+          date: new Date(Date.now() + 10 * 86400000).toISOString().slice(0,10),
+          access: 'supporter',
+          active: true,
+          teaserText: 'Supporters only · Live session'
+        },
+        {
+          id: 'demo-m3',
+          type: 'show',
+          title: 'Fabric',
+          date: new Date(Date.now() + 12 * 86400000).toISOString().slice(0,10),
+          access: 'public',
+          active: true
+        }
+      ],
       credits: [],
       recommendations: [
         {
@@ -4134,13 +4328,20 @@
         var primaryColor = hasMoments ? (WM_TYPE_COLOR[moms[0].type] || 'var(--color-accent)') : 'var(--color-accent)'
         var styleStr = '--wm-type-color: ' + primaryColor + ';'
 
+        var profile4dots = safeLS('able_v3_profile', {})
+        var isSupporter4dots = !!(profile4dots.supporterSince)
         var dotsHtml = '<div class="wm-dots" aria-hidden="true">'
         if (hasMoments) {
           var visible = moms.slice(0, 3)
           var extra = moms.length - 3
           visible.forEach(function(m) {
+            var isLocked = (m.access === 'supporter' && !isSupporter4dots) || m.access === 'private'
             var c = WM_TYPE_COLOR[m.type] || 'var(--color-accent)'
-            dotsHtml += '<div class="wm-dot" style="background:' + c + '"></div>'
+            if (isLocked) {
+              dotsHtml += '<div class="wm-dot wm-dot--locked" style="color:' + c + '"></div>'
+            } else {
+              dotsHtml += '<div class="wm-dot" style="background:' + c + '"></div>'
+            }
           })
           if (extra > 0) dotsHtml += '<span class="wm-dot-more">+' + extra + '</span>'
         }
@@ -4220,7 +4421,7 @@
       } else if (access === 'gate_fan') {
         ctaHtml = '<button class="wm-panel__cta wm-panel__cta--gated" id="wm-fan-gate">Join the list to access this</button>'
       } else if (access === 'gate_supporter') {
-        ctaHtml = '<button class="wm-panel__cta wm-panel__cta--gated" id="wm-supporter-gate">Supporters get this — become a supporter</button>'
+        ctaHtml = '<button class="wm-panel__cta wm-panel__cta--gated" id="wm-supporter-gate">Join the close circle u2192</button>'
       }
 
       body.style.setProperty('--wm-panel-type-color', typeColor)
@@ -4256,13 +4457,7 @@
         })
       }
 
-      var supportGateBtn = body.querySelector('#wm-supporter-gate')
-      if (supportGateBtn) {
-        supportGateBtn.addEventListener('click', function() {
-          closeWorldMapPanel()
-          document.getElementById('support-section')?.scrollIntoView({ behavior: 'smooth' })
-        })
-      }
+      // supporter gate handled globally in initCloseCircle via event delegation
 
       panel.hidden = false
       panel.setAttribute('aria-hidden', 'false')
@@ -4310,6 +4505,136 @@
         grid.addEventListener('animationend', function() { grid.classList.remove(cls) }, { once: true })
       }
       renderWorldMapGrid(wmYear, wmMonth, wmAllMoments, wmFeaturedDate, wmSelectedDate)
+    }
+
+    // === CLOSE CIRCLE ============================================
+
+    function initCloseCircle(profile) {
+      var cc = profile.closeCircle || {}
+      var isEnabled = !!cc.enabled
+      var isSupporter = !!(profile.supporterSince)
+
+      // Hero entry point: show if CC enabled, hide if already supporter
+      var heroEntry = document.getElementById('cc-hero-entry')
+      var heroBtn   = document.getElementById('cc-hero-btn')
+      if (heroEntry) {
+        if (isEnabled && !isSupporter) {
+          heroEntry.hidden = false
+        } else if (isEnabled && isSupporter) {
+          heroEntry.hidden = false
+          if (heroBtn) {
+            heroBtn.textContent = 'Close circle · Active'
+            heroBtn.classList.add('close-circle-hero__link--active')
+          }
+        } else {
+          heroEntry.hidden = true
+        }
+      }
+
+      // Populate join sheet
+      var sheet     = document.getElementById('cc-sheet')
+      var backdrop  = document.getElementById('cc-backdrop')
+      var nameEl    = document.getElementById('cc-artist-name')
+      var priceEl   = document.getElementById('cc-price')
+      var introEl   = document.getElementById('cc-intro')
+      var termsEl   = document.getElementById('cc-terms')
+      var emailEl   = document.getElementById('cc-email')
+      var submitEl  = document.getElementById('cc-submit')
+
+      var amount    = cc.monthlyAmount || 5
+      var currency  = cc.currency || '£'
+      var intro     = cc.introText || ('Get closer to ' + escHtml(profile.name || 'the artist') + '\u2019s music. Early access, close circle sessions, and more.')
+
+      if (nameEl)  nameEl.textContent  = profile.name || ''
+      if (priceEl) priceEl.textContent = currency + amount + '/month'
+      if (introEl) introEl.textContent = intro
+      if (termsEl) termsEl.textContent = currency + amount + '/month \u00b7 Cancel any time'
+
+      // Open/close sheet
+      function openSheet() {
+        if (!sheet) return
+        sheet.hidden = false
+        backdrop.style.display = 'block'
+        requestAnimationFrame(function() {
+          sheet.classList.add('open')
+          backdrop.classList.add('open')
+        })
+        sheet.focus()
+        if (emailEl) {
+          // Pre-fill if already a fan
+          var fans = safeLS('able_fans', [])
+          if (fans.length > 0 && fans[fans.length - 1].email && !emailEl.value) {
+            emailEl.value = fans[fans.length - 1].email
+          }
+        }
+      }
+
+      function closeSheet() {
+        sheet.classList.remove('open')
+        backdrop.classList.remove('open')
+        setTimeout(function() {
+          sheet.hidden = true
+          backdrop.style.display = 'none'
+        }, 260)
+      }
+
+      // Hero button
+      if (heroBtn && isEnabled && !isSupporter) {
+        heroBtn.addEventListener('click', openSheet)
+      }
+
+      // Backdrop dismiss
+      if (backdrop) {
+        backdrop.addEventListener('click', closeSheet)
+      }
+
+      // Swipe down to close
+      if (sheet) {
+        var startY = 0
+        sheet.addEventListener('touchstart', function(e) { startY = e.touches[0].clientY }, { passive: true })
+        sheet.addEventListener('touchend', function(e) {
+          if (e.changedTouches[0].clientY - startY > 60) closeSheet()
+        }, { passive: true })
+      }
+
+      // Supporter gate button inside World Map panel → opens join sheet
+      document.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'wm-supporter-gate') {
+          // Close the world map panel first, then open join sheet
+          closeWorldMapPanel()
+          setTimeout(openSheet, 280)
+        }
+      })
+
+      // Submit
+      if (submitEl && emailEl) {
+        submitEl.addEventListener('click', function() {
+          var email = emailEl.value.trim()
+          if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            emailEl.style.borderColor = 'var(--color-state-pre)'
+            emailEl.focus()
+            return
+          }
+          emailEl.style.borderColor = ''
+          // Mark as supporter (prototype — no real payment)
+          var p = safeLS('able_v3_profile', {})
+          p.supporterSince = Date.now()
+          setLS('able_v3_profile', p)
+          submitEl.textContent = 'Welcome to the close circle'
+          submitEl.disabled = true
+          setTimeout(function() {
+            closeSheet()
+            // Re-render CC hero entry to show Active state
+            if (heroBtn) {
+              heroBtn.textContent = 'Close circle · Active'
+              heroBtn.classList.add('close-circle-hero__link--active')
+              heroBtn.replaceWith(heroBtn.cloneNode(true)) // remove click listener
+            }
+            // Refresh World Map so locked moments now show
+            initWorldMap(p)
+          }, 1200)
+        })
+      }
     }
 
     function initWorldMap(profile) {
@@ -5081,6 +5406,9 @@
 
       // World Map — init after state chip (uses same moment data)
       initWorldMap(profile)
+
+      // Close Circle — hero entry point + join sheet
+      initCloseCircle(profile)
 
       // CTAs — rendered in Checkpoint 3, but set up anchors here
       const ctaPrimary   = document.getElementById('cta-primary')
