@@ -2122,67 +2122,229 @@
       position: relative;
     }
 
-    /* Floating edit bar at top of page */
-    #edit-bar {
+    /* ── Edit FAB (pen icon, bottom-right) ──────────────────────── */
+    #edit-fab {
       display: none;
-      position: sticky;
-      top: 0;
-      z-index: 90;
-      padding: var(--sp-3) var(--sp-5);
-      background: rgba(var(--color-accent-rgb), 0.95);
+      position: fixed;
+      bottom: calc(var(--tab-bar-h, 72px) + 16px);
+      right: 16px;
+      z-index: 200;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(var(--color-accent-rgb), 0.18);
+      border: 1px solid rgba(var(--color-accent-rgb), 0.35);
+      color: var(--color-accent);
+      font-size: 18px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      color: var(--cta-text-color, #fff);
-      font-size: var(--text-sm);
-      font-weight: 600;
+      transition: background var(--dur-fast), transform var(--dur-fast);
+    }
+    #edit-fab.visible { display: flex; }
+    #edit-fab:hover   { background: rgba(var(--color-accent-rgb), 0.3); transform: scale(1.05); }
+
+    /* ── Edit backdrop ───────────────────────────────────────────── */
+    #edit-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 210;
+      background: rgba(0,0,0,0);
+      transition: background var(--dur-normal);
+    }
+    #edit-backdrop.open { display: block; background: rgba(0,0,0,0.65); }
+
+    /* ── Slide-up edit panel ─────────────────────────────────────── */
+    #edit-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 220;
+      height: 60vh;
+      background: var(--color-card);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px 20px 0 0;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform var(--dur-normal) cubic-bezier(0.25,0.46,0.45,0.94);
+      overflow: hidden;
+    }
+    #edit-panel.open { transform: translateY(0); }
+
+    /* Desktop: cap at 480px centred */
+    @media (min-width: 600px) {
+      #edit-panel {
+        left: 50%;
+        right: auto;
+        width: 480px;
+        transform: translateX(-50%) translateY(100%);
+        border-radius: 20px 20px 0 0;
+      }
+      #edit-panel.open { transform: translateX(-50%) translateY(0); }
+    }
+
+    .ep-header {
+      display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--sp-3);
+      padding: 14px 20px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0;
     }
-
-    #edit-bar.visible {
-      display: flex;
-    }
-
-    .edit-bar__label {
-      font-size: var(--text-xs);
-      font-weight: 500;
-      opacity: 0.85;
-      letter-spacing: 0.05em;
-    }
-
-    .edit-bar__btn {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--sp-2);
-      padding: var(--sp-2) var(--sp-4);
-      background: rgba(0,0,0,0.2);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: var(--r-pill);
-      font-family: var(--font-body);
-      font-size: var(--text-xs);
+    .ep-title {
+      font-size: var(--text-sm);
       font-weight: 700;
-      color: currentColor;
+      color: var(--color-text);
+      letter-spacing: 0.02em;
+    }
+    .ep-close {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: none;
+      color: var(--color-text-2);
+      font-size: 16px;
       cursor: pointer;
-      text-decoration: none;
+      display: flex; align-items: center; justify-content: center;
       transition: background var(--dur-fast);
-      white-space: nowrap;
     }
+    .ep-close:hover { background: rgba(255,255,255,0.14); }
 
-    .edit-bar__btn:hover { background: rgba(0,0,0,0.35); }
-
-    /* Editable field highlight on hover (edit mode) */
-    .able-edit-mode [data-editable] {
-      outline: 2px dashed rgba(var(--color-accent-rgb), 0.5);
-      outline-offset: 2px;
-      border-radius: var(--r-sm);
-      cursor: text;
+    .ep-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      -webkit-overflow-scrolling: touch;
     }
+    .ep-body::-webkit-scrollbar { display: none; }
 
-    .able-edit-mode [data-editable]:hover {
-      outline-color: var(--color-accent);
+    .ep-field { display: flex; flex-direction: column; gap: 6px; }
+    .ep-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .ep-input {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--r-md);
+      padding: 10px 12px;
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color var(--dur-fast);
+      resize: none;
+    }
+    .ep-input:focus { border-color: var(--color-accent); }
+    .ep-input::placeholder { color: var(--color-text-3); }
+
+    .ep-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .ep-chip {
+      padding: 6px 12px;
+      border-radius: var(--r-pill);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-2);
+      cursor: pointer;
+      transition: background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast);
+    }
+    .ep-chip.active {
       background: var(--color-accent-soft);
+      border-color: var(--color-accent);
+      color: var(--color-accent);
     }
+
+    .ep-colour-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ep-colour-swatch {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .ep-colour-swatch input[type="color"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%; height: 100%;
+    }
+    .ep-colour-hex {
+      font-size: 13px;
+      color: var(--color-text-2);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ep-cta-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .ep-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+      flex-shrink: 0;
+    }
+
+    .ep-save-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--r-lg);
+      background: var(--color-accent);
+      color: var(--cta-text-color, #fff);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: opacity var(--dur-fast);
+      flex-shrink: 0;
+    }
+    .ep-save-btn:hover { opacity: 0.88; }
+
+    .ep-dash-link {
+      display: block;
+      text-align: center;
+      font-size: 12px;
+      color: var(--color-text-3);
+      text-decoration: none;
+      padding: 10px 0 6px;
+    }
+    .ep-dash-link:hover { color: var(--color-text-2); }
+
+    /* Shell scale when panel open */
+    #app-shell.panel-open {
+      transform: scale(0.95);
+      transform-origin: center top;
+      transition: transform var(--dur-normal) cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    #app-shell { transition: transform var(--dur-normal) cubic-bezier(0.25,0.46,0.45,0.94); }
 
     /* === KEYFRAMES ============================================= */
     @keyframes shake {
@@ -2301,12 +2463,20 @@
     <!-- iOS safe area top -->
     <div id="status-bar" aria-hidden="true"></div>
 
-    <!-- On-page edit bar (shown if artist owns this profile) -->
-    <div id="edit-bar" role="banner" aria-label="Edit your profile">
-      <span class="edit-bar__label">Your profile</span>
-      <div style="display:flex;gap:var(--sp-2)">
-        <a class="edit-bar__btn pressable" href="admin.html" aria-label="Open dashboard">Dashboard</a>
-        <button class="edit-bar__btn pressable" id="edit-toggle-btn" aria-pressed="false">Edit page</button>
+    <!-- Edit FAB — shown if artist owns this profile -->
+    <button id="edit-fab" aria-label="Edit your profile">✎</button>
+
+    <!-- Backdrop -->
+    <div id="edit-backdrop" aria-hidden="true"></div>
+
+    <!-- Slide-up edit panel -->
+    <div id="edit-panel" role="dialog" aria-label="Edit profile" aria-modal="true">
+      <div class="ep-header">
+        <span class="ep-title">Edit your page</span>
+        <button class="ep-close" id="edit-panel-close" aria-label="Close">✕</button>
+      </div>
+      <div class="ep-body" id="edit-panel-body">
+        <!-- Fields injected by JS -->
       </div>
     </div>
 
@@ -4671,62 +4841,199 @@
       }
     }
 
-    // === ON-PAGE EDITING =========================================
+    // === ON-PAGE EDITING (§6.4) ==================================
 
     function initEditBar(profile) {
-      const editBar = document.getElementById('edit-bar')
-      const editToggleBtn = document.getElementById('edit-toggle-btn')
-      const shell = document.getElementById('app-shell')
-      if (!editBar || !editToggleBtn) return
+      const fab      = document.getElementById('edit-fab')
+      const backdrop = document.getElementById('edit-backdrop')
+      const panel    = document.getElementById('edit-panel')
+      const closeBtn = document.getElementById('edit-panel-close')
+      const body     = document.getElementById('edit-panel-body')
+      const shell    = document.getElementById('app-shell')
 
-      // Show edit bar only if the artist has a locally-stored profile (ie they're the owner)
-      // OR if ?edit=1 is in the URL
-      const isOwner = Boolean(localStorage.getItem('able_v3_profile') && profile.name) || new URLSearchParams(window.location.search).get('edit') === '1'
+      // Move overlay elements to <body> so they are NOT inside #app-shell.
+      // This prevents the CSS transform: scale(0.95) on shell from breaking
+      // position:fixed containment (transformed parents create a new containing block).
+      if (fab && fab.parentElement !== document.body)      document.body.appendChild(fab)
+      if (backdrop && backdrop.parentElement !== document.body) document.body.appendChild(backdrop)
+      if (panel && panel.parentElement !== document.body)  document.body.appendChild(panel)
+      if (!fab || !panel) return
+
+      // Show FAB only if artist owns this profile
+      const isOwner = Boolean(localStorage.getItem('able_v3_profile') && profile.name)
+                   || new URLSearchParams(window.location.search).get('edit') === '1'
       if (!isOwner) return
 
-      editBar.classList.add('visible')
+      fab.classList.add('visible')
 
-      let editMode = false
+      // ── Build panel content ──────────────────────────────────────
+      function buildPanel(p) {
+        const ctas = p.ctas || []
+        const cta0 = ctas[0] || {}
+        const cta1 = ctas[1] || {}
+        const accent = p.accent || getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim() || '#e07b3a'
 
-      editToggleBtn.addEventListener('click', () => {
-        editMode = !editMode
-        editToggleBtn.setAttribute('aria-pressed', String(editMode))
-        editToggleBtn.textContent = editMode ? 'Done editing' : 'Edit page'
+        const THEMES = ['dark','light','glass','contrast']
+        const VIBES  = ['electronic','hiphop','rnb','indie','pop','rock','acoustic']
 
-        if (editMode) {
-          shell.classList.add('able-edit-mode')
-          // Make bio, name, platform text inline-editable
-          const editables = [
-            document.getElementById('hero-name'),
-            document.getElementById('bio-text'),
-          ]
-          editables.forEach(el => {
-            if (!el) return
-            el.setAttribute('data-editable', 'true')
-            el.contentEditable = 'true'
-            el.dataset.originalText = el.textContent
+        const themeChips = THEMES.map(t =>
+          `<button class="ep-chip${(p.theme||'dark')===t?' active':''}" data-theme="${t}">${t[0].toUpperCase()+t.slice(1)}</button>`
+        ).join('')
+
+        const vibeChips = VIBES.map(v =>
+          `<button class="ep-chip${(p.vibe||'indie')===v?' active':''}" data-vibe="${v}">${v[0].toUpperCase()+v.slice(1)}</button>`
+        ).join('')
+
+        body.innerHTML = `
+          <div class="ep-field">
+            <label class="ep-label" for="ep-name">Artist name</label>
+            <input class="ep-input" id="ep-name" type="text" value="${escHtml(p.name||'')}" placeholder="Your name" autocomplete="off">
+          </div>
+
+          <div class="ep-field">
+            <label class="ep-label" for="ep-bio">Bio</label>
+            <textarea class="ep-input" id="ep-bio" rows="3" placeholder="A few lines about you and your music">${escHtml(p.bio||'')}</textarea>
+          </div>
+
+          <div class="ep-field">
+            <span class="ep-label">Theme</span>
+            <div class="ep-chips" id="ep-theme-chips">${themeChips}</div>
+          </div>
+
+          <div class="ep-field">
+            <span class="ep-label">Vibe</span>
+            <div class="ep-chips" id="ep-vibe-chips">${vibeChips}</div>
+          </div>
+
+          <div class="ep-field">
+            <span class="ep-label">Accent colour</span>
+            <div class="ep-colour-row">
+              <div class="ep-colour-swatch" id="ep-swatch" style="background:${accent}">
+                <input type="color" id="ep-accent" value="${accent}">
+              </div>
+              <span class="ep-colour-hex" id="ep-hex-label">${accent}</span>
+            </div>
+          </div>
+
+          <div class="ep-divider"></div>
+
+          <div class="ep-field">
+            <span class="ep-label">Primary CTA</span>
+            <div class="ep-cta-row">
+              <input class="ep-input" id="ep-cta0-label" type="text" value="${escHtml(cta0.label||'')}" placeholder="Label">
+              <input class="ep-input" id="ep-cta0-url"   type="url"  value="${escHtml(cta0.url||'')}"   placeholder="https://…">
+            </div>
+          </div>
+
+          <div class="ep-field">
+            <span class="ep-label">Secondary CTA</span>
+            <div class="ep-cta-row">
+              <input class="ep-input" id="ep-cta1-label" type="text" value="${escHtml(cta1.label||'')}" placeholder="Label">
+              <input class="ep-input" id="ep-cta1-url"   type="url"  value="${escHtml(cta1.url||'')}"   placeholder="https://…">
+            </div>
+          </div>
+
+          <div class="ep-divider"></div>
+
+          <button class="ep-save-btn" id="ep-save">Save changes</button>
+          <a class="ep-dash-link" href="admin.html">Full dashboard — events, merch, fans, analytics →</a>
+        `
+
+        // Chip selection
+        body.querySelectorAll('[data-theme]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            body.querySelectorAll('[data-theme]').forEach(b => b.classList.remove('active'))
+            btn.classList.add('active')
           })
-        } else {
-          shell.classList.remove('able-edit-mode')
-          // Save edits back to localStorage profile
-          const nameEl = document.getElementById('hero-name')
-          const bioEl = document.getElementById('bio-text')
+        })
+        body.querySelectorAll('[data-vibe]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            body.querySelectorAll('[data-vibe]').forEach(b => b.classList.remove('active'))
+            btn.classList.add('active')
+          })
+        })
+
+        // Colour picker live preview
+        const accentInput = body.querySelector('#ep-accent')
+        const swatch      = body.querySelector('#ep-swatch')
+        const hexLabel    = body.querySelector('#ep-hex-label')
+        if (accentInput) {
+          accentInput.addEventListener('input', () => {
+            swatch.style.background = accentInput.value
+            hexLabel.textContent    = accentInput.value
+          })
+        }
+
+        // Save
+        body.querySelector('#ep-save').addEventListener('click', () => {
           try {
             const stored = JSON.parse(localStorage.getItem('able_v3_profile') || '{}')
-            if (nameEl && nameEl.contentEditable === 'true') {
-              stored.name = nameEl.textContent.trim()
-              nameEl.contentEditable = 'false'
-              nameEl.removeAttribute('data-editable')
-            }
-            if (bioEl && bioEl.contentEditable === 'true') {
-              stored.bio = bioEl.textContent.trim()
-              bioEl.contentEditable = 'false'
-              bioEl.removeAttribute('data-editable')
-            }
+            stored.name  = body.querySelector('#ep-name').value.trim() || stored.name
+            stored.bio   = body.querySelector('#ep-bio').value.trim()  || stored.bio
+            stored.theme = body.querySelector('[data-theme].active')?.dataset.theme || stored.theme
+            stored.vibe  = body.querySelector('[data-vibe].active')?.dataset.vibe  || stored.vibe
+            stored.accent = body.querySelector('#ep-accent')?.value || stored.accent
+
+            const c0label = body.querySelector('#ep-cta0-label')?.value.trim()
+            const c0url   = body.querySelector('#ep-cta0-url')?.value.trim()
+            const c1label = body.querySelector('#ep-cta1-label')?.value.trim()
+            const c1url   = body.querySelector('#ep-cta1-url')?.value.trim()
+
+            stored.ctas = []
+            if (c0label || c0url) stored.ctas.push({ label: c0label || 'Stream now', url: c0url || '#', type: 'primary' })
+            if (c1label || c1url) stored.ctas.push({ label: c1label || 'Follow', url: c1url || '#', type: 'secondary' })
+
             localStorage.setItem('able_v3_profile', JSON.stringify(stored))
           } catch (_) {}
-        }
+
+          closePanel()
+          // Re-initialise to reflect changes without full reload
+          const fresh = getProfile()
+          const s     = document.getElementById('app-shell')
+          if (s) {
+            s.dataset.theme = fresh.theme || 'dark'
+            applyVibe(fresh.vibe || 'indie', s)
+          }
+          renderHero(fresh)
+          injectSEO(fresh)
+        })
+      }
+
+      function escHtml(str) {
+        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+      }
+
+      // ── Open / close ─────────────────────────────────────────────
+      function openPanel() {
+        const p = getProfile()
+        buildPanel(p)
+        backdrop.classList.add('open')
+        panel.classList.add('open')
+        shell.classList.add('panel-open')
+        history.pushState({ panel: 'edit' }, '')
+      }
+
+      function closePanel() {
+        backdrop.classList.remove('open')
+        panel.classList.remove('open')
+        shell.classList.remove('panel-open')
+      }
+
+      fab.addEventListener('click', openPanel)
+      closeBtn.addEventListener('click', closePanel)
+      backdrop.addEventListener('click', closePanel)
+
+      window.addEventListener('popstate', e => {
+        if (!e.state?.panel) closePanel()
       })
+    }
+
+    // renderHero must exist — quick re-render of name + bio after inline save
+    function renderHero(profile) {
+      const nameEl = document.getElementById('hero-name')
+      const bioEl  = document.getElementById('bio-text')
+      if (nameEl && profile.name) nameEl.textContent = profile.name
+      if (bioEl  && profile.bio)  bioEl.textContent  = profile.bio
     }
 
     // Run after DOM ready
