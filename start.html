@@ -1488,6 +1488,7 @@ document.getElementById('iName').addEventListener('input', e => {
 // iGenre is now a hidden input driven by vibe picker — no change listener needed
 document.getElementById('iBio').addEventListener('input', e => { P.bio = e.target.value; updatePreview(); });
 document.getElementById('iLocation').addEventListener('input', e => { P.location = e.target.value; updatePreview(); });
+document.getElementById('iSpotify').addEventListener('input', e => { P.spotify = e.target.value.trim(); });
 document.getElementById('iCtaSecCustom').addEventListener('input', e => { P.secLabel = e.target.value; updatePreview(); });
 
 /* ── DONE ── */
