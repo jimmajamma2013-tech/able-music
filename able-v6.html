@@ -352,6 +352,13 @@
       -webkit-backdrop-filter: blur(20px) saturate(180%);
     }
 
+    /* Light tab bar — warm cream to match content */
+    body:has([data-theme="light"]) #tab-bar {
+      background-color: rgba(240,237,232,0.97);
+      border-top: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 -1px 0 rgba(0,0,0,0.04), 0 -8px 24px rgba(0,0,0,0.06);
+    }
+
     #tab-bar.tab-bar--hidden {
       transform: translateX(-50%) translateY(100%);
       will-change: transform;
@@ -848,7 +855,7 @@
       color: var(--color-text);
     }
 
-    [data-theme="light"] .btn-secondary { border-color: rgba(0,0,0,0.12); }
+    [data-theme="light"] .btn-secondary { border-color: rgba(0,0,0,0.20); color: var(--color-text-2); }
     [data-theme="contrast"] .btn-secondary { border-color: rgba(255,255,255,0.2); }
 
     [data-theme="glass"] .btn-secondary {
@@ -938,6 +945,26 @@
       background-color: rgba(255,255,255,0.07);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
+    }
+
+    /* Light secondary section header — swap white-alpha border for dark-alpha */
+    [data-theme="light"] .section-header--secondary { border-top-color: rgba(0,0,0,0.08); }
+
+    /* Light fan-capture--secondary — same swap */
+    [data-theme="light"] .fan-capture--secondary { border-color: rgba(0,0,0,0.08); }
+
+    /* Light tiles — flip to dark-on-cream */
+    [data-theme="light"] .pill {
+      background-color: rgba(0,0,0,0.03);
+      border-color: rgba(0,0,0,0.10);
+    }
+    [data-theme="light"] .pill:hover,
+    [data-theme="light"] .pill:focus-visible {
+      background-color: rgba(0,0,0,0.06);
+      border-color: rgba(var(--color-accent-rgb), 0.3);
+    }
+    [data-theme="light"] .pills-more:hover {
+      background-color: rgba(0,0,0,0.04);
     }
 
     /* Overflow "more" button */
