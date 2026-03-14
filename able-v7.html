@@ -630,14 +630,19 @@
     }
 
     /* === GLOBAL PRESS SCALE (interaction #1) ==================== */
-    /* Applied to all interactive elements via JS pointer events */
+    /* Applied to all interactive elements via JS pointer events.
+       B2: Directional easing — fast compress on press, spring overshoot on release.
+       .pressing class = pressed state (80ms ease-out compress)
+       Release handled in JS by swapping transition to spring BEFORE removing .pressing */
     .pressable {
-      transition: transform var(--dur-fast) var(--ease-spring);
+      transition: transform 80ms ease-out;
     }
-    .pressable:active,
     .pressable.pressing {
       transform: scale(0.97);
       will-change: transform;
+    }
+    .pressable.spring-release {
+      transition: transform var(--dur-fast) var(--ease-spring);
     }
     /* Focus rings — visible keyboard navigation for all interactive elements */
     .pressable:focus-visible,
@@ -945,7 +950,25 @@
 
     .hero__state-chip--pre  { background: var(--color-state-pre); color: #000; }
     .hero__state-chip--live { background: var(--color-state-live); }
-    .hero__state-chip--gig  { background: var(--color-state-gig); }
+    .hero__state-chip--gig  { background: var(--color-state-gig); position: relative; overflow: visible; }
+    /* C7 — Gig badge warm glow pulse: ::after radiates outward on a 2s loop.
+       GPU-only (opacity on dedicated layer) — zero repaint. Never on box-shadow. */
+    @keyframes badge-glow-pulse {
+      0%, 100% { opacity: 0; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(1.35); }
+    }
+    .hero__state-chip--gig::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: inherit;
+      background: var(--color-state-gig);
+      z-index: -1;
+      animation: badge-glow-pulse 2s ease-in-out infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero__state-chip--gig::after { animation: none; }
+    }
     .hero__state-chip--profile { display: none; }
     .hero__state-chip--near-future {
       background: rgba(255,255,255,0.10);
@@ -1308,10 +1331,29 @@
       text-decoration: none;
       cursor: pointer;
       text-align: left;
+      overflow: hidden; /* clip the shimmer sweep */
+      position: relative;
       transition: color var(--dur-fast) var(--ease-standard),
                   border-color var(--dur-fast) var(--ease-standard),
                   background-color var(--dur-fast) var(--ease-standard),
                   transform var(--dur-fast) var(--ease-spring);
+    }
+    /* D15 — First-load shimmer wave: one sweep per pill, staggered, session-flagged */
+    @keyframes pill-shimmer {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(250%); }
+    }
+    .pill.pill-shimmer-once::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0; left: 0;
+      width: 40%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      animation: pill-shimmer 550ms var(--ease-decel) var(--pill-shimmer-delay, 0ms) 1 both;
+      pointer-events: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pill.pill-shimmer-once::after { animation: none; }
     }
 
     .pill:hover,
@@ -5641,15 +5683,22 @@
       document.addEventListener('touchstart', () => {}, { passive: true })
 
       // All .pressable elements get pointer press scale
+      // B2: directional easing — compress fast (80ms ease-out), spring back on release
       document.addEventListener('pointerdown', e => {
         const el = e.target.closest('.pressable')
-        if (el) el.classList.add('pressing')
+        if (el) { el.classList.remove('spring-release'); el.classList.add('pressing') }
       })
       document.addEventListener('pointerup', e => {
-        document.querySelectorAll('.pressing').forEach(el => el.classList.remove('pressing'))
+        document.querySelectorAll('.pressing').forEach(el => {
+          el.classList.add('spring-release')
+          el.classList.remove('pressing')
+          el.addEventListener('transitionend', () => el.classList.remove('spring-release'), { once: true })
+        })
       })
       document.addEventListener('pointercancel', () => {
-        document.querySelectorAll('.pressing').forEach(el => el.classList.remove('pressing'))
+        document.querySelectorAll('.pressing').forEach(el => {
+          el.classList.remove('pressing', 'spring-release')
+        })
       })
     }
 
@@ -5793,10 +5842,17 @@
       const visible   = deduped.slice(0, maxVisible)
       const overflow  = deduped.slice(maxVisible)
 
-      visible.forEach(platform => {
+      const doShimmer = !sessionStorage.getItem('pills-shimmer-done')
+      visible.forEach((platform, i) => {
         const pill = buildPill(platform)
+        if (doShimmer) {
+          pill.style.setProperty('--pill-shimmer-delay', `${i * 60}ms`)
+          pill.classList.add('pill-shimmer-once')
+          pill.addEventListener('animationend', () => pill.classList.remove('pill-shimmer-once'), { once: true })
+        }
         track.appendChild(pill)
       })
+      if (doShimmer) sessionStorage.setItem('pills-shimmer-done', '1')
 
       if (overflow.length) {
         moreBtn.hidden = false
