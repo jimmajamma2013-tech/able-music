@@ -107,16 +107,18 @@
 
     /* === §3.2 THEME TOKENS ====================================== */
     [data-theme="dark"] {
-      --color-bg:          #080808;
-      --color-surface:     #0f0f0f;
-      --color-card:        #141414;
-      --color-card-raised: #1c1c1c;
-      --color-border:      rgba(255,255,255,0.08);
+      /* Slightly warm graphite — richer depth than pure black */
+      --color-bg:          #09090e;
+      --color-surface:     #0f0f17;
+      --color-card:        #141520;
+      --color-card-raised: #1c1d2c;
+      --color-border:      rgba(255,255,255,0.07);
+      /* Warm off-white — not harsh */
       --color-text:        #f0ede8;
-      --color-text-2:      rgba(240,237,232,0.60);
-      --color-text-3:      rgba(240,237,232,0.38);
-      --color-overlay:     rgba(8,8,8,0.80);
-      --shadow-card:       0 4px 24px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04);
+      --color-text-2:      rgba(240,237,232,0.55);
+      --color-text-3:      rgba(240,237,232,0.32);
+      --color-overlay:     rgba(9,9,14,0.82);
+      --shadow-card:       0 4px 28px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.04);
     }
 
     [data-theme="light"] {
@@ -902,16 +904,15 @@
       justify-content: center;
       gap: 6px;
       padding: var(--sp-4) var(--sp-2);
-      min-height: 72px;
-      background-color: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: var(--r-sm);
+      min-height: 68px;
+      background-color: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--r-md);
       font-family: var(--font-body);
       font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--color-text-3);
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      color: var(--color-text-2);
       text-decoration: none;
       cursor: pointer;
       text-align: center;
@@ -924,8 +925,8 @@
     .pill:hover,
     .pill:focus-visible {
       color: var(--color-text);
-      border-color: rgba(var(--color-accent-rgb), 0.4);
-      background-color: rgba(var(--color-accent-rgb), 0.06);
+      border-color: rgba(var(--color-accent-rgb), 0.25);
+      background-color: rgba(255,255,255,0.05);
     }
 
     .pill.pressing {
@@ -978,7 +979,8 @@
     }
 
     .pills-more:hover {
-      background-color: var(--color-accent-soft);
+      background-color: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.12);
     }
 
     /* ============================================================
@@ -990,6 +992,17 @@
       padding: var(--sp-10) var(--sp-5) var(--sp-6);
     }
 
+    /* Primary sections (Listen, Shows) breathe more */
+    .content-section--primary {
+      padding-top: calc(var(--sp-10) + var(--sp-4));
+    }
+
+    /* Secondary sections (Merch, Support) step back */
+    .content-section--secondary {
+      padding-top: var(--sp-8);
+      padding-bottom: var(--sp-4);
+    }
+
     .section-header {
       display: flex;
       align-items: baseline;
@@ -997,7 +1010,21 @@
       margin-bottom: var(--sp-6);
       /* Accent rule above — editorial marker */
       padding-top: var(--sp-5);
-      border-top: 3px solid var(--color-accent);
+      border-top: 2px solid rgba(var(--color-accent-rgb), 0.7);
+    }
+
+    /* Secondary section header — quieter hierarchy */
+    .section-header--secondary {
+      border-top-width: 1px;
+      border-top-color: rgba(255,255,255,0.08);
+      padding-top: var(--sp-4);
+      margin-bottom: var(--sp-5);
+    }
+    .section-header--secondary .section-title {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      opacity: 0.75;
     }
 
     .section-title {
@@ -1044,12 +1071,20 @@
       padding: var(--sp-6);
       background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-top: 2px solid var(--color-accent);
-      border-radius: var(--r-sm);
+      border-top: 2px solid rgba(var(--color-accent-rgb), 0.55);
+      border-radius: var(--r-md);
     }
 
     .fan-capture--secondary {
       margin-top: 0;
+      border-top-width: 1px;
+      border-top-color: rgba(var(--color-accent-rgb), 0.25);
+      background: transparent;
+      border-color: rgba(255,255,255,0.06);
+    }
+    .fan-capture--secondary .fan-capture__heading {
+      font-size: var(--text-xl);
+      opacity: 0.8;
     }
 
     .fan-capture__heading {
@@ -1168,8 +1203,9 @@
       flex-direction: column;
       background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-radius: var(--r-sm);
+      border-radius: var(--r-md);
       overflow: hidden;
+      box-shadow: var(--shadow-card);
       color: inherit;
       transition: transform var(--dur-fast) var(--ease-spring),
                   box-shadow var(--dur-fast) var(--ease-standard);
@@ -1478,6 +1514,7 @@
       gap: 0;
       background: var(--color-card);
       border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-card);
       border-radius: var(--r-sm);
       overflow: hidden;
       transition: transform var(--dur-fast) var(--ease-spring),
@@ -1522,7 +1559,7 @@
       z-index: 1;
     }
 
-    /* Date column — accent-filled block */
+    /* Date column — softly tinted, not heavy */
     .show-item__date {
       display: flex;
       flex-direction: column;
@@ -1531,8 +1568,8 @@
       min-width: 68px;
       flex-shrink: 0;
       padding: var(--sp-4) var(--sp-3);
-      background: rgba(var(--color-accent-rgb), 0.12);
-      border-right: 1px solid rgba(var(--color-accent-rgb), 0.22);
+      background: rgba(var(--color-accent-rgb), 0.08);
+      border-right: 1px solid rgba(var(--color-accent-rgb), 0.14);
       gap: 2px;
     }
 
@@ -1866,10 +1903,16 @@
     .support-pack:hover { border-color: var(--color-accent); }
 
     .support-pack__emoji {
-      font-size: 28px;
+      font-size: 17px;
       flex-shrink: 0;
-      width: 40px;
-      text-align: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--color-accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
     }
 
     .support-pack__info { flex: 1; min-width: 0; }
@@ -2000,7 +2043,7 @@
 
     /* === RECOMMENDATIONS ======================================= */
     .recs-section {
-      padding: 0 0 var(--sp-8);
+      padding: 0 0 var(--sp-5);
     }
 
     .recs-list {
@@ -2077,11 +2120,12 @@
 
     /* === FOOTER ================================================ */
     .profile-footer {
-      padding: var(--sp-8) var(--sp-5) var(--sp-6);
+      padding: var(--sp-6) var(--sp-5) var(--sp-5);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: var(--sp-3);
+      gap: var(--sp-2);
+      opacity: 0.6;
     }
 
     .footer-able-link {
@@ -2648,7 +2692,7 @@
       <!-- ======================================================
            LISTEN SECTION
            ====================================================== -->
-      <section class="content-section" id="listen-section" aria-labelledby="listen-heading" hidden>
+      <section class="content-section content-section--primary" id="listen-section" aria-labelledby="listen-heading" hidden>
         <header class="section-header">
           <h2 class="section-title" id="listen-heading">Listen</h2>
         </header>
@@ -2658,7 +2702,7 @@
       <!-- ======================================================
            SHOWS SECTION
            ====================================================== -->
-      <section class="content-section" id="shows-section" aria-labelledby="shows-heading" hidden>
+      <section class="content-section content-section--primary" id="shows-section" aria-labelledby="shows-heading" hidden>
         <header class="section-header">
           <h2 class="section-title" id="shows-heading">Shows</h2>
         </header>
@@ -2675,8 +2719,8 @@
       <!-- ======================================================
            MERCH SECTION
            ====================================================== -->
-      <section class="content-section" id="merch-section" aria-labelledby="merch-heading" hidden>
-        <header class="section-header">
+      <section class="content-section content-section--secondary" id="merch-section" aria-labelledby="merch-heading" hidden>
+        <header class="section-header section-header--secondary">
           <h2 class="section-title" id="merch-heading">Merch</h2>
           <a class="section-action" id="merch-shop-link" href="#" target="_blank" rel="noopener noreferrer" hidden>
             Shop all
@@ -2688,8 +2732,8 @@
       <!-- ======================================================
            SUPPORT SECTION
            ====================================================== -->
-      <section class="content-section" id="support-section" aria-labelledby="support-heading" hidden>
-        <header class="section-header">
+      <section class="content-section content-section--secondary" id="support-section" aria-labelledby="support-heading" hidden>
+        <header class="section-header section-header--secondary">
           <h2 class="section-title" id="support-heading">Support</h2>
         </header>
         <div class="support-packs" id="support-packs"></div>
@@ -2717,7 +2761,7 @@
            RECOMMENDATIONS — artist's picks (optional)
            ====================================================== -->
       <section class="recs-section" id="recs-section" aria-labelledby="recs-heading" hidden>
-        <header class="section-header" style="margin: 0 var(--sp-5) var(--sp-5);">
+        <header class="section-header section-header--secondary" style="margin: 0 var(--sp-5) var(--sp-5);">
           <h2 class="section-title" id="recs-heading">Worth hearing</h2>
         </header>
         <ul class="recs-list" id="recs-list" role="list"></ul>
