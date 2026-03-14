@@ -1383,7 +1383,7 @@ body {
   <div class="page" id="page-connect">
     <div class="page-header">
       <div class="page-title">Connections</div>
-      <div class="page-sub">Import and sync your content from other platforms.</div>
+      <div class="page-sub">Add your platform links — embeds load directly for fans without leaving your page.</div>
     </div>
     <div class="dash-card" style="max-width:560px;">
       <div class="dc-head"><div class="dc-title">Platforms</div></div>
@@ -1393,55 +1393,55 @@ body {
             <div class="ci-logo" style="background:#1DB954;color:#000;">S</div>
             <div class="ci-body">
               <div class="ci-name">Spotify</div>
-              <div class="ci-status">Import tracks, albums, playlists · 30s preview for non-subscribers</div>
+              <div class="ci-status">Add your Spotify URL in Music → your album or single embeds directly</div>
             </div>
-            <button class="ci-btn ci-btn-connect">Connect</button>
+            <button class="ci-btn ci-btn-connect" onclick="showPage('music')">Add →</button>
           </div>
           <div class="connect-item">
             <div class="ci-logo" style="background:#FF0000;color:#fff;">▶</div>
             <div class="ci-body">
               <div class="ci-name">YouTube</div>
-              <div class="ci-status">Import videos, playlists · Full embed, no restrictions</div>
+              <div class="ci-status">Add your YouTube video URL in Music → it loads inline when fans tap</div>
             </div>
-            <button class="ci-btn ci-btn-connect">Connect</button>
+            <button class="ci-btn ci-btn-connect" onclick="showPage('music')">Add →</button>
           </div>
           <div class="connect-item">
             <div class="ci-logo" style="background:#FF6600;color:#fff;">BC</div>
             <div class="ci-body">
               <div class="ci-name">Bandcamp</div>
-              <div class="ci-status">Full player embed · Artist controls pricing</div>
+              <div class="ci-status">Add your Bandcamp release URL in Music — full embed, no restrictions</div>
             </div>
-            <button class="ci-btn ci-btn-connect">Connect</button>
+            <button class="ci-btn ci-btn-connect" onclick="showPage('music')">Add →</button>
           </div>
           <div class="connect-item">
             <div class="ci-logo" style="background:#ff5500;color:#fff;">SC</div>
             <div class="ci-body">
               <div class="ci-name">SoundCloud</div>
-              <div class="ci-status">Full waveform embed · No restrictions</div>
+              <div class="ci-status">Add your SoundCloud track URL in Music — waveform player embeds directly</div>
             </div>
-            <button class="ci-btn ci-btn-connect">Connect</button>
+            <button class="ci-btn ci-btn-connect" onclick="showPage('music')">Add →</button>
           </div>
           <div class="connect-item">
             <div class="ci-logo" style="background:#1a1a1a;color:#fff;font-size:10px;">BST</div>
             <div class="ci-body">
               <div class="ci-name">Bandsintown</div>
-              <div class="ci-status">Auto-sync tour dates · Show calendar widget</div>
+              <div class="ci-status">Add your shows manually in Events — auto-sync in a future update</div>
             </div>
-            <button class="ci-btn ci-btn-connect">Connect</button>
+            <button class="ci-btn ci-btn-connect" onclick="showPage('events')">Add →</button>
           </div>
           <div class="connect-item">
             <div class="ci-logo" style="background:#010101;color:#fff;font-size:10px;">TK</div>
             <div class="ci-body">
               <div class="ci-name">TikTok</div>
-              <div class="ci-status">Video embeds · Business account needed for import</div>
+              <div class="ci-status">Add your TikTok video URL in Music — embed coming in a future update</div>
             </div>
-            <button class="ci-btn ci-btn-connect">Connect</button>
+            <button class="ci-btn ci-btn-connect" onclick="showPage('music')">Add →</button>
           </div>
           <div class="connect-item">
             <div class="ci-logo" style="background:#E4405F;color:#fff;">IG</div>
             <div class="ci-body">
               <div class="ci-name">Instagram</div>
-              <div class="ci-status" style="color:#e05242;">No embed API available · Link-out only</div>
+              <div class="ci-status" style="color:var(--t3);">No embed API — add your Instagram URL as a platform link instead</div>
             </div>
             <button class="ci-btn" style="background:rgba(255,255,255,.06);color:var(--t3);border:1px solid var(--border);cursor:default;">Limited</button>
           </div>
@@ -2000,20 +2000,20 @@ function renderFanList() {
 function renderFanSupportPacksSummary() {
   const listEl = document.getElementById('fanSupportPacksList');
   if (!listEl) return;
-  const packs = safeLS(V3_KEY, {}).supportPacks || [];
+  const data = safeLS(V3_KEY, {});
+  const packs = (data.support || {}).packs || [];
   const enabled = packs.filter(p => p.enabled !== false);
   if (!enabled.length) {
     listEl.innerHTML = '<div style="font-size:12px;color:var(--t3);">No support packs set up yet. Add them from the Support page.</div>';
     return;
   }
-  const sym = { GBP:'£', USD:'$', EUR:'€' };
   listEl.innerHTML = enabled.map(p => {
-    const cur = sym[p.currency] || p.currency || '£';
+    const cur = p.currency || '£';
     const priceStr = p.price ? `${cur}${p.price}${p.type === 'subscription' ? '/mo' : ''}` : '';
     return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
       <div>
-        <div style="font-size:12px;font-weight:600;color:var(--text);">${escHtml(p.name || 'Support pack')}</div>
-        ${p.perks ? `<div style="font-size:10px;color:var(--t3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;">${escHtml(p.perks)}</div>` : ''}
+        <div style="font-size:12px;font-weight:600;color:var(--text);">${escHtml(p.label || 'Support pack')}</div>
+        ${p.description ? `<div style="font-size:10px;color:var(--t3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;">${escHtml(p.description)}</div>` : ''}
       </div>
       <div style="font-size:12px;font-weight:600;color:var(--acc);flex-shrink:0;margin-left:10px;">${escHtml(priceStr)}</div>
     </div>`;
