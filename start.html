@@ -153,6 +153,90 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 .field-error-msg { margin-top:5px; font-size:11.5px; color:#e05050; display:none; }
 .field-error-msg.show { display:block; }
 
+/* ── HOW-TO GUIDES ── */
+.how-to-btn {
+  display:flex; align-items:center; gap:7px;
+  margin-top:10px; padding:8px 12px; border-radius:9px;
+  font-size:12px; font-weight:600; color:var(--t2);
+  background:rgba(138,180,206,.06); border:1px solid var(--border);
+  cursor:pointer; transition:all .16s; font-family:var(--font); width:100%;
+  text-align:left;
+}
+.how-to-btn:hover { background:rgba(138,180,206,.10); color:var(--text); border-color:var(--bm); }
+.how-to-btn svg { margin-left:auto; flex-shrink:0; transition:transform .2s; color:var(--t3); }
+.how-to-btn.open svg { transform:rotate(180deg); }
+.how-to-guide {
+  margin-top:10px; padding:14px 16px 12px; border-radius:12px;
+  background:rgba(138,180,206,.05); border:1px solid rgba(138,180,206,.12);
+  animation:stepIn .22s var(--ease) both;
+}
+.how-to-steps { display:flex; flex-direction:column; gap:10px; margin-bottom:12px; }
+.how-to-step {
+  display:flex; align-items:flex-start; gap:11px;
+  font-size:13px; color:var(--t2); line-height:1.45;
+}
+.how-to-num {
+  width:22px; height:22px; border-radius:50%; flex-shrink:0;
+  background:rgba(138,180,206,.15); color:var(--acc);
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700; margin-top:1px;
+}
+.how-to-step strong { color:var(--text); font-weight:600; }
+.how-to-note {
+  font-size:11.5px; color:var(--t3); line-height:1.55;
+  padding-top:10px; border-top:1px solid rgba(138,180,206,.08);
+}
+.how-to-note strong { color:var(--t2); }
+
+/* ── PLATFORM PICKER (music step) ── */
+.music-plat-row {
+  display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;
+}
+.music-plat-btn {
+  display:flex; align-items:center; gap:7px;
+  padding:9px 14px; border-radius:10px; font-size:13px; font-weight:600;
+  border:1.5px solid var(--border); color:var(--t2);
+  cursor:pointer; background:var(--card); font-family:var(--font);
+  transition:all .16s;
+}
+.music-plat-btn:hover { border-color:var(--bm); color:var(--text); }
+.music-plat-btn.on { border-color:var(--acc); color:var(--text); background:rgba(138,180,206,.08); }
+.music-plat-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+/* ── COLOUR PREVIEW STRIP ── */
+.colour-where {
+  margin-top:16px; padding:14px 16px; border-radius:12px;
+  background:rgba(138,180,206,.05); border:1px solid rgba(138,180,206,.10);
+}
+.colour-where-label { font-size:10px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--t3); margin-bottom:10px; }
+.colour-where-examples {
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+}
+.cw-btn {
+  padding:8px 18px; border-radius:100px; font-size:13px; font-weight:700;
+  background:var(--acc); color:#121a24;
+  transition:background .2s;
+}
+.cw-pill {
+  padding:5px 12px; border-radius:100px; font-size:11px; font-weight:600;
+  border:1.5px solid var(--acc); color:var(--acc);
+  transition:border-color .2s, color .2s;
+}
+.cw-highlight {
+  width:8px; height:8px; border-radius:50%;
+  background:var(--acc); flex-shrink:0; transition:background .2s;
+}
+.colour-where-note { font-size:11px; color:var(--t3); margin-top:8px; }
+
+/* ── INLINE INFO CHIP ── */
+.info-chip {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:11px; color:var(--t3); font-weight:500;
+  background:rgba(138,180,206,.06); border:1px solid rgba(138,180,206,.10);
+  border-radius:6px; padding:4px 9px; margin-top:8px;
+}
+.info-chip svg { flex-shrink:0; color:var(--acc); }
+
 /* Colour presets */
 .colour-presets {
   display:grid; grid-template-columns:repeat(8,1fr); gap:9px;
@@ -748,6 +832,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       <div class="field">
         <label class="field-label" for="iName">Artist name</label>
         <input class="field-input" type="text" id="iName" placeholder="e.g. Nova" autocomplete="off" autofocus>
+        <div class="field-hint">This goes at the top of your page. Use whatever name you release music under.</div>
         <p class="field-error-msg" id="iNameErr" role="alert">Enter your artist name to continue.</p>
       </div>
 
@@ -790,9 +875,24 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
 
       <div class="field">
-        <label class="field-label" for="iSpotify">Spotify artist URL <span class="opt">optional</span></label>
-        <input class="field-input" type="url" id="iSpotify" placeholder="open.spotify.com/artist/…">
-        <div class="field-hint">Your music embeds directly — fans stream without leaving your page.</div>
+        <label class="field-label" for="iSpotify">Your Spotify link <span class="opt">optional — do this later if easier</span></label>
+        <input class="field-input" type="url" id="iSpotify" placeholder="Paste your Spotify link here…" autocomplete="off">
+        <div class="field-hint">Your music plays directly on your page — fans don't need to open another app.</div>
+        <button class="how-to-btn" type="button" onclick="toggleHowTo('spotifyGuide','spotifyGuideBtn')" id="spotifyGuideBtn" aria-expanded="false">
+          <span>📱 How do I find my Spotify link?</span>
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M2 4l4 4 4-4"/></svg>
+        </button>
+        <div class="how-to-guide" id="spotifyGuide" hidden>
+          <div class="how-to-steps">
+            <div class="how-to-step"><span class="how-to-num">1</span><span>Open <strong>Spotify</strong> on your phone</span></div>
+            <div class="how-to-step"><span class="how-to-num">2</span><span>Tap <strong>Search</strong> at the bottom, then search your own artist name</span></div>
+            <div class="how-to-step"><span class="how-to-num">3</span><span>Tap on <strong>your artist profile</strong> — it'll have your photo on it</span></div>
+            <div class="how-to-step"><span class="how-to-num">4</span><span>Tap the <strong>three dots ···</strong> in the top right corner</span></div>
+            <div class="how-to-step"><span class="how-to-num">5</span><span>Tap <strong>Share</strong> → tap <strong>Copy link</strong></span></div>
+            <div class="how-to-step"><span class="how-to-num">6</span><span>Come back here and paste it into the box above</span></div>
+          </div>
+          <div class="how-to-note"><strong>Works with YouTube and SoundCloud too.</strong> Just paste whatever link you have — we'll grab the artwork and track info automatically. Not on Spotify? No problem — skip this and add music links from your dashboard instead.</div>
+        </div>
       </div>
 
       <div class="step-nav">
@@ -809,20 +909,24 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       <div class="feel-grid" id="feelGrid">
         <button class="feel-card" data-feel="intimate-raw" onclick="selectFeel('intimate-raw')">
           <span class="feel-card__label">Stripped back</span>
-          <span class="feel-card__desc">Personal, unfinished-on-purpose, close</span>
+          <span class="feel-card__desc">Personal, unfinished-on-purpose, close — like a voice note</span>
         </button>
         <button class="feel-card" data-feel="intimate-refined" onclick="selectFeel('intimate-refined')">
           <span class="feel-card__label">Warm and cinematic</span>
-          <span class="feel-card__desc">Unhurried, warm, quietly premium</span>
+          <span class="feel-card__desc">Unhurried, warm, quietly premium — like a vinyl sleeve</span>
         </button>
         <button class="feel-card" data-feel="bold-raw" onclick="selectFeel('bold-raw')">
           <span class="feel-card__label">Underground and direct</span>
-          <span class="feel-card__desc">High contrast, no softening, forward</span>
+          <span class="feel-card__desc">High contrast, no softening — like a club flyer</span>
         </button>
         <button class="feel-card" data-feel="bold-refined" onclick="selectFeel('bold-refined')">
           <span class="feel-card__label">Clean and confident</span>
-          <span class="feel-card__desc">Polished, assured, editorial</span>
+          <span class="feel-card__desc">Polished, assured — like a festival headliner</span>
         </button>
+      </div>
+      <div class="info-chip" style="margin-top:12px;">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><circle cx="7" cy="7" r="6"/><path d="M7 6v4M7 4.5v.5"/></svg>
+        This affects spacing, typography weight, and motion — not just colours. You can change it later.
       </div>
 
       <div class="step-nav">
@@ -835,7 +939,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <div class="step" id="step3">
       <div class="step-eyebrow">Step 3 of 5</div>
       <h1 class="step-title">Your<br>colour.</h1>
-      <p class="step-sub">One colour becomes your brand across the whole page. Change one thing — everything shifts with it.</p>
+      <p class="step-sub">One colour. It runs through your buttons, highlights, and every detail on your page — like a signature.</p>
 
       <div class="colour-presets" id="colourGrid"></div>
 
@@ -843,6 +947,19 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
         <div class="cc-swatch" id="ccSwatch"></div>
         <span class="cc-label">Pick a custom colour</span>
         <input type="color" id="ccPicker" value="#f4b942">
+      </div>
+
+      <div class="colour-where" id="colourWherePreview">
+        <div class="colour-where-label">Your colour appears here</div>
+        <div class="colour-where-examples">
+          <div class="cw-btn" id="cwBtn">Stream Now</div>
+          <div class="cw-pill" id="cwPill">Spotify</div>
+          <div style="display:flex;align-items:center;gap:5px;">
+            <div class="cw-highlight" id="cwDot"></div>
+            <span style="font-size:11px;color:var(--t3);">active tab</span>
+          </div>
+        </div>
+        <div class="colour-where-note">Don't overthink it — your fans will just see it as "your vibe". You can change this any time.</div>
       </div>
 
       <div class="step-nav" style="margin-top:28px;">
@@ -859,6 +976,11 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
       <div class="theme-grid" id="themeGrid"></div>
 
+      <div class="info-chip" style="margin-top:4px;">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><circle cx="7" cy="7" r="6"/><path d="M7 6v4M7 4.5v.5"/></svg>
+        This is the background of your page — dark or light. Not sure? Dark works for most music.
+      </div>
+
       <div class="step-nav">
         <button class="btn-back" onclick="goStep(3)">← Back</button>
         <button class="btn-next" onclick="goStep(5)">Continue →</button>
@@ -869,7 +991,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <div class="step" id="step5">
       <div class="step-eyebrow">Step 5 of 5</div>
       <h1 class="step-title">One thing,<br>front and centre.</h1>
-      <p class="step-sub">The main thing you want fans to do right now. This becomes your hero button. Change it any time.</p>
+      <p class="step-sub">This is the <strong style="color:var(--text);">big button</strong> at the top of your page — the first thing every fan sees when they arrive. What do you want them to do right now?</p>
 
       <div class="cta-preview">
         <div class="cta-preview-lbl">Fans will see</div>
@@ -924,13 +1046,25 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <div class="step" id="step6">
       <div class="step-eyebrow">Step 6 of 8 — optional</div>
       <h1 class="step-title">Add your<br>music.</h1>
-      <p class="step-sub">Paste a Spotify, SoundCloud, or YouTube URL — your release shows up on your page with artwork and tracklist auto-filled. You can add more from your dashboard.</p>
+      <p class="step-sub">Link a track or album and it plays directly on your page — fans don't need to leave to listen. We grab the artwork automatically.</p>
+
+      <div class="music-plat-row" id="musicPlatRow">
+        <button class="music-plat-btn on" type="button" data-plat="spotify" onclick="selectMusicPlat(this)" id="platSpotify">
+          <div class="music-plat-dot" style="background:#1db954;"></div> Spotify
+        </button>
+        <button class="music-plat-btn" type="button" data-plat="youtube" onclick="selectMusicPlat(this)" id="platYoutube">
+          <div class="music-plat-dot" style="background:#ff0000;"></div> YouTube
+        </button>
+        <button class="music-plat-btn" type="button" data-plat="soundcloud" onclick="selectMusicPlat(this)" id="platSoundcloud">
+          <div class="music-plat-dot" style="background:#ff5500;"></div> SoundCloud
+        </button>
+      </div>
 
       <div class="step-field" id="musicUrlField">
-        <label class="step-label" for="iMusicUrl">Stream link</label>
+        <label class="step-label" for="iMusicUrl" id="musicUrlLabel">Paste your Spotify link here</label>
         <div style="position:relative;">
           <input class="step-input" type="url" id="iMusicUrl"
-            placeholder="open.spotify.com/album/… or youtu.be/…"
+            placeholder="open.spotify.com/album/… or /track/…"
             oninput="onMusicUrlInput(this.value)"
             autocomplete="off" spellcheck="false">
           <div class="step-autofill-badge" id="musicBadge" hidden></div>
@@ -944,10 +1078,21 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
         </div>
       </div>
 
+      <button class="how-to-btn" type="button" onclick="toggleHowTo('musicGuide','musicGuideBtn')" id="musicGuideBtn" aria-expanded="false">
+        <span id="musicGuideText">📱 How do I find my Spotify link?</span>
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M2 4l4 4 4-4"/></svg>
+      </button>
+      <div class="how-to-guide" id="musicGuide" hidden>
+        <div class="how-to-steps" id="musicHowToSteps">
+          <!-- filled by selectMusicPlat() -->
+        </div>
+        <div class="how-to-note" id="musicHowToNote"></div>
+      </div>
+
       <div class="step-nav">
         <button class="btn-back" onclick="goStep(5)">← Back</button>
-        <button class="btn-skip" onclick="goStep(7)">Skip for now →</button>
-        <button class="btn-next" onclick="applyMusicStep();goStep(7)">Add it →</button>
+        <button class="btn-skip" onclick="goStep(7)">Skip — I'll add music later</button>
+        <button class="btn-next" id="musicAddBtn" onclick="applyMusicStep();goStep(7)" style="display:none;">Add it →</button>
       </div>
     </div>
 
@@ -955,7 +1100,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <div class="step" id="step7">
       <div class="step-eyebrow">Step 7 of 8 — optional</div>
       <h1 class="step-title">Playing<br>anywhere soon?</h1>
-      <p class="step-sub">Add one show and a ticket link — it goes front and centre on your page. Your fans will see it the moment they land.</p>
+      <p class="step-sub">Got a show coming up? Add it and the tickets go straight to the top of your page. No shows yet — that's fine, skip this entirely.</p>
 
       <div class="step-field">
         <label class="step-label" for="iShowVenue">Venue</label>
@@ -1320,6 +1465,8 @@ function onMusicUrlInput(val) {
   const badge = document.getElementById('musicBadge')
   const preview = document.getElementById('musicPreview')
   preview.hidden = true
+  const addBtn = document.getElementById('musicAddBtn')
+  if (addBtn) addBtn.style.display = val && val.length > 10 ? '' : 'none'
   if (!val || val.length < 12) { badge.hidden = true; return }
   badge.hidden = false; badge.textContent = 'Fetching…'
   _musicFetchTimer = setTimeout(() => fetchMusicMeta(val), 700)
@@ -1507,6 +1654,7 @@ function applyVibe(v) {
     const root = document.documentElement;
     root.style.setProperty('--acc', v.accent);
     root.style.setProperty('--acc-rgb', h2r(v.accent.replace('#','')));
+    updateColourWhere(v.accent);
     // sync swatch selection
     document.querySelectorAll('.c-swatch').forEach(s => {
       s.classList.toggle('on', s.dataset.hex === v.accent);
@@ -1583,6 +1731,7 @@ function setAccent(hex) {
   root.style.setProperty('--acc-rgb', rgb);
   root.style.setProperty('--acc-glow', `rgba(${rgb},.28)`);
   syncCustomSwatch();
+  updateColourWhere(hex);
   updatePreview();
 }
 
@@ -2096,6 +2245,92 @@ function setView(v) {
   window.scrollTo(0,0);
 }
 
+/* ── HOW-TO GUIDES ── */
+function toggleHowTo(id, btnId) {
+  const guide = document.getElementById(id);
+  const btn = document.getElementById(btnId);
+  if (!guide) return;
+  const hidden = guide.hidden;
+  guide.hidden = !hidden;
+  if (btn) {
+    btn.classList.toggle('open', hidden);
+    btn.setAttribute('aria-expanded', hidden ? 'true' : 'false');
+  }
+}
+
+/* ── MUSIC PLATFORM PICKER ── */
+const MUSIC_PLAT_DATA = {
+  spotify: {
+    label: 'Paste your Spotify link here',
+    placeholder: 'open.spotify.com/album/… or /track/…',
+    guideText: '📱 How do I find my Spotify link?',
+    steps: [
+      'Open <strong>Spotify</strong> on your phone',
+      'Tap <strong>Search</strong>, search your own name',
+      'Tap your <strong>artist profile</strong> (with your photo)',
+      'Find a <strong>track or album</strong> you want to add',
+      'Tap the <strong>three dots ···</strong> next to it',
+      'Tap <strong>Share</strong> → <strong>Copy link</strong>',
+      'Paste it into the box above'
+    ],
+    note: '<strong>Tip:</strong> You can add a track, album, or your whole artist profile. We\'ll show it neatly on your page.'
+  },
+  youtube: {
+    label: 'Paste your YouTube link here',
+    placeholder: 'youtube.com/watch?v=… or youtu.be/…',
+    guideText: '📺 How do I find my YouTube link?',
+    steps: [
+      'Open <strong>YouTube</strong> on your phone or computer',
+      'Find the <strong>video</strong> you want to add',
+      'Tap or click the <strong>Share</strong> button (under the video)',
+      'Tap <strong>Copy link</strong>',
+      'Paste it into the box above'
+    ],
+    note: '<strong>Tip:</strong> Any YouTube video works — a music video, a live session, a lyric video. It plays inside your page.'
+  },
+  soundcloud: {
+    label: 'Paste your SoundCloud link here',
+    placeholder: 'soundcloud.com/yourname/track-name',
+    guideText: '🎵 How do I find my SoundCloud link?',
+    steps: [
+      'Open <strong>SoundCloud</strong> on your phone or at soundcloud.com',
+      'Find the <strong>track</strong> you want to add',
+      'Tap the <strong>three dots ···</strong> next to it',
+      'Tap <strong>Share</strong> → <strong>Copy link</strong>',
+      'Paste it into the box above'
+    ],
+    note: '<strong>Tip:</strong> Works with individual tracks or your whole profile. Fans can play it without leaving your page.'
+  }
+};
+
+function selectMusicPlat(btn) {
+  document.querySelectorAll('.music-plat-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  const plat = btn.dataset.plat;
+  const data = MUSIC_PLAT_DATA[plat];
+  if (!data) return;
+  const labelEl = document.getElementById('musicUrlLabel');
+  const inputEl = document.getElementById('iMusicUrl');
+  const guideTextEl = document.getElementById('musicGuideText');
+  const stepsEl = document.getElementById('musicHowToSteps');
+  const noteEl = document.getElementById('musicHowToNote');
+  if (labelEl) labelEl.textContent = data.label;
+  if (inputEl) inputEl.placeholder = data.placeholder;
+  if (guideTextEl) guideTextEl.innerHTML = data.guideText;
+  if (stepsEl) stepsEl.innerHTML = data.steps.map((s, i) => `<div class="how-to-step"><span class="how-to-num">${i+1}</span><span>${s}</span></div>`).join('');
+  if (noteEl) noteEl.innerHTML = data.note;
+}
+
+/* ── COLOUR PREVIEW STRIP ── */
+function updateColourWhere(hex) {
+  const cwBtn = document.getElementById('cwBtn');
+  const cwPill = document.getElementById('cwPill');
+  const cwDot = document.getElementById('cwDot');
+  if (cwBtn) cwBtn.style.background = hex;
+  if (cwPill) { cwPill.style.borderColor = hex; cwPill.style.color = hex; }
+  if (cwDot) cwDot.style.background = hex;
+}
+
 /* ── INIT ── */
 initVibe();
 initColour();
@@ -2103,6 +2338,12 @@ initTheme();
 initCta();
 updatePreview();
 selectFeel(P.feel);
+// Initialise music platform guide with Spotify data
+document.addEventListener('DOMContentLoaded', () => {
+  const platBtn = document.getElementById('platSpotify');
+  if (platBtn) selectMusicPlat(platBtn);
+  updateColourWhere(P.accent || '#8ab4ce');
+});
 </script>
 </body>
 </html>

@@ -539,6 +539,86 @@ body::before {
 }
 #adminToast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
+/* ── INFO TOOLTIP ── */
+.info-tooltip {
+  position:relative; display:inline-flex; align-items:center;
+}
+.info-icon {
+  width:16px; height:16px; border-radius:50%;
+  background:rgba(138,180,206,.12); border:1px solid rgba(138,180,206,.18);
+  color:rgba(204,221,239,.52); font-size:9px; font-weight:700;
+  display:inline-flex; align-items:center; justify-content:center;
+  cursor:help; margin-left:5px; flex-shrink:0;
+  transition:background .15s, color .15s;
+  font-family:var(--font);
+  vertical-align:middle;
+}
+.info-icon:hover { background:rgba(138,180,206,.22); color:var(--text); }
+.tooltip-bubble {
+  position:absolute; bottom:calc(100% + 8px); left:50%;
+  transform:translateX(-50%);
+  background:#1f2d45; border:1px solid rgba(138,180,206,.18);
+  border-radius:10px; padding:10px 14px;
+  font-size:12px; font-weight:400; color:var(--text-2, rgba(204,221,239,.58));
+  line-height:1.55; width:220px; text-align:left;
+  box-shadow:0 8px 28px rgba(8,16,40,.5);
+  pointer-events:none; opacity:0;
+  transition:opacity .16s; z-index:9999;
+  white-space:normal;
+}
+.tooltip-bubble::after {
+  content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+  border:5px solid transparent; border-top-color:#1f2d45;
+}
+.info-icon:hover + .tooltip-bubble,
+.info-icon:focus + .tooltip-bubble {
+  opacity:1;
+}
+
+/* ── FIRST-RUN CHECKLIST ── */
+.first-run-card {
+  background:linear-gradient(135deg, rgba(138,180,206,.08) 0%, rgba(110,100,200,.06) 100%);
+  border:1px solid rgba(138,180,206,.18); border-radius:16px;
+  padding:20px 22px; margin-bottom:24px;
+}
+.frc-head {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:14px;
+}
+.frc-title { font-size:14px; font-weight:700; color:var(--text); }
+.frc-dismiss {
+  font-size:11px; color:var(--t3); background:none; border:none;
+  cursor:pointer; font-family:var(--font); padding:4px 8px;
+  border-radius:6px; transition:color .15s;
+}
+.frc-dismiss:hover { color:var(--t2); }
+.frc-steps { display:flex; flex-direction:column; gap:8px; }
+.frc-step {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:10px 12px; border-radius:10px;
+  background:rgba(138,180,206,.04); border:1px solid rgba(138,180,206,.08);
+  cursor:pointer; transition:background .15s, border-color .15s;
+  font-family:var(--font); text-align:left; width:100%;
+}
+.frc-step:hover { background:rgba(138,180,206,.09); border-color:rgba(138,180,206,.16); }
+.frc-step.done { opacity:.5; }
+.frc-check {
+  width:20px; height:20px; border-radius:50%; flex-shrink:0;
+  border:2px solid rgba(138,180,206,.3);
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; color:transparent; margin-top:1px;
+  transition:all .2s;
+}
+.frc-step.done .frc-check {
+  background:rgba(126,200,138,.2); border-color:#7ec88a; color:#7ec88a;
+}
+.frc-step-body { flex:1; }
+.frc-step-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:2px; }
+.frc-step-sub { font-size:11px; color:var(--t3); line-height:1.4; }
+.frc-step.done .frc-step-title { text-decoration:line-through; color:var(--t3); }
+.frc-progress { margin-top:12px; height:3px; border-radius:100px; background:rgba(138,180,206,.1); overflow:hidden; }
+.frc-progress-fill { height:100%; background:var(--acc); border-radius:100px; transition:width .4s var(--ease); }
+
 /* ── RESPONSIVE ── */
 @media (max-width:960px) {
   .stats-row { grid-template-columns:1fr 1fr; }
@@ -989,7 +1069,7 @@ body::before {
     </button>
     <button class="sb-item" onclick="showPage('snaps')">
       <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><rect x="1" y="4" width="6" height="11" rx="1.5"/><rect x="9" y="1" width="6" height="14" rx="1.5"/></svg>
-      Snap Cards
+      Updates
     </button>
 
     <button class="sb-item" onclick="showPage('fans')">
@@ -1002,7 +1082,7 @@ body::before {
 
     <button class="sb-item" onclick="showPage('connect')">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" width="15" height="15"><path d="M10 5.5a3.5 3.5 0 010 5M13 3a7 7 0 010 10M6 5.5a3.5 3.5 0 000 5M3 3a7 7 0 000 10"/></svg>
-      Connections
+      Streaming links
     </button>
     <button class="sb-item" onclick="showPage('settings')">
       <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 10.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7z"/></svg>
@@ -1049,6 +1129,45 @@ body::before {
       <button class="upgrade-bar-btn" onclick="showPage('settings')">See what's included →</button>
     </div>
 
+    <!-- FIRST-RUN CHECKLIST — hidden once all done or dismissed -->
+    <div class="first-run-card" id="firstRunCard">
+      <div class="frc-head">
+        <div class="frc-title">Get your page working — 4 quick things</div>
+        <button class="frc-dismiss" onclick="dismissFirstRun()" title="Dismiss">Got it, hide this</button>
+      </div>
+      <div class="frc-steps">
+        <button class="frc-step" id="frc1" onclick="showPage('profile')">
+          <div class="frc-check" id="frc1check">✓</div>
+          <div class="frc-step-body">
+            <div class="frc-step-title">Add your photo or artwork</div>
+            <div class="frc-step-sub">Goes at the top of your page — this is the first thing fans see</div>
+          </div>
+        </button>
+        <button class="frc-step" id="frc2" onclick="navigator.clipboard?.writeText(document.getElementById('profileLink')?.textContent||'').then(()=>{markFrcDone(2)})">
+          <div class="frc-check" id="frc2check">✓</div>
+          <div class="frc-step-body">
+            <div class="frc-step-title">Copy your page link</div>
+            <div class="frc-step-sub">Your link: <span id="profileLinkFrc" style="color:var(--acc);font-size:11px;">able.fm/you</span> — tap to copy</div>
+          </div>
+        </button>
+        <button class="frc-step" id="frc3" onclick="markFrcDone(3)">
+          <div class="frc-check" id="frc3check">✓</div>
+          <div class="frc-step-body">
+            <div class="frc-step-title">Put the link in your Instagram and TikTok bio</div>
+            <div class="frc-step-sub">This is where your first fans will come from</div>
+          </div>
+        </button>
+        <button class="frc-step" id="frc4" onclick="showPage('music')">
+          <div class="frc-check" id="frc4check">✓</div>
+          <div class="frc-step-body">
+            <div class="frc-step-title">Add your latest release</div>
+            <div class="frc-step-sub">Paste a Spotify, YouTube, or SoundCloud link — artwork fills in automatically</div>
+          </div>
+        </button>
+      </div>
+      <div class="frc-progress"><div class="frc-progress-fill" id="frcProgress" style="width:0%"></div></div>
+    </div>
+
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-label">Page views</div>
@@ -1075,7 +1194,13 @@ body::before {
     <!-- Campaign HQ -->
     <div class="campaign-hq" id="campaignHQ">
       <div class="chq-head">
-        <div class="chq-title">Campaign HQ</div>
+        <div class="chq-title">
+          Page mode
+          <span class="info-tooltip">
+            <span class="info-icon" tabindex="0">?</span>
+            <span class="tooltip-bubble">Switch what your page is focused on right now — building up to a release, going live on drop day, pushing tickets for a show, or just your regular profile.</span>
+          </span>
+        </div>
         <span class="chq-state-pill profile" id="chqStatePill">Profile</span>
       </div>
       <div class="chq-body">
@@ -1444,8 +1569,8 @@ body::before {
   <!-- ── SNAP CARDS PAGE ── -->
   <div class="page" id="page-snaps">
     <div class="page-header">
-      <div class="page-title">Snap Cards</div>
-      <div class="page-sub">Contextual updates shown on your page. Use ↑↓ to reorder.</div>
+      <div class="page-title">Updates</div>
+      <div class="page-sub">Short posts and announcements that sit on your page. Fans see them when they scroll.</div>
     </div>
     <div class="dash-card" style="max-width:600px;">
       <div class="dc-head">
@@ -2006,7 +2131,7 @@ const GIG_KEY     = 'able_gig_expires';
 const PAGE_TITLES = {
   home:'Overview', profile:'Profile', music:'Music',
   events:'Events', merch:'Merch', support:'Support',
-  snaps:'Snap Cards', connect:'Connections', settings:'Settings',
+  snaps:'Updates', connect:'Streaming links', settings:'Settings',
   analytics:'Analytics', fans:'Fans', broadcast:'Send to fans',
 };
 
@@ -3699,6 +3824,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Profile identity card
   initIdentityCard();
+
+  // First-run checklist
+  initFirstRun();
 });
 
 /* ── ARTWORK PREVIEW ── */
@@ -4130,6 +4258,53 @@ function showToast(msg) {
   t.classList.add('show');
   clearTimeout(_toastTimer);
   _toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ── FIRST-RUN CHECKLIST ── */
+function initFirstRun() {
+  const frc = document.getElementById('firstRunCard');
+  if (!frc) return;
+  // Hide if already dismissed
+  if (localStorage.getItem('able_frc_dismissed') === '1') { frc.hidden = true; return; }
+  // Mark steps done based on real data
+  const data = safeLS(V3_KEY, {});
+  const fans = safeLS('able_fans', []);
+  if (data.topCard?.artworkUrl || data.topCard?.videoUrl) markFrcDone(1);
+  // Link step: mark done if fans > 0 (implies they shared)
+  if (fans.length > 0) { markFrcDone(2); markFrcDone(3); }
+  if ((data.releases||[]).length > 0) markFrcDone(4);
+  // Update profile link in checklist
+  const derivedHandle = (data.name || 'you').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const handle = data.handle || derivedHandle;
+  const el = document.getElementById('profileLinkFrc');
+  if (el) el.textContent = `able.fm/${handle}`;
+}
+
+function markFrcDone(n) {
+  const step = document.getElementById('frc' + n);
+  const check = document.getElementById('frc' + n + 'check');
+  if (step) step.classList.add('done');
+  if (check) check.textContent = '✓';
+  updateFrcProgress();
+}
+
+function updateFrcProgress() {
+  const done = document.querySelectorAll('.frc-step.done').length;
+  const total = document.querySelectorAll('.frc-step').length;
+  const bar = document.getElementById('frcProgress');
+  if (bar) bar.style.width = (done / total * 100) + '%';
+  if (done >= total) {
+    setTimeout(() => {
+      const frc = document.getElementById('firstRunCard');
+      if (frc) { frc.style.opacity = '0'; frc.style.transition = 'opacity .4s'; setTimeout(() => frc.hidden = true, 400); }
+    }, 1200);
+  }
+}
+
+function dismissFirstRun() {
+  localStorage.setItem('able_frc_dismissed', '1');
+  const frc = document.getElementById('firstRunCard');
+  if (frc) { frc.style.opacity = '0'; frc.style.transition = 'opacity .3s'; setTimeout(() => frc.hidden = true, 300); }
 }
 </script>
 
