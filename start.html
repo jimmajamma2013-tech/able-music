@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data:; connect-src 'self' https:;">
 <meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <title>ABLE — Get Started</title>
 <meta name="description" content="Set up your ABLE artist page in minutes. Free.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1028,14 +1029,17 @@ function goStep(n) {
 
     // Write to the canonical v3 key that able-v6.html reads
     const v3profile = {
-      name:         P.name,
-      bio:          P.bio,
-      vibe:         P.vibe,
-      accent:       P.accent,
-      theme:        P.theme,
-      ctaPrimary:   { label: P.ctaLabel,  url: P.ctaUrl    || '' },
-      ctaSecondary: { label: P.secLabel,  url: P.ctaSecUrl || '' },
-      platforms:    P.spotify ? [{ label: 'Spotify', url: P.spotify, type: 'spotify' }] : [],
+      name:          P.name,
+      handle:        slug(P.name),
+      bio:           P.bio,
+      vibe:          P.vibe,
+      accent:        P.accent,
+      theme:         P.theme,
+      genres:        P.genre ? [P.genre] : [],
+      stateOverride: null,
+      ctaPrimary:    { label: P.ctaLabel,  url: P.ctaUrl    || '' },
+      ctaSecondary:  { label: P.secLabel,  url: P.ctaSecUrl || '' },
+      platforms:     P.spotify ? [{ label: 'Spotify', url: P.spotify, type: 'spotify' }] : [],
     };
     localStorage.setItem('able_v3_profile', JSON.stringify(v3profile));
     // Also keep able_profile for any legacy reads
@@ -1544,7 +1548,7 @@ function generateBio(refinement) {
 
   const context = {
     name: (document.getElementById('iName') || {}).value || '',
-    vibe: P.vibe || 'indiealt',
+    vibe: P.vibe || 'indie',
   };
 
   callAI('bio', context, refinement).then(result => {
@@ -1563,7 +1567,7 @@ function refineBio(type) {
   draft.textContent = 'Refining…';
   useBtn.disabled = true;
 
-  const context = { name: (document.getElementById('iName') || {}).value || '', vibe: P.vibe || 'indiealt' };
+  const context = { name: (document.getElementById('iName') || {}).value || '', vibe: P.vibe || 'indie' };
   callAI('bio', context, type).then(result => {
     _bioCurrent = result;
     draft.classList.remove('ai-draft--loading');
