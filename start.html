@@ -458,6 +458,115 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   .step-title { font-size:44px; }
   .preview-phone { width:200px; height:420px; }
 }
+
+/* ── AI HELPER ── */
+.ai-btn {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:4px 12px; border-radius:20px;
+  font-size:11px; font-weight:700; letter-spacing:0.03em;
+  color:var(--acc); border:1px solid rgba(var(--acc-rgb),.25);
+  background:rgba(var(--acc-rgb),.06);
+  cursor:pointer; font-family:var(--font);
+  transition:all .15s;
+  margin-top:8px;
+}
+.ai-btn:hover { background:rgba(var(--acc-rgb),.12); border-color:rgba(var(--acc-rgb),.4); }
+.ai-btn__spark { font-size:10px; line-height:1; }
+
+.ai-panel {
+  background:rgba(var(--acc-rgb),.03);
+  border:1px solid rgba(var(--acc-rgb),.18);
+  border-radius:12px;
+  padding:16px;
+  margin-top:10px;
+  display:none;
+  animation:ai-slide-in .18s ease both;
+}
+.ai-panel.open { display:block; }
+
+@keyframes ai-slide-in {
+  from { opacity:0; transform:translateY(-6px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.ai-panel__header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:10px;
+}
+.ai-panel__title {
+  font-size:10px; font-weight:800; letter-spacing:0.08em;
+  text-transform:uppercase; color:var(--acc);
+}
+.ai-panel__close {
+  width:22px; height:22px; display:flex; align-items:center; justify-content:center;
+  font-size:16px; color:var(--t3); cursor:pointer;
+  background:none; border:none; font-family:var(--font);
+  transition:color .15s;
+}
+.ai-panel__close:hover { color:var(--t2); }
+
+.ai-draft {
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:8px; padding:12px;
+  font-size:13px; color:var(--text);
+  line-height:1.58; min-height:60px;
+  margin-bottom:10px; white-space:pre-wrap;
+  word-break:break-word;
+}
+.ai-draft--loading { color:var(--t3); font-style:italic; }
+
+.ai-refine-pills {
+  display:flex; gap:6px; flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.ai-refine-pill {
+  padding:5px 11px; border-radius:20px;
+  font-size:11px; font-weight:600; font-family:var(--font);
+  color:var(--t2); border:1px solid var(--border);
+  background:none; cursor:pointer; transition:all .15s;
+}
+.ai-refine-pill:hover { color:var(--text); border-color:var(--bm); }
+
+.ai-actions {
+  display:flex; gap:8px; justify-content:space-between; align-items:center;
+}
+.ai-regen {
+  font-size:12px; color:var(--t3); cursor:pointer;
+  text-decoration:underline; text-underline-offset:3px;
+  background:none; border:none; font-family:var(--font);
+  transition:color .15s;
+}
+.ai-regen:hover { color:var(--t2); }
+.ai-use {
+  padding:8px 18px; border-radius:8px;
+  font-size:12px; font-weight:700; font-family:var(--font);
+  background:var(--acc); color:#000;
+  cursor:pointer; border:none;
+  transition:opacity .15s;
+}
+.ai-use:hover { opacity:.85; }
+.ai-use:disabled { opacity:.4; cursor:not-allowed; }
+
+.ai-panel__desc {
+  font-size:12px; color:var(--t3); margin:0 0 10px;
+  line-height:1.4;
+}
+
+/* CTA suggestions */
+.ai-cta-opts {
+  display:flex; flex-direction:column; gap:6px;
+  margin-bottom:12px;
+}
+.ai-cta-opt {
+  padding:10px 12px; border-radius:8px;
+  font-size:13px; font-weight:500; font-family:var(--font);
+  color:var(--text); border:1px solid var(--border);
+  background:rgba(255,255,255,.03); cursor:pointer;
+  text-align:left; transition:all .15s;
+}
+.ai-cta-opt:hover { border-color:var(--bm); background:rgba(255,255,255,.06); }
+.ai-cta-opt.selected { border-color:var(--acc); background:rgba(var(--acc-rgb),.08); color:var(--acc); }
 </style>
 </head>
 <body>
@@ -503,6 +612,26 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
         <label class="field-label" for="iBio">One-line bio <span class="opt">optional</span></label>
         <input class="field-input" type="text" id="iBio" placeholder="e.g. Making music from my bedroom to yours." maxlength="80">
         <div class="field-hint">One sentence. Sits under your name. Say something real.</div>
+        <button class="ai-btn" type="button" id="aiBioBtn" onclick="openBioHelper()">
+          <span class="ai-btn__spark">✦</span> Help me write this
+        </button>
+        <div class="ai-panel" id="aiBioPanel">
+          <div class="ai-panel__header">
+            <span class="ai-panel__title">✦ Bio helper</span>
+            <button class="ai-panel__close" onclick="closeBioHelper()" aria-label="Close bio helper">×</button>
+          </div>
+          <div class="ai-draft ai-draft--loading" id="aiBioDraft">Generating…</div>
+          <div class="ai-refine-pills" aria-label="Refine options">
+            <button class="ai-refine-pill" type="button" onclick="refineBio('shorter')">Shorter</button>
+            <button class="ai-refine-pill" type="button" onclick="refineBio('warmer')">Warmer</button>
+            <button class="ai-refine-pill" type="button" onclick="refineBio('direct')">More direct</button>
+            <button class="ai-refine-pill" type="button" onclick="refineBio('editorial')">More editorial</button>
+          </div>
+          <div class="ai-actions">
+            <button class="ai-regen" type="button" onclick="generateBio()">↺ Try again</button>
+            <button class="ai-use" type="button" id="aiBioUse" onclick="useBioDraft()" disabled>Use this →</button>
+          </div>
+        </div>
       </div>
 
       <div class="field">
@@ -562,6 +691,22 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
 
       <div class="cta-groups" id="ctaGrid"></div>
+
+      <!-- CTA AI helper -->
+      <button class="ai-btn" type="button" id="aiCtaBtn" onclick="openCtaHelper()" style="margin-top:10px;">
+        <span class="ai-btn__spark">✦</span> Not sure? Get a suggestion
+      </button>
+      <div class="ai-panel" id="aiCtaPanel">
+        <div class="ai-panel__header">
+          <span class="ai-panel__title">✦ CTA helper</span>
+          <button class="ai-panel__close" onclick="closeCtaHelper()" aria-label="Close CTA helper">×</button>
+        </div>
+        <p class="ai-panel__desc">Based on your vibe, here's what tends to land.</p>
+        <div id="aiCtaOpts" class="ai-cta-opts"></div>
+        <div class="ai-actions">
+          <button class="ai-use" type="button" id="aiCtaUse" onclick="useCtaSuggestion()" disabled>Use this →</button>
+        </div>
+      </div>
 
       <div class="field" id="ctaUrlWrap" style="display:none; margin-top:10px;">
         <label class="field-label" for="iCtaUrl" id="ctaUrlLbl">Link</label>
@@ -1195,6 +1340,215 @@ function launchConfetti() {
     if (++f < MAX) requestAnimationFrame(draw);
     else ctx.clearRect(0,0,canvas.width,canvas.height);
   })();
+}
+
+/* ── AI HELPER ── */
+
+// Demo mode: returns an intelligent template instead of hitting the API.
+// Production: swap callAI() to hit a Netlify function → Anthropic API.
+function callAI(type, context, refinement) {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(generateDemoDraft(type, context, refinement)), 600);
+  });
+}
+
+const BIO_TEMPLATES = {
+  electronic: [
+    '{name} makes club music for people who close their eyes.',
+    'Producer, sound designer. Quiet studio, loud mixes.',
+    '{name} — electronic music built for the hours between midnight and 4am.',
+  ],
+  hiphop: [
+    '{name}. Rapper, writer, producer. Everything made from scratch.',
+    'Bars and beats. All original, all intentional.',
+    '{name} — hip hop with something to say.',
+  ],
+  rnbsoul: [
+    '{name} writes about love, grief, and the space in between.',
+    'Soul music. Real feelings, real production.',
+    '{name} — voice, keys, and every word earned.',
+  ],
+  indiealt: [
+    'Songs about ordinary things that turn out to be everything.',
+    '{name} — indie music made in the margins.',
+    'Guitar, tape, and whatever else the song needs.',
+  ],
+  pop: [
+    '{name} makes pop songs people still remember three days later.',
+    'Big hooks, real feelings. Pop done with intention.',
+    '{name} — pop that earns its chorus.',
+  ],
+  rockmetal: [
+    '{name}. Guitar-driven, heavy where it counts.',
+    'Loud music made carefully. Volume as a choice, not a default.',
+    '{name} — rock with something to prove.',
+  ],
+  acousticfolk: [
+    'Just a voice, a guitar, and things worth saying.',
+    '{name} — folk music with its feet on the ground.',
+    'Songs that started in a quiet room and stayed honest.',
+  ],
+};
+
+const REFINE_TRANSFORMS = {
+  shorter: (s) => s.split('. ').slice(0, 1).join('. ').replace(/\.$/, '') + '.',
+  warmer: (s) => s.replace(/^(\S+)/, 'Hi — I\'m $1').replace(/\.$/, ' and I\'d love you to listen.'),
+  direct: (s) => s.replace(/^(Hi — I'm |Just |Songs )/, '').replace(/\.$/, '.'),
+  editorial: (s) => s.replace(/\.$/, '') + '. The work is the introduction.',
+};
+
+function generateDemoDraft(type, context, refinement) {
+  if (type === 'bio') {
+    const vibe  = (context.vibe  || 'indiealt').replace(/[^a-z]/gi, '').toLowerCase();
+    const name  = (context.name  || '').trim();
+    const key   = BIO_TEMPLATES[vibe] ? vibe : 'indiealt';
+    const pool  = BIO_TEMPLATES[key];
+    const draft = pool[Math.floor(Math.random() * pool.length)].replace(/{name}/g, name || 'Artist');
+    if (refinement && REFINE_TRANSFORMS[refinement]) {
+      return REFINE_TRANSFORMS[refinement](draft);
+    }
+    return draft;
+  }
+  if (type === 'cta') {
+    const vibe  = (context.vibe || 'indiealt').replace(/[^a-z]/gi, '').toLowerCase();
+    const ctaSets = {
+      electronic:    [{ label: 'Stream the drop', type: 'stream' }, { label: 'Tickets', type: 'tickets' }, { label: 'Hear the mix', type: 'stream' }],
+      hiphop:        [{ label: 'Stream now', type: 'stream' }, { label: 'Free download', type: 'download' }, { label: 'Get tickets', type: 'tickets' }],
+      rnbsoul:       [{ label: 'Listen', type: 'stream' }, { label: 'Support my work', type: 'support' }, { label: 'See me live', type: 'tickets' }],
+      indiealt:      [{ label: 'Stream the album', type: 'stream' }, { label: 'Come to a show', type: 'tickets' }, { label: 'Download free', type: 'download' }],
+      pop:           [{ label: 'Stream now', type: 'stream' }, { label: 'Pre-save', type: 'presave' }, { label: 'Tickets', type: 'tickets' }],
+      rockmetal:     [{ label: 'Listen', type: 'stream' }, { label: 'Tour dates', type: 'tickets' }, { label: 'Merch', type: 'merch' }],
+      acousticfolk:  [{ label: 'Listen', type: 'stream' }, { label: 'Support my music', type: 'support' }, { label: 'See me live', type: 'tickets' }],
+    };
+    return (ctaSets[vibe] || ctaSets['indiealt']);
+  }
+  return '';
+}
+
+// ── Bio helper ──
+
+let _bioCurrent = '';
+
+function openBioHelper() {
+  const panel = document.getElementById('aiBioPanel');
+  panel.classList.add('open');
+  document.getElementById('aiBioBtn').style.display = 'none';
+  generateBio();
+}
+
+function closeBioHelper() {
+  document.getElementById('aiBioPanel').classList.remove('open');
+  document.getElementById('aiBioBtn').style.display = '';
+}
+
+function generateBio(refinement) {
+  const draft  = document.getElementById('aiBioDraft');
+  const useBtn = document.getElementById('aiBioUse');
+  draft.classList.add('ai-draft--loading');
+  draft.textContent = 'Generating…';
+  useBtn.disabled = true;
+  _bioCurrent = '';
+
+  const context = {
+    name: (document.getElementById('iName') || {}).value || '',
+    vibe: P.vibe || 'indiealt',
+  };
+
+  callAI('bio', context, refinement).then(result => {
+    _bioCurrent = result;
+    draft.classList.remove('ai-draft--loading');
+    draft.textContent = result;
+    useBtn.disabled = false;
+  });
+}
+
+function refineBio(type) {
+  if (!_bioCurrent) return;
+  const draft  = document.getElementById('aiBioDraft');
+  const useBtn = document.getElementById('aiBioUse');
+  draft.classList.add('ai-draft--loading');
+  draft.textContent = 'Refining…';
+  useBtn.disabled = true;
+
+  const context = { name: (document.getElementById('iName') || {}).value || '', vibe: P.vibe || 'indiealt' };
+  callAI('bio', context, type).then(result => {
+    _bioCurrent = result;
+    draft.classList.remove('ai-draft--loading');
+    draft.textContent = result;
+    useBtn.disabled = false;
+  });
+}
+
+function useBioDraft() {
+  if (!_bioCurrent) return;
+  const inp = document.getElementById('iBio');
+  inp.value = _bioCurrent;
+  inp.dispatchEvent(new Event('input'));
+  closeBioHelper();
+  updatePreview();
+}
+
+// ── CTA helper ──
+
+let _ctaSelected = null;
+
+function openCtaHelper() {
+  const panel = document.getElementById('aiCtaPanel');
+  panel.classList.add('open');
+  document.getElementById('aiCtaBtn').style.display = 'none';
+  buildCtaOptions();
+}
+
+function closeCtaHelper() {
+  document.getElementById('aiCtaPanel').classList.remove('open');
+  document.getElementById('aiCtaBtn').style.display = '';
+}
+
+function buildCtaOptions() {
+  const context  = { vibe: P.vibe || 'indiealt' };
+  const opts     = generateDemoDraft('cta', context, null);
+  const container = document.getElementById('aiCtaOpts');
+  const useBtn   = document.getElementById('aiCtaUse');
+  _ctaSelected   = null;
+  useBtn.disabled = true;
+  container.innerHTML = '';
+
+  opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'ai-cta-opt';
+    btn.type = 'button';
+    btn.textContent = opt.label;
+    btn.dataset.idx = i;
+    btn.onclick = () => {
+      container.querySelectorAll('.ai-cta-opt').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      _ctaSelected = opt;
+      useBtn.disabled = false;
+    };
+    container.appendChild(btn);
+  });
+}
+
+function useCtaSuggestion() {
+  if (!_ctaSelected) return;
+  // Find matching CTA in the grid and select it
+  const grid = document.getElementById('ctaGrid');
+  if (grid) {
+    const pills = grid.querySelectorAll('[data-cta]');
+    let matched = false;
+    pills.forEach(pill => {
+      if (pill.dataset.cta === _ctaSelected.type) {
+        pill.click();
+        matched = true;
+      }
+    });
+    if (!matched) {
+      // Fallback: just update preview label
+      const previewBtn = document.getElementById('ctaPreviewBtn');
+      if (previewBtn) previewBtn.textContent = _ctaSelected.label;
+    }
+  }
+  closeCtaHelper();
 }
 
 /* ── VIEW TOGGLE ── */
