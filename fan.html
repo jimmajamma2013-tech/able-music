@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0d0e1a">
+  <title>ABLE — Your feed</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap">
+
+  <style>
+    /* ============================================================
+       ABLE Fan Feed — fan.html
+       Authority: docs/v6/core/V6_BUILD_AUTHORITY.md
+       ============================================================ */
+
+    /* === RESET + BASE ========================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { height: 100%; -webkit-text-size-adjust: 100%; }
+
+    body {
+      min-height: 100%;
+      background: #111;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, a {
+      font-family: inherit;
+      font-size: inherit;
+      border: none;
+      background: none;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* === TOKENS ================================================ */
+    :root {
+      /* Spacing */
+      --sp-1: 4px;  --sp-2: 8px;   --sp-3: 12px; --sp-4: 16px;
+      --sp-5: 20px; --sp-6: 24px;  --sp-8: 32px; --sp-10: 40px;
+
+      /* Typography */
+      --text-xs:   11px;
+      --text-sm:   13px;
+      --text-base: 15px;
+      --text-lg:   17px;
+      --text-xl:   20px;
+
+      /* Radius */
+      --r-sm:  8px;
+      --r-md:  14px;
+      --r-lg:  20px;
+      --r-pill: 999px;
+
+      /* Motion */
+      --ease-decel:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1.0);
+      --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+      --dur-fast:   150ms;
+      --dur-mid:    250ms;
+      --dur-slow:   400ms;
+
+      /* Platform accent — neutral, not artist-owned */
+      --platform-accent: #8b7cf4;
+      --platform-accent-soft: rgba(139, 124, 244, 0.12);
+
+      /* Dark theme colours */
+      --color-bg:       #0d0e1a;
+      --color-surface:  #111427;
+      --color-card:     #12152a;
+      --color-border:   rgba(255, 255, 255, 0.06);
+      --color-border-2: rgba(255, 255, 255, 0.10);
+      --color-text:     #f0ede8;
+      --color-text-2:   rgba(240, 237, 232, 0.60);
+      --color-text-3:   rgba(240, 237, 232, 0.38);
+      --shadow-card:    0 2px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    /* === SHELL ================================================= */
+    .shell {
+      position: relative;
+      width: min(390px, 100vw);
+      min-height: 100dvh;
+      background: var(--color-bg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Status bar */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text);
+      flex-shrink: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .status-icons { display: flex; gap: 5px; align-items: center; }
+    .status-icon {
+      width: 16px; height: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Header */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sp-3) var(--sp-5) var(--sp-2);
+      flex-shrink: 0;
+    }
+
+    .page-header__wordmark {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--color-text);
+    }
+
+    .page-header__actions { display: flex; gap: var(--sp-2); align-items: center; }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-2);
+      transition: background var(--dur-fast) var(--ease-standard),
+                  color var(--dur-fast) var(--ease-standard);
+    }
+    .icon-btn:hover { background: rgba(255,255,255,0.09); color: var(--color-text); }
+
+    .notif-pip {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--platform-accent);
+      position: absolute;
+      top: -1px; right: -1px;
+    }
+    .notif-wrap { position: relative; }
+
+    /* === CONTENT TABS ========================================= */
+    .content-tabs {
+      display: flex;
+      gap: var(--sp-1);
+      padding: var(--sp-2) var(--sp-5) var(--sp-3);
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .ctab {
+      padding: 7px 16px;
+      border-radius: var(--r-pill);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text-3);
+      transition: all var(--dur-fast) var(--ease-standard);
+      white-space: nowrap;
+    }
+
+    .ctab:hover { color: var(--color-text-2); }
+
+    .ctab.active {
+      background: var(--platform-accent-soft);
+      color: var(--platform-accent);
+      border: 1px solid rgba(139, 124, 244, 0.22);
+    }
+
+    /* === SCROLL AREA ========================================== */
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: calc(72px + env(safe-area-inset-bottom));
+    }
+
+    .scroll-area::-webkit-scrollbar { display: none; }
+
+    /* === VIEW PANELS ========================================== */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* === FEED DATE LABELS ===================================== */
+    .feed-section { padding: var(--sp-5) var(--sp-5) 0; }
+
+    .feed-section + .feed-section { margin-top: var(--sp-4); }
+
+    .feed-date-label {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-3);
+      margin-bottom: var(--sp-3);
+    }
+
+    /* === FEED ITEM ============================================ */
+    .feed-items { display: flex; flex-direction: column; gap: var(--sp-2); }
+
+    .feed-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      padding: var(--sp-3) var(--sp-4);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: border-color var(--dur-fast) var(--ease-standard),
+                  transform var(--dur-fast) var(--ease-spring),
+                  box-shadow var(--dur-fast) var(--ease-standard);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .feed-item:active {
+      transform: scale(0.98);
+    }
+
+    .feed-item:hover {
+      border-color: var(--color-border-2);
+    }
+
+    /* Artwork / avatar */
+    .feed-item__art {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--r-sm);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: rgba(0,0,0,0.7);
+      letter-spacing: -0.02em;
+      background: var(--item-accent, #555);
+      /* Artist accent applied inline via JS */
+    }
+
+    .feed-item__art--circle {
+      border-radius: 50%;
+    }
+
+    /* Info */
+    .feed-item__info { flex: 1; min-width: 0; }
+
+    .feed-item__artist {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+      margin-bottom: 2px;
+      letter-spacing: 0.01em;
+    }
+
+    .feed-item__title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text);
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .feed-item__sub {
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Type badge + time */
+    .feed-item__meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--sp-1);
+      flex-shrink: 0;
+    }
+
+    .type-badge {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: var(--r-pill);
+    }
+
+    .type-badge--release {
+      background: rgba(6, 182, 212, 0.12);
+      color: #06b6d4;
+      border: 1px solid rgba(6, 182, 212, 0.22);
+    }
+
+    .type-badge--event {
+      background: rgba(251, 191, 36, 0.12);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.22);
+    }
+
+    .type-badge--merch {
+      background: rgba(167, 139, 250, 0.12);
+      color: #a78bfa;
+      border: 1px solid rgba(167, 139, 250, 0.22);
+    }
+
+    .type-badge--snap {
+      background: rgba(240, 237, 232, 0.06);
+      color: rgba(240, 237, 232, 0.45);
+      border: 1px solid rgba(240, 237, 232, 0.10);
+    }
+
+    .feed-item__time {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+    }
+
+    /* Today items — slightly elevated */
+    .feed-section--today .feed-item {
+      background: rgba(255,255,255,0.025);
+    }
+
+    /* === ALL CAUGHT UP ======================================== */
+    .caught-up {
+      padding: var(--sp-10) var(--sp-5) var(--sp-6);
+      text-align: center;
+    }
+
+    .caught-up__line {
+      display: inline-block;
+      width: 32px;
+      height: 1px;
+      background: var(--color-border-2);
+      vertical-align: middle;
+      margin: 0 var(--sp-3);
+    }
+
+    .caught-up__text {
+      font-size: var(--text-sm);
+      color: var(--color-text-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .caught-up__sub {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+      margin-top: var(--sp-2);
+      opacity: 0.7;
+    }
+
+    /* Empty state */
+    .empty-state {
+      padding: var(--sp-10) var(--sp-5) var(--sp-6);
+      text-align: center;
+    }
+
+    .empty-state__emoji { font-size: 32px; margin-bottom: var(--sp-4); }
+
+    .empty-state__title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: var(--sp-2);
+    }
+
+    .empty-state__body {
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      line-height: 1.55;
+    }
+
+    /* === DISCOVER VIEW ======================================== */
+    .discover-filters {
+      display: flex;
+      gap: var(--sp-2);
+      padding: var(--sp-4) var(--sp-5) var(--sp-3);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .discover-filters::-webkit-scrollbar { display: none; }
+
+    .filter-pill {
+      padding: 7px 16px;
+      border-radius: var(--r-pill);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-text-2);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--color-border);
+      white-space: nowrap;
+      transition: all var(--dur-fast) var(--ease-standard);
+    }
+
+    .filter-pill:hover { background: rgba(255,255,255,0.08); color: var(--color-text); }
+
+    .filter-pill.active {
+      background: var(--platform-accent-soft);
+      color: var(--platform-accent);
+      border-color: rgba(139, 124, 244, 0.22);
+    }
+
+    /* Artist discovery grid */
+    .discover-grid {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+      padding: 0 var(--sp-5) var(--sp-4);
+    }
+
+    .artist-card {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      padding: var(--sp-3) var(--sp-4);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--r-md);
+      transition: border-color var(--dur-fast) var(--ease-standard),
+                  transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .artist-card:active { transform: scale(0.98); }
+
+    /* Accent strip on left */
+    .artist-card__accent-strip {
+      width: 3px;
+      border-radius: var(--r-pill);
+      align-self: stretch;
+      flex-shrink: 0;
+      min-height: 48px;
+    }
+
+    .artist-card__avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: rgba(0,0,0,0.7);
+      flex-shrink: 0;
+    }
+
+    .artist-card__info { flex: 1; min-width: 0; }
+
+    .artist-card__name {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 2px;
+    }
+
+    .artist-card__meta {
+      display: flex;
+      gap: var(--sp-3);
+      align-items: center;
+    }
+
+    .artist-card__genre {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+    }
+
+    .artist-card__followers {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+    }
+
+    /* Follow button */
+    .follow-btn {
+      padding: 7px 14px;
+      border-radius: var(--r-pill);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--platform-accent);
+      border: 1px solid rgba(139, 124, 244, 0.35);
+      background: var(--platform-accent-soft);
+      flex-shrink: 0;
+      transition: all var(--dur-fast) var(--ease-standard);
+      white-space: nowrap;
+    }
+
+    .follow-btn:hover {
+      background: rgba(139, 124, 244, 0.20);
+    }
+
+    .follow-btn.following {
+      color: var(--color-text-3);
+      border-color: var(--color-border);
+      background: transparent;
+    }
+
+    /* Discover section label */
+    .discover-label {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-3);
+      padding: var(--sp-4) var(--sp-5) var(--sp-2);
+    }
+
+    /* === NEAR ME VIEW ========================================= */
+    .near-header {
+      padding: var(--sp-4) var(--sp-5) var(--sp-2);
+    }
+
+    .near-location {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      margin-bottom: var(--sp-1);
+    }
+
+    .near-location__dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--platform-accent);
+      flex-shrink: 0;
+    }
+
+    .near-location__edit {
+      margin-left: auto;
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .show-items { display: flex; flex-direction: column; gap: var(--sp-2); padding: 0 var(--sp-5) var(--sp-4); }
+
+    .show-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      padding: var(--sp-3) var(--sp-4);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: border-color var(--dur-fast) var(--ease-standard),
+                  transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .show-item:active { transform: scale(0.98); }
+
+    .show-item__date-block {
+      width: 42px;
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .show-item__day {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1;
+    }
+
+    .show-item__month {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .show-item__info { flex: 1; min-width: 0; }
+
+    .show-item__artist {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 2px;
+    }
+
+    .show-item__venue {
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .show-item__city {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+      margin-top: 2px;
+    }
+
+    .show-item__following-badge {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--platform-accent);
+      background: var(--platform-accent-soft);
+      border: 1px solid rgba(139,124,244,0.20);
+      border-radius: var(--r-pill);
+      padding: 3px 8px;
+      flex-shrink: 0;
+      letter-spacing: 0.03em;
+    }
+
+    .ticket-btn {
+      padding: 7px 14px;
+      border-radius: var(--r-pill);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text);
+      border: 1px solid var(--color-border-2);
+      background: rgba(255,255,255,0.04);
+      flex-shrink: 0;
+      transition: all var(--dur-fast) var(--ease-standard);
+      white-space: nowrap;
+    }
+
+    .ticket-btn:hover { background: rgba(255,255,255,0.08); }
+
+    /* Show section date label */
+    .shows-date-group { padding: var(--sp-2) var(--sp-5) var(--sp-2); }
+    .shows-date-group-label {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-3);
+      margin-bottom: var(--sp-2);
+    }
+
+    /* === BOTTOM TAB BAR ======================================= */
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(390px, 100vw);
+      display: flex;
+      align-items: stretch;
+      border-top: 1px solid var(--color-border);
+      background: rgba(13, 14, 26, 0.92);
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      padding-bottom: env(safe-area-inset-bottom);
+      z-index: 100;
+    }
+
+    .tb-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0 12px;
+      gap: 4px;
+      color: var(--color-text-3);
+      transition: color var(--dur-fast) var(--ease-standard);
+    }
+
+    .tb-tab.active { color: var(--platform-accent); }
+
+    .tb-tab svg {
+      width: 22px; height: 22px;
+      stroke-width: 1.75;
+    }
+
+    .tb-tab__label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    /* === FOCUS RINGS ========================================== */
+    :focus-visible {
+      outline: 2px solid rgba(139, 124, 244, 0.75);
+      outline-offset: 3px;
+      border-radius: var(--r-sm);
+    }
+
+    .ctab:focus-visible,
+    .filter-pill:focus-visible,
+    .follow-btn:focus-visible,
+    .ticket-btn:focus-visible { border-radius: var(--r-pill); }
+
+    /* === BLOOM ANIMATION ====================================== */
+    @keyframes bloom-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .feed-item, .artist-card, .show-item {
+      animation: bloom-in var(--dur-mid) var(--ease-decel) both;
+    }
+
+    /* stagger applied inline */
+
+    /* === REDUCED MOTION ======================================= */
+    @media (prefers-reduced-motion: reduce) {
+      .feed-item, .artist-card, .show-item { animation: none; }
+      .tab-bar { backdrop-filter: none; background: var(--color-bg); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- Status bar (demo) -->
+  <div class="status-bar" aria-hidden="true">
+    <span>9:41</span>
+    <div class="status-icons">
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
+        <rect x="0" y="4" width="3" height="8" rx="1" opacity="0.4"/>
+        <rect x="4" y="2.5" width="3" height="9.5" rx="1" opacity="0.6"/>
+        <rect x="8" y="0.5" width="3" height="11.5" rx="1"/>
+        <rect x="12" y="0" width="3" height="12" rx="1"/>
+      </svg>
+      <svg width="15" height="12" viewBox="0 0 15 12" fill="currentColor">
+        <path d="M7.5 2.5C9.5 2.5 11.3 3.3 12.5 4.7L14 3.1C12.4 1.2 10.1 0 7.5 0C4.9 0 2.6 1.2 1 3.1L2.5 4.7C3.7 3.3 5.5 2.5 7.5 2.5Z" opacity="0.4"/>
+        <path d="M7.5 5.5C8.8 5.5 10 6 10.8 6.9L12.3 5.3C11.1 4 9.4 3.2 7.5 3.2C5.6 3.2 3.9 4 2.7 5.3L4.2 6.9C5 6 6.2 5.5 7.5 5.5Z" opacity="0.7"/>
+        <circle cx="7.5" cy="9.5" r="2"/>
+      </svg>
+      <span style="font-size:12px;font-weight:600;letter-spacing:-0.02em;">100%</span>
+    </div>
+  </div>
+
+  <!-- Page header -->
+  <header class="page-header">
+    <span class="page-header__wordmark">ABLE</span>
+    <div class="page-header__actions">
+      <div class="notif-wrap">
+        <button class="icon-btn" aria-label="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="notif-pip" aria-hidden="true"></span>
+        </button>
+      </div>
+      <button class="icon-btn" aria-label="Your profile">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Content tabs -->
+  <div class="content-tabs" role="tablist" aria-label="Feed views">
+    <button class="ctab active" role="tab" aria-selected="true" data-tab="following" id="tab-following" aria-controls="view-following">Following</button>
+    <button class="ctab" role="tab" aria-selected="false" data-tab="discover" id="tab-discover" aria-controls="view-discover">Discover</button>
+    <button class="ctab" role="tab" aria-selected="false" data-tab="near" id="tab-near" aria-controls="view-near">Near me</button>
+  </div>
+
+  <!-- Scroll area -->
+  <div class="scroll-area">
+
+    <!-- === FOLLOWING VIEW ==================================== -->
+    <div class="view active" id="view-following" role="tabpanel" aria-labelledby="tab-following">
+      <div class="feed-section feed-section--today">
+        <h2 class="feed-date-label">Today</h2>
+        <div class="feed-items" id="feed-today"></div>
+      </div>
+      <div class="feed-section" id="section-this-week" style="display:none">
+        <h2 class="feed-date-label">This week</h2>
+        <div class="feed-items" id="feed-week"></div>
+      </div>
+      <div class="caught-up" id="caught-up" style="display:none">
+        <p class="caught-up__text">
+          <span class="caught-up__line" aria-hidden="true"></span>
+          You're all caught up
+          <span class="caught-up__line" aria-hidden="true"></span>
+        </p>
+        <p class="caught-up__sub">Updated moments ago</p>
+      </div>
+      <div class="empty-state" id="empty-following" style="display:none">
+        <div class="empty-state__emoji">🎵</div>
+        <p class="empty-state__title">No one in your feed yet</p>
+        <p class="empty-state__body">Follow artists from their ABLE page and you'll see their releases, shows, and drops right here.</p>
+      </div>
+    </div>
+
+    <!-- === DISCOVER VIEW ==================================== -->
+    <div class="view" id="view-discover" role="tabpanel" aria-labelledby="tab-discover">
+      <div class="discover-filters" role="group" aria-label="Discovery filters">
+        <button class="filter-pill active" data-filter="emerging">Emerging</button>
+        <button class="filter-pill" data-filter="genre">By genre</button>
+        <button class="filter-pill" data-filter="new-drops">New drops</button>
+      </div>
+
+      <div id="discover-content"></div>
+    </div>
+
+    <!-- === NEAR ME VIEW ===================================== -->
+    <div class="view" id="view-near" role="tabpanel" aria-labelledby="tab-near">
+      <div class="near-header">
+        <div class="near-location">
+          <span class="near-location__dot" aria-hidden="true"></span>
+          <span>London, UK</span>
+          <button class="near-location__edit" aria-label="Change location">Change</button>
+        </div>
+      </div>
+      <div id="near-content"></div>
+    </div>
+
+  </div><!-- /scroll-area -->
+
+  <!-- Bottom tab bar -->
+  <nav class="tab-bar" aria-label="Main navigation">
+    <button class="tb-tab active" data-panel="feed" aria-label="Feed">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      </svg>
+      <span class="tb-tab__label">Feed</span>
+    </button>
+    <button class="tb-tab" data-panel="artists" aria-label="Artists you follow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+        <path d="M16 11l2 2 4-4" stroke-width="2"/>
+      </svg>
+      <span class="tb-tab__label">Artists</span>
+    </button>
+    <button class="tb-tab" data-panel="profile" aria-label="Your profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 21v-1a8 8 0 0 1 16 0v1"/>
+      </svg>
+      <span class="tb-tab__label">Me</span>
+    </button>
+  </nav>
+
+</div><!-- /shell -->
+
+<script>
+  /* ============================================================
+     ABLE Fan Feed — fan.html
+     localStorage key: able_fan_following = [{id, name, accent, genre, ...}]
+     For demo: uses hardcoded DEMO data if localStorage is empty.
+     ============================================================ */
+
+  // === DEMO DATA ============================================
+
+  const DEMO_FOLLOWED = [
+    { id: 'nova-reign',  name: 'Nova Reign',  genre: 'Electronic',   accent: '#06b6d4' },
+    { id: 'luna-waves',  name: 'Luna Waves',  genre: 'R&B / Soul',   accent: '#e06b7a' },
+    { id: 'drift',       name: 'Drift',       genre: 'Hip Hop',      accent: '#f4b942' },
+    { id: 'sable',       name: 'Sable',       genre: 'Indie / Alt',  accent: '#7ec88a' },
+  ]
+
+  const now = Date.now()
+  const h = 3600000
+
+  const DEMO_FEED = [
+    { type: 'release', artistId: 'nova-reign', title: 'Fracture', sub: 'New single',        age: now - 2*h     },
+    { type: 'event',   artistId: 'luna-waves', title: 'Jazz Cafe · London', sub: 'Tonight · Doors 8pm', age: now - 5*h },
+    { type: 'release', artistId: 'drift',      title: 'Hollow Ground',  sub: 'New EP · 6 tracks', age: now - 28*h  },
+    { type: 'merch',   artistId: 'sable',      title: 'Silhouette tee', sub: 'Limited run · £32', age: now - 48*h },
+    { type: 'release', artistId: 'nova-reign', title: 'Archive Vol. 1', sub: 'Album · 12 tracks', age: now - 96*h  },
+    { type: 'snap',    artistId: 'luna-waves', title: 'Studio session update', sub: 'Drop from the artist', age: now - 120*h },
+  ]
+
+  const DEMO_EMERGING = [
+    { id: 'margot-veil',     name: 'Margot Veil',    genre: 'Indie / Alt',    accent: '#7ec88a', followers: '1.2k', location: 'Glasgow' },
+    { id: 'kreyz',           name: 'KREYZ',          genre: 'Electronic',     accent: '#06b6d4', followers: '843',  location: 'Berlin' },
+    { id: 'tendai',          name: 'Tendai',         genre: 'R&B / Soul',     accent: '#e06b7a', followers: '2.1k', location: 'London' },
+    { id: 'fools-gold',      name: 'The Fools Gold', genre: 'Acoustic / Folk',accent: '#d4a96a', followers: '677',  location: 'Nashville' },
+    { id: 'caspar-black',    name: 'Caspar Black',   genre: 'Rock / Metal',   accent: '#e05242', followers: '1.8k', location: 'Manchester' },
+  ]
+
+  const DEMO_NEAR = [
+    { artistId: 'nova-reign',  artist: 'Nova Reign',  venue: 'Fabric',      city: 'London',  day: '15', month: 'Mar', time: '11pm', followed: true,  accent: '#06b6d4' },
+    { artistId: 'margot-veil', artist: 'Margot Veil', venue: 'The Lexington', city: 'London', day: '19', month: 'Mar', time: '8pm',  followed: false, accent: '#7ec88a' },
+    { artistId: 'luna-waves',  artist: 'Luna Waves',  venue: 'Jazz Cafe',   city: 'London',  day: '22', month: 'Mar', time: '9pm',  followed: true,  accent: '#e06b7a' },
+    { artistId: 'tendai',      artist: 'Tendai',      venue: 'Village Underground', city: 'London', day: '28', month: 'Mar', time: '9pm', followed: false, accent: '#e06b7a' },
+  ]
+
+  // === UTILITIES ============================================
+
+  function getInitials(name) {
+    if (!name) return '?'
+    const p = name.trim().split(/\s+/)
+    if (p.length === 1) return p[0].slice(0, 2).toUpperCase()
+    return (p[0][0] + p[1][0]).toUpperCase()
+  }
+
+  function hexToRgb(hex) {
+    const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    return r ? `${parseInt(r[1],16)},${parseInt(r[2],16)},${parseInt(r[3],16)}` : '255,255,255'
+  }
+
+  function formatAge(ts) {
+    const diff = Date.now() - ts
+    const m = Math.floor(diff / 60000)
+    const h = Math.floor(diff / 3600000)
+    const d = Math.floor(diff / 86400000)
+    if (m < 60) return `${m}m`
+    if (h < 24) return `${h}h`
+    return `${d}d`
+  }
+
+  function typeBadgeClass(type) {
+    const map = { release: 'type-badge--release', event: 'type-badge--event', merch: 'type-badge--merch', snap: 'type-badge--snap' }
+    return map[type] || 'type-badge--snap'
+  }
+
+  function typeBadgeLabel(type) {
+    const map = { release: 'Release', event: 'Show', merch: 'Merch', snap: 'Update' }
+    return map[type] || 'Update'
+  }
+
+  // === LOAD DATA ============================================
+
+  function getFollowed() {
+    try {
+      const stored = JSON.parse(localStorage.getItem('able_fan_following') || '[]')
+      return stored.length ? stored : DEMO_FOLLOWED
+    } catch (_) { return DEMO_FOLLOWED }
+  }
+
+  function getFeed() {
+    try {
+      const stored = JSON.parse(localStorage.getItem('able_fan_feed') || '[]')
+      return stored.length ? stored : DEMO_FEED
+    } catch (_) { return DEMO_FEED }
+  }
+
+  function getFollowedIds() {
+    return getFollowed().map(a => a.id)
+  }
+
+  // === RENDER FOLLOWING VIEW ================================
+
+  function renderFollowing() {
+    const followed = getFollowed()
+    const followedMap = {}
+    followed.forEach(a => { followedMap[a.id] = a })
+
+    const feed = getFeed()
+    const ONE_DAY = 86400000
+    const SEVEN_DAYS = 7 * ONE_DAY
+
+    const todayItems  = feed.filter(i => (Date.now() - i.age) < ONE_DAY)
+    const weekItems   = feed.filter(i => {
+      const age = Date.now() - i.age
+      return age >= ONE_DAY && age < SEVEN_DAYS
+    })
+
+    const todayEl  = document.getElementById('feed-today')
+    const weekEl   = document.getElementById('feed-week')
+    const weekSec  = document.getElementById('section-this-week')
+    const caughtUp = document.getElementById('caught-up')
+    const emptyEl  = document.getElementById('empty-following')
+
+    if (!followed.length) {
+      emptyEl.style.display = 'block'
+      return
+    }
+
+    function buildItem(item, idx) {
+      const artist = followedMap[item.artistId] || { name: item.artistId, accent: '#555', genre: '' }
+      const rgb    = hexToRgb(artist.accent)
+
+      const el = document.createElement('div')
+      el.className = 'feed-item pressable'
+      el.style.animationDelay = `${idx * 35}ms`
+      el.setAttribute('role', 'article')
+      el.setAttribute('aria-label', `${artist.name} — ${item.title}, ${typeBadgeLabel(item.type)}`)
+      el.innerHTML = `
+        <div class="feed-item__art" style="background:rgba(${rgb},0.18);color:rgba(${rgb},1)">
+          ${getInitials(artist.name)}
+        </div>
+        <div class="feed-item__info">
+          <p class="feed-item__artist">${escHtml(artist.name)}</p>
+          <p class="feed-item__title">${escHtml(item.title)}</p>
+          <p class="feed-item__sub">${escHtml(item.sub)}</p>
+        </div>
+        <div class="feed-item__meta">
+          <span class="type-badge ${typeBadgeClass(item.type)}" aria-label="${typeBadgeLabel(item.type)}">${typeBadgeLabel(item.type)}</span>
+          <span class="feed-item__time" aria-hidden="true">${formatAge(item.age)}</span>
+        </div>
+      `
+      el.addEventListener('click', () => {
+        if (item.url) window.open(item.url, '_blank', 'noopener')
+      })
+      return el
+    }
+
+    todayItems.forEach((item, i) => todayEl.appendChild(buildItem(item, i)))
+    if (!todayItems.length) {
+      todayEl.innerHTML = `<p style="font-size:var(--text-sm);color:var(--color-text-3);padding:var(--sp-2) 0">Nothing new today.</p>`
+    }
+
+    if (weekItems.length) {
+      weekSec.style.display = 'block'
+      weekItems.forEach((item, i) => weekEl.appendChild(buildItem(item, i + todayItems.length)))
+    }
+
+    if (feed.length) {
+      caughtUp.style.display = 'block'
+    } else {
+      emptyEl.style.display = 'block'
+    }
+  }
+
+  // === RENDER DISCOVER VIEW =================================
+
+  let activeFilter = 'emerging'
+  let followedIds  = []
+
+  function renderDiscover(filter) {
+    activeFilter = filter || activeFilter
+    followedIds  = getFollowedIds()
+
+    const container = document.getElementById('discover-content')
+    container.innerHTML = ''
+
+    if (activeFilter === 'emerging') {
+      renderEmerging(container)
+    } else if (activeFilter === 'genre') {
+      renderByGenre(container)
+    } else if (activeFilter === 'new-drops') {
+      renderNewDrops(container)
+    }
+  }
+
+  function buildArtistCard(artist, idx) {
+    const rgb    = hexToRgb(artist.accent)
+    const isF    = followedIds.includes(artist.id)
+
+    const el = document.createElement('div')
+    el.className = 'artist-card'
+    el.style.animationDelay = `${idx * 40}ms`
+    el.setAttribute('role', 'article')
+    el.innerHTML = `
+      <div class="artist-card__accent-strip" style="background:${artist.accent}"></div>
+      <div class="artist-card__avatar" style="background:rgba(${rgb},0.18);color:rgba(${rgb},1)">
+        ${getInitials(artist.name)}
+      </div>
+      <div class="artist-card__info">
+        <p class="artist-card__name">${escHtml(artist.name)}</p>
+        <div class="artist-card__meta">
+          <span class="artist-card__genre">${escHtml(artist.genre)}</span>
+          <span class="artist-card__followers">${escHtml(artist.followers)} fans</span>
+        </div>
+      </div>
+      <button class="follow-btn ${isF ? 'following' : ''}" data-artist-id="${escHtml(artist.id)}"
+        aria-pressed="${isF}" aria-label="${isF ? 'Following ' : 'Follow '}${escHtml(artist.name)}">
+        ${isF ? 'Following' : 'Follow'}
+      </button>
+    `
+
+    el.querySelector('.follow-btn').addEventListener('click', e => {
+      e.stopPropagation()
+      toggleFollow(artist, e.currentTarget)
+    })
+
+    return el
+  }
+
+  function renderEmerging(container) {
+    const label = document.createElement('p')
+    label.className = 'discover-label'
+    label.textContent = 'Emerging artists'
+    container.appendChild(label)
+
+    const grid = document.createElement('div')
+    grid.className = 'discover-grid'
+    DEMO_EMERGING.forEach((a, i) => grid.appendChild(buildArtistCard(a, i)))
+    container.appendChild(grid)
+  }
+
+  const GENRES = ['Electronic', 'Hip Hop', 'R&B / Soul', 'Indie / Alt', 'Pop', 'Rock / Metal', 'Acoustic / Folk']
+
+  function renderByGenre(container) {
+    const pillRow = document.createElement('div')
+    pillRow.className = 'discover-filters'
+    pillRow.style.paddingTop = '0'
+    pillRow.setAttribute('role', 'group')
+    pillRow.setAttribute('aria-label', 'Genre filter')
+
+    let selectedGenre = GENRES[0]
+
+    function renderGenreGrid(genre) {
+      let grid = document.getElementById('genre-grid')
+      if (grid) grid.remove()
+
+      const label = document.getElementById('genre-label')
+      if (label) label.textContent = genre
+
+      grid = document.createElement('div')
+      grid.id = 'genre-grid'
+      grid.className = 'discover-grid'
+
+      const artists = DEMO_EMERGING.filter(a => a.genre === genre)
+      if (!artists.length) {
+        grid.innerHTML = `<p style="font-size:var(--text-sm);color:var(--color-text-3);padding:var(--sp-2) var(--sp-5)">No artists found for this genre yet.</p>`
+      } else {
+        artists.forEach((a, i) => grid.appendChild(buildArtistCard(a, i)))
+      }
+      container.appendChild(grid)
+    }
+
+    GENRES.forEach(g => {
+      const pill = document.createElement('button')
+      pill.className = 'filter-pill' + (g === selectedGenre ? ' active' : '')
+      pill.textContent = g
+      pill.addEventListener('click', () => {
+        selectedGenre = g
+        pillRow.querySelectorAll('.filter-pill').forEach(p => {
+          p.classList.toggle('active', p.textContent === g)
+        })
+        renderGenreGrid(g)
+      })
+      pillRow.appendChild(pill)
+    })
+
+    container.appendChild(pillRow)
+
+    const lbl = document.createElement('p')
+    lbl.id = 'genre-label'
+    lbl.className = 'discover-label'
+    lbl.textContent = selectedGenre
+    container.appendChild(lbl)
+
+    renderGenreGrid(selectedGenre)
+  }
+
+  function renderNewDrops(container) {
+    const label = document.createElement('p')
+    label.className = 'discover-label'
+    label.textContent = 'New this week'
+    container.appendChild(label)
+
+    // New drops = recent releases from non-followed artists
+    const items = [
+      { type: 'release', artist: 'Margot Veil', accent: '#7ec88a', title: 'Before the Rain', sub: 'New single', age: now - 3*h },
+      { type: 'release', artist: 'KREYZ',       accent: '#06b6d4', title: 'Operator',        sub: 'EP · 5 tracks', age: now - 18*h },
+      { type: 'release', artist: 'Tendai',      accent: '#e06b7a', title: 'Soft Hours',      sub: 'New single', age: now - 30*h },
+      { type: 'release', artist: 'Caspar Black', accent: '#e05242', title: 'Glass Jaw',      sub: 'Album · 9 tracks', age: now - 72*h },
+    ]
+
+    const list = document.createElement('div')
+    list.className = 'feed-items'
+    list.style.padding = '0 var(--sp-5) var(--sp-4)'
+
+    items.forEach((item, i) => {
+      const rgb = hexToRgb(item.accent)
+      const el = document.createElement('div')
+      el.className = 'feed-item'
+      el.style.animationDelay = `${i * 35}ms`
+      el.innerHTML = `
+        <div class="feed-item__art" style="background:rgba(${rgb},0.18);color:rgba(${rgb},1)">
+          ${getInitials(item.artist)}
+        </div>
+        <div class="feed-item__info">
+          <p class="feed-item__artist">${escHtml(item.artist)}</p>
+          <p class="feed-item__title">${escHtml(item.title)}</p>
+          <p class="feed-item__sub">${escHtml(item.sub)}</p>
+        </div>
+        <div class="feed-item__meta">
+          <span class="type-badge type-badge--release">Release</span>
+          <span class="feed-item__time">${formatAge(item.age)}</span>
+        </div>
+      `
+      list.appendChild(el)
+    })
+
+    container.appendChild(list)
+  }
+
+  // === NEAR ME ==============================================
+
+  function renderNearMe() {
+    const container = document.getElementById('near-content')
+    const followedIds = getFollowedIds()
+
+    const thisWeek   = DEMO_NEAR.filter(s => parseInt(s.day) <= 20)
+    const laterItems = DEMO_NEAR.filter(s => parseInt(s.day) > 20)
+
+    function buildGroup(label, items) {
+      if (!items.length) return
+
+      const group = document.createElement('div')
+      group.className = 'shows-date-group'
+      group.innerHTML = `<p class="shows-date-group-label">${label}</p>`
+
+      const list = document.createElement('div')
+      list.className = 'show-items'
+
+      items.forEach((show, i) => {
+        const isFollowed = followedIds.includes(show.artistId) || show.followed
+        const el = document.createElement('div')
+        el.className = 'show-item'
+        el.style.animationDelay = `${i * 40}ms`
+        el.innerHTML = `
+          <div class="show-item__date-block" aria-hidden="true">
+            <div class="show-item__day">${escHtml(show.day)}</div>
+            <div class="show-item__month">${escHtml(show.month)}</div>
+          </div>
+          <div class="show-item__info">
+            <p class="show-item__artist">${escHtml(show.artist)}</p>
+            <p class="show-item__venue">${escHtml(show.venue)}</p>
+            <p class="show-item__city">${escHtml(show.city)} · ${escHtml(show.time)}</p>
+          </div>
+          ${isFollowed ? `<span class="show-item__following-badge">Following</span>` : `<button class="ticket-btn">Tickets</button>`}
+        `
+        list.appendChild(el)
+      })
+
+      group.appendChild(list)
+      container.appendChild(group)
+    }
+
+    buildGroup('This week', thisWeek)
+    buildGroup('Coming up', laterItems)
+
+    if (!DEMO_NEAR.length) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state__emoji">📍</div>
+          <p class="empty-state__title">No shows nearby</p>
+          <p class="empty-state__body">We'll show you shows from artists near your location as they get added.</p>
+        </div>
+      `
+    }
+  }
+
+  // === FOLLOW TOGGLE ========================================
+
+  function toggleFollow(artist, btn) {
+    const ids = getFollowedIds()
+    const isNow = ids.includes(artist.id)
+
+    let followed = getFollowed()
+    if (isNow) {
+      followed = followed.filter(a => a.id !== artist.id)
+    } else {
+      followed.push(artist)
+    }
+
+    try {
+      localStorage.setItem('able_fan_following', JSON.stringify(followed))
+    } catch (_) {}
+
+    // Update button
+    const nowFollowed = !isNow
+    btn.classList.toggle('following', nowFollowed)
+    btn.setAttribute('aria-pressed', String(nowFollowed))
+    btn.textContent = nowFollowed ? 'Following' : 'Follow'
+    btn.setAttribute('aria-label', `${nowFollowed ? 'Following' : 'Follow'} ${artist.name}`)
+  }
+
+  // === SECURITY =============================================
+
+  function escHtml(s) {
+    if (!s && s !== 0) return ''
+    return String(s)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#x27;')
+  }
+
+  // === TAB SWITCHING ========================================
+
+  function initContentTabs() {
+    const tabs  = document.querySelectorAll('.ctab')
+    const views = document.querySelectorAll('.view')
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.tab
+
+        tabs.forEach(t => {
+          t.classList.toggle('active', t === tab)
+          t.setAttribute('aria-selected', String(t === tab))
+        })
+
+        views.forEach(v => {
+          v.classList.toggle('active', v.id === `view-${target}`)
+        })
+
+        // Lazy-render discover / near only when first activated
+        if (target === 'discover' && !document.getElementById('discover-content').dataset.rendered) {
+          document.getElementById('discover-content').dataset.rendered = '1'
+          renderDiscover('emerging')
+        }
+        if (target === 'near' && !document.getElementById('near-content').dataset.rendered) {
+          document.getElementById('near-content').dataset.rendered = '1'
+          renderNearMe()
+        }
+      })
+    })
+  }
+
+  function initDiscoverFilters() {
+    document.querySelector('.discover-filters').addEventListener('click', e => {
+      const pill = e.target.closest('.filter-pill')
+      if (!pill) return
+      document.querySelectorAll('#view-discover > .discover-filters .filter-pill').forEach(p => {
+        p.classList.toggle('active', p === pill)
+      })
+      renderDiscover(pill.dataset.filter)
+    })
+  }
+
+  // === INIT =================================================
+
+  function init() {
+    renderFollowing()
+    initContentTabs()
+    initDiscoverFilters()
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init)
+  } else {
+    init()
+  }
+</script>
+</body>
+</html>
