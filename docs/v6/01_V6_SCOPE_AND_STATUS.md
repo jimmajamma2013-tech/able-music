@@ -73,7 +73,8 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 | **Artist World Map** — landing demo state | Complete — `dp-wm` state in `landing.html` |
 | Professional ecosystem spec | Spec complete (`df492b6`) — implementation Phase 2 |
 | Showcase / Campaign Mode spec | Spec complete (`72f5d0d`) — implementation Phase 2 |
-| Showcase interaction layer spec | Spec complete — companion to showcase spec |
+| Showcase interaction layer spec | Spec complete (`0619801`) — companion to showcase spec |
+| **Close Circle** supporter system spec | Spec complete — implementation Phase 2 |
 | Live Moments / Streaming Moments spec | Spec complete (`8c18580`, `1def3b3`) — implementation Phase 2 |
 | Moment Engine unified spec | Spec complete (`b562ecb`) — canonical Moment object defined |
 | Supabase migration path | Planned — localStorage keys map 1:1 to table rows |
