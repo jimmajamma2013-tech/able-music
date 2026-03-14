@@ -165,6 +165,7 @@ body {
 }
 .field-input:focus { border-color:var(--acc); }
 .field-textarea { resize:vertical; min-height:72px; line-height:1.5; }
+.field-hint { font-size:11px; color:var(--t3); line-height:1.4; }
 
 /* ── EMBED PREVIEW ── */
 .embed-preview { margin-top:8px; border-radius:12px; overflow:hidden; }
@@ -1557,15 +1558,40 @@ body {
       <div class="page-title">Settings</div>
       <div class="page-sub">Page URL, privacy, and account.</div>
     </div>
+
     <div class="dash-card" style="max-width:480px;">
       <div class="dc-head"><div class="dc-title">Your ABLE URL</div></div>
       <div class="dc-body">
         <div class="field-row">
           <div class="field-label">Slug</div>
           <div style="display:flex;gap:8px;align-items:center;">
-            <span style="font-size:13px;color:var(--t3);">able.fm/</span>
-            <input class="field-input" type="text" placeholder="yourname" style="flex:1;">
+            <span style="font-size:13px;color:var(--t3);flex-shrink:0;">able.fm/</span>
+            <input class="field-input" type="text" id="settingsSlug" placeholder="yourname" style="flex:1;" oninput="saveSlug(this.value)" autocomplete="off" autocapitalize="none" spellcheck="false">
           </div>
+          <div class="field-hint" style="margin-top:4px;">Lowercase letters, numbers, and hyphens only. Changes take effect immediately.</div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
+          <div id="settingsUrlPreview" style="flex:1;font-size:12px;color:var(--t2);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">able.fm/yourname</div>
+          <button class="tb-btn tb-btn-ghost" onclick="copyPageUrl()" style="flex-shrink:0;gap:6px;" id="settingsCopyBtn">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M2 10V3a1 1 0 011-1h7"/></svg>
+            Copy
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-card" style="max-width:480px;margin-top:16px;">
+      <div class="dc-head"><div class="dc-title">Account</div></div>
+      <div class="dc-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
+          <div>
+            <div style="font-size:13px;font-weight:600;" id="settingsAccountName">—</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:2px;">Free plan · <button onclick="alert('Upgrade coming soon — backend in Phase 2.')" style="background:none;border:none;padding:0;color:var(--acc);font-size:11px;cursor:pointer;font-family:var(--font);">Upgrade to Artist →</button></div>
+          </div>
+          <span class="tier-badge" style="font-size:10px;">✦ Free</span>
+        </div>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+          <button onclick="if(confirm('Clear all local data and restart? This cannot be undone.')){localStorage.clear();location.href='start.html';}" style="background:none;border:none;padding:0;color:rgba(255,80,80,.6);font-size:12px;cursor:pointer;font-family:var(--font);">Reset account data…</button>
         </div>
       </div>
     </div>
@@ -2589,9 +2615,17 @@ window.addEventListener('DOMContentLoaded', () => {
   const bio    = v3data.bio    || wizData.bio     || '';
   const genre  = v3data.genres?.[0] || wizData.genre || '';
 
+  const derivedHandle = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const handle = v3data.handle || derivedHandle;
+
   document.getElementById('sbAv').textContent = name.charAt(0).toUpperCase();
   document.getElementById('sbName').textContent = name;
-  document.getElementById('sbUrl').textContent = `able.fm/${name.toLowerCase().replace(/[^a-z0-9]+/g,'-')}`;
+  document.getElementById('sbUrl').textContent = `able.fm/${handle}`;
+
+  // Settings page
+  if (document.getElementById('settingsSlug')) document.getElementById('settingsSlug').value = handle;
+  updateSlugPreview(handle);
+  if (document.getElementById('settingsAccountName')) document.getElementById('settingsAccountName').textContent = name;
 
   if (document.getElementById('adminName')) document.getElementById('adminName').value = name;
   if (document.getElementById('adminBio') && bio) document.getElementById('adminBio').value = bio;
@@ -2655,11 +2689,38 @@ window.addEventListener('DOMContentLoaded', () => {
   initIdentityCard();
 });
 
+/* ── SETTINGS — slug ── */
+function saveSlug(raw) {
+  const slug = raw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const data = safeLS(V3_KEY, {});
+  setLS(V3_KEY, { ...data, handle: slug });
+  updateSlugPreview(slug);
+  // Keep sidebar URL in sync
+  const sbUrl = document.getElementById('sbUrl');
+  if (sbUrl) sbUrl.textContent = `able.fm/${slug || 'yourname'}`;
+}
+function updateSlugPreview(slug) {
+  const el = document.getElementById('settingsUrlPreview');
+  if (el) el.textContent = `able.fm/${slug || 'yourname'}`;
+}
+function copyPageUrl() {
+  const data = safeLS(V3_KEY, {});
+  const slug = data.handle || (data.name || 'artist').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const url = `https://able.fm/${slug}`;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('settingsCopyBtn');
+    if (!btn) return;
+    const orig = btn.innerHTML;
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.innerHTML = orig; }, 1800);
+  });
+}
+
 /* ── QR CODE ── */
 function renderQR() {
   const data = safeLS(V3_KEY, {});
-  const name = data.name || 'artist';
-  const handle = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const derivedHandle = (data.name || 'artist').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const handle = data.handle || derivedHandle;
   const url = `https://able.fm/${handle}?src=qr`;
   const accent = data.accent || getComputedStyle(document.documentElement).getPropertyValue('--acc').trim() || '#c9a84c';
   const canvas = document.getElementById('qrCanvas');
