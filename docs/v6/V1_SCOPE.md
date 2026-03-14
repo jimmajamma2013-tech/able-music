@@ -33,6 +33,12 @@ V1 is not a demo. V1 is not a beta. V1 is a real product with real limits — an
 | Close Circle — surface layer (hero entry, join sheet, lock-ring dots) | Complete | `37a6073` |
 | Guided Identity — `data-feel` CSS system + `applyIdentity()` | Complete | `47beb81` |
 | Admin theme persistence | Complete | `7d2acd1` |
+| Hierarchy refinement — `computeSectionOrder()` + `applySectionOrder()` | Complete | `a0620b4` |
+| Contextual email capture copy variants (5 states) | Complete | `d733a15` |
+| Inline credits on release cards | Complete | (existing) |
+| Hero top card credit line (`topCard.creditLine`) | Complete | `17fc6f9` |
+| Admin section visibility toggles | Complete | `f865865` |
+| Extended gig mode — venue photo, set time, reframed capture | Complete | `0f396b3` |
 
 ---
 
