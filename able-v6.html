@@ -5795,11 +5795,26 @@
     // === VIEW TRACKING ===========================================
 
     function trackView() {
+      const source = getUtmSource()
       try {
         const views = safeLS('able_views', [])
-        views.push({ ts: Date.now(), source: getUtmSource() })
+        views.push({ ts: Date.now(), source })
         if (views.length > 500) views.splice(0, views.length - 500)
         localStorage.setItem('able_views', JSON.stringify(views))
+      } catch (_) {}
+      sbSyncView(source) // async fire-and-forget
+    }
+
+    async function sbSyncView(source) {
+      if (!sb) return
+      try {
+        await sb.from('views').insert({
+          id:         crypto.randomUUID(),
+          profile_id: getArtistId(),
+          ts:         Date.now(),
+          source,
+          user_agent: navigator.userAgent || null,
+        })
       } catch (_) {}
     }
 
@@ -6673,9 +6688,12 @@
       const footerAble = document.getElementById('footer-able')
       const footerExport = document.getElementById('footer-export')
 
-      // "Made with ABLE" — free tier only
+      // "Made with ABLE" — free tier only, with referral tracking
       if (footerAble) {
         footerAble.hidden = (profile.tier && profile.tier !== 'free')
+        // Referral link: ?ref=artist-handle so we know which profile drove the signup
+        const handle = profile.handle || getArtistId().slice(0, 8)
+        footerAble.href = `https://ablemusic.co?ref=${encodeURIComponent(handle)}`
       }
 
       // Fan list export — show if any fans captured
