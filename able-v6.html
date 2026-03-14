@@ -7424,6 +7424,7 @@
           renderRecommendations(fresh)
           renderFooter(fresh)
           injectSEO(fresh)
+          applySectionOrder(fresh)
           // Re-apply gig state section order
           if (computeState(fresh) === 'gig') {
             const listenEl = document.getElementById('listen-section')
