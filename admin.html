@@ -3228,7 +3228,7 @@ function ywRenderMomentList(profile) {
     return '<div class="yw-moment-row">'
       + '<div class="yw-dot" style="background:' + color + '"></div>'
       + '<div class="yw-moment-date">' + dateStr + '</div>'
-      + '<div class="yw-moment-title">' + title.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>'
+      + '<div class="yw-moment-title">' + escHtml(title) + '</div>'
       + accessTag
       + (isFeatured ? '<div class="yw-moment-featured">● In hero</div>' : '')
       + (m.isAuto ? '' : '<button class="snap-btn del" style="margin-left:8px;flex-shrink:0;font-size:11px;" onclick="removeMoment(\'' + m.id + '\')" title="Remove">×</button>')
