@@ -1,3 +1,7 @@
+> **REFERENCE** — This file informs product, design, and build thinking but does not override the v6 authority chain. See `docs/v6/00_AUTHORITY_ORDER.md` for precedence rules.
+
+---
+
 # ABLE — Product Hierarchy, Credibility & Light Growth
 
 ---

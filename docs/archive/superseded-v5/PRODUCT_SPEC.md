@@ -1,3 +1,7 @@
+> **ARCHIVAL / SUPERSEDED** — This file is retained for historical context only. Do not use as active build authority. See `docs/v6/core/V6_BUILD_AUTHORITY.md` for current decisions.
+
+---
+
 # ABLE — Product Specification
 **Version:** 0.2 · **Last updated:** 2026-02-22
 **Canonical file:** `able-merged.html` (single-file, no build pipeline)

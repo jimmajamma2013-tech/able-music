@@ -1,3 +1,7 @@
+> **ARCHIVAL / SUPERSEDED** — This file is retained for historical context only. Do not use as active build authority. See `docs/v6/core/V6_BUILD_AUTHORITY.md` for current decisions.
+
+---
+
 # ABLE v3 — Refined Design Specification
 **Date:** 2026-03-12
 **Status:** Active — supersedes 2026-03-10-able-v3-design.md for product logic and visual decisions

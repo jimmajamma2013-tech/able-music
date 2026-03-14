@@ -1,3 +1,7 @@
+> **ARCHIVAL / SUPERSEDED** — This file is retained for historical context only. Do not use as active build authority. See `docs/v6/core/V6_BUILD_AUTHORITY.md` for current decisions.
+
+---
+
 # ABLE — QA Smoke Test Checklist
 **Run after every prompt / code change. Target: 5–10 minutes.**
 Check each item. Mark ✅ pass or ❌ fail with a note.

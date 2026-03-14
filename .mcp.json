@@ -6,8 +6,7 @@
         "@playwright/mcp@0.0.68",
         "--allow-unrestricted-file-access",
         "--browser",
-        "chromium",
-        "--headed"
+        "chromium"
       ]
     }
   }

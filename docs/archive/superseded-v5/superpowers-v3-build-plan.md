@@ -1,3 +1,7 @@
+> **ARCHIVAL / SUPERSEDED** — This file is retained for historical context only. Do not use as active build authority. See `docs/v6/core/V6_BUILD_AUTHORITY.md` for current decisions.
+
+---
+
 # ABLE v3 Implementation Plan
 
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.

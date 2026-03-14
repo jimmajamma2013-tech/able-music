@@ -1,6 +1,18 @@
 # ABLE v5 — Master Build Prompt
-**Use this prompt to start a new Claude Code session for the v5 redesign.**
-**Drop it in as-is. Do not summarise it. Do not skip phases.**
+
+> **Build doc — rank 3 in authority chain.** Where this document conflicts with `V6_BUILD_AUTHORITY.md` (rank 1) or `V5_RESEARCH_ADDENDUM.md` (rank 2), those documents win. Known divergences in this doc that will cause build errors if followed uncorrected:
+>
+> - **Target file:** This doc says `able-v5.html` throughout. Build target is `able-v6.html`.
+> - **Electronic vibe r-mult:** CSS block in Section 1.3 shows `--r-mult: 0.8`. Correct value is **0.6** (V6_BUILD_AUTHORITY.md §2.10 and §3.1).
+> - **Admin model:** Section 11 brainstorm table says "Admin and profile same file? | Separate." This decision was reversed in V6. The admin is a **slide-up panel on the profile** (`able-v6.html`), not a separate page. See V6_BUILD_AUTHORITY.md §6.4.
+> - **Spotify monthly listeners:** Section 10 Connections list says "pulls... monthly listeners." Monthly listener count is NOT available via Spotify's public API. See V6_BUILD_AUTHORITY.md §2.4. Pull: artist name, photo, top tracks, follower count (optional), albums/singles.
+> - **Mid theme:** Any reference to "Mid" or "mid-tone" theme is wrong. Themes are: Dark, Light, Glass, Contrast. See V6_BUILD_AUTHORITY.md §2.1.
+> - **Source taxonomy:** Section "able_fans schema" lists v3 source values (`reel`, `story`, `post`, `bio`). The frozen v6 taxonomy is: `direct | instagram | tiktok | youtube | qr | email | other`. See V6_BUILD_AUTHORITY.md §6.2.
+> - **Analytics SQL (Section 19 of V5_RESEARCH_ADDENDUM):** Uses SQLite/D1 syntax (`strftime`, `unixepoch`). Must be adapted to PostgreSQL for Supabase. Key differences: timestamp math uses `NOW() - INTERVAL '7 days'`; epoch math uses `EXTRACT(EPOCH FROM NOW())`.
+> - **File paths:** Phase 0 reading list references old `docs/` paths. All research docs are now at `docs/reference/research/`. Micro-interactions at `docs/reference/micro-interactions/`. Build docs at `docs/v6/build/`. See `docs/v6/02_MIGRATION_FROM_V5.md` for the full path mapping.
+> - **Body font:** This doc lists Plus Jakarta Sans as body font. Body font for v6 profile page is **DM Sans**. See V6_BUILD_AUTHORITY.md §2.11.
+>
+> This document remains the primary source for: phase structure, component checklist, support pack UX flow (Section 14), GDPR double opt-in flow (Section 15), Android back gesture spec (Section 17), organic growth loop architecture (Section 7), brainstorm-settled decisions (Section 11), admin.html design spec (Section 10), and the full vibe copy tone and reference artist lists (Section 1.3). For token values, always use V6_BUILD_AUTHORITY.md §3 over the CSS blocks in this document.
 
 ---
 

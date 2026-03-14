@@ -1,3 +1,7 @@
+> **ARCHIVAL / SUPERSEDED** — This file is retained for historical context only. Do not use as active build authority. See `docs/v6/core/V6_BUILD_AUTHORITY.md` for current decisions.
+
+---
+
 # ABLE v3 — Design Specification
 **Date:** 2026-03-10
 **Status:** Approved — ready for implementation
