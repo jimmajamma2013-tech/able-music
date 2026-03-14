@@ -704,6 +704,12 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
 
       <div class="field">
+        <label class="field-label" for="iLocation">Based in <span class="opt">optional</span></label>
+        <input class="field-input" type="text" id="iLocation" placeholder="e.g. London, Berlin, New York" maxlength="40" autocomplete="off">
+        <div class="field-hint">Shows next to your genre on your page.</div>
+      </div>
+
+      <div class="field">
         <label class="field-label" for="iSpotify">Spotify artist URL <span class="opt">optional</span></label>
         <input class="field-input" type="url" id="iSpotify" placeholder="open.spotify.com/artist/…">
         <div class="field-hint">Your music embeds directly — fans stream without leaving your page.</div>
@@ -1022,7 +1028,7 @@ const CTA_SECONDARY = [
 ];
 
 const P = {
-  name:'', genre:'Electronic', bio:'', spotify:'',
+  name:'', genre:'Electronic', bio:'', location:'', spotify:'',
   vibe:'electronic',
   feel:'bold-refined',
   accent:'#f4b942', theme:'dark',
@@ -1127,6 +1133,7 @@ function goStep(n) {
       name:          P.name,
       handle:        slug(P.name),
       bio:           P.bio,
+      location:      P.location || '',
       vibe:          P.vibe,
       accent:        P.accent,
       theme:         P.theme,
@@ -1398,7 +1405,8 @@ function updatePreview() {
   // genre & bio
   const genEl = document.getElementById('phGenre');
   genEl.style.color = ts.text;
-  genEl.textContent = P.genre || 'Genre · Location';
+  const genreText = P.genre || 'Genre';
+  genEl.textContent = P.location ? `${genreText} · ${P.location}` : genreText;
 
   const bioEl = document.getElementById('phBio');
   bioEl.style.color = ts.text;
@@ -1479,6 +1487,7 @@ document.getElementById('iName').addEventListener('input', e => {
 });
 // iGenre is now a hidden input driven by vibe picker — no change listener needed
 document.getElementById('iBio').addEventListener('input', e => { P.bio = e.target.value; updatePreview(); });
+document.getElementById('iLocation').addEventListener('input', e => { P.location = e.target.value; updatePreview(); });
 document.getElementById('iCtaSecCustom').addEventListener('input', e => { P.secLabel = e.target.value; updatePreview(); });
 
 /* ── DONE ── */
