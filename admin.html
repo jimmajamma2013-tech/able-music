@@ -981,7 +981,7 @@ body {
     <div class="section-grid">
       <div>
         <div class="dash-card" style="margin-bottom:16px;">
-          <div class="dc-head"><div class="dc-title">Hero image</div></div>
+          <div class="dc-head"><div class="dc-title">Hero media</div></div>
           <div class="dc-body">
             <div id="artworkPreviewWrap" style="display:none;margin-bottom:12px;border-radius:10px;overflow:hidden;height:120px;background:rgba(255,255,255,.04);">
               <img id="artworkPreview" src="" alt="Artwork preview" style="width:100%;height:100%;object-fit:cover;display:block;">
@@ -991,6 +991,11 @@ body {
               <input class="field-input" type="url" id="adminArtworkUrl" placeholder="https://i.imgur.com/… or cdn.yoursite.com/artwork.jpg" oninput="previewArtwork(this.value)">
             </div>
             <div class="field-hint" style="margin-top:4px;">Appears as your hero background. Use a square image for best results. Min 800px.</div>
+            <div class="field-row" style="margin-top:10px;margin-bottom:0;">
+              <div class="field-label">Video URL <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:10px;color:var(--t3);">YouTube link — overrides artwork</span></div>
+              <input class="field-input" type="url" id="adminVideoUrl" placeholder="https://youtu.be/… or youtube.com/watch?v=…">
+            </div>
+            <div class="field-hint" style="margin-top:4px;">Set a music video as your hero. Fans tap to expand it inline.</div>
           </div>
         </div>
         <div class="dash-card" style="margin-bottom:16px;">
@@ -1326,6 +1331,19 @@ body {
       <div class="dc-body">
         <p style="font-size:11px;color:var(--t3);line-height:1.5;">Support packs appear as the last tab on your profile. Fans can buy directly — your link, your platform, your money.</p>
         <p style="font-size:11px;color:var(--t2);line-height:1.5;margin-top:6px;">0% taken by ABLE. Stripe standard fee only — 1.4% + 20p for UK cards.</p>
+      </div>
+    </div>
+    <div class="dash-card" style="margin-bottom:16px;">
+      <div class="dc-head"><div class="dc-title">Section customisation</div></div>
+      <div class="dc-body">
+        <div class="field-row">
+          <div class="field-label">Section heading <span style="font-weight:400;color:var(--t3);">(default: "Support")</span></div>
+          <input class="field-input" type="text" id="supportTitle" placeholder="Support" oninput="saveSupportMeta()">
+        </div>
+        <div class="field-row" style="margin-bottom:0;">
+          <div class="field-label">Intro text <span style="font-weight:400;color:var(--t3);">(optional — shown above packs)</span></div>
+          <input class="field-input" type="text" id="supportIntro" placeholder="If the music means something to you…" oninput="saveSupportMeta()">
+        </div>
       </div>
     </div>
     <div id="adminSupportList"></div>
@@ -2275,6 +2293,12 @@ function renderAdminSupport() {
   const cb = document.getElementById('supportEnabled');
   if (cb) cb.checked = !!support.enabled;
 
+  // Sync section meta fields
+  const titleEl = document.getElementById('supportTitle');
+  const introEl = document.getElementById('supportIntro');
+  if (titleEl) titleEl.value = support.title || '';
+  if (introEl) introEl.value = support.intro || '';
+
   if (!packs.length) {
     el.innerHTML = `<div class="admin-empty">No packs yet — add your first one below.</div>`;
     return;
@@ -2365,6 +2389,15 @@ function removeSupportPack(id) {
   setLS(V3_KEY, updated);
   syncProfile(updated);
   renderAdminSupport();
+}
+
+function saveSupportMeta() {
+  const data = safeLS(V3_KEY, {});
+  const support = { ...(data.support || {}),
+    title: document.getElementById('supportTitle')?.value.trim() || '',
+    intro: document.getElementById('supportIntro')?.value.trim() || '',
+  };
+  setLS(V3_KEY, { ...data, support });
 }
 
 function updateSupportField(id, field, value) {
@@ -2654,11 +2687,15 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('adminGenre') && genre) document.getElementById('adminGenre').value = genre;
   if (document.getElementById('adminLocation') && v3data.location) document.getElementById('adminLocation').value = v3data.location;
 
-  // Hero artwork URL
+  // Hero artwork + video URLs
   const artworkUrl = v3data.topCard?.artworkUrl || '';
   if (artworkUrl && document.getElementById('adminArtworkUrl')) {
     document.getElementById('adminArtworkUrl').value = artworkUrl;
     previewArtwork(artworkUrl);
+  }
+  const videoUrl = v3data.topCard?.videoUrl || '';
+  if (videoUrl && document.getElementById('adminVideoUrl')) {
+    document.getElementById('adminVideoUrl').value = videoUrl;
   }
 
   // Hydrate CTA fields
@@ -2849,7 +2886,8 @@ function saveProfilePage() {
   const location   = document.getElementById('adminLocation')?.value.trim();
   const accent     = document.getElementById('adminAccent')?.value;
   const theme      = document.querySelector('.theme-chip.on')?.dataset.theme || data.theme || 'dark';
-  const artworkUrl = document.getElementById('adminArtworkUrl')?.value.trim() || '';
+  const artworkUrl = document.getElementById('adminArtworkUrl')?.value.trim() || ''
+  const videoUrl   = document.getElementById('adminVideoUrl')?.value.trim()   || ''
 
   const rawPlatforms = [
     { label: 'Spotify',     type: 'spotify',    url: document.getElementById('plSpotify')?.value.trim()    || '' },
@@ -2875,7 +2913,12 @@ function saveProfilePage() {
     genres:    genre    ? [genre]    : data.genres,
     location:  location || data.location,
     platforms,
-    topCard:   { ...(data.topCard || {}), artworkUrl: artworkUrl || data.topCard?.artworkUrl || '' },
+    topCard:   {
+      ...(data.topCard || {}),
+      artworkUrl: artworkUrl || data.topCard?.artworkUrl || '',
+      videoUrl:   videoUrl   || data.topCard?.videoUrl   || '',
+      type:       videoUrl   ? 'video' : (artworkUrl ? 'artwork' : data.topCard?.type || ''),
+    },
     ctaPrimary:   { label: ctaPrimaryLabel || data.ctaPrimary?.label || 'Stream Now',  url: ctaPrimaryUrl   || data.ctaPrimary?.url   || '' },
     ctaSecondary: { label: ctaSecLabel     || data.ctaSecondary?.label || '',           url: ctaSecUrl       || data.ctaSecondary?.url  || '' },
   };
