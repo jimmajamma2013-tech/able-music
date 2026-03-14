@@ -2811,8 +2811,8 @@
            QUICK ACTION PILLS
            Horizontal scroll, max 4 visible + overflow toggle
            ====================================================== -->
-      <section class="pills-section" id="pills-section" aria-label="Find me on" hidden>
-        <p class="pills-section__label" aria-hidden="true">Find me on</p>
+      <section class="pills-section" id="pills-section" aria-label="Also available on" hidden>
+        <p class="pills-section__label" aria-hidden="true" hidden></p>
         <div class="pills-track-wrap">
           <div class="pills-track" id="pills-track" role="list"></div>
         </div>
@@ -3535,6 +3535,49 @@
     const MAX_PILLS_NARROW = 4
     const MAX_PILLS_WIDE   = 6
 
+    // State-aware platform sorting — surfaces what matters now, not just a logo list
+    function sortPlatformsByState(platforms, state) {
+      const MUSIC_HOSTS  = ['spotify', 'apple', 'soundcloud', 'bandcamp', 'tidal', 'deezer', 'audiomack', 'boomplay']
+      const TICKET_HOSTS = ['dice', 'resident-advisor', 'eventbrite', 'ticketmaster', 'skiddle', 'ticketweb', 'seetickets']
+      const SOCIAL_HOSTS = ['instagram', 'tiktok', 'twitter', 'x.com', 'facebook', 'threads']
+
+      function rank(p) {
+        const url  = (p.url  || '').toLowerCase()
+        const type = (p.type || '').toLowerCase()
+        const isMusic  = MUSIC_HOSTS.some(h  => url.includes(h) || type === h)
+        const isTicket = TICKET_HOSTS.some(h => url.includes(h) || type === h)
+        const isSocial = SOCIAL_HOSTS.some(h => url.includes(h) || type === h)
+
+        if (state === 'gig') {
+          if (isTicket) return 0
+          if (isMusic)  return 1
+          if (isSocial) return 3
+          return 2
+        }
+        if (state === 'live' || state === 'pre-release') {
+          if (isMusic)  return 0
+          if (isSocial) return 2
+          return 1
+        }
+        return 999 // natural order in profile state
+      }
+
+      return [...platforms].sort((a, b) => rank(a) - rank(b))
+    }
+
+    // State-aware section label — not "Find me on", which is pure directory framing
+    function getPillsSectionLabel(profile, state) {
+      const platforms = profile.platforms || []
+      const TICKET_HOSTS = ['dice', 'resident-advisor', 'eventbrite', 'ticketmaster', 'skiddle']
+      const hasTickets = platforms.some(p =>
+        TICKET_HOSTS.some(h => (p.url || '').toLowerCase().includes(h) || (p.type || '') === h)
+      )
+
+      if (state === 'gig' && hasTickets) return 'Tickets and more'
+      if (state === 'live' || state === 'pre-release') return 'Listen on'
+      return null  // no label in profile state — platforms are self-explanatory
+    }
+
     function renderPills(profile) {
       const section   = document.getElementById('pills-section')
       const track     = document.getElementById('pills-track')
@@ -3547,9 +3590,26 @@
       section.hidden = false
       track.innerHTML = ''
 
+      // State-aware sorting — not just alphabetical / added order
+      const state    = computeState(profile)
+      const sorted   = sortPlatformsByState(platforms, state)
+
+      // Update label to reflect current context
+      const labelEl  = document.querySelector('.pills-section__label')
+      const labelText = getPillsSectionLabel(profile, state)
+      if (labelEl) {
+        if (labelText) {
+          labelEl.textContent = labelText
+          labelEl.hidden = false
+        } else {
+          labelEl.hidden = true
+        }
+      }
+      section.setAttribute('aria-label', labelText || 'Also available on')
+
       const heroUrls  = getHeroUrls(profile)
       // Filter out pills that duplicate hero CTAs
-      const deduped   = platforms.filter(p => !heroUrls.has(p.url))
+      const deduped   = sorted.filter(p => !heroUrls.has(p.url))
       const isWide    = window.innerWidth >= 400
       const maxVisible = isWide ? MAX_PILLS_WIDE : MAX_PILLS_NARROW
       const visible   = deduped.slice(0, maxVisible)
