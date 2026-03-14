@@ -857,14 +857,15 @@
       background: rgba(200,104,88,0.06);
       border-radius: 10px;
     }
+    /* proof-action: CTA pulsing opacity (opacity/transform only — no box-shadow animation) */
     @media (prefers-reduced-motion: no-preference) {
       #demoPhone.proof-action .dp-cta1 {
-        animation: ctaGlow 1.8s ease-in-out infinite;
+        animation: ctaPulse 1.8s ease-in-out infinite;
       }
     }
-    @keyframes ctaGlow {
-      0%,100% { box-shadow: 0 2px 8px rgba(200,104,88,0.3); }
-      50%      { box-shadow: 0 2px 22px rgba(200,104,88,0.62); }
+    @keyframes ctaPulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.82; transform: scale(0.98); }
     }
 
     /* proof-music: embedded content highlight */
@@ -875,12 +876,12 @@
     }
     @media (prefers-reduced-motion: no-preference) {
       #demoPhone.proof-music .dp-sp-art {
-        animation: artGlow 2s ease-in-out infinite;
+        animation: artPulse 2s ease-in-out infinite;
       }
     }
-    @keyframes artGlow {
-      0%,100% { box-shadow: none; }
-      50%      { box-shadow: 0 0 14px rgba(var(--accent-rgb),0.38); }
+    @keyframes artPulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.88; transform: scale(1.04); }
     }
   </style>
 </head>
