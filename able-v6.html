@@ -118,7 +118,7 @@
       --color-border:      rgba(255,255,255,0.065);
       --color-text:        #f0ede8;  /* warm cream — unchanged */
       --color-text-2:      rgba(240,237,232,0.60);
-      --color-text-3:      rgba(218,213,207,0.33);  /* slightly warmer muted */
+      --color-text-3:      rgba(218,213,207,0.45);  /* 3.8:1 on dark bg — readable for secondary text */
       --color-overlay:     rgba(10,11,16,0.82);
       --shadow-card:       0 4px 28px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.04);
     }
@@ -440,10 +440,26 @@
 
     /* === FOCUS STYLES (WCAG 2.2 AA §5) ========================= */
     :focus-visible {
-      outline: 2px solid var(--color-accent);
+      outline: 2px solid rgba(var(--color-accent-rgb), 0.80);
       outline-offset: 3px;
       border-radius: var(--r-sm);
+      box-shadow: 0 0 0 5px rgba(var(--color-accent-rgb), 0.12);
     }
+
+    /* Match outline radius to element shape */
+    .btn-primary:focus-visible,
+    .btn-secondary:focus-visible,
+    .pills-more:focus-visible,
+    .hero__copy-link:focus-visible { border-radius: var(--r-pill); }
+
+    .pill:focus-visible { border-radius: var(--r-md); }
+
+    .fan-capture:focus-visible,
+    .release-card:focus-visible,
+    .merch-item:focus-visible,
+    .support-pack:focus-visible { border-radius: var(--r-md); }
+
+    .rec-item:focus-visible { border-radius: var(--r-sm); }
 
     /* === REDUCED MOTION (§5.1) ================================== */
     @media (prefers-reduced-motion: reduce) {
@@ -949,6 +965,15 @@
       padding: var(--sp-4) var(--sp-5) var(--sp-4);
     }
 
+    .pills-section__label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-text-3);
+      margin-bottom: var(--sp-3);
+    }
+
     /* Wrapping div still present — now unused */
     .pills-track-wrap { overflow: visible; }
 
@@ -1174,8 +1199,9 @@
       border-color: rgba(255,255,255,0.06);
     }
     .fan-capture--secondary .fan-capture__heading {
-      font-size: var(--text-xl);
-      opacity: 0.8;
+      font-size: var(--text-lg);
+      opacity: 0.55;
+      margin-bottom: var(--sp-4);
     }
 
     .fan-capture__heading {
@@ -2057,9 +2083,10 @@
     .support-note {
       margin-top: var(--sp-3);
       font-size: var(--text-xs);
-      color: var(--color-text-3);
+      color: var(--color-text-2);
       text-align: center;
       letter-spacing: 0.02em;
+      opacity: 0.7;
     }
 
     /* === CREDITS ACCORDION ===================================== */
@@ -2706,7 +2733,7 @@
         <span class="countdown__sep" aria-hidden="true">:</span>
         <div class="countdown__unit">
           <span class="countdown__num" id="cd-secs">00</span>
-          <span class="countdown__label">Secs</span>
+          <span class="countdown__label">Sec</span>
         </div>
       </div>
 
@@ -2728,7 +2755,8 @@
            QUICK ACTION PILLS
            Horizontal scroll, max 4 visible + overflow toggle
            ====================================================== -->
-      <section class="pills-section" id="pills-section" aria-label="Quick actions" hidden>
+      <section class="pills-section" id="pills-section" aria-label="Find me on" hidden>
+        <p class="pills-section__label" aria-hidden="true">Find me on</p>
         <div class="pills-track-wrap">
           <div class="pills-track" id="pills-track" role="list"></div>
         </div>
@@ -2861,8 +2889,7 @@
            ====================================================== -->
       <section class="fan-capture fan-capture--secondary" id="fan-capture-2"
                aria-labelledby="fan-capture-2-heading" hidden>
-        <h2 class="fan-capture__heading" id="fan-capture-2-heading">Stay close.</h2>
-        <p class="fan-capture__sub">Your list. I'll look after it.</p>
+        <h2 class="fan-capture__heading" id="fan-capture-2-heading">Still here.</h2>
         <form class="fan-capture__form" id="fan-form-2" novalidate>
           <div class="fan-capture__field-wrap">
             <label for="fan-email-2" class="sr-only">Email address</label>
@@ -2871,8 +2898,7 @@
                    autocomplete="email" autocapitalize="off"
                    placeholder="your@email.com"
                    aria-required="true">
-            <button class="fan-capture__btn btn-primary pressable" type="submit"
-                   >
+            <button class="fan-capture__btn btn-primary pressable" type="submit">
               <span>I'm in</span>
             </button>
           </div>
@@ -3661,7 +3687,7 @@
       chip.className = 'hero__state-chip'
 
       const config = {
-        'pre-release': { cls: 'hero__state-chip--pre',  text: 'Pre-release' },
+        'pre-release': { cls: 'hero__state-chip--pre',  text: 'Coming soon' },
         'live':        { cls: 'hero__state-chip--live', text: 'Out now'     },
         'gig':         { cls: 'hero__state-chip--gig',  text: 'On tonight' },
         'profile':     { cls: 'hero__state-chip--profile', text: ''         },
