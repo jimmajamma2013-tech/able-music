@@ -521,6 +521,41 @@
       padding: 8px; cursor: default;
     }
 
+    /* ── WORLD MAP DEMO STATE ────────────────────────────────── */
+    .dp-wm { margin: 0 10px 8px; }
+    .dp-wm-month {
+      font-size: 15px; font-weight: 700; letter-spacing: -0.02em;
+      color: var(--dp-text, #e4dfd2);
+      padding: 0 2px 6px;
+    }
+    .dp-wm-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .dp-wm-cell {
+      height: 28px;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center;
+      font-size: 6.5px; font-weight: 500;
+      color: rgba(232,228,222,0.45);
+      gap: 2px;
+      border-right: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .dp-wm-cell:nth-child(7n) { border-right: none; }
+    .dp-wm-dot { width: 4px; height: 4px; border-radius: 50%; }
+    .dp-wm-cell--accent .dp-wm-dot   { background: #e05242; }
+    .dp-wm-cell--coral .dp-wm-dot    { background: #e8715a; }
+    .dp-wm-cell--gold .dp-wm-dot     { background: #d4a84b; }
+    .dp-wm-cell--teal .dp-wm-dot     { background: #2db8b0; }
+    .dp-wm-cell--selected { background: rgba(224,82,66,0.12); }
+    .dp-wm-cell--selected .dp-wm-date { color: rgba(232,228,222,0.9); }
+    .dp-wm-cell--locked .dp-wm-dot   { background: rgba(255,255,255,0.25); }
+    .dp-wm-lock { font-size: 5px; opacity: 0.35; }
+    #demoPhone[data-theme="light"] .dp-wm-cell { color: rgba(28,26,20,0.4); }
+    #demoPhone[data-theme="light"] .dp-wm-grid { border-top-color: rgba(0,0,0,0.06); }
+    #demoPhone[data-theme="light"] .dp-wm-month { color: #1c1a14; }
+
     /* Tab bar */
     .dp-tabs {
       display: flex;
@@ -1043,6 +1078,45 @@
             <div class="dp-ev-ticket">Get Tickets</div>
           </div>
 
+          <!-- World map state -->
+          <div class="dp-wm" id="dp-worldmap" style="display:none;">
+            <div class="dp-wm-month">May</div>
+            <div class="dp-wm-grid">
+              <!-- Row 1: days 1-7, day 3 = early access (gold) -->
+              <div class="dp-wm-cell"><span class="dp-wm-date">1</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">2</span></div>
+              <div class="dp-wm-cell dp-wm-cell--gold"><span class="dp-wm-date">3</span><div class="dp-wm-dot"></div></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">4</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">5</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">6</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">7</span></div>
+              <!-- Row 2: day 8 = release (accent), day 14 = show (coral) -->
+              <div class="dp-wm-cell dp-wm-cell--accent"><span class="dp-wm-date">8</span><div class="dp-wm-dot"></div></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">9</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">10</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">11</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">12</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">13</span></div>
+              <div class="dp-wm-cell dp-wm-cell--coral"><span class="dp-wm-date">14</span><div class="dp-wm-dot"></div></div>
+              <!-- Row 3: day 15 = selected/release, day 19 = merch (teal), day 21 = private (locked) -->
+              <div class="dp-wm-cell dp-wm-cell--accent dp-wm-cell--selected"><span class="dp-wm-date">15</span><div class="dp-wm-dot"></div></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">16</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">17</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">18</span></div>
+              <div class="dp-wm-cell dp-wm-cell--teal"><span class="dp-wm-date">19</span><div class="dp-wm-dot"></div></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">20</span></div>
+              <div class="dp-wm-cell dp-wm-cell--locked"><span class="dp-wm-date">21</span><div class="dp-wm-dot"></div><span class="dp-wm-lock">🔒</span></div>
+              <!-- Row 4: empty -->
+              <div class="dp-wm-cell"><span class="dp-wm-date">22</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">23</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">24</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">25</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">26</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">27</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">28</span></div>
+            </div>
+          </div>
+
           <!-- Tab bar -->
           <div class="dp-tabs">
             <div class="dp-tab">
@@ -1304,7 +1378,8 @@
         live:    { badge: '● Out now',      badgeRgb: '184,120,112', dot: true,  cta1: 'Stream Now',      cta2: 'Tickets',        countdown: false, spotify: true,  youtube: true,  event: false, desc: '<em>Release is out.</em> The page leads with streaming. Music plays here, not somewhere else.' },
         pre:     { badge: '⏳ Drops 28 Mar', badgeRgb: '184,168,96',  dot: false, cta1: 'Pre-save',        cta2: 'Add to library', countdown: true,  spotify: false, youtube: false, event: false, desc: '<em>Dropping soon.</em> A countdown. A pre-save CTA. Fans lock in before the release exists.' },
         gig:     { badge: '● On tonight',   badgeRgb: '184,144,104', dot: true,  cta1: 'Get Tickets',     cta2: 'Find us',        countdown: false, spotify: false, youtube: false, event: true,  desc: '<em>Show tonight.</em> Tickets take the front. Fans know exactly what to do.' },
-        profile: { badge: null,             badgeRgb: null,           dot: false, cta1: 'Stream my music', cta2: 'All platforms',  countdown: false, spotify: true,  youtube: false, event: false, desc: '<em>Between moments.</em> Your full profile leads — music, identity, links. Always ready.' },
+        profile:  { badge: null,             badgeRgb: null,           dot: false, cta1: 'Stream my music', cta2: 'All platforms',  countdown: false, spotify: true,  youtube: false, event: false, worldmap: false, desc: '<em>Between moments.</em> Your full profile leads — music, identity, links. Always ready.' },
+        worldmap: { badge: null,             badgeRgb: null,           dot: false, cta1: 'Plan your month', cta2: 'Set a reminder',  countdown: false, spotify: false, youtube: false, event: false, worldmap: true,  desc: '<em>A living artist world.</em> Releases, shows, drops — your whole month mapped. Not a static page.' },
       };
 
       const descEl = document.getElementById('demo-desc');
@@ -1332,9 +1407,11 @@
         const spEl = document.getElementById('dp-spotify');
         const ytEl = document.getElementById('dp-youtube');
         const evEl = document.getElementById('dp-event');
-        if (spEl) spEl.style.display = s.spotify ? 'block' : 'none';
-        if (ytEl) ytEl.style.display = s.youtube ? 'block' : 'none';
-        if (evEl) evEl.style.display = s.event  ? 'block' : 'none';
+        if (spEl) spEl.style.display = s.spotify   ? 'block' : 'none';
+        if (ytEl) ytEl.style.display = s.youtube   ? 'block' : 'none';
+        if (evEl) evEl.style.display = s.event     ? 'block' : 'none';
+        const wmEl = document.getElementById('dp-worldmap');
+        if (wmEl) wmEl.style.display = s.worldmap  ? 'block' : 'none';
         if (updateDesc !== false && descEl && s.desc) {
           descEl.style.opacity = '0';
           setTimeout(function() { descEl.innerHTML = s.desc; descEl.style.opacity = '1'; }, 110);

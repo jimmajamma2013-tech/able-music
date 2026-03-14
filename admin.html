@@ -483,6 +483,65 @@ body {
   .stats-row { grid-template-columns:1fr 1fr; gap:10px; }
   .mode-cards { grid-template-columns:1fr; }
 }
+
+    /* === YOUR WORLD (Admin) ==================================== */
+    .yw-section { margin: 0 0 var(--sp-6, 24px); }
+    .yw-section-head {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .yw-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .yw-add-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--acc, #f4b942);
+      color: #000;
+      border: none;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+    .yw-moment-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .yw-moment-row {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      font-size: 13px;
+    }
+    .yw-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .yw-moment-date { color: rgba(255,255,255,0.4); width: 48px; flex-shrink: 0; font-size: 11px; }
+    .yw-moment-title { flex: 1; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .yw-moment-access { font-size: 10px; color: rgba(255,255,255,0.35); }
+    .yw-moment-featured { font-size: 9px; color: var(--acc, #f4b942); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+    .yw-empty { text-align: center; padding: 24px 16px; color: rgba(255,255,255,0.3); font-size: 13px; }
+    .yw-private-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 8px;
+    }
+    .yw-private-label { font-size: 13px; font-weight: 600; }
+    .yw-private-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+    .yw-enquiry-link {
+      font-size: 12px;
+      color: var(--acc, #f4b942);
+      cursor: pointer;
+      text-decoration: underline;
+    }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
@@ -659,6 +718,28 @@ body {
         </div>
       </div>
     </div>
+
+      <!-- YOUR WORLD =========================================== -->
+      <section class="yw-section" id="yw-section">
+        <div class="yw-section-head">
+          <h3 class="yw-section-title">Your World</h3>
+          <button class="yw-add-btn" id="yw-add-btn">+ Add moment</button>
+        </div>
+        <div class="yw-moment-list" id="yw-moment-list">
+          <div class="yw-empty">No upcoming moments yet. Add your first.</div>
+        </div>
+        <div class="yw-private-row">
+          <div>
+            <div class="yw-private-label">Private access</div>
+            <div class="yw-private-sub">Open a window for intimate session enquiries</div>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <input type="checkbox" id="yw-private-toggle" style="width:36px;height:20px;cursor:pointer;" role="switch">
+            <span style="font-size:12px;color:rgba(255,255,255,0.4)">Open</span>
+          </label>
+        </div>
+        <div class="yw-enquiry-link" id="yw-enquiry-count" style="display:none;"></div>
+      </section>
 
     <div class="section-grid">
 
@@ -2093,6 +2174,104 @@ function updateFanPageStats() {
   });
 }
 
+// === YOUR WORLD (ADMIN) =====================================
+
+var WM_TYPE_COLOR_ADM = {
+  release: '#3b82f6', show: '#e8715a', on_sale: '#f4b942',
+  merch_drop: '#2db8b0', early_access: '#d4a84b',
+  livestream: '#4b8fd4', private_access: '#888888', announcement: '#aaaaaa',
+}
+
+function ywRenderMomentList(profile) {
+  var list = document.getElementById('yw-moment-list')
+  if (!list) return
+
+  var moments = (profile.moments || []).filter(function(m) { return m.active !== false })
+  var today = new Date().toISOString().slice(0,10)
+  var in7 = new Date(Date.now() + 7*86400000).toISOString().slice(0,10)
+  var upcoming = moments.filter(function(m) { return m.date >= today }).sort(function(a,b) { return a.date.localeCompare(b.date) })
+
+  if (!upcoming.length) {
+    list.innerHTML = '<div class="yw-empty">No upcoming moments yet. Add your first.</div>'
+    return
+  }
+
+  var featuredId = (upcoming.find(function(m) { return m.date <= in7 && m.access !== 'private' }) || {}).id
+
+  list.innerHTML = upcoming.slice(0, 12).map(function(m) {
+    var d = new Date(m.date + 'T00:00:00')
+    var dateStr = d.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' })
+    var color = WM_TYPE_COLOR_ADM[m.type] || '#888'
+    var isFeatured = m.id === featuredId
+    var title = m.title || '(untitled)'
+    return '<div class="yw-moment-row">'
+      + '<div class="yw-dot" style="background:' + color + '"></div>'
+      + '<div class="yw-moment-date">' + dateStr + '</div>'
+      + '<div class="yw-moment-title">' + title.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>'
+      + '<div class="yw-moment-access">' + (m.access || 'public') + '</div>'
+      + (isFeatured ? '<div class="yw-moment-featured">● In hero</div>' : '')
+      + '</div>'
+  }).join('')
+
+  // Private toggle state
+  var toggle = document.getElementById('yw-private-toggle')
+  if (toggle) toggle.checked = !!profile.privateAccessOpen
+
+  // Enquiry count
+  var enquiries = (profile.privateAccessEnquiries || []).filter(function(e) { return e.status === 'pending' || !e.status })
+  var enqEl = document.getElementById('yw-enquiry-count')
+  if (enqEl) {
+    if (enquiries.length) {
+      enqEl.style.display = 'block'
+      enqEl.textContent = enquiries.length + ' enquir' + (enquiries.length === 1 ? 'y' : 'ies') + ' waiting'
+    } else {
+      enqEl.style.display = 'none'
+    }
+  }
+}
+
+function ywInit(profile) {
+  ywRenderMomentList(profile)
+
+  var addBtn = document.getElementById('yw-add-btn')
+  if (addBtn) addBtn.addEventListener('click', function() {
+    var types = 'release / show / on_sale / merch_drop / early_access / livestream / private_access / announcement'
+    var type = prompt('Moment type:\n' + types, 'release')
+    if (!type) return
+    var date = prompt('Date (YYYY-MM-DD):', new Date().toISOString().slice(0,10))
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) { alert('Invalid date format'); return }
+    var title = prompt('Title:', '')
+    if (!title) return
+    var access = prompt('Access:\npublic / fan / supporter / private', 'public')
+    var url = prompt('CTA URL (leave blank if none):', '')
+    var ctaLabel = url ? prompt('CTA label:', 'View') : ''
+    var artistNote = prompt('Artist note (optional, shown in panel):', '')
+
+    var p = safeLS(V3_KEY, {})
+    var moments = p.moments || []
+    moments.push({
+      id: 'm_' + Date.now(),
+      type: type.trim(),
+      date: date.trim(),
+      title: title.trim().slice(0, 60),
+      access: access ? access.trim() : 'public',
+      artistNote: artistNote || '',
+      cta: url ? { label: ctaLabel || 'View', url: url.trim(), type: 'link' } : null,
+      active: true,
+    })
+    p.moments = moments
+    setLS(V3_KEY, p)
+    ywRenderMomentList(p)
+  })
+
+  var toggle = document.getElementById('yw-private-toggle')
+  if (toggle) toggle.addEventListener('change', function(e) {
+    var p = safeLS(V3_KEY, {})
+    p.privateAccessOpen = e.target.checked
+    setLS(V3_KEY, p)
+  })
+}
+
 /* ── LOAD STATE FROM LOCALSTORAGE ── */
 window.addEventListener('DOMContentLoaded', () => {
   // Hydrate from v3 profile key (wizard or admin saves)
@@ -2150,6 +2329,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Wire profile page Save button
   wireProfileSave();
+
+  // Your World moments panel
+  ywInit(v3data);
 });
 
 /* ── QR CODE ── */
