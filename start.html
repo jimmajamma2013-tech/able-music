@@ -579,6 +579,44 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 }
 .ai-cta-opt:hover { border-color:var(--bm); background:rgba(255,255,255,.06); }
 .ai-cta-opt.selected { border-color:var(--acc); background:rgba(var(--acc-rgb),.08); color:var(--acc); }
+
+/* ── FEEL GRID ── */
+.feel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.feel-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 14px 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--bm);
+  background: var(--card);
+  cursor: pointer;
+  transition: border-color .18s, background .18s;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+.feel-card:hover { border-color: rgba(255,255,255,.25); }
+.feel-card.on {
+  border-color: var(--acc);
+  background: rgba(var(--acc-rgb), .08);
+}
+.feel-card__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+.feel-card__desc {
+  font-size: 11px;
+  color: var(--t2);
+  line-height: 1.4;
+}
+.feel-card.on .feel-card__label { color: var(--acc); }
 </style>
 </head>
 <body>
@@ -587,7 +625,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
 <header class="header">
   <div class="logo" id="logoEl">ABLE</div>
-  <div class="step-indicator" id="stepInd">Step 1 of 4</div>
+  <div class="step-indicator" id="stepInd">Step 1 of 5</div>
 </header>
 
 <div class="progress">
@@ -607,7 +645,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
     <!-- STEP 1 -->
     <div class="step active" id="step1">
-      <div class="step-eyebrow">Step 1 of 4</div>
+      <div class="step-eyebrow">Step 1 of 5</div>
       <h1 class="step-title">Your name,<br>your vibe.</h1>
       <p class="step-sub">Your page builds as you go. Hit Preview above to see it take shape.</p>
 
@@ -660,9 +698,40 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
     </div>
 
-    <!-- STEP 2 -->
+    <!-- STEP 2 — FEEL -->
     <div class="step" id="step2">
-      <div class="step-eyebrow">Step 2 of 4</div>
+      <div class="step-eyebrow">Step 2 of 5</div>
+      <h1 class="step-title">How does<br>your music feel?</h1>
+      <p class="step-sub">This shapes how your page moves and carries itself — not just how it looks.</p>
+
+      <div class="feel-grid" id="feelGrid">
+        <button class="feel-card" data-feel="intimate-raw" onclick="selectFeel('intimate-raw')">
+          <span class="feel-card__label">Stripped back</span>
+          <span class="feel-card__desc">Personal, unfinished-on-purpose, close</span>
+        </button>
+        <button class="feel-card" data-feel="intimate-refined" onclick="selectFeel('intimate-refined')">
+          <span class="feel-card__label">Warm and cinematic</span>
+          <span class="feel-card__desc">Unhurried, warm, quietly premium</span>
+        </button>
+        <button class="feel-card" data-feel="bold-raw" onclick="selectFeel('bold-raw')">
+          <span class="feel-card__label">Underground and direct</span>
+          <span class="feel-card__desc">High contrast, no softening, forward</span>
+        </button>
+        <button class="feel-card" data-feel="bold-refined" onclick="selectFeel('bold-refined')">
+          <span class="feel-card__label">Clean and confident</span>
+          <span class="feel-card__desc">Polished, assured, editorial</span>
+        </button>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-back" onclick="goStep(1)">← Back</button>
+        <button class="btn-next" onclick="goStep(3)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step" id="step3">
+      <div class="step-eyebrow">Step 3 of 5</div>
       <h1 class="step-title">Your<br>colour.</h1>
       <p class="step-sub">One colour becomes your brand across the whole page. Change one thing — everything shifts with it.</p>
 
@@ -675,20 +744,6 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
 
       <div class="step-nav" style="margin-top:28px;">
-        <button class="btn-back" onclick="goStep(1)">← Back</button>
-        <button class="btn-next" onclick="goStep(3)">Continue →</button>
-      </div>
-    </div>
-
-    <!-- STEP 3 -->
-    <div class="step" id="step3">
-      <div class="step-eyebrow">Step 3 of 4</div>
-      <h1 class="step-title">How it<br>feels.</h1>
-      <p class="step-sub">Choose the atmosphere. You can switch at any time — from your dashboard, whenever your music needs a different world.</p>
-
-      <div class="theme-grid" id="themeGrid"></div>
-
-      <div class="step-nav">
         <button class="btn-back" onclick="goStep(2)">← Back</button>
         <button class="btn-next" onclick="goStep(4)">Continue →</button>
       </div>
@@ -696,7 +751,21 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
     <!-- STEP 4 -->
     <div class="step" id="step4">
-      <div class="step-eyebrow">Step 4 of 4</div>
+      <div class="step-eyebrow">Step 4 of 5</div>
+      <h1 class="step-title">How it<br>feels.</h1>
+      <p class="step-sub">Choose the atmosphere. You can switch at any time — from your dashboard, whenever your music needs a different world.</p>
+
+      <div class="theme-grid" id="themeGrid"></div>
+
+      <div class="step-nav">
+        <button class="btn-back" onclick="goStep(3)">← Back</button>
+        <button class="btn-next" onclick="goStep(5)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step" id="step5">
+      <div class="step-eyebrow">Step 5 of 5</div>
       <h1 class="step-title">One thing,<br>front and centre.</h1>
       <p class="step-sub">The main thing you want fans to do right now. This becomes your hero button. Change it any time.</p>
 
@@ -744,8 +813,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
 
       <div class="step-nav">
-        <button class="btn-back" onclick="goStep(3)">← Back</button>
-        <button class="btn-next" onclick="tryStep4()">Create my page →</button>
+        <button class="btn-back" onclick="goStep(4)">← Back</button>
+        <button class="btn-next" onclick="tryStep5()">Create my page →</button>
       </div>
     </div>
 
@@ -939,6 +1008,7 @@ const CTA_SECONDARY = [
 const P = {
   name:'', genre:'Electronic', bio:'', spotify:'',
   vibe:'electronic',
+  feel:'bold-refined',
   accent:'#f4b942', theme:'dark',
   ctaId:'stream', ctaLabel:'Stream Now',
   secId:'s-tickets', secLabel:'Get Tickets',
@@ -979,7 +1049,16 @@ function tryStep1() {
   goStep(2);
 }
 
-function tryStep4() {
+function selectFeel(feel) {
+  P.feel = feel;
+  document.querySelectorAll('.feel-card').forEach(c => {
+    c.classList.toggle('on', c.dataset.feel === feel);
+  });
+  const previewShell = document.getElementById('previewShell');
+  if (previewShell) previewShell.dataset.feel = feel;
+}
+
+function tryStep5() {
   // Read CTA URL if visible
   const urlWrap = document.getElementById('ctaUrlWrap');
   const urlInput = document.getElementById('iCtaUrl');
@@ -1014,9 +1093,9 @@ function goStep(n) {
   const id = n === 'done' ? 'stepDone' : `step${n}`;
   document.getElementById(id).classList.add('active');
 
-  const num = n === 'done' ? 5 : Number(n);
-  document.getElementById('progressFill').style.width = (num === 5 ? 100 : num*25) + '%';
-  document.getElementById('stepInd').textContent = n === 'done' ? 'All done' : `Step ${n} of 4`;
+  const num = n === 'done' ? 6 : Number(n);
+  document.getElementById('progressFill').style.width = (num >= 6 ? 100 : (num/5)*100) + '%';
+  document.getElementById('stepInd').textContent = n === 'done' ? 'All done' : `Step ${n} of 5`;
 
   if (n === 'done') {
     document.getElementById('doneUrl').textContent = `able.fm/${slug(P.name)}`;
@@ -1040,6 +1119,13 @@ function goStep(n) {
       ctaPrimary:    { label: P.ctaLabel,  url: P.ctaUrl    || '' },
       ctaSecondary:  { label: P.secLabel,  url: P.ctaSecUrl || '' },
       platforms:     P.spotify ? [{ label: 'Spotify', url: P.spotify, type: 'spotify' }] : [],
+      identity: {
+        genre:       P.vibe,
+        feel:        P.feel || 'bold-refined',
+        accent:      P.accent,
+        accentSource:'artist',
+        refinements: { darkness:0, spacing:0, sharpness:0, contrast:0, warmth:0 }
+      },
     };
     localStorage.setItem('able_v3_profile', JSON.stringify(v3profile));
     // Also keep able_profile for any legacy reads
@@ -1669,6 +1755,7 @@ initColour();
 initTheme();
 initCta();
 updatePreview();
+selectFeel(P.feel);
 </script>
 </body>
 </html>
