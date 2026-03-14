@@ -2807,12 +2807,13 @@ function renderAdminMerch() {
   el.innerHTML = items.map((item, i) => `
     <div class="dash-card" style="max-width:560px;margin-bottom:10px;">
       <div class="dc-head">
-        <div class="dc-title">${escHtml(item.title||'Item')} <span style="color:var(--t3);font-weight:400;">${escHtml(item.price||'')}</span></div>
+        <div class="dc-title">${escHtml(item.title||'Item')} <span style="color:var(--t3);font-weight:400;">${item.price ? escHtml(item.currency||'£')+escHtml(item.price) : ''}</span></div>
         <button class="snap-btn del" onclick="removeMerchItem('${item.id}')" title="Remove">×</button>
       </div>
       <div class="dc-body">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="display:grid;grid-template-columns:1fr 80px 100px;gap:8px;">
           <div class="field-row" style="margin:0"><div class="field-label">Item name</div><input class="field-input" value="${escHtml(item.title||'')}" oninput="updateMerchField('${item.id}','title',this.value)" placeholder="Tour Hoodie 2026"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Currency</div><select class="field-input" onchange="updateMerchField('${item.id}','currency',this.value)"><option value="£"${(item.currency||'£')==='£'?' selected':''}>£ GBP</option><option value="$"${item.currency==='$'?' selected':''}>$ USD</option><option value="€"${item.currency==='€'?' selected':''}>€ EUR</option></select></div>
           <div class="field-row" style="margin:0"><div class="field-label">Price</div><input class="field-input" type="number" min="0" step="0.01" value="${escHtml(item.price||'')}" oninput="updateMerchField('${item.id}','price',this.value)" placeholder="25.00"></div>
         </div>
         <div class="field-row" style="margin-top:8px;">
@@ -2841,7 +2842,7 @@ function saveMerchShopUrl() {
 function addMerchItem() {
   const data = safeLS(V3_KEY, {});
   const merch = data.merch || {};
-  const items = [...(merch.items||[]), { id: 'm'+Date.now(), title: '', price: '', url: '', imageUrl: '', emoji: '🎵', badge: '' }];
+  const items = [...(merch.items||[]), { id: 'm'+Date.now(), title: '', price: '', currency: '£', url: '', imageUrl: '', emoji: '🎵', badge: '' }];
   setLS(V3_KEY, { ...data, merch: { ...merch, items } });
   syncProfile({ ...data, merch: { ...merch, items } });
   renderAdminMerch();
