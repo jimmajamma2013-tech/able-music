@@ -49,11 +49,11 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 
 ## Current build status
 
-**Last updated: 2026-03-14 — Checkpoint 11 complete. Guided Identity onboarding + admin identity card shipped.**
+**Last updated: 2026-03-14 — Checkpoint 12 complete. Admin schema gap pass + start.html wizard fix.**
 
 | Component | Status |
 |---|---|
-| `able-v6.html` | **COMPLETE through Checkpoint 10** — see checkpoint log below |
+| `able-v6.html` | **COMPLETE through Checkpoint 12** — see checkpoint log below |
 | Design system (tokens, 7 vibes, 4 themes) | Complete — all tokens live in `able-v6.html` |
 | Campaign state machine (profile/pre-release/live/gig) | Complete |
 | State 4 (near-future): world map moment ≤7d → hero chip | Complete — `04f5476` |
@@ -82,8 +82,11 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 | **Guided Identity System** — `data-feel` CSS system in `able-v6.html` | Complete — Checkpoint 10 |
 | **Guided Identity System** — onboarding feel step (`start.html` step 2 of 5) | Complete — `fbb0631` |
 | **Guided Identity System** — admin Profile Identity card (genre, feel, nudges, preview) | Complete — `e5ccc03` |
+| **Admin schema gap pass** — recommendations CRUD, events country, support currency, release credits, release artworkUrl, per-track streamUrl, snap card alt text, section order includes recs-section | Complete — `8e17e18`–`3eaff8c` |
+| **start.html wizard** — Spotify URL capture bug fix | Complete — `07d87ca` |
+| **able-v6.html** — applySectionOrder after inline profile save | Complete — `52dc51c` |
 | Supabase migration path | Planned — localStorage keys map 1:1 to table rows |
-| Snap cards CRUD (admin) | Deferred to Phase 2 |
+| Snap cards CRUD (admin) | Complete — full CRUD with ↑↓ reorder, inline edit, alt text, live/hidden toggle |
 | Supabase auth + read path | Deferred to Phase 2 |
 | Fan feed (fan.html) | Deferred to Phase 2 |
 | Professional/studio profile layer | Deferred to Phase 2 |
@@ -107,6 +110,7 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 | 9 | `37a6073` | Close Circle — hero entry, join half-sheet, lock-ring dots, supporter gate |
 | 10 | `47beb81` | Guided Identity System — `data-feel` CSS, `applyIdentity()`, `profile.identity` |
 | 11 | `e5ccc03` | Guided Identity onboarding — feel step in start.html wizard + admin identity card |
+| 12 | `52dc51c` | Admin schema gap pass — recommendations CRUD, events country field, support pack currency, release credits/artworkUrl, per-track streamUrl, snap card alt text, wizard Spotify fix, applySectionOrder after inline save |
 
 ### Checkpoint 7 spot-check matrix (12/12 pass)
 
