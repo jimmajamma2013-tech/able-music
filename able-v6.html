@@ -923,13 +923,26 @@
       cursor: pointer;
       text-decoration: none;
       text-align: center;
-      box-shadow: 0 4px 24px var(--color-accent-glow);
-      transition: box-shadow var(--dur-fast) var(--ease-standard),
-                  transform var(--dur-fast) var(--ease-spring);
+      /* §7.1: no box-shadow animation — use ::after opacity for glow */
+      position: relative;
+      overflow: visible;
+      transition: transform var(--dur-fast) var(--ease-spring);
     }
 
-    .btn-primary:hover {
+    /* Rest-state glow (always present, dim) */
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: var(--r-sm);
       box-shadow: 0 8px 40px var(--color-accent-glow);
+      opacity: 0.45;
+      pointer-events: none;
+      transition: opacity var(--dur-fast) var(--ease-standard);
+    }
+
+    .btn-primary:hover::after {
+      opacity: 1;
     }
 
     /* Secondary CTA — quiet, clearly subordinate, authority §3.5 */
@@ -2429,7 +2442,7 @@
       background: rgba(0,0,0,0);
       transition: background var(--dur-mid);
     }
-    #edit-backdrop.open { display: block; background: rgba(0,0,0,0.65); }
+    #edit-backdrop.open { display: block; background: rgba(0,0,0,0.55); } /* §7.2 #13: 55% per spec */
 
     /* ── Slide-up edit panel ─────────────────────────────────────── */
     #edit-panel {
