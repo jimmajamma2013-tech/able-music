@@ -698,6 +698,20 @@
     .hero__state-chip--live { background: var(--color-state-live); }
     .hero__state-chip--gig  { background: var(--color-state-gig); }
     .hero__state-chip--profile { display: none; }
+    .hero__state-chip--near-future {
+      background: rgba(255,255,255,0.10);
+      color: var(--color-text-1);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    [data-theme="light"] .hero__state-chip--near-future {
+      background: rgba(0,0,0,0.07);
+      color: var(--color-text-1);
+      border: 1px solid rgba(0,0,0,0.12);
+    }
+    .hero__state-chip--near-future:hover { background: rgba(255,255,255,0.15); }
+    [data-theme="light"] .hero__state-chip--near-future:hover { background: rgba(0,0,0,0.11); }
 
     /* Gig pulsing dot — implemented via ::before pseudo-element in Checkpoint 5 */
 
@@ -1874,6 +1888,370 @@
       opacity: 0.8;
     }
 
+    /* === WORLD MAP ============================================= */
+
+    .world-map-section {
+      margin: 0 var(--sp-3) var(--sp-5);
+    }
+
+    .world-map-card {
+      border-radius: var(--r-lg);
+      background: var(--color-surface);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+      overflow: hidden;
+    }
+    [data-theme="light"] .world-map-card {
+      background: rgba(0,0,0,0.03);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+    }
+
+    .wm-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sp-4) var(--sp-5) var(--sp-3);
+    }
+
+    .wm-month-label {
+      font-family: var(--font-d);
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--color-text-1);
+      line-height: 1;
+    }
+
+    .wm-nav {
+      display: flex;
+      gap: var(--sp-2);
+    }
+
+    .wm-nav-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--r-full);
+      border: 1px solid rgba(255,255,255,0.10);
+      background: transparent;
+      color: var(--color-text-2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--dur-fast) var(--ease-standard);
+    }
+    .wm-nav-btn:hover { background: rgba(255,255,255,0.06); }
+    [data-theme="light"] .wm-nav-btn { border-color: rgba(0,0,0,0.12); color: var(--color-text-2); }
+
+    .wm-dow-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      padding: 0 var(--sp-3);
+    }
+
+    .wm-dow {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-3);
+      padding-bottom: var(--sp-2);
+    }
+
+    .wm-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding: 0 var(--sp-3) var(--sp-3);
+      touch-action: pan-y;
+    }
+    [data-theme="light"] .wm-grid { border-top-color: rgba(0,0,0,0.06); }
+
+    .wm-cell {
+      min-height: 48px;
+      padding: 6px 2px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      border-radius: var(--r-sm);
+      position: relative;
+      transition: background var(--dur-fast) var(--ease-standard);
+      border-right: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    [data-theme="light"] .wm-cell {
+      border-right-color: rgba(0,0,0,0.05);
+      border-bottom-color: rgba(0,0,0,0.05);
+    }
+    .wm-cell:nth-child(7n) { border-right: none; }
+
+    .wm-cell--empty { cursor: default; }
+    .wm-cell--past .wm-date-num { opacity: 0.35; }
+    .wm-cell--past .wm-dot { opacity: 0.40; }
+    .wm-cell--today .wm-date-num {
+      color: var(--color-accent);
+      font-weight: 700;
+    }
+    .wm-cell--today::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border-radius: var(--r-sm);
+      border: 1px solid rgba(var(--color-accent-rgb), 0.35);
+      pointer-events: none;
+    }
+
+    .wm-cell--selected {
+      background-color: color-mix(in srgb, var(--wm-type-color, var(--color-accent)) 15%, transparent);
+    }
+    .wm-cell--selected::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0; right: 0;
+      height: 2px;
+      background: var(--wm-type-color, var(--color-accent));
+      border-radius: 0 0 var(--r-sm) var(--r-sm);
+    }
+
+    .wm-date-num {
+      font-size: 13px;
+      color: var(--color-text-2);
+      font-weight: 500;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .wm-cell--has-moment .wm-date-num { color: var(--color-text-1); }
+
+    .wm-dots {
+      display: flex;
+      gap: 2px;
+      align-items: center;
+      min-height: 5px;
+    }
+    .wm-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .wm-dot-more {
+      font-size: 7px;
+      color: var(--color-text-3);
+      line-height: 1;
+      margin-left: 1px;
+    }
+
+    .wm-cell--featured::before {
+      content: '';
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes wm-attention {
+      0%   { box-shadow: 0 0 0 0 rgba(var(--color-accent-rgb), 0.5); }
+      70%  { box-shadow: 0 0 0 6px rgba(var(--color-accent-rgb), 0); }
+      100% { box-shadow: 0 0 0 0 rgba(var(--color-accent-rgb), 0); }
+    }
+    .wm-cell--new { animation: wm-attention 1s ease-out 0.3s 1 forwards; }
+
+    .wm-grid-wrap {
+      overflow: hidden;
+      position: relative;
+    }
+    .wm-grid.wm-slide-left  { animation: wmSlideLeft  220ms var(--ease-decel) forwards; }
+    .wm-grid.wm-slide-right { animation: wmSlideRight 220ms var(--ease-decel) forwards; }
+    @keyframes wmSlideLeft  { from { transform: translateX(40px); opacity: 0.4; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes wmSlideRight { from { transform: translateX(-40px); opacity: 0.4; } to { transform: translateX(0); opacity: 1; } }
+
+    .wm-footer {
+      padding: var(--sp-2) var(--sp-5) var(--sp-4);
+      text-align: center;
+    }
+    .wm-footer-link {
+      font-size: var(--text-sm);
+      color: var(--color-text-3);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      padding-bottom: 1px;
+      transition: color var(--dur-fast) var(--ease-standard);
+    }
+    .wm-footer-link:hover { color: var(--color-text-2); }
+    [data-theme="light"] .wm-footer-link { border-bottom-color: rgba(0,0,0,0.12); }
+
+    /* === WORLD MAP DETAIL PANEL ================================= */
+
+    .wm-panel {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 300;
+      background: var(--color-card);
+      border-radius: var(--r-lg) var(--r-lg) 0 0;
+      box-shadow: 0 -4px 32px rgba(0,0,0,0.5);
+      transform: translateY(100%);
+      transition: transform var(--dur-mid) var(--ease-spring);
+      max-height: 60vh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .wm-panel.open {
+      transform: translateY(0);
+      transition: transform 350ms var(--ease-spring);
+    }
+    .wm-panel.closing {
+      transform: translateY(100%);
+      transition: transform 250ms var(--ease-decel);
+    }
+    [data-theme="light"] .wm-panel {
+      background: #f0ede8;
+      box-shadow: 0 -4px 32px rgba(0,0,0,0.15);
+    }
+
+    .wm-panel__handle-wrap {
+      display: flex;
+      justify-content: center;
+      padding: var(--sp-3) 0 var(--sp-2);
+      cursor: pointer;
+    }
+    .wm-panel__handle {
+      width: 36px; height: 4px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.20);
+    }
+    [data-theme="light"] .wm-panel__handle { background: rgba(0,0,0,0.15); }
+
+    .wm-panel__body {
+      padding: 0 var(--sp-6) var(--sp-7);
+    }
+
+    .wm-panel__type {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--wm-panel-type-color, var(--color-accent));
+      margin-bottom: var(--sp-2);
+    }
+
+    .wm-panel__title {
+      font-family: var(--font-d);
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--color-text-1);
+      margin-bottom: var(--sp-2);
+    }
+
+    .wm-panel__date {
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      margin-bottom: var(--sp-3);
+    }
+
+    .wm-panel__access {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-1);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: var(--r-pill);
+      margin-bottom: var(--sp-4);
+    }
+    .wm-panel__access--public    { background: rgba(255,255,255,0.08); color: var(--color-text-2); }
+    .wm-panel__access--fan       { background: rgba(78,205,196,0.15); color: #4ecdc4; }
+    .wm-panel__access--supporter { background: rgba(212,168,75,0.15); color: #d4a84b; }
+    .wm-panel__access--private   { background: rgba(255,255,255,0.06); color: var(--color-text-3); }
+
+    .wm-panel__note {
+      font-size: var(--text-sm);
+      font-style: italic;
+      color: var(--color-text-2);
+      border-left: 2px solid var(--wm-panel-type-color, var(--color-accent));
+      padding-left: var(--sp-3);
+      margin-bottom: var(--sp-4);
+      line-height: 1.6;
+    }
+
+    .wm-panel__cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: var(--tap-min);
+      border-radius: var(--r-sm);
+      font-size: var(--text-base);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      background: var(--wm-panel-type-color, var(--color-accent));
+      color: #fff;
+      transition: opacity var(--dur-fast) var(--ease-standard),
+                  transform var(--dur-fast) var(--ease-spring);
+    }
+    .wm-panel__cta:hover  { opacity: 0.88; }
+    .wm-panel__cta:active { transform: scale(0.97); }
+
+    .wm-panel__cta--gated {
+      background: rgba(255,255,255,0.06);
+      color: var(--color-text-2);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    [data-theme="light"] .wm-panel__cta--gated {
+      background: rgba(0,0,0,0.05);
+      border-color: rgba(0,0,0,0.10);
+      color: var(--color-text-2);
+    }
+
+    .wm-panel__enquiry { margin-top: var(--sp-4); }
+    .wm-panel__enquiry-field {
+      width: 100%; box-sizing: border-box;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--r-sm);
+      color: var(--color-text-1);
+      font-size: var(--text-sm);
+      padding: var(--sp-3);
+      resize: none;
+      min-height: 90px;
+      margin-bottom: var(--sp-2);
+      font-family: var(--font);
+    }
+    .wm-panel__enquiry-email {
+      width: 100%; box-sizing: border-box;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--r-sm);
+      color: var(--color-text-1);
+      font-size: var(--text-sm);
+      padding: 0 var(--sp-3);
+      min-height: var(--tap-min);
+      margin-bottom: var(--sp-3);
+      font-family: var(--font);
+    }
+    .wm-panel__enquiry-hint {
+      font-size: 11px;
+      color: var(--color-text-3);
+      text-align: center;
+      margin-bottom: var(--sp-3);
+      font-style: italic;
+    }
+    [data-theme="light"] .wm-panel__enquiry-field,
+    [data-theme="light"] .wm-panel__enquiry-email {
+      background: rgba(0,0,0,0.05);
+      border-color: rgba(0,0,0,0.10);
+    }
+
     /* === SNAP CARDS ============================================ */
     .snap-cards-section {
       padding: var(--sp-6) 0;
@@ -3042,6 +3420,64 @@
       </section>
 
       <!-- ======================================================
+           WORLD MAP SECTION
+           ====================================================== -->
+      <section class="world-map-section" id="world-map-section" aria-label="What's coming" hidden>
+        <div class="world-map-card" id="world-map-card">
+
+          <!-- Month header -->
+          <div class="wm-header">
+            <div class="wm-month-label" id="wm-month-label" aria-live="polite" aria-atomic="true">May</div>
+            <div class="wm-nav" role="group" aria-label="Month navigation">
+              <button class="wm-nav-btn pressable" id="wm-prev" aria-label="Previous month">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <button class="wm-nav-btn pressable" id="wm-next" aria-label="Next month">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Day-of-week headers -->
+          <div class="wm-dow-row" aria-hidden="true">
+            <div class="wm-dow">M</div>
+            <div class="wm-dow">T</div>
+            <div class="wm-dow">W</div>
+            <div class="wm-dow">T</div>
+            <div class="wm-dow">F</div>
+            <div class="wm-dow">S</div>
+            <div class="wm-dow">S</div>
+          </div>
+
+          <!-- Date grid (JS-generated) -->
+          <div class="wm-grid-wrap">
+            <div class="wm-grid" id="wm-grid" role="grid" aria-label="Calendar"></div>
+          </div>
+
+          <!-- "See all shows" footer -->
+          <div class="wm-footer" id="wm-footer" hidden>
+            <a class="wm-footer-link" id="wm-shows-link" href="#shows-section">See all shows</a>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- World map detail panel (half-sheet) -->
+      <div class="wm-panel" id="wm-panel" role="dialog" aria-modal="true" aria-label="Moment details" hidden>
+        <div class="wm-panel__handle-wrap" id="wm-panel-handle" role="button" tabindex="0" aria-label="Close">
+          <div class="wm-panel__handle"></div>
+        </div>
+        <div class="wm-panel__body" id="wm-panel-body">
+          <!-- JS-rendered -->
+        </div>
+      </div>
+      <div class="edit-backdrop" id="wm-backdrop" style="display:none;" aria-hidden="true"></div>
+
+      <!-- ======================================================
            LISTEN SECTION
            ====================================================== -->
       <section class="content-section content-section--primary" id="listen-section" aria-labelledby="listen-heading" hidden>
@@ -3554,6 +3990,407 @@
       return 'profile'
     }
 
+    // === WORLD MAP ===============================================
+
+    const WM_TYPE_COLOR = {
+      release:        'var(--color-accent)',
+      show:           '#e8715a',
+      on_sale:        '#f4b942',
+      merch_drop:     '#2db8b0',
+      early_access:   '#d4a84b',
+      livestream:     '#4b8fd4',
+      private_access: 'var(--color-text-3)',
+      announcement:   'rgba(255,255,255,0.7)',
+    }
+
+    const WM_TYPE_LABEL = {
+      release:        'Release',
+      show:           'Show',
+      on_sale:        'On sale',
+      merch_drop:     'Merch drop',
+      early_access:   'Early access',
+      livestream:     'Livestream',
+      private_access: 'Private',
+      announcement:   'Announcement',
+    }
+
+    const WM_ACCESS = {
+      public:    { label: 'For everyone',   cls: 'wm-panel__access--public'    },
+      fan:       { label: 'Fan list',       cls: 'wm-panel__access--fan'       },
+      supporter: { label: 'Supporters',     cls: 'wm-panel__access--supporter' },
+      private:   { label: 'Private',        cls: 'wm-panel__access--private'   },
+    }
+
+    function isoDate(d) {
+      return d.toISOString().slice(0, 10)
+    }
+
+    function buildWorldMapMoments(profile) {
+      const manual = (profile.moments || []).filter(m => m.active !== false)
+      const today = isoDate(new Date())
+
+      const hasRelease = manual.some(m => m.linkedId === 'release')
+      if (!hasRelease && profile.releaseDate) {
+        manual.push({
+          id: 'auto_release',
+          type: 'release',
+          date: profile.releaseDate,
+          title: profile.releaseName || 'New release',
+          access: 'public',
+          cta: { label: profile.releaseDate > today ? 'Pre-save' : 'Stream now', url: profile.ctaUrl || '', type: 'link' },
+          linkedId: 'release',
+          isAuto: true,
+        })
+      }
+
+      ;(profile.shows || []).forEach(show => {
+        if (!manual.some(m => m.linkedId === show.id)) {
+          manual.push({
+            id: 'auto_show_' + show.id,
+            type: 'show',
+            date: show.date,
+            title: show.venue || 'Live show',
+            access: 'public',
+            cta: { label: 'Get tickets', url: show.ticketUrl || '', type: 'link' },
+            linkedId: show.id,
+            isAuto: true,
+          })
+        }
+      })
+
+      return manual.sort((a, b) => a.date.localeCompare(b.date))
+    }
+
+    function selectFeaturedMoment(moments) {
+      const today = isoDate(new Date())
+      const in7   = isoDate(new Date(Date.now() + 7 * 86400000))
+      return moments.find(m =>
+        m.active !== false &&
+        m.date >= today &&
+        m.date <= in7 &&
+        m.access !== 'private'
+      ) || null
+    }
+
+    function resolveAccess(moment, userState) {
+      switch (moment.access) {
+        case 'public':    return 'full'
+        case 'fan':       return userState.isFan ? 'full' : 'gate_fan'
+        case 'supporter': return userState.isSupporter ? 'full' : 'gate_supporter'
+        case 'private':   return 'enquire'
+        default:          return 'full'
+      }
+    }
+
+    function buildMonthGrid(year, month, moments) {
+      const today = isoDate(new Date())
+      const firstDay = new Date(year, month, 1)
+      let startOffset = firstDay.getDay() - 1
+      if (startOffset < 0) startOffset = 6
+
+      const daysInMonth = new Date(year, month + 1, 0).getDate()
+      const cells = []
+
+      for (let i = 0; i < startOffset; i++) cells.push(null)
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = year + '-' + String(month + 1).padStart(2,'0') + '-' + String(d).padStart(2,'0')
+        const dayMoments = moments.filter(m => m.date === dateStr)
+        cells.push({ day: d, dateStr, moments: dayMoments, isToday: dateStr === today })
+      }
+
+      while (cells.length % 7 !== 0) cells.push(null)
+      return { cells }
+    }
+
+    function renderWorldMapGrid(year, month, moments, featuredDate, selectedDate) {
+      const grid = document.getElementById('wm-grid')
+      if (!grid) return
+
+      const today = isoDate(new Date())
+      const { cells } = buildMonthGrid(year, month, moments)
+
+      const monthLabel = document.getElementById('wm-month-label')
+      if (monthLabel) {
+        monthLabel.textContent = new Date(year, month, 1).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
+      }
+
+      grid.innerHTML = cells.map(function(cell) {
+        if (!cell) return '<div class="wm-cell wm-cell--empty" aria-hidden="true"></div>'
+
+        var day = cell.day, dateStr = cell.dateStr, moms = cell.moments, isToday = cell.isToday
+        var isPast = dateStr < today
+        var hasMoments = moms.length > 0
+        var isSelected = dateStr === selectedDate
+        var isFeatured = dateStr === featuredDate
+
+        var classes = ['wm-cell']
+        if (isPast) classes.push('wm-cell--past')
+        if (isToday) classes.push('wm-cell--today')
+        if (hasMoments) classes.push('wm-cell--has-moment')
+        if (isSelected) classes.push('wm-cell--selected')
+        if (isFeatured) classes.push('wm-cell--featured')
+
+        var primaryColor = hasMoments ? (WM_TYPE_COLOR[moms[0].type] || 'var(--color-accent)') : 'var(--color-accent)'
+        var styleStr = '--wm-type-color: ' + primaryColor + ';'
+
+        var dotsHtml = '<div class="wm-dots" aria-hidden="true">'
+        if (hasMoments) {
+          var visible = moms.slice(0, 3)
+          var extra = moms.length - 3
+          visible.forEach(function(m) {
+            var c = WM_TYPE_COLOR[m.type] || 'var(--color-accent)'
+            dotsHtml += '<div class="wm-dot" style="background:' + c + '"></div>'
+          })
+          if (extra > 0) dotsHtml += '<span class="wm-dot-more">+' + extra + '</span>'
+        }
+        dotsHtml += '</div>'
+
+        var monthName = new Date(year, month, 1).toLocaleDateString('en-GB', { month: 'long' })
+        var ariaLabel = hasMoments
+          ? day + ' ' + monthName + ', ' + moms.map(function(m) { return WM_TYPE_LABEL[m.type] || m.type }).join(', ')
+          : day + ' ' + monthName
+
+        return '<div class="' + classes.join(' ') + '" style="' + styleStr + '" data-date="' + dateStr + '"'
+             + ' role="gridcell" aria-label="' + escHtml(ariaLabel) + '"'
+             + ' aria-selected="' + isSelected + '" tabindex="' + (isSelected ? '0' : '-1') + '">'
+             + '<span class="wm-date-num" aria-hidden="true">' + day + '</span>'
+             + dotsHtml
+             + '</div>'
+      }).join('')
+
+      grid.querySelectorAll('.wm-cell[data-date]').forEach(function(cellEl) {
+        cellEl.addEventListener('click', function() {
+          var dateStr = cellEl.dataset.date
+          var dayMoments = moments.filter(function(m) { return m.date === dateStr })
+          if (!dayMoments.length) return
+          wmSelectedDate = dateStr
+          openWorldMapPanel(dayMoments, year, month, moments, featuredDate, dateStr)
+        })
+      })
+    }
+
+    function openWorldMapPanel(dayMoments, year, month, moments, featuredDate, selectedDate) {
+      renderWorldMapGrid(year, month, moments, featuredDate, selectedDate)
+
+      var panel = document.getElementById('wm-panel')
+      var body  = document.getElementById('wm-panel-body')
+      var backdrop = document.getElementById('wm-backdrop')
+      if (!panel || !body) return
+
+      var moment = dayMoments[0]
+      var typeColor = WM_TYPE_COLOR[moment.type] || 'var(--color-accent)'
+      var typeLabel = WM_TYPE_LABEL[moment.type] || 'Moment'
+      var accessCfg = WM_ACCESS[moment.access] || WM_ACCESS.public
+
+      var profile = safeLS(V3_KEY, {})
+      var fans = safeLS('able_fans', [])
+      var userState = {
+        isFan: fans.length > 0,
+        isSupporter: !!(profile.supporterSince),
+      }
+      var access = resolveAccess(moment, userState)
+
+      var dateObj = new Date(moment.date + 'T00:00:00')
+      var dateStr = dateObj.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long' })
+
+      var artistName = escHtml(profile.name || 'the artist')
+      var ctaHtml = ''
+
+      if (access === 'enquire' || (access === 'full' && moment.access === 'private')) {
+        ctaHtml = '<div class="wm-panel__enquiry">'
+          + '<textarea class="wm-panel__enquiry-field" id="wm-enquiry-msg"'
+          + ' placeholder="Tell ' + artistName + ' what you have in mind."'
+          + ' maxlength="600" aria-label="Your message"></textarea>'
+          + '<input type="email" class="wm-panel__enquiry-email" id="wm-enquiry-email"'
+          + ' placeholder="Your email" aria-label="Your email"/>'
+          + '<p class="wm-panel__enquiry-hint">I read everything. I\'ll be in touch if it feels right.</p>'
+          + '<button class="wm-panel__cta" id="wm-enquiry-submit"'
+          + ' style="--wm-panel-type-color:' + typeColor + '">Express interest</button>'
+          + '</div>'
+      } else if (access === 'full' && moment.cta) {
+        if (moment.cta.url && isSafeUrl(moment.cta.url)) {
+          var safeUrl = escHtml(moment.cta.url)
+          ctaHtml = '<a class="wm-panel__cta" href="' + safeUrl + '" target="_blank" rel="noopener noreferrer"'
+            + ' style="--wm-panel-type-color:' + typeColor + '">' + escHtml(moment.cta.label || 'View') + '</a>'
+        } else if (moment.cta.type === 'notify') {
+          ctaHtml = '<button class="wm-panel__cta" style="--wm-panel-type-color:' + typeColor + '">'
+            + escHtml(moment.cta.label || 'Notify me') + '</button>'
+        }
+      } else if (access === 'gate_fan') {
+        ctaHtml = '<button class="wm-panel__cta wm-panel__cta--gated" id="wm-fan-gate">Join the list to access this</button>'
+      } else if (access === 'gate_supporter') {
+        ctaHtml = '<button class="wm-panel__cta wm-panel__cta--gated" id="wm-supporter-gate">Supporters get this — become a supporter</button>'
+      }
+
+      body.style.setProperty('--wm-panel-type-color', typeColor)
+      body.innerHTML = '<div class="wm-panel__type">' + escHtml(typeLabel) + '</div>'
+        + '<div class="wm-panel__title">' + escHtml(moment.title) + '</div>'
+        + '<div class="wm-panel__date">' + escHtml(dateStr) + '</div>'
+        + '<div class="wm-panel__access ' + accessCfg.cls + '">' + escHtml(accessCfg.label) + '</div>'
+        + (moment.artistNote ? '<div class="wm-panel__note">' + escHtml(moment.artistNote) + '</div>' : '')
+        + ctaHtml
+
+      var submitBtn = body.querySelector('#wm-enquiry-submit')
+      if (submitBtn) {
+        submitBtn.addEventListener('click', function() {
+          var msg   = document.getElementById('wm-enquiry-msg')?.value.trim() || ''
+          var email = document.getElementById('wm-enquiry-email')?.value.trim() || ''
+          if (msg.length < 50) { submitBtn.textContent = 'Write a bit more first'; return }
+          if (!email.includes('@')) { submitBtn.textContent = 'Add your email'; return }
+          var enq = safeLS(V3_KEY, {})
+          var enquiries = enq.privateAccessEnquiries || []
+          enquiries.push({ momentId: moment.id, email: email, message: msg, submittedAt: new Date().toISOString(), status: 'pending' })
+          enq.privateAccessEnquiries = enquiries
+          setLS(V3_KEY, enq)
+          submitBtn.textContent = "Sent — I'll be in touch if it feels right."
+          submitBtn.disabled = true
+        })
+      }
+
+      var fanGateBtn = body.querySelector('#wm-fan-gate')
+      if (fanGateBtn) {
+        fanGateBtn.addEventListener('click', function() {
+          closeWorldMapPanel()
+          document.getElementById('fan-capture-section')?.scrollIntoView({ behavior: 'smooth' })
+        })
+      }
+
+      var supportGateBtn = body.querySelector('#wm-supporter-gate')
+      if (supportGateBtn) {
+        supportGateBtn.addEventListener('click', function() {
+          closeWorldMapPanel()
+          document.getElementById('support-section')?.scrollIntoView({ behavior: 'smooth' })
+        })
+      }
+
+      panel.hidden = false
+      panel.setAttribute('aria-hidden', 'false')
+      if (backdrop) { backdrop.style.display = 'block'; backdrop.style.opacity = '0'; }
+      requestAnimationFrame(function() {
+        panel.classList.add('open')
+        if (backdrop) backdrop.style.opacity = '1'
+      })
+      panel.focus()
+    }
+
+    function closeWorldMapPanel() {
+      var panel = document.getElementById('wm-panel')
+      var backdrop = document.getElementById('wm-backdrop')
+      if (!panel) return
+      panel.classList.remove('open')
+      panel.classList.add('closing')
+      if (backdrop) backdrop.style.opacity = '0'
+      setTimeout(function() {
+        panel.classList.remove('closing')
+        panel.hidden = true
+        panel.setAttribute('aria-hidden', 'true')
+        if (backdrop) backdrop.style.display = 'none'
+      }, 260)
+    }
+
+    var wmYear  = new Date().getFullYear()
+    var wmMonth = new Date().getMonth()
+    var wmAllMoments = []
+    var wmFeaturedDate = null
+    var wmSelectedDate = null
+
+    function wmNavigate(delta) {
+      wmMonth += delta
+      if (wmMonth < 0)  { wmMonth = 11; wmYear--; }
+      if (wmMonth > 11) { wmMonth = 0;  wmYear++; }
+      wmSelectedDate = null
+      closeWorldMapPanel()
+      var grid = document.getElementById('wm-grid')
+      if (grid) {
+        var cls = delta > 0 ? 'wm-slide-left' : 'wm-slide-right'
+        grid.classList.remove('wm-slide-left', 'wm-slide-right')
+        void grid.offsetWidth
+        grid.classList.add(cls)
+        grid.addEventListener('animationend', function() { grid.classList.remove(cls) }, { once: true })
+      }
+      renderWorldMapGrid(wmYear, wmMonth, wmAllMoments, wmFeaturedDate, wmSelectedDate)
+    }
+
+    function initWorldMap(profile) {
+      var section = document.getElementById('world-map-section')
+      if (!section) return
+
+      wmAllMoments = buildWorldMapMoments(profile)
+
+      var today = isoDate(new Date())
+      var in12mo = isoDate(new Date(Date.now() + 365 * 86400000))
+      var hasUpcoming = wmAllMoments.some(function(m) { return m.date >= today && m.date <= in12mo })
+      if (!hasUpcoming) return
+
+      section.hidden = false
+
+      var now = new Date()
+      wmYear  = now.getFullYear()
+      wmMonth = now.getMonth()
+
+      var featured = selectFeaturedMoment(wmAllMoments)
+      wmFeaturedDate = featured ? featured.date : null
+
+      var nearest = wmAllMoments.find(function(m) { return m.date >= today })
+      if (nearest) {
+        var d = new Date(nearest.date)
+        wmYear = d.getFullYear()
+        wmMonth = d.getMonth()
+        wmSelectedDate = nearest.date
+      }
+
+      var hasShows = wmAllMoments.some(function(m) { return m.type === 'show' || m.type === 'on_sale' })
+      var footer = document.getElementById('wm-footer')
+      if (footer && hasShows) footer.hidden = false
+
+      renderWorldMapGrid(wmYear, wmMonth, wmAllMoments, wmFeaturedDate, wmSelectedDate)
+
+      var prevBtn = document.getElementById('wm-prev')
+      var nextBtn = document.getElementById('wm-next')
+      if (prevBtn) prevBtn.addEventListener('click', function() { wmNavigate(-1) })
+      if (nextBtn) nextBtn.addEventListener('click', function() { wmNavigate(1) })
+
+      var grid = document.getElementById('wm-grid')
+      if (grid) {
+        var sx = 0, sy = 0
+        grid.addEventListener('touchstart', function(e) { sx = e.touches[0].clientX; sy = e.touches[0].clientY }, { passive: true })
+        grid.addEventListener('touchend', function(e) {
+          var dx = sx - e.changedTouches[0].clientX
+          var dy = Math.abs(sy - e.changedTouches[0].clientY)
+          if (Math.abs(dx) > 40 && dy < 20) wmNavigate(dx > 0 ? 1 : -1)
+        }, { passive: true })
+      }
+
+      var backdrop = document.getElementById('wm-backdrop')
+      if (backdrop) backdrop.addEventListener('click', closeWorldMapPanel)
+
+      var handle = document.getElementById('wm-panel-handle')
+      if (handle) {
+        handle.addEventListener('click', closeWorldMapPanel)
+        handle.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') closeWorldMapPanel()
+        })
+      }
+
+      var panel = document.getElementById('wm-panel')
+      if (panel) {
+        var psy = 0
+        panel.addEventListener('touchstart', function(e) { psy = e.touches[0].clientY }, { passive: true })
+        panel.addEventListener('touchend', function(e) {
+          if (e.changedTouches[0].clientY - psy > 60) closeWorldMapPanel()
+        }, { passive: true })
+      }
+
+      var showsLink = document.getElementById('wm-shows-link')
+      if (showsLink) {
+        showsLink.addEventListener('click', function(e) {
+          e.preventDefault()
+          document.getElementById('shows-section')?.scrollIntoView({ behavior: 'smooth' })
+        })
+      }
+    }
+
     // === TAB BAR =================================================
 
     function initTabBar(shell) {
@@ -3987,15 +4824,16 @@
 
     // === STATE CHIP ==============================================
 
-    function applyStateChip(state, animate) {
+    function applyStateChip(state, animate, customText) {
       const chip = document.getElementById('hero-state-chip')
       const label = document.getElementById('hero-state-label')
 
       const config = {
-        'pre-release': { cls: 'hero__state-chip--pre',  text: 'Coming soon' },
-        'live':        { cls: 'hero__state-chip--live', text: 'Out now'     },
-        'gig':         { cls: 'hero__state-chip--gig',  text: 'On tonight' },
-        'profile':     { cls: 'hero__state-chip--profile', text: ''         },
+        'pre-release':  { cls: 'hero__state-chip--pre',        text: 'Coming soon' },
+        'live':         { cls: 'hero__state-chip--live',        text: 'Out now'     },
+        'gig':          { cls: 'hero__state-chip--gig',         text: 'On tonight'  },
+        'near-future':  { cls: 'hero__state-chip--near-future', text: customText || '' },
+        'profile':      { cls: 'hero__state-chip--profile',     text: ''            },
       }[state] || { cls: 'hero__state-chip--profile', text: '' }
 
       function applyConfig() {
@@ -4004,6 +4842,17 @@
         label.textContent = config.text
         if (state !== 'profile') {
           requestAnimationFrame(() => chip.classList.add('visible'))
+        }
+        // State 4: chip scrolls to world map on click
+        if (state === 'near-future') {
+          chip.style.cursor = 'pointer'
+          chip.onclick = function() {
+            const wm = document.getElementById('world-map-section')
+            if (wm) wm.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }
+        } else {
+          chip.style.cursor = ''
+          chip.onclick = null
         }
       }
 
@@ -4195,8 +5044,33 @@
         loadHeroArtwork(artworkSrc, shell)
       }
 
-      // State chip
-      applyStateChip(state)
+      // State chip — check for State 4 (near-future world map moment)
+      // Runs before applyStateChip so it can override 'profile' state with a near-future chip
+      var chipState = state
+      var chipCustomText = undefined
+      if (state === 'profile') {
+        // Build moments early enough to check for near-future moment
+        var moments4 = buildWorldMapMoments(profile)
+        var featured4 = selectFeaturedMoment(moments4)
+        if (featured4) {
+          chipState = 'near-future'
+          // Generate copy: "[Type action] [timing]"
+          var typeLabels4 = {
+            release: 'New music', show: 'Playing', on_sale: 'Tickets', merch_drop: 'Merch drop',
+            early_access: 'Early access', livestream: 'Livestream', announcement: 'Announcement'
+          }
+          var tLabel = typeLabels4[featured4.type] || 'Coming up'
+          var mDate = new Date(featured4.date + 'T00:00:00')
+          var today4 = new Date(); today4.setHours(0,0,0,0)
+          var diff4 = Math.round((mDate - today4) / 86400000)
+          var timing4 = diff4 === 0 ? 'tonight' : diff4 === 1 ? 'tomorrow' : (function() {
+            var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+            return diff4 <= 6 ? days[mDate.getDay()] : 'soon'
+          })()
+          chipCustomText = tLabel + ' ' + timing4
+        }
+      }
+      applyStateChip(chipState, false, chipCustomText)
 
       // State-specific content
       stopCountdown()
@@ -4204,6 +5078,9 @@
       if (state === 'pre-release' && profile.releaseDate) {
         startCountdown(new Date(profile.releaseDate).getTime())
       }
+
+      // World Map — init after state chip (uses same moment data)
+      initWorldMap(profile)
 
       // CTAs — rendered in Checkpoint 3, but set up anchors here
       const ctaPrimary   = document.getElementById('cta-primary')
