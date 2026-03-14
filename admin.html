@@ -1444,6 +1444,23 @@ body {
         </div>
       </div>
     </div>
+
+    <!-- Recommendations -->
+    <div class="dash-card" style="max-width:560px;margin-top:16px;">
+      <div class="dc-head">
+        <div>
+          <div class="dc-title">Who you rate</div>
+          <div class="dc-sub">Artists you recommend on your profile — up to 5.</div>
+        </div>
+        <button class="dc-action" id="recAddBtn" onclick="addRec()">+ Add artist</button>
+      </div>
+      <div class="dc-body">
+        <div class="snap-list" id="recList"><!-- Populated by renderRecsList() --></div>
+        <div id="recEmpty" style="color:var(--t3);font-size:13px;padding:4px 0;">
+          No recommendations yet. Share artists who've shaped your sound.
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ── MERCH PAGE ── -->
@@ -1989,6 +2006,7 @@ function showPage(id) {
   if (id === 'merch')     renderAdminMerch();
   if (id === 'support')   renderAdminSupport();
   if (id === 'snaps')     renderSnapCardsList();
+  if (id === 'connect')   renderRecsList();
   if (id === 'analytics') { loadRealStats(); loadActivityFeed(); }
 }
 
@@ -2553,6 +2571,119 @@ function moveSnapCard(id, dir) {
   data.snapCards = cards
   setLS(V3_KEY, data)
   renderSnapCardsList()
+}
+
+/* ── RECOMMENDATIONS (who you rate) ── */
+function renderRecsList() {
+  const list  = document.getElementById('recList')
+  const empty = document.getElementById('recEmpty')
+  const addBtn = document.getElementById('recAddBtn')
+  if (!list) return
+  const data = safeLS(V3_KEY, {})
+  const recs = data.recommendations || []
+  if (empty) empty.style.display = recs.length ? 'none' : 'block'
+  if (addBtn) addBtn.style.display = recs.length >= 5 ? 'none' : ''
+
+  list.innerHTML = recs.map((rec, i) => `
+    <div class="snap-card-wrap" data-recidx="${i}">
+      <div class="snap-item">
+        <div style="display:flex;gap:4px;flex-shrink:0;">
+          <button class="section-order-btn" onclick="moveRec(${i},-1)" ${i===0?'disabled':''} title="Move up">↑</button>
+          <button class="section-order-btn" onclick="moveRec(${i},1)" ${i===recs.length-1?'disabled':''} title="Move down">↓</button>
+        </div>
+        <div class="snap-body" style="min-width:0;flex:1;">
+          <div class="snap-eyebrow">${escHtml(rec.name || '(unnamed)')}</div>
+          ${rec.note ? `<div class="snap-label">${escHtml(rec.note)}</div>` : ''}
+        </div>
+        <div class="snap-actions">
+          <button class="snap-btn" onclick="toggleRecEdit(${i})">Edit</button>
+          <button class="snap-btn del" onclick="removeRec(${i})">×</button>
+        </div>
+      </div>
+      <div class="snap-item-edit" id="rec-edit-${i}" hidden>
+        <div class="field-row" style="margin:0;">
+          <div class="field-label">Artist name</div>
+          <input class="field-input" id="re-name-${i}" value="${escHtml(rec.name||'')}" placeholder="e.g. Burial">
+        </div>
+        <div class="field-row" style="margin:0;">
+          <div class="field-label">Note <span style="font-weight:400;color:var(--t3);">(optional — one line)</span></div>
+          <input class="field-input" id="re-note-${i}" value="${escHtml(rec.note||'')}" placeholder="e.g. Taught me how to use silence.">
+        </div>
+        <div class="field-row" style="margin:0;">
+          <div class="field-label">Avatar image URL <span style="font-weight:400;color:var(--t3);">(optional)</span></div>
+          <input class="field-input" type="url" id="re-avatar-${i}" value="${escHtml(rec.avatarUrl||'')}" placeholder="https://…/photo.jpg">
+        </div>
+        <div class="field-row" style="margin:0;">
+          <div class="field-label">Link URL <span style="font-weight:400;color:var(--t3);">(optional)</span></div>
+          <input class="field-input" type="url" id="re-url-${i}" value="${escHtml(rec.url||'')}" placeholder="https://soundcloud.com/…">
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;">
+          <button class="snap-btn" onclick="toggleRecEdit(${i})">Close</button>
+          <button class="ci-btn ci-btn-connect" onclick="saveRec(${i})">Save</button>
+        </div>
+      </div>
+    </div>`).join('')
+}
+
+function addRec() {
+  const data = safeLS(V3_KEY, {})
+  const recs = data.recommendations || []
+  if (recs.length >= 5) return
+  recs.push({ name: '', note: '', avatarUrl: '', url: '' })
+  data.recommendations = recs
+  setLS(V3_KEY, data)
+  renderRecsList()
+  setTimeout(() => toggleRecEdit(recs.length - 1), 50)
+}
+
+function removeRec(idx) {
+  const data = safeLS(V3_KEY, {})
+  const recs = data.recommendations || []
+  recs.splice(idx, 1)
+  data.recommendations = recs
+  setLS(V3_KEY, data)
+  renderRecsList()
+}
+
+function moveRec(idx, dir) {
+  const data = safeLS(V3_KEY, {})
+  const recs = data.recommendations || []
+  const swapIdx = idx + dir
+  if (swapIdx < 0 || swapIdx >= recs.length) return
+  ;[recs[idx], recs[swapIdx]] = [recs[swapIdx], recs[idx]]
+  data.recommendations = recs
+  setLS(V3_KEY, data)
+  renderRecsList()
+}
+
+function toggleRecEdit(idx) {
+  const wrap = document.querySelector(`.snap-card-wrap[data-recidx="${idx}"]`)
+  const panel = document.getElementById('rec-edit-' + idx)
+  if (!wrap || !panel) return
+  const opening = panel.hidden
+  panel.hidden = !opening
+  wrap.classList.toggle('editing', opening)
+  if (opening) {
+    const nameEl = document.getElementById('re-name-' + idx)
+    if (nameEl) nameEl.focus()
+  }
+}
+
+function saveRec(idx) {
+  const data = safeLS(V3_KEY, {})
+  const recs = data.recommendations || []
+  if (!recs[idx]) return
+  const name = document.getElementById('re-name-' + idx)?.value.trim() || ''
+  if (!name) { alert('Artist name is required.'); return }
+  recs[idx] = {
+    name,
+    note:      document.getElementById('re-note-' + idx)?.value.trim()   || '',
+    avatarUrl: document.getElementById('re-avatar-' + idx)?.value.trim() || '',
+    url:       document.getElementById('re-url-' + idx)?.value.trim()    || '',
+  }
+  data.recommendations = recs
+  setLS(V3_KEY, data)
+  renderRecsList()
 }
 
 /* ── MERCH MANAGEMENT ── */
