@@ -2913,7 +2913,7 @@ function renderAdminSupport() {
   el.innerHTML = packs.map((pack) => `
     <div class="dash-card admin-release-card" style="max-width:560px;margin-bottom:12px;" data-pid="${pack.id}">
       <div class="dc-head">
-        <div class="dc-title">${escHtml(pack.emoji || '💝')} ${escHtml(pack.label || 'Untitled pack')} <span style="font-weight:400;color:var(--t3);font-size:11px;">${pack.price ? '£'+escHtml(pack.price) : ''}</span></div>
+        <div class="dc-title">${escHtml(pack.emoji || '💝')} ${escHtml(pack.label || 'Untitled pack')} <span style="font-weight:400;color:var(--t3);font-size:11px;">${pack.price ? escHtml(pack.currency||'£')+escHtml(pack.price) : ''}</span></div>
         <button class="snap-btn del" onclick="removeSupportPack('${pack.id}')" title="Remove">×</button>
       </div>
       <div class="dc-body">
@@ -2982,7 +2982,7 @@ function addSupportPack() {
   const support = data.support || {};
   const packs = [...(support.packs||[]), {
     id: 'sp'+Date.now(), label: 'Buy me a coffee', emoji: '☕',
-    description: 'Keep the music coming.', price: '5', type: 'tip', url: '', limit: ''
+    description: 'Keep the music coming.', price: '5', currency: '£', type: 'tip', url: '', limit: ''
   }];
   const updated = { ...data, support: { ...support, packs } };
   setLS(V3_KEY, updated);
