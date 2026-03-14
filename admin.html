@@ -581,6 +581,127 @@ body {
     }
     .section-vis-toggle[aria-pressed="true"] { background: var(--acc, #f4b942); }
     .section-vis-toggle[aria-pressed="true"]::after { transform: translateX(16px); }
+
+/* ── PROFILE IDENTITY CARD ── */
+.identity-card {
+  background: var(--card, #16181f);
+  border-radius: 14px;
+  padding: 18px 16px 16px;
+  margin-bottom: 12px;
+}
+.identity-card__title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  color: var(--t2, rgba(255,255,255,.45));
+  margin-bottom: 14px;
+}
+.identity-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.identity-row:first-of-type { border-top: none; }
+.identity-row__label {
+  font-size: 12px;
+  color: var(--t2, rgba(255,255,255,.45));
+  font-weight: 500;
+}
+.identity-row__value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text, #fff);
+  flex: 1;
+  text-align: center;
+}
+.identity-row__change {
+  font-size: 12px;
+  color: var(--acc, #f4b942);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0 4px 12px;
+  font-weight: 500;
+}
+.identity-row__change:hover { opacity: .75; }
+.identity-nudges {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.nudge-btn {
+  padding: 6px 13px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.04);
+  color: var(--text, #fff);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.nudge-btn:hover {
+  border-color: var(--acc, #f4b942);
+  background: rgba(255,255,255,.07);
+}
+.nudge-btn.applied {
+  border-color: var(--acc, #f4b942);
+  color: var(--acc, #f4b942);
+}
+.identity-preview {
+  margin-top: 14px;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 130px;
+  background: var(--bg, #09090f);
+  position: relative;
+  border: 1px solid rgba(255,255,255,.07);
+}
+.identity-preview__label {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  font-size: 10px;
+  color: rgba(255,255,255,.4);
+  font-weight: 500;
+  letter-spacing: .04em;
+}
+.identity-preview__name {
+  position: absolute;
+  bottom: 26px;
+  left: 10px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -.01em;
+  font-family: var(--font-d, 'Barlow Condensed', sans-serif);
+}
+.identity-preview__accent {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--acc, #f4b942);
+}
+.identity-preview__feel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 10px;
+  color: var(--acc, #f4b942);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.identity-nudge-hint {
+  font-size: 11px;
+  color: var(--t2, rgba(255,255,255,.45));
+  margin-top: 6px;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
@@ -755,6 +876,38 @@ body {
         <div style="margin-top:14px;">
           <button class="tb-btn tb-btn-acc" style="width:100%;" onclick="saveCampaignHQ()">Apply to live page →</button>
         </div>
+      </div>
+    </div>
+
+    <!-- ── PROFILE IDENTITY CARD ── -->
+    <div class="identity-card" id="identityCard">
+      <div class="identity-card__title">Profile Identity</div>
+
+      <div class="identity-row">
+        <span class="identity-row__label">Sound</span>
+        <span class="identity-row__value" id="idGenreVal">—</span>
+        <button class="identity-row__change" onclick="identityChangeGenre()">Change →</button>
+      </div>
+      <div class="identity-row">
+        <span class="identity-row__label">Feel</span>
+        <span class="identity-row__value" id="idFeelVal">—</span>
+        <button class="identity-row__change" onclick="identityChangeFeel()">Change →</button>
+      </div>
+
+      <div class="identity-nudges" id="identityNudges">
+        <button class="nudge-btn" data-nudge="darkness"  data-dir="1"  onclick="applyNudge(this)">Darker</button>
+        <button class="nudge-btn" data-nudge="spacing"   data-dir="1"  onclick="applyNudge(this)">More space</button>
+        <button class="nudge-btn" data-nudge="sharpness" data-dir="-1" onclick="applyNudge(this)">Softer</button>
+        <button class="nudge-btn" data-nudge="contrast"  data-dir="1"  onclick="applyNudge(this)">Bolder</button>
+        <button class="nudge-btn" data-nudge="warmth"    data-dir="1"  onclick="applyNudge(this)">Warmer</button>
+      </div>
+      <p class="identity-nudge-hint" id="nudgeHint"></p>
+
+      <div class="identity-preview" id="identityPreview">
+        <div class="identity-preview__accent" id="idPrevAccent"></div>
+        <div class="identity-preview__feel"   id="idPrevFeel"></div>
+        <div class="identity-preview__name"   id="idPrevName"></div>
+        <div class="identity-preview__label">Profile preview</div>
       </div>
     </div>
 
@@ -1415,8 +1568,24 @@ async function syncProfile(data) {
   if (!sb) return;
   try {
     await sb.from('profiles').upsert({
-      id: getArtistId(), data,
-      updated_at: new Date().toISOString()
+      id:             getArtistId(),
+      name:           data.name           || null,
+      handle:         data.handle         || null,
+      bio:            data.bio            || null,
+      location:       data.location       || null,
+      accent:         data.accent         || '#e05242',
+      theme:          data.theme          || 'dark',
+      vibe:           data.vibe           || 'indie',
+      hero_tag:       data.heroTag        || null,
+      page_state:     data.pageState      || 'profile',
+      state_override: data.stateOverride  || null,
+      release_date:   data.releaseDate    || null,
+      release_json:   data.release        ? JSON.stringify(data.release)      : null,
+      cta_primary:    data.ctaPrimary     ? JSON.stringify(data.ctaPrimary)   : null,
+      cta_secondary:  data.ctaSecondary   ? JSON.stringify(data.ctaSecondary) : null,
+      top_card:       data.topCard        ? JSON.stringify(data.topCard)      : null,
+      platforms:      data.platforms      ? JSON.stringify(data.platforms)    : null,
+      updated_at:     Date.now(),
     }, { onConflict: 'id' });
   } catch(e) {}
 }
@@ -1424,9 +1593,16 @@ async function syncProfile(data) {
 async function syncFans(fans) {
   if (!sb || !fans.length) return;
   try {
-    const artist_id = getArtistId();
-    const rows = fans.map(f => ({ artist_id, email: f.email, source: f.source || 'direct', created_at: new Date(f.ts || Date.now()).toISOString() }));
-    await sb.from('fans').upsert(rows, { onConflict: 'artist_id,email', ignoreDuplicates: true });
+    const profile_id = getArtistId();
+    const rows = fans.map(f => ({
+      id:         crypto.randomUUID(),
+      profile_id,
+      email:      f.email,
+      source:     f.source || 'direct',
+      ts:         f.ts || Date.now(),
+      created_at: f.ts || Date.now(),
+    }));
+    await sb.from('fans').upsert(rows, { onConflict: 'profile_id,email', ignoreDuplicates: true });
   } catch(e) {}
 }
 
@@ -2405,6 +2581,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Section visibility toggles
   initSectionVisibility();
+
+  // Profile identity card
+  initIdentityCard();
 });
 
 /* ── QR CODE ── */
@@ -2554,6 +2733,122 @@ function toggleSectionVis(btn) {
   if (!profile.sectionVisibility) profile.sectionVisibility = {}
   profile.sectionVisibility[sectionId] = next
   localStorage.setItem(V3_KEY, JSON.stringify(profile))
+}
+
+// ── PROFILE IDENTITY CARD ─────────────────────────────────────────────────
+
+const FEEL_LABELS = {
+  'intimate-raw':     'Stripped back',
+  'intimate-refined': 'Warm and cinematic',
+  'bold-raw':         'Underground and direct',
+  'bold-refined':     'Clean and confident',
+};
+
+const GENRE_LABELS = {
+  'electronic': 'Electronic', 'hiphop': 'Hip-hop', 'rnb': 'R&B',
+  'indie': 'Indie', 'pop': 'Pop', 'rock': 'Rock', 'acoustic': 'Acoustic',
+};
+
+let nudgeUsesLeft = null; // null = unlimited (Artist+); number = free tier remaining
+
+function initIdentityCard() {
+  const profile = safeLS(V3_KEY, {});
+  const id = profile.identity || {};
+  const feel  = id.feel  || 'bold-refined';
+  const genre = id.genre || profile.vibe || 'indie';
+  const accent = id.accent || profile.accent || '#f4b942';
+
+  const genreEl = document.getElementById('idGenreVal');
+  const feelEl  = document.getElementById('idFeelVal');
+  if (genreEl) genreEl.textContent = GENRE_LABELS[genre] || genre;
+  if (feelEl)  feelEl.textContent  = FEEL_LABELS[feel]   || feel;
+
+  const tier = profile.tier || 'free';
+  if (tier === 'free') {
+    const used = parseInt(localStorage.getItem('able_nudge_uses') || '0', 10);
+    nudgeUsesLeft = Math.max(0, 3 - used);
+  } else {
+    nudgeUsesLeft = null;
+  }
+  updateNudgeHint();
+  updateIdentityPreview(profile);
+}
+
+function updateNudgeHint() {
+  const hint = document.getElementById('nudgeHint');
+  if (!hint) return;
+  if (nudgeUsesLeft === null) {
+    hint.textContent = '';
+  } else if (nudgeUsesLeft > 0) {
+    hint.textContent = `${nudgeUsesLeft} nudge${nudgeUsesLeft === 1 ? '' : 's'} remaining on free.`;
+  } else {
+    hint.textContent = 'Upgrade to Artist for unlimited nudges.';
+  }
+}
+
+function applyNudge(btn) {
+  if (nudgeUsesLeft !== null && nudgeUsesLeft <= 0) {
+    updateNudgeHint();
+    return;
+  }
+  const profile = safeLS(V3_KEY, {});
+  if (!profile.identity) {
+    profile.identity = {
+      genre: profile.vibe || 'indie', feel: 'bold-refined',
+      accent: profile.accent || '#f4b942', accentSource: 'artist',
+      refinements: { darkness:0, spacing:0, sharpness:0, contrast:0, warmth:0 }
+    };
+  }
+  const r = profile.identity.refinements;
+  const axis = btn.dataset.nudge;
+  const dir  = parseInt(btn.dataset.dir, 10);
+  r[axis] = Math.max(-3, Math.min(3, (r[axis] || 0) + dir));
+  setLS(V3_KEY, profile);
+
+  if (nudgeUsesLeft !== null) {
+    nudgeUsesLeft = Math.max(0, nudgeUsesLeft - 1);
+    const used = parseInt(localStorage.getItem('able_nudge_uses') || '0', 10);
+    localStorage.setItem('able_nudge_uses', String(used + 1));
+  }
+
+  btn.classList.add('applied');
+  setTimeout(() => btn.classList.remove('applied'), 900);
+  updateNudgeHint();
+  updateIdentityPreview(profile);
+}
+
+function updateIdentityPreview(profile) {
+  const id = profile.identity || {};
+  const feel   = id.feel   || 'bold-refined';
+  const accent = id.accent || profile.accent || '#f4b942';
+  const name   = profile.name || 'Artist';
+
+  const prevAccent = document.getElementById('idPrevAccent');
+  const prevFeel   = document.getElementById('idPrevFeel');
+  const prevName   = document.getElementById('idPrevName');
+  if (prevAccent) prevAccent.style.background = accent;
+  if (prevFeel)   prevFeel.textContent = FEEL_LABELS[feel] || feel;
+  if (prevName)   prevName.textContent = name.toUpperCase();
+}
+
+function identityChangeGenre() {
+  if (confirm('Re-run genre setup? This will take you back to onboarding.')) {
+    window.location.href = 'start.html';
+  }
+}
+
+function identityChangeFeel() {
+  const options = Object.entries(FEEL_LABELS);
+  const msg = 'Choose feel:\n' + options.map(([k,v],i) => `${i+1}. ${v}`).join('\n');
+  const choice = prompt(msg);
+  const idx = parseInt(choice, 10) - 1;
+  if (idx >= 0 && idx < options.length) {
+    const profile = safeLS(V3_KEY, {});
+    if (!profile.identity) profile.identity = {};
+    profile.identity.feel = options[idx][0];
+    setLS(V3_KEY, profile);
+    initIdentityCard();
+  }
 }
 </script>
 </body>
