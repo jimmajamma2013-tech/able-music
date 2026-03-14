@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data:; connect-src 'self' https:;">
+<meta name="robots" content="noindex, nofollow">
 <title>ABLE — Get Started</title>
 <meta name="description" content="Set up your ABLE artist page in minutes. Free.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,10 +137,19 @@ body::before {
   border-color:rgba(var(--acc-rgb),.5);
   box-shadow:0 0 0 3px rgba(var(--acc-rgb),.1);
 }
+button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+:focus:not(:focus-visible) { outline: none; }
 .field-input::placeholder { color:var(--t3); }
 select.field-input { appearance:none; cursor:pointer; }
 textarea.field-input { resize:none; height:76px; line-height:1.5; }
 .field-hint { margin-top:5px; font-size:11.5px; color:var(--t3); line-height:1.5; }
+.field-error { border-color:rgba(220,80,60,.6) !important; box-shadow:0 0 0 3px rgba(220,80,60,.12) !important; }
+.field-error-msg { margin-top:5px; font-size:11.5px; color:#e05050; display:none; }
+.field-error-msg.show { display:block; }
 
 /* Colour presets */
 .colour-presets {
@@ -571,6 +582,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 </head>
 <body>
 
+<a href="#layout" style="position:absolute;top:-100%;left:8px;z-index:9999;background:var(--card);color:var(--text);padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:2px solid var(--acc);transition:top .15s" onfocus="this.style.top='8px'" onblur="this.style.top='-100%'">Skip to content</a>
+
 <header class="header">
   <div class="logo" id="logoEl">ABLE</div>
   <div class="step-indicator" id="stepInd">Step 1 of 4</div>
@@ -599,7 +612,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
       <div class="field">
         <label class="field-label" for="iName">Artist name</label>
-        <input class="field-input" type="text" id="iName" placeholder="e.g. Nova" autocomplete="off">
+        <input class="field-input" type="text" id="iName" placeholder="e.g. Nova" autocomplete="off" autofocus>
+        <p class="field-error-msg" id="iNameErr" role="alert">Enter your artist name to continue.</p>
       </div>
 
       <div class="field">
@@ -641,7 +655,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
 
       <div class="step-nav">
-        <button class="btn-next" onclick="goStep(2)">Continue →</button>
+        <button class="btn-next" onclick="tryStep1()">Continue →</button>
       </div>
     </div>
 
@@ -730,7 +744,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
       <div class="step-nav">
         <button class="btn-back" onclick="goStep(3)">← Back</button>
-        <button class="btn-next" onclick="goStep('done')">Create my page →</button>
+        <button class="btn-next" onclick="tryStep4()">Create my page →</button>
       </div>
     </div>
 
@@ -941,7 +955,59 @@ function slug(s) {
   return (s||'artist').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
 }
 
+/* ── HELPERS ── */
+const SAFE_URL_RE = /^(https?:|mailto:|tel:)/i;
+function isSafeUrl(url) {
+  if (!url) return false;
+  return SAFE_URL_RE.test(String(url).trim());
+}
+
 /* ── STEP NAV ── */
+function tryStep1() {
+  const nameVal = document.getElementById('iName').value.trim();
+  const input   = document.getElementById('iName');
+  const err     = document.getElementById('iNameErr');
+  if (!nameVal) {
+    input.classList.add('field-error');
+    err.classList.add('show');
+    input.focus();
+    return;
+  }
+  input.classList.remove('field-error');
+  err.classList.remove('show');
+  goStep(2);
+}
+
+function tryStep4() {
+  // Read CTA URL if visible
+  const urlWrap = document.getElementById('ctaUrlWrap');
+  const urlInput = document.getElementById('iCtaUrl');
+  if (urlWrap && urlWrap.style.display !== 'none' && urlInput.value.trim()) {
+    const rawUrl = urlInput.value.trim();
+    if (!isSafeUrl(rawUrl)) {
+      urlInput.classList.add('field-error');
+      urlInput.focus();
+      return;
+    }
+    P.ctaUrl = rawUrl;
+    urlInput.classList.remove('field-error');
+  }
+  // Read secondary CTA URL if visible
+  const secUrlWrap = document.getElementById('ctaSecUrlWrap');
+  const secUrlInput = document.getElementById('iCtaSecUrl');
+  if (secUrlWrap && secUrlWrap.style.display !== 'none' && secUrlInput.value.trim()) {
+    const rawSecUrl = secUrlInput.value.trim();
+    if (!isSafeUrl(rawSecUrl)) {
+      secUrlInput.classList.add('field-error');
+      secUrlInput.focus();
+      return;
+    }
+    P.ctaSecUrl = rawSecUrl;
+    secUrlInput.classList.remove('field-error');
+  }
+  goStep('done');
+}
+
 function goStep(n) {
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
   const id = n === 'done' ? 'stepDone' : `step${n}`;
@@ -967,8 +1033,8 @@ function goStep(n) {
       vibe:         P.vibe,
       accent:       P.accent,
       theme:        P.theme,
-      ctaPrimary:   { label: P.ctaLabel,  url: '' },
-      ctaSecondary: { label: P.secLabel,  url: '' },
+      ctaPrimary:   { label: P.ctaLabel,  url: P.ctaUrl    || '' },
+      ctaSecondary: { label: P.secLabel,  url: P.ctaSecUrl || '' },
       platforms:    P.spotify ? [{ label: 'Spotify', url: P.spotify, type: 'spotify' }] : [],
     };
     localStorage.setItem('able_v3_profile', JSON.stringify(v3profile));
@@ -1297,7 +1363,14 @@ function updatePreview() {
 }
 
 /* ── LIVE INPUTS ── */
-document.getElementById('iName').addEventListener('input', e => { P.name = e.target.value; updatePreview(); });
+document.getElementById('iName').addEventListener('input', e => {
+  P.name = e.target.value;
+  updatePreview();
+  if (e.target.value.trim()) {
+    e.target.classList.remove('field-error');
+    document.getElementById('iNameErr').classList.remove('show');
+  }
+});
 // iGenre is now a hidden input driven by vibe picker — no change listener needed
 document.getElementById('iBio').addEventListener('input', e => { P.bio = e.target.value; updatePreview(); });
 document.getElementById('iCtaSecCustom').addEventListener('input', e => { P.secLabel = e.target.value; updatePreview(); });

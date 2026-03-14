@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0d0e1a">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data: blob:; media-src *; frame-src https://open.spotify.com https://w.soundcloud.com https://www.youtube.com https://bandcamp.com https://embed.music.apple.com; connect-src 'self' https:;">
   <title>ABLE</title>
 
   <!-- Preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+  <!-- Preload critical display font -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap">
   <!-- Eager: DM Sans (body) + Barlow Condensed (display) — Latin subset only -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap">
 
@@ -437,6 +440,18 @@
       transform: scale(0.97);
       will-change: transform;
     }
+    /* Focus rings — visible keyboard navigation for all interactive elements */
+    .pressable:focus-visible,
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 3px;
+      border-radius: var(--r-sm);
+    }
+    /* Suppress focus ring on mouse/touch clicks */
+    :focus:not(:focus-visible) { outline: none; }
 
     /* === FOCUS STYLES (WCAG 2.2 AA §5) ========================= */
     :focus-visible {
@@ -2372,6 +2387,38 @@
     #edit-fab.visible { display: flex; }
     #edit-fab:hover   { background: rgba(var(--color-accent-rgb), 0.3); transform: scale(1.05); }
 
+    /* ── Edit FAB first-visit hint ───────────────────────────────── */
+    #edit-fab-hint {
+      position: fixed;
+      bottom: calc(var(--tab-bar-h, 72px) + 24px);
+      right: 68px;
+      z-index: 200;
+      background: rgba(14,13,11,0.92);
+      border: 1px solid rgba(var(--color-accent-rgb), 0.35);
+      color: var(--color-text-1);
+      font-size: 13px;
+      font-family: var(--font);
+      padding: 6px 12px;
+      border-radius: var(--r-md);
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    #edit-fab-hint.show { opacity: 1; }
+    #edit-fab-hint::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 6px solid transparent;
+      border-right: none;
+      border-left-color: rgba(var(--color-accent-rgb), 0.35);
+    }
+
     /* ── Edit backdrop ───────────────────────────────────────────── */
     #edit-backdrop {
       display: none;
@@ -2758,9 +2805,21 @@
       @keyframes shimmer { 0%, 100% { background-position: 0 0; } }
       @keyframes pulse-dot { 0%, 100% { transform: none; } }
     }
+    /* Skip-link — keyboard accessibility */
+    .skip-link {
+      position: absolute; top: -100%; left: 8px; z-index: 9999;
+      background: var(--color-surface); color: var(--color-text-1);
+      padding: 8px 16px; border-radius: var(--r-md);
+      font-size: var(--text-sm); font-weight: 600;
+      border: 2px solid var(--color-accent);
+      transition: top 0.15s;
+    }
+    .skip-link:focus { top: 8px; }
   </style>
 </head>
 <body>
+
+  <a class="skip-link" href="#scroll-container">Skip to content</a>
 
   <!-- Glass full-bleed blurred background (glass theme only) -->
   <div id="glass-bg" aria-hidden="true"></div>
@@ -2776,7 +2835,8 @@
     <div id="status-bar" aria-hidden="true"></div>
 
     <!-- Edit FAB — shown if artist owns this profile -->
-    <button id="edit-fab" aria-label="Edit your profile">✎</button>
+    <button id="edit-fab" aria-label="Edit your profile" aria-expanded="false" aria-controls="edit-panel">✎</button>
+    <div id="edit-fab-hint" aria-hidden="true">Edit page</div>
 
     <!-- Backdrop -->
     <div id="edit-backdrop" aria-hidden="true"></div>
@@ -3049,7 +3109,7 @@
            ====================================================== -->
       <section class="fan-capture fan-capture--secondary" id="fan-capture-2"
                aria-labelledby="fan-capture-2-heading" hidden>
-        <h2 class="fan-capture__heading" id="fan-capture-2-heading">Still here.</h2>
+        <h2 class="fan-capture__heading" id="fan-capture-2-heading">Stay close.</h2>
         <form class="fan-capture__form" id="fan-form-2" novalidate>
           <div class="fan-capture__field-wrap">
             <label for="fan-email-2" class="sr-only">Email address</label>
@@ -3156,6 +3216,13 @@
 
     function escHtml(str) {
       return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    }
+
+    function safeLS(key, fallback) {
+      try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback } catch { return fallback }
+    }
+    function setLS(key, val) {
+      try { localStorage.setItem(key, JSON.stringify(val)) } catch (_) {}
     }
 
     const SAFE_URL_RE = /^(https?:|mailto:|tel:)/i
@@ -3268,14 +3335,14 @@
           platform: 'Spotify',
           releaseDate: '2026-01-15',
           artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
-          streamUrl: 'https://open.spotify.com/album/example',
+          streamUrl: 'https://open.spotify.com/album/2ODvWsOgouMbaA5xf0RkJe',
           tracks: [
-            { title: 'Liminal', duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
-            { title: 'Glass City', duration: '3:48', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
-            { title: 'Deep Water', duration: '5:03', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
-            { title: 'Signal Loss', duration: '3:22', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
-            { title: 'Corridor', duration: '6:01', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
-            { title: 'Static', duration: '4:44', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
+            { title: 'Liminal',     duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
+            { title: 'Glass City',  duration: '3:48', artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=100&q=60' },
+            { title: 'Deep Water',  duration: '5:03', artworkUrl: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=100&q=60' },
+            { title: 'Signal Loss', duration: '3:22', artworkUrl: 'https://images.unsplash.com/photo-1526478806334-5fd488fcaabc?w=100&q=60' },
+            { title: 'Corridor',    duration: '6:01', artworkUrl: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=100&q=60' },
+            { title: 'Static',      duration: '4:44', artworkUrl: 'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=100&q=60' },
           ],
           credits: [
             { name: 'LUNA', role: 'Production, Mixing' },
@@ -3288,7 +3355,7 @@
           platform: 'SoundCloud',
           releaseDate: '2025-11-20',
           artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=800&q=80',
-          streamUrl: 'https://soundcloud.com/example/liminal',
+          streamUrl: 'https://soundcloud.com/bicep-music/glue',
           tracks: [
             { title: 'Liminal', duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=100&q=60' },
             { title: 'Liminal (Instrumental)', duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=100&q=60' },
@@ -3427,7 +3494,7 @@
 
     function getProfile() {
       try {
-        const stored = JSON.parse(localStorage.getItem('able_v3_profile') || 'null')
+        const stored = safeLS('able_v3_profile', null)
         // Return stored profile if it has a name, else fall back to demo
         return (stored && stored.name) ? stored : DEMO_PROFILE
       } catch (_) {
@@ -3486,6 +3553,11 @@
         merch:   'merch-section',
         support: 'support-section',
       }
+
+      // Init roving tabindex — only the selected tab is in the tab sequence
+      tabs.forEach(tab => {
+        tab.setAttribute('tabindex', tab.getAttribute('aria-selected') === 'true' ? '0' : '-1')
+      })
 
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -4122,20 +4194,19 @@
       const ctaPrimary   = document.getElementById('cta-primary')
       const ctaSecondary = document.getElementById('cta-secondary')
 
-      const primary = profile.ctaPrimary || { label: 'Stream now', url: '#' }
-      const secondary = profile.ctaSecondary
+      const primary   = profile.ctaPrimary   || (profile.ctas && profile.ctas[0]) || null
+      const secondary = profile.ctaSecondary || (profile.ctas && profile.ctas[1]) || null
 
-      if (primary.url && primary.url !== '#') {
+      if (primary && primary.url && isSafeUrl(primary.url)) {
         ctaPrimary.textContent = primary.label || 'Stream now'
-        ctaPrimary.href = isSafeUrl(primary.url) ? primary.url : '#'
+        ctaPrimary.href = primary.url
         ctaPrimary.hidden = false
-        // Click tracking
         ctaPrimary.onclick = () => trackClick(primary.label, 'primary_cta')
       }
 
-      if (secondary && secondary.url) {
+      if (secondary && secondary.url && isSafeUrl(secondary.url)) {
         ctaSecondary.textContent = secondary.label || 'Get tickets'
-        ctaSecondary.href = isSafeUrl(secondary.url) ? secondary.url : '#'
+        ctaSecondary.href = secondary.url
         ctaSecondary.hidden = false
         ctaSecondary.onclick = () => trackClick(secondary.label, 'secondary_cta')
       }
@@ -4175,7 +4246,7 @@
 
     function trackClick(label, type, source) {
       try {
-        const clicks = JSON.parse(localStorage.getItem('able_clicks') || '[]')
+        const clicks = safeLS('able_clicks', [])
         clicks.push({
           id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2),
           label,
@@ -4193,7 +4264,7 @@
 
     function trackView() {
       try {
-        const views = JSON.parse(localStorage.getItem('able_views') || '[]')
+        const views = safeLS('able_views', [])
         views.push({ ts: Date.now(), source: getUtmSource() })
         if (views.length > 500) views.splice(0, views.length - 500)
         localStorage.setItem('able_views', JSON.stringify(views))
@@ -4224,7 +4295,7 @@
       if (nameEl && profile.name) nameEl.textContent = profile.name
 
       // If fan already signed up this session, show echo state
-      const fans = JSON.parse(localStorage.getItem('able_fans') || '[]')
+      const fans = safeLS('able_fans', [])
       const alreadySigned = fans.length > 0
 
       if (alreadySigned) {
@@ -4297,7 +4368,7 @@
 
           // Write to localStorage (double_opted_in: false — confirmed via email later)
           try {
-            const fans = JSON.parse(localStorage.getItem('able_fans') || '[]')
+            const fans = safeLS('able_fans', [])
             fans.push({
               id: crypto.randomUUID(),
               email,
@@ -4377,7 +4448,7 @@
             return
           }
           try {
-            const fans = JSON.parse(localStorage.getItem('able_fans') || '[]')
+            const fans = safeLS('able_fans', [])
             fans.push({
               id: crypto.randomUUID(),
               email,
@@ -4413,10 +4484,13 @@
       if (!streamUrl) return null
       const u = streamUrl
 
-      // Spotify: https://open.spotify.com/... → https://open.spotify.com/embed/...
-      if (u.includes('open.spotify.com')) {
-        return u.replace('open.spotify.com/', 'open.spotify.com/embed/')
+      // Spotify: https://open.spotify.com/track|album|playlist/ID → embed URL
+      // Only convert if URL has a valid resource type + 22-char base62 ID
+      const spMatch = u.match(/open\.spotify\.com\/(track|album|playlist|artist|show|episode)\/([A-Za-z0-9]{10,30})/)
+      if (spMatch) {
+        return `https://open.spotify.com/embed/${spMatch[1]}/${spMatch[2]}`
       }
+      if (u.includes('open.spotify.com')) return null // placeholder — no embed
 
       // YouTube: watch?v=ID → embed/ID
       const ytMatch = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]+)/)
@@ -5032,7 +5106,7 @@
 
       // Fan list export — show if any fans captured
       if (footerExport) {
-        const fans = JSON.parse(localStorage.getItem('able_fans') || '[]')
+        const fans = safeLS('able_fans', [])
         footerExport.hidden = fans.length === 0
       }
     }
@@ -5043,7 +5117,7 @@
 
       btn.addEventListener('click', () => {
         try {
-          const fans = JSON.parse(localStorage.getItem('able_fans') || '[]')
+          const fans = safeLS('able_fans', [])
           if (!fans.length) return
 
           const header = 'email,ts,source,double_opted_in'
@@ -5149,6 +5223,7 @@
     // --- #7: Confetti burst on fan sign-up ----------------------
 
     function fireConfetti() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
       const PARTICLE_COUNT = 40
       const container = document.body
       const colors = [
@@ -5161,6 +5236,7 @@
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const p = document.createElement('div')
         p.className = 'confetti-particle'
+        p.setAttribute('aria-hidden', 'true')
         const color = colors[i % colors.length]
         const x = (Math.random() - 0.5) * 300
         const y = -(Math.random() * 200 + 80)
@@ -5306,11 +5382,19 @@
       const theme = profile.theme || 'dark'
       shell.dataset.theme = theme
 
-      // Sync glass bg with artwork if available (Checkpoint 2 will set this properly)
+      // Sync glass bg with artwork — fallback to accent gradient if no artwork
       if (theme === 'glass') {
         const glassBg = document.getElementById('glass-bg')
-        if (glassBg && profile.topCard && profile.topCard.artworkUrl) {
-          glassBg.style.backgroundImage = `url(${profile.topCard.artworkUrl})`
+        if (glassBg) {
+          const artUrl = profile.topCard?.artworkUrl || profile.release?.artworkUrl || null
+          if (artUrl) {
+            glassBg.style.backgroundImage = `url(${artUrl})`
+          } else {
+            // Accent-driven gradient fallback — keeps glass readable without artwork
+            const accent = profile.accent || '#c49438'
+            glassBg.style.background = `linear-gradient(155deg, ${accent}44 0%, #0a0b10 60%, ${accent}22 100%)`
+            glassBg.style.filter = 'none'
+          }
         }
       }
 
@@ -5398,6 +5482,19 @@
 
       fab.classList.add('visible')
 
+      // First-visit hint — show "Edit page" label for 3s, then hide forever
+      const hint = document.getElementById('edit-fab-hint')
+      if (hint && !localStorage.getItem('able_edit_hinted')) {
+        if (hint.parentElement !== document.body) document.body.appendChild(hint)
+        setTimeout(() => { hint.classList.add('show') }, 600)
+        setTimeout(() => {
+          hint.classList.remove('show')
+          localStorage.setItem('able_edit_hinted', '1')
+        }, 3600)
+      } else if (hint) {
+        hint.remove()
+      }
+
       // ── Build panel content ──────────────────────────────────────
       function buildPanel(p) {
         const cta0 = p.ctaPrimary   || {}
@@ -5406,7 +5503,7 @@
 
         // Fan count (§9.1)
         let fanCount = 0
-        try { fanCount = JSON.parse(localStorage.getItem('able_fans') || '[]').length } catch (_) {}
+        try { fanCount = safeLS('able_fans', []).length } catch (_) {}
         const FREE_CAP  = 100
         const fanPct    = Math.min(100, Math.round((fanCount / FREE_CAP) * 100))
         const nearFull  = fanCount >= 95
@@ -5428,13 +5525,15 @@
         const THEMES = ['dark','light','glass','contrast']
         const VIBES  = ['electronic','hiphop','rnb','indie','pop','rock','acoustic']
 
-        const themeChips = THEMES.map(t =>
-          `<button class="ep-chip${(p.theme||'dark')===t?' active':''}" data-theme="${t}">${t[0].toUpperCase()+t.slice(1)}</button>`
-        ).join('')
+        const themeChips = THEMES.map(t => {
+          const on = (p.theme||'dark')===t
+          return `<button class="ep-chip${on?' active':''}" data-theme="${t}" aria-pressed="${on}">${t[0].toUpperCase()+t.slice(1)}</button>`
+        }).join('')
 
-        const vibeChips = VIBES.map(v =>
-          `<button class="ep-chip${(p.vibe||'indie')===v?' active':''}" data-vibe="${v}">${v[0].toUpperCase()+v.slice(1)}</button>`
-        ).join('')
+        const vibeChips = VIBES.map(v => {
+          const on = (p.vibe||'indie')===v
+          return `<button class="ep-chip${on?' active':''}" data-vibe="${v}" aria-pressed="${on}">${v[0].toUpperCase()+v.slice(1)}</button>`
+        }).join('')
 
         body.innerHTML = `
           ${fanBarHTML}
@@ -5479,11 +5578,12 @@
           <div class="ep-field">
             <span class="ep-label">Campaign state</span>
             <div class="ep-chips" id="ep-state-chips">
-              ${['profile','pre-release','live','gig'].map(s =>
-                `<button class="ep-chip${(p.stateOverride||computeState(p))===s?' active':''}" data-state="${s}">${s[0].toUpperCase()+s.slice(1)}</button>`
-              ).join('')}
+              ${['profile','pre-release','live','gig'].map(s => {
+                const on = (p.stateOverride||computeState(p))===s
+                return `<button class="ep-chip${on?' active':''}" data-state="${s}" aria-pressed="${on}">${s[0].toUpperCase()+s.slice(1)}</button>`
+              }).join('')}
             </div>
-            <p class="ep-hint">Override your automatic campaign state.</p>
+            <p class="ep-hint">Auto: <strong>${computeState(p)}</strong>${p.stateOverride ? ' · override active' : ''}. Change this to control what fans see.</p>
           </div>
 
           <div class="ep-field">
@@ -5505,15 +5605,19 @@
           <div class="ep-divider"></div>
 
           <button class="ep-save-btn" id="ep-save">Save changes</button>
-          <a class="ep-dash-link" href="admin.html">Full dashboard — events, merch, fans, analytics →</a>
+          <a class="ep-dash-link" href="admin.html" target="_blank" rel="noopener noreferrer">Full dashboard — events, merch, fans, analytics →</a>
         `
 
         // Chip selection
-        ;[['[data-theme]','[data-theme]'], ['[data-vibe]','[data-vibe]'], ['[data-state]','[data-state]']].forEach(([sel]) => {
+        ;['[data-theme]', '[data-vibe]', '[data-state]'].forEach(sel => {
           body.querySelectorAll(sel).forEach(btn => {
             btn.addEventListener('click', () => {
-              body.querySelectorAll(sel).forEach(b => b.classList.remove('active'))
+              body.querySelectorAll(sel).forEach(b => {
+                b.classList.remove('active')
+                b.setAttribute('aria-pressed', 'false')
+              })
               btn.classList.add('active')
+              btn.setAttribute('aria-pressed', 'true')
             })
           })
         })
@@ -5579,7 +5683,7 @@
         // Save
         body.querySelector('#ep-save').addEventListener('click', () => {
           try {
-            const stored = JSON.parse(localStorage.getItem('able_v3_profile') || '{}')
+            const stored = safeLS('able_v3_profile', {})
             stored.name  = body.querySelector('#ep-name').value.trim() || stored.name
             stored.bio   = body.querySelector('#ep-bio').value.trim()  || stored.bio
             stored.theme         = body.querySelector('[data-theme].active')?.dataset.theme  || stored.theme
@@ -5599,7 +5703,7 @@
           } catch (_) {}
 
           closePanel()
-          // Re-initialise to reflect changes without full reload
+          // Full re-render to reflect all saved changes
           const fresh = getProfile()
           const s     = document.getElementById('app-shell')
           if (s) {
@@ -5607,6 +5711,16 @@
             applyVibe(fresh.vibe || 'indie', s)
           }
           renderHero(fresh)
+          renderPills(fresh)
+          renderFanCapture(fresh)
+          renderListenSection(fresh)
+          renderShowsSection(fresh)
+          renderSnapCards(fresh)
+          renderMerchSection(fresh)
+          renderSupportSection(fresh)
+          renderCreditsSection(fresh)
+          renderRecommendations(fresh)
+          renderFooter(fresh)
           injectSEO(fresh)
           // Re-apply gig state section order
           if (computeState(fresh) === 'gig') {
@@ -5623,6 +5737,23 @@
         return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
       }
 
+      // ── Focus trap helpers ────────────────────────────────────────
+      const FOCUSABLE = 'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])'
+
+      function trapFocus(e) {
+        const els = [...panel.querySelectorAll(FOCUSABLE)].filter(el => el.offsetParent !== null)
+        if (!els.length) return
+        const first = els[0], last = els[els.length - 1]
+        if (e.key === 'Tab') {
+          if (e.shiftKey) {
+            if (document.activeElement === first) { e.preventDefault(); last.focus() }
+          } else {
+            if (document.activeElement === last)  { e.preventDefault(); first.focus() }
+          }
+        }
+        if (e.key === 'Escape') closePanel()
+      }
+
       // ── Open / close ─────────────────────────────────────────────
       function openPanel() {
         const p = getProfile()
@@ -5630,6 +5761,13 @@
         backdrop.classList.add('open')
         panel.classList.add('open')
         shell.classList.add('panel-open')
+        fab.setAttribute('aria-expanded', 'true')
+        panel.addEventListener('keydown', trapFocus)
+        // Focus first interactive element
+        requestAnimationFrame(() => {
+          const first = panel.querySelector(FOCUSABLE)
+          if (first) first.focus()
+        })
         history.pushState({ panel: 'edit' }, '')
       }
 
@@ -5637,6 +5775,9 @@
         backdrop.classList.remove('open')
         panel.classList.remove('open')
         shell.classList.remove('panel-open')
+        fab.setAttribute('aria-expanded', 'false')
+        panel.removeEventListener('keydown', trapFocus)
+        fab.focus()
       }
 
       fab.addEventListener('click', openPanel)

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data: blob:; frame-src https://open.spotify.com https://w.soundcloud.com https://www.youtube.com; connect-src 'self' https:;">
 <title>Dashboard — ABLE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1317,16 +1318,18 @@ function renderFanTable(fans) {
   // Merge demo + real
   const real = JSON.parse(localStorage.getItem('able_fans') || '[]');
   const all = [...fans, ...real.map(f => ({ email:f.email, level:'listener', source:f.source||'Direct', ts:f.ts }))];
-  tbody.innerHTML = all.map(f => {
+  const PAGE_SIZE = 100;
+  const shown = all.slice(0, PAGE_SIZE);
+  tbody.innerHTML = shown.map(f => {
     const ls = LEVEL_STYLES[f.level] || LEVEL_STYLES.listener;
     const date = new Date(f.ts).toLocaleDateString('en-GB', {day:'numeric',month:'short'});
     return `<tr style="border-bottom:1px solid var(--border);">
-      <td style="padding:10px 18px;font-size:12px;color:var(--text);">${f.email}</td>
-      <td style="padding:10px 8px;"><span style="padding:3px 10px;border-radius:100px;font-size:10px;font-weight:600;background:${ls.bg};color:${ls.color};">${ls.label}</span></td>
-      <td style="padding:10px 8px;font-size:11px;color:var(--t3);">${f.source}</td>
-      <td style="padding:10px 18px;font-size:11px;color:var(--t3);text-align:right;">${date}</td>
+      <td style="padding:10px 18px;font-size:12px;color:var(--text);">${escHtml(f.email)}</td>
+      <td style="padding:10px 8px;"><span style="padding:3px 10px;border-radius:100px;font-size:10px;font-weight:600;background:${ls.bg};color:${ls.color};">${escHtml(ls.label)}</span></td>
+      <td style="padding:10px 8px;font-size:11px;color:var(--t3);">${escHtml(f.source)}</td>
+      <td style="padding:10px 18px;font-size:11px;color:var(--t3);text-align:right;">${escHtml(date)}</td>
     </tr>`;
-  }).join('');
+  }).join('') + (all.length > PAGE_SIZE ? `<tr><td colspan="4" style="padding:10px 18px;font-size:11px;color:var(--t3);">Showing first ${PAGE_SIZE} of ${all.length} fans — export CSV to see all.</td></tr>` : '');
 }
 
 function filterFans(q) {
@@ -1411,6 +1414,9 @@ function relTime(ts) {
   if (diff < 3600000) return Math.floor(diff/60000) + 'm ago';
   if (diff < 86400000) return Math.floor(diff/3600000) + 'h ago';
   return Math.floor(diff/86400000) + 'd ago';
+}
+function escHtml(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 /* ── CAMPAIGN HQ ── */
@@ -1537,13 +1543,13 @@ function renderAdminMusic() {
   el.innerHTML = releases.map((rel, i) => `
     <div class="dash-card admin-release-card" style="max-width:560px;margin-bottom:12px;" data-rid="${rel.id}">
       <div class="dc-head">
-        <div class="dc-title">${rel.title || 'Untitled'} <span style="font-weight:400;color:var(--t3);font-size:11px;">${rel.type||''} ${rel.year||''}</span></div>
+        <div class="dc-title">${escHtml(rel.title || 'Untitled')} <span style="font-weight:400;color:var(--t3);font-size:11px;">${escHtml(rel.type||'')} ${escHtml(rel.year||'')}</span></div>
         <button class="snap-btn del" onclick="removeRelease('${rel.id}')" title="Remove">×</button>
       </div>
       <div class="dc-body">
         <div class="field-row">
           <div class="field-label">Release title</div>
-          <input class="field-input" value="${rel.title||''}" oninput="updateReleaseField('${rel.id}','title',this.value)" placeholder="Album / EP / Single title">
+          <input class="field-input" value="${escHtml(rel.title||'')}" oninput="updateReleaseField('${rel.id}','title',this.value)" placeholder="Album / EP / Single title">
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
           <div class="field-row" style="margin:0">
@@ -1565,16 +1571,16 @@ function renderAdminMusic() {
         </div>
         <div class="field-row">
           <div class="field-label">Stream link (Spotify, YouTube, SoundCloud, Apple Music)</div>
-          <input class="field-input" type="url" value="${rel.platformUrl||''}" oninput="updateReleaseField('${rel.id}','platformUrl',this.value)" placeholder="open.spotify.com/album/… or youtu.be/…">
+          <input class="field-input" type="url" value="${escHtml(rel.platformUrl||'')}" oninput="updateReleaseField('${rel.id}','platformUrl',this.value)" placeholder="open.spotify.com/album/… or youtu.be/…">
           <div class="embed-preview" id="embed-prev-${rel.id}" style="display:none;"></div>
         </div>
         <div class="field-label" style="margin-bottom:6px;">Tracklist <span style="font-weight:400;color:var(--t3);">(${(rel.tracks||[]).length} tracks)</span></div>
         <div id="tracks-${rel.id}">
           ${(rel.tracks||[]).map((t,ti)=>`
             <div class="admin-track-row" data-ti="${ti}">
-              <span class="track-num">${t.num}</span>
-              <input class="field-input" value="${t.title}" oninput="updateTrack('${rel.id}',${ti},'title',this.value)" placeholder="Track title" style="flex:1;">
-              <input class="field-input" value="${t.duration||''}" oninput="updateTrack('${rel.id}',${ti},'duration',this.value)" placeholder="3:42" style="width:56px;">
+              <span class="track-num">${escHtml(t.num)}</span>
+              <input class="field-input" value="${escHtml(t.title)}" oninput="updateTrack('${rel.id}',${ti},'title',this.value)" placeholder="Track title" style="flex:1;">
+              <input class="field-input" value="${escHtml(t.duration||'')}" oninput="updateTrack('${rel.id}',${ti},'duration',this.value)" placeholder="3:42" style="width:56px;">
               <button class="snap-btn del" onclick="removeTrack('${rel.id}',${ti})" title="Remove">×</button>
             </div>`).join('')}
         </div>
@@ -1598,6 +1604,7 @@ function addRelease() {
 }
 
 function removeRelease(rid) {
+  if (!confirm('Remove this release? This cannot be undone.')) return;
   const data = safeLS(V3_KEY, {});
   const releases = (data.releases||[]).filter(r => r.id !== rid);
   setLS(V3_KEY, { ...data, releases });
@@ -1691,21 +1698,21 @@ function renderAdminEvents() {
     const isPast = new Date(ev.date) < now;
     return `<div class="dash-card" style="max-width:560px;margin-bottom:10px;${isPast?'opacity:0.65':''}">
       <div class="dc-head">
-        <div class="dc-title">${ev.venue} <span style="font-weight:400;color:var(--t3);font-size:11px;">${ev.city} · ${ev.date}</span> ${isPast?'<span style="font-size:10px;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;margin-left:4px;color:var(--t3)">Past</span>':''}</div>
+        <div class="dc-title">${escHtml(ev.venue)} <span style="font-weight:400;color:var(--t3);font-size:11px;">${escHtml(ev.city)} · ${escHtml(ev.date)}</span> ${isPast?'<span style="font-size:10px;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;margin-left:4px;color:var(--t3)">Past</span>':''}</div>
         <button class="snap-btn del" onclick="removeEvent('${ev.id}')" title="Remove">×</button>
       </div>
       <div class="dc-body">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <div class="field-row" style="margin:0"><div class="field-label">Venue</div><input class="field-input" value="${ev.venue||''}" oninput="updateEventField('${ev.id}','venue',this.value)" placeholder="Fabric, London"></div>
-          <div class="field-row" style="margin:0"><div class="field-label">City</div><input class="field-input" value="${ev.city||''}" oninput="updateEventField('${ev.id}','city',this.value)" placeholder="London, UK"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Venue</div><input class="field-input" value="${escHtml(ev.venue||'')}" oninput="updateEventField('${ev.id}','venue',this.value)" placeholder="Fabric, London"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">City</div><input class="field-input" value="${escHtml(ev.city||'')}" oninput="updateEventField('${ev.id}','city',this.value)" placeholder="London, UK"></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
-          <div class="field-row" style="margin:0"><div class="field-label">Date</div><input class="field-input" type="date" value="${ev.date||''}" oninput="updateEventField('${ev.id}','date',this.value)"></div>
-          <div class="field-row" style="margin:0"><div class="field-label">Doors / time</div><input class="field-input" value="${ev.time||''}" oninput="updateEventField('${ev.id}','time',this.value)" placeholder="Doors 10pm"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Date</div><input class="field-input" type="date" value="${escHtml(ev.date||'')}" oninput="updateEventField('${ev.id}','date',this.value)"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Doors / time</div><input class="field-input" value="${escHtml(ev.time||'')}" oninput="updateEventField('${ev.id}','time',this.value)" placeholder="Doors 10pm"></div>
         </div>
         <div class="field-row" style="margin-top:8px;">
           <div class="field-label">Ticket URL (Dice, Eventbrite, RA, Ticketmaster…)</div>
-          <input class="field-input" type="url" value="${ev.ticketUrl||''}" oninput="updateEventField('${ev.id}','ticketUrl',this.value)" placeholder="dice.fm/event/…">
+          <input class="field-input" type="url" value="${escHtml(ev.ticketUrl||'')}" oninput="updateEventField('${ev.id}','ticketUrl',this.value)" placeholder="dice.fm/event/…">
         </div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
           <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2);cursor:pointer;">
@@ -1729,6 +1736,7 @@ function addEvent() {
 }
 
 function removeEvent(id) {
+  if (!confirm('Remove this show? This cannot be undone.')) return;
   const data = safeLS(V3_KEY, {});
   const events = (data.events||[]).filter(e => e.id !== id);
   setLS(V3_KEY, { ...data, events });
@@ -1769,21 +1777,21 @@ function renderAdminMerch() {
   el.innerHTML = items.map((item, i) => `
     <div class="dash-card" style="max-width:560px;margin-bottom:10px;">
       <div class="dc-head">
-        <div class="dc-title">${item.title||'Item'} <span style="color:var(--t3);font-weight:400;">${item.price||''}</span></div>
+        <div class="dc-title">${escHtml(item.title||'Item')} <span style="color:var(--t3);font-weight:400;">${escHtml(item.price||'')}</span></div>
         <button class="snap-btn del" onclick="removeMerchItem('${item.id}')" title="Remove">×</button>
       </div>
       <div class="dc-body">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <div class="field-row" style="margin:0"><div class="field-label">Item name</div><input class="field-input" value="${item.title||''}" oninput="updateMerchField('${item.id}','title',this.value)" placeholder="Tour Hoodie 2026"></div>
-          <div class="field-row" style="margin:0"><div class="field-label">Price</div><input class="field-input" value="${item.price||''}" oninput="updateMerchField('${item.id}','price',this.value)" placeholder="£25"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Item name</div><input class="field-input" value="${escHtml(item.title||'')}" oninput="updateMerchField('${item.id}','title',this.value)" placeholder="Tour Hoodie 2026"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Price</div><input class="field-input" value="${escHtml(item.price||'')}" oninput="updateMerchField('${item.id}','price',this.value)" placeholder="£25"></div>
         </div>
         <div class="field-row" style="margin-top:8px;">
           <div class="field-label">Product URL (direct link to item)</div>
-          <input class="field-input" type="url" value="${item.url||''}" oninput="updateMerchField('${item.id}','url',this.value)" placeholder="bandcamp.com/merch/…">
+          <input class="field-input" type="url" value="${escHtml(item.url||'')}" oninput="updateMerchField('${item.id}','url',this.value)" placeholder="bandcamp.com/merch/…">
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;">
-          <div class="field-row" style="margin:0"><div class="field-label">Image URL</div><input class="field-input" type="url" value="${item.imageUrl||''}" oninput="updateMerchField('${item.id}','imageUrl',this.value)" placeholder="https://…"></div>
-          <div class="field-row" style="margin:0"><div class="field-label">Emoji (fallback)</div><input class="field-input" value="${item.emoji||'🎵'}" oninput="updateMerchField('${item.id}','emoji',this.value)" maxlength="4" style="width:60px;"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Image URL</div><input class="field-input" type="url" value="${escHtml(item.imageUrl||'')}" oninput="updateMerchField('${item.id}','imageUrl',this.value)" placeholder="https://…"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Emoji (fallback)</div><input class="field-input" value="${escHtml(item.emoji||'🎵')}" oninput="updateMerchField('${item.id}','emoji',this.value)" maxlength="4" style="width:60px;"></div>
           <div class="field-row" style="margin:0"><div class="field-label">Badge</div><select class="field-input" onchange="updateMerchField('${item.id}','badge',this.value)"><option value="">None</option><option${item.badge==='New'?' selected':''}>New</option><option${item.badge==='Limited'?' selected':''}>Limited</option></select></div>
         </div>
         <div style="display:flex;justify-content:flex-end;margin-top:10px;padding-top:8px;border-top:1px solid var(--border);">
@@ -1810,6 +1818,7 @@ function addMerchItem() {
 }
 
 function removeMerchItem(id) {
+  if (!confirm('Remove this merch item? This cannot be undone.')) return;
   const data = safeLS(V3_KEY, {});
   const merch = data.merch || {};
   const items = (merch.items||[]).filter(m => m.id !== id);
@@ -1857,28 +1866,28 @@ function renderAdminSupport() {
   el.innerHTML = packs.map((pack) => `
     <div class="dash-card admin-release-card" style="max-width:560px;margin-bottom:12px;" data-pid="${pack.id}">
       <div class="dc-head">
-        <div class="dc-title">${pack.emoji || '💝'} ${pack.label || 'Untitled pack'} <span style="font-weight:400;color:var(--t3);font-size:11px;">${pack.price ? '£'+pack.price : ''}</span></div>
+        <div class="dc-title">${escHtml(pack.emoji || '💝')} ${escHtml(pack.label || 'Untitled pack')} <span style="font-weight:400;color:var(--t3);font-size:11px;">${pack.price ? '£'+escHtml(pack.price) : ''}</span></div>
         <button class="snap-btn del" onclick="removeSupportPack('${pack.id}')" title="Remove">×</button>
       </div>
       <div class="dc-body">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
           <div class="field-row" style="margin:0;">
             <div class="field-label">Label</div>
-            <input class="field-input" value="${pack.label||''}" oninput="updateSupportField('${pack.id}','label',this.value)" placeholder="Buy me a coffee">
+            <input class="field-input" value="${escHtml(pack.label||'')}" oninput="updateSupportField('${pack.id}','label',this.value)" placeholder="Buy me a coffee">
           </div>
           <div class="field-row" style="margin:0;">
             <div class="field-label">Emoji</div>
-            <input class="field-input" value="${pack.emoji||'💝'}" oninput="updateSupportField('${pack.id}','emoji',this.value)" placeholder="💝" style="width:70px;">
+            <input class="field-input" value="${escHtml(pack.emoji||'💝')}" oninput="updateSupportField('${pack.id}','emoji',this.value)" placeholder="💝" style="width:70px;">
           </div>
         </div>
         <div class="field-row">
           <div class="field-label">Description (what fans get / what it means)</div>
-          <input class="field-input" value="${pack.description||''}" oninput="updateSupportField('${pack.id}','description',this.value)" placeholder="Keep the lights on for another month">
+          <input class="field-input" value="${escHtml(pack.description||'')}" oninput="updateSupportField('${pack.id}','description',this.value)" placeholder="Keep the lights on for another month">
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
           <div class="field-row" style="margin:0;">
             <div class="field-label">Price (£)</div>
-            <input class="field-input" type="number" min="1" value="${pack.price||''}" oninput="updateSupportField('${pack.id}','price',this.value)" placeholder="5">
+            <input class="field-input" type="number" min="1" value="${escHtml(pack.price||'')}" oninput="updateSupportField('${pack.id}','price',this.value)" placeholder="5">
           </div>
           <div class="field-row" style="margin:0;">
             <div class="field-label">Type</div>
@@ -1890,12 +1899,12 @@ function renderAdminSupport() {
           </div>
           <div class="field-row" style="margin:0;">
             <div class="field-label">Quantity limit</div>
-            <input class="field-input" type="number" min="0" value="${pack.limit||''}" oninput="updateSupportField('${pack.id}','limit',this.value)" placeholder="Unlimited">
+            <input class="field-input" type="number" min="0" value="${escHtml(pack.limit||'')}" oninput="updateSupportField('${pack.id}','limit',this.value)" placeholder="Unlimited">
           </div>
         </div>
         <div class="field-row">
           <div class="field-label">Payment link (Ko-fi, Patreon, PayPal, Stripe, etc.)</div>
-          <input class="field-input" type="url" value="${pack.url||''}" oninput="updateSupportField('${pack.id}','url',this.value)" placeholder="ko-fi.com/yourname or pay.stripe.com/…">
+          <input class="field-input" type="url" value="${escHtml(pack.url||'')}" oninput="updateSupportField('${pack.id}','url',this.value)" placeholder="ko-fi.com/yourname or pay.stripe.com/…">
         </div>
         <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;">
           <button class="ci-btn ci-btn-connect" onclick="saveAllSupport()">Save support</button>
@@ -1926,6 +1935,7 @@ function addSupportPack() {
 }
 
 function removeSupportPack(id) {
+  if (!confirm('Remove this support pack? This cannot be undone.')) return;
   const data = safeLS(V3_KEY, {});
   const support = data.support || {};
   const packs = (support.packs||[]).filter(p => p.id !== id);
@@ -2021,7 +2031,7 @@ function loadRealStats() {
     const maxCount = sorted[0]?.[1] || 1;
     topList.innerHTML = sorted.map(([label, count]) => `
       <div style="display:flex;align-items:center;gap:12px;">
-        <div style="font-size:12px;color:var(--t2);min-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${label}</div>
+        <div style="font-size:12px;color:var(--t2);min-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(label)}</div>
         <div style="flex:1;height:7px;border-radius:100px;background:var(--border);overflow:hidden;">
           <div style="height:100%;width:${(count/maxCount*100).toFixed(0)}%;background:var(--acc);border-radius:100px;"></div>
         </div>
@@ -2051,9 +2061,9 @@ function loadActivityFeed() {
 
   feed.innerHTML = events.map(e => {
     const dot   = e.type === 'view' ? 'view' : e.type === 'fan' ? 'share' : 'click';
-    const label = e.type === 'click'  ? `<strong>${e.label}</strong> tapped`
-                : e.type === 'fan'    ? `Fan from <strong>${e.source||'direct'}</strong>`
-                :                       `Visit from <strong>${e.source||'direct'}</strong>`;
+    const label = e.type === 'click'  ? `<strong>${escHtml(e.label)}</strong> tapped`
+                : e.type === 'fan'    ? `Fan from <strong>${escHtml(e.source||'direct')}</strong>`
+                :                       `Visit from <strong>${escHtml(e.source||'direct')}</strong>`;
     return `<div class="activity-item">
       <div class="ai-dot ${dot}"></div>
       <div class="ai-body">${label}</div>
@@ -2123,7 +2133,8 @@ window.addEventListener('DOMContentLoaded', () => {
   renderQR();
 
   // Refresh activity every 30s (catches clicks from profile in another tab)
-  setInterval(() => { loadRealStats(); loadActivityFeed(); }, 30000);
+  // Skip when tab is hidden to avoid wasted work on mobile
+  setInterval(() => { if (!document.hidden) { loadRealStats(); loadActivityFeed(); } }, 30000);
 
   // Wire profile page Save button
   wireProfileSave();

@@ -8,8 +8,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data:; connect-src 'self' https:;">
   <title>ABLE — For independent artists</title>
   <meta name="description" content="Your page. Your fans. Direct. Music, events, merch, and support — all in one place, without an algorithm in the way.">
+  <link rel="canonical" href="https://able.fm/">
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="ABLE">
+  <meta property="og:title"       content="ABLE — For independent artists">
+  <meta property="og:description" content="Your page. Your fans. Direct. Music, events, merch, and support — all in one place, without an algorithm in the way.">
+  <meta property="og:url"         content="https://able.fm/">
+  <meta property="og:image"       content="https://able.fm/og-image.jpg">
+  <!-- Twitter / X -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:site"        content="@ablefm">
+  <meta name="twitter:title"       content="ABLE — For independent artists">
+  <meta name="twitter:description" content="Your page. Your fans. Direct. Music, events, merch, and support — all in one place, without an algorithm in the way.">
+  <meta name="twitter:image"       content="https://able.fm/og-image.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
@@ -79,7 +94,8 @@
     }
 
     /* ── SCROLL ANIMATIONS ─────────────────────────────────────── */
-    .fade-up {
+    /* Progressive enhancement: content visible by default, hidden only when JS runs */
+    .js .fade-up {
       opacity: 0;
       transform: translateY(24px);
       transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
@@ -90,6 +106,9 @@
     .fade-up:nth-child(4) { transition-delay: 0.24s; }
     .fade-up:nth-child(5) { transition-delay: 0.32s; }
     .fade-up:nth-child(6) { transition-delay: 0.40s; }
+    @media (prefers-reduced-motion: reduce) {
+      .js .fade-up { opacity: 1; transform: none; transition: none; }
+    }
 
     /* ── NAV ─────────────────────────────────────────────────────── */
     .nav {
@@ -211,6 +230,8 @@
       display: inline-flex; align-items: center; gap: 6px;
     }
     .btn-ghost:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+    :focus:not(:focus-visible) { outline: none; }
     .hero__micro {
       font-size: 12px; color: var(--text-3); margin-top: 14px;
       display: flex; align-items: center; gap: 8px;
@@ -836,6 +857,8 @@
 </head>
 <body>
 
+  <a href="#hero" style="position:absolute;top:-100%;left:8px;z-index:9999;background:var(--card);color:var(--text);padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:2px solid var(--accent);transition:top .15s" onfocus="this.style.top='8px'" onblur="this.style.top='-100%'">Skip to content</a>
+
   <!-- NAV -->
   <nav class="nav">
     <a href="#" class="nav__logo">ABL<span>E</span></a>
@@ -848,7 +871,7 @@
   </nav>
 
   <!-- HERO -->
-  <section class="hero">
+  <section class="hero" id="hero">
     <!-- Left: copy -->
     <div class="hero__copy">
       <div class="hero__eyebrow">For independent artists</div>
@@ -1019,8 +1042,8 @@
 
   <!-- PROOF STRIP -->
   <div class="proof">
-    <div class="proof__item fade-up"><div class="proof__num">12k+</div><div class="proof__label">Artists live</div></div>
-    <div class="proof__item fade-up"><div class="proof__num">3.2M</div><div class="proof__label">Fan sign-ups captured</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">4</div><div class="proof__label">Campaign moments</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">7</div><div class="proof__label">Sounds to start from</div></div>
     <div class="proof__item fade-up"><div class="proof__num">£0</div><div class="proof__label">Platform cut</div></div>
     <div class="proof__item fade-up"><div class="proof__num">5 min</div><div class="proof__label">From link to live</div></div>
     <div class="proof__item fade-up"><div class="proof__num">∞</div><div class="proof__label">Your colour, exactly</div></div>
@@ -1137,7 +1160,7 @@
     <div class="quote">
       <span class="quote__mark">"</span>
       <p class="quote__text">I dropped a single with no label, no budget. Put the ABLE link in my bio the night before. Woke up to 340 fan sign-ups and 12 pre-saves. That's never happened with Linktree.</p>
-      <p class="quote__author"><strong>Mara J.</strong> · Independent artist, Bristol</p>
+      <p class="quote__author"><strong>Beta artist</strong> · Bristol</p>
     </div>
   </section>
 
@@ -1190,7 +1213,7 @@
           <div class="pricing-card__desc">For professional artists who want the full fan relationship stack.</div>
           <ul class="pricing-card__features">
             <li>Everything in Artist</li>
-            <li>Full fan CRM + superfan scoring</li>
+            <li>Full fan list + dedicated listener scoring</li>
             <li>Email broadcasts to fans</li>
             <li>Credits + recommend section</li>
             <li>Advanced analytics + exports</li>
@@ -1227,11 +1250,18 @@
   </footer>
 
   <script>
+    // Progressive enhancement — hide fade-up elements only when JS is available
+    document.documentElement.classList.add('js');
+
     // Scroll-in animations
+    const fadeEls = document.querySelectorAll('.fade-up');
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); } });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    }, { threshold: 0.1, rootMargin: '0px 0px 80px 0px' });
+    fadeEls.forEach(el => observer.observe(el));
+
+    // Fallback: reveal anything still hidden after 1.5s (e.g. if IO never fires)
+    setTimeout(() => { fadeEls.forEach(el => el.classList.add('in')); }, 1500);
 
     // Interactive phone demo
     (function() {
