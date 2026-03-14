@@ -814,57 +814,74 @@
       .hero__platforms, .hero__actions, .hero__micro { justify-content: flex-start; }
     }
 
-    /* ── DEMO CONTROLS ──────────────────────────────────────────────────── */
-    .demo-controls {
-      display: flex; flex-direction: column; gap: 8px;
-      padding: 12px 16px;
-      background: rgba(18,16,12,0.7);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    /* ── PROOF LINES ────────────────────────────────────────────────────── */
+    .proof-lines {
+      display: flex; flex-wrap: wrap; gap: 5px;
+      justify-content: center; margin-bottom: 14px;
+      max-width: 300px;
+    }
+    .proof-line {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 13px; border-radius: 20px;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      margin-bottom: 20px;
-      width: 280px;
-    }
-    .demo-ctrl-row {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .demo-ctrl-label {
-      font-size: 9px; font-weight: 700; letter-spacing: 1.8px;
-      text-transform: uppercase; color: var(--text-3);
-      min-width: 52px; flex-shrink: 0;
-    }
-    .demo-ctrl-pills {
-      display: flex; gap: 4px; flex-wrap: wrap;
-    }
-    .demo-ctrl-pill {
-      font-size: 10px; font-weight: 700; padding: 3px 9px;
-      border-radius: 7px;
-      border: 1px solid var(--border);
-      color: var(--text-3);
       background: rgba(255,255,255,0.02);
-      cursor: pointer;
-      transition: all 0.14s;
-      font-family: var(--font);
+      cursor: pointer; font-family: var(--font);
+      color: var(--text-3);
+      transition: background 0.18s, border-color 0.18s, color 0.18s;
     }
-    .demo-ctrl-pill:hover {
-      border-color: var(--border-mid); color: var(--text-2);
+    .proof-line:hover { color: var(--text-2); border-color: var(--border-mid); background: rgba(255,255,255,0.04); }
+    .proof-line.active { color: var(--text); background: rgba(var(--accent-rgb),0.09); border-color: rgba(var(--accent-rgb),0.3); }
+    .proof-line__num {
+      font-size: 7.5px; font-weight: 900; letter-spacing: 0.5px;
+      font-family: var(--font-d); color: var(--accent); opacity: 0.5; line-height: 1;
     }
-    .demo-ctrl-pill.active {
-      background: var(--accent-dim);
-      border-color: var(--accent-border);
-      color: var(--accent);
-    }
+    .proof-line.active .proof-line__num { opacity: 1; }
+    .proof-line__text { font-size: 11px; font-weight: 700; line-height: 1; white-space: nowrap; }
 
-    /* Demo state description */
+    /* State description */
     .demo-state-desc {
       font-size: 11.5px; font-weight: 500;
       color: var(--text-2); line-height: 1.55;
       text-align: center; max-width: 280px;
-      margin: 14px 0 4px;
-      min-height: 36px;
+      margin: 0 0 12px; min-height: 34px;
       transition: opacity 0.18s ease;
     }
     .demo-state-desc em { font-style: normal; color: var(--accent); }
+
+    /* ── PROOF PHONE INTERACTIONS ────────────────────────────────────────── */
+    /* Smooth theme transition on the phone */
+    #demoPhone { transition: background 0.55s var(--ease), border-color 0.4s var(--ease); }
+
+    /* proof-action: CTA row ambient glow */
+    #demoPhone.proof-action .dp-ctas {
+      background: rgba(200,104,88,0.06);
+      border-radius: 10px;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      #demoPhone.proof-action .dp-cta1 {
+        animation: ctaGlow 1.8s ease-in-out infinite;
+      }
+    }
+    @keyframes ctaGlow {
+      0%,100% { box-shadow: 0 2px 8px rgba(200,104,88,0.3); }
+      50%      { box-shadow: 0 2px 22px rgba(200,104,88,0.62); }
+    }
+
+    /* proof-music: embedded content highlight */
+    #demoPhone.proof-music .dp-spotify,
+    #demoPhone.proof-music .dp-youtube {
+      border-color: rgba(var(--accent-rgb),0.32);
+      transition: border-color 0.35s var(--ease);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      #demoPhone.proof-music .dp-sp-art {
+        animation: artGlow 2s ease-in-out infinite;
+      }
+    }
+    @keyframes artGlow {
+      0%,100% { box-shadow: none; }
+      50%      { box-shadow: 0 0 14px rgba(var(--accent-rgb),0.38); }
+    }
   </style>
 </head>
 <body>
@@ -915,30 +932,27 @@
     <!-- Right: phone mockup + interactive demo -->
     <div class="hero__visual">
       <div class="demo-phone-wrap">
-        <!-- Controls above the phone -->
-        <div class="demo-controls">
-          <div style="font-size:10px;color:var(--text-3);margin-bottom:6px;letter-spacing:0.3px;font-weight:500;">Tap a moment — watch your page shift</div>
-          <div class="demo-ctrl-row">
-            <span class="demo-ctrl-label">Moment</span>
-            <div class="demo-ctrl-pills">
-              <button class="demo-ctrl-pill active" data-ctrl-state="live">Live</button>
-              <button class="demo-ctrl-pill" data-ctrl-state="pre">Pre-release</button>
-              <button class="demo-ctrl-pill" data-ctrl-state="gig">On tonight</button>
-              <button class="demo-ctrl-pill" data-ctrl-state="profile">Profile</button>
-            </div>
-          </div>
-          <div class="demo-ctrl-row">
-            <span class="demo-ctrl-label">Theme</span>
-            <div class="demo-ctrl-pills">
-              <button class="demo-ctrl-pill active" data-ctrl-theme="dark">Dark</button>
-              <button class="demo-ctrl-pill" data-ctrl-theme="light">Light</button>
-              <button class="demo-ctrl-pill" data-ctrl-theme="glass">Glass</button>
-              <button class="demo-ctrl-pill" data-ctrl-theme="contrast">Contrast</button>
-            </div>
-          </div>
+        <!-- Proof lines — interactive copy triggers -->
+        <div class="proof-lines" role="group" aria-label="See how ABLE works">
+          <button class="proof-line active" data-proof="moment">
+            <span class="proof-line__num">01</span>
+            <span class="proof-line__text">Changes with your moment</span>
+          </button>
+          <button class="proof-line" data-proof="action">
+            <span class="proof-line__num">02</span>
+            <span class="proof-line__text">Leads with the right action</span>
+          </button>
+          <button class="proof-line" data-proof="music">
+            <span class="proof-line__num">03</span>
+            <span class="proof-line__text">Music lives in the page</span>
+          </button>
+          <button class="proof-line" data-proof="look">
+            <span class="proof-line__num">04</span>
+            <span class="proof-line__text">Your look, exactly</span>
+          </button>
         </div>
 
-        <!-- State description -->
+        <!-- Dynamic caption — updates with each proof line -->
         <p class="demo-state-desc" id="demo-desc"><em>Release is out.</em> The page leads with streaming. Music plays here, not somewhere else.</p>
 
         <!-- Single phone chrome -->
@@ -1284,26 +1298,29 @@
       const phone = document.getElementById('demoPhone');
       if (!phone) return;
 
+      // ── State definitions ─────────────────────────────────────────────
       const STATES = {
-        live:    { badge: '● Out now',      badgeRgb: '184,120,112', dot: true,  cta1: 'Stream Now',      cta2: 'Tickets',        countdown: false, spTrack: 'Resonance', spotify: true,  youtube: true,  event: false, desc: '<em>Release is out.</em> The page leads with streaming. Music plays here, not somewhere else.' },
-        pre:     { badge: '⏳ Drops 28 Mar', badgeRgb: '184,168,96',  dot: false, cta1: 'Pre-save',        cta2: 'Add to library', countdown: true,  spTrack: 'Resonance', spotify: false, youtube: false, event: false, desc: '<em>Dropping soon.</em> A countdown. A pre-save lead. Fans lock in before the release exists.' },
-        gig:     { badge: '● On tonight',   badgeRgb: '184,144,104', dot: true,  cta1: 'Get Tickets',     cta2: 'Find us',        countdown: false, spTrack: 'Resonance', spotify: false, youtube: false, event: true,  desc: '<em>Show tonight.</em> Tickets take the front. Fans who land here know what to do.' },
-        profile: { badge: null,             badgeRgb: null,           dot: false, cta1: 'Stream my music', cta2: 'All platforms',  countdown: false, spTrack: 'Resonance', spotify: true,  youtube: false, event: false, desc: '<em>Between moments.</em> Your full profile leads — music, identity, links. Always ready.' },
+        live:    { badge: '● Out now',      badgeRgb: '184,120,112', dot: true,  cta1: 'Stream Now',      cta2: 'Tickets',        countdown: false, spotify: true,  youtube: true,  event: false, desc: '<em>Release is out.</em> The page leads with streaming. Music plays here, not somewhere else.' },
+        pre:     { badge: '⏳ Drops 28 Mar', badgeRgb: '184,168,96',  dot: false, cta1: 'Pre-save',        cta2: 'Add to library', countdown: true,  spotify: false, youtube: false, event: false, desc: '<em>Dropping soon.</em> A countdown. A pre-save CTA. Fans lock in before the release exists.' },
+        gig:     { badge: '● On tonight',   badgeRgb: '184,144,104', dot: true,  cta1: 'Get Tickets',     cta2: 'Find us',        countdown: false, spotify: false, youtube: false, event: true,  desc: '<em>Show tonight.</em> Tickets take the front. Fans know exactly what to do.' },
+        profile: { badge: null,             badgeRgb: null,           dot: false, cta1: 'Stream my music', cta2: 'All platforms',  countdown: false, spotify: true,  youtube: false, event: false, desc: '<em>Between moments.</em> Your full profile leads — music, identity, links. Always ready.' },
       };
 
       const descEl = document.getElementById('demo-desc');
+      const PROOF_CLASSES = ['proof-action', 'proof-music'];
+      let activeInterval = null;
 
-      function applyState(key) {
+      // ── Core: apply a state to the phone ─────────────────────────────
+      function applyState(key, updateDesc) {
         const s = STATES[key];
         phone.dataset.state = key;
         const badge = phone.querySelector('.dp-badge');
         if (s.badge) {
           badge.style.display = 'flex';
           badge.querySelector('.dp-badge-text').textContent = s.badge;
-          badge.style.background = 'rgba(' + s.badgeRgb + ', 0.85)';
-          badge.style.borderColor = 'rgba(' + s.badgeRgb + ', 0.4)';
-          const dot = badge.querySelector('.dp-badge-dot');
-          dot.style.display = s.dot ? 'block' : 'none';
+          badge.style.background = 'rgba(' + s.badgeRgb + ',0.85)';
+          badge.style.borderColor = 'rgba(' + s.badgeRgb + ',0.4)';
+          badge.querySelector('.dp-badge-dot').style.display = s.dot ? 'block' : 'none';
         } else {
           badge.style.display = 'none';
         }
@@ -1316,32 +1333,76 @@
         const evEl = document.getElementById('dp-event');
         if (spEl) spEl.style.display = s.spotify ? 'block' : 'none';
         if (ytEl) ytEl.style.display = s.youtube ? 'block' : 'none';
-        if (evEl) evEl.style.display = s.event ? 'block' : 'none';
-        const spTrackEl = document.getElementById('dp-sp-track');
-        if (spTrackEl) spTrackEl.textContent = s.spTrack;
-        if (descEl) { descEl.style.opacity = '0'; setTimeout(function() { descEl.innerHTML = s.desc; descEl.style.opacity = '1'; }, 120); }
+        if (evEl) evEl.style.display = s.event  ? 'block' : 'none';
+        if (updateDesc !== false && descEl && s.desc) {
+          descEl.style.opacity = '0';
+          setTimeout(function() { descEl.innerHTML = s.desc; descEl.style.opacity = '1'; }, 110);
+        }
       }
 
-      function applyTheme(key) {
-        phone.dataset.theme = key;
+      function applyTheme(key) { phone.dataset.theme = key; }
+
+      function setDesc(html) {
+        if (!descEl) return;
+        descEl.style.opacity = '0';
+        setTimeout(function() { descEl.innerHTML = html; descEl.style.opacity = '1'; }, 110);
       }
 
-      document.querySelectorAll('[data-ctrl-state]').forEach(function(btn) {
+      function clearInteraction() {
+        if (activeInterval) { clearInterval(activeInterval); activeInterval = null; }
+        PROOF_CLASSES.forEach(function(c) { phone.classList.remove(c); });
+      }
+
+      // ── Proof line behaviours ─────────────────────────────────────────
+      const MOMENT_CYCLE = ['live', 'pre', 'gig', 'profile'];
+      const THEME_CYCLE  = ['dark', 'light', 'glass', 'dark', 'contrast', 'dark'];
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const PROOFS = {
+        moment: function() {
+          applyState('live');
+          if (reducedMotion) return;
+          var idx = 0;
+          activeInterval = setInterval(function() {
+            idx = (idx + 1) % MOMENT_CYCLE.length;
+            applyState(MOMENT_CYCLE[idx]);
+          }, 1300);
+        },
+        action: function() {
+          applyState('live');
+          setDesc('The top of your page always leads with the most relevant action — before fans have to look for it.');
+          phone.classList.add('proof-action');
+        },
+        music: function() {
+          applyState('live');
+          setDesc('Spotify plays here. YouTube loads when they tap. Fans stay — they don\'t disappear into another app.');
+          phone.classList.add('proof-music');
+        },
+        look: function() {
+          applyState('live');
+          setDesc('<em>One accent. Four looks.</em> Your colour runs through everything — dark, light, glass, or contrast.');
+          if (reducedMotion) return;
+          var idx = 0;
+          activeInterval = setInterval(function() {
+            idx = (idx + 1) % THEME_CYCLE.length;
+            applyTheme(THEME_CYCLE[idx]);
+          }, 950);
+        },
+      };
+
+      // ── Wire up proof line clicks ─────────────────────────────────────
+      document.querySelectorAll('.proof-line').forEach(function(btn) {
         btn.addEventListener('click', function() {
-          document.querySelectorAll('[data-ctrl-state]').forEach(function(b) { b.classList.remove('active'); });
+          clearInteraction();
+          applyTheme('dark'); // always reset theme between proofs
+          document.querySelectorAll('.proof-line').forEach(function(b) { b.classList.remove('active'); });
           btn.classList.add('active');
-          applyState(btn.dataset.ctrlState);
+          var key = btn.dataset.proof;
+          if (PROOFS[key]) PROOFS[key]();
         });
       });
 
-      document.querySelectorAll('[data-ctrl-theme]').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          document.querySelectorAll('[data-ctrl-theme]').forEach(function(b) { b.classList.remove('active'); });
-          btn.classList.add('active');
-          applyTheme(btn.dataset.ctrlTheme);
-        });
-      });
-
+      // Init
       applyState('live');
       applyTheme('dark');
     })();
