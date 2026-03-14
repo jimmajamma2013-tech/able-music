@@ -6075,6 +6075,7 @@
         const type = rel.type || 'Single'
         const year = rel.year || (rel.releaseDate ? new Date(rel.releaseDate).getFullYear() : '')
         const tracks = rel.tracks || []
+        const displayMode = rel.displayMode || 'both'  // 'embed' | 'tracklist' | 'both'
         // Admin saves platformUrl; renderer historically used streamUrl — accept both
         const streamUrl = rel.streamUrl || rel.platformUrl || ''
         const embedUrl = rel.embedUrl || buildEmbedUrl(streamUrl)
@@ -6093,7 +6094,7 @@
         card.setAttribute('role', 'listitem')
 
         // Build tracks list
-        const tracksHtml = tracks.length
+        let tracksHtml = tracks.length
           ? `<div class="release-card__tracks" aria-label="Track listing">
               ${tracks.slice(0, 5).map((t, ti) => {
                 const trackArt = t.artworkUrl || artworkSrc
@@ -6192,6 +6193,10 @@
               : ''
           }`
         }
+
+        // Apply displayMode: 'embed' hides tracklist; 'tracklist' hides embed media
+        if (displayMode === 'embed') tracksHtml = ''
+        else if (displayMode === 'tracklist') mediaHtml = ''
 
         // Credits — compact strip, quiet acknowledgment
         const credits = Array.isArray(rel.credits) ? rel.credits : []
@@ -6983,19 +6988,20 @@
       initCopyLink(profile)
       renderPills(profile)
 
-      // Render main content sections (Checkpoint 4)
+      // Render all content sections first, then apply visibility + ordering
       renderFanCapture(profile)
       renderListenSection(profile)
       renderShowsSection(profile)
-
-      // Dynamic section ordering — state-driven + artist preference
-      applySectionOrder(profile)
       renderSnapCards(profile)
       renderMerchSection(profile)
       renderSupportSection(profile)
       renderCreditsSection(profile)
       renderRecommendations(profile)
       renderFooter(profile)
+
+      // Dynamic section ordering — state-driven + artist preference
+      // Must run AFTER all renderers so visibility overrides their section.hidden = false
+      applySectionOrder(profile)
 
       // Wire interactions (Checkpoint 4)
       initFanForms()

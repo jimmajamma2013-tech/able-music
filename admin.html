@@ -2127,6 +2127,10 @@ function renderAdminEvents() {
           <div class="field-label">Ticket URL (Dice, Eventbrite, RA, Ticketmaster…)</div>
           <input class="field-input" type="url" value="${escHtml(ev.ticketUrl||'')}" oninput="updateEventField('${ev.id}','ticketUrl',this.value)" placeholder="dice.fm/event/…">
         </div>
+        <div class="field-row" style="margin-top:8px;">
+          <div class="field-label">Venue image URL <span style="font-weight:400;color:var(--t3);">(optional — shown behind show card)</span></div>
+          <input class="field-input" type="url" value="${escHtml(ev.venueImageUrl||'')}" oninput="updateEventField('${ev.id}','venueImageUrl',this.value)" placeholder="https://…/venue.jpg">
+        </div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
           <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2);cursor:pointer;">
             <input type="checkbox" ${ev.soldOut?'checked':''} onchange="updateEventField('${ev.id}','soldOut',this.checked)"> Sold out
@@ -2142,7 +2146,7 @@ function addEvent() {
   const data = safeLS(V3_KEY, {});
   const events = data.events || [];
   const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
-  events.unshift({ id: 'ev'+Date.now(), venue: '', city: '', date: tomorrow.toISOString().split('T')[0], time: '', ticketUrl: '', soldOut: false });
+  events.unshift({ id: 'ev'+Date.now(), venue: '', city: '', date: tomorrow.toISOString().split('T')[0], time: '', ticketUrl: '', soldOut: false, venueImageUrl: '' });
   setLS(V3_KEY, { ...data, events });
   syncProfile({ ...data, events });
   renderAdminEvents();
