@@ -155,38 +155,44 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
 /* ── HOW-TO GUIDES ── */
 .how-to-btn {
-  display:flex; align-items:center; gap:7px;
-  margin-top:10px; padding:8px 12px; border-radius:9px;
-  font-size:12px; font-weight:600; color:var(--t2);
-  background:rgba(138,180,206,.06); border:1px solid var(--border);
-  cursor:pointer; transition:all .16s; font-family:var(--font); width:100%;
-  text-align:left;
+  display:flex; align-items:center; gap:8px;
+  margin-top:12px; padding:10px 14px; border-radius:10px;
+  font-size:12.5px; font-weight:600; color:rgba(255,255,255,.75);
+  background:rgba(138,180,206,.10); border:1.5px solid rgba(138,180,206,.22);
+  cursor:pointer; transition:all .18s; font-family:var(--font); width:100%;
+  text-align:left; letter-spacing:.01em;
 }
-.how-to-btn:hover { background:rgba(138,180,206,.10); color:var(--text); border-color:var(--bm); }
-.how-to-btn svg { margin-left:auto; flex-shrink:0; transition:transform .2s; color:var(--t3); }
-.how-to-btn.open svg { transform:rotate(180deg); }
+.how-to-btn:hover { background:rgba(138,180,206,.18); color:#fff; border-color:rgba(138,180,206,.45); }
+.how-to-btn.open { background:rgba(138,180,206,.18); color:#fff; border-color:rgba(138,180,206,.45); border-bottom-left-radius:0; border-bottom-right-radius:0; margin-bottom:0; }
+.how-to-btn svg { margin-left:auto; flex-shrink:0; transition:transform .22s; color:rgba(255,255,255,.5); }
+.how-to-btn.open svg { transform:rotate(180deg); color:#fff; }
+@keyframes slideDown {
+  from { opacity:0; transform:translateY(-6px); }
+  to   { opacity:1; transform:translateY(0); }
+}
 .how-to-guide {
-  margin-top:10px; padding:14px 16px 12px; border-radius:12px;
-  background:rgba(138,180,206,.05); border:1px solid rgba(138,180,206,.12);
-  animation:stepIn .22s var(--ease) both;
+  padding:18px 18px 16px; border-radius:0 0 12px 12px;
+  background:rgba(20,30,55,.95); border:1.5px solid rgba(138,180,206,.45);
+  border-top:none; animation:slideDown .22s ease both;
+  backdrop-filter:blur(8px);
 }
-.how-to-steps { display:flex; flex-direction:column; gap:10px; margin-bottom:12px; }
+.how-to-steps { display:flex; flex-direction:column; gap:12px; margin-bottom:14px; }
 .how-to-step {
-  display:flex; align-items:flex-start; gap:11px;
-  font-size:13px; color:var(--t2); line-height:1.45;
+  display:flex; align-items:flex-start; gap:12px;
+  font-size:13.5px; color:rgba(255,255,255,.88); line-height:1.5;
 }
 .how-to-num {
-  width:22px; height:22px; border-radius:50%; flex-shrink:0;
-  background:rgba(138,180,206,.15); color:var(--acc);
+  width:24px; height:24px; border-radius:50%; flex-shrink:0;
+  background:var(--acc); color:#0f1624;
   display:flex; align-items:center; justify-content:center;
-  font-size:11px; font-weight:700; margin-top:1px;
+  font-size:11px; font-weight:800; margin-top:1px;
 }
-.how-to-step strong { color:var(--text); font-weight:600; }
+.how-to-step strong { color:#fff; font-weight:700; }
 .how-to-note {
-  font-size:11.5px; color:var(--t3); line-height:1.55;
-  padding-top:10px; border-top:1px solid rgba(138,180,206,.08);
+  font-size:12px; color:rgba(255,255,255,.6); line-height:1.6;
+  padding-top:12px; border-top:1px solid rgba(138,180,206,.15);
 }
-.how-to-note strong { color:var(--t2); }
+.how-to-note strong { color:rgba(255,255,255,.85); font-weight:600; }
 
 /* ── PLATFORM PICKER (music step) ── */
 .music-plat-row {
@@ -2250,11 +2256,18 @@ function toggleHowTo(id, btnId) {
   const guide = document.getElementById(id);
   const btn = document.getElementById(btnId);
   if (!guide) return;
-  const hidden = guide.hidden;
-  guide.hidden = !hidden;
+  const isHidden = guide.hidden;
+  if (isHidden) {
+    guide.hidden = false;
+    // Replay animation on re-open
+    guide.style.animation = 'none';
+    requestAnimationFrame(() => { guide.style.animation = ''; });
+  } else {
+    guide.hidden = true;
+  }
   if (btn) {
-    btn.classList.toggle('open', hidden);
-    btn.setAttribute('aria-expanded', hidden ? 'true' : 'false');
+    btn.classList.toggle('open', isHidden);
+    btn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
   }
 }
 
