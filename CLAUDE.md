@@ -101,11 +101,11 @@ Deceleration:    cubic-bezier(0.25,0.46,0.45,0.94)
 --font-d: 'Barlow Condensed'
 ```
 
-### Themes (all must work on able-v3.html)
+### Themes (all must work on able-v3.html / able-v6.html)
 - Dark (default): #0d0e1a base
-- Light: inverted, dark text
-- Mid: mid-tone
-- Glass: backdrop-filter blur(28px) saturate(180%)
+- Light: warm cream #f0ede8 base, dark text
+- Glass: backdrop-filter blur(28px) saturate(180%) — requires background artwork
+- Contrast: pure black #000000 base, maximum contrast
 
 ---
 
@@ -179,7 +179,7 @@ When backend is added:
 7. **Commit after each logical chunk** with descriptive message
 8. **Run Playwright smoke tests** after major changes (Playwright MCP is configured)
 9. **Never add cheesy copy** — re-read the copy philosophy above before every text change
-10. **Always check PRODUCT_HIERARCHY_AND_TRUST.md** before deciding what to build next — work top of the hierarchy down
+10. **Always check `docs/v6/core/V6_BUILD_AUTHORITY.md`** before deciding what to build next — it is the primary authority for all v6 decisions
 
 ---
 
@@ -187,10 +187,13 @@ When backend is added:
 
 | File | What's in it |
 |---|---|
-| `docs/PRODUCT_HIERARCHY_AND_TRUST.md` | Priority order for all features |
-| `docs/PLATFORM_STRATEGY.md` | Tiers, fan journey, superfan system, support packs |
-| `docs/VISUAL_SYSTEM.md` | 7 genre vibes, fonts, accent suggestions |
-| `docs/DISCOVERY_AND_GROWTH.md` | Directory, leaderboards, organic growth mechanics |
-| `docs/ECOSYSTEM_AND_PARTNERSHIPS.md` | Ablers, playlist pushers, rooms, press packs |
-| `docs/PRODUCT_SPEC.md` | Legacy v1 spec — useful for vocabulary |
-| `docs/QA_SMOKE_TESTS.md` | Smoke test checklist |
+| `docs/v6/core/V6_BUILD_AUTHORITY.md` | **Primary authority** — all resolved decisions for v6 |
+| `docs/v6/00_AUTHORITY_ORDER.md` | Precedence order — read this first |
+| `docs/v6/core/VISUAL_SYSTEM.md` | 7 genre vibes, fonts, accent suggestions |
+| `docs/v6/core/COPY_AND_DESIGN_PHILOSOPHY.md` | Copy register, voice, banned phrases |
+| `docs/reference/research/PRODUCT_HIERARCHY_AND_TRUST.md` | Priority order for all features (reference only) |
+| `docs/reference/research/PLATFORM_STRATEGY.md` | Tiers, fan journey, superfan system (reference only) |
+| `docs/reference/research/DISCOVERY_AND_GROWTH.md` | Directory, leaderboards, organic growth mechanics (reference only) |
+| `docs/reference/research/ECOSYSTEM_AND_PARTNERSHIPS.md` | Ablers, playlist pushers, rooms, press packs (reference only) |
+| `docs/archive/superseded-v5/PRODUCT_SPEC.md` | Legacy v1 spec — vocabulary reference only (archived) |
+| `docs/archive/superseded-v5/QA_SMOKE_TESTS.md` | v3-era smoke tests — archived, superseded by v6 (archived) |
