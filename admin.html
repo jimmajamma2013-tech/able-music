@@ -2657,6 +2657,17 @@ function renderAdminSupport() {
   if (titleEl) titleEl.value = support.title || '';
   if (introEl) introEl.value = support.intro || '';
 
+  // Sync Close Circle fields
+  const cc = data.closeCircle || {};
+  const ccEnabledEl  = document.getElementById('ccEnabled');
+  const ccCurrencyEl = document.getElementById('ccCurrency');
+  const ccAmountEl   = document.getElementById('ccAmount');
+  const ccIntroEl    = document.getElementById('ccIntro');
+  if (ccEnabledEl)  ccEnabledEl.checked  = !!cc.enabled;
+  if (ccCurrencyEl) ccCurrencyEl.value   = cc.currency || '£';
+  if (ccAmountEl)   ccAmountEl.value     = cc.monthlyAmount || 5;
+  if (ccIntroEl)    ccIntroEl.value      = cc.introText || '';
+
   if (!packs.length) {
     el.innerHTML = `<div class="admin-empty">No packs yet — add your first one below.</div>`;
     return;
@@ -2771,6 +2782,16 @@ function saveAllSupport() {
   const btn = event.target;
   btn.textContent = '✓ Saved'; btn.style.background='#16a34a';
   setTimeout(() => { btn.textContent = 'Save support'; btn.style.background=''; }, 2000);
+}
+
+function saveCloseCircle() {
+  const data = safeLS(V3_KEY, {});
+  const enabled  = document.getElementById('ccEnabled')?.checked  || false;
+  const currency = document.getElementById('ccCurrency')?.value   || '£';
+  const amount   = parseFloat(document.getElementById('ccAmount')?.value) || 5;
+  const intro    = document.getElementById('ccIntro')?.value.trim() || '';
+  data.closeCircle = { enabled, currency, monthlyAmount: amount, introText: intro };
+  setLS(V3_KEY, data);
 }
 
 /* ── REAL STATS FROM LOCALSTORAGE ── */
