@@ -103,7 +103,7 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 | 7 | `7d2acd1` | §7.1 + §7.2 audit fixes; admin theme persistence |
 | 8 | `2a426b9` | Artist World Map — State 4 + hero wire-up; V3_KEY fix |
 | 9 | `37a6073` | Close Circle — hero entry, join half-sheet, lock-ring dots, supporter gate |
-| 10 | pending | Guided Identity System — `data-feel` CSS, `applyIdentity()`, `profile.identity` |
+| 10 | `47beb81` | Guided Identity System — `data-feel` CSS, `applyIdentity()`, `profile.identity` |
 
 ### Checkpoint 7 spot-check matrix (12/12 pass)
 
