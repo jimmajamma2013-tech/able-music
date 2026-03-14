@@ -2832,7 +2832,15 @@ function renderAdminSupport() {
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
           <div class="field-row" style="margin:0;">
-            <div class="field-label">Price (£)</div>
+            <div class="field-label">Currency</div>
+            <select class="field-input" onchange="updateSupportField('${pack.id}','currency',this.value)">
+              <option value="£"${(pack.currency||'£')==='£'?' selected':''}>£ GBP</option>
+              <option value="$"${pack.currency==='$'?' selected':''}>$ USD</option>
+              <option value="€"${pack.currency==='€'?' selected':''}>€ EUR</option>
+            </select>
+          </div>
+          <div class="field-row" style="margin:0;">
+            <div class="field-label">Price</div>
             <input class="field-input" type="number" min="1" value="${escHtml(pack.price||'')}" oninput="updateSupportField('${pack.id}','price',this.value)" placeholder="5">
           </div>
           <div class="field-row" style="margin:0;">
@@ -2842,10 +2850,6 @@ function renderAdminSupport() {
               <option value="subscription"${pack.type==='subscription'?' selected':''}>Subscription</option>
               <option value="pack"${pack.type==='pack'?' selected':''}>Pack / bundle</option>
             </select>
-          </div>
-          <div class="field-row" style="margin:0;">
-            <div class="field-label">Quantity limit</div>
-            <input class="field-input" type="number" min="0" value="${escHtml(pack.limit||'')}" oninput="updateSupportField('${pack.id}','limit',this.value)" placeholder="Unlimited">
           </div>
         </div>
         <div class="field-row">
