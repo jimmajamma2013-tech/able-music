@@ -854,6 +854,17 @@
       border-color: var(--accent-border);
       color: var(--accent);
     }
+
+    /* Demo state description */
+    .demo-state-desc {
+      font-size: 11.5px; font-weight: 500;
+      color: var(--text-2); line-height: 1.55;
+      text-align: center; max-width: 280px;
+      margin: 14px 0 4px;
+      min-height: 36px;
+      transition: opacity 0.18s ease;
+    }
+    .demo-state-desc em { font-style: normal; color: var(--accent); }
   </style>
 </head>
 <body>
@@ -877,7 +888,7 @@
     <div class="hero__copy">
       <div class="hero__eyebrow">For independent artists</div>
       <h1 class="hero__headline">When they click,<br>be <em>ready.</em></h1>
-      <p class="hero__sub">A release. A show tonight. Or just you, as you are. Your page reads the moment and shifts to meet it — automatically.</p>
+      <p class="hero__sub">Fans clicked from your release post, your story, your show announcement. Your ABLE page knows the moment — and leads with the right action before they have to look for it.</p>
 
       <div class="hero__platforms">
         <span class="hero__platforms-label">Connects to</span>
@@ -926,6 +937,9 @@
             </div>
           </div>
         </div>
+
+        <!-- State description -->
+        <p class="demo-state-desc" id="demo-desc"><em>Release is out.</em> The page leads with streaming. Music plays here, not somewhere else.</p>
 
         <!-- Single phone chrome -->
         <div id="demoPhone" data-theme="dark" data-state="live">
@@ -1105,23 +1119,23 @@
       <div class="features-grid">
         <div class="feature-card fade-up">
           <div class="feature-card__icon">01</div>
-          <div class="feature-card__title">Fan-first page structure</div>
-          <div class="feature-card__desc">One primary CTA, one secondary. Quick action pills below. Section links after. Everything ordered by what converts a first-time visitor.</div>
+          <div class="feature-card__title">The right action leads every time</div>
+          <div class="feature-card__desc">Stream on release day. Pre-save in the build-up. Tickets on show night. The top of your page leads with what matters most — not the same thing regardless of when they arrive.</div>
         </div>
         <div class="feature-card fade-up">
           <div class="feature-card__icon">02</div>
           <div class="feature-card__title">Listen here, not somewhere else</div>
-          <div class="feature-card__desc">Spotify plays in the page. YouTube loads when they tap. Every platform embeds natively — fans hear your music without leaving.</div>
+          <div class="feature-card__desc">Spotify plays in the page. YouTube loads when they tap. Fans stay with you — they don't disappear into another app before you've had a chance to land.</div>
         </div>
         <div class="feature-card fade-up">
           <div class="feature-card__icon">03</div>
-          <div class="feature-card__title">Four themes, zero broken combos</div>
-          <div class="feature-card__desc">Dark, Light, High-Contrast, Glass. Every theme works with every accent. Pick your vibe, stay consistent.</div>
+          <div class="feature-card__title">Looks like you, not a template</div>
+          <div class="feature-card__desc">Dark, Light, Glass, or High-Contrast — every theme works with your accent colour. Set it once and it holds across the whole page.</div>
         </div>
         <div class="feature-card fade-up">
           <div class="feature-card__icon">04</div>
-          <div class="feature-card__title">Direct support — no middleman</div>
-          <div class="feature-card__desc">Support packs, one-off contributions. Fans back you directly — no platform cut beyond Stripe's standard rate.</div>
+          <div class="feature-card__title">Your list. Your relationship.</div>
+          <div class="feature-card__desc">Fans sign up on your page — that list is yours. Not the platform's. Support packs and one-off contributions go directly to you, with no cut beyond Stripe's standard rate.</div>
         </div>
       </div>
     </div>
@@ -1271,11 +1285,13 @@
       if (!phone) return;
 
       const STATES = {
-        live:    { badge: '● Out now',      badgeRgb: '184,120,112', dot: true,  cta1: 'Stream Now',      cta2: 'Tickets',        countdown: false, spTrack: 'Resonance', spotify: true,  youtube: true,  event: false },
-        pre:     { badge: '⏳ Drops 28 Mar', badgeRgb: '184,168,96',  dot: false, cta1: 'Pre-save',        cta2: 'Add to library', countdown: true,  spTrack: 'Resonance', spotify: false, youtube: false, event: false },
-        gig:     { badge: '● On tonight',   badgeRgb: '184,144,104', dot: true,  cta1: 'Get Tickets',     cta2: 'Find us',        countdown: false, spTrack: 'Resonance', spotify: false, youtube: false, event: true  },
-        profile: { badge: null,             badgeRgb: null,           dot: false, cta1: 'Stream my music', cta2: 'All platforms',  countdown: false, spTrack: 'Resonance', spotify: true,  youtube: false, event: false },
+        live:    { badge: '● Out now',      badgeRgb: '184,120,112', dot: true,  cta1: 'Stream Now',      cta2: 'Tickets',        countdown: false, spTrack: 'Resonance', spotify: true,  youtube: true,  event: false, desc: '<em>Release is out.</em> The page leads with streaming. Music plays here, not somewhere else.' },
+        pre:     { badge: '⏳ Drops 28 Mar', badgeRgb: '184,168,96',  dot: false, cta1: 'Pre-save',        cta2: 'Add to library', countdown: true,  spTrack: 'Resonance', spotify: false, youtube: false, event: false, desc: '<em>Dropping soon.</em> A countdown. A pre-save lead. Fans lock in before the release exists.' },
+        gig:     { badge: '● On tonight',   badgeRgb: '184,144,104', dot: true,  cta1: 'Get Tickets',     cta2: 'Find us',        countdown: false, spTrack: 'Resonance', spotify: false, youtube: false, event: true,  desc: '<em>Show tonight.</em> Tickets take the front. Fans who land here know what to do.' },
+        profile: { badge: null,             badgeRgb: null,           dot: false, cta1: 'Stream my music', cta2: 'All platforms',  countdown: false, spTrack: 'Resonance', spotify: true,  youtube: false, event: false, desc: '<em>Between moments.</em> Your full profile leads — music, identity, links. Always ready.' },
       };
+
+      const descEl = document.getElementById('demo-desc');
 
       function applyState(key) {
         const s = STATES[key];
@@ -1303,6 +1319,7 @@
         if (evEl) evEl.style.display = s.event ? 'block' : 'none';
         const spTrackEl = document.getElementById('dp-sp-track');
         if (spTrackEl) spTrackEl.textContent = s.spTrack;
+        if (descEl) { descEl.style.opacity = '0'; setTimeout(function() { descEl.innerHTML = s.desc; descEl.style.opacity = '1'; }, 120); }
       }
 
       function applyTheme(key) {
