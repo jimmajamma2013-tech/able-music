@@ -849,7 +849,6 @@ const VIBES = [
   { id:'pop',        label:'Pop',         grad:'linear-gradient(135deg,#9b7cf4,#4a1a8a)', accent:'#9b7cf4', font:'Barlow Condensed', fontUrl:null,              accents:['#9b7cf4','#e06b7a','#06b6d4','#f4b942'] },
   { id:'rock',       label:'Rock',        grad:'linear-gradient(160deg,#e05242,#1a0a0a)', accent:'#e05242', font:'Oswald',           fontUrl:'Oswald:700',      accents:['#e05242','#ffffff','#f4b942','#9b7cf4'] },
   { id:'acoustic',   label:'Acoustic',    grad:'linear-gradient(135deg,#d4a96a,#5a3a1a)', accent:'#d4a96a', font:'Lora',             fontUrl:'Lora:700',        accents:['#d4a96a','#7ec88a','#e06b7a','#ffffff'] },
-  { id:'afrobeats',  label:'Afrobeats',   grad:'linear-gradient(135deg,#ff6b52,#8a1a00)', accent:'#ff6b52', font:'Barlow Condensed', fontUrl:null,              accents:['#ff6b52','#f4b942','#e06b7a','#7ec88a'] },
 ];
 
 const PRESETS = [
@@ -1307,7 +1306,7 @@ function shareSMS() {
   const msg = `Check out my artist page: ${getPageUrl()}`;
   window.open(`sms:?body=${encodeURIComponent(msg)}`);
 }
-function openPage() { window.open('able-v3.html', '_blank'); }
+function openPage() { window.open('able-v6.html', '_blank'); }
 
 /* ── CONFETTI ── */
 function launchConfetti() {
@@ -1363,12 +1362,12 @@ const BIO_TEMPLATES = {
     'Bars and beats. All original, all intentional.',
     '{name} — hip hop with something to say.',
   ],
-  rnbsoul: [
+  rnb: [
     '{name} writes about love, grief, and the space in between.',
     'Soul music. Real feelings, real production.',
     '{name} — voice, keys, and every word earned.',
   ],
-  indiealt: [
+  indie: [
     'Songs about ordinary things that turn out to be everything.',
     '{name} — indie music made in the margins.',
     'Guitar, tape, and whatever else the song needs.',
@@ -1378,12 +1377,12 @@ const BIO_TEMPLATES = {
     'Big hooks, real feelings. Pop done with intention.',
     '{name} — pop that earns its chorus.',
   ],
-  rockmetal: [
+  rock: [
     '{name}. Guitar-driven, heavy where it counts.',
     'Loud music made carefully. Volume as a choice, not a default.',
     '{name} — rock with something to prove.',
   ],
-  acousticfolk: [
+  acoustic: [
     'Just a voice, a guitar, and things worth saying.',
     '{name} — folk music with its feet on the ground.',
     'Songs that started in a quiet room and stayed honest.',
@@ -1399,9 +1398,9 @@ const REFINE_TRANSFORMS = {
 
 function generateDemoDraft(type, context, refinement) {
   if (type === 'bio') {
-    const vibe  = (context.vibe  || 'indiealt').replace(/[^a-z]/gi, '').toLowerCase();
+    const vibe  = (context.vibe  || 'indie').replace(/[^a-z]/gi, '').toLowerCase();
     const name  = (context.name  || '').trim();
-    const key   = BIO_TEMPLATES[vibe] ? vibe : 'indiealt';
+    const key   = BIO_TEMPLATES[vibe] ? vibe : 'indie';
     const pool  = BIO_TEMPLATES[key];
     const draft = pool[Math.floor(Math.random() * pool.length)].replace(/{name}/g, name || 'Artist');
     if (refinement && REFINE_TRANSFORMS[refinement]) {
@@ -1410,17 +1409,17 @@ function generateDemoDraft(type, context, refinement) {
     return draft;
   }
   if (type === 'cta') {
-    const vibe  = (context.vibe || 'indiealt').replace(/[^a-z]/gi, '').toLowerCase();
+    const vibe  = (context.vibe || 'indie').replace(/[^a-z]/gi, '').toLowerCase();
     const ctaSets = {
-      electronic:    [{ label: 'Stream the drop', type: 'stream' }, { label: 'Tickets', type: 'tickets' }, { label: 'Hear the mix', type: 'stream' }],
-      hiphop:        [{ label: 'Stream now', type: 'stream' }, { label: 'Free download', type: 'download' }, { label: 'Get tickets', type: 'tickets' }],
-      rnbsoul:       [{ label: 'Listen', type: 'stream' }, { label: 'Support my work', type: 'support' }, { label: 'See me live', type: 'tickets' }],
-      indiealt:      [{ label: 'Stream the album', type: 'stream' }, { label: 'Come to a show', type: 'tickets' }, { label: 'Download free', type: 'download' }],
-      pop:           [{ label: 'Stream now', type: 'stream' }, { label: 'Pre-save', type: 'presave' }, { label: 'Tickets', type: 'tickets' }],
-      rockmetal:     [{ label: 'Listen', type: 'stream' }, { label: 'Tour dates', type: 'tickets' }, { label: 'Merch', type: 'merch' }],
-      acousticfolk:  [{ label: 'Listen', type: 'stream' }, { label: 'Support my music', type: 'support' }, { label: 'See me live', type: 'tickets' }],
+      electronic: [{ label: 'Stream the drop', type: 'stream' }, { label: 'Tickets', type: 'tickets' }, { label: 'Hear the mix', type: 'stream' }],
+      hiphop:     [{ label: 'Stream now', type: 'stream' }, { label: 'Free download', type: 'download' }, { label: 'Get tickets', type: 'tickets' }],
+      rnb:        [{ label: 'Listen', type: 'stream' }, { label: 'Support my work', type: 'support' }, { label: 'See me live', type: 'tickets' }],
+      indie:      [{ label: 'Stream the album', type: 'stream' }, { label: 'Come to a show', type: 'tickets' }, { label: 'Download free', type: 'download' }],
+      pop:        [{ label: 'Stream now', type: 'stream' }, { label: 'Pre-save', type: 'presave' }, { label: 'Tickets', type: 'tickets' }],
+      rock:       [{ label: 'Listen', type: 'stream' }, { label: 'Tour dates', type: 'tickets' }, { label: 'Merch', type: 'merch' }],
+      acoustic:   [{ label: 'Listen', type: 'stream' }, { label: 'Support my music', type: 'support' }, { label: 'See me live', type: 'tickets' }],
     };
-    return (ctaSets[vibe] || ctaSets['indiealt']);
+    return (ctaSets[vibe] || ctaSets['indie']);
   }
   return '';
 }
@@ -1505,7 +1504,7 @@ function closeCtaHelper() {
 }
 
 function buildCtaOptions() {
-  const context  = { vibe: P.vibe || 'indiealt' };
+  const context  = { vibe: P.vibe || 'indie' };
   const opts     = generateDemoDraft('cta', context, null);
   const container = document.getElementById('aiCtaOpts');
   const useBtn   = document.getElementById('aiCtaUse');
@@ -1531,23 +1530,30 @@ function buildCtaOptions() {
 
 function useCtaSuggestion() {
   if (!_ctaSelected) return;
-  // Find matching CTA in the grid and select it
-  const grid = document.getElementById('ctaGrid');
-  if (grid) {
-    const pills = grid.querySelectorAll('[data-cta]');
-    let matched = false;
-    pills.forEach(pill => {
-      if (pill.dataset.cta === _ctaSelected.type) {
-        pill.click();
-        matched = true;
-      }
+  const { label, type } = _ctaSelected;
+
+  // Find matching CTA definition and activate it
+  const found = CTA_PRIMARY.find(c => c.id === type);
+  if (found) {
+    P.ctaId = found.id;
+    document.querySelectorAll('.cta-gcard').forEach(b => {
+      const isMatch = b.querySelector('.cg-label') &&
+                      b.querySelector('.cg-label').textContent === found.label;
+      b.classList.toggle('on', isMatch);
     });
-    if (!matched) {
-      // Fallback: just update preview label
-      const previewBtn = document.getElementById('ctaPreviewBtn');
-      if (previewBtn) previewBtn.textContent = _ctaSelected.label;
+    const needsUrl = !!found.ph;
+    document.getElementById('ctaUrlWrap').style.display = needsUrl ? 'block' : 'none';
+    if (needsUrl) {
+      document.getElementById('iCtaUrl').placeholder = found.ph;
     }
   }
+
+  // Apply the AI-suggested label (overrides the default label for this CTA type)
+  P.ctaLabel = label;
+  const previewBtn = document.getElementById('ctaPreviewBtn');
+  if (previewBtn) previewBtn.textContent = label;
+  updatePreview();
+
   closeCtaHelper();
 }
 

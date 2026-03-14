@@ -1,0 +1,25 @@
+# Local Netlify folder
+.netlify
+
+# Screenshots and iteration images (root level only — keep design-references/)
+/*.png
+/*.jpg
+/*.jpeg
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Playwright
+.playwright-mcp/
+
+# Claude / Superpowers tooling
+.claude/
+.superpowers/
+
+# Node (if ever used)
+node_modules/
+
+# Env files
+.env
+.env.local

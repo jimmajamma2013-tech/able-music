@@ -2600,6 +2600,13 @@
     }
     .ep-save-btn:hover { opacity: 0.88; }
 
+    .ep-hint {
+      font-size: 11px;
+      color: var(--color-text-3);
+      margin: 2px 0 0;
+      line-height: 1.4;
+    }
+
     .ep-dash-link {
       display: block;
       text-align: center;
@@ -5362,9 +5369,8 @@
 
       // ── Build panel content ──────────────────────────────────────
       function buildPanel(p) {
-        const ctas = p.ctas || []
-        const cta0 = ctas[0] || {}
-        const cta1 = ctas[1] || {}
+        const cta0 = p.ctaPrimary   || {}
+        const cta1 = p.ctaSecondary || {}
         const accent = p.accent || getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim() || '#e07b3a'
 
         // Fan count (§9.1)
@@ -5437,6 +5443,16 @@
           <div class="ep-divider"></div>
 
           <div class="ep-field">
+            <span class="ep-label">Campaign state</span>
+            <div class="ep-chips" id="ep-state-chips">
+              ${['profile','pre-release','live','gig'].map(s =>
+                `<button class="ep-chip${(p.stateOverride||computeState(p))===s?' active':''}" data-state="${s}">${s[0].toUpperCase()+s.slice(1)}</button>`
+              ).join('')}
+            </div>
+            <p class="ep-hint">Override your automatic campaign state.</p>
+          </div>
+
+          <div class="ep-field">
             <span class="ep-label">Primary CTA</span>
             <div class="ep-cta-row">
               <input class="ep-input" id="ep-cta0-label" type="text" value="${escHtml(cta0.label||'')}" placeholder="Label">
@@ -5459,16 +5475,12 @@
         `
 
         // Chip selection
-        body.querySelectorAll('[data-theme]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            body.querySelectorAll('[data-theme]').forEach(b => b.classList.remove('active'))
-            btn.classList.add('active')
-          })
-        })
-        body.querySelectorAll('[data-vibe]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            body.querySelectorAll('[data-vibe]').forEach(b => b.classList.remove('active'))
-            btn.classList.add('active')
+        ;[['[data-theme]','[data-theme]'], ['[data-vibe]','[data-vibe]'], ['[data-state]','[data-state]']].forEach(([sel]) => {
+          body.querySelectorAll(sel).forEach(btn => {
+            btn.addEventListener('click', () => {
+              body.querySelectorAll(sel).forEach(b => b.classList.remove('active'))
+              btn.classList.add('active')
+            })
           })
         })
 
@@ -5489,9 +5501,10 @@
             const stored = JSON.parse(localStorage.getItem('able_v3_profile') || '{}')
             stored.name  = body.querySelector('#ep-name').value.trim() || stored.name
             stored.bio   = body.querySelector('#ep-bio').value.trim()  || stored.bio
-            stored.theme = body.querySelector('[data-theme].active')?.dataset.theme || stored.theme
-            stored.vibe  = body.querySelector('[data-vibe].active')?.dataset.vibe  || stored.vibe
-            stored.accent = body.querySelector('#ep-accent')?.value || stored.accent
+            stored.theme         = body.querySelector('[data-theme].active')?.dataset.theme  || stored.theme
+            stored.vibe          = body.querySelector('[data-vibe].active')?.dataset.vibe    || stored.vibe
+            stored.stateOverride = body.querySelector('[data-state].active')?.dataset.state  || stored.stateOverride
+            stored.accent        = body.querySelector('#ep-accent')?.value || stored.accent
 
             const c0label = body.querySelector('#ep-cta0-label')?.value.trim()
             const c0url   = body.querySelector('#ep-cta0-url')?.value.trim()
