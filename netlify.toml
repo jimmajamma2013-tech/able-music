@@ -36,6 +36,12 @@
     Cache-Control = "public, max-age=0, must-revalidate"
 
 # ── Redirects ────────────────────────────────────────────────────
+# Root → new landing page
+[[redirects]]
+  from   = "/"
+  to     = "/landing.html"
+  status = 200
+
 # Supabase auth callback (magic link lands here)
 [[redirects]]
   from   = "/auth/callback"
