@@ -774,6 +774,12 @@
       filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
     }
 
+    /* H1+H3 — Ambient glow breathing animation */
+    @keyframes glow-breathe {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.55; }
+    }
+
     /* Ambient gradient overlay — uses extracted artwork colour */
     .hero__ambient {
       position: absolute;
@@ -784,6 +790,7 @@
         transparent 65%
       );
       pointer-events: none;
+      animation: glow-breathe 4s ease-in-out infinite;
     }
 
     /* H17 — State-specific ambient glow tint (pre-release amber, live warm red) */
@@ -802,12 +809,32 @@
         transparent 65%
       );
     }
+    /* H3 — Gig state: brighter opacity + faster rhythm (2.5s) */
     [data-campaign-state="gig"] .hero__ambient {
       background: radial-gradient(
         ellipse at 50% 100%,
         rgba(var(--color-ambient), 0.55) 0%,
         transparent 65%
       );
+      animation-duration: 2.5s;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero__ambient { animation: none; }
+    }
+
+    /* C4 — Gig mode activation flash overlay (session-flagged, one-time) */
+    @keyframes gig-flash {
+      0%   { opacity: 0; }
+      20%  { opacity: 0.18; }
+      100% { opacity: 0; }
+    }
+    .gig-activation-flash {
+      position: fixed;
+      inset: 0;
+      background: rgba(var(--color-ambient), 1);
+      pointer-events: none;
+      z-index: 9999;
+      animation: gig-flash 600ms var(--ease-decel) forwards;
     }
 
     /* Top vignette — editorial depth, frames the image from above */
@@ -5886,13 +5913,20 @@
           const newVal = pad(val)
           if (el.textContent !== newVal) {
             if (!reducedMotion) {
-              el.style.transform = 'translateY(-4px)'
+              // C5 — Split-flap digit flip: fold up (rotateX 0→-90°), swap, fold down (rotateX 90°→0)
+              el.style.transition = 'transform 120ms var(--ease-standard), opacity 120ms var(--ease-standard)'
+              el.style.transformOrigin = 'center bottom'
+              el.style.transform = 'rotateX(-90deg)'
               el.style.opacity = '0'
-              requestAnimationFrame(() => {
+              setTimeout(() => {
                 el.textContent = newVal
-                el.style.transform = 'translateY(0)'
-                el.style.opacity = '1'
-              })
+                el.style.transform = 'rotateX(90deg)'
+                requestAnimationFrame(() => {
+                  el.style.transition = 'transform 140ms var(--ease-spring), opacity 100ms var(--ease-standard)'
+                  el.style.transform = 'rotateX(0deg)'
+                  el.style.opacity = '1'
+                })
+              }, 125)
             } else {
               el.textContent = newVal
             }
@@ -6212,6 +6246,15 @@
         }
       }
       applyStateChip(chipState, false, chipCustomText)
+
+      // C4 — Gig mode activation flash: one-time per session, most dramatic ABLE moment
+      if (state === 'gig' && !sessionStorage.getItem('gig-flash-shown')) {
+        sessionStorage.setItem('gig-flash-shown', '1')
+        const flash = document.createElement('div')
+        flash.className = 'gig-activation-flash'
+        document.body.appendChild(flash)
+        flash.addEventListener('animationend', () => flash.remove(), { once: true })
+      }
 
       // State-specific content
       stopCountdown()
