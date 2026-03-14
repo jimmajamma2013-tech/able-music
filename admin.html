@@ -542,6 +542,45 @@ body {
       cursor: pointer;
       text-decoration: underline;
     }
+
+    /* ── SECTION VISIBILITY ── */
+    .section-vis-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .section-vis-row:first-of-type { border-top: none; }
+    .section-vis-label {
+      font-size: 13px;
+      color: var(--text, #fff);
+      font-weight: 500;
+    }
+    .section-vis-toggle {
+      width: 40px;
+      height: 24px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.15);
+      border: none;
+      cursor: pointer;
+      position: relative;
+      transition: background .2s;
+      flex-shrink: 0;
+    }
+    .section-vis-toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform .2s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .section-vis-toggle[aria-pressed="true"] { background: var(--acc, #f4b942); }
+    .section-vis-toggle[aria-pressed="true"]::after { transform: translateX(16px); }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
@@ -844,6 +883,37 @@ body {
             </div>
           </div>
         </div>
+        <!-- ── SECTION VISIBILITY ── -->
+        <div class="dash-card" style="margin-top:16px;" id="sectionVisCard">
+          <div class="dc-head"><div class="dc-title">Sections</div></div>
+          <div class="dc-body">
+            <div class="section-vis-row">
+              <span class="section-vis-label">Music</span>
+              <button class="section-vis-toggle pressable" data-section="listen-section" aria-pressed="true" onclick="toggleSectionVis(this)" aria-label="Toggle Music section"></button>
+            </div>
+            <div class="section-vis-row">
+              <span class="section-vis-label">Shows</span>
+              <button class="section-vis-toggle pressable" data-section="shows-section" aria-pressed="true" onclick="toggleSectionVis(this)" aria-label="Toggle Shows section"></button>
+            </div>
+            <div class="section-vis-row">
+              <span class="section-vis-label">World Map</span>
+              <button class="section-vis-toggle pressable" data-section="world-map-section" aria-pressed="true" onclick="toggleSectionVis(this)" aria-label="Toggle World Map section"></button>
+            </div>
+            <div class="section-vis-row">
+              <span class="section-vis-label">Updates</span>
+              <button class="section-vis-toggle pressable" data-section="snap-cards-section" aria-pressed="true" onclick="toggleSectionVis(this)" aria-label="Toggle Updates section"></button>
+            </div>
+            <div class="section-vis-row">
+              <span class="section-vis-label">Merch</span>
+              <button class="section-vis-toggle pressable" data-section="merch-section" aria-pressed="true" onclick="toggleSectionVis(this)" aria-label="Toggle Merch section"></button>
+            </div>
+            <div class="section-vis-row">
+              <span class="section-vis-label">Support</span>
+              <button class="section-vis-toggle pressable" data-section="support-section" aria-pressed="true" onclick="toggleSectionVis(this)" aria-label="Toggle Support section"></button>
+            </div>
+          </div>
+        </div>
+
         <div class="dash-card" style="margin-top:16px;">
           <div class="dc-head"><div class="dc-title">Your QR code</div></div>
           <div class="dc-body" style="display:flex;flex-direction:column;align-items:center;gap:14px;">
@@ -2332,6 +2402,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Your World moments panel
   ywInit(v3data);
+
+  // Section visibility toggles
+  initSectionVisibility();
 });
 
 /* ── QR CODE ── */
@@ -2457,6 +2530,30 @@ function saveProfilePage() {
   renderQR();
   const btn = document.querySelector('.profile-save-btn');
   if (btn) { btn.textContent = '✓ Saved'; setTimeout(() => btn.textContent = 'Save profile changes →', 1800); }
+}
+
+// ── SECTION VISIBILITY ────────────────────────────────────────────────────
+
+function initSectionVisibility() {
+  const profile = safeLS(V3_KEY, {})
+  const vis = profile.sectionVisibility || {}
+  document.querySelectorAll('.section-vis-toggle').forEach(btn => {
+    const sectionId = btn.dataset.section
+    const isVisible = vis[sectionId] !== false  // default true
+    btn.setAttribute('aria-pressed', String(isVisible))
+  })
+}
+
+function toggleSectionVis(btn) {
+  const sectionId = btn.dataset.section
+  const current = btn.getAttribute('aria-pressed') === 'true'
+  const next = !current
+  btn.setAttribute('aria-pressed', String(next))
+
+  const profile = safeLS(V3_KEY, {})
+  if (!profile.sectionVisibility) profile.sectionVisibility = {}
+  profile.sectionVisibility[sectionId] = next
+  localStorage.setItem(V3_KEY, JSON.stringify(profile))
 }
 </script>
 </body>
