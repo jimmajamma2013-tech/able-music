@@ -525,6 +525,93 @@
       padding: var(--sp-4) var(--sp-5) var(--sp-2);
     }
 
+    /* "Why" reason signal on artist cards */
+    .artist-card__reason {
+      font-size: 10px;
+      color: var(--platform-accent);
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      opacity: 0.85;
+    }
+
+    .artist-card__reason::before {
+      content: '';
+      display: inline-block;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--platform-accent);
+      flex-shrink: 0;
+    }
+
+    /* Active now badge */
+    .artist-card__active {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #4ade80;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 2px rgba(74,222,128,0.20);
+    }
+
+    /* Creative/collaborator card */
+    .creative-card {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      padding: var(--sp-3) var(--sp-4);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--r-md);
+      transition: border-color var(--dur-fast) var(--ease-standard),
+                  transform var(--dur-fast) var(--ease-spring);
+      animation: bloom-in var(--dur-mid) var(--ease-decel) both;
+    }
+
+    .creative-card:active { transform: scale(0.98); }
+
+    .creative-card__avatar {
+      width: 40px; height: 40px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.06);
+      color: var(--color-text-2);
+    }
+
+    .creative-card__info { flex: 1; min-width: 0; }
+
+    .creative-card__name {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 2px;
+    }
+
+    .creative-card__role {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+    }
+
+    .creative-card__credits {
+      font-size: var(--text-xs);
+      color: var(--color-text-2);
+      text-align: right;
+      flex-shrink: 0;
+      line-height: 1.35;
+    }
+
+    /* Divider between artist grid and creatives */
+    .discover-divider {
+      height: 1px;
+      background: var(--color-border);
+      margin: var(--sp-2) var(--sp-5) 0;
+    }
+
     /* === NEAR ME VIEW ========================================= */
     .near-header {
       padding: var(--sp-4) var(--sp-5) var(--sp-2);
@@ -809,8 +896,9 @@
     <div class="view" id="view-discover" role="tabpanel" aria-labelledby="tab-discover">
       <div class="discover-filters" role="group" aria-label="Discovery filters">
         <button class="filter-pill active" data-filter="emerging">Emerging</button>
-        <button class="filter-pill" data-filter="genre">By genre</button>
-        <button class="filter-pill" data-filter="new-drops">New drops</button>
+        <button class="filter-pill" data-filter="connected">Connected</button>
+        <button class="filter-pill" data-filter="genre">By vibe</button>
+        <button class="filter-pill" data-filter="new-drops">Just dropped</button>
       </div>
 
       <div id="discover-content"></div>
@@ -1033,6 +1121,21 @@
   let activeFilter = 'emerging'
   let followedIds  = []
 
+  // Connected artists — those linked via credits to artists the fan follows
+  const DEMO_CONNECTED = [
+    { id: 'juicy-grey',   name: 'Juicy Grey',  genre: 'Electronic',  accent: '#06b6d4', followers: '421',  location: 'London',    via: 'Nova Reign', role: 'producer' },
+    { id: 'sol-rave',     name: 'Sol Rave',    genre: 'R&B / Soul',  accent: '#e06b7a', followers: '988',  location: 'London',    via: 'Luna Waves', role: 'mix' },
+    { id: 'low-key-labs', name: 'Low Key Labs',genre: 'Hip Hop',     accent: '#f4b942', followers: '1.5k', location: 'Hackney',   via: 'Drift',      role: 'producer' },
+    { id: 'erin-grey',    name: 'Erin Grey',   genre: 'Indie / Alt', accent: '#7ec88a', followers: '304',  location: 'Edinburgh', via: 'Sable',      role: 'mixing' },
+  ]
+
+  const DEMO_CREATIVES = [
+    { id: 'mk-prod',    name: 'MK Produce', role: 'Producer',           location: 'London',    creditedOn: 'Drift, Nova Reign' },
+    { id: 'luz-mix',    name: 'Luz',        role: 'Mixing / Mastering', location: 'Berlin',    creditedOn: 'Luna Waves, Sable' },
+    { id: 'dean-photo', name: 'Dean Patel', role: 'Photography',        location: 'Manchester', creditedOn: 'Nova Reign' },
+    { id: 'lena-vid',   name: 'Lena Ross',  role: 'Videography',        location: 'London',    creditedOn: 'Luna Waves, Drift' },
+  ]
+
   function renderDiscover(filter) {
     activeFilter = filter || activeFilter
     followedIds  = getFollowedIds()
@@ -1040,34 +1143,45 @@
     const container = document.getElementById('discover-content')
     container.innerHTML = ''
 
-    if (activeFilter === 'emerging') {
-      renderEmerging(container)
-    } else if (activeFilter === 'genre') {
-      renderByGenre(container)
-    } else if (activeFilter === 'new-drops') {
-      renderNewDrops(container)
-    }
+    if (activeFilter === 'emerging')  renderEmerging(container)
+    else if (activeFilter === 'connected') renderConnected(container)
+    else if (activeFilter === 'genre') renderByGenre(container)
+    else if (activeFilter === 'new-drops') renderNewDrops(container)
   }
 
-  function buildArtistCard(artist, idx) {
-    const rgb    = hexToRgb(artist.accent)
-    const isF    = followedIds.includes(artist.id)
+  function buildArtistCard(artist, idx, opts) {
+    opts = opts || {}
+    const rgb = hexToRgb(artist.accent)
+    const isF = followedIds.includes(artist.id)
 
     const el = document.createElement('div')
     el.className = 'artist-card'
     el.style.animationDelay = `${idx * 40}ms`
     el.setAttribute('role', 'article')
+
+    const reasonHtml = opts.reason
+      ? `<p class="artist-card__reason">${escHtml(opts.reason)}</p>`
+      : ''
+
+    const activeHtml = opts.active
+      ? `<span class="artist-card__active" aria-label="Active recently" title="Active recently"></span>`
+      : ''
+
     el.innerHTML = `
       <div class="artist-card__accent-strip" style="background:${artist.accent}"></div>
       <div class="artist-card__avatar" style="background:rgba(${rgb},0.18);color:rgba(${rgb},1)">
         ${getInitials(artist.name)}
       </div>
       <div class="artist-card__info">
-        <p class="artist-card__name">${escHtml(artist.name)}</p>
+        <div style="display:flex;align-items:center;gap:6px">
+          <p class="artist-card__name">${escHtml(artist.name)}</p>
+          ${activeHtml}
+        </div>
         <div class="artist-card__meta">
           <span class="artist-card__genre">${escHtml(artist.genre)}</span>
           <span class="artist-card__followers">${escHtml(artist.followers)} fans</span>
         </div>
+        ${reasonHtml}
       </div>
       <button class="follow-btn ${isF ? 'following' : ''}" data-artist-id="${escHtml(artist.id)}"
         aria-pressed="${isF}" aria-label="${isF ? 'Following ' : 'Follow '}${escHtml(artist.name)}">
@@ -1083,6 +1197,22 @@
     return el
   }
 
+  function buildCreativeCard(creative, idx) {
+    const el = document.createElement('div')
+    el.className = 'creative-card'
+    el.style.animationDelay = `${idx * 40}ms`
+    el.setAttribute('role', 'article')
+    el.innerHTML = `
+      <div class="creative-card__avatar">${getInitials(creative.name)}</div>
+      <div class="creative-card__info">
+        <p class="creative-card__name">${escHtml(creative.name)}</p>
+        <p class="creative-card__role">${escHtml(creative.role)} · ${escHtml(creative.location)}</p>
+      </div>
+      <div class="creative-card__credits">${escHtml(creative.creditedOn)}</div>
+    `
+    return el
+  }
+
   function renderEmerging(container) {
     const label = document.createElement('p')
     label.className = 'discover-label'
@@ -1091,7 +1221,60 @@
 
     const grid = document.createElement('div')
     grid.className = 'discover-grid'
-    DEMO_EMERGING.forEach((a, i) => grid.appendChild(buildArtistCard(a, i)))
+
+    // "Why" reasons pulled from shared genre with followed artists
+    const reasons = [
+      'Similar to artists you follow',
+      'Growing in London',
+      'R&B · gaining traction',
+      null,
+      'Active this week',
+    ]
+
+    DEMO_EMERGING.forEach((a, i) => {
+      grid.appendChild(buildArtistCard(a, i, {
+        reason: reasons[i] || null,
+        active: i === 2 || i === 4,
+      }))
+    })
+    container.appendChild(grid)
+
+    renderCreativesSection(container)
+  }
+
+  function renderConnected(container) {
+    const label = document.createElement('p')
+    label.className = 'discover-label'
+    label.textContent = 'Connected to artists you follow'
+    container.appendChild(label)
+
+    const grid = document.createElement('div')
+    grid.className = 'discover-grid'
+
+    DEMO_CONNECTED.forEach((a, i) => {
+      grid.appendChild(buildArtistCard(a, i, {
+        reason: `${escHtml(a.role)} on ${escHtml(a.via)}`,
+      }))
+    })
+
+    container.appendChild(grid)
+    renderCreativesSection(container)
+  }
+
+  function renderCreativesSection(container) {
+    const divider = document.createElement('div')
+    divider.className = 'discover-divider'
+    container.appendChild(divider)
+
+    const label = document.createElement('p')
+    label.className = 'discover-label'
+    label.textContent = 'Creatives'
+    container.appendChild(label)
+
+    const grid = document.createElement('div')
+    grid.className = 'discover-grid'
+
+    DEMO_CREATIVES.forEach((c, i) => grid.appendChild(buildCreativeCard(c, i)))
     container.appendChild(grid)
   }
 
@@ -1321,11 +1504,13 @@
   }
 
   function initDiscoverFilters() {
-    document.querySelector('.discover-filters').addEventListener('click', e => {
+    const discoverView = document.getElementById('view-discover')
+    discoverView.querySelector('.discover-filters').addEventListener('click', e => {
       const pill = e.target.closest('.filter-pill')
       if (!pill) return
-      document.querySelectorAll('#view-discover > .discover-filters .filter-pill').forEach(p => {
+      discoverView.querySelectorAll('.discover-filters .filter-pill').forEach(p => {
         p.classList.toggle('active', p === pill)
+        p.setAttribute('aria-selected', String(p === pill))
       })
       renderDiscover(pill.dataset.filter)
     })
