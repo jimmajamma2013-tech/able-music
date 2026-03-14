@@ -546,6 +546,105 @@ body {
       text-decoration: underline;
     }
 
+    /* ── ADD MOMENT FORM ── */
+    .yw-add-form {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      animation: fadeSlide .18s ease;
+    }
+    .yw-form-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.4);
+      margin-bottom: 7px;
+    }
+    .yw-form-input {
+      width: 100%;
+      box-sizing: border-box;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: #fff;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .yw-form-input:focus { border-color: var(--acc, #f4b942); }
+    .yw-type-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+    .yw-type-btn {
+      padding: 7px 4px;
+      border-radius: 8px;
+      border: 1.5px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      color: rgba(255,255,255,.55);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color .12s, color .12s, background .12s;
+      line-height: 1.25;
+    }
+    .yw-type-btn:hover { border-color: rgba(255,255,255,.2); color: #fff; }
+    .yw-type-btn.active {
+      border-color: var(--acc, #f4b942);
+      color: var(--acc, #f4b942);
+      background: rgba(244,185,66,.07);
+    }
+    .yw-access-row {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .yw-access-btn {
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.03);
+      color: rgba(255,255,255,.55);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color .12s, color .12s, background .12s;
+    }
+    .yw-access-btn:hover { border-color: rgba(255,255,255,.2); color: #fff; }
+    .yw-access-btn.active {
+      border-color: var(--acc, #f4b942);
+      color: var(--acc, #f4b942);
+      background: rgba(244,185,66,.07);
+    }
+    .yw-save-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      background: var(--acc, #f4b942);
+      color: #000;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .yw-cancel-btn {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: none;
+      color: rgba(255,255,255,.55);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
     /* ── SECTION VISIBILITY ── */
     .section-vis-row {
       display: flex;
@@ -962,6 +1061,50 @@ body {
         <div class="yw-moment-list" id="yw-moment-list">
           <div class="yw-empty">No upcoming moments yet. Add your first.</div>
         </div>
+
+        <!-- ADD MOMENT FORM (inline, hidden by default) -->
+        <div class="yw-add-form" id="yw-add-form" hidden>
+          <div class="yw-form-label">Type</div>
+          <div class="yw-type-grid" id="ywTypeGrid">
+            <button class="yw-type-btn active" data-type="release">Release</button>
+            <button class="yw-type-btn" data-type="show">Show</button>
+            <button class="yw-type-btn" data-type="on_sale">On sale</button>
+            <button class="yw-type-btn" data-type="merch_drop">Merch drop</button>
+            <button class="yw-type-btn" data-type="early_access">Early access</button>
+            <button class="yw-type-btn" data-type="livestream">Livestream</button>
+            <button class="yw-type-btn" data-type="private_access">Private</button>
+            <button class="yw-type-btn" data-type="announcement">News</button>
+          </div>
+
+          <div class="yw-form-label" style="margin-top:12px;">Title</div>
+          <input class="yw-form-input" type="text" id="ywTitle" placeholder="e.g. New EP out now" maxlength="60">
+
+          <div class="yw-form-label" style="margin-top:10px;">Date</div>
+          <input class="yw-form-input" type="date" id="ywDate">
+
+          <div class="yw-form-label" style="margin-top:10px;">Who sees it</div>
+          <div class="yw-access-row" id="ywAccessRow">
+            <button class="yw-access-btn active" data-access="public">Everyone</button>
+            <button class="yw-access-btn" data-access="fan">Fans</button>
+            <button class="yw-access-btn" data-access="supporter">Supporters</button>
+            <button class="yw-access-btn" data-access="private">Just me</button>
+          </div>
+
+          <div class="yw-form-label" style="margin-top:10px;">Link <span style="opacity:.5;font-weight:400;">(optional)</span></div>
+          <input class="yw-form-input" type="url" id="ywCtaUrl" placeholder="https://…">
+          <input class="yw-form-input" type="text" id="ywCtaLabel" placeholder="Button label" style="margin-top:6px;" hidden>
+
+          <div class="yw-form-label" style="margin-top:10px;">Artist note <span style="opacity:.5;font-weight:400;">(optional)</span></div>
+          <textarea class="yw-form-input" id="ywNote" rows="2" placeholder="Something for the people who care…" style="resize:none;"></textarea>
+
+          <div id="ywFormError" style="font-size:12px;color:#f05252;margin-top:8px;display:none;"></div>
+
+          <div style="display:flex;gap:8px;margin-top:14px;">
+            <button class="yw-save-btn" onclick="ywSaveMoment()">Add moment</button>
+            <button class="yw-cancel-btn" onclick="ywToggleAddForm(false)">Cancel</button>
+          </div>
+        </div>
+
         <div class="yw-private-row">
           <div>
             <div class="yw-private-label">Private access</div>
@@ -2678,35 +2821,34 @@ function ywInit(profile) {
   ywRenderMomentList(profile)
 
   var addBtn = document.getElementById('yw-add-btn')
-  if (addBtn) addBtn.addEventListener('click', function() {
-    var types = 'release / show / on_sale / merch_drop / early_access / livestream / private_access / announcement'
-    var type = prompt('Moment type:\n' + types, 'release')
-    if (!type) return
-    var date = prompt('Date (YYYY-MM-DD):', new Date().toISOString().slice(0,10))
-    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) { alert('Invalid date format'); return }
-    var title = prompt('Title:', '')
-    if (!title) return
-    var access = prompt('Access:\npublic / fan / supporter / private', 'public')
-    var url = prompt('CTA URL (leave blank if none):', '')
-    var ctaLabel = url ? prompt('CTA label:', 'View') : ''
-    var artistNote = prompt('Artist note (optional, shown in panel):', '')
+  if (addBtn) addBtn.addEventListener('click', function() { ywToggleAddForm(true) })
 
-    var p = safeLS(V3_KEY, {})
-    var moments = p.moments || []
-    moments.push({
-      id: 'm_' + Date.now(),
-      type: type.trim(),
-      date: date.trim(),
-      title: title.trim().slice(0, 60),
-      access: access ? access.trim() : 'public',
-      artistNote: artistNote || '',
-      cta: url ? { label: ctaLabel || 'View', url: url.trim(), type: 'link' } : null,
-      active: true,
-    })
-    p.moments = moments
-    setLS(V3_KEY, p)
-    ywRenderMomentList(p)
+  // Type button group
+  var typeGrid = document.getElementById('ywTypeGrid')
+  if (typeGrid) typeGrid.addEventListener('click', function(e) {
+    var btn = e.target.closest('.yw-type-btn')
+    if (!btn) return
+    typeGrid.querySelectorAll('.yw-type-btn').forEach(function(b) { b.classList.remove('active') })
+    btn.classList.add('active')
   })
+
+  // Access button group
+  var accessRow = document.getElementById('ywAccessRow')
+  if (accessRow) accessRow.addEventListener('click', function(e) {
+    var btn = e.target.closest('.yw-access-btn')
+    if (!btn) return
+    accessRow.querySelectorAll('.yw-access-btn').forEach(function(b) { b.classList.remove('active') })
+    btn.classList.add('active')
+  })
+
+  // Show/hide CTA label when URL is entered
+  var ctaUrlEl = document.getElementById('ywCtaUrl')
+  var ctaLabelEl = document.getElementById('ywCtaLabel')
+  if (ctaUrlEl && ctaLabelEl) {
+    ctaUrlEl.addEventListener('input', function() {
+      ctaLabelEl.hidden = !ctaUrlEl.value.trim()
+    })
+  }
 
   var toggle = document.getElementById('yw-private-toggle')
   if (toggle) toggle.addEventListener('change', function(e) {
@@ -2714,6 +2856,87 @@ function ywInit(profile) {
     p.privateAccessOpen = e.target.checked
     setLS(V3_KEY, p)
   })
+}
+
+function ywToggleAddForm(open) {
+  var form   = document.getElementById('yw-add-form')
+  var addBtn = document.getElementById('yw-add-btn')
+  if (!form) return
+  form.hidden = !open
+  if (addBtn) addBtn.textContent = open ? '✕ Cancel' : '+ Add moment'
+  if (open) {
+    // Reset form to defaults
+    var today = new Date().toISOString().slice(0, 10)
+    var titleEl = document.getElementById('ywTitle')
+    var dateEl  = document.getElementById('ywDate')
+    var urlEl   = document.getElementById('ywCtaUrl')
+    var lblEl   = document.getElementById('ywCtaLabel')
+    var noteEl  = document.getElementById('ywNote')
+    var errEl   = document.getElementById('ywFormError')
+    if (titleEl) titleEl.value = ''
+    if (dateEl)  dateEl.value  = today
+    if (urlEl)   urlEl.value   = ''
+    if (lblEl)   { lblEl.value = ''; lblEl.hidden = true; }
+    if (noteEl)  noteEl.value  = ''
+    if (errEl)   { errEl.textContent = ''; errEl.style.display = 'none'; }
+    // Reset type → release
+    document.querySelectorAll('.yw-type-btn').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.type === 'release')
+    })
+    // Reset access → public
+    document.querySelectorAll('.yw-access-btn').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.access === 'public')
+    })
+    if (titleEl) titleEl.focus()
+  }
+}
+
+function ywSaveMoment() {
+  var typeBtn   = document.querySelector('.yw-type-btn.active')
+  var accessBtn = document.querySelector('.yw-access-btn.active')
+  var titleEl   = document.getElementById('ywTitle')
+  var dateEl    = document.getElementById('ywDate')
+  var urlEl     = document.getElementById('ywCtaUrl')
+  var lblEl     = document.getElementById('ywCtaLabel')
+  var noteEl    = document.getElementById('ywNote')
+  var errEl     = document.getElementById('ywFormError')
+
+  var type   = typeBtn   ? typeBtn.dataset.type     : 'release'
+  var access = accessBtn ? accessBtn.dataset.access : 'public'
+  var title  = titleEl   ? titleEl.value.trim()     : ''
+  var date   = dateEl    ? dateEl.value.trim()      : ''
+  var url    = urlEl     ? urlEl.value.trim()       : ''
+  var lbl    = lblEl     ? lblEl.value.trim()       : ''
+  var note   = noteEl    ? noteEl.value.trim()      : ''
+
+  // Validate
+  if (!title) {
+    if (errEl) { errEl.textContent = 'Title is required.'; errEl.style.display = 'block'; }
+    if (titleEl) titleEl.focus()
+    return
+  }
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    if (errEl) { errEl.textContent = 'A valid date is required.'; errEl.style.display = 'block'; }
+    if (dateEl) dateEl.focus()
+    return
+  }
+
+  var p = safeLS(V3_KEY, {})
+  var moments = p.moments || []
+  moments.push({
+    id: 'm_' + Date.now(),
+    type: type,
+    date: date,
+    title: title.slice(0, 60),
+    access: access,
+    artistNote: note,
+    cta: url ? { label: lbl || 'View', url: url, type: 'link' } : null,
+    active: true,
+  })
+  p.moments = moments
+  setLS(V3_KEY, p)
+  ywRenderMomentList(p)
+  ywToggleAddForm(false)
 }
 
 /* ── LOAD STATE FROM LOCALSTORAGE ── */
