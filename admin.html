@@ -2844,7 +2844,8 @@ function saveProfilePage() {
   if (updated.name) {
     document.getElementById('sbAv').textContent = updated.name.charAt(0).toUpperCase();
     document.getElementById('sbName').textContent = updated.name;
-    document.getElementById('sbUrl').textContent = `able.fm/${updated.name.toLowerCase().replace(/[^a-z0-9]+/g,'-')}`;
+    const resolvedHandle = updated.handle || updated.name.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+    document.getElementById('sbUrl').textContent = `able.fm/${resolvedHandle}`;
     const greeting = document.getElementById('homeGreeting');
     if (greeting) greeting.textContent = `Good to see you, ${updated.name.split(' ')[0]}.`;
   }

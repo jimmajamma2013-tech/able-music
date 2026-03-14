@@ -4414,9 +4414,9 @@
           id: 'auto_release',
           type: 'release',
           date: profile.releaseDate,
-          title: profile.releaseName || 'New release',
+          title: profile.releaseName || profile.release?.title || 'New release',
           access: 'public',
-          cta: { label: profile.releaseDate > today ? 'Pre-save' : 'Stream now', url: profile.ctaUrl || '', type: 'link' },
+          cta: { label: profile.releaseDate > today ? 'Pre-save' : 'Stream now', url: profile.ctaPrimary?.url || profile.ctaUrl || '', type: 'link' },
           linkedId: 'release',
           isAuto: true,
         })
