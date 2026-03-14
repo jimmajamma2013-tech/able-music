@@ -1889,6 +1889,7 @@ async function syncProfile(data) {
       cta_secondary:  data.ctaSecondary   ? JSON.stringify(data.ctaSecondary) : null,
       top_card:       data.topCard        ? JSON.stringify(data.topCard)      : null,
       platforms:      data.platforms      ? JSON.stringify(data.platforms)    : null,
+      identity:       data.identity       ? JSON.stringify(data.identity)     : null,
       updated_at:     Date.now(),
     }, { onConflict: 'id' });
   } catch(e) {}
@@ -3891,6 +3892,7 @@ function selectFeel(btn) {
   if (!profile.identity) profile.identity = {};
   profile.identity.feel = feel;
   setLS(V3_KEY, profile);
+  syncProfile(profile);
   // Close picker
   const picker = document.getElementById('feelPicker');
   const changeBtn = document.getElementById('feelChangeBtn');
