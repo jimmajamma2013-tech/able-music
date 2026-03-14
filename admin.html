@@ -2137,7 +2137,20 @@ function renderQR() {
   const url = `https://able.fm/${handle}?src=qr`;
   const accent = data.accent || getComputedStyle(document.documentElement).getPropertyValue('--acc').trim() || '#c9a84c';
   const canvas = document.getElementById('qrCanvas');
-  if (!canvas || typeof QRCode === 'undefined') return;
+  if (!canvas) return;
+  if (typeof QRCode === 'undefined') {
+    // CDN not available (file:// context or offline) — show placeholder
+    const card = canvas.closest('.dc-body');
+    if (card && !card.querySelector('.qr-offline-msg')) {
+      canvas.style.display = 'none';
+      const msg = document.createElement('p');
+      msg.className = 'qr-offline-msg';
+      msg.style.cssText = 'font-size:11px;color:var(--t3);text-align:center;padding:20px 0;margin:0;';
+      msg.textContent = 'QR code generates when your page is served over HTTPS.';
+      card.insertBefore(msg, canvas);
+    }
+    return;
+  }
   QRCode.toCanvas(canvas, url, {
     width: 160,
     margin: 2,
