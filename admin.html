@@ -241,6 +241,18 @@ body {
   cursor:pointer; font-family:var(--font); transition:all .16s;
 }
 .snap-add-btn:hover { border-color:var(--bm); color:var(--t2); }
+.snap-card-wrap { display:flex; flex-direction:column; }
+.snap-card-wrap .snap-item { border-radius:12px; cursor:default; }
+.snap-card-wrap.editing .snap-item { border-radius:12px 12px 0 0; }
+.snap-item-edit {
+  padding:12px 14px 14px;
+  border:1px solid var(--border); border-top:none;
+  border-radius:0 0 12px 12px;
+  background:rgba(255,255,255,.02);
+  display:flex; flex-direction:column; gap:8px;
+  animation:fadeSlide .15s ease;
+}
+.snap-btn.published { color:#7ec88a; border-color:rgba(126,200,138,.25); }
 
 /* ── ADMIN CONTENT MANAGEMENT ── */
 .admin-add-btn {
@@ -1345,47 +1357,14 @@ body {
     </div>
     <div class="dash-card" style="max-width:600px;">
       <div class="dc-head">
-        <div class="dc-title">Active cards</div>
-        <button class="dc-action">+ New card</button>
+        <div class="dc-title">Cards</div>
+        <button class="dc-action" onclick="addSnapCard()">+ New card</button>
       </div>
       <div class="dc-body">
-        <div class="snap-list" id="snapList">
-          <div class="snap-item">
-            <div class="snap-handle"><svg viewBox="0 0 10 14" fill="currentColor" width="10" height="14" opacity=".4"><circle cx="3" cy="3" r="1.2"/><circle cx="7" cy="3" r="1.2"/><circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="3" cy="11" r="1.2"/><circle cx="7" cy="11" r="1.2"/></svg></div>
-            <div class="snap-body">
-              <div class="snap-eyebrow">New Release</div>
-              <div class="snap-label">My debut album is out now on all platforms.</div>
-            </div>
-            <div class="snap-actions">
-              <button class="snap-btn">Edit</button>
-              <button class="snap-btn del">×</button>
-            </div>
-          </div>
-          <div class="snap-item">
-            <div class="snap-handle"><svg viewBox="0 0 10 14" fill="currentColor" width="10" height="14" opacity=".4"><circle cx="3" cy="3" r="1.2"/><circle cx="7" cy="3" r="1.2"/><circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="3" cy="11" r="1.2"/><circle cx="7" cy="11" r="1.2"/></svg></div>
-            <div class="snap-body">
-              <div class="snap-eyebrow">Live This Week</div>
-              <div class="snap-label">Catching me at Fabric, London — March 28.</div>
-            </div>
-            <div class="snap-actions">
-              <button class="snap-btn">Edit</button>
-              <button class="snap-btn del">×</button>
-            </div>
-          </div>
-          <div class="snap-item">
-            <div class="snap-handle"><svg viewBox="0 0 10 14" fill="currentColor" width="10" height="14" opacity=".4"><circle cx="3" cy="3" r="1.2"/><circle cx="7" cy="3" r="1.2"/><circle cx="3" cy="7" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="3" cy="11" r="1.2"/><circle cx="7" cy="11" r="1.2"/></svg></div>
-            <div class="snap-body">
-              <div class="snap-eyebrow">Limited Drop</div>
-              <div class="snap-label">New merch just landed. Limited run.</div>
-            </div>
-            <div class="snap-actions">
-              <button class="snap-btn">Edit</button>
-              <button class="snap-btn del">×</button>
-            </div>
-          </div>
-        </div>
-        <button class="snap-add-btn" style="margin-top:10px;">
-          <svg viewBox="0 0 12 12" fill="currentColor" width="12" height="12"><path d="M6 1v10M1 6h10"/></svg>
+        <div class="snap-list" id="snapList"><!-- Populated by renderSnapCardsList() --></div>
+        <p id="snapEmpty" style="text-align:center;padding:20px 0;color:rgba(255,255,255,.3);font-size:13px;margin:0;">No snap cards yet. Add one to post updates on your profile.</p>
+        <button class="snap-add-btn" style="margin-top:8px;" onclick="addSnapCard()">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M6 1v10M1 6h10"/></svg>
           Add snap card
         </button>
       </div>
@@ -1646,6 +1625,7 @@ body {
               <tr style="border-bottom:1px solid var(--border);">
                 <th style="padding:10px 18px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);">Fan</th>
                 <th style="padding:10px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);">Level</th>
+                <th style="padding:10px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);">Confirmed</th>
                 <th style="padding:10px 8px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);">Source</th>
                 <th style="padding:10px 18px;text-align:right;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);">Joined</th>
               </tr>
@@ -1915,19 +1895,23 @@ function renderFanTable(fans) {
   if (!tbody) return;
   // Merge demo + real
   const real = JSON.parse(localStorage.getItem('able_fans') || '[]');
-  const all = [...fans, ...real.map(f => ({ email:f.email, level:'listener', source:f.source||'Direct', ts:f.ts }))];
+  const all = [...fans, ...real.map(f => ({ email:f.email, level:'listener', source:f.source||'Direct', ts:f.ts, double_opted_in:f.double_opted_in||false }))];
   const PAGE_SIZE = 100;
   const shown = all.slice(0, PAGE_SIZE);
   tbody.innerHTML = shown.map(f => {
     const ls = LEVEL_STYLES[f.level] || LEVEL_STYLES.listener;
     const date = new Date(f.ts).toLocaleDateString('en-GB', {day:'numeric',month:'short'});
+    const confirmed = f.double_opted_in
+      ? `<span title="Email confirmed" style="color:#22c55e;font-size:13px;">●</span>`
+      : `<span title="Awaiting confirmation" style="color:var(--t3);font-size:11px;">○</span>`;
     return `<tr style="border-bottom:1px solid var(--border);">
       <td style="padding:10px 18px;font-size:12px;color:var(--text);">${escHtml(f.email)}</td>
       <td style="padding:10px 8px;"><span style="padding:3px 10px;border-radius:100px;font-size:10px;font-weight:600;background:${ls.bg};color:${ls.color};">${escHtml(ls.label)}</span></td>
+      <td style="padding:10px 8px;text-align:left;">${confirmed}</td>
       <td style="padding:10px 8px;font-size:11px;color:var(--t3);">${escHtml(f.source)}</td>
       <td style="padding:10px 18px;font-size:11px;color:var(--t3);text-align:right;">${escHtml(date)}</td>
     </tr>`;
-  }).join('') + (all.length > PAGE_SIZE ? `<tr><td colspan="4" style="padding:10px 18px;font-size:11px;color:var(--t3);">Showing first ${PAGE_SIZE} of ${all.length} fans — export CSV to see all.</td></tr>` : '');
+  }).join('') + (all.length > PAGE_SIZE ? `<tr><td colspan="5" style="padding:10px 18px;font-size:11px;color:var(--t3);">Showing first ${PAGE_SIZE} of ${all.length} fans — export CSV to see all.</td></tr>` : '');
 }
 
 function filterFans(q) {
@@ -1968,6 +1952,7 @@ function showPage(id) {
   if (id === 'events')  renderAdminEvents();
   if (id === 'merch')   renderAdminMerch();
   if (id === 'support') renderAdminSupport();
+  if (id === 'snaps')   renderSnapCardsList();
 }
 
 /* mode cards handled by Campaign HQ */
@@ -2381,6 +2366,156 @@ function saveAllEvents() {
   const btn = event.target;
   btn.textContent = '✓ Saved'; btn.style.background='#16a34a';
   setTimeout(() => { btn.textContent = 'Save shows'; btn.style.background=''; }, 2000);
+}
+
+/* ── SNAP CARDS CRUD ── */
+
+function renderSnapCardsList() {
+  const list = document.getElementById('snapList')
+  const empty = document.getElementById('snapEmpty')
+  const addBtn = document.querySelector('#page-snaps .snap-add-btn')
+  if (!list) return
+  const data = safeLS(V3_KEY, {})
+  const cards = (data.snapCards || []).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+  if (empty) empty.style.display = cards.length ? 'none' : 'block'
+  if (addBtn) addBtn.style.display = cards.length >= 12 ? 'none' : ''
+
+  list.innerHTML = cards.map((card, i) => {
+    const isPublished = card.published !== false
+    const label = escHtml(card.title || card.eyebrow || '(untitled)')
+    const sub   = escHtml(card.body || '')
+    return `
+      <div class="snap-card-wrap" data-scid="${card.id}">
+        <div class="snap-item">
+          <div style="display:flex;gap:4px;flex-shrink:0;">
+            <button class="section-order-btn" onclick="moveSnapCard('${card.id}',-1)"
+              ${i===0?'disabled':''} title="Move up">↑</button>
+            <button class="section-order-btn" onclick="moveSnapCard('${card.id}',1)"
+              ${i===cards.length-1?'disabled':''} title="Move down">↓</button>
+          </div>
+          <div class="snap-body" style="min-width:0;flex:1;">
+            <div class="snap-eyebrow">${label}</div>
+            ${sub ? `<div class="snap-label">${sub}</div>` : ''}
+          </div>
+          <div class="snap-actions">
+            <button class="snap-btn${isPublished?' published':''}" onclick="toggleSnapPublished('${card.id}')">${isPublished?'Live':'Hidden'}</button>
+            <button class="snap-btn" onclick="toggleSnapEdit('${card.id}')">Edit</button>
+            <button class="snap-btn del" onclick="removeSnapCard('${card.id}')">×</button>
+          </div>
+        </div>
+        <div class="snap-item-edit" id="snap-edit-${card.id}" hidden>
+          <div class="field-row" style="margin:0;">
+            <div class="field-label">Title / headline</div>
+            <input class="field-input" id="sce-title-${card.id}" value="${escHtml(card.title||'')}" placeholder="What's the update?">
+          </div>
+          <div class="field-row" style="margin:0;">
+            <div class="field-label">Body text <span style="font-weight:400;color:var(--t3);">(optional)</span></div>
+            <textarea class="field-input" id="sce-body-${card.id}" rows="2" style="resize:none;" placeholder="A bit more detail…">${escHtml(card.body||'')}</textarea>
+          </div>
+          <div class="field-row" style="margin:0;">
+            <div class="field-label">Image URL <span style="font-weight:400;color:var(--t3);">(optional)</span></div>
+            <input class="field-input" type="url" id="sce-img-${card.id}" value="${escHtml(card.imageUrl||'')}" placeholder="https://…/photo.jpg">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div class="field-row" style="margin:0;">
+              <div class="field-label">Button label</div>
+              <input class="field-input" id="sce-ctalabel-${card.id}" value="${escHtml(card.ctaLabel||'')}" placeholder="Listen now">
+            </div>
+            <div class="field-row" style="margin:0;">
+              <div class="field-label">Button URL</div>
+              <input class="field-input" type="url" id="sce-ctaurl-${card.id}" value="${escHtml(card.ctaUrl||'')}" placeholder="https://…">
+            </div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;">
+            <button class="snap-btn" onclick="toggleSnapEdit('${card.id}')">Close</button>
+            <button class="ci-btn ci-btn-connect" onclick="saveSnapCard('${card.id}')">Save card</button>
+          </div>
+        </div>
+      </div>`
+  }).join('')
+}
+
+function addSnapCard() {
+  const data = safeLS(V3_KEY, {})
+  const cards = data.snapCards || []
+  const newCard = {
+    id: 'sc_' + Date.now(),
+    eyebrow: '',
+    title: '',
+    body: '',
+    imageUrl: '',
+    alt: '',
+    ctaLabel: '',
+    ctaUrl: '',
+    published: true,
+    sortOrder: cards.length,
+  }
+  data.snapCards = [...cards, newCard]
+  setLS(V3_KEY, data)
+  renderSnapCardsList()
+  // Auto-open the edit form for the new card
+  setTimeout(() => toggleSnapEdit(newCard.id), 50)
+}
+
+function removeSnapCard(id) {
+  if (!confirm('Remove this snap card?')) return
+  const data = safeLS(V3_KEY, {})
+  data.snapCards = (data.snapCards || []).filter(c => c.id !== id)
+  setLS(V3_KEY, data)
+  renderSnapCardsList()
+}
+
+function toggleSnapPublished(id) {
+  const data = safeLS(V3_KEY, {})
+  data.snapCards = (data.snapCards || []).map(c =>
+    c.id === id ? { ...c, published: c.published === false ? true : false } : c
+  )
+  setLS(V3_KEY, data)
+  renderSnapCardsList()
+}
+
+function toggleSnapEdit(id) {
+  const wrap = document.querySelector(`.snap-card-wrap[data-scid="${id}"]`)
+  const editPanel = document.getElementById('snap-edit-' + id)
+  if (!wrap || !editPanel) return
+  const opening = editPanel.hidden
+  editPanel.hidden = !opening
+  wrap.classList.toggle('editing', opening)
+  if (opening) {
+    const titleEl = document.getElementById('sce-title-' + id)
+    if (titleEl) titleEl.focus()
+  }
+}
+
+function saveSnapCard(id) {
+  const data = safeLS(V3_KEY, {})
+  data.snapCards = (data.snapCards || []).map(c => {
+    if (c.id !== id) return c
+    return {
+      ...c,
+      title:    document.getElementById('sce-title-' + id)?.value.trim()    || '',
+      body:     document.getElementById('sce-body-' + id)?.value.trim()     || '',
+      imageUrl: document.getElementById('sce-img-' + id)?.value.trim()      || '',
+      ctaLabel: document.getElementById('sce-ctalabel-' + id)?.value.trim() || '',
+      ctaUrl:   document.getElementById('sce-ctaurl-' + id)?.value.trim()   || '',
+    }
+  })
+  setLS(V3_KEY, data)
+  renderSnapCardsList()
+}
+
+function moveSnapCard(id, dir) {
+  const data = safeLS(V3_KEY, {})
+  const cards = [...(data.snapCards || [])].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
+  const idx = cards.findIndex(c => c.id === id)
+  if (idx < 0) return
+  const swapIdx = idx + dir
+  if (swapIdx < 0 || swapIdx >= cards.length) return
+  ;[cards[idx], cards[swapIdx]] = [cards[swapIdx], cards[idx]]
+  cards.forEach((c, i) => { c.sortOrder = i })
+  data.snapCards = cards
+  setLS(V3_KEY, data)
+  renderSnapCardsList()
 }
 
 /* ── MERCH MANAGEMENT ── */
