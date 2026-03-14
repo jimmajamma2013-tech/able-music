@@ -847,6 +847,15 @@
       flex-shrink: 0;
     }
 
+    .hero__credit-line {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.04em;
+      margin-top: 4px;
+      line-height: 1.3;
+    }
+    [data-theme="light"] .hero__credit-line { color: rgba(13,14,26,0.4); }
+
     /* Copy-link button — subtle hero utility */
     .hero__copy-link {
       display: inline-flex;
@@ -3509,6 +3518,9 @@
             <span class="hero__tag" id="hero-location"></span>
           </div>
 
+          <!-- Top card optional credit line -->
+          <p class="hero__credit-line" id="hero-credit-line" hidden></p>
+
           <!-- Copy your ABLE link — subtle utility -->
           <button class="hero__copy-link pressable" id="hero-copy-link"
                   aria-label="Copy your ABLE link" hidden>
@@ -4025,7 +4037,8 @@
         type: 'artwork',
         artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
         title: 'Echo Chamber',
-        releaseType: 'Album'
+        releaseType: 'Album',
+        creditLine: 'Prod. LUNA · Mix. James Reid'
       },
       platforms: [
         { label: 'Spotify',      url: 'https://spotify.com',        type: 'spotify' },
@@ -5511,6 +5524,18 @@
       genreEl.textContent  = profile.genres?.[0] || ''
       locEl.textContent    = profile.location || ''
       sepEl.hidden         = !(profile.genres?.[0] && profile.location)
+
+      // Top card credit line (optional — e.g. "Produced by LUNA · Mix. James Reid")
+      const creditLineEl = document.getElementById('hero-credit-line')
+      if (creditLineEl) {
+        const cl = profile.topCard?.creditLine || null
+        if (cl) {
+          creditLineEl.textContent = cl
+          creditLineEl.hidden = false
+        } else {
+          creditLineEl.hidden = true
+        }
+      }
 
       // Bio
       const bioStrip = document.getElementById('bio-strip')
