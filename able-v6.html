@@ -307,6 +307,10 @@
     }
 
     /* === RESET & BASE =========================================== */
+    /* Enforce hidden attribute — CSS display values on specific classes
+       can override the UA stylesheet's [hidden]{display:none}. */
+    [hidden] { display: none !important; }
+
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
