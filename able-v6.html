@@ -486,16 +486,44 @@
       opacity: 1;
     }
 
-    /* Artwork placeholder gradient (shows before image loads) */
+    /* Artwork placeholder gradient (shows before image loads or when no artwork) */
     .hero__artwork-placeholder {
       position: absolute;
       inset: 0;
       background: linear-gradient(
-        135deg,
-        rgba(var(--color-accent-rgb), 0.3) 0%,
-        rgba(var(--color-ambient), 0.2) 50%,
-        var(--color-card) 100%
+        160deg,
+        rgba(var(--color-accent-rgb), 0.50) 0%,
+        rgba(var(--color-accent-rgb), 0.18) 55%,
+        var(--color-bg) 100%
       );
+    }
+
+    /* Initials fallback — shown when no artwork available */
+    .hero__initials {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 80px; /* optical centre — text block below */
+      font-family: var(--font-d);
+      font-size: clamp(72px, 20vw, 108px);
+      font-weight: var(--font-d-weight);
+      font-style: var(--font-d-style);
+      text-transform: var(--font-d-transform);
+      letter-spacing: var(--ls-d);
+      color: rgba(255,255,255,0.18);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity var(--dur-slow) var(--ease-decel);
+    }
+
+    [data-theme="light"] .hero__initials {
+      color: rgba(13,14,26,0.12);
+    }
+
+    .hero__initials.visible {
+      opacity: 1;
     }
 
     /* Video embed container */
@@ -696,6 +724,50 @@
       border-radius: 50%;
       background-color: var(--color-text-3);
       flex-shrink: 0;
+    }
+
+    /* Copy-link button — subtle hero utility */
+    .hero__copy-link {
+      display: inline-flex;
+      align-items: center;
+      align-self: flex-start;
+      gap: 2px;
+      padding: 3px 10px;
+      margin-top: var(--sp-1);
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--r-pill);
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: rgba(240,237,232,0.45);
+      cursor: pointer;
+      transition: background var(--dur-fast) var(--ease-standard),
+                  color var(--dur-fast) var(--ease-standard),
+                  border-color var(--dur-fast) var(--ease-standard);
+    }
+
+    .hero__copy-link:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(240,237,232,0.80);
+    }
+
+    .hero__copy-link.copied {
+      background: rgba(var(--color-accent-rgb), 0.15);
+      border-color: rgba(var(--color-accent-rgb), 0.40);
+      color: var(--color-accent);
+    }
+
+    [data-theme="light"] .hero__copy-link {
+      background: rgba(0,0,0,0.06);
+      border-color: rgba(0,0,0,0.12);
+      color: rgba(13,14,26,0.45);
+    }
+
+    [data-theme="light"] .hero__copy-link:hover {
+      background: rgba(0,0,0,0.10);
+      color: rgba(13,14,26,0.75);
     }
 
     /* === BIO STRIP ============================================== */
@@ -1922,13 +1994,13 @@
     .support-pack:hover { border-color: var(--color-accent); }
 
     .support-pack__emoji {
-      font-size: 18px;
+      font-size: 16px;
       flex-shrink: 0;
-      width: 40px;
-      height: 40px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      background: var(--color-accent-soft);
-      border: 1px solid rgba(var(--color-accent-rgb), 0.15);
+      background: rgba(var(--color-accent-rgb), 0.06);
+      border: 1px solid rgba(var(--color-accent-rgb), 0.10);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -2546,6 +2618,9 @@
         <!-- Artwork placeholder (gradient, shows before image loads) -->
         <div class="hero__artwork-placeholder" id="hero-placeholder" aria-hidden="true"></div>
 
+        <!-- Initials fallback — visible when no artwork available -->
+        <div class="hero__initials" id="hero-initials" aria-hidden="true"></div>
+
         <!-- Artwork image — LCP element, eager + high priority -->
         <img class="hero__artwork" id="hero-artwork"
              alt="" role="presentation" fetchpriority="high"
@@ -2590,6 +2665,12 @@
             <span class="hero__tag-sep" aria-hidden="true" id="hero-sep"></span>
             <span class="hero__tag" id="hero-location"></span>
           </div>
+
+          <!-- Copy your ABLE link — subtle utility -->
+          <button class="hero__copy-link pressable" id="hero-copy-link"
+                  aria-label="Copy your ABLE link" hidden>
+            <span class="hero__copy-prefix">able.fm/</span><span id="hero-handle-display"></span>
+          </button>
         </div>
       </section>
 
@@ -2967,6 +3048,7 @@
 
     const DEMO_PROFILE = {
       name: 'LUNA',
+      handle: 'luna',
       genres: ['Electronic'],
       location: 'London',
       bio: 'Beats built in the dark. Music for late nights and early mornings. New album out now.',
@@ -3596,10 +3678,30 @@
 
     // === HERO ARTWORK ============================================
 
+    function getInitials(name) {
+      if (!name) return ''
+      const parts = name.trim().split(/\s+/)
+      if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+      return (parts[0][0] + (parts[1][0] || '')).toUpperCase()
+    }
+
+    function showInitialsFallback(name) {
+      const el = document.getElementById('hero-initials')
+      if (!el) return
+      el.textContent = getInitials(name)
+      requestAnimationFrame(() => el.classList.add('visible'))
+    }
+
     function loadHeroArtwork(src, shell) {
-      if (!src) return
       const img = document.getElementById('hero-artwork')
       const placeholder = document.getElementById('hero-placeholder')
+
+      if (!src) {
+        // No artwork — keep gradient, show initials
+        const profile = getProfile()
+        showInitialsFallback(profile.name)
+        return
+      }
 
       img.onload = () => {
         img.classList.add('loaded')
@@ -3610,8 +3712,43 @@
           document.getElementById('glass-bg').style.backgroundImage = `url(${src})`
         }
       }
-      img.onerror = () => { /* keep placeholder */ }
+      img.onerror = () => {
+        // Image failed — show initials on placeholder
+        const profile = getProfile()
+        showInitialsFallback(profile.name)
+      }
       img.src = src
+    }
+
+    // === COPY LINK ===============================================
+
+    function initCopyLink(profile) {
+      const btn = document.getElementById('hero-copy-link')
+      const handleDisplay = document.getElementById('hero-handle-display')
+      const prefixSpan = btn ? btn.querySelector('.hero__copy-prefix') : null
+      if (!btn || !handleDisplay) return
+
+      const handle = (profile.handle || profile.name || 'artist')
+        .toLowerCase().replace(/[^a-z0-9]+/g, '-')
+
+      handleDisplay.textContent = handle
+      btn.hidden = false
+
+      let copyTimeout = null
+      btn.addEventListener('click', () => {
+        if (copyTimeout) return
+        const url = `https://able.fm/${handle}`
+        navigator.clipboard.writeText(url).catch(() => {})
+        btn.classList.add('copied')
+        if (prefixSpan) prefixSpan.hidden = true
+        handleDisplay.textContent = 'Copied!'
+        copyTimeout = setTimeout(() => {
+          btn.classList.remove('copied')
+          if (prefixSpan) prefixSpan.hidden = false
+          handleDisplay.textContent = handle
+          copyTimeout = null
+        }, 2000)
+      })
     }
 
     // === HERO VIDEO ==============================================
@@ -4872,6 +5009,7 @@
       // Render hero (local-first from localStorage)
       renderHero(profile)
       revealHeroName()
+      initCopyLink(profile)
       renderPills(profile)
 
       // Render main content sections (Checkpoint 4)
