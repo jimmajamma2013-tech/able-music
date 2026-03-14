@@ -2359,16 +2359,17 @@ function renderAdminEvents() {
     const isPast = new Date(ev.date) < now;
     return `<div class="dash-card" style="max-width:560px;margin-bottom:10px;${isPast?'opacity:0.65':''}">
       <div class="dc-head">
-        <div class="dc-title">${escHtml(ev.venue)} <span style="font-weight:400;color:var(--t3);font-size:11px;">${escHtml(ev.city)} · ${escHtml(ev.date)}</span> ${isPast?'<span style="font-size:10px;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;margin-left:4px;color:var(--t3)">Past</span>':''}</div>
+        <div class="dc-title">${escHtml(ev.venue)} <span style="font-weight:400;color:var(--t3);font-size:11px;">${escHtml([ev.city,ev.country].filter(Boolean).join(', ') || '—')} · ${escHtml(ev.date)}</span> ${isPast?'<span style="font-size:10px;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;margin-left:4px;color:var(--t3)">Past</span>':''}</div>
         <button class="snap-btn del" onclick="removeEvent('${ev.id}')" title="Remove">×</button>
       </div>
       <div class="dc-body">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <div class="field-row" style="margin:0"><div class="field-label">Venue</div><input class="field-input" value="${escHtml(ev.venue||'')}" oninput="updateEventField('${ev.id}','venue',this.value)" placeholder="Fabric, London"></div>
-          <div class="field-row" style="margin:0"><div class="field-label">City</div><input class="field-input" value="${escHtml(ev.city||'')}" oninput="updateEventField('${ev.id}','city',this.value)" placeholder="London, UK"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Venue</div><input class="field-input" value="${escHtml(ev.venue||'')}" oninput="updateEventField('${ev.id}','venue',this.value)" placeholder="Fabric"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">City</div><input class="field-input" value="${escHtml(ev.city||'')}" oninput="updateEventField('${ev.id}','city',this.value)" placeholder="London"></div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;">
           <div class="field-row" style="margin:0"><div class="field-label">Date</div><input class="field-input" type="date" value="${escHtml(ev.date||'')}" oninput="updateEventField('${ev.id}','date',this.value)"></div>
+          <div class="field-row" style="margin:0"><div class="field-label">Country</div><input class="field-input" value="${escHtml(ev.country||'')}" oninput="updateEventField('${ev.id}','country',this.value)" placeholder="UK"></div>
           <div class="field-row" style="margin:0"><div class="field-label">Doors / time</div><input class="field-input" value="${escHtml(ev.time||'')}" oninput="updateEventField('${ev.id}','time',this.value)" placeholder="Doors 10pm"></div>
         </div>
         <div class="field-row" style="margin-top:8px;">
@@ -2394,7 +2395,7 @@ function addEvent() {
   const data = safeLS(V3_KEY, {});
   const events = data.events || [];
   const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
-  events.unshift({ id: 'ev'+Date.now(), venue: '', city: '', date: tomorrow.toISOString().split('T')[0], time: '', ticketUrl: '', soldOut: false, venueImageUrl: '' });
+  events.unshift({ id: 'ev'+Date.now(), venue: '', city: '', country: '', date: tomorrow.toISOString().split('T')[0], time: '', ticketUrl: '', soldOut: false, venueImageUrl: '' });
   setLS(V3_KEY, { ...data, events });
   syncProfile({ ...data, events });
   renderAdminEvents();
