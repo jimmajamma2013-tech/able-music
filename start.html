@@ -400,13 +400,13 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 .ph-hero { height:132px; position:relative; flex-shrink:0; }
 .ph-art { position:absolute; inset:0; transition:background .4s; }
 .ph-scrim { position:absolute; bottom:0; left:0; right:0; height:72px; z-index:2; transition:background .3s; }
-.ph-n { position:absolute; bottom:10px; left:14px; z-index:3; font-family:var(--ph-font-d, var(--font-d)); font-size:22px; font-weight:800; text-transform:uppercase; color:#fff; line-height:.9; text-shadow:0 2px 12px rgba(0,0,0,.5); }
+.ph-n { position:absolute; bottom:10px; left:14px; z-index:3; font-family:var(--ph-font-d, var(--font-d)); font-size:22px; font-weight:800; text-transform:uppercase; color:#fff; line-height:.9; text-shadow:0 2px 12px rgba(0,0,0,.5); transition:font-weight .2s, letter-spacing .2s; }
 .ph-body { flex:1; display:flex; flex-direction:column; overflow:hidden; padding-top:8px; }
 .ph-meta { padding:0 13px 5px; }
 .ph-genre { font-size:9px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; opacity:.4; margin-bottom:2px; }
 .ph-bio { font-size:9px; line-height:1.4; opacity:.55; }
 .ph-ctas { padding:6px 12px; display:flex; flex-direction:column; gap:5px; }
-.ph-p { padding:8px 12px; border-radius:10px; font-size:10px; font-weight:700; text-align:center; color:#fff; letter-spacing:.03em; transition:background .3s; }
+.ph-p { padding:8px 12px; border-radius:10px; font-size:10px; font-weight:700; text-align:center; color:#fff; letter-spacing:.03em; transition:background .3s, border-radius .25s; }
 .ph-s { padding:7px 12px; border-radius:10px; font-size:10px; font-weight:500; text-align:center; border:1.5px solid; opacity:.65; transition:color .3s, border-color .3s; }
 .ph-pills { padding:4px 12px; display:flex; gap:4px; overflow:hidden; }
 .ph-pill { padding:3px 8px; border-radius:100px; font-size:7.5px; font-weight:600; white-space:nowrap; transition:background .3s, color .3s; }
@@ -425,6 +425,22 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 .ph-dot { width:3px; height:3px; border-radius:50%; margin:0 auto; opacity:0; transition:background .3s; }
 .ph-tab.on .ph-dot { opacity:1; }
 .preview-hint { font-size:11px; color:var(--t3); text-align:center; }
+
+/* ── FEEL PREVIEW MODIFIERS ── */
+#previewShell[data-feel="intimate-raw"]      .ph-n { font-weight:500; letter-spacing:.02em; }
+#previewShell[data-feel="intimate-raw"]      .ph-p { border-radius:4px; }
+#previewShell[data-feel="intimate-raw"]      .ph-art { filter:saturate(0.82); }
+
+#previewShell[data-feel="intimate-refined"]  .ph-n { font-weight:400; letter-spacing:.04em; }
+#previewShell[data-feel="intimate-refined"]  .ph-p { border-radius:14px; }
+#previewShell[data-feel="intimate-refined"]  .ph-art { filter:saturate(0.88) sepia(0.08); }
+
+#previewShell[data-feel="bold-raw"]          .ph-n { font-weight:800; letter-spacing:-.02em; }
+#previewShell[data-feel="bold-raw"]          .ph-p { border-radius:2px; }
+#previewShell[data-feel="bold-raw"]          .ph-art { filter:contrast(1.06); }
+
+#previewShell[data-feel="bold-refined"]      .ph-n { font-weight:700; letter-spacing:0; }
+#previewShell[data-feel="bold-refined"]      .ph-p { border-radius:10px; }
 
 /* ── VIEW TOGGLE BAR (mobile) ── */
 .view-toggle {
@@ -873,7 +889,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <div class="preview-label">Live preview</div>
 
     <div class="preview-phone" id="previewPhone">
-      <div class="ph-inner" id="phInner">
+      <div class="ph-inner" id="previewShell">
         <div class="ph-sb" id="phSb"><span>9:41</span><span>●●●</span></div>
         <div class="ph-hero">
           <div class="ph-art" id="phArt"></div>
@@ -1154,7 +1170,7 @@ function applyVibe(v) {
   }
 
   // Apply font to preview
-  const ph = document.getElementById('phInner');
+  const ph = document.getElementById('previewShell');
   if (ph) ph.style.setProperty('--ph-font-d', `'${v.font}', sans-serif`);
 
   // Suggest accent from vibe if accent is still default
@@ -1360,7 +1376,7 @@ function updatePreview() {
   const dk = darken(acc, .38);
 
   // phone bg
-  const inner = document.getElementById('phInner');
+  const inner = document.getElementById('previewShell');
   inner.style.background = P.theme === 'glass'
     ? 'linear-gradient(155deg,#1a1230 0%,#0a1a28 55%,#1a1008 100%)'
     : ts.bg;
