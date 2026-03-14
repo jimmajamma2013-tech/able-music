@@ -1,729 +1,1216 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Create your page — Able</title>
-  <meta name="description" content="Set up your Able artist page in five minutes. Free." />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABLE — Get Started</title>
+<meta name="description" content="Set up your ABLE artist page in minutes. Free.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #121a24;
+  --bg-mid:  #171f2a;
+  --card:    #1d2636;
+  --border:  rgba(255,255,255,0.07);
+  --bm:      rgba(255,255,255,0.14);
+  --acc:     #f4b942;
+  --acc-rgb: 244,185,66;
+  --acc-glow:rgba(244,185,66,0.28);
+  --text:    #e8eaf2;
+  --t2:      rgba(232,234,242,0.55);
+  --t3:      rgba(232,234,242,0.28);
+  --font:    'DM Sans', sans-serif;
+  --font-d:  'Barlow Condensed', sans-serif;
+  --ease:    cubic-bezier(0.25,0.46,0.45,0.94);
+  --spring:  cubic-bezier(0.34,1.56,0.64,1);
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color:inherit; text-decoration:none; }
+button { font-family:var(--font); cursor:pointer; border:none; background:none; }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+/* grain */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:500; pointer-events:none;
+  opacity:0.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px;
+}
 
-  <link rel="stylesheet" href="shared/style.css" />
+/* ── HEADER ── */
+.header {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 40px; height:56px;
+  background:rgba(18,26,36,0.88);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.logo {
+  font-family:var(--font-d);
+  font-size:18px; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--acc);
+  transition:color .3s;
+}
+.step-indicator { font-size:12px; font-weight:500; color:var(--t2); letter-spacing:.04em; }
 
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font); background: var(--page); color: var(--ink); min-height: 100vh; }
+/* ── PROGRESS ── */
+.progress {
+  position:fixed; top:56px; left:0; right:0; z-index:99;
+  height:2px; background:var(--border);
+}
+.progress-fill {
+  height:100%; background:var(--acc);
+  transition:width .55s var(--ease), background .3s;
+  box-shadow:0 0 10px rgba(var(--acc-rgb),.5);
+}
 
-    /* ── Shell layout ─────────────────────────────────────── */
-    .ob-shell {
-      min-height: 100vh;
-      display: flex; flex-direction: column;
-    }
+/* ── LAYOUT ── */
+.layout {
+  display:grid;
+  grid-template-columns:1fr 420px;
+  min-height:100vh;
+  padding-top:58px;
+}
 
-    /* ── Top bar ──────────────────────────────────────────── */
-    .ob-topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--surface2);
-    }
-    .ob-brand {
-      font-size: 1rem; font-weight: 800; letter-spacing: -0.02em;
-      text-decoration: none; color: var(--ink);
-    }
-    .ob-step-count {
-      font-size: 0.78rem; color: var(--ink3);
-      font-variant-numeric: tabular-nums;
-    }
+/* ── FORM SIDE ── */
+.form-side {
+  display:flex; align-items:center; justify-content:center;
+  padding:48px 64px;
+  min-height:calc(100vh - 58px);
+}
+.step {
+  display:none;
+  flex-direction:column;
+  width:100%; max-width:440px;
+  animation:stepIn .38s var(--ease) both;
+}
+.step.active { display:flex; }
+@keyframes stepIn {
+  from { opacity:0; transform:translateY(22px); }
+  to   { opacity:1; transform:none; }
+}
+.step-eyebrow {
+  font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--acc); margin-bottom:14px;
+  transition:color .3s;
+}
+.step-title {
+  font-family:var(--font-d);
+  font-size:52px; font-weight:800; text-transform:uppercase;
+  letter-spacing:-.01em; line-height:.9;
+  color:var(--text); margin-bottom:12px;
+}
+.step-sub {
+  font-size:15px; line-height:1.65;
+  color:var(--t2); margin-bottom:36px;
+}
 
-    /* ── Progress bar ─────────────────────────────────────── */
-    .ob-progress-track {
-      height: 3px; background: var(--surface2);
-    }
-    .ob-progress-fill {
-      height: 100%; background: var(--accent);
-      transition: width 0.4s var(--ease);
-    }
+/* Fields */
+.field { margin-bottom:18px; }
+.field-label {
+  display:block; font-size:11px; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:var(--t2); margin-bottom:7px;
+}
+.opt { font-weight:400; text-transform:none; letter-spacing:0; font-size:11px; color:var(--t3); margin-left:4px; }
+.field-input {
+  width:100%; padding:13px 16px;
+  background:var(--card); border:1.5px solid var(--border); border-radius:10px;
+  font-family:var(--font); font-size:15px; color:var(--text);
+  outline:none; transition:border-color .2s, box-shadow .2s;
+}
+.field-input:focus {
+  border-color:rgba(var(--acc-rgb),.5);
+  box-shadow:0 0 0 3px rgba(var(--acc-rgb),.1);
+}
+.field-input::placeholder { color:var(--t3); }
+select.field-input { appearance:none; cursor:pointer; }
+textarea.field-input { resize:none; height:76px; line-height:1.5; }
+.field-hint { margin-top:5px; font-size:11.5px; color:var(--t3); line-height:1.5; }
 
-    /* ── Main content area ────────────────────────────────── */
-    .ob-main {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: flex-start;
-      padding: 40px 20px 100px;
-    }
-    .ob-step {
-      display: none; /* JS shows active step */
-      width: 100%; max-width: 440px;
-      animation: stepIn 0.22s var(--ease) both;
-    }
-    .ob-step.active { display: block; }
-    @keyframes stepIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+/* Colour presets */
+.colour-presets {
+  display:grid; grid-template-columns:repeat(8,1fr); gap:9px;
+  margin-bottom:14px;
+}
+.c-swatch {
+  width:100%; aspect-ratio:1; border-radius:9px; cursor:pointer;
+  border:2px solid transparent;
+  transition:transform .2s var(--spring), border-color .15s, box-shadow .15s;
+  position:relative;
+}
+.c-swatch:hover { transform:scale(1.14); }
+.c-swatch.on { border-color:#fff; box-shadow:0 0 0 3px rgba(255,255,255,.14); transform:scale(1.08); }
+.c-swatch.on::after { content:''; position:absolute; inset:0; border-radius:7px; background:rgba(255,255,255,.18); }
+.colour-custom {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 14px;
+  background:var(--card); border:1.5px solid var(--border); border-radius:10px;
+  cursor:pointer; transition:border-color .2s;
+}
+.colour-custom:hover { border-color:var(--bm); }
+.cc-swatch { width:26px; height:26px; border-radius:6px; flex-shrink:0; border:1.5px solid rgba(255,255,255,.12); }
+.cc-label { font-size:13px; color:var(--t2); }
+.colour-custom input[type=color] { position:absolute; opacity:0; width:0; height:0; }
 
-    .ob-step-eyebrow {
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
-    }
-    .ob-step-title {
-      font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em;
-      line-height: 1.15; margin-bottom: 8px; color: var(--ink);
-    }
-    .ob-step-sub {
-      font-size: 0.9rem; color: var(--ink2); line-height: 1.5;
-      margin-bottom: 28px;
-    }
+/* Theme grid */
+.theme-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:8px; }
+.theme-opt {
+  padding:14px; background:var(--card); border:1.5px solid var(--border);
+  border-radius:13px; cursor:pointer; transition:border-color .2s, box-shadow .2s;
+}
+.theme-opt:hover { border-color:var(--bm); }
+.theme-opt.on { border-color:var(--acc); box-shadow:0 0 0 3px rgba(var(--acc-rgb),.12); }
+.theme-preview { height:40px; border-radius:7px; margin-bottom:10px; overflow:hidden; }
+.theme-name { font-size:13px; font-weight:600; margin-bottom:2px; }
+.theme-desc { font-size:11px; color:var(--t3); }
 
-    /* ── Form fields ──────────────────────────────────────── */
-    .ob-field { margin-bottom: 16px; }
-    .ob-label {
-      display: block; font-size: 0.82rem; font-weight: 600;
-      color: var(--ink2); margin-bottom: 6px;
-    }
-    .ob-input {
-      width: 100%; padding: 12px 14px;
-      background: var(--surface); border: 1.5px solid var(--surface2);
-      border-radius: var(--r); font-size: 0.95rem; color: var(--ink);
-      font-family: var(--font);
-      transition: border-color var(--t), box-shadow var(--t);
-      outline: none;
-    }
-    .ob-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-    .ob-input::placeholder { color: var(--ink3); }
-    .ob-handle-prefix {
-      display: flex; align-items: center;
-      background: var(--surface); border: 1.5px solid var(--surface2);
-      border-radius: var(--r); overflow: hidden;
-      transition: border-color var(--t), box-shadow var(--t);
-    }
-    .ob-handle-prefix:focus-within {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-    .ob-handle-at {
-      padding: 12px 4px 12px 14px; font-size: 0.95rem;
-      color: var(--ink3); font-weight: 500; white-space: nowrap;
-    }
-    .ob-handle-input {
-      flex: 1; padding: 12px 14px 12px 2px;
-      background: transparent; border: none; outline: none;
-      font-size: 0.95rem; color: var(--ink); font-family: var(--font);
-    }
-    .ob-hint {
-      font-size: 0.75rem; color: var(--ink3); margin-top: 5px;
-    }
+/* ── VIBE PICKER ── */
+.vibe-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin-bottom:4px; }
+.vibe-card {
+  padding:11px 8px 10px; border-radius:13px;
+  border:1.5px solid var(--border); cursor:pointer;
+  transition:all .16s; background:var(--card);
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  font-family:var(--font); text-align:center;
+}
+.vibe-card:hover { border-color:var(--bm); }
+.vibe-card.on {
+  border-color:var(--acc); background:rgba(var(--acc-rgb),.08);
+  box-shadow:0 0 0 3px rgba(var(--acc-rgb),.1);
+}
+.vc-swatch {
+  width:32px; height:32px; border-radius:9px;
+  transition:transform .18s var(--spring);
+}
+.vibe-card.on .vc-swatch { transform:scale(1.1); }
+.vc-label { font-size:10px; font-weight:600; line-height:1.2; color:var(--t2); }
+.vibe-card.on .vc-label { color:var(--text); }
 
-    /* ── Mode picker ──────────────────────────────────────── */
-    .ob-mode-grid { display: flex; flex-direction: column; gap: 10px; }
-    .ob-mode-option { display: none; }
-    .ob-mode-label {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 16px; border-radius: var(--r);
-      background: var(--surface); border: 1.5px solid var(--surface2);
-      cursor: pointer; transition: border-color var(--t), background var(--t);
-      user-select: none;
-    }
-    .ob-mode-option:checked + .ob-mode-label {
-      border-color: var(--accent); background: var(--accent-soft);
-    }
-    .ob-mode-dot {
-      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-    }
-    .ob-mode-text {}
-    .ob-mode-name { font-size: 0.9rem; font-weight: 700; }
-    .ob-mode-desc { font-size: 0.78rem; color: var(--ink2); margin-top: 1px; }
+/* ── CTA PICKER ── */
+.cta-zone-label {
+  font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--t3); margin-bottom:10px;
+}
 
-    /* ── Vibe / theme quiz ────────────────────────────────── */
-    .ob-quiz-q { margin-bottom: 20px; }
-    .ob-quiz-q-label {
-      font-size: 0.85rem; font-weight: 600; color: var(--ink2); margin-bottom: 8px;
-    }
-    .ob-quiz-options { display: flex; flex-wrap: wrap; gap: 8px; }
-    .ob-quiz-option { display: none; }
-    .ob-quiz-chip {
-      padding: 7px 14px; border-radius: var(--r-full);
-      background: var(--surface); border: 1.5px solid var(--surface2);
-      font-size: 0.82rem; font-weight: 500; cursor: pointer;
-      transition: border-color var(--t), background var(--t), color var(--t);
-      user-select: none;
-    }
-    .ob-quiz-option:checked + .ob-quiz-chip {
-      background: var(--accent); border-color: var(--accent); color: #fff;
-    }
+/* ── CTA PREVIEW CHIP ── */
+.cta-preview { margin-bottom:18px; }
+.cta-preview-lbl { font-size:10px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--t3); margin-bottom:8px; }
+.cta-preview-btn {
+  display:inline-block; padding:13px 32px; border-radius:100px;
+  font-size:15px; font-weight:700; letter-spacing:.01em;
+  background:var(--acc); color:#121a24;
+  transition:background .2s, transform .2s var(--spring);
+  box-shadow:0 4px 18px rgba(var(--acc-rgb),.38);
+}
 
-    /* ── Platform rows ────────────────────────────────────── */
-    .ob-platform-list { display: flex; flex-direction: column; gap: 10px; }
-    .ob-platform-row {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .ob-platform-icon {
-      width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 1rem;
-    }
-    .ob-platform-icon.spotify    { background: #1DB954; }
-    .ob-platform-icon.apple      { background: #fc3c44; }
-    .ob-platform-icon.soundcloud { background: #ff5500; }
-    .ob-platform-icon.youtube    { background: #FF0000; }
-    .ob-platform-icon.bandcamp   { background: #1DA0C3; }
-    .ob-platform-input {
-      flex: 1; padding: 10px 12px;
-      background: var(--surface); border: 1.5px solid var(--surface2);
-      border-radius: var(--r); font-size: 0.85rem; color: var(--ink);
-      font-family: var(--font); outline: none;
-      transition: border-color var(--t), box-shadow var(--t);
-    }
-    .ob-platform-input:focus {
-      border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-    .ob-platform-input::placeholder { color: var(--ink3); font-size: 0.78rem; }
+/* Primary CTA — grouped cards */
+.cta-groups { display:flex; flex-direction:column; gap:18px; }
+.cta-grp-hd {
+  font-size:9px; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--t3); margin-bottom:8px;
+}
+.cta-grp-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.cta-gcard {
+  padding:13px 12px 12px; border-radius:13px;
+  border:1.5px solid var(--border); color:var(--t2);
+  cursor:pointer; transition:all .16s; background:var(--card);
+  display:flex; flex-direction:column; align-items:flex-start; gap:7px;
+  font-family:var(--font); text-align:left;
+}
+.cta-gcard:hover { border-color:var(--bm); color:var(--text); }
+.cta-gcard.on {
+  background:rgba(var(--acc-rgb),.08); border-color:var(--acc); color:var(--text);
+  box-shadow:0 0 0 3px rgba(var(--acc-rgb),.1);
+}
+.cg-icon {
+  width:30px; height:30px; border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.05); color:var(--t2);
+  transition:background .16s, color .16s;
+}
+.cta-gcard.on .cg-icon { background:rgba(var(--acc-rgb),.2); color:var(--acc); }
+.cg-label { font-size:12.5px; font-weight:600; line-height:1.2; }
+.cg-hint { font-size:9.5px; color:var(--t3); line-height:1.3; }
+.cta-gcard.on .cg-hint { color:rgba(var(--acc-rgb),.6); }
+/* compact variant for "more" grid */
+.cg-sm { padding:9px 10px 8px; gap:5px; border-radius:11px; }
+.cg-sm .cg-icon { width:24px; height:24px; border-radius:7px; }
+.cg-sm .cg-label { font-size:11px; }
+.cg-sm .cg-hint { font-size:9px; }
+/* more options */
+.cta-more-btn {
+  display:flex; align-items:center; gap:5px; margin-top:2px;
+  font-size:12px; font-weight:500; color:var(--t3); border:none;
+  background:none; cursor:pointer; font-family:var(--font); padding:6px 0;
+  transition:color .16s;
+}
+.cta-more-btn:hover { color:var(--t2); }
+.cta-more-btn .cm-chevron { transition:transform .2s; display:inline-flex; }
+.cta-more-btn.open .cm-chevron { transform:rotate(180deg); }
+.cta-more-area { display:none; grid-template-columns:1fr 1fr 1fr; gap:7px; margin-top:10px; }
+.cta-more-area.open { display:grid; }
 
-    /* ── Social rows ──────────────────────────────────────── */
-    .ob-social-list { display: flex; flex-direction: column; gap: 10px; }
-    .ob-social-row {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .ob-social-icon {
-      width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
-      background: var(--surface2);
-      display: flex; align-items: center; justify-content: center; font-size: 1rem;
-    }
+/* Secondary CTA — pill buttons */
+.cta-sec-pills { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+.cta-sec-btn {
+  padding:7px 14px; border-radius:100px; font-size:12px; font-weight:500;
+  border:1.5px solid var(--border); color:var(--t3);
+  cursor:pointer; transition:all .16s; background:none; font-family:var(--font);
+}
+.cta-sec-btn:hover { border-color:var(--bm); color:var(--t2); }
+.cta-sec-btn.on {
+  background:rgba(var(--acc-rgb),.08); border-color:rgba(var(--acc-rgb),.38);
+  color:var(--acc);
+}
+.cta-sec-btn.is-none.on {
+  background:rgba(255,255,255,.04); border-color:var(--bm); color:var(--t2);
+}
 
-    /* ── PIN input ────────────────────────────────────────── */
-    .ob-pin-wrap {
-      display: flex; gap: 10px; justify-content: center;
-      margin: 20px 0;
-    }
-    .ob-pin-digit {
-      width: 52px; height: 64px;
-      background: var(--surface); border: 1.5px solid var(--surface2);
-      border-radius: var(--r); font-size: 1.8rem; font-weight: 700;
-      text-align: center; outline: none; font-family: var(--font);
-      color: var(--ink); letter-spacing: -0.02em;
-      transition: border-color var(--t), box-shadow var(--t);
-    }
-    .ob-pin-digit:focus {
-      border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
-    }
+/* Nav buttons */
+.step-nav { display:flex; align-items:center; gap:12px; margin-top:8px; }
+.btn-back {
+  padding:12px 20px; border-radius:100px; font-size:13px; font-weight:500;
+  border:1.5px solid var(--border); color:var(--t2);
+  cursor:pointer; transition:all .18s; background:none; font-family:var(--font);
+}
+.btn-back:hover { color:var(--text); border-color:var(--bm); }
+.btn-next {
+  padding:12px 28px; border-radius:100px; font-size:14px; font-weight:600;
+  border:none; background:var(--acc); color:#121a24;
+  cursor:pointer; transition:all .2s var(--spring); font-family:var(--font);
+  box-shadow:0 4px 20px rgba(var(--acc-rgb),.32); letter-spacing:.01em;
+}
+.btn-next:hover { transform:translateY(-2px); box-shadow:0 7px 28px rgba(var(--acc-rgb),.42); }
 
-    /* ── Success screen ───────────────────────────────────── */
-    #step-done {
-      text-align: center;
-    }
-    .ob-done-icon {
-      width: 72px; height: 72px; border-radius: 50%;
-      background: var(--accent); color: #fff;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2rem; margin: 0 auto 20px;
-    }
+/* Done screen */
+.done-link {
+  display:flex; align-items:center; gap:12px;
+  padding:15px 18px; background:var(--card);
+  border:1.5px solid var(--border); border-radius:13px; margin-bottom:20px;
+}
+.done-url {
+  flex:1; font-size:15px; font-weight:600; color:var(--text);
+  font-family:var(--font-d); letter-spacing:.04em;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.done-copy {
+  padding:7px 14px; border-radius:8px; font-size:12px; font-weight:600;
+  background:rgba(var(--acc-rgb),.12); color:var(--acc);
+  border:1px solid rgba(var(--acc-rgb),.25);
+  cursor:pointer; transition:all .18s; font-family:var(--font); white-space:nowrap;
+}
+.done-copy:hover { background:rgba(var(--acc-rgb),.22); }
+.done-actions { display:flex; gap:10px; flex-wrap:wrap; }
+.done-open {
+  padding:13px 24px; border-radius:100px; font-size:14px; font-weight:600;
+  background:var(--acc); color:#121a24; border:none;
+  cursor:pointer; font-family:var(--font);
+  box-shadow:0 4px 20px rgba(var(--acc-rgb),.3);
+  transition:all .2s var(--spring);
+}
+.done-open:hover { transform:translateY(-2px); box-shadow:0 7px 28px rgba(var(--acc-rgb),.42); }
+.done-dash {
+  padding:13px 24px; border-radius:100px; font-size:14px; font-weight:500;
+  background:none; color:var(--t2); border:1.5px solid var(--border);
+  cursor:pointer; font-family:var(--font); transition:all .18s;
+}
+.done-dash:hover { color:var(--text); border-color:var(--bm); }
+.done-next { margin-top:28px; padding-top:24px; border-top:1px solid var(--border); }
+.done-next-label { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--t3); margin-bottom:12px; }
+.done-next-item { font-size:13px; color:var(--t2); margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+.done-next-item::before { content:''; width:4px; height:4px; border-radius:50%; background:var(--acc); flex-shrink:0; }
+/* share row */
+.done-share { margin-top:20px; }
+.done-share-lbl { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--t3); margin-bottom:10px; }
+.done-share-row { display:flex; flex-wrap:wrap; gap:8px; }
+.done-share-btn {
+  display:flex; align-items:center; gap:7px;
+  padding:9px 15px; border-radius:100px; font-size:12px; font-weight:500;
+  border:1.5px solid var(--border); color:var(--t2); background:none;
+  cursor:pointer; font-family:var(--font); transition:all .16s;
+}
+.done-share-btn:hover { border-color:var(--bm); color:var(--text); }
+.done-share-btn.primary-share {
+  background:var(--acc); color:#121a24; border-color:transparent; font-weight:600;
+  box-shadow:0 4px 16px rgba(var(--acc-rgb),.3);
+}
+.done-share-btn.primary-share:hover { transform:translateY(-1px); box-shadow:0 6px 22px rgba(var(--acc-rgb),.4); }
+/* confetti canvas */
+#confettiCanvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:20; }
+/* mobile done preview toggle */
+.done-preview-toggle {
+  display:none; width:100%; padding:12px; border-radius:100px; font-size:13px; font-weight:600;
+  border:1.5px solid var(--border); color:var(--t2); background:none;
+  cursor:pointer; font-family:var(--font); margin-top:16px; transition:all .18s;
+  text-align:center;
+}
+.done-preview-toggle:hover { color:var(--text); border-color:var(--bm); }
+@media (max-width:860px) { .done-preview-toggle { display:block; } }
 
-    /* ── Bottom nav ───────────────────────────────────────── */
-    .ob-bottom {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      padding: 14px 20px 24px;
-      background: var(--page);
-      border-top: 1px solid var(--surface2);
-      display: flex; gap: 10px; align-items: center;
-      max-width: 480px; margin: 0 auto;
-    }
-    .ob-back-btn {
-      width: 44px; height: 44px; border-radius: var(--r-full);
-      background: var(--surface2); border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem; color: var(--ink2); flex-shrink: 0;
-      transition: background var(--t);
-    }
-    .ob-back-btn:hover { background: var(--surface2); color: var(--ink); }
-    .ob-back-btn:disabled { opacity: 0.3; cursor: default; }
-    .ob-next-btn {
-      flex: 1; padding: 13px 20px;
-      background: var(--accent); color: #fff;
-      border: none; border-radius: var(--r-full);
-      font-size: 0.95rem; font-weight: 700; cursor: pointer;
-      font-family: var(--font);
-      transition: background var(--t), opacity var(--t), transform var(--t);
-    }
-    .ob-next-btn:hover  { background: var(--accent-dark); transform: translateY(-1px); }
-    .ob-next-btn:active { transform: scale(0.98); }
+/* ── PREVIEW SIDE ── */
+.preview-side {
+  background:var(--bg-mid); border-left:1px solid var(--border);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:16px; padding:48px 40px;
+  position:sticky; top:58px; height:calc(100vh - 58px);
+  overflow:hidden;
+}
+.preview-label {
+  font-size:10px; font-weight:600; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--t3);
+}
+.preview-phone {
+  width:224px; height:464px; border-radius:50px; overflow:hidden;
+  border:2px solid rgba(255,255,255,.11); position:relative;
+  box-shadow:0 40px 80px rgba(0,0,0,.6);
+  transition:box-shadow .4s var(--ease);
+}
+/* dynamic island */
+.preview-phone::before {
+  content:''; position:absolute; top:11px; left:50%; transform:translateX(-50%);
+  width:72px; height:22px; background:#000; border-radius:100px; z-index:50;
+}
+.ph-inner { position:absolute; inset:0; display:flex; flex-direction:column; transition:background .3s; }
+.ph-sb { padding:14px 16px 4px; display:flex; justify-content:space-between; font-size:9px; font-weight:700; flex-shrink:0; z-index:5; position:relative; }
+.ph-hero { height:132px; position:relative; flex-shrink:0; }
+.ph-art { position:absolute; inset:0; transition:background .4s; }
+.ph-scrim { position:absolute; bottom:0; left:0; right:0; height:72px; z-index:2; transition:background .3s; }
+.ph-n { position:absolute; bottom:10px; left:14px; z-index:3; font-family:var(--ph-font-d, var(--font-d)); font-size:22px; font-weight:800; text-transform:uppercase; color:#fff; line-height:.9; text-shadow:0 2px 12px rgba(0,0,0,.5); }
+.ph-body { flex:1; display:flex; flex-direction:column; overflow:hidden; padding-top:8px; }
+.ph-meta { padding:0 13px 5px; }
+.ph-genre { font-size:9px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; opacity:.4; margin-bottom:2px; }
+.ph-bio { font-size:9px; line-height:1.4; opacity:.55; }
+.ph-ctas { padding:6px 12px; display:flex; flex-direction:column; gap:5px; }
+.ph-p { padding:8px 12px; border-radius:10px; font-size:10px; font-weight:700; text-align:center; color:#fff; letter-spacing:.03em; transition:background .3s; }
+.ph-s { padding:7px 12px; border-radius:10px; font-size:10px; font-weight:500; text-align:center; border:1.5px solid; opacity:.65; transition:color .3s, border-color .3s; }
+.ph-pills { padding:4px 12px; display:flex; gap:4px; overflow:hidden; }
+.ph-pill { padding:3px 8px; border-radius:100px; font-size:7.5px; font-weight:600; white-space:nowrap; transition:background .3s, color .3s; }
+.ph-sect { margin:5px 10px; border-radius:12px; overflow:hidden; flex-shrink:0; transition:background .3s; }
+.ph-sh { padding:6px 10px 2px; font-size:8px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; opacity:.4; }
+.ph-tr { padding:4px 10px; display:flex; align-items:center; gap:6px; }
+.ph-ta { width:22px; height:22px; border-radius:4px; flex-shrink:0; }
+.ph-ti { flex:1; }
+.ph-tn { font-size:8.5px; font-weight:600; opacity:.85; }
+.ph-ts { font-size:7.5px; opacity:.35; }
+.ph-pl { width:17px; height:17px; border-radius:50%; margin-left:auto; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:background .3s; }
+.ph-arr { width:0; height:0; border-style:solid; border-width:2.5px 0 2.5px 4.5px; border-color:transparent transparent transparent #fff; margin-left:1px; }
+.ph-tabs { margin-top:auto; padding:7px 2px 12px; display:flex; justify-content:space-around; border-top:1px solid; flex-shrink:0; transition:background .3s, border-color .3s; }
+.ph-tab { display:flex; flex-direction:column; align-items:center; gap:2px; font-size:7px; font-weight:600; opacity:.45; letter-spacing:.01em; }
+.ph-tab.on { opacity:1; }
+.ph-dot { width:3px; height:3px; border-radius:50%; margin:0 auto; opacity:0; transition:background .3s; }
+.ph-tab.on .ph-dot { opacity:1; }
+.preview-hint { font-size:11px; color:var(--t3); text-align:center; }
 
-    /* ── Skip link ────────────────────────────────────────── */
-    .ob-skip {
-      text-align: center; margin-top: 12px;
-    }
-    .ob-skip a {
-      font-size: 0.78rem; color: var(--ink3); text-decoration: none;
-    }
-    .ob-skip a:hover { color: var(--ink2); }
+/* ── VIEW TOGGLE BAR (mobile) ── */
+.view-toggle {
+  display:none;
+  position:fixed; top:58px; left:0; right:0; z-index:98;
+  background:var(--bg-mid); border-bottom:1px solid var(--border);
+  padding:8px 16px;
+  gap:6px;
+}
+.vt-btn {
+  flex:1; padding:9px; border-radius:10px; font-size:13px; font-weight:600;
+  font-family:var(--font); border:1.5px solid var(--border);
+  color:var(--t2); background:none; cursor:pointer; transition:all .18s;
+}
+.vt-btn.on {
+  background:rgba(var(--acc-rgb),.12); border-color:var(--acc); color:var(--acc);
+}
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --page: #0f0f11; --surface: #1a1a1f; --surface2: #242429;
-        --ink: #f0efee; --ink2: #9a9490; --ink3: #5a5550;
-      }
-    }
-  </style>
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  .view-toggle { display:flex; }
+  .progress { top:100px; }
+  .layout {
+    grid-template-columns:1fr;
+    padding-top:102px;
+  }
+
+  /* form view (default) */
+  .layout[data-view="form"] .form-side { display:flex; }
+  .layout[data-view="form"] .preview-side { display:none; }
+
+  /* preview view */
+  .layout[data-view="preview"] .form-side { display:none; }
+  .layout[data-view="preview"] .preview-side {
+    display:flex;
+    position:relative; top:auto;
+    height:auto;
+    min-height:calc(100vh - 102px);
+    border-left:none;
+  }
+
+  .form-side { padding:32px 24px; }
+  .step-title { font-size:44px; }
+  .preview-phone { width:200px; height:420px; }
+}
+</style>
 </head>
-
 <body>
 
-  <div class="ob-shell">
+<header class="header">
+  <div class="logo" id="logoEl">ABLE</div>
+  <div class="step-indicator" id="stepInd">Step 1 of 4</div>
+</header>
 
-    <!-- Top bar -->
-    <div class="ob-topbar">
-      <a href="index.html" class="ob-brand">Able</a>
-      <span class="ob-step-count" id="ob-step-count">Step 1 of 5</span>
+<div class="progress">
+  <div class="progress-fill" id="progressFill" style="width:25%"></div>
+</div>
+
+<div class="view-toggle">
+  <button class="vt-btn on" id="vtForm" onclick="setView('form')">Setup</button>
+  <button class="vt-btn" id="vtPreview" onclick="setView('preview')">Preview</button>
+</div>
+
+<div class="layout" data-view="form" id="layout">
+
+  <!-- ── FORM SIDE ── -->
+  <div class="form-side" style="position:relative;">
+  <canvas id="confettiCanvas"></canvas>
+
+    <!-- STEP 1 -->
+    <div class="step active" id="step1">
+      <div class="step-eyebrow">Step 1 of 4</div>
+      <h1 class="step-title">Tell us<br>about you</h1>
+      <p class="step-sub">Your fans will see this on your ABLE page. Everything can be changed later from your dashboard.</p>
+
+      <div class="field">
+        <label class="field-label" for="iName">Artist name</label>
+        <input class="field-input" type="text" id="iName" placeholder="e.g. Nova" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label class="field-label">Your vibe</label>
+        <div class="vibe-grid" id="vibeGrid"></div>
+        <input type="hidden" id="iGenre">
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="iBio">One-line bio <span class="opt">optional</span></label>
+        <input class="field-input" type="text" id="iBio" placeholder="e.g. Making music from my bedroom to yours." maxlength="80">
+        <div class="field-hint">Keep it short — this sits under your name on the page.</div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="iSpotify">Spotify artist URL <span class="opt">optional</span></label>
+        <input class="field-input" type="url" id="iSpotify" placeholder="open.spotify.com/artist/…">
+        <div class="field-hint">Your music plays directly on your page — fans stream without leaving.</div>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-next" onclick="goStep(2)">Continue →</button>
+      </div>
     </div>
 
-    <!-- Progress -->
-    <div class="ob-progress-track">
-      <div class="ob-progress-fill" id="ob-progress" style="width:20%"></div>
+    <!-- STEP 2 -->
+    <div class="step" id="step2">
+      <div class="step-eyebrow">Step 2 of 4</div>
+      <h1 class="step-title">Your<br>colour</h1>
+      <p class="step-sub">This becomes your brand throughout your page. One colour change — everything updates with it.</p>
+
+      <div class="colour-presets" id="colourGrid"></div>
+
+      <div class="colour-custom" id="ccWrap" onclick="document.getElementById('ccPicker').click()">
+        <div class="cc-swatch" id="ccSwatch"></div>
+        <span class="cc-label">Pick a custom colour</span>
+        <input type="color" id="ccPicker" value="#f4b942">
+      </div>
+
+      <div class="step-nav" style="margin-top:28px;">
+        <button class="btn-back" onclick="goStep(1)">← Back</button>
+        <button class="btn-next" onclick="goStep(3)">Continue →</button>
+      </div>
     </div>
 
-    <!-- Steps -->
-    <div class="ob-main">
+    <!-- STEP 3 -->
+    <div class="step" id="step3">
+      <div class="step-eyebrow">Step 3 of 4</div>
+      <h1 class="step-title">Your<br>look</h1>
+      <p class="step-sub">Choose how your page feels. You can switch themes any time — your fans can too, if you allow it.</p>
 
-      <!-- ── STEP 1: Who are you ────────────────────────────── -->
-      <div class="ob-step active" id="step-1">
-        <p class="ob-step-eyebrow">Step 1 of 5</p>
-        <h1 class="ob-step-title">Who are you?</h1>
-        <p class="ob-step-sub">This is what fans see first.</p>
+      <div class="theme-grid" id="themeGrid"></div>
 
-        <div class="ob-field">
-          <label class="ob-label" for="ob-name">Artist name</label>
-          <input class="ob-input" id="ob-name" type="text" placeholder="e.g. Maya Rivers" autocomplete="off" />
-        </div>
-
-        <div class="ob-field">
-          <label class="ob-label" for="ob-handle-input">Your handle</label>
-          <div class="ob-handle-prefix" id="ob-handle-wrap">
-            <span class="ob-handle-at">able.music/</span>
-            <input class="ob-handle-input" id="ob-handle-input" type="text" placeholder="yourname" autocomplete="off" />
-          </div>
-          <p class="ob-hint" id="ob-handle-hint">Your permanent link — choose carefully.</p>
-        </div>
-
-        <div class="ob-field">
-          <label class="ob-label" for="ob-location">Location <span style="font-weight:400;color:var(--ink3)">(optional)</span></label>
-          <input class="ob-input" id="ob-location" type="text" placeholder="e.g. London, UK" autocomplete="off" />
-        </div>
-
-        <div class="ob-field">
-          <label class="ob-label" for="ob-genres">Genres <span style="font-weight:400;color:var(--ink3)">(optional, comma-separated)</span></label>
-          <input class="ob-input" id="ob-genres" type="text" placeholder="e.g. Soul, Electronic, R&B" autocomplete="off" />
-        </div>
+      <div class="step-nav">
+        <button class="btn-back" onclick="goStep(2)">← Back</button>
+        <button class="btn-next" onclick="goStep(4)">Continue →</button>
       </div>
-
-      <!-- ── STEP 2: What's happening now ──────────────────── -->
-      <div class="ob-step" id="step-2">
-        <p class="ob-step-eyebrow">Step 2 of 5</p>
-        <h1 class="ob-step-title">What's happening right now?</h1>
-        <p class="ob-step-sub">Pick the moment. Your page will match.</p>
-
-        <div class="ob-mode-grid">
-          <input type="radio" name="ob-mode" id="mode-live"       class="ob-mode-option" value="live" checked />
-          <label class="ob-mode-label" for="mode-live">
-            <span class="ob-mode-dot" style="background:#0891b2"></span>
-            <span class="ob-mode-text">
-              <div class="ob-mode-name">New release out</div>
-              <div class="ob-mode-desc">Music is out now — push people to listen.</div>
-            </span>
-          </label>
-
-          <input type="radio" name="ob-mode" id="mode-prerelease" class="ob-mode-option" value="pre-release" />
-          <label class="ob-mode-label" for="mode-prerelease">
-            <span class="ob-mode-dot" style="background:#7c3aed"></span>
-            <span class="ob-mode-text">
-              <div class="ob-mode-name">Something's coming</div>
-              <div class="ob-mode-desc">Pre-save + Inner Circle sign-up front and centre.</div>
-            </span>
-          </label>
-
-          <input type="radio" name="ob-mode" id="mode-gig"        class="ob-mode-option" value="gig" />
-          <label class="ob-mode-label" for="mode-gig">
-            <span class="ob-mode-dot" style="background:#dc2626"></span>
-            <span class="ob-mode-text">
-              <div class="ob-mode-name">On tour</div>
-              <div class="ob-mode-desc">Tickets button leads. Shows section rises.</div>
-            </span>
-          </label>
-
-          <input type="radio" name="ob-mode" id="mode-evergreen"  class="ob-mode-option" value="evergreen" />
-          <label class="ob-mode-label" for="mode-evergreen">
-            <span class="ob-mode-dot" style="background:#16a34a"></span>
-            <span class="ob-mode-text">
-              <div class="ob-mode-name">Just the music</div>
-              <div class="ob-mode-desc">No push — clean streaming links, catalogue speaks.</div>
-            </span>
-          </label>
-        </div>
-      </div>
-
-      <!-- ── STEP 3: Your vibe ──────────────────────────────── -->
-      <div class="ob-step" id="step-3">
-        <p class="ob-step-eyebrow">Step 3 of 5</p>
-        <h1 class="ob-step-title">What's your vibe?</h1>
-        <p class="ob-step-sub">Three questions. We'll pick the right theme.</p>
-
-        <div class="ob-quiz-q">
-          <div class="ob-quiz-q-label">Your main genre is closest to…</div>
-          <div class="ob-quiz-options">
-            <input type="radio" name="q-genre" id="q-g1" class="ob-quiz-option" value="electronic" />
-            <label class="ob-quiz-chip" for="q-g1">Electronic / Dance</label>
-            <input type="radio" name="q-genre" id="q-g2" class="ob-quiz-option" value="hiphop" />
-            <label class="ob-quiz-chip" for="q-g2">Hip-Hop / Rap</label>
-            <input type="radio" name="q-genre" id="q-g3" class="ob-quiz-option" value="soul" />
-            <label class="ob-quiz-chip" for="q-g3">Soul / R&B</label>
-            <input type="radio" name="q-genre" id="q-g4" class="ob-quiz-option" value="indie" />
-            <label class="ob-quiz-chip" for="q-g4">Indie / Alt</label>
-            <input type="radio" name="q-genre" id="q-g5" class="ob-quiz-option" value="pop" />
-            <label class="ob-quiz-chip" for="q-g5">Pop</label>
-            <input type="radio" name="q-genre" id="q-g6" class="ob-quiz-option" value="other" />
-            <label class="ob-quiz-chip" for="q-g6">Other</label>
-          </div>
-        </div>
-
-        <div class="ob-quiz-q">
-          <div class="ob-quiz-q-label">Your sound feels…</div>
-          <div class="ob-quiz-options">
-            <input type="radio" name="q-feel" id="q-f1" class="ob-quiz-option" value="warm" />
-            <label class="ob-quiz-chip" for="q-f1">Warm &amp; organic</label>
-            <input type="radio" name="q-feel" id="q-f2" class="ob-quiz-option" value="dark" />
-            <label class="ob-quiz-chip" for="q-f2">Dark &amp; moody</label>
-            <input type="radio" name="q-feel" id="q-f3" class="ob-quiz-option" value="clean" />
-            <label class="ob-quiz-chip" for="q-f3">Clean &amp; minimal</label>
-            <input type="radio" name="q-feel" id="q-f4" class="ob-quiz-option" value="bold" />
-            <label class="ob-quiz-chip" for="q-f4">Bold &amp; loud</label>
-          </div>
-        </div>
-
-        <div class="ob-quiz-q">
-          <div class="ob-quiz-q-label">Your visual identity is…</div>
-          <div class="ob-quiz-options">
-            <input type="radio" name="q-vibe" id="q-v1" class="ob-quiz-option" value="light" />
-            <label class="ob-quiz-chip" for="q-v1">Light &amp; airy</label>
-            <input type="radio" name="q-vibe" id="q-v2" class="ob-quiz-option" value="dark" />
-            <label class="ob-quiz-chip" for="q-v2">Dark &amp; dramatic</label>
-            <input type="radio" name="q-vibe" id="q-v3" class="ob-quiz-option" value="colourful" />
-            <label class="ob-quiz-chip" for="q-v3">Colourful &amp; expressive</label>
-          </div>
-        </div>
-
-        <div id="theme-preview-wrap" style="display:none;margin-top:16px;">
-          <div style="font-size:0.78rem;color:var(--ink3);margin-bottom:6px;">Suggested theme:</div>
-          <div id="theme-preview" style="height:40px;border-radius:var(--r);transition:background 0.3s;"></div>
-          <div id="theme-name" style="font-size:0.8rem;font-weight:600;margin-top:5px;color:var(--accent);"></div>
-        </div>
-      </div>
-
-      <!-- ── STEP 4: Platforms + Social ────────────────────── -->
-      <div class="ob-step" id="step-4">
-        <p class="ob-step-eyebrow">Step 4 of 5</p>
-        <h1 class="ob-step-title">Where can fans find you?</h1>
-        <p class="ob-step-sub">Paste any links you have. Skip the ones you don't use.</p>
-
-        <div style="margin-bottom:20px;">
-          <div class="ob-label" style="margin-bottom:10px;">Music platforms</div>
-          <div class="ob-platform-list">
-            <div class="ob-platform-row">
-              <div class="ob-platform-icon spotify">🎵</div>
-              <input class="ob-platform-input" id="plat-spotify" type="url" placeholder="Spotify artist URL" />
-            </div>
-            <div class="ob-platform-row">
-              <div class="ob-platform-icon apple">🎵</div>
-              <input class="ob-platform-input" id="plat-apple" type="url" placeholder="Apple Music URL" />
-            </div>
-            <div class="ob-platform-row">
-              <div class="ob-platform-icon soundcloud">☁️</div>
-              <input class="ob-platform-input" id="plat-soundcloud" type="url" placeholder="SoundCloud URL" />
-            </div>
-            <div class="ob-platform-row">
-              <div class="ob-platform-icon bandcamp">🎸</div>
-              <input class="ob-platform-input" id="plat-bandcamp" type="url" placeholder="Bandcamp URL" />
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <div class="ob-label" style="margin-bottom:10px;">Social <span style="font-weight:400;color:var(--ink3)">(optional)</span></div>
-          <div class="ob-social-list">
-            <div class="ob-social-row">
-              <div class="ob-social-icon">📸</div>
-              <input class="ob-platform-input" id="soc-instagram" type="url" placeholder="Instagram URL" />
-            </div>
-            <div class="ob-social-row">
-              <div class="ob-social-icon">🎵</div>
-              <input class="ob-platform-input" id="soc-tiktok" type="url" placeholder="TikTok URL" />
-            </div>
-            <div class="ob-social-row">
-              <div class="ob-social-icon">🐦</div>
-              <input class="ob-platform-input" id="soc-twitter" type="url" placeholder="X / Twitter URL" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── STEP 5: PIN ────────────────────────────────────── -->
-      <div class="ob-step" id="step-5">
-        <p class="ob-step-eyebrow">Step 5 of 5</p>
-        <h1 class="ob-step-title">Set a PIN.</h1>
-        <p class="ob-step-sub">
-          4 digits to unlock edit mode on your page.
-          Fans can't see it. Just you.
-        </p>
-
-        <div class="ob-pin-wrap">
-          <input class="ob-pin-digit" id="pin-0" type="password" inputmode="numeric" maxlength="1" pattern="[0-9]" />
-          <input class="ob-pin-digit" id="pin-1" type="password" inputmode="numeric" maxlength="1" pattern="[0-9]" />
-          <input class="ob-pin-digit" id="pin-2" type="password" inputmode="numeric" maxlength="1" pattern="[0-9]" />
-          <input class="ob-pin-digit" id="pin-3" type="password" inputmode="numeric" maxlength="1" pattern="[0-9]" />
-        </div>
-        <p class="ob-hint" style="text-align:center">Pick something you'll remember. You can change it later in settings.</p>
-      </div>
-
-      <!-- ── DONE ───────────────────────────────────────────── -->
-      <div class="ob-step" id="step-done">
-        <div class="ob-done-icon">✓</div>
-        <h1 class="ob-step-title">Your page is ready.</h1>
-        <p class="ob-step-sub">
-          You can edit everything inline — tap the settings icon on your page, enter your PIN, and make it yours.
-        </p>
-        <a href="able-v2.html" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;">
-          View my page →
-        </a>
-        <div style="text-align:center;margin-top:12px;">
-          <a href="able-v2.html" style="font-size:0.78rem;color:var(--ink3);text-decoration:none">
-            Or open edit mode straight away
-          </a>
-        </div>
-      </div>
-
-    </div><!-- /ob-main -->
-
-    <!-- Bottom nav (hidden on done screen) -->
-    <div class="ob-bottom" id="ob-bottom">
-      <button class="ob-back-btn" id="ob-back" disabled aria-label="Go back">←</button>
-      <button class="ob-next-btn" id="ob-next">Continue →</button>
     </div>
 
-  </div><!-- /ob-shell -->
+    <!-- STEP 4 -->
+    <div class="step" id="step4">
+      <div class="step-eyebrow">Step 4 of 4</div>
+      <h1 class="step-title">What's your<br>goal?</h1>
+      <p class="step-sub">Your hero button — the one thing you want fans to do. Change it any time from your dashboard.</p>
 
-  <div id="able-toast" role="status" aria-live="polite"></div>
+      <div class="cta-preview">
+        <div class="cta-preview-lbl">Fans will see</div>
+        <div class="cta-preview-btn" id="ctaPreviewBtn">Stream Now</div>
+      </div>
 
-  <script src="shared/able.js"></script>
-  <script>
-  (function () {
-    'use strict';
+      <div class="cta-groups" id="ctaGrid"></div>
 
-    /* ────────────────────────────────────────────────────────
-       State
-    ──────────────────────────────────────────────────────── */
-    var TOTAL_STEPS = 5;
-    var current     = 1;
-    var quizAnswers = {};
+      <div class="field" id="ctaUrlWrap" style="display:none; margin-top:10px;">
+        <label class="field-label" for="iCtaUrl" id="ctaUrlLbl">Link</label>
+        <input class="field-input" type="url" id="iCtaUrl" placeholder="https://…">
+      </div>
 
-    /* ────────────────────────────────────────────────────────
-       DOM refs
-    ──────────────────────────────────────────────────────── */
-    var nextBtn    = document.getElementById('ob-next');
-    var backBtn    = document.getElementById('ob-back');
-    var progressEl = document.getElementById('ob-progress');
-    var stepCount  = document.getElementById('ob-step-count');
-    var bottomBar  = document.getElementById('ob-bottom');
+      <div style="margin-top:24px; margin-bottom:10px;">
+        <div class="cta-grp-hd" style="margin-bottom:10px;">Secondary <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:10px;color:var(--t3);opacity:.7;">optional</span></div>
+        <div class="cta-sec-pills" id="ctaSecGrid"></div>
+      </div>
 
-    /* ────────────────────────────────────────────────────────
-       Navigation
-    ──────────────────────────────────────────────────────── */
-    function showStep (n) {
-      document.querySelectorAll('.ob-step').forEach(function (el) {
-        el.classList.remove('active');
-      });
-      var el = document.getElementById('step-' + n);
-      if (el) el.classList.add('active');
+      <div class="field" id="ctaSecUrlWrap" style="display:none;">
+        <label class="field-label" for="iCtaSecUrl" id="ctaSecUrlLbl">Link for secondary</label>
+        <input class="field-input" type="url" id="iCtaSecUrl" placeholder="https://…">
+      </div>
 
-      var pct = Math.round((n / TOTAL_STEPS) * 100);
-      progressEl.style.width = pct + '%';
-      stepCount.textContent  = 'Step ' + n + ' of ' + TOTAL_STEPS;
-      backBtn.disabled = (n === 1);
-      nextBtn.textContent = (n === TOTAL_STEPS) ? 'Finish →' : 'Continue →';
+      <div class="field" id="ctaSecCustomWrap" style="display:none;">
+        <label class="field-label" for="iCtaSecCustom">Custom label</label>
+        <input class="field-input" type="text" id="iCtaSecCustom" placeholder="e.g. Pre-order now, Book me…" maxlength="32">
+      </div>
 
-      if (n === 'done') {
-        progressEl.style.width = '100%';
-        stepCount.textContent  = 'Done!';
-        bottomBar.style.display = 'none';
-        document.getElementById('step-done').classList.add('active');
-      }
-    }
+      <div class="step-nav">
+        <button class="btn-back" onclick="goStep(3)">← Back</button>
+        <button class="btn-next" onclick="goStep('done')">Create my page →</button>
+      </div>
+    </div>
 
-    nextBtn.addEventListener('click', function () {
-      if (!validateStep(current)) return;
-      if (current < TOTAL_STEPS) {
-        current++;
-        showStep(current);
-      } else {
-        /* Step 5 — save everything */
-        saveAll();
-      }
+    <!-- DONE -->
+    <div class="step" id="stepDone">
+      <div class="step-eyebrow">You're live</div>
+      <h1 class="step-title">Your page<br>is ready.</h1>
+      <p class="step-sub">One link. Everything fans need. Drop it everywhere.</p>
+
+      <div class="done-link">
+        <div class="done-url" id="doneUrl">able.fm/artist</div>
+        <button class="done-copy" id="doneCopy" onclick="copyLink()">Copy</button>
+      </div>
+
+      <div class="done-share">
+        <div class="done-share-lbl">Share it now</div>
+        <div class="done-share-row">
+          <button class="done-share-btn primary-share" onclick="copyLink()">
+            <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><rect x="1" y="4" width="9" height="9" rx="1.5"/><path d="M4 4V2.5A1.5 1.5 0 015.5 1h7A1.5 1.5 0 0114 2.5v7A1.5 1.5 0 0112.5 11H11" fill="currentColor"/></svg>
+            Copy link
+          </button>
+          <button class="done-share-btn" onclick="shareWhatsApp()">
+            <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><path d="M7 .5C3.4.5.5 3.4.5 7c0 1.2.3 2.3.9 3.3L.5 13.5l3.3-.9C4.8 13.2 5.9 13.5 7 13.5c3.6 0 6.5-2.9 6.5-6.5S10.6.5 7 .5zm3.2 9.1c-.1.4-.8.8-1.1.8-.3 0-.5.1-1.7-.4-1.4-.5-2.3-1.9-2.4-2-.1-.1-.7-1-.7-1.9s.5-1.3.7-1.5c.2-.2.4-.2.5-.2h.4c.1 0 .3 0 .4.3.1.3.5 1.2.5 1.3 0 .1 0 .2-.1.3-.1.1-.1.2-.2.3-.1.1-.2.2-.1.4.1.2.5.8 1 1.3.7.6 1.3.8 1.5.9.2.1.3 0 .4-.1l.6-.7c.1-.2.2-.2.4-.1.2.1 1.1.5 1.3.6.2.1.3.2.3.3 0 .2-.1.6-.2 1z"/></svg>
+            WhatsApp
+          </button>
+          <button class="done-share-btn" onclick="shareTwitter()">
+            <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><path d="M.5 1.5h3.6L7 6 10.5 1.5H14L9 7.8l5 4.7h-3.6L7 8 3.5 12.5H.5L6 6.2z"/></svg>
+            Post on X
+          </button>
+          <button class="done-share-btn" onclick="shareSMS()">
+            <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><path d="M1 1.5A1.5 1.5 0 012.5 0h9A1.5 1.5 0 0113 1.5v8A1.5 1.5 0 0111.5 11H4l-3 3V1.5z"/></svg>
+            Message
+          </button>
+        </div>
+      </div>
+
+      <button class="done-preview-toggle" onclick="setView('preview')">See your page →</button>
+
+      <div class="done-actions" style="margin-top:20px;">
+        <button class="done-open" onclick="openPage()">Open your page →</button>
+        <button class="done-dash" onclick="window.location.href='admin.html'">Dashboard</button>
+      </div>
+
+      <div class="done-next">
+        <div class="done-next-label">What's next</div>
+        <div class="done-next-item">Your music plays live from Spotify and YouTube — no redirects</div>
+        <div class="done-next-item">Add shows and merch — they live on the page, not behind a link</div>
+        <div class="done-next-item">Set up a pre-release campaign</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── PREVIEW SIDE ── -->
+  <div class="preview-side">
+    <div class="preview-label">Live preview</div>
+
+    <div class="preview-phone" id="previewPhone">
+      <div class="ph-inner" id="phInner">
+        <div class="ph-sb" id="phSb"><span>9:41</span><span>●●●</span></div>
+        <div class="ph-hero">
+          <div class="ph-art" id="phArt"></div>
+          <div class="ph-scrim" id="phScrim"></div>
+          <div class="ph-n" id="phName">YOUR NAME</div>
+        </div>
+        <div class="ph-body">
+          <div class="ph-meta">
+            <div class="ph-genre" id="phGenre">Genre · Location</div>
+            <div class="ph-bio" id="phBio">Your one-line bio.</div>
+          </div>
+          <div class="ph-ctas">
+            <div class="ph-p" id="phP">Stream Now</div>
+            <div class="ph-s" id="phS">Get Tickets</div>
+          </div>
+          <div class="ph-pills">
+            <div class="ph-pill" id="phPill1">Spotify</div>
+            <div class="ph-pill" id="phPill2">Apple Music</div>
+            <div class="ph-pill" id="phPill3">YouTube</div>
+          </div>
+          <div class="ph-sect" id="phSect">
+            <div class="ph-sh" id="phSh">Latest</div>
+            <div class="ph-tr">
+              <div class="ph-ta" id="phTa1"></div>
+              <div class="ph-ti"><div class="ph-tn">Golden Hour</div><div class="ph-ts">2.4M streams</div></div>
+              <div class="ph-pl" id="phPl1"><div class="ph-arr"></div></div>
+            </div>
+            <div class="ph-tr">
+              <div class="ph-ta" id="phTa2"></div>
+              <div class="ph-ti"><div class="ph-tn">Sundown</div><div class="ph-ts">1.1M streams</div></div>
+              <div class="ph-pl" id="phPl2"><div class="ph-arr"></div></div>
+            </div>
+          </div>
+          <div class="ph-tabs" id="phTabs">
+            <div class="ph-tab on" id="phTab0"><svg width="13" height="13" viewBox="0 0 12 12" fill="currentColor"><path d="M6 1L11 5.5h-1V11H7.5V8h-3v3H2V5.5H1z"/></svg><div>Home</div><div class="ph-dot" id="phDot0"></div></div>
+            <div class="ph-tab"><svg width="13" height="13" viewBox="0 0 12 12" fill="currentColor"><path d="M8.5 1v6.8C8 7.5 7.4 7.3 6.8 7.3c-1 0-1.8.6-1.8 1.3s.8 1.4 1.8 1.4S8.5 9.3 8.5 8.5V2.7L4 3.7v6.1C3.5 9.5 2.9 9.3 2.3 9.3c-1 0-1.8.6-1.8 1.3s.8 1.4 1.8 1.4S4 11.3 4 10.5V5L8.5 4V1z"/></svg><div>Music</div><div class="ph-dot"></div></div>
+            <div class="ph-tab"><svg width="13" height="13" viewBox="0 0 12 12" fill="currentColor"><rect x="1" y="3" width="10" height="8" rx="1.5"/><rect x="3.5" y="1" width="1.2" height="3.5" rx=".6"/><rect x="7.3" y="1" width="1.2" height="3.5" rx=".6"/><rect x="1" y="6" width="10" height="1" fill-opacity=".3"/></svg><div>Events</div><div class="ph-dot"></div></div>
+            <div class="ph-tab"><svg width="13" height="13" viewBox="0 0 12 12" fill="currentColor"><path d="M9.5 4H8.5C8.5 2.6 7.4 1.5 6 1.5S3.5 2.6 3.5 4H2.5C1.7 4 1 4.7 1 5.5v4C1 10.3 1.7 11 2.5 11h7c.8 0 1.5-.7 1.5-1.5v-4C11 4.7 10.3 4 9.5 4zm-5-0c0-.8.7-1.5 1.5-1.5s1.5.7 1.5 1.5z"/></svg><div>Merch</div><div class="ph-dot"></div></div>
+            <div class="ph-tab"><svg width="13" height="13" viewBox="0 0 12 12" fill="currentColor"><path d="M6 10.5L1.3 5.8C.4 4.9.4 3.4 1.3 2.5 2.2 1.6 3.7 1.6 4.6 2.5L6 3.9l1.4-1.4c.9-.9 2.4-.9 3.3 0 .9.9.9 2.4 0 3.3z"/></svg><div>Support</div><div class="ph-dot"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="preview-hint">Updates as you type</div>
+  </div>
+
+</div>
+
+<script>
+/* ── DATA ── */
+const VIBES = [
+  { id:'electronic', label:'Electronic',  grad:'linear-gradient(135deg,#06b6d4,#0a1a2e)', accent:'#06b6d4', font:'Barlow Condensed', fontUrl:null,              accents:['#06b6d4','#f4b942','#ffffff','#9b7cf4'] },
+  { id:'hiphop',     label:'Hip Hop',     grad:'linear-gradient(160deg,#f4b942,#c4782a)', accent:'#f4b942', font:'Oswald',           fontUrl:'Oswald:700',      accents:['#f4b942','#e05242','#ffffff','#c4782a'] },
+  { id:'rnb',        label:'R&B / Soul',  grad:'linear-gradient(135deg,#e06b7a,#7c2d42)', accent:'#e06b7a', font:'Cormorant Garamond',fontUrl:'Cormorant+Garamond:600italic,600', accents:['#e06b7a','#f4b942','#9b7cf4','#ffffff'] },
+  { id:'indie',      label:'Indie / Alt', grad:'linear-gradient(150deg,#7ec88a,#2a4a2e)', accent:'#7ec88a', font:'Space Grotesk',    fontUrl:'Space+Grotesk:700',accents:['#7ec88a','#e06b7a','#ffffff','#f4b942'] },
+  { id:'pop',        label:'Pop',         grad:'linear-gradient(135deg,#9b7cf4,#4a1a8a)', accent:'#9b7cf4', font:'Barlow Condensed', fontUrl:null,              accents:['#9b7cf4','#e06b7a','#06b6d4','#f4b942'] },
+  { id:'rock',       label:'Rock',        grad:'linear-gradient(160deg,#e05242,#1a0a0a)', accent:'#e05242', font:'Oswald',           fontUrl:'Oswald:700',      accents:['#e05242','#ffffff','#f4b942','#9b7cf4'] },
+  { id:'acoustic',   label:'Acoustic',    grad:'linear-gradient(135deg,#d4a96a,#5a3a1a)', accent:'#d4a96a', font:'Lora',             fontUrl:'Lora:700',        accents:['#d4a96a','#7ec88a','#e06b7a','#ffffff'] },
+  { id:'afrobeats',  label:'Afrobeats',   grad:'linear-gradient(135deg,#ff6b52,#8a1a00)', accent:'#ff6b52', font:'Barlow Condensed', fontUrl:null,              accents:['#ff6b52','#f4b942','#e06b7a','#7ec88a'] },
+];
+
+const PRESETS = [
+  { name:'Amber',  hex:'#f4b942' },
+  { name:'Ember',  hex:'#e05242' },
+  { name:'Rose',   hex:'#e06b7a' },
+  { name:'Sage',   hex:'#7ec88a' },
+  { name:'Indigo', hex:'#9b7cf4' },
+  { name:'Coral',  hex:'#ff6b52' },
+  { name:'Sky',    hex:'#4a7cf7' },
+  { name:'Clay',   hex:'#b8603a' },
+];
+
+const THEMES = [
+  { id:'dark',  name:'Dark',  desc:'Deep & immersive' },
+  { id:'light', name:'Light', desc:'Clean & open' },
+  { id:'mid',   name:'Mid',   desc:'Dark bg, white cards' },
+  { id:'glass', name:'Glass', desc:'Frosted & layered' },
+];
+
+const TS = {
+  dark:  { bg:'#07080f',  card:'rgba(255,255,255,.06)', text:'#f0ece4', t2:'rgba(240,236,228,.52)', tabBg:'rgba(5,6,12,.97)',    tabBdr:'rgba(255,255,255,.07)', scrimEnd:'#07080f',  stColor:'#f0ece4' },
+  light: { bg:'#f5f5f2',  card:'rgba(0,0,0,.045)',     text:'#1a1a18', t2:'rgba(26,26,24,.52)',    tabBg:'rgba(245,245,242,.97)',tabBdr:'rgba(26,26,24,.09)',    scrimEnd:'#f5f5f2',  stColor:'#1a1a18' },
+  mid:   { bg:'#07080f',  card:'#ffffff',              text:'#1a1a18', t2:'rgba(26,26,24,.52)',    tabBg:'rgba(5,6,12,.97)',    tabBdr:'rgba(255,255,255,.07)', scrimEnd:'#07080f',  stColor:'#ffffff' },
+  glass: { bg:'linear-gradient(155deg,#1a1230 0%,#0a1a28 55%,#1a1008 100%)', card:'rgba(255,255,255,.09)', text:'#ffffff', t2:'rgba(255,255,255,.55)', tabBg:'rgba(0,0,0,.42)', tabBdr:'rgba(255,255,255,.1)', scrimEnd:'rgba(8,12,20,.75)', stColor:'#ffffff' },
+};
+
+const CTA_GROUPS = [
+  { id:'listen',     label:'Listen' },
+  { id:'connect',    label:'Connect' },
+  { id:'experience', label:'Experience' },
+  { id:'support',    label:'Support' },
+];
+
+const CTA_PRIMARY = [
+  /* listen */
+  { id:'stream',     group:'listen',     label:'Stream Now',    svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M2 1.5v11L13 7z"/></svg>`,       ph:'open.spotify.com/…',          hint:'Spotify, Apple Music, Tidal' },
+  { id:'presave',    group:'listen',     label:'Pre-save',      svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M7 .5 8.8 4.7l4.6.6-3.3 3.1.8 4.6L7 10.8l-3.9 2.2.8-4.6L.7 5.3l4.6-.6z"/></svg>`, ph:'distrokid.com/hyperfollow/…', hint:'Build hype before release' },
+  /* connect */
+  { id:'follow',     group:'connect',    label:'Follow Me',     svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><circle cx="5.5" cy="4" r="3"/><path d="M0 13c0-3 2.5-5.5 5.5-5.5S11 10 11 13z"/><rect x="11" y="7" width="1.5" height="5" rx=".75"/><rect x="9" y="9" width="5" height="1.5" rx=".75"/></svg>`, ph:'', hint:'Spotify, Instagram, TikTok…' },
+  { id:'newsletter', group:'connect',    label:'Join My List',  svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><rect x="1" y="3" width="12" height="8" rx="1.5"/><path d="M1 5l6 4 6-4" fill="none" stroke="#121a24" stroke-width="1.4" stroke-linecap="round"/></svg>`, ph:'', hint:'Email you own directly' },
+  /* experience */
+  { id:'tickets',    group:'experience', label:'Get Tickets',   svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M.5 5A2 2 0 010 9v2.5A1.5 1.5 0 001.5 13h11a1.5 1.5 0 001.5-1.5V9a2 2 0 000-4V2.5A1.5 1.5 0 0012.5 1h-11A1.5 1.5 0 000 2.5z"/></svg>`, ph:'ra.co/…',              hint:'Eventbrite, RA, Dice…' },
+  { id:'livestream', group:'experience', label:'Watch Live',    svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><circle cx="7" cy="8" r="2.5"/><path d="M4.2 5.2a4 4 0 015.6 0M1.8 2.8a7.4 7.4 0 0110.4 0" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`, ph:'youtube.com/…',       hint:'YouTube Live, Twitch' },
+  /* support */
+  { id:'shop',       group:'support',    label:'Shop Merch',    svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M11.5 5H10c0-1.7-1.3-3-3-3S4 3.3 4 5H2.5C1.7 5 1 5.7 1 6.5v5C1 12.3 1.7 13 2.5 13h9c.8 0 1.5-.7 1.5-1.5v-5C13 5.7 12.3 5 11.5 5zm-7 0c0-1.1.9-2 2-2s2 .9 2 2z"/></svg>`, ph:'yourshop.com/…',      hint:'Your merch store' },
+  { id:'support',    group:'support',    label:'Support Me',    svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M7 12.5 1.3 6.8C.3 5.8.3 4.1 1.3 3.1c1-1 2.7-1 3.7 0L7 5l2-1.9c1-1 2.7-1 3.7 0 1 1 1 2.7 0 3.7z"/></svg>`, ph:'ko-fi.com/…',          hint:'Ko-fi, Patreon, tip jar' },
+  /* more */
+  { id:'rsvp',       group:'more', label:'RSVP Free',     svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M7 0C3.1 0 0 3.1 0 7s3.1 7 7 7 7-3.1 7-7S10.9 0 7 0zM5.6 9.8 3 7.2l1-1 1.6 1.6 3.8-3.8 1 1z"/></svg>`, ph:'', hint:'Free event sign-up' },
+  { id:'video',      group:'more', label:'Watch Video',   svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><rect x=".5" y="2.5" width="9" height="9" rx="2"/><path d="M10 5.5 13.5 3v8L10 8.5z"/></svg>`, ph:'youtube.com/…', hint:'Music video, trailer' },
+  { id:'preorder',   group:'more', label:'Pre-order',     svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M7 .5.5 4v6L7 13.5l6.5-3.5V4z"/></svg>`, ph:'', hint:'Album or merch drop' },
+  { id:'book',       group:'more', label:'Book Me',       svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><rect x="1" y="3.5" width="12" height="9" rx="1.5"/><rect x="4" y="1" width="1.5" height="4" rx=".75"/><rect x="8.5" y="1" width="1.5" height="4" rx=".75"/><rect x="1" y="7" width="12" height="1.2" fill-opacity=".2"/></svg>`, ph:'calendly.com/…', hint:'Sessions, collabs…' },
+  { id:'download',   group:'more', label:'Free Download', svg:`<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M7 1.5v8M3.5 6.5 7 10l3.5-3.5M1.5 12.5h11"/></svg>`, ph:'', hint:'Track, EP, sample pack' },
+  { id:'crowdfund',  group:'more', label:'Fund Project',  svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M1 10.5h2v2H1zM4 8h2v4.5H4zM7 5.5h2v7H7zM10 3h2v9.5h-2z"/><path d="M2 8 5 6l3-2.5 3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`, ph:'kickstarter.com/…', hint:'Kickstarter, Indiegogo' },
+  { id:'custom',     group:'more', label:'Custom…',       svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M9.5 1.5 12 4l-7.5 7.5L1.5 10z"/><path d="M12.5 1.5l-1 1M1 12.5l1 .5.5-1" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`, ph:'', hint:'Your own label & link', custom:true },
+];
+
+const CTA_SECONDARY = [
+  { id:'s-tickets',    label:'Get Tickets',   ph:'ra.co/…',            needsUrl:true  },
+  { id:'s-shop',       label:'Shop Merch',    ph:'yourshop.com/…',     needsUrl:true  },
+  { id:'s-stream',     label:'Stream Now',    ph:'open.spotify.com/…', needsUrl:true  },
+  { id:'s-video',      label:'Watch Video',   ph:'youtube.com/…',      needsUrl:true  },
+  { id:'s-follow',     label:'Follow me',     ph:'',                   needsUrl:false },
+  { id:'s-rsvp',       label:'RSVP',          ph:'',                   needsUrl:false },
+  { id:'s-newsletter', label:'Join my list',  ph:'',                   needsUrl:false },
+  { id:'s-book',       label:'Book me',       ph:'calendly.com/…',     needsUrl:true  },
+  { id:'s-support',    label:'Support me',    ph:'ko-fi.com/…',        needsUrl:true  },
+  { id:'s-download',   label:'Free download', ph:'',                   needsUrl:false },
+  { id:'s-custom',     label:'Custom…',       ph:'',                   needsUrl:false, custom:true },
+  { id:'s-none',       label:'No secondary',  ph:'',                   needsUrl:false, none:true },
+];
+
+const P = {
+  name:'', genre:'Electronic', bio:'', spotify:'',
+  vibe:'electronic',
+  accent:'#f4b942', theme:'dark',
+  ctaId:'stream', ctaLabel:'Stream Now',
+  secId:'s-tickets', secLabel:'Get Tickets',
+};
+
+/* ── HELPERS ── */
+function h2r(hex) {
+  return [1,3,5].map(i => parseInt(hex.slice(i,i+2),16)).join(',');
+}
+function darken(hex, a=0.3) {
+  let [r,g,b] = [1,3,5].map(i => parseInt(hex.slice(i,i+2),16));
+  return '#'+[r,g,b].map(v => Math.round(v*(1-a)).toString(16).padStart(2,'0')).join('');
+}
+function slug(s) {
+  return (s||'artist').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+}
+
+/* ── STEP NAV ── */
+function goStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  const id = n === 'done' ? 'stepDone' : `step${n}`;
+  document.getElementById(id).classList.add('active');
+
+  const num = n === 'done' ? 5 : Number(n);
+  document.getElementById('progressFill').style.width = (num === 5 ? 100 : num*25) + '%';
+  document.getElementById('stepInd').textContent = n === 'done' ? 'All done' : `Step ${n} of 4`;
+
+  if (n === 'done') {
+    document.getElementById('doneUrl').textContent = `able.fm/${slug(P.name)}`;
+    localStorage.setItem('able_profile', JSON.stringify(P));
+    setTimeout(launchConfetti, 180);
+  }
+  // on mobile: always go back to form view when advancing
+  if (window.innerWidth <= 860) setView('form');
+  window.scrollTo(0,0);
+}
+
+/* ── VIBE PICKER ── */
+function applyVibe(v) {
+  P.vibe = v.id;
+  P.genre = v.label;
+  document.getElementById('iGenre').value = v.label;
+
+  // Load font if needed
+  if (v.fontUrl && !document.querySelector(`link[data-font="${v.id}"]`)) {
+    const lk = document.createElement('link');
+    lk.rel = 'stylesheet';
+    lk.href = `https://fonts.googleapis.com/css2?family=${v.fontUrl}&display=swap`;
+    lk.dataset.font = v.id;
+    document.head.appendChild(lk);
+  }
+
+  // Apply font to preview
+  const ph = document.getElementById('phInner');
+  if (ph) ph.style.setProperty('--ph-font-d', `'${v.font}', sans-serif`);
+
+  // Suggest accent from vibe if accent is still default
+  if (!P._accentCustomised) {
+    P.accent = v.accent;
+    const root = document.documentElement;
+    root.style.setProperty('--acc', v.accent);
+    root.style.setProperty('--acc-rgb', h2r(v.accent.replace('#','')));
+    // sync swatch selection
+    document.querySelectorAll('.c-swatch').forEach(s => {
+      s.classList.toggle('on', s.dataset.hex === v.accent);
     });
+  }
 
-    backBtn.addEventListener('click', function () {
-      if (current > 1) { current--; showStep(current); }
+  // Reorder colour presets to genre-appropriate
+  const wrap = document.getElementById('colourGrid');
+  if (wrap) {
+    const swatches = [...wrap.querySelectorAll('.c-swatch')];
+    v.accents.forEach(hex => {
+      const match = swatches.find(s => s.dataset.hex === hex);
+      if (match) wrap.prepend(match);
     });
+  }
 
-    /* ────────────────────────────────────────────────────────
-       Validation per step
-    ──────────────────────────────────────────────────────── */
-    function validateStep (n) {
-      if (n === 1) {
-        var name = document.getElementById('ob-name').value.trim();
-        if (!name) { notify('Please enter your artist name'); return false; }
-        return true;
-      }
-      if (n === 5) {
-        var pin = getPIN();
-        if (pin.length !== 4) { notify('Please enter a 4-digit PIN'); return false; }
-        return true;
-      }
-      return true;
-    }
+  updatePreview();
+}
 
-    /* ────────────────────────────────────────────────────────
-       Handle auto-fill from name
-    ──────────────────────────────────────────────────────── */
-    document.getElementById('ob-name').addEventListener('input', function () {
-      var handle = nameToHandle(this.value);
-      document.getElementById('ob-handle-input').value = handle;
-    });
-
-    document.getElementById('ob-handle-input').addEventListener('input', function () {
-      /* sanitise: lowercase, no spaces */
-      this.value = this.value.toLowerCase().replace(/[^a-z0-9_-]/g, '');
-    });
-
-    /* ────────────────────────────────────────────────────────
-       Quiz → theme preview
-    ──────────────────────────────────────────────────────── */
-    var THEME_GRADIENTS = {
-      warm:     'linear-gradient(135deg, #f6f5f2, #e8e4de)',
-      dark:     'linear-gradient(135deg, #1a1a1f, #7c3aed)',
-      minimal:  'linear-gradient(135deg, #f8f8f7, #374151)',
-      bold:     'linear-gradient(135deg, #fff8ee, #ea580c)',
-      night:    'linear-gradient(135deg, #0a0a12, #e11d48)',
-      electric: 'linear-gradient(135deg, #0d0d1a, #22c55e)'
+function initVibe() {
+  const wrap = document.getElementById('vibeGrid');
+  if (!wrap) return;
+  VIBES.forEach(v => {
+    const btn = document.createElement('button');
+    btn.className = 'vibe-card' + (v.id === P.vibe ? ' on' : '');
+    btn.innerHTML = `<div class="vc-swatch" style="background:${v.grad}"></div><div class="vc-label">${v.label}</div>`;
+    btn.onclick = () => {
+      document.querySelectorAll('.vibe-card').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      applyVibe(v);
     };
+    wrap.appendChild(btn);
+  });
+  // apply initial vibe
+  const initial = VIBES.find(v => v.id === P.vibe) || VIBES[0];
+  applyVibe(initial);
+}
 
-    function updateThemePreview () {
-      var genre = getRadioVal('q-genre');
-      var feel  = getRadioVal('q-feel');
-      var vibe  = getRadioVal('q-vibe');
+/* ── COLOUR PRESETS ── */
+function initColour() {
+  const wrap = document.getElementById('colourGrid');
+  PRESETS.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'c-swatch' + (p.hex === P.accent ? ' on' : '');
+    el.style.background = p.hex;
+    el.title = p.name;
+    el.dataset.hex = p.hex;
+    el.onclick = () => {
+      document.querySelectorAll('.c-swatch').forEach(s => s.classList.remove('on'));
+      el.classList.add('on');
+      setAccent(p.hex);
+    };
+    wrap.appendChild(el);
+  });
+  syncCustomSwatch();
+}
 
-      quizAnswers = { genre: genre, feel: feel, vibe: vibe };
+document.getElementById('ccPicker').addEventListener('input', e => {
+  document.querySelectorAll('.c-swatch').forEach(s => s.classList.remove('on'));
+  setAccent(e.target.value);
+});
 
-      if (!genre && !feel && !vibe) {
-        document.getElementById('theme-preview-wrap').style.display = 'none';
-        return;
+function syncCustomSwatch() {
+  document.getElementById('ccSwatch').style.background = P.accent;
+  document.getElementById('ccPicker').value = P.accent;
+}
+
+function setAccent(hex) {
+  P._accentCustomised = true;
+  P.accent = hex;
+  const rgb = h2r(hex);
+  const root = document.documentElement;
+  root.style.setProperty('--acc', hex);
+  root.style.setProperty('--acc-rgb', rgb);
+  root.style.setProperty('--acc-glow', `rgba(${rgb},.28)`);
+  syncCustomSwatch();
+  updatePreview();
+}
+
+/* ── THEME GRID ── */
+function initTheme() {
+  const wrap = document.getElementById('themeGrid');
+  THEMES.forEach(t => {
+    const el = document.createElement('div');
+    el.className = 'theme-opt' + (t.id === P.theme ? ' on' : '');
+    const pv = themePreviewHTML(t.id);
+    el.innerHTML = `<div class="theme-preview">${pv}</div><div class="theme-name">${t.name}</div><div class="theme-desc">${t.desc}</div>`;
+    el.onclick = () => {
+      document.querySelectorAll('.theme-opt').forEach(o => o.classList.remove('on'));
+      el.classList.add('on');
+      P.theme = t.id;
+      updatePreview();
+    };
+    wrap.appendChild(el);
+  });
+}
+
+function themePreviewHTML(id) {
+  const acc = P.accent;
+  const dk = darken(acc, .35);
+  if (id === 'dark')  return `<div style="height:100%;background:#07080f;border-radius:7px;overflow:hidden;"><div style="height:56%;background:linear-gradient(135deg,${acc},${dk});"></div><div style="height:6px;margin:4px 8px;background:rgba(255,255,255,.1);border-radius:3px;"></div><div style="height:5px;margin:2px 8px;background:rgba(255,255,255,.06);border-radius:3px;"></div></div>`;
+  if (id === 'light') return `<div style="height:100%;background:#f5f5f2;border-radius:7px;overflow:hidden;"><div style="height:56%;background:linear-gradient(135deg,${acc},${dk});"></div><div style="height:6px;margin:4px 8px;background:rgba(0,0,0,.07);border-radius:3px;"></div><div style="height:5px;margin:2px 8px;background:rgba(0,0,0,.05);border-radius:3px;"></div></div>`;
+  if (id === 'mid')   return `<div style="height:100%;background:#07080f;border-radius:7px;overflow:hidden;"><div style="height:56%;background:linear-gradient(135deg,${acc},${dk});"></div><div style="height:12px;margin:4px 8px;background:#fff;border-radius:3px;"></div></div>`;
+  if (id === 'glass') return `<div style="height:100%;background:linear-gradient(135deg,#1a1230,#0a1a28);border-radius:7px;overflow:hidden;"><div style="height:56%;background:linear-gradient(135deg,${acc},${dk});"></div><div style="height:6px;margin:4px 8px;background:rgba(255,255,255,.14);border-radius:3px;"></div></div>`;
+  return '';
+}
+
+/* ── CTA GRID ── */
+function makeCtaCard(c, extraClass) {
+  const el = document.createElement('button');
+  el.className = 'cta-gcard' + (extraClass ? ' '+extraClass : '') + (c.id === P.ctaId ? ' on' : '');
+  el.innerHTML = `<div class="cg-icon">${c.svg}</div><div class="cg-label">${c.label}</div><div class="cg-hint">${c.hint}</div>`;
+  el.onclick = () => {
+    document.querySelectorAll('.cta-gcard').forEach(b => b.classList.remove('on'));
+    el.classList.add('on');
+    P.ctaId = c.id;
+    P.ctaLabel = c.label;
+    const needsUrl = !!c.ph;
+    document.getElementById('ctaUrlWrap').style.display = needsUrl ? 'block' : 'none';
+    if (needsUrl) {
+      document.getElementById('ctaUrlLbl').textContent = `Link for "${c.label}"`;
+      document.getElementById('iCtaUrl').placeholder = c.ph;
+    }
+    document.getElementById('ctaPreviewBtn').textContent = c.label;
+    updatePreview();
+  };
+  return el;
+}
+
+function initCta() {
+  const wrap = document.getElementById('ctaGrid');
+
+  /* — 4 main groups — */
+  CTA_GROUPS.forEach(grp => {
+    const items = CTA_PRIMARY.filter(c => c.group === grp.id);
+    const section = document.createElement('div');
+    const hd = document.createElement('div');
+    hd.className = 'cta-grp-hd';
+    hd.textContent = grp.label;
+    const grid = document.createElement('div');
+    grid.className = 'cta-grp-grid';
+    items.forEach(c => grid.appendChild(makeCtaCard(c, '')));
+    section.appendChild(hd);
+    section.appendChild(grid);
+    wrap.appendChild(section);
+  });
+
+  /* — more options — */
+  const moreItems = CTA_PRIMARY.filter(c => c.group === 'more');
+  const moreBtn = document.createElement('button');
+  moreBtn.className = 'cta-more-btn';
+  moreBtn.innerHTML = `More options <span class="cm-chevron"><svg viewBox="0 0 10 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" width="10" height="7"><path d="M1 1l4 4 4-4"/></svg></span>`;
+  const moreArea = document.createElement('div');
+  moreArea.className = 'cta-more-area';
+  moreItems.forEach(c => moreArea.appendChild(makeCtaCard(c, 'cg-sm')));
+  moreBtn.onclick = () => {
+    moreBtn.classList.toggle('open');
+    moreArea.classList.toggle('open');
+  };
+  wrap.appendChild(moreBtn);
+  wrap.appendChild(moreArea);
+
+  /* — secondary pills — */
+  const secWrap = document.getElementById('ctaSecGrid');
+  CTA_SECONDARY.forEach(c => {
+    const el = document.createElement('button');
+    el.className = 'cta-sec-btn' + (c.id === P.secId ? ' on' : '') + (c.none ? ' is-none' : '');
+    el.textContent = c.label;
+    el.onclick = () => {
+      document.querySelectorAll('.cta-sec-btn').forEach(b => b.classList.remove('on'));
+      el.classList.add('on');
+      P.secId = c.id;
+      P.secLabel = c.none ? '' : (c.custom ? '' : c.label);
+      // secondary URL field
+      const secUrlWrap = document.getElementById('ctaSecUrlWrap');
+      secUrlWrap.style.display = (!c.none && c.needsUrl) ? 'block' : 'none';
+      if (!c.none && c.needsUrl) {
+        document.getElementById('ctaSecUrlLbl').textContent = `Link for "${c.label}"`;
+        document.getElementById('iCtaSecUrl').placeholder = c.ph || 'https://…';
       }
+      // custom label field
+      const secCustomWrap = document.getElementById('ctaSecCustomWrap');
+      secCustomWrap.style.display = c.custom ? 'block' : 'none';
+      updatePreview();
+    };
+    secWrap.appendChild(el);
+  });
+}
 
-      var theme = quizToTheme(quizAnswers);
-      document.getElementById('theme-preview-wrap').style.display = 'block';
-      document.getElementById('theme-preview').style.background = THEME_GRADIENTS[theme] || THEME_GRADIENTS.warm;
-      document.getElementById('theme-name').textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+/* ── UPDATE PREVIEW ── */
+function updatePreview() {
+  const ts = TS[P.theme];
+  const acc = P.accent;
+  const rgb = h2r(acc);
+  const dk = darken(acc, .38);
+
+  // phone bg
+  const inner = document.getElementById('phInner');
+  inner.style.background = P.theme === 'glass'
+    ? 'linear-gradient(155deg,#1a1230 0%,#0a1a28 55%,#1a1008 100%)'
+    : ts.bg;
+
+  // status bar
+  const sb = document.getElementById('phSb');
+  sb.style.color = ts.stColor;
+
+  // hero gradient (accent-driven)
+  document.getElementById('phArt').style.background = `linear-gradient(135deg, ${acc} 0%, ${dk} 100%)`;
+
+  // scrim
+  const scrimEnd = P.theme === 'glass' ? 'rgba(8,12,20,.75)' : ts.bg;
+  document.getElementById('phScrim').style.background = `linear-gradient(to bottom, transparent, ${scrimEnd})`;
+
+  // artist name
+  document.getElementById('phName').textContent = (P.name || 'Your Name').toUpperCase();
+
+  // genre & bio
+  const genEl = document.getElementById('phGenre');
+  genEl.style.color = ts.text;
+  genEl.textContent = P.genre || 'Genre · Location';
+
+  const bioEl = document.getElementById('phBio');
+  bioEl.style.color = ts.text;
+  bioEl.textContent = P.bio || 'Your one-line bio.';
+
+  // primary btn + step4 preview chip
+  const pBtn = document.getElementById('phP');
+  pBtn.style.background = acc;
+  pBtn.textContent = P.ctaLabel || 'Stream Now';
+  const previewChip = document.getElementById('ctaPreviewBtn');
+  if (previewChip) {
+    previewChip.style.background = acc;
+    previewChip.style.boxShadow = `0 4px 18px rgba(${rgb},.38)`;
+    previewChip.textContent = P.ctaLabel || 'Stream Now';
+  }
+
+  // secondary btn
+  const sBtn = document.getElementById('phS');
+  const secIsNone = P.secId === 's-none' || !P.secLabel;
+  sBtn.style.display = secIsNone ? 'none' : '';
+  if (!secIsNone) {
+    sBtn.textContent = P.secLabel;
+    if (P.theme === 'light' || P.theme === 'mid') {
+      sBtn.style.color = '#1a1a18';
+      sBtn.style.borderColor = 'rgba(26,26,24,.22)';
+    } else {
+      sBtn.style.color = ts.text;
+      sBtn.style.borderColor = 'rgba(255,255,255,.2)';
     }
+  }
 
-    document.querySelectorAll('[name^="q-"]').forEach(function (el) {
-      el.addEventListener('change', updateThemePreview);
+  // pills
+  [1,2,3].forEach(i => {
+    const pill = document.getElementById(`phPill${i}`);
+    pill.style.background = `rgba(${rgb},.13)`;
+    pill.style.color = acc;
+  });
+
+  // section card
+  const sect = document.getElementById('phSect');
+  sect.style.background = P.theme === 'light' ? 'rgba(0,0,0,.04)' : P.theme === 'mid' ? '#ffffff' : 'rgba(255,255,255,.05)';
+
+  // section title
+  document.getElementById('phSh').style.color = ts.text;
+
+  // track names (find all)
+  sect.querySelectorAll('.ph-tn').forEach(t => t.style.color = ts.text);
+
+  // track arts
+  document.getElementById('phTa1').style.background = `linear-gradient(135deg, ${acc}, ${darken(acc,.18)})`;
+  document.getElementById('phTa2').style.background = `linear-gradient(135deg, ${darken(acc,.18)}, ${dk})`;
+
+  // play buttons
+  document.getElementById('phPl1').style.background = acc;
+  document.getElementById('phPl2').style.background = acc;
+
+  // tab bar
+  const tabs = document.getElementById('phTabs');
+  tabs.style.background = ts.tabBg;
+  tabs.style.borderColor = ts.tabBdr;
+  tabs.querySelectorAll('.ph-tab').forEach(t => t.style.color = ts.text);
+  const tab0 = document.getElementById('phTab0');
+  tab0.style.color = acc;
+  document.getElementById('phDot0').style.background = acc;
+
+  // phone glow
+  document.getElementById('previewPhone').style.boxShadow = `0 40px 80px rgba(0,0,0,.6), 0 0 64px rgba(${rgb},.12)`;
+}
+
+/* ── LIVE INPUTS ── */
+document.getElementById('iName').addEventListener('input', e => { P.name = e.target.value; updatePreview(); });
+// iGenre is now a hidden input driven by vibe picker — no change listener needed
+document.getElementById('iBio').addEventListener('input', e => { P.bio = e.target.value; updatePreview(); });
+document.getElementById('iCtaSecCustom').addEventListener('input', e => { P.secLabel = e.target.value; updatePreview(); });
+
+/* ── DONE ── */
+function getPageUrl() {
+  return document.getElementById('doneUrl').textContent;
+}
+function copyLink() {
+  navigator.clipboard.writeText(getPageUrl()).then(() => {
+    document.querySelectorAll('.done-share-btn.primary-share, #doneCopy').forEach(b => {
+      const orig = b.textContent.trim();
+      b.textContent = '✓ Copied';
+      setTimeout(() => b.textContent = orig, 1500);
     });
+  });
+}
+function shareWhatsApp() {
+  const msg = `Check out my ABLE page: ${getPageUrl()}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+}
+function shareTwitter() {
+  const msg = `Check out my artist page: ${getPageUrl()}`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(msg)}`, '_blank');
+}
+function shareSMS() {
+  const msg = `Check out my artist page: ${getPageUrl()}`;
+  window.open(`sms:?body=${encodeURIComponent(msg)}`);
+}
+function openPage() { window.open('able-v3.html', '_blank'); }
 
-    function getRadioVal (name) {
-      var el = document.querySelector('[name="' + name + '"]:checked');
-      return el ? el.value : '';
-    }
-
-    /* ────────────────────────────────────────────────────────
-       PIN digits — auto-advance
-    ──────────────────────────────────────────────────────── */
-    [0, 1, 2, 3].forEach(function (i) {
-      var el = document.getElementById('pin-' + i);
-      el.addEventListener('input', function () {
-        this.value = this.value.replace(/\D/g, '').slice(-1);
-        if (this.value && i < 3) {
-          document.getElementById('pin-' + (i + 1)).focus();
-        }
-      });
-      el.addEventListener('keydown', function (e) {
-        if (e.key === 'Backspace' && !this.value && i > 0) {
-          document.getElementById('pin-' + (i - 1)).focus();
-        }
-      });
+/* ── CONFETTI ── */
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  const colors = [P.accent, '#ffffff', '#f4b942', '#e05242', '#9b7cf4', '#7ec88a'];
+  const pts = Array.from({length:70}, () => ({
+    x: Math.random() * canvas.width,
+    y: -12 - Math.random() * 60,
+    w: Math.random()*7+3, h: Math.random()*4+2,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    vx: (Math.random()-.5)*5, vy: Math.random()*3+1.5,
+    rot: Math.random()*360, rv: (Math.random()-.5)*10,
+    op: 1,
+  }));
+  let f = 0; const MAX = 110;
+  (function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pts.forEach(p => {
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.07; p.rot+=p.rv;
+      p.op = Math.max(0, 1 - f/MAX);
+      ctx.save(); ctx.globalAlpha=p.op;
+      ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
     });
+    if (++f < MAX) requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  })();
+}
 
-    function getPIN () {
-      return [0,1,2,3].map(function(i){ return document.getElementById('pin-'+i).value; }).join('');
-    }
+/* ── VIEW TOGGLE ── */
+function setView(v) {
+  document.getElementById('layout').dataset.view = v;
+  document.getElementById('vtForm').classList.toggle('on', v === 'form');
+  document.getElementById('vtPreview').classList.toggle('on', v === 'preview');
+  window.scrollTo(0,0);
+}
 
-    /* ────────────────────────────────────────────────────────
-       Save everything to localStorage
-    ──────────────────────────────────────────────────────── */
-    function saveAll () {
-      var d = ableGet();
-
-      /* Step 1 */
-      d.artist.name     = document.getElementById('ob-name').value.trim();
-      d.artist.handle   = document.getElementById('ob-handle-input').value.trim() || nameToHandle(d.artist.name);
-      d.artist.location = document.getElementById('ob-location').value.trim();
-      var genreRaw      = document.getElementById('ob-genres').value.trim();
-      d.artist.genres   = genreRaw ? genreRaw.split(',').map(function(g){return g.trim();}).filter(Boolean) : [];
-
-      /* Step 2 — mode */
-      var modeEl = document.querySelector('[name="ob-mode"]:checked');
-      d.currentMode = modeEl ? modeEl.value : 'live';
-
-      /* Step 3 — theme */
-      var theme = quizToTheme(quizAnswers);
-      d.appearance.theme = theme || 'warm';
-
-      /* Step 4 — platforms */
-      d.platforms.spotify    = document.getElementById('plat-spotify').value.trim();
-      d.platforms.apple      = document.getElementById('plat-apple').value.trim();
-      d.platforms.soundcloud = document.getElementById('plat-soundcloud').value.trim();
-      d.platforms.bandcamp   = document.getElementById('plat-bandcamp').value.trim();
-
-      /* Determine primary platform */
-      var order = ['spotify', 'apple', 'soundcloud', 'bandcamp'];
-      for (var i = 0; i < order.length; i++) {
-        if (d.platforms[order[i]]) { d.platforms.primary = order[i]; break; }
-      }
-
-      /* Step 4 — social */
-      d.social.instagram = document.getElementById('soc-instagram').value.trim();
-      d.social.tiktok    = document.getElementById('soc-tiktok').value.trim();
-      d.social.twitter   = document.getElementById('soc-twitter').value.trim();
-
-      /* Step 5 — PIN */
-      d.settings.editPin = getPIN();
-
-      /* Inner circle on by default */
-      d.innerCircle.enabled = true;
-      d.innerCircle.title   = 'Join the Inner Circle';
-      d.innerCircle.desc    = 'First access to new music and shows. Direct from ' + d.artist.name + '.';
-      d.innerCircle.perks   = ['Early access to new music', 'Show presales', 'Exclusive updates'];
-
-      ableSave(d);
-      notify('Page saved!');
-
-      /* Show done screen */
-      showStep('done');
-    }
-
-    /* ────────────────────────────────────────────────────────
-       Init
-    ──────────────────────────────────────────────────────── */
-    showStep(1);
-
-  }());
-  </script>
+/* ── INIT ── */
+initVibe();
+initColour();
+initTheme();
+initCta();
+updatePreview();
+</script>
 </body>
 </html>
