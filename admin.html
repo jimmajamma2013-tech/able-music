@@ -2217,6 +2217,10 @@ function renderAdminMusic() {
           <input class="field-input" type="url" value="${escHtml(rel.platformUrl||'')}" oninput="updateReleaseField('${rel.id}','platformUrl',this.value)" placeholder="open.spotify.com/album/… or youtu.be/…">
           <div class="embed-preview" id="embed-prev-${rel.id}" style="display:none;"></div>
         </div>
+        <div class="field-row">
+          <div class="field-label">Artwork URL <span style="font-weight:400;color:var(--t3);">(optional — shown on release card if no embed)</span></div>
+          <input class="field-input" type="url" value="${escHtml(rel.artworkUrl||'')}" oninput="updateReleaseField('${rel.id}','artworkUrl',this.value)" placeholder="https://…/artwork.jpg">
+        </div>
         <div class="field-label" style="margin-bottom:6px;">Tracklist <span style="font-weight:400;color:var(--t3);">(${(rel.tracks||[]).length} tracks)</span></div>
         <div id="tracks-${rel.id}">
           ${(rel.tracks||[]).map((t,ti)=>`
@@ -2250,7 +2254,7 @@ function renderAdminMusic() {
 function addRelease() {
   const data = safeLS(V3_KEY, {});
   const releases = data.releases || [];
-  releases.unshift({ id: 'r'+Date.now(), title: 'New Release', type: 'Single', year: String(new Date().getFullYear()), displayMode: 'both', platformUrl: '', tracks: [], credits: [] });
+  releases.unshift({ id: 'r'+Date.now(), title: 'New Release', type: 'Single', year: String(new Date().getFullYear()), displayMode: 'both', platformUrl: '', artworkUrl: '', tracks: [], credits: [] });
   setLS(V3_KEY, { ...data, releases });
   syncProfile({ ...data, releases });
   renderAdminMusic();
