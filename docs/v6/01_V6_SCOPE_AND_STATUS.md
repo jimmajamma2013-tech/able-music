@@ -49,7 +49,7 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 
 ## Current build status
 
-**Last updated: 2026-03-14 — Checkpoint 8 complete.**
+**Last updated: 2026-03-14 — Checkpoint 8 complete. Specs: Moment Engine, Live Moments, Showcase Interaction Layer added.**
 
 | Component | Status |
 |---|---|
@@ -72,7 +72,10 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 | **Artist World Map** — admin "Your World" | Complete — `ywInit`, `ywRenderMomentList` in `admin.html` |
 | **Artist World Map** — landing demo state | Complete — `dp-wm` state in `landing.html` |
 | Professional ecosystem spec | Spec complete (`df492b6`) — implementation Phase 2 |
-| Showcase / Campaign Mode spec | Spec in progress — implementation Phase 2 |
+| Showcase / Campaign Mode spec | Spec complete (`72f5d0d`) — implementation Phase 2 |
+| Showcase interaction layer spec | Spec complete — companion to showcase spec |
+| Live Moments / Streaming Moments spec | Spec complete (`8c18580`, `1def3b3`) — implementation Phase 2 |
+| Moment Engine unified spec | Spec complete (`b562ecb`) — canonical Moment object defined |
 | Supabase migration path | Planned — localStorage keys map 1:1 to table rows |
 | Snap cards CRUD (admin) | Deferred to Phase 2 |
 | Supabase auth + read path | Deferred to Phase 2 |
