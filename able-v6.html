@@ -4351,11 +4351,31 @@
       const container = document.getElementById('scroll-container')
       if (!container) return
 
+      // Section → tab mapping for tab-bar sync
+      const SECTION_TAB = {
+        'listen-section':  'tab-music',
+        'shows-section':   'tab-shows',
+        'merch-section':   'tab-merch',
+        'support-section': 'tab-support',
+      }
+
       // Force-hide sections marked invisible — never force-show (renderers control that)
+      // Also hide the corresponding tab when a section is invisible
       DEFAULT_SECTION_ORDER.forEach(id => {
         const el = document.getElementById(id)
         if (!el) return
-        if (vis[id] === false) el.hidden = true
+        if (vis[id] === false) {
+          el.hidden = true
+          const tabEl = document.getElementById(SECTION_TAB[id])
+          if (tabEl) tabEl.hidden = true
+        }
+      })
+
+      // Also hide tab for any section that ended up hidden (no content or vis=false)
+      Object.entries(SECTION_TAB).forEach(([sectionId, tabId]) => {
+        const section = document.getElementById(sectionId)
+        const tab = document.getElementById(tabId)
+        if (tab && section) tab.hidden = !!section.hidden
       })
 
       // Re-order: use credits-section as fixed anchor — orderable sections go before it
