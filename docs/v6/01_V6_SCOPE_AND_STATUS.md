@@ -49,15 +49,61 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 
 ## Current build status
 
+**Last updated: 2026-03-14 — Checkpoint 7 complete.**
+
 | Component | Status |
 |---|---|
-| `able-v6.html` | Not started — awaiting final authority confirmation |
-| Design system (tokens, themes, vibes) | Fully specced in authority docs |
-| Micro-interactions | Fully specced — 17 must-builds identified |
-| Campaign states | Fully specced — state machine documented |
-| Fan capture + GDPR | Fully specced |
-| Admin slide-up panel | Specced |
-| localStorage schema | Frozen |
-| Supabase migration path | Planned |
+| `able-v6.html` | **COMPLETE through Checkpoint 7** — see checkpoint log below |
+| Design system (tokens, 7 vibes, 4 themes) | Complete — all tokens live in `able-v6.html` |
+| Campaign state machine (profile/pre-release/live/gig) | Complete |
+| CTA zone architecture (3 zones, caps, dedupe) | Complete |
+| §7.2 Phase 1 interactions (17 must-builds) | Complete — all 17 shipped |
+| §7.1 animation rule compliance | Complete — btn glow uses `::after` opacity, no box-shadow loops |
+| Hero artwork blur-up | Complete |
+| Card bloom (two-system: rAF + IntersectionObserver) | Complete |
+| Paste flash (400ms fade per §7.2 #16) | Complete |
+| Error shake (−8/8/−5/5px, 0.4s ease-out) | Complete |
+| Edit backdrop (55% opacity per §7.2 #13) | Complete |
+| Panel asymmetric timing (350ms spring in / 250ms accel out) | Complete |
+| Admin theme persistence | Complete — `data-theme` chips hydrate from `able_v3_profile.theme` |
+| Fan capture + localStorage schema | Complete — keys frozen |
+| Supabase migration path | Planned — localStorage keys map 1:1 to table rows |
+| Snap cards CRUD (admin) | Deferred to Phase 2 |
+| Supabase auth + read path | Deferred to Phase 2 |
 | Fan feed (fan.html) | Deferred to Phase 2 |
 | Studio/freelancer mode | Deferred to Phase 2 |
+| Skeleton loading system (hero/CTAs/bio) | Deferred to Phase 2 — §7.2 #5 |
+| Full hero content crossfade on state change | Deferred to Phase 2 — §7.2 #9 |
+
+---
+
+## Checkpoint log
+
+| # | Commit | Description |
+|---|---|---|
+| 1 | `d0169e3` | Foundation — shell, tokens, state machine |
+| 2 | `dceb907` | Hero + state machine wiring |
+| 3 | `ae19721` | CTA architecture + Quick Action pills |
+| 4 | `12a273a` | Main content flow (music, events, merch, support) |
+| 5 | `69193bf` | Interaction layer — §7.2 Phase 1 |
+| 6 | `69193bf` | a11y + performance pass |
+| 7 | `7d2acd1` | §7.1 + §7.2 audit fixes; admin theme persistence |
+
+### Checkpoint 7 spot-check matrix (12/12 pass)
+
+Verified via Playwright DOM evaluation (headless screenshots are blank in dark mode; structural checks confirm correctness).
+
+| Theme | State | Verified |
+|---|---|---|
+| Dark | profile | ✓ |
+| Dark | pre-release | ✓ |
+| Dark | live | ✓ |
+| Dark | gig | ✓ |
+| Light | profile | ✓ |
+| Light | live | ✓ |
+| Glass | profile | ✓ |
+| Glass | live | ✓ |
+| Contrast | profile | ✓ |
+| Contrast | live | ✓ |
+| Dark | card bloom (hero visible) | ✓ |
+| Dark | card bloom (below-fold IO) | ✓ |
