@@ -6073,14 +6073,15 @@
         const card = document.createElement('article')
 
         const type = rel.type || 'Single'
-        const year = rel.releaseDate ? new Date(rel.releaseDate).getFullYear() : ''
+        const year = rel.year || (rel.releaseDate ? new Date(rel.releaseDate).getFullYear() : '')
         const tracks = rel.tracks || []
-        const embedUrl = rel.embedUrl || buildEmbedUrl(rel.streamUrl)
-        const embedHeight = getEmbedHeight(rel.streamUrl || rel.embedUrl)
+        // Admin saves platformUrl; renderer historically used streamUrl — accept both
+        const streamUrl = rel.streamUrl || rel.platformUrl || ''
+        const embedUrl = rel.embedUrl || buildEmbedUrl(streamUrl)
+        const embedHeight = getEmbedHeight(streamUrl || rel.embedUrl)
         const artworkSrc = rel.artworkUrl || ''
 
         // Platform detection
-        const streamUrl = rel.streamUrl || ''
         const isSpotify = streamUrl.includes('spotify')
         const ytIdMatch = streamUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]+)/)
         const youtubeId = ytIdMatch ? ytIdMatch[1] : null
