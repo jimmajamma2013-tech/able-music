@@ -2017,7 +2017,11 @@
                   transform var(--dur-fast) var(--ease-spring);
     }
 
-    .support-pack:hover { border-color: var(--color-accent); }
+    .support-pack:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(var(--color-accent-rgb), 0.12);
+    }
 
     .support-pack__emoji {
       font-size: 16px;
@@ -2589,14 +2593,20 @@
     }
 
     /* #10 — Live pulsing dot (gig state chip) */
-    .state-chip--gig::before {
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(1.4); }
+    }
+
+    .hero__state-chip--gig::before {
       content: '';
       display: inline-block;
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: currentColor;
+      background: rgba(255,255,255,0.85);
       margin-right: 5px;
+      flex-shrink: 0;
       animation: pulse-dot 2s ease-in-out infinite;
     }
 
@@ -3726,11 +3736,9 @@
 
     // === STATE CHIP ==============================================
 
-    function applyStateChip(state) {
+    function applyStateChip(state, animate) {
       const chip = document.getElementById('hero-state-chip')
       const label = document.getElementById('hero-state-label')
-
-      chip.className = 'hero__state-chip'
 
       const config = {
         'pre-release': { cls: 'hero__state-chip--pre',  text: 'Coming soon' },
@@ -3739,12 +3747,26 @@
         'profile':     { cls: 'hero__state-chip--profile', text: ''         },
       }[state] || { cls: 'hero__state-chip--profile', text: '' }
 
-      chip.classList.add(config.cls)
-      label.textContent = config.text
+      function applyConfig() {
+        chip.className = 'hero__state-chip'
+        chip.classList.add(config.cls)
+        label.textContent = config.text
+        if (state !== 'profile') {
+          requestAnimationFrame(() => chip.classList.add('visible'))
+        }
+      }
 
-      // Show chip if not profile state
-      if (state !== 'profile') {
-        requestAnimationFrame(() => chip.classList.add('visible'))
+      // Crossfade when transitioning (§7.2 #9): fade out → swap → fade in
+      if (animate && chip.classList.contains('visible')) {
+        chip.style.transition = 'opacity 150ms ease'
+        chip.style.opacity = '0'
+        setTimeout(() => {
+          applyConfig()
+          chip.style.opacity = ''
+          chip.style.transition = ''
+        }, 160)
+      } else {
+        applyConfig()
       }
     }
 
