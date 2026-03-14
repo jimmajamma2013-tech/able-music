@@ -1880,9 +1880,24 @@
       if (!sb) return;
       try {
         await sb.from('profiles').upsert({
-          id: getArtistId(),
-          data,
-          updated_at: new Date().toISOString()
+          id:             getArtistId(),
+          name:           data.name           || null,
+          handle:         data.handle         || null,
+          bio:            data.bio            || null,
+          location:       data.location       || null,
+          accent:         data.accent         || '#e05242',
+          theme:          data.theme          || 'dark',
+          vibe:           data.vibe           || 'indie',
+          hero_tag:       data.heroTag        || null,
+          page_state:     data.pageState      || 'profile',
+          state_override: data.stateOverride  || null,
+          release_date:   data.releaseDate    || null,
+          release_json:   data.release        ? JSON.stringify(data.release)      : null,
+          cta_primary:    data.ctaPrimary     ? JSON.stringify(data.ctaPrimary)   : null,
+          cta_secondary:  data.ctaSecondary   ? JSON.stringify(data.ctaSecondary) : null,
+          top_card:       data.topCard        ? JSON.stringify(data.topCard)      : null,
+          platforms:      data.platforms      ? JSON.stringify(data.platforms)    : null,
+          updated_at:     Date.now(),
         }, { onConflict: 'id' });
       } catch(e) { /* offline — localStorage is the fallback */ }
     }
@@ -1890,19 +1905,27 @@
     async function syncFanSignup(email, source) {
       if (!sb) return;
       try {
-        await sb.from('fans').insert({
-          artist_id: getArtistId(), email, source,
-          created_at: new Date().toISOString()
-        });
+        await sb.from('fans').upsert({
+          id:         crypto.randomUUID(),
+          profile_id: getArtistId(),
+          email,
+          source,
+          ts:         Date.now(),
+          created_at: Date.now(),
+        }, { onConflict: 'profile_id,email', ignoreDuplicates: true });
       } catch(e) {}
     }
 
-    async function syncEvent(type, label, source) {
+    async function syncClick(label, type, source) {
       if (!sb) return;
       try {
-        await sb.from('events').insert({
-          artist_id: getArtistId(), type, label, source,
-          ts: new Date().toISOString()
+        await sb.from('clicks').insert({
+          id:         crypto.randomUUID(),
+          profile_id: getArtistId(),
+          label,
+          type,
+          source,
+          ts:         Date.now(),
         });
       } catch(e) {}
     }
@@ -2812,7 +2835,7 @@
         if (log.length > 200) log.length = 200;
         localStorage.setItem('able_clicks', JSON.stringify(log));
       } catch(e) {}
-      syncEvent('click', label, source); // async to Supabase
+      syncClick(label, type, source); // async to Supabase
     }
 
     // Wire click tracking to CTAs

@@ -3904,6 +3904,7 @@
 
   </div><!-- /#app-shell -->
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script>
     'use strict';
 
@@ -4421,7 +4422,8 @@
         })
       }
 
-      ;(profile.shows || []).forEach(show => {
+      // Admin saves shows to profile.events — auto-generate world map moments from them
+      ;(profile.events || []).forEach(show => {
         if (!manual.some(m => m.linkedId === show.id)) {
           manual.push({
             id: 'auto_show_' + show.id,
@@ -5685,6 +5687,72 @@
       })
     }
 
+    // === SUPABASE ================================================
+
+    const SB_URL = 'https://jgspraqrnjrerzhnnhtb.supabase.co'
+    const SB_KEY = 'sb_publishable_pRmYph3-GYIeZEeKyY1_sg_5sOPkQp_'
+    const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null
+
+    function getArtistId() {
+      let id = localStorage.getItem('able_artist_id')
+      if (!id) { id = crypto.randomUUID(); localStorage.setItem('able_artist_id', id) }
+      return id
+    }
+
+    async function sbSyncProfile(data) {
+      if (!sb) return
+      try {
+        await sb.from('profiles').upsert({
+          id:             getArtistId(),
+          name:           data.name           || null,
+          handle:         data.handle         || null,
+          bio:            data.bio            || null,
+          location:       data.location       || null,
+          accent:         data.accent         || '#e05242',
+          theme:          data.theme          || 'dark',
+          vibe:           data.vibe           || 'indie',
+          hero_tag:       data.heroTag        || null,
+          page_state:     data.pageState      || 'profile',
+          state_override: data.stateOverride  || null,
+          release_date:   data.releaseDate    || null,
+          release_json:   data.release        ? JSON.stringify(data.release)      : null,
+          cta_primary:    data.ctaPrimary     ? JSON.stringify(data.ctaPrimary)   : null,
+          cta_secondary:  data.ctaSecondary   ? JSON.stringify(data.ctaSecondary) : null,
+          top_card:       data.topCard        ? JSON.stringify(data.topCard)      : null,
+          platforms:      data.platforms      ? JSON.stringify(data.platforms)    : null,
+          updated_at:     Date.now(),
+        }, { onConflict: 'id' })
+      } catch (_) { /* offline — localStorage is the fallback */ }
+    }
+
+    async function sbSyncFanSignup(email, source) {
+      if (!sb) return
+      try {
+        await sb.from('fans').upsert({
+          id:         crypto.randomUUID(),
+          profile_id: getArtistId(),
+          email,
+          source,
+          ts:         Date.now(),
+          created_at: Date.now(),
+        }, { onConflict: 'profile_id,email', ignoreDuplicates: true })
+      } catch (_) {}
+    }
+
+    async function sbSyncClick(label, type, source) {
+      if (!sb) return
+      try {
+        await sb.from('clicks').insert({
+          id:         crypto.randomUUID(),
+          profile_id: getArtistId(),
+          label,
+          type,
+          source,
+          ts:         Date.now(),
+        })
+      } catch (_) {}
+    }
+
     // === CLICK TRACKING ==========================================
 
     function trackClick(label, type, source) {
@@ -5701,6 +5769,7 @@
         if (clicks.length > 200) clicks.splice(0, clicks.length - 200)
         localStorage.setItem('able_clicks', JSON.stringify(clicks))
       } catch (_) {}
+      sbSyncClick(label, type, source || getUtmSource()) // async fire-and-forget
     }
 
     // === VIEW TRACKING ===========================================
@@ -5833,20 +5902,23 @@
           }
 
           // Write to localStorage (double_opted_in: false — confirmed via email later)
+          const signupSource = getUtmSource()
           try {
             const fans = safeLS('able_fans', [])
             fans.push({
               id: crypto.randomUUID(),
               email,
               ts: Date.now(),
-              source: getUtmSource(),
+              source: signupSource,
               double_opted_in: false
             })
             localStorage.setItem('able_fans', JSON.stringify(fans))
             sessionStorage.setItem('able_this_fan_email', email)
           } catch (_) {}
 
-          // Simulate async (real: Supabase call in Phase 2)
+          // Sync to Supabase (fire-and-forget — localStorage is the fallback)
+          sbSyncFanSignup(email, signupSource)
+
           setTimeout(() => {
             // Switch to checkmark
             if (submitBtn) {
@@ -5914,18 +5986,20 @@
             }
             return
           }
+          const signup2Source = getUtmSource()
           try {
             const fans = safeLS('able_fans', [])
             fans.push({
               id: crypto.randomUUID(),
               email,
               ts: Date.now(),
-              source: getUtmSource(),
+              source: signup2Source,
               double_opted_in: false
             })
             localStorage.setItem('able_fans', JSON.stringify(fans))
             sessionStorage.setItem('able_this_fan_email', email)
           } catch (_) {}
+          sbSyncFanSignup(email, signup2Source) // async fire-and-forget
           form2.hidden = true
           // Show brief confirmation
           const confirmP = document.createElement('p')
@@ -6337,10 +6411,11 @@
       const items = merch.items || []
       if (!items.length) return
 
-      // Show "Shop all" link if storeUrl provided
+      // Show "Shop all" link if shopUrl provided (admin saves as shopUrl)
       const shopLink = document.getElementById('merch-shop-link')
-      if (shopLink && merch.storeUrl) {
-        shopLink.href = isSafeUrl(merch.storeUrl) ? merch.storeUrl : '#'
+      const shopUrl = merch.shopUrl || merch.storeUrl
+      if (shopLink && shopUrl) {
+        shopLink.href = isSafeUrl(shopUrl) ? shopUrl : '#'
         shopLink.hidden = false
       }
 
@@ -7180,6 +7255,7 @@
             stored.ctaSecondary = (c1label || c1url) ? { label: c1label || 'Follow',     url: c1url || '#' } : stored.ctaSecondary
 
             localStorage.setItem('able_v3_profile', JSON.stringify(stored))
+            sbSyncProfile(stored) // async fire-and-forget to Supabase
           } catch (_) {}
 
           closePanel()
