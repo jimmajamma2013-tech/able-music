@@ -4298,6 +4298,61 @@
       return 'profile'
     }
 
+    // === SECTION ORDER SYSTEM =====================================
+    // STATE_PROMOTIONS: lower number = higher position.
+    // null = section stays visible but loses promotion.
+    const STATE_PROMOTIONS = {
+      'profile':     {},
+      'pre-release': { 'listen-section': 6, 'world-map-section': 4 },
+      'live':        { 'listen-section': 2, 'shows-section': 4, 'merch-section': 5 },
+      'gig':         { 'shows-section': 2, 'listen-section': 6 },
+      'near-future': { 'world-map-section': 2 }
+    }
+
+    const DEFAULT_SECTION_ORDER = [
+      'listen-section', 'shows-section', 'world-map-section',
+      'snap-cards-section', 'merch-section', 'support-section', 'recs-section'
+    ]
+
+    function computeSectionOrder(profile) {
+      const state = computeState(profile)
+      const base = profile.sectionOrder || DEFAULT_SECTION_ORDER
+      const vis  = profile.sectionVisibility || {}
+      const promos = STATE_PROMOTIONS[state] || {}
+
+      return base
+        .filter(id => vis[id] !== false)
+        .sort((a, b) => {
+          const pa = promos[a] !== undefined ? promos[a] : (base.indexOf(a) + 10)
+          const pb = promos[b] !== undefined ? promos[b] : (base.indexOf(b) + 10)
+          return pa - pb
+        })
+    }
+
+    function applySectionOrder(profile) {
+      const order = computeSectionOrder(profile)
+      const vis   = profile.sectionVisibility || {}
+      const container = document.getElementById('scroll-container')
+      if (!container) return
+
+      // Hidden sections
+      DEFAULT_SECTION_ORDER.forEach(id => {
+        const el = document.getElementById(id)
+        if (!el) return
+        el.hidden = vis[id] === false
+      })
+
+      // Re-order: use credits-section as fixed anchor — orderable sections go before it
+      const anchor = document.getElementById('credits-section')
+      if (!anchor) return
+
+      order.forEach(id => {
+        const el = document.getElementById(id)
+        if (!el || el.hidden) return
+        container.insertBefore(el, anchor)
+      })
+    }
+
     // === WORLD MAP ===============================================
 
     const WM_TYPE_COLOR = {
@@ -6771,15 +6826,8 @@
       renderListenSection(profile)
       renderShowsSection(profile)
 
-      // §6.1: Shows before Listen in gig state
-      const state = computeState(profile)
-      if (state === 'gig') {
-        const listenEl = document.getElementById('listen-section')
-        const showsEl  = document.getElementById('shows-section')
-        if (listenEl && showsEl && listenEl.previousElementSibling !== showsEl) {
-          listenEl.parentNode.insertBefore(showsEl, listenEl)
-        }
-      }
+      // Dynamic section ordering — state-driven + artist preference
+      applySectionOrder(profile)
       renderSnapCards(profile)
       renderMerchSection(profile)
       renderSupportSection(profile)
