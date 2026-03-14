@@ -307,6 +307,85 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   box-shadow:0 4px 20px rgba(var(--acc-rgb),.32); letter-spacing:.01em;
 }
 .btn-next:hover { transform:translateY(-2px); box-shadow:0 7px 28px rgba(var(--acc-rgb),.42); }
+.btn-skip {
+  padding:12px 20px; border-radius:100px; font-size:13px; font-weight:500;
+  border:1.5px solid var(--border); color:var(--t2);
+  cursor:pointer; transition:all .18s; background:none; font-family:var(--font);
+}
+.btn-skip:hover { color:var(--text); border-color:var(--bm); }
+
+/* Auth step */
+.auth-options { display:flex; flex-direction:column; gap:10px; margin:20px 0 4px; }
+.auth-btn {
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  width:100%; padding:14px 20px; border-radius:12px;
+  font-family:var(--font); font-size:14px; font-weight:600;
+  cursor:pointer; border:none; transition:all .18s;
+}
+.auth-btn--google {
+  background:#fff; color:#1c1c1e;
+  box-shadow:0 1px 4px rgba(0,0,0,0.25);
+}
+.auth-btn--google:hover { background:#f2f2f2; }
+.auth-btn--apple {
+  background:#1c1c1e; color:#fff;
+  border:1.5px solid rgba(255,255,255,0.12);
+}
+.auth-btn--apple:hover { background:#2a2a2e; }
+.auth-divider {
+  display:flex; align-items:center; gap:12px;
+  font-size:11px; font-weight:600; color:var(--t3); letter-spacing:.08em;
+}
+.auth-divider::before,.auth-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+.auth-email-wrap { display:flex; flex-direction:column; gap:8px; }
+.auth-magic-sent { text-align:center; padding:20px; background:var(--card); border-radius:12px; border:1px solid var(--border); }
+.auth-skip {
+  display:block; width:100%; padding:12px; margin-top:4px;
+  font-family:var(--font); font-size:13px; font-weight:500; color:var(--t2);
+  background:none; border:none; cursor:pointer; text-align:center;
+  transition:color .18s;
+}
+.auth-skip:hover { color:var(--text); }
+
+/* Freelancer toggle */
+.freelancer-toggle {
+  display:flex; align-items:flex-start; gap:12px;
+  background:var(--card); border:1.5px solid var(--border);
+  border-radius:13px; padding:14px 16px; cursor:pointer;
+  margin-bottom:8px; transition:border-color .18s;
+}
+.freelancer-toggle:hover { border-color:var(--bm); }
+.freelancer-toggle input { display:none; }
+.freelancer-toggle__box {
+  width:22px; height:22px; flex-shrink:0; border-radius:6px;
+  background:var(--bg-mid); border:2px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  margin-top:1px; transition:all .16s;
+}
+.freelancer-toggle input:checked ~ .freelancer-toggle__box {
+  background:var(--acc); border-color:var(--acc);
+}
+.freelancer-toggle input:checked ~ .freelancer-toggle__box::after {
+  content:'✓'; color:#121a24; font-size:13px; font-weight:700;
+}
+.freelancer-toggle__text { flex:1; font-size:13px; font-weight:500; color:var(--text); }
+
+/* Music URL auto-fill */
+.step-autofill-badge {
+  position:absolute; right:12px; top:50%; transform:translateY(-50%);
+  font-size:10px; font-weight:700; letter-spacing:.04em;
+  color:var(--t2); padding:2px 8px; border-radius:999px;
+  background:rgba(255,255,255,0.06);
+}
+.step-autofill-preview {
+  display:flex; align-items:center; gap:12px;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:10px; padding:10px 12px; margin-top:8px;
+}
+.step-preview-art {
+  width:44px; height:44px; flex-shrink:0; border-radius:6px;
+  background:var(--bg-mid); background-size:cover; background-position:center;
+}
 
 /* Done screen */
 .done-link {
@@ -837,7 +916,127 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
       <div class="step-nav">
         <button class="btn-back" onclick="goStep(4)">← Back</button>
-        <button class="btn-next" onclick="tryStep5()">Create my page →</button>
+        <button class="btn-next" onclick="tryStep5()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 6 — MUSIC -->
+    <div class="step" id="step6">
+      <div class="step-eyebrow">Step 6 of 8 — optional</div>
+      <h1 class="step-title">Add your<br>music.</h1>
+      <p class="step-sub">Paste a Spotify, SoundCloud, or YouTube URL — your release shows up on your page with artwork and tracklist auto-filled. You can add more from your dashboard.</p>
+
+      <div class="step-field" id="musicUrlField">
+        <label class="step-label" for="iMusicUrl">Stream link</label>
+        <div style="position:relative;">
+          <input class="step-input" type="url" id="iMusicUrl"
+            placeholder="open.spotify.com/album/… or youtu.be/…"
+            oninput="onMusicUrlInput(this.value)"
+            autocomplete="off" spellcheck="false">
+          <div class="step-autofill-badge" id="musicBadge" hidden></div>
+        </div>
+        <div class="step-autofill-preview" id="musicPreview" hidden>
+          <div id="musicPreviewArt" class="step-preview-art"></div>
+          <div>
+            <div id="musicPreviewTitle" style="font-size:14px;font-weight:600;"></div>
+            <div id="musicPreviewSub" style="font-size:12px;color:var(--t2);margin-top:2px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-back" onclick="goStep(5)">← Back</button>
+        <button class="btn-skip" onclick="goStep(7)">Skip for now →</button>
+        <button class="btn-next" onclick="applyMusicStep();goStep(7)">Add it →</button>
+      </div>
+    </div>
+
+    <!-- STEP 7 — SHOW -->
+    <div class="step" id="step7">
+      <div class="step-eyebrow">Step 7 of 8 — optional</div>
+      <h1 class="step-title">Playing<br>anywhere soon?</h1>
+      <p class="step-sub">Add one show and a ticket link — it goes front and centre on your page. Your fans will see it the moment they land.</p>
+
+      <div class="step-field">
+        <label class="step-label" for="iShowVenue">Venue</label>
+        <input class="step-input" type="text" id="iShowVenue" placeholder="fabric / The Jazz Cafe / Berghain…" autocomplete="off">
+      </div>
+      <div class="step-field">
+        <label class="step-label" for="iShowCity">City</label>
+        <input class="step-input" type="text" id="iShowCity" placeholder="London, UK" autocomplete="off">
+      </div>
+      <div class="step-field">
+        <label class="step-label" for="iShowDate">Date</label>
+        <input class="step-input" type="date" id="iShowDate">
+      </div>
+      <div class="step-field">
+        <label class="step-label" for="iShowTickets">Ticket link <span style="font-weight:400;color:var(--t3);">(optional)</span></label>
+        <input class="step-input" type="url" id="iShowTickets" placeholder="https://dice.fm/… or ra.co/…" autocomplete="off">
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-back" onclick="goStep(6)">← Back</button>
+        <button class="btn-skip" onclick="goStep(8)">Skip for now →</button>
+        <button class="btn-next" onclick="applyShowStep();goStep(8)">Add it →</button>
+      </div>
+    </div>
+
+    <!-- STEP 8 — ACCOUNT -->
+    <div class="step" id="step8">
+      <div class="step-eyebrow">Step 8 of 8</div>
+      <h1 class="step-title">Save your<br>page.</h1>
+      <p class="step-sub">Your page is already live locally. Create a free account to make it permanent — and to access it from any device.</p>
+
+      <!-- Freelancer toggle -->
+      <label class="freelancer-toggle" id="freelancerToggle">
+        <input type="checkbox" id="iFreelancer" onchange="P.isFreelancer=this.checked">
+        <span class="freelancer-toggle__box"></span>
+        <div class="freelancer-toggle__text">
+          <span>I also offer services</span>
+          <span style="display:block;font-size:12px;color:var(--t2);margin-top:2px;">Production, mixing, mastering, photography, video — add a "Work with me" section</span>
+        </div>
+      </label>
+
+      <div class="auth-options">
+        <!-- Google OAuth — primary -->
+        <button class="auth-btn auth-btn--google" onclick="signInGoogle()" type="button">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+            <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/>
+            <path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+            <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+          </svg>
+          Continue with Google
+        </button>
+
+        <!-- Apple Sign In -->
+        <button class="auth-btn auth-btn--apple" onclick="signInApple()" type="button">
+          <svg width="16" height="18" viewBox="0 0 16 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13.27 9.57c-.02-2.1 1.72-3.12 1.8-3.16-1-1.43-2.53-1.63-3.07-1.65-1.3-.13-2.54.77-3.2.77-.67 0-1.69-.75-2.78-.73C4.56 4.83 3.1 5.76 2.3 7.17.7 9.97 1.9 14.1 3.44 16.35c.77 1.1 1.67 2.34 2.86 2.3 1.15-.05 1.58-.74 2.97-.74 1.38 0 1.77.74 2.98.71 1.24-.02 2.01-1.12 2.77-2.23.88-1.27 1.24-2.5 1.26-2.56-.03-.01-2.39-.91-2.41-3.27zM10.96 3.23c.61-.76 1.02-1.8.91-2.86-.88.04-1.97.59-2.6 1.33-.56.65-1.06 1.7-.92 2.7 1 .07 1.99-.5 2.61-1.17z"/>
+          </svg>
+          Continue with Apple
+        </button>
+
+        <div class="auth-divider"><span>or</span></div>
+
+        <!-- Email magic link -->
+        <div class="auth-email-wrap" id="authEmailWrap">
+          <input class="step-input" type="email" id="iAuthEmail"
+            placeholder="your@email.com"
+            onkeydown="if(event.key==='Enter')sendMagicLink()">
+          <button class="btn-next" style="margin-top:10px;width:100%;" onclick="sendMagicLink()">Send magic link →</button>
+        </div>
+        <div class="auth-magic-sent" id="authMagicSent" hidden>
+          <div style="font-size:32px;margin-bottom:8px;">✉️</div>
+          <p style="font-weight:600;margin-bottom:4px;">Check your email</p>
+          <p style="font-size:13px;color:var(--t2);">We sent a sign-in link to <strong id="authEmailSent"></strong>. Click it to save your page.</p>
+        </div>
+      </div>
+
+      <button class="auth-skip" onclick="goStep('done')">Skip — I'll save it later →</button>
+
+      <div class="step-nav" style="margin-top:0;">
+        <button class="btn-back" onclick="goStep(7)">← Back</button>
       </div>
     </div>
 
@@ -1108,7 +1307,123 @@ function tryStep5() {
     P.ctaSecUrl = rawSecUrl;
     secUrlInput.classList.remove('field-error');
   }
-  goStep('done');
+  goStep(6); // continue to content steps
+}
+
+// === STEP 6: MUSIC ==========================================
+let _musicFetchTimer = null
+let _musicMeta = null
+
+function onMusicUrlInput(val) {
+  clearTimeout(_musicFetchTimer)
+  _musicMeta = null
+  const badge = document.getElementById('musicBadge')
+  const preview = document.getElementById('musicPreview')
+  preview.hidden = true
+  if (!val || val.length < 12) { badge.hidden = true; return }
+  badge.hidden = false; badge.textContent = 'Fetching…'
+  _musicFetchTimer = setTimeout(() => fetchMusicMeta(val), 700)
+}
+
+async function fetchMusicMeta(rawUrl) {
+  const url = rawUrl.startsWith('http') ? rawUrl : 'https://' + rawUrl
+  let endpoint = null, ytId = null
+  if (/youtube\.com|youtu\.be/.test(url)) {
+    const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]+)/)
+    ytId = m?.[1]
+    endpoint = `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`
+  } else if (url.includes('spotify.com')) {
+    endpoint = `https://open.spotify.com/oembed?url=${encodeURIComponent(url)}&format=json`
+  } else if (url.includes('soundcloud.com')) {
+    endpoint = `https://soundcloud.com/oembed?url=${encodeURIComponent(url)}&format=json`
+  }
+  if (!endpoint) return
+  const badge = document.getElementById('musicBadge')
+  try {
+    const res = await fetch(endpoint, { mode: 'cors' })
+    if (!res.ok) throw new Error()
+    const meta = await res.json()
+    _musicMeta = {
+      title: (meta.title || '').replace(/\s*[\-–—]\s*(official|audio|video|music video|lyrics?|hd|4k).*/i, '').replace(/\s*\(official.*\)/i,'').trim(),
+      artwork: ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : (meta.thumbnail_url || ''),
+      author: meta.author_name || '',
+      url: rawUrl
+    }
+    badge.textContent = '✓ Found'
+    const preview = document.getElementById('musicPreview')
+    document.getElementById('musicPreviewTitle').textContent = _musicMeta.title
+    document.getElementById('musicPreviewSub').textContent = _musicMeta.author
+    if (_musicMeta.artwork) document.getElementById('musicPreviewArt').style.backgroundImage = `url(${_musicMeta.artwork})`
+    preview.hidden = false
+  } catch { badge.hidden = true }
+}
+
+function applyMusicStep() {
+  if (!_musicMeta) return
+  const existing = JSON.parse(localStorage.getItem('able_v3_profile') || '{}')
+  const releases = existing.releases || []
+  releases.unshift({
+    id: 'r' + Date.now(),
+    title: _musicMeta.title || 'New Release',
+    type: 'Single',
+    year: String(new Date().getFullYear()),
+    displayMode: 'both',
+    platformUrl: _musicMeta.url || '',
+    artworkUrl: _musicMeta.artwork || '',
+    tracks: [], credits: []
+  })
+  existing.releases = releases
+  localStorage.setItem('able_v3_profile', JSON.stringify(existing))
+}
+
+// === STEP 7: SHOW ==========================================
+function applyShowStep() {
+  const venue   = document.getElementById('iShowVenue')?.value.trim()
+  const city    = document.getElementById('iShowCity')?.value.trim()
+  const dateVal = document.getElementById('iShowDate')?.value
+  const tickets = document.getElementById('iShowTickets')?.value.trim()
+  if (!venue && !dateVal) return // nothing entered — skip silently
+  const existing = JSON.parse(localStorage.getItem('able_v3_profile') || '{}')
+  const events = existing.events || []
+  const [cityName, country] = (city || 'Unknown').split(',').map(s => s.trim())
+  events.unshift({
+    venue, city: cityName, country: country || '',
+    date: dateVal ? new Date(dateVal).toISOString() : new Date(Date.now() + 14*86400000).toISOString(),
+    time: '20:00',
+    ticketUrl: tickets || '',
+    soldOut: false
+  })
+  existing.events = events
+  localStorage.setItem('able_v3_profile', JSON.stringify(existing))
+}
+
+// === STEP 8: AUTH ===========================================
+async function signInGoogle() {
+  // Supabase OAuth — ready to wire when backend is live
+  // await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } })
+  showAuthPending('Google')
+}
+
+async function signInApple() {
+  // await supabase.auth.signInWithOAuth({ provider: 'apple', options: { redirectTo: window.location.href } })
+  showAuthPending('Apple')
+}
+
+async function sendMagicLink() {
+  const emailInput = document.getElementById('iAuthEmail')
+  const email = emailInput?.value.trim()
+  if (!email || !email.includes('@')) { emailInput?.focus(); return }
+  // await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href } })
+  document.getElementById('authEmailSent').textContent = email
+  document.getElementById('authEmailWrap').hidden = true
+  document.getElementById('authMagicSent').hidden = false
+  // After auth would complete: go to done
+  setTimeout(() => goStep('done'), 2000)
+}
+
+function showAuthPending(provider) {
+  // In production: OAuth redirect happens. For now, advance.
+  goStep('done')
 }
 
 function goStep(n) {
@@ -1116,9 +1431,10 @@ function goStep(n) {
   const id = n === 'done' ? 'stepDone' : `step${n}`;
   document.getElementById(id).classList.add('active');
 
-  const num = n === 'done' ? 6 : Number(n);
-  document.getElementById('progressFill').style.width = (num >= 6 ? 100 : (num/5)*100) + '%';
-  document.getElementById('stepInd').textContent = n === 'done' ? 'All done' : `Step ${n} of 5`;
+  const TOTAL = 8;
+  const num = n === 'done' ? TOTAL + 1 : Number(n);
+  document.getElementById('progressFill').style.width = (num > TOTAL ? 100 : (num/TOTAL)*100) + '%';
+  document.getElementById('stepInd').textContent = (n === 'done') ? 'All done' : (Number(n) >= 6 ? `Step ${n} of ${TOTAL} — optional` : `Step ${n} of ${TOTAL}`);
 
   if (n === 'done') {
     document.getElementById('doneUrl').textContent = `able.fm/${slug(P.name)}`;

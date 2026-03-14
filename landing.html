@@ -10,21 +10,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data:; connect-src 'self' https:;">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <title>ABLE — For independent artists</title>
-  <meta name="description" content="Your page. Your fans. Direct. Music, events, merch, and support — all in one place, without an algorithm in the way.">
+  <title>ABLE — Your fans. Direct.</title>
+  <meta name="description" content="A page that moves with your music. Pre-save before the drop, streaming on release day, tickets on show night. Own the relationship — no algorithm in the middle.">
   <link rel="canonical" href="https://able.fm/">
   <!-- Open Graph -->
   <meta property="og:type"        content="website">
   <meta property="og:site_name"   content="ABLE">
-  <meta property="og:title"       content="ABLE — For independent artists">
-  <meta property="og:description" content="Your page. Your fans. Direct. Music, events, merch, and support — all in one place, without an algorithm in the way.">
+  <meta property="og:title"       content="ABLE — Your fans. Direct.">
+  <meta property="og:description" content="A page that moves with your music. Pre-save before the drop, streaming on release day, tickets on show night. Own the relationship — no algorithm in the middle.">
   <meta property="og:url"         content="https://able.fm/">
   <meta property="og:image"       content="https://able.fm/og-image.jpg">
   <!-- Twitter / X -->
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:site"        content="@ablefm">
-  <meta name="twitter:title"       content="ABLE — For independent artists">
-  <meta name="twitter:description" content="Your page. Your fans. Direct. Music, events, merch, and support — all in one place, without an algorithm in the way.">
+  <meta name="twitter:title"       content="ABLE — Your fans. Direct.">
+  <meta name="twitter:description" content="A page that moves with your music. Pre-save before the drop, streaming on release day, tickets on show night. Own the relationship — no algorithm in the middle.">
   <meta name="twitter:image"       content="https://able.fm/og-image.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -234,10 +234,38 @@
     .btn-ghost:hover { background: rgba(255,255,255,0.06); color: var(--text); }
     :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
     :focus:not(:focus-visible) { outline: none; }
+    .hero__auth {
+      display: flex; flex-direction: column; gap: 8px;
+      margin-top: 24px; align-items: flex-start;
+      animation: heroIn 0.7s var(--ease) 0.38s both;
+    }
+    @media (max-width: 899px) { .hero__auth { align-items: center; } }
+    .btn-google {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 700; color: var(--text);
+      padding: 11px 20px; border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border-mid);
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-google:hover { background: rgba(255,255,255,0.10); }
+    .btn-google__icon {
+      width: 16px; height: 16px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-google__icon svg { width: 16px; height: 16px; }
+    .hero__auth-or {
+      font-size: 11px; color: var(--text-3); display: flex; align-items: center; gap: 8px; width: 100%; max-width: 260px;
+    }
+    .hero__auth-or::before, .hero__auth-or::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .hero__auth-email {
+      font-size: 13px; color: var(--text-3);
+    }
+    .hero__auth-email a { color: var(--accent); text-decoration: underline; text-decoration-color: rgba(var(--accent-rgb),0.3); }
+    .hero__auth-email a:hover { text-decoration-color: var(--accent); }
     .hero__micro {
-      font-size: 12px; color: var(--text-3); margin-top: 14px;
+      font-size: 12px; color: var(--text-3); margin-top: 4px;
       display: flex; align-items: center; gap: 8px;
-      animation: heroIn 0.7s var(--ease) 0.42s both;
     }
     .micro-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-3); }
 
@@ -848,6 +876,7 @@
       .hero__copy { flex: 0 0 420px; }
       .hero__visual { flex: 1; position: relative; align-items: center; justify-content: center; }
       .hero__platforms, .hero__actions, .hero__micro { justify-content: flex-start; }
+      .hero__auth { align-items: flex-start; }
     }
 
     /* ── PROOF LINES ────────────────────────────────────────────────────── */
@@ -940,9 +969,9 @@
   <section class="hero" id="hero">
     <!-- Left: copy -->
     <div class="hero__copy">
-      <div class="hero__eyebrow">For independent artists</div>
-      <h1 class="hero__headline">Give your fans<br>somewhere to <em>go.</em></h1>
-      <p class="hero__sub">One link in your bio. Pre-save before the drop. Streaming on release day. Tickets on show night. Your ABLE page always leads with the right thing — without you touching a thing.</p>
+      <div class="hero__eyebrow">Artist Before Label</div>
+      <h1 class="hero__headline">100 real fans<br>beat 10,000<br><em>strangers.</em></h1>
+      <p class="hero__sub">ABLE gives independent artists a page that moves with them. Pre-save before the drop. Streaming on release day. Tickets on show night. And a direct relationship with the people who actually care — no algorithm between you.</p>
 
       <div class="hero__platforms">
         <span class="hero__platforms-label">Connects to</span>
@@ -954,16 +983,26 @@
       </div>
 
       <div class="hero__actions">
-        <a href="start.html" class="btn-primary">Get your page — it's free</a>
+        <a href="start.html" class="btn-primary">Get your free page →</a>
         <a href="able-v6.html" class="btn-ghost">See a live example</a>
       </div>
-      <p class="hero__micro">
-        Free forever on the base plan
-        <span class="micro-dot"></span>
-        No credit card needed
-        <span class="micro-dot"></span>
-        Live in 5 minutes
-      </p>
+
+      <div class="hero__auth">
+        <a href="start.html" class="btn-google">
+          <span class="btn-google__icon">
+            <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+              <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+              <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
+              <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+            </svg>
+          </span>
+          Continue with Google
+        </a>
+        <div class="hero__auth-or">or</div>
+        <span class="hero__auth-email"><a href="start.html">Sign up with email</a> — free forever, no card needed</span>
+      </div>
+      <p class="hero__micro">Live in 5 minutes<span class="micro-dot"></span>No platform cut<span class="micro-dot"></span>No lock-in</p>
     </div>
 
     <!-- Right: phone mockup + interactive demo -->
@@ -1158,7 +1197,7 @@
   <!-- DIFFERENTIATOR -->
   <div class="diff-band fade-up">
     <p class="diff-band__text">
-      Not a link dump. Not a social profile. <strong>A page that knows what moment you're in</strong> — and changes with it, without you lifting a finger.
+      This is not a social network. It is not a marketing tool. <strong>It is a place for artists to be themselves</strong> — and to own a direct relationship with the people who actually show up.
     </p>
   </div>
 
@@ -1265,8 +1304,8 @@
   <section class="quote-section fade-up">
     <div class="quote">
       <span class="quote__mark">"</span>
-      <p class="quote__text">Most link-in-bio tools give you a list. ABLE gives you a page that actually knows what's happening with your music right now.</p>
-      <p class="quote__author"><strong>ABLE</strong> · Built for artists who release independently</p>
+      <p class="quote__text">Every platform owns your fans. They show your posts to who they decide. They cut the reach when it suits them. ABLE is the one place where you own the list — and talk to people who actually asked to hear from you.</p>
+      <p class="quote__author"><strong>ABLE</strong> · Artist Before Label</p>
     </div>
   </section>
 
@@ -1352,9 +1391,12 @@
 
   <!-- FOOTER CTA -->
   <section class="footer-cta fade-up">
-    <h2 class="footer-cta__headline">Your fans are<br>looking for <em style="color:var(--accent);">somewhere</em><br>to go.</h2>
-    <p class="footer-cta__sub">Free to start. Live in five minutes. No credit card, no platform cut, no lock-in.</p>
-    <a href="start.html" class="btn-primary" style="display:inline-flex;">Get your page — it's free</a>
+    <h2 class="footer-cta__headline">Your best fans<br>are already out there.<br><em style="color:var(--accent);">Give them a home.</em></h2>
+    <p class="footer-cta__sub">Free to start. Live in five minutes. Your list, your relationship — no algorithm in the way.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;position:relative;z-index:1;">
+      <a href="start.html" class="btn-primary" style="display:inline-flex;">Get your free page →</a>
+      <a href="start.html" class="btn-ghost" style="display:inline-flex;">Sign in with Google</a>
+    </div>
   </section>
 
   <!-- FOOTER -->
