@@ -49,11 +49,11 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 
 ## Current build status
 
-**Last updated: 2026-03-14 — Checkpoint 8 complete. Specs: Moment Engine, Live Moments, Showcase Interaction Layer added.**
+**Last updated: 2026-03-14 — Checkpoint 10 complete. Guided Identity System spec + data-feel CSS system added.**
 
 | Component | Status |
 |---|---|
-| `able-v6.html` | **COMPLETE through Checkpoint 8** — see checkpoint log below |
+| `able-v6.html` | **COMPLETE through Checkpoint 10** — see checkpoint log below |
 | Design system (tokens, 7 vibes, 4 themes) | Complete — all tokens live in `able-v6.html` |
 | Campaign state machine (profile/pre-release/live/gig) | Complete |
 | State 4 (near-future): world map moment ≤7d → hero chip | Complete — `04f5476` |
@@ -74,9 +74,12 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 | Professional ecosystem spec | Spec complete (`df492b6`) — implementation Phase 2 |
 | Showcase / Campaign Mode spec | Spec complete (`72f5d0d`) — implementation Phase 2 |
 | Showcase interaction layer spec | Spec complete (`0619801`) — companion to showcase spec |
-| **Close Circle** supporter system spec | Spec complete — implementation Phase 2 |
+| **Close Circle** supporter system spec | Spec complete (`f4cba1a`) — surface layer complete (Checkpoint 9) |
+| **Close Circle** surface layer — hero entry, join sheet, lock-ring dots | Complete — `37a6073` |
 | Live Moments / Streaming Moments spec | Spec complete (`8c18580`, `1def3b3`) — implementation Phase 2 |
 | Moment Engine unified spec | Spec complete (`b562ecb`) — canonical Moment object defined |
+| **Guided Identity System** spec | Spec complete (`54e7a88`) — three-layer model: Sound + Feel + Moment |
+| **Guided Identity System** — `data-feel` CSS system in `able-v6.html` | Complete — Checkpoint 10 |
 | Supabase migration path | Planned — localStorage keys map 1:1 to table rows |
 | Snap cards CRUD (admin) | Deferred to Phase 2 |
 | Supabase auth + read path | Deferred to Phase 2 |
@@ -99,6 +102,8 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 | 6 | `69193bf` | a11y + performance pass |
 | 7 | `7d2acd1` | §7.1 + §7.2 audit fixes; admin theme persistence |
 | 8 | `2a426b9` | Artist World Map — State 4 + hero wire-up; V3_KEY fix |
+| 9 | `37a6073` | Close Circle — hero entry, join half-sheet, lock-ring dots, supporter gate |
+| 10 | pending | Guided Identity System — `data-feel` CSS, `applyIdentity()`, `profile.identity` |
 
 ### Checkpoint 7 spot-check matrix (12/12 pass)
 

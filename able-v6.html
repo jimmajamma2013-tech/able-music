@@ -231,6 +231,81 @@
       --ls-label: 0.10em;
     }
 
+    /* === FEEL QUADRANT MODIFIERS ================================
+       Applied via data-feel attribute on #app-shell.
+       These are deltas on top of the vibe defaults — they shift
+       weight, radius, duration, density, and easing personality.
+       All four quadrants always defined; no fallback gap.
+    ============================================================== */
+    [data-feel="intimate-raw"] {
+      --font-display-weight: 500;
+      --r-card: 4px;
+      --dur-norm: 150ms;
+      --spacing-density: 1.0;
+      --ease-primary: cubic-bezier(0.25, 0.1, 0.25, 1); /* no spring */
+    }
+    [data-feel="intimate-refined"] {
+      --font-display-weight: 400;
+      --r-card: 12px;
+      --dur-norm: 600ms;
+      --spacing-density: 1.1;
+      --ease-primary: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* deceleration */
+    }
+    [data-feel="bold-raw"] {
+      --font-display-weight: 800;
+      --r-card: 2px;
+      --dur-norm: 200ms;
+      --spacing-density: 0.90;
+      --ease-primary: cubic-bezier(0.34, 1.56, 0.64, 1); /* full spring */
+    }
+    [data-feel="bold-refined"] {
+      --font-display-weight: 700;
+      --r-card: 8px;
+      --dur-norm: 350ms;
+      --spacing-density: 1.0;
+      --ease-primary: cubic-bezier(0.34, 1.20, 0.64, 1); /* confident spring, less overshoot */
+    }
+
+    /* Apply feel tokens to elements that consume them */
+    [data-feel] .hero__name,
+    [data-feel] .section-header__title {
+      font-weight: var(--font-display-weight, var(--font-d-weight));
+    }
+    [data-feel] .card,
+    [data-feel] .release-card,
+    [data-feel] .snap-card,
+    [data-feel] .event-card,
+    [data-feel] .merch-card,
+    [data-feel] .world-map-card {
+      border-radius: var(--r-card, var(--r-lg));
+    }
+
+    /* Image treatment by feel quadrant */
+    [data-feel="intimate-raw"] .hero__artwork,
+    [data-feel="intimate-raw"] .release-card__art,
+    [data-feel="intimate-raw"] .snap-card__img {
+      filter: saturate(0.85);
+    }
+    [data-feel="intimate-refined"] .hero__artwork,
+    [data-feel="intimate-refined"] .release-card__art,
+    [data-feel="intimate-refined"] .snap-card__img {
+      filter: saturate(0.9) sepia(0.05);
+    }
+    [data-feel="bold-raw"] .hero__artwork,
+    [data-feel="bold-raw"] .release-card__art,
+    [data-feel="bold-raw"] .snap-card__img {
+      filter: contrast(1.05);
+    }
+    /* bold-refined: clean, no filter override */
+
+    /* Reduced-motion: collapse all feel durations */
+    @media (prefers-reduced-motion: reduce) {
+      [data-feel] {
+        --dur-norm: 100ms;
+        --ease-primary: linear;
+      }
+    }
+
     /* === RESET & BASE =========================================== */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -3348,8 +3423,9 @@
        APP SHELL
        data-theme: dark | light | glass | contrast
        data-vibe:  electronic | hiphop | rnb | indie | pop | rock | acoustic
+       data-feel:  intimate-raw | intimate-refined | bold-raw | bold-refined
        ============================================================ -->
-  <div id="app-shell" data-theme="dark" data-vibe="indie">
+  <div id="app-shell" data-theme="dark" data-vibe="indie" data-feel="bold-refined">
 
     <!-- iOS safe area top -->
     <div id="status-bar" aria-hidden="true"></div>
@@ -3908,6 +3984,31 @@
       })
     }
 
+    // applyIdentity: reads profile.identity, sets data-feel on shell,
+    // then applies refinement deltas as inline CSS custom property overrides.
+    // Refinement range: -3 to +3 integer steps on each axis.
+    function applyIdentity(profile, shell) {
+      const id = profile.identity
+      if (!id) return
+      const feel = id.feel || 'bold-refined'
+      shell.dataset.feel = feel
+      const r = id.refinements || {}
+      // Delta mappings — each step is a small, bounded nudge
+      const darkness  = (r.darkness  || 0) * -0.04   // positive darkness → lower brightness
+      const spacing   = (r.spacing   || 0) *  0.04   // positive spacing → more density multiplier
+      const sharpness = (r.sharpness || 0) * -1       // positive sharpness → smaller radius
+      const contrast  = (r.contrast  || 0) *  0.05   // positive contrast → stronger accent opacity
+      // warmth: shifts accent hue — apply only if non-zero (handled in accent derivation)
+      if (darkness  !== 0) shell.style.setProperty('--brightness-delta', `${1 + darkness}`)
+      if (spacing   !== 0) shell.style.setProperty('--spacing-density',
+        `${parseFloat(getComputedStyle(shell).getPropertyValue('--spacing-density') || '1') + spacing}`)
+      if (sharpness !== 0) {
+        const base = parseFloat(getComputedStyle(shell).getPropertyValue('--r-card') || '8')
+        shell.style.setProperty('--r-card', `${Math.max(0, base + sharpness)}px`)
+      }
+      if (contrast !== 0) shell.style.setProperty('--accent-opacity-delta', `${contrast}`)
+    }
+
     // === PROFILE =================================================
 
     const DEMO_PROFILE = {
@@ -4115,6 +4216,19 @@
           active: true
         }
       ],
+      identity: {
+        genre: 'electronic',
+        feel: 'bold-refined',
+        accent: '#c49438',
+        accentSource: 'ai',
+        refinements: {
+          darkness: 0,   // -3 (lighter) → +3 (darker)
+          spacing: 0,    // -3 (tighter) → +3 (more space)
+          sharpness: 0,  // -3 (softer)  → +3 (sharper)
+          contrast: 0,   // -3 (quieter) → +3 (bolder)
+          warmth: 0      // -3 (cooler)  → +3 (warmer)
+        }
+      },
       credits: [],
       recommendations: [
         {
@@ -6636,6 +6750,8 @@
       // Apply vibe (loads font, sets tokens, applies accent + radius)
       const vibe = profile.vibe || 'indie'
       applyVibe(vibe, shell)
+      // Apply feel quadrant + refinement deltas (Guided Identity System)
+      applyIdentity(profile, shell)
 
       // Boot UI systems
       initTabBar(shell)
