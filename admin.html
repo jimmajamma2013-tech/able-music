@@ -525,7 +525,9 @@ body {
     .yw-moment-title { flex: 1; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .yw-moment-access { font-size: 10px; color: rgba(255,255,255,0.35); }
     .yw-moment-featured { font-size: 9px; color: var(--acc, #f4b942); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+    .yw-moment-auto { color: var(--acc, #f4b942) !important; opacity: 0.7; }
     .yw-empty { text-align: center; padding: 24px 16px; color: rgba(255,255,255,0.3); font-size: 13px; }
+    .yw-empty-link { background: none; border: none; padding: 0; color: var(--acc, #f4b942); font-size: 13px; cursor: pointer; text-decoration: underline; }
     .yw-private-row {
       display: flex; align-items: center; justify-content: space-between;
       padding: 12px 14px;
@@ -2474,10 +2476,26 @@ function ywRenderMomentList(profile) {
   var moments = (profile.moments || []).filter(function(m) { return m.active !== false })
   var today = new Date().toISOString().slice(0,10)
   var in7 = new Date(Date.now() + 7*86400000).toISOString().slice(0,10)
+
+  // Auto-include upcoming shows from profile.events (same as public profile does)
+  ;(profile.events || []).forEach(function(ev) {
+    if (ev.date && ev.date >= today && !moments.some(function(m) { return m.linkedId === ev.id })) {
+      moments.push({
+        id: 'auto_show_' + ev.id,
+        type: 'show',
+        date: ev.date,
+        title: (ev.venue || 'Live show') + (ev.city ? ', ' + ev.city : ''),
+        access: 'public',
+        linkedId: ev.id,
+        isAuto: true,
+      })
+    }
+  })
+
   var upcoming = moments.filter(function(m) { return m.date >= today }).sort(function(a,b) { return a.date.localeCompare(b.date) })
 
   if (!upcoming.length) {
-    list.innerHTML = '<div class="yw-empty">No upcoming moments yet. Add your first.</div>'
+    list.innerHTML = '<div class="yw-empty">No upcoming moments yet. Add shows in the <button class="yw-empty-link" onclick="showPage(\'events\')">Events</button> page, or add a moment here.</div>'
     return
   }
 
@@ -2489,11 +2507,14 @@ function ywRenderMomentList(profile) {
     var color = WM_TYPE_COLOR_ADM[m.type] || '#888'
     var isFeatured = m.id === featuredId
     var title = m.title || '(untitled)'
+    var accessTag = m.isAuto
+      ? '<div class="yw-moment-access yw-moment-auto">from shows</div>'
+      : '<div class="yw-moment-access">' + (m.access || 'public') + '</div>'
     return '<div class="yw-moment-row">'
       + '<div class="yw-dot" style="background:' + color + '"></div>'
       + '<div class="yw-moment-date">' + dateStr + '</div>'
       + '<div class="yw-moment-title">' + title.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>'
-      + '<div class="yw-moment-access">' + (m.access || 'public') + '</div>'
+      + accessTag
       + (isFeatured ? '<div class="yw-moment-featured">● In hero</div>' : '')
       + '</div>'
   }).join('')
