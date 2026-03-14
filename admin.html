@@ -683,6 +683,19 @@ body {
     }
     .section-vis-toggle[aria-pressed="true"] { background: var(--acc, #f4b942); }
     .section-vis-toggle[aria-pressed="true"]::after { transform: translateX(16px); }
+    .section-order-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 5px;
+      color: rgba(255,255,255,.4);
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 1;
+      padding: 2px 5px;
+      transition: color .12s, border-color .12s;
+    }
+    .section-order-btn:hover { color: #fff; border-color: rgba(255,255,255,.25); }
+    .section-order-btn:disabled { opacity: .2; cursor: default; }
 
 /* ── PROFILE IDENTITY CARD ── */
 .feel-picker {
@@ -1281,31 +1294,8 @@ body {
         <!-- ── SECTION VISIBILITY ── -->
         <div class="dash-card" style="margin-top:16px;" id="sectionVisCard">
           <div class="dc-head"><div class="dc-title">Sections</div></div>
-          <div class="dc-body">
-            <div class="section-vis-row">
-              <span class="section-vis-label">Music</span>
-              <button class="section-vis-toggle pressable" data-section="listen-section" aria-pressed="true" onclick="toggleSectionVis(this)" aria-label="Toggle Music section"></button>
-            </div>
-            <div class="section-vis-row">
-              <span class="section-vis-label">Shows</span>
-              <button class="section-vis-toggle pressable" data-section="shows-section" aria-pressed="true" onclick="toggleSectionVis(this)" aria-label="Toggle Shows section"></button>
-            </div>
-            <div class="section-vis-row">
-              <span class="section-vis-label">World Map</span>
-              <button class="section-vis-toggle pressable" data-section="world-map-section" aria-pressed="true" onclick="toggleSectionVis(this)" aria-label="Toggle World Map section"></button>
-            </div>
-            <div class="section-vis-row">
-              <span class="section-vis-label">Updates</span>
-              <button class="section-vis-toggle pressable" data-section="snap-cards-section" aria-pressed="true" onclick="toggleSectionVis(this)" aria-label="Toggle Updates section"></button>
-            </div>
-            <div class="section-vis-row">
-              <span class="section-vis-label">Merch</span>
-              <button class="section-vis-toggle pressable" data-section="merch-section" aria-pressed="true" onclick="toggleSectionVis(this)" aria-label="Toggle Merch section"></button>
-            </div>
-            <div class="section-vis-row">
-              <span class="section-vis-label">Support</span>
-              <button class="section-vis-toggle pressable" data-section="support-section" aria-pressed="true" onclick="toggleSectionVis(this)" aria-label="Toggle Support section"></button>
-            </div>
+          <div class="dc-body" id="sectionOrderBody">
+            <!-- Populated by renderSectionOrder() -->
           </div>
         </div>
 
@@ -3234,26 +3224,70 @@ function saveProfilePage() {
   if (btn) { btn.textContent = '✓ Saved'; setTimeout(() => btn.textContent = 'Save profile changes →', 1800); }
 }
 
-// ── SECTION VISIBILITY ────────────────────────────────────────────────────
+// ── SECTION VISIBILITY + ORDER ────────────────────────────────────────────
 
-function initSectionVisibility() {
+const SECTION_LABELS = {
+  'listen-section':    'Music',
+  'shows-section':     'Shows',
+  'world-map-section': 'World Map',
+  'snap-cards-section':'Updates',
+  'merch-section':     'Merch',
+  'support-section':   'Support',
+}
+const ADMIN_SECTION_ORDER = [
+  'listen-section','shows-section','world-map-section',
+  'snap-cards-section','merch-section','support-section',
+]
+
+function renderSectionOrder() {
+  const body = document.getElementById('sectionOrderBody')
+  if (!body) return
   const profile = safeLS(V3_KEY, {})
   const vis = profile.sectionVisibility || {}
-  document.querySelectorAll('.section-vis-toggle').forEach(btn => {
-    const sectionId = btn.dataset.section
-    const isVisible = vis[sectionId] !== false  // default true
-    btn.setAttribute('aria-pressed', String(isVisible))
-  })
-  // Keep support-enabled checkbox in sync with sectionVisibility
+  const order = (profile.sectionOrder || ADMIN_SECTION_ORDER)
+    .filter(id => SECTION_LABELS[id]) // only known sections
+
+  body.innerHTML = order.map((id, i) => {
+    const isVisible = vis[id] !== false
+    const label = SECTION_LABELS[id] || id
+    return `<div class="section-vis-row" data-section="${id}">
+      <div style="display:flex;gap:4px;flex-shrink:0;">
+        <button class="section-order-btn" onclick="moveSectionOrder('${id}',-1)"
+          ${i === 0 ? 'disabled' : ''} aria-label="Move ${label} up" title="Move up">↑</button>
+        <button class="section-order-btn" onclick="moveSectionOrder('${id}',1)"
+          ${i === order.length - 1 ? 'disabled' : ''} aria-label="Move ${label} down" title="Move down">↓</button>
+      </div>
+      <span class="section-vis-label" style="flex:1;padding:0 10px;">${label}</span>
+      <button class="section-vis-toggle pressable"
+        data-section="${id}" aria-pressed="${isVisible}"
+        onclick="toggleSectionVis(this)" aria-label="Toggle ${label} section"></button>
+    </div>`
+  }).join('')
+
+  // Support checkbox sync
   const cb = document.getElementById('supportEnabled')
   if (cb) cb.checked = vis['support-section'] !== false
+}
+
+function initSectionVisibility() { renderSectionOrder() }
+
+function moveSectionOrder(sectionId, dir) {
+  const profile = safeLS(V3_KEY, {})
+  const order = [...(profile.sectionOrder || ADMIN_SECTION_ORDER).filter(id => SECTION_LABELS[id])]
+  const idx = order.indexOf(sectionId)
+  if (idx < 0) return
+  const swapIdx = idx + dir
+  if (swapIdx < 0 || swapIdx >= order.length) return
+  ;[order[idx], order[swapIdx]] = [order[swapIdx], order[idx]]
+  profile.sectionOrder = order
+  localStorage.setItem(V3_KEY, JSON.stringify(profile))
+  renderSectionOrder()
 }
 
 function toggleSectionVis(btn) {
   const sectionId = btn.dataset.section
   const current = btn.getAttribute('aria-pressed') === 'true'
   const next = !current
-  btn.setAttribute('aria-pressed', String(next))
 
   const profile = safeLS(V3_KEY, {})
   if (!profile.sectionVisibility) profile.sectionVisibility = {}
@@ -3268,6 +3302,8 @@ function toggleSectionVis(btn) {
     profile.support = { ...supportData, enabled: next }
     localStorage.setItem(V3_KEY, JSON.stringify(profile))
   }
+
+  renderSectionOrder()
 }
 
 // ── PROFILE IDENTITY CARD ─────────────────────────────────────────────────
