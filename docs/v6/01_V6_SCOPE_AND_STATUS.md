@@ -49,7 +49,7 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 
 ## Current build status
 
-**Last updated: 2026-03-14 — Checkpoint 10 complete. Guided Identity System spec + data-feel CSS system added.**
+**Last updated: 2026-03-14 — Checkpoint 11 complete. Guided Identity onboarding + admin identity card shipped.**
 
 | Component | Status |
 |---|---|
@@ -80,6 +80,8 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 | Moment Engine unified spec | Spec complete (`b562ecb`) — canonical Moment object defined |
 | **Guided Identity System** spec | Spec complete (`54e7a88`) — three-layer model: Sound + Feel + Moment |
 | **Guided Identity System** — `data-feel` CSS system in `able-v6.html` | Complete — Checkpoint 10 |
+| **Guided Identity System** — onboarding feel step (`start.html` step 2 of 5) | Complete — `fbb0631` |
+| **Guided Identity System** — admin Profile Identity card (genre, feel, nudges, preview) | Complete — `e5ccc03` |
 | Supabase migration path | Planned — localStorage keys map 1:1 to table rows |
 | Snap cards CRUD (admin) | Deferred to Phase 2 |
 | Supabase auth + read path | Deferred to Phase 2 |
@@ -104,6 +106,7 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 | 8 | `2a426b9` | Artist World Map — State 4 + hero wire-up; V3_KEY fix |
 | 9 | `37a6073` | Close Circle — hero entry, join half-sheet, lock-ring dots, supporter gate |
 | 10 | `47beb81` | Guided Identity System — `data-feel` CSS, `applyIdentity()`, `profile.identity` |
+| 11 | `e5ccc03` | Guided Identity onboarding — feel step in start.html wizard + admin identity card |
 
 ### Checkpoint 7 spot-check matrix (12/12 pass)
 
