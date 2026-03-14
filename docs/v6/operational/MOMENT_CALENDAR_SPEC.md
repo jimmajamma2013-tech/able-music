@@ -1,295 +1,326 @@
-# ABLE — Moment Calendar: Product & Design Spec
+# ABLE — Artist World Map: Product & Design Spec
 **Created:** 2026-03-14
-**Status:** ACTIVE — approved design. Ready for implementation planning.
+**Status:** ACTIVE — v2 refinement pass complete. Supersedes draft v1.
+**Formerly called:** Moment Calendar
 
 ---
 
 ## 1. Product framing
 
-The Moment Calendar is the artist's living schedule of meaningful moments — a structured expression of what's coming, what fans can do about it, and why this profile is worth returning to.
+The Artist World Map is the temporal layer of the ABLE profile. It shows what's coming in the artist's world — releases, shows, early access windows, private access opportunities — arranged in time, tiered by closeness, connected to the featured moment in the top card.
 
-A link-in-bio page has no concept of time. It is always the same. ABLE's Moment Calendar changes that. The profile now has a timeline. The artist has a world. Fans have reasons to come back.
+It is not a gig calendar. It is not a schedule widget. It is the answer to the question a returning fan asks but no other platform answers: *what's coming in this artist's world, and how close do I need to be to get it?*
 
-Done well, this makes ABLE definitively different from every competitor at a glance.
+Done well, it makes the ABLE profile feel alive in a way no link-in-bio or artist page tool currently achieves. It creates a reason to return — not through push notifications or algorithms, but through genuine anticipation. Something is coming on the 21st. The fan knows. They'll be back.
+
+**In admin, this section is called: "Your World."**
+**On the profile, it is labelled only by the current month name.** No "Calendar" header. No "Upcoming events" title. Just "May." Then the world.
 
 ---
 
 ## 2. Core user stories
 
 **Fan**
-- See what's happening in this artist's world in the next few months, at a glance
-- Know if something requires action (buy tickets, pre-save, sign up, support)
-- Know if something is just for supporters — understand what they're missing and what getting closer gives them
-- Be notified when something relevant is coming up
-- Have a reason to come back — the calendar changes
+- See the shape of the artist's world across the next 60–90 days at a glance
+- Understand immediately what's public, what requires closeness, what's private
+- Know exactly what action is available for each moment
+- See what being on the list gets me — and what supporting this artist unlocks
+- Have a concrete reason to come back on a specific date
 
 **Artist**
-- Show the shape of upcoming months — signals activity, intention, momentum
-- Give closest fans early or exclusive moments without it feeling like admin
-- Make private bookings available on their terms, without a marketplace feel
-- Have the calendar reflect existing data (releases, shows) without re-entry
+- Declare what's coming in my world — releases, shows, early access windows, private sessions — without it feeling like admin
+- Give my closest fans specific, real privileges that are visible and meaningful
+- Open a window for private, intimate experiences — on my terms, selectively, without turning my profile into a booking page
+- Have my upcoming moments automatically reflect what I've already entered (releases, shows), with the option to add standalone moments
 
-**Business**
-- Return visits: fans revisit because the calendar changes
-- Supporter tier value: early access creates genuine pull toward paid tiers
-- Private booking: revenue potential without a separate product
-- Differentiation: no link-in-bio does this well
+**Business (ABLE)**
+- Return visits: the world map changes, so fans return
+- Supporter conversion: early access and supporter moments create concrete, specific reasons to upgrade — not vague "exclusive content" promises
+- Private access: premium revenue potential without marketplace architecture
+- Profile differentiation: no other artist platform does this
 
 ---
 
 ## 3. UX structure
 
-**Default view: month grid, full section width**
+**Default view: month grid, full section width, no title other than the month name**
 
-The calendar is a major profile section — comparable in visual weight to Music. It is a destination, not a widget.
+The world map takes up a major section of the profile — comparable in visual weight and vertical footprint to the Music section. It is a destination, not a widget.
 
-Grid dimensions:
+**The grid:**
 - 7 columns (Mon–Sun)
-- Row height: 48px mobile, 52px desktop
-- Current month by default
-- Month navigation: swipe left/right (mobile), chevron buttons (desktop)
-- Month label: 28–32px, weight 700, `var(--font-display)`, letter-spacing -0.02em
+- Row height: 48px mobile, 52px desktop (floor, never compromised)
+- Current month by default, auto-scrolled to nearest upcoming moment date
+- Month label: 36px, `var(--font-display)` (Barlow Condensed), weight 700, letter-spacing -0.02em — editorial statement, not a section header
 
-Date cells:
-- Empty: muted, 44px minimum tap target
-- Today: thin accent ring, no fill
-- Past dates with moments: visible, 40% opacity
-- Future dates with moments: full-weight, type-colored dot(s)
-- Selected: accent background circle, white number
+**Date cells:**
+- Empty: `var(--color-text-3)`, 44px minimum tap target
+- Today: 1px accent ring, no fill
+- Past with moment: 40% opacity (history, visible, accessible)
+- Future with moment: full-weight date number, type-colored 5px dot at cell bottom
+- Multiple moments one day: stacked dots (max 3, then "+n")
+- Selected: type-color fills cell at 15% opacity, 2px type-color bottom border, dot at full opacity
 
-Multiple moments on one day: stacked dots (max 3, then "+n" label)
+**Cell separator:** 1px `rgba(255,255,255,0.04)` between cells — subtle structure, not a visible grid
 
-**Detail panel**
+**Card treatment:** No hard card border. Inset shadow: `inset 0 0 0 1px rgba(255,255,255,0.05)`. The section has presence without feeling like a container.
 
-Mobile: half-sheet slides up from bottom — 350ms spring entry, 250ms decel exit (per §7.2 panel spec)
-Desktop: inline accordion below selected date row
+**Detail panel (half-sheet on mobile, persistent sidebar on desktop):**
 
-Panel contents:
-- Moment type badge + icon
-- Title
-- Short description (artist-written, 2–3 sentences max)
-- Access layer indicator
-- CTA button (contextual to access and type)
-- Optional moment image
+Mobile: rises from bottom on date select, covers ~50% of viewport. Grid still partially visible. Tap new date → panel updates without dismissing. Dismiss: swipe down or drag handle.
 
-**Month navigation**
+Desktop: panel lives beside the grid as a permanent sidebar, updates on date select.
 
-Mobile: swipe the grid left/right. No chevron buttons.
-Desktop: chevron buttons flanking the month label.
-Tapping month label: compact year-strip for quick jumps (current month ± 6).
+Panel contents (in order):
+1. Moment type label — 9px, weight 600, letter-spacing 0.10em, uppercase, type-colored
+2. Title — 22px, weight 700, `var(--font-display)`
+3. Date + time — 13px, `var(--color-text-2)`
+4. Access tier badge — pill, tier-colored: "For everyone" / "Fan list" / "Supporters" / "Private"
+5. Artist note (optional, italic, left quote-border in type color)
+6. CTA — full-width, type-color fill (each type has its own CTA color matching its dot)
+
+**Month navigation:**
+- Mobile: swipe the grid left/right (touch delta > 40px x, < 20px y → change month)
+- Desktop: chevron buttons beside month label
+- Month label tap: compact year-strip (current ± 6 months) for quick jumps
 
 ---
 
 ## 4. V1 moment taxonomy
 
-| Type | Meaning | Default CTA |
-|---|---|---|
-| Release | Track, EP, album drop | Pre-save / Stream now |
-| Show | Live performance | Get tickets |
-| On Sale | Ticket sale opens | Buy tickets |
-| Merch Drop | New or limited merch | Shop now |
-| Early Access | Window before public release | Unlock early access |
-| Livestream | Virtual performance or session | Set reminder / Watch live |
-| Private Booking | Artist has availability for private requests | Send enquiry |
-| Announcement | Major news, new direction | Read more |
+8 types. Icon + color identity per type. Used in detail panel; dots only in grid.
 
-Auto-populated from existing data:
-- `able_v3_profile.releaseDate` → Release moment
-- Shows array entries → Show moments
+| Type | Meaning | Dot color | Default CTA |
+|---|---|---|---|
+| Release | Track, EP, album drop | `var(--color-accent)` | Pre-save / Stream now |
+| Show | Live performance | Coral `#e8715a` | Get tickets |
+| On Sale | Ticket sale opens | Amber `#f4b942` | Buy tickets |
+| Merch Drop | New or limited merch | Teal `#2db8b0` | Shop now |
+| Early Access | Window before public release | Gold `#d4a84b` | — (see §6) |
+| Livestream | Virtual performance / session | Blue `#4b8fd4` | Set reminder / Watch |
+| Private Access | Artist open to intimate enquiries | Muted `var(--color-text-3)` | Express interest |
+| Announcement | Major news or creative direction | White `rgba(255,255,255,0.7)` | Read more |
 
-Standalone moments added via admin calendar section.
+**Auto-populated from existing profile data:**
+- `able_v3_profile.releaseDate` → Release moment (read-only, edit via release object)
+- Shows array entries → Show moments (read-only, edit via shows)
+
+Standalone moments added in admin "Your World" section.
 
 ---
 
-## 5. Access model
+## 5. Access tier model
 
-Four tiers. Nothing is fully hidden — all tiers create visible presence.
+Four tiers. Nothing fully hidden. Everything has a visible presence.
 
-**Public** — visible and fully actionable to everyone.
+**For everyone (public)**
+Visible and fully actionable by anyone visiting the profile.
 
-**Fan list** — visible to all. CTA requires email sign-up. Fan sees the moment; CTA says "Join the list to access this." One tap → fan capture form pre-sourced with moment context.
+**Fan list**
+Visible to all. CTA requires email sign-up. Fan sees the moment clearly. CTA: "Join the list to access this." One tap → fan capture with moment title as source context. High-intent sign-up.
 
-**Supporter** — visible to all. CTA requires supporter tier. Non-supporters see honest access information and a path to support. Supporters see "You're in."
+**Supporters**
+Visible to all. CTA requires supporter tier. Non-supporters see honest access framing and a path to support — no aggressive overlay, no pop-up. The tier badge says "Supporters" and the CTA changes to "Become a supporter to unlock this." Existing supporters see full CTA.
 
-**Private** — moment appears on the calendar as a tile with a lock icon and "Private moment" label. No title or description visible. Tapping: "This is a private moment. [Enquire]." Used for private booking windows and invite-only sessions.
+**Private**
+Visible on the calendar as a tile with lock icon. No title, no description visible publicly. Tapping: artist-written message + "Express interest" CTA. Used for private access windows and invite-only sessions.
 
-**Key principle:** Nothing is hidden. Private and gated moments have visible presence. The fan sees the full shape of the calendar. They always understand what they're missing and what getting closer would give them.
+**Key principle:** Nothing is hidden. Private and gated moments have visible calendar presence. The fan always sees the full shape of the world. They always understand what getting closer means — because they can see exactly what it unlocks, on specific dates, for specific moments.
+
+*Turn attention into connection — expressed as a timeline.*
 
 ---
 
 ## 6. Early access model
 
-Early access is a distinct calendar moment type that maps a specific time window before a public event.
+Early access is a distinct moment type — not a permission layer on other types. It sits on its own date (the window-open date), separate from the public release date.
 
-**Two dates, two moments:**
-
-An Early Access moment sits on the window-open date. The public Release moment sits on the public drop date. Between them: the early window.
-
-Example:
-- May 8: Early Access — "Resonance (supporter preview)"
+**Example:**
+- May 8: Early Access — "Resonance · Supporter preview"
 - May 10: Release — "Resonance drops everywhere"
+
+The fan sees both dates. They see the gap. They understand what being closer means without reading a single line of explanation.
 
 **What fans see, by tier:**
 
-| Tier | Message |
+| Tier | Panel message |
 |---|---|
 | Supporter | "Listen now — supporter exclusive. Public release: May 10." |
-| Fan list | "Supporters hear this May 8. You're on the list — you get it May 9." |
-| Public | "Supporters get this on May 8. The rest of the world: May 10. [Support link]." |
+| Fan list | "You're on the list. You get this May 9 — one day ahead." |
+| Public | "Supporters hear this on May 8. Public: May 10. Move closer [link]." |
 
-**Early access applies to:**
-- Track/album preview
+**Framing:** Early access is not a paywall. It is a privilege tied to closeness. The artist decides who goes first — and they decide based on relationship, not on any algorithmic metric. The calendar makes this concrete: not "supporters get exclusive content" but "you will hear this specific track on this specific date, two days before anyone else."
+
+**Applies to:**
+- Track/album preview before public release
 - First ticket access before public on-sale
 - Merch drop with early window
-- Acoustic/demo version before official release
+- Acoustic or demo version
 - Livestream for supporters before public broadcast
 
-Artist sets access level per moment in admin — one dropdown.
+Artist sets access tier per moment in admin — one dropdown.
 
 ---
 
-## 7. Private booking model
+## 7. Private access model
 
-**What it is**
+**Renamed throughout.** Never "private booking." Always:
+- "Private access" (in admin/system)
+- Artist-authored in-panel copy (examples below)
+- "Express interest" (the CTA)
 
-A selective invitation for fans and buyers to enquire about a private experience with the artist. Artist always in control. Nothing automatic. Nothing committed until artist decides.
+**Framing:** This is an opening, not a service. The artist has decided to be open to a small number of intimate experiences. If a fan has something in mind, they can reach out. The artist reads it. The artist decides.
 
-**V1 supported booking types:**
+**Types supported:**
+- Intimate acoustic set (private home or small venue)
+- House session (small live gathering)
+- Private listening (album playback, artist present)
+- Supporter gathering (small group, artist-led)
+- One-to-one (for journalists, serious collectors, superfans)
+- Something else (open — artist sees what fans propose)
 
-- Intimate acoustic performance (private home, small venue)
-- House show / small gathering
-- Special occasion (birthday, cultural event)
-- Virtual private set
-- Private listening session / album playback
-- Supporter-only small gathering
-
-Industry/brand inquiries are a separate form type — different fields, different admin routing.
+Industry and brand enquiries are a separate channel with different fields, different admin routing, never mixed with fan access.
 
 **How it appears on the calendar:**
 
-Two modes:
-1. **Availability window** — date range moment ("Private bookings open: May–July 2026")
-2. **Available date** — specific date with availability
+A muted dot on the relevant date or date range. Tapping: the panel shows the artist's personal note (2–3 sentences, written in their voice) and a single CTA: "Express interest."
 
-Artist can add a note visible in the panel: "Currently taking intimate acoustic enquiries in London and Manchester. Min 20 guests."
+Example artist notes:
+- *"I'll be in London for a few days in June and thinking about doing something small. If you have something in mind, I'd like to hear it."*
+- *"I'm open to a handful of intimate acoustic sessions this spring. Private homes, small spaces — nothing big."*
+- *"A few slots for a private listening session before the album drops. If you want to be in the room, reach out."*
 
-**The enquiry form**
+Not: "Request a private performance." Not: "Book Artist." Not any language that implies a service or a marketplace.
 
-Lightweight. Not a booking engine. An enquiry form.
+**The enquiry — a message, not a form:**
 
-Fields:
-- Event type (dropdown: Intimate performance / House show / Special occasion / Virtual set / Private listening / Supporter gathering / Other)
-- Preferred date or range
-- City / country
-- Expected attendance (optional)
-- Budget indication (optional)
-- Short description (200 char)
-- Contact email
+One textarea. "Tell [Artist] what you have in mind." 200–600 characters. Plus their email. No dropdowns. No budget field. No event type picker.
 
-**What happens after submission:**
+Quiet guidance copy below the textarea (artist-set or default): *"I read everything. I'll be in touch if it feels right."*
 
-Fan sees: "Your enquiry has been sent. They'll be in touch if they're interested. If no reply within 2 weeks, dates were likely taken."
+The right fans will write good messages. The wrong ones self-select out. Budget, attendance, and logistics are for later — not for the opening message.
 
-Artist sees enquiry in admin under "Booking enquiries." Options: Accept (opens reply composer, CC's management email) / Decline (archives, no contact) / Hold.
+**Artist admin — the inbox:**
+
+Simple list. Each message: fan email, their message, date submitted. Three options: Reply (opens email compose, fan address pre-filled) / Pass (archives, no contact) / Later (pending). That's it.
+
+No booking system. No calendar slots. No automatic confirmation. Artist replies when they want to, how they want to, through their own email.
+
+**Artist controls:**
+- Toggle: private access open / closed (one switch in "Your World" admin)
+- Artist note: editable at any time
+- Available dates or date range: set in admin, shown on calendar
 
 **Safety:**
-- No instant booking or financial commitment in v1
-- Artist never required to respond
+- No real-time chat
+- No financial transaction via ABLE in v1
 - No personal details beyond email
-- Budget field optional
-- Artist can disable private booking with one toggle
-- Industry enquiries are a separate form, separate admin section
+- No artist obligation to respond
+- Message has a minimum character count (prevents one-word spam)
+- Industry/brand enquiries are a separate form with explicit field for "this is a commercial enquiry"
 
-**V1 implementation:** Enquiry data via Netlify form POST → admin email. Maps to `booking_enquiries` table when Supabase lands.
+**How it looks in the profile:**
+
+Muted. Not prominent. The private access tile is there for fans who are close enough to notice it. Others scroll past. Interested fans see the artist's note — personal, warm, specific. They write a message. That's the interaction. Clean. Light. Artist-led.
 
 ---
 
 ## 8. Profile integration
 
-### Top card / hero relationship
+### Top card relationship
 
-The top card leads with what matters most right now. The calendar is the map of what's coming. They should tell the same story from different angles.
+The top card and the world map are one system, two levels of zoom.
 
-**State chip integration:** When the next calendar moment is within 7 days, the hero state chip reflects it:
-- "Tickets Friday" / "New music tomorrow" / "Early access opens tonight"
-- Chip links to calendar section (smooth scroll, 400ms)
+**Top card:** the featured moment — what matters most right now, full visual dominance, immediate CTA.
+**World map:** the full arc — the next 60–90 days, all moment types, all access tiers.
 
-**State machine connection:**
-- `pre-release` state → the calendar's Release moment on the release date is highlighted (accent ring pulsing at 4s interval, reduced-motion: static)
-- `live` state → Release moment shows as "Live now" with stream CTA
-- `gig` state → nearest Show moment highlighted, ticket CTA elevated
-- `profile` state → calendar shows future moments without elevation
+Both read from the same moments array. The top card selects the highest-priority upcoming moment within 14 days via this priority order:
+1. Gig (tonight toggle) — always wins
+2. Live state (release week)
+3. Pre-release (upcoming release, within 30 days)
+4. Next moment of any type within 7 days
 
-The hero expresses the current moment. The calendar shows the next 60–90 days of context. They reinforce, not compete.
+The visible bridge: the **state chip** in the hero. When a moment is featured by the top card, the state chip shows: "Tickets Friday" / "New music tomorrow" / "Early access tonight." Tapping the chip scrolls to the world map and auto-selects the featured date.
+
+In the world map, the featured moment's date cell has a top-left corner accent indicator (2px × 2px, type-colored) in addition to its normal dot. This visual echo says: *that thing in the hero — here it is on the timeline.*
+
+**When they should not compete:**
+
+When `gig` state is active, the top card is in full gig mode. The world map shows the Show moment highlighted but does not override the top card's urgency. The top card leads. The world map confirms.
 
 ### Placement in the profile
 
-Position: **immediately after hero CTAs and Quick Action pills**, before Music.
+```
+1. Top card
+2. Quick Action pills
+3. ── WORLD MAP (month name + grid) ──
+4. Listen / Music
+5. Shows [linked from world map; detailed view]
+6. Merch
+7. Support
+8. Fan capture
+9. Credits
+10. Recommendations
+11. Footer
+```
 
-Rationale: fans scroll past the hero wanting to know what's coming. The calendar answers that question first. Music, Shows, Merch, and Support follow as deeper dives into specific moment types.
-
-The calendar is not a widget at the bottom. It is the first major content section.
+The world map sits immediately after the hero. After the top card asks "what is happening now?", the world map answers "what does the next 60 days look like?" Before Music, before Shows — because context comes before content.
 
 ### Interaction with other sections
 
-| Section | Calendar relationship |
+| Section | Relationship |
 |---|---|
-| Listen / Music | Release moments link to track embeds. Calendar date → opens the release card inline. No duplication — the calendar previews; Music contains. |
-| Shows | Show moments on the calendar mirror the Shows section. "See all shows" in the calendar navigates to Shows section. Calendar is the overview; Shows is the detail. |
-| Merch | Merch Drop moments link to the Merch section. Active drop dates shown in calendar; Merch section has the full product cards. |
-| Support | Supporter moments (Early Access, supporter-only sessions) create passive upgrade prompts. Non-supporter fans see the moment and a clear path. Supporter section reinforces what they get. |
-| Fan capture | "Notify me" CTA on fan-gated moments routes to fan sign-up form with moment title as source context. |
-| Credits | No direct relationship in v1. |
-| Recommendations | No direct relationship in v1. Future: recommended artists who have upcoming moments. |
+| Listen / Music | Release moment in world map → tapping CTA scrolls to Listen, auto-expands the release card. If `embedUrl` exists, panel shows compact embed (conduit). |
+| Shows | Show moments in world map = same data as Shows section. "See all shows" at bottom of world map → jumps to Shows section. World map is the discovery surface; Shows is the detail view. |
+| Merch | Merch Drop moments link to Merch section. Panel may show product image if set. |
+| Support | Supporter and Early Access moments create passive, honest upgrade prompts. The world map is the strongest supporter conversion surface on the profile. |
+| Fan capture | "Notify me" CTA on fan-list moments → fan capture form, pre-sourced with moment title. High-intent sign-up. |
 
 ---
 
 ## 9. UX/UI direction
 
-### Visual treatment
+**Visual identity:**
 
-Section container: `var(--color-surface)`, `--r-lg` border radius, 1px `rgba(255,255,255,0.06)` border.
+No section label other than the month name. "May" at 36px in Barlow Condensed is a statement. The artist's world has a month. This month has moments.
 
-Section header: "What's coming" — or just the current month name in large editorial type. Month name preferred: it makes the section feel more like a real calendar object.
+**Grid:**
+- 1px `rgba(255,255,255,0.04)` cell separator lines — structure, not weight
+- 5px dot at cell bottom center, type-colored, for moment dates
+- Selected cell: 15% opacity type-color fill, 2px type-color bottom border
+- No scaling animations on selection — stability over motion
 
-Day-of-week header: 10px, weight 600, letter-spacing 0.08em, uppercase, `var(--color-text-3)`.
+**Detail panel:**
+- Type label: 9px, uppercase, type-colored
+- Title: 22px, `var(--font-display)`
+- Artist note: italic, left border in type color
+- CTA: full-width, type-color fill
 
-Date cells:
-- Normal: transparent, text `var(--color-text-2)`
-- Today: 1px accent border ring
-- Has moment: dot below date number, type-colored
-- Selected: accent fill circle, white number
-- Past with moment: 40% opacity
+**Moment type colors:**
 
-Moment type colors:
 | Type | Color |
 |---|---|
-| Release | `var(--color-accent)` — artist-set |
-| Show | Warm coral `#e8715a` |
-| On Sale | Amber `#f4b942` |
-| Merch Drop | Teal `#2db8b0` |
-| Early Access | Gold `#d4a84b` |
-| Livestream | Electric blue `#4b8fd4` |
-| Private Booking | Muted `var(--color-text-3)` |
+| Release | `var(--color-accent)` |
+| Show | `#e8715a` |
+| On Sale | `#f4b942` |
+| Merch Drop | `#2db8b0` |
+| Early Access | `#d4a84b` |
+| Livestream | `#4b8fd4` |
+| Private Access | `var(--color-text-3)` |
 | Announcement | `rgba(255,255,255,0.7)` |
 
-### Motion
+**Motion:**
+- Month transition: entire grid slides as one unit, 220ms decel, x-axis only
+- Date selection: fill animates in 80ms (no scaling)
+- Detail panel: 350ms spring entry, 250ms decel exit (§7.2 panel spec)
+- New moment since last visit: subtle attention ring on relevant date cell, 1s duration, fades. Only ambient animation in the calendar. Says: *something changed.*
 
-Month transition: grid slides horizontally, 220ms decel ease. Numbers fade out (80ms) / fade in (100ms).
-
-Date selection: selected cell scales 1.08× in 120ms spring. Detail panel slides up in 350ms spring.
-
-Entry animation: calendar rows stagger in at 40ms intervals, `translateY(8px)` → `translateY(0)`, 250ms decel. Same bloom system as cards (§7.2 #4).
-
-### Mobile-first
-
-Grid fills full scroll-container width. Cells: ~44px wide × 48px tall.
-
-Detail panel: half-sheet overlay. Handle bar at top. Swipe down or tap outside to dismiss.
-
-Month navigation: swipe the grid itself — touch events on the grid container. No chevron buttons on mobile.
-
-Critical: 44px minimum tap target on all date cells. This means the grid must expand to fill available width rather than shrink to fit a fixed max.
+**Mobile:**
+- Full section width, 16px internal card padding
+- Cell width: `calc((100% - 12px) / 7)` — fills available width
+- Row height: 48px fixed
+- Swipe grid for month navigation
+- Detail panel: half-sheet from bottom, tapping a new date updates without dismissing
 
 ---
 
@@ -298,47 +329,54 @@ Critical: 44px minimum tap target on all date cells. This means the grid must ex
 ### Data structure
 
 ```json
-// Stored in able_v3_profile.moments (array)
+// able_v3_profile.moments — array
 {
   "id": "m_01jxk3",
-  "type": "release|show|on_sale|merch_drop|early_access|livestream|private_booking|announcement",
+  "type": "release|show|on_sale|merch_drop|early_access|livestream|private_access|announcement",
   "date": "2026-05-08",
   "endDate": null,
-  "title": "Resonance — Supporter Preview",
+  "title": "Resonance · Supporter Preview",
   "description": "Hear the full album 48 hours before anyone else.",
+  "artistNote": null,
   "access": "public|fan|supporter|private",
   "cta": {
     "label": "Listen early",
     "url": "https://...",
-    "type": "link|inquire|notify|stream"
+    "type": "link|enquire|notify|stream"
   },
   "imageUrl": null,
   "linkedId": null,
   "active": true
 }
+
+// able_v3_profile.privateAccessEnquiries — array (v1, before Supabase)
+{
+  "id": "e_01jxm9",
+  "email": "fan@example.com",
+  "message": "I'd love to host a small session at my home in Edinburgh...",
+  "momentId": "m_01jxk3",
+  "submittedAt": "2026-05-01T14:23:00Z",
+  "status": "pending|replied|passed"
+}
 ```
 
 ### Auto-population
 
-- `able_v3_profile.releaseDate` → generates Release moment if none exists with `linkedId: 'release'`
-- Shows array entries → generate Show moments with `linkedId: show.id`
-- Auto-generated moments are read-only in calendar admin (edit via source object)
+- `able_v3_profile.releaseDate` → Release moment if none exists with `linkedId: 'release'`
+- Shows array entries → Show moments with `linkedId: show.id`
+- Auto-generated moments are read-only in admin calendar (edit via source object)
 
-### Key rendering logic
+### Key rendering
 
 ```javascript
-function buildCalendarMonth(year, month, moments) {
-  // 1. Generate date grid (6 rows × 7 cols)
-  // 2. Filter moments for this month
-  // 3. Map moment dates to cell indices
-  // 4. Render cells with dot indicators (type-colored)
-  // 5. On date select: filter moments for that date → render detail panel
+function buildWorldMapMonth(year, month, moments) {
+  // Generate 6×7 date grid
+  // Filter moments for this month
+  // Map moment dates to cells → render type-colored dots
+  // On date select → filter moments for date → render detail panel
+  // Auto-select: nearest future moment date on load
 }
-```
 
-### Access gate logic
-
-```javascript
 function getCtaForMoment(moment, userState) {
   if (moment.access === 'public') return moment.cta
   if (moment.access === 'fan') {
@@ -349,51 +387,59 @@ function getCtaForMoment(moment, userState) {
   if (moment.access === 'supporter') {
     return userState.isSupporter
       ? moment.cta
-      : { label: 'Supporters get this', type: 'supporter_prompt' }
+      : { label: 'Become a supporter to unlock this', type: 'supporter_prompt' }
   }
   if (moment.access === 'private') {
-    return { label: 'Private moment — enquire', type: 'inquire' }
+    return { label: 'Express interest', type: 'enquire' }
   }
 }
 ```
 
-### localStorage schema
+### localStorage keys
 
 ```
-able_v3_profile.moments        — array of moment objects
-able_v3_profile.bookingEnquiries — array of received enquiries (v1, before Supabase)
+able_v3_profile.moments               — moment array
+able_v3_profile.privateAccessEnquiries — enquiry inbox (v1)
 ```
 
-Maps 1:1 to `moments` and `booking_enquiries` tables when Supabase lands.
+Maps 1:1 to `moments` and `private_access_enquiries` tables when Supabase lands.
 
-### V1 scope
+### V1 build scope
 
 Build:
-- Full month grid calendar section in `able-v6.html`
-- 8 moment types with color + icon system
-- 4 access layers (public, fan, supporter, private)
+- Full month grid in `able-v6.html` (no external lib — pure JS)
+- 8 moment types, color + icon system
+- 4 access tiers with correct CTA logic per tier
 - Auto-population from releases + shows
-- Manual moment entry in admin panel
-- Detail panel (half-sheet mobile, accordion desktop)
-- "Notify me" fan capture on fan-gated moments
-- Private booking availability + enquiry form (Netlify form POST)
-- Hero state chip integration (within-7-days moments)
-- Month swipe navigation (mobile) + chevron (desktop)
+- Manual moment entry in admin "Your World" section
+- Detail panel: half-sheet (mobile), sidebar (desktop)
+- "Notify me" fan capture on fan-list moments
+- Private access moment type + message-based enquiry
+- Hero state chip integration (≤7 day moments)
+- Month navigation: swipe (mobile) + chevrons (desktop)
+- "New moment" attention ring for return visits
 
 Defer to v2:
 - Per-moment analytics
 - Fan email notification on new moments
 - Recurring moments
 - Moment OG card sharing
-- Livestream embed inside detail panel
 - Full calendar embed widget
+- Livestream integration in detail panel
+- Supporter-only hidden moments (v1: visible, gated)
 
 ---
 
 ## 11. Final recommendation
 
-Build the Moment Calendar as a first-class section in `able-v6.html`, positioned immediately after the hero CTAs. Month grid with full visual presence. Eight moment types. Four access tiers. Private booking as inquiry-based only.
+The Artist World Map is the single feature that most clearly separates ABLE from every other artist profile tool. It adds a temporal dimension to a profile that previously existed only in the present tense.
 
-The single most important product decision: **nothing is hidden**. Private moments show as locked tiles. Supporter moments show as gated. Fan-gated moments show with a join path. The fan always sees the full shape of the calendar. They always understand what they're missing and what getting closer would give them.
+**Three decisions that make it a 10/10:**
 
-The Moment Calendar is what makes ABLE's artist profiles feel like living, time-aware destinations. That is what separates it from every link-in-bio tool in existence.
+1. **No section title.** Just the month name. This signals immediately that this is different — not a feature, not a widget, but a view into the artist's world.
+
+2. **Private access is a message, not a form.** The fan writes to the artist. The artist reads it. Nothing is automated. This keeps it intimate, selective, and premium in a way no booking system can.
+
+3. **Nothing is hidden.** Every moment has visible presence on the timeline. Private moments appear as locked tiles. Supporter moments appear with clear framing. The fan always sees the full arc. They always understand what getting closer means — because they can see it, on specific dates, in advance.
+
+The world map is what makes ABLE's profiles feel alive, time-aware, and worth returning to. That is the core product promise.
