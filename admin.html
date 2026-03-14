@@ -483,6 +483,7 @@ body {
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -758,6 +759,14 @@ body {
               <button class="theme-chip">Contrast</button>
               <button class="theme-chip">Glass</button>
             </div>
+          </div>
+        </div>
+        <div class="dash-card" style="margin-top:16px;">
+          <div class="dc-head"><div class="dc-title">Your QR code</div></div>
+          <div class="dc-body" style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+            <canvas id="qrCanvas" style="border-radius:12px;width:160px;height:160px;"></canvas>
+            <p style="font-size:11px;color:var(--t2);text-align:center;margin:0;">Drop this at gigs, on merch, or anywhere offline. Fans scan → your page.</p>
+            <button class="ci-btn ci-btn-connect" onclick="downloadQR()" style="width:100%;">Download PNG</button>
           </div>
         </div>
       </div>
@@ -2078,6 +2087,7 @@ window.addEventListener('DOMContentLoaded', () => {
   renderAdminMerch();
   renderAdminSupport();
   hydratePlatformFields(v3data);
+  renderQR();
 
   // Refresh activity every 30s (catches clicks from profile in another tab)
   setInterval(() => { loadRealStats(); loadActivityFeed(); }, 30000);
@@ -2085,6 +2095,32 @@ window.addEventListener('DOMContentLoaded', () => {
   // Wire profile page Save button
   wireProfileSave();
 });
+
+/* ── QR CODE ── */
+function renderQR() {
+  const data = safeLS(V3_KEY, {});
+  const name = data.name || 'artist';
+  const handle = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const url = `https://able.fm/${handle}?src=qr`;
+  const accent = data.accent || getComputedStyle(document.documentElement).getPropertyValue('--acc').trim() || '#c9a84c';
+  const canvas = document.getElementById('qrCanvas');
+  if (!canvas || typeof QRCode === 'undefined') return;
+  QRCode.toCanvas(canvas, url, {
+    width: 160,
+    margin: 2,
+    color: { dark: accent, light: '#0d0b09' },
+    errorCorrectionLevel: 'M',
+  }, err => { if (err) console.warn('QR error', err); });
+}
+
+function downloadQR() {
+  const canvas = document.getElementById('qrCanvas');
+  if (!canvas) return;
+  const link = document.createElement('a');
+  link.download = 'able-qr.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
 
 /* ── PROFILE PAGE SAVE ── */
 /* ── PLATFORM LINKS ── */
@@ -2165,6 +2201,7 @@ function saveProfilePage() {
     } catch(e) {}
   }
 
+  renderQR();
   const btn = document.querySelector('.profile-save-btn');
   if (btn) { btn.textContent = '✓ Saved'; setTimeout(() => btn.textContent = 'Save profile changes →', 1800); }
 }
