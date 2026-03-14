@@ -4183,7 +4183,7 @@
       var typeLabel = WM_TYPE_LABEL[moment.type] || 'Moment'
       var accessCfg = WM_ACCESS[moment.access] || WM_ACCESS.public
 
-      var profile = safeLS(V3_KEY, {})
+      var profile = safeLS('able_v3_profile', {})
       var fans = safeLS('able_fans', [])
       var userState = {
         isFan: fans.length > 0,
@@ -4238,11 +4238,11 @@
           var email = document.getElementById('wm-enquiry-email')?.value.trim() || ''
           if (msg.length < 50) { submitBtn.textContent = 'Write a bit more first'; return }
           if (!email.includes('@')) { submitBtn.textContent = 'Add your email'; return }
-          var enq = safeLS(V3_KEY, {})
+          var enq = safeLS('able_v3_profile', {})
           var enquiries = enq.privateAccessEnquiries || []
           enquiries.push({ momentId: moment.id, email: email, message: msg, submittedAt: new Date().toISOString(), status: 'pending' })
           enq.privateAccessEnquiries = enquiries
-          setLS(V3_KEY, enq)
+          setLS('able_v3_profile', enq)
           submitBtn.textContent = "Sent — I'll be in touch if it feels right."
           submitBtn.disabled = true
         })
