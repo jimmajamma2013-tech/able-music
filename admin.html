@@ -778,7 +778,7 @@ body {
   </nav>
 
   <div class="sb-footer">
-    <a class="sb-view-btn" href="able-v3.html" target="_blank">
+    <a class="sb-view-btn" href="able-v6.html" target="_blank">
       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M1 7a6 6 0 1012 0A6 6 0 001 7z"/><path d="M7 4v3l2 2"/></svg>
       View live page
     </a>
@@ -793,7 +793,7 @@ body {
     <div class="topbar-title" id="topbarTitle">Overview</div>
     <div class="topbar-actions">
       <span class="tier-badge" onclick="showPage('settings')" title="Upgrade plan">✦ Free</span>
-      <button class="tb-btn tb-btn-ghost" onclick="window.open('able-v3.html','_blank')">View page</button>
+      <button class="tb-btn tb-btn-ghost" onclick="window.open('able-v6.html','_blank')">View page</button>
     </div>
   </div>
 
@@ -960,7 +960,7 @@ body {
           <button class="tb-btn tb-btn-ghost" style="text-align:left;width:100%;justify-content:flex-start;" onclick="showPage('fans')">
             👥 View fans
           </button>
-          <a class="tb-btn tb-btn-ghost" href="able-v3.html" target="_blank" style="text-align:left;width:100%;justify-content:flex-start;display:flex;">
+          <a class="tb-btn tb-btn-ghost" href="able-v6.html" target="_blank" style="text-align:left;width:100%;justify-content:flex-start;display:flex;">
             ↗ View live page
           </a>
         </div>
@@ -976,20 +976,43 @@ body {
       <div class="page-sub">What fans see on your page.</div>
     </div>
     <div class="section-grid">
-      <div class="dash-card">
-        <div class="dc-head"><div class="dc-title">Basic info</div></div>
-        <div class="dc-body">
-          <div class="field-row">
-            <div class="field-label">Artist name</div>
-            <input class="field-input" type="text" id="adminName" placeholder="Your artist name">
+      <div>
+        <div class="dash-card" style="margin-bottom:16px;">
+          <div class="dc-head"><div class="dc-title">Basic info</div></div>
+          <div class="dc-body">
+            <div class="field-row">
+              <div class="field-label">Artist name</div>
+              <input class="field-input" type="text" id="adminName" placeholder="Your artist name">
+            </div>
+            <div class="field-row">
+              <div class="field-label">Genre / style</div>
+              <input class="field-input" type="text" id="adminGenre" placeholder="e.g. Electronic · London">
+            </div>
+            <div class="field-row">
+              <div class="field-label">Bio</div>
+              <textarea class="field-input field-textarea" id="adminBio" placeholder="One line about you…"></textarea>
+            </div>
           </div>
-          <div class="field-row">
-            <div class="field-label">Genre / style</div>
-            <input class="field-input" type="text" id="adminGenre" placeholder="e.g. Electronic · London">
-          </div>
-          <div class="field-row">
-            <div class="field-label">Bio</div>
-            <textarea class="field-input field-textarea" id="adminBio" placeholder="One line about you…"></textarea>
+        </div>
+        <div class="dash-card">
+          <div class="dc-head"><div class="dc-title">Hero CTAs</div></div>
+          <div class="dc-body">
+            <div class="field-row">
+              <div class="field-label">Primary label</div>
+              <input class="field-input" type="text" id="adminCtaPrimaryLabel" placeholder="e.g. Stream Now" maxlength="32">
+            </div>
+            <div class="field-row">
+              <div class="field-label">Primary link</div>
+              <input class="field-input" type="url" id="adminCtaPrimaryUrl" placeholder="https://…">
+            </div>
+            <div class="field-row" style="margin-top:8px;">
+              <div class="field-label">Secondary label</div>
+              <input class="field-input" type="text" id="adminCtaSecLabel" placeholder="e.g. Get Tickets" maxlength="32">
+            </div>
+            <div class="field-row">
+              <div class="field-label">Secondary link</div>
+              <input class="field-input" type="url" id="adminCtaSecUrl" placeholder="https://… (optional)">
+            </div>
           </div>
         </div>
       </div>
@@ -2537,6 +2560,14 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('adminBio') && bio) document.getElementById('adminBio').value = bio;
   if (document.getElementById('adminGenre') && genre) document.getElementById('adminGenre').value = genre;
 
+  // Hydrate CTA fields
+  const ctaP = v3data.ctaPrimary   || {};
+  const ctaS = v3data.ctaSecondary || {};
+  if (document.getElementById('adminCtaPrimaryLabel') && ctaP.label) document.getElementById('adminCtaPrimaryLabel').value = ctaP.label;
+  if (document.getElementById('adminCtaPrimaryUrl')   && ctaP.url)   document.getElementById('adminCtaPrimaryUrl').value   = ctaP.url;
+  if (document.getElementById('adminCtaSecLabel')     && ctaS.label) document.getElementById('adminCtaSecLabel').value     = ctaS.label;
+  if (document.getElementById('adminCtaSecUrl')       && ctaS.url)   document.getElementById('adminCtaSecUrl').value       = ctaS.url;
+
   // Greet by name
   const greeting = document.getElementById('homeGreeting');
   if (greeting && name !== 'Your Artist Name') greeting.textContent = `Good to see you, ${name.split(' ')[0]}.`;
@@ -2677,6 +2708,11 @@ function saveProfilePage() {
     { label: 'SoundCloud',  type: 'soundcloud', url: document.getElementById('plSoundcloud')?.value.trim() || '' },
     { label: 'YouTube',     type: 'youtube',    url: document.getElementById('plYoutube')?.value.trim()    || '' },
   ];
+  const ctaPrimaryLabel = document.getElementById('adminCtaPrimaryLabel')?.value.trim();
+  const ctaPrimaryUrl   = document.getElementById('adminCtaPrimaryUrl')?.value.trim();
+  const ctaSecLabel     = document.getElementById('adminCtaSecLabel')?.value.trim();
+  const ctaSecUrl       = document.getElementById('adminCtaSecUrl')?.value.trim();
+
   const updated = {
     ...data,
     name:      name   || data.name,
@@ -2686,6 +2722,8 @@ function saveProfilePage() {
     genres:    genre ? [genre] : data.genres,
     location:  data.location,
     platforms,
+    ctaPrimary:   { label: ctaPrimaryLabel || data.ctaPrimary?.label || 'Stream Now',  url: ctaPrimaryUrl   || data.ctaPrimary?.url   || '' },
+    ctaSecondary: { label: ctaSecLabel     || data.ctaSecondary?.label || '',           url: ctaSecUrl       || data.ctaSecondary?.url  || '' },
   };
   setLS(V3_KEY, updated);
   syncProfile(updated);
