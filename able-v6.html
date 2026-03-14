@@ -1785,9 +1785,8 @@
     .merch-item:hover {
       box-shadow: 0 8px 32px rgba(0,0,0,0.5);
       transform: translateY(-2px);
+      border-color: var(--color-accent);
     }
-
-    .merch-item:hover { border-color: var(--color-accent); }
 
     .merch-item__image-wrap {
       position: relative;
@@ -2145,15 +2144,7 @@
       text-underline-offset: 2px;
     }
 
-    /* === SECTION: CHECKPOINT 1 PLACEHOLDER ===================== */
-    /* Removed — replaced by hero */
-    .c1-placeholder { display: none; }
-
     /* === ON-PAGE EDITING ======================================= */
-    /* Shown when artist is viewing their own profile (has localStorage profile) */
-    .editable-hint {
-      position: relative;
-    }
 
     /* ── Edit FAB (pen icon, bottom-right) ──────────────────────── */
     #edit-fab {
@@ -2402,7 +2393,7 @@
     /* Credits accordion height transition */
     .credits-body {
       overflow: hidden;
-      transition: height var(--dur-mid) var(--ease-decel);
+      transition: max-height var(--dur-mid) var(--ease-decel);
     }
 
     /* === CHECKPOINT 5: INTERACTION LAYER ======================= */
@@ -2411,10 +2402,11 @@
     .tab-indicator {
       position: absolute;
       bottom: 4px;
+      left: 0;
       height: 2px;
       background: var(--color-accent);
       border-radius: var(--r-pill);
-      transition: left 350ms var(--ease-spring), width 350ms var(--ease-spring);
+      transition: transform 350ms var(--ease-spring), width 350ms var(--ease-spring);
       pointer-events: none;
     }
 
@@ -3312,7 +3304,6 @@
       twitter:     `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.732-8.837L1.548 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
       facebook:    `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`,
       mixcloud:    `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 7.85c-.1 0-.2.007-.298.014C16.6 5.67 14.34 4 11.66 4a6.14 6.14 0 00-5.944 4.57c-.114-.014-.228-.02-.344-.02a3.49 3.49 0 00-3.49 3.49A3.49 3.49 0 005.37 15.53h12.153a3.84 3.84 0 000-7.68z"/></svg>`,
-      bandcamp:    `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M0 18.75l7.437-13.5H24l-7.438 13.5z"/></svg>`,
       dice:        `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r="1.5" fill="white"/><circle cx="16" cy="8" r="1.5" fill="white"/><circle cx="8" cy="16" r="1.5" fill="white"/><circle cx="16" cy="16" r="1.5" fill="white"/><circle cx="12" cy="12" r="1.5" fill="white"/></svg>`,
       link:        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
     }
@@ -3457,7 +3448,6 @@
       // On hover: show brand colour instead of generic accent
       if (brandColor) {
         a.addEventListener('mouseenter', () => {
-          a.style.setProperty('--tile-brand', brandColor)
           a.style.color = brandColor
           a.style.borderColor = brandColor + '55'
           a.style.backgroundColor = brandColor + '15'
@@ -3659,7 +3649,6 @@
       const genreEl    = document.getElementById('hero-genre')
       const locEl      = document.getElementById('hero-location')
       const sepEl      = document.getElementById('hero-sep')
-      const hasMeta    = profile.genres?.length || profile.location
       genreEl.textContent  = profile.genres?.[0] || ''
       locEl.textContent    = profile.location || ''
       sepEl.hidden         = !(profile.genres?.[0] && profile.location)
@@ -4475,22 +4464,18 @@
         body.hidden = isOpen
 
         if (!isOpen) {
-          // Animate height open
-          body.style.height = '0'
           body.hidden = false
-          requestAnimationFrame(() => {
-            body.style.height = body.scrollHeight + 'px'
-            body.addEventListener('transitionend', () => {
-              body.style.height = ''
-            }, { once: true })
-          })
+          body.style.maxHeight = body.scrollHeight + 'px'
+          body.addEventListener('transitionend', () => {
+            body.style.maxHeight = ''
+          }, { once: true })
         } else {
-          body.style.height = body.scrollHeight + 'px'
+          body.style.maxHeight = body.scrollHeight + 'px'
           requestAnimationFrame(() => {
-            body.style.height = '0'
+            body.style.maxHeight = '0'
             body.addEventListener('transitionend', () => {
               body.hidden = true
-              body.style.height = ''
+              body.style.maxHeight = ''
             }, { once: true })
           })
         }
@@ -4597,8 +4582,8 @@
       function moveIndicator(activeTab) {
         const rect = activeTab.getBoundingClientRect()
         const barRect = tabBar.getBoundingClientRect()
-        indicator.style.width  = rect.width + 'px'
-        indicator.style.left   = (rect.left - barRect.left) + 'px'
+        indicator.style.width     = rect.width + 'px'
+        indicator.style.transform = `translateX(${rect.left - barRect.left}px)`
       }
 
       const tabs = tabBar.querySelectorAll('.tab-btn')
@@ -4743,25 +4728,6 @@
 
     // --- #17: Copy link flash -----------------------------------
 
-    function initCopyLink() {
-      const btn = document.querySelector('.share-btn')
-      if (!btn) return
-
-      btn.addEventListener('click', () => {
-        const handle = window.ABLE?.getProfile()?.handle
-        const url = handle ? `https://able.fm/${handle}` : window.location.href
-        navigator.clipboard.writeText(url).then(() => {
-          btn.classList.add('copy-flash')
-          const orig = btn.textContent
-          btn.textContent = 'Copied!'
-          setTimeout(() => {
-            btn.classList.remove('copy-flash')
-            btn.textContent = orig
-          }, 2000)
-        }).catch(() => {})
-      })
-    }
-
     // --- Reduced motion -------------------------------------------
 
     function respectReducedMotion() {
@@ -4832,9 +4798,6 @@
       const shell = document.getElementById('app-shell')
       const profile = getProfile()
 
-      // Set page title with artist name
-      if (profile.name) document.title = `${profile.name} — ABLE`
-
       // Apply theme
       const theme = profile.theme || 'dark'
       shell.dataset.theme = theme
@@ -4884,7 +4847,6 @@
       initCardBloom()
       initLazyImageBlurUp()
       patchFanFormConfetti()
-      initCopyLink()
       respectReducedMotion()
 
       // Track page view
@@ -4895,21 +4857,6 @@
 
       // On-page edit bar — show if artist owns this profile (has localStorage data)
       initEditBar(profile)
-
-      // Expose globals
-      window.ABLE = {
-        getProfile,
-        applyDerivedTokens,
-        applyVibe,
-        extractAmbientColour,
-        computeState,
-        hexToRgb,
-        VIBES,
-        trackClick,
-        trackView,
-        getUtmSource,
-        shell,
-      }
     }
 
     // === ON-PAGE EDITING (§6.4) ==================================
@@ -4930,9 +4877,8 @@
       if (panel && panel.parentElement !== document.body)  document.body.appendChild(panel)
       if (!fab || !panel) return
 
-      // Show FAB only if artist owns this profile
+      // Show FAB only if artist owns this profile (has their own localStorage data)
       const isOwner = Boolean(localStorage.getItem('able_v3_profile') && profile.name)
-                   || new URLSearchParams(window.location.search).get('edit') === '1'
       if (!isOwner) return
 
       fab.classList.add('visible')
