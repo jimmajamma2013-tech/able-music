@@ -5073,13 +5073,6 @@
     }
 
     // renderHero must exist — quick re-render of name + bio after inline save
-    function renderHero(profile) {
-      const nameEl = document.getElementById('hero-name')
-      const bioEl  = document.getElementById('bio-text')
-      if (nameEl && profile.name) nameEl.textContent = profile.name
-      if (bioEl  && profile.bio)  bioEl.textContent  = profile.bio
-    }
-
     // Run after DOM ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', init)
