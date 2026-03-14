@@ -5686,9 +5686,10 @@
         // Enrich gig chip with venue + set time
         if (typeof gigChipEvent !== 'undefined' && gigChipEvent) {
           var timeStr = gigChipEvent.setTime || gigChipEvent.time || ''
-          chipCustomText = timeStr
-            ? `On tonight \u2014 ${gigChipEvent.venue}, ${gigChipEvent.city} \u2014 ${timeStr}`
-            : `On tonight \u2014 ${gigChipEvent.venue}, ${gigChipEvent.city}`
+          var location = [gigChipEvent.venue, gigChipEvent.city].filter(Boolean).join(', ')
+          chipCustomText = location
+            ? (timeStr ? `On tonight \u2014 ${location} \u2014 ${timeStr}` : `On tonight \u2014 ${location}`)
+            : (timeStr ? `On tonight \u2014 ${timeStr}` : 'On tonight')
         }
       } else if (state === 'profile') {
         // Build moments early enough to check for near-future moment
