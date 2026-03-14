@@ -106,16 +106,20 @@
     }
 
     /* === §3.2 THEME TOKENS ====================================== */
+    /* Dark theme: luxurious graphite layering — not pure black, not Midnight Navy.
+       Four distinct surface levels: base → surface → card → raised.
+       Each step +7-9 lightness points. Cool-neutral undertone (not warm, not harsh blue).
+       Text stays warm cream. Accent used sparingly. */
     [data-theme="dark"] {
-      --color-bg:          #0d0e1a;
-      --color-surface:     #111427;
-      --color-card:        #12152a;
-      --color-card-raised: #1a1d35;
-      --color-border:      rgba(255,255,255,0.07);
-      --color-text:        #f0ede8;
-      --color-text-2:      rgba(240,237,232,0.6);
-      --color-text-3:      rgba(240,237,232,0.32);
-      --color-overlay:     rgba(13,14,26,0.82);
+      --color-bg:          #0a0b10;  /* deep graphite-black — barely perceptible cool hint */
+      --color-surface:     #0f1018;  /* clear step above bg — neutral-deep charcoal */
+      --color-card:        #16161e;  /* card layer — graphite with subtle purple-cool */
+      --color-card-raised: #1e1e2a;  /* elevated panel — distinctly lifted */
+      --color-border:      rgba(255,255,255,0.065);
+      --color-text:        #f0ede8;  /* warm cream — unchanged */
+      --color-text-2:      rgba(240,237,232,0.60);
+      --color-text-3:      rgba(218,213,207,0.33);  /* slightly warmer muted */
+      --color-overlay:     rgba(10,11,16,0.82);
       --shadow-card:       0 4px 28px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.04);
     }
 
@@ -334,8 +338,8 @@
       max-width: 430px;
       height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom, 0px));
       padding-bottom: env(safe-area-inset-bottom, 0px);
-      background-color: rgba(8,8,8,0.96);
-      border-top: 1px solid rgba(255,255,255,0.07);
+      background-color: rgba(9,9,14,0.97);
+      border-top: 1px solid rgba(255,255,255,0.065);
       display: flex;
       align-items: center;
       justify-content: space-around;
@@ -897,7 +901,8 @@
       gap: 6px;
       padding: var(--sp-4) var(--sp-2);
       min-height: 72px;
-      background-color: rgba(255,255,255,0.03);
+      /* Slightly more present than pure transparent — reads as a product object, not a grid tile */
+      background-color: rgba(255,255,255,0.055);
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: var(--r-md);
       font-family: var(--font-body);
@@ -917,27 +922,32 @@
     .pill:hover,
     .pill:focus-visible {
       color: var(--color-text);
-      border-color: rgba(var(--color-accent-rgb), 0.25);
-      background-color: rgba(255,255,255,0.05);
+      border-color: rgba(var(--color-accent-rgb), 0.22);
+      background-color: rgba(255,255,255,0.09);
     }
 
     .pill.pressing {
       transform: scale(0.95);
     }
 
-    /* Platform icon — larger in tile mode */
+    /* Platform icon — refined size, more elegant, less launcher-grid */
     .pill__icon {
-      width: 26px;
-      height: 26px;
+      width: 22px;
+      height: 22px;
       flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      opacity: 0.8;
+      transition: opacity var(--dur-fast) var(--ease-standard);
     }
 
+    .pill:hover .pill__icon,
+    .pill:focus-visible .pill__icon { opacity: 1; }
+
     .pill__icon svg {
-      width: 26px;
-      height: 26px;
+      width: 22px;
+      height: 22px;
     }
 
     /* Glass tile */
@@ -955,14 +965,16 @@
 
     /* Light tiles — flip to dark-on-cream */
     [data-theme="light"] .pill {
-      background-color: rgba(0,0,0,0.03);
+      background-color: rgba(0,0,0,0.04);
       border-color: rgba(0,0,0,0.10);
     }
     [data-theme="light"] .pill:hover,
     [data-theme="light"] .pill:focus-visible {
-      background-color: rgba(0,0,0,0.06);
+      background-color: rgba(0,0,0,0.08);
       border-color: rgba(var(--color-accent-rgb), 0.3);
     }
+    [data-theme="light"] .pill .pill__icon { opacity: 0.7; }
+    [data-theme="light"] .pill:hover .pill__icon { opacity: 1; }
     [data-theme="light"] .pills-more:hover {
       background-color: rgba(0,0,0,0.04);
     }
@@ -1022,13 +1034,13 @@
       margin-bottom: var(--sp-6);
       /* Accent rule above — editorial marker */
       padding-top: var(--sp-5);
-      border-top: 2px solid rgba(var(--color-accent-rgb), 0.8);
+      border-top: 1px solid rgba(var(--color-accent-rgb), 0.38);
     }
 
     /* Secondary section header — quieter hierarchy */
     .section-header--secondary {
       border-top-width: 1px;
-      border-top-color: rgba(255,255,255,0.08);
+      border-top-color: rgba(255,255,255,0.06);
       padding-top: var(--sp-4);
       margin-bottom: var(--sp-5);
     }
@@ -2964,6 +2976,7 @@
       bio: 'Beats built in the dark. Music for late nights and early mornings. New album out now.',
       theme: 'dark',
       vibe: 'electronic',
+      accent: '#c49438',  /* washed gold — editorial warmth over the deep graphite base */
       tier: 'free',
       topCard: {
         type: 'artwork',
