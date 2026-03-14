@@ -4278,30 +4278,34 @@
       handle: 'luna',
       genres: ['Electronic'],
       location: 'London',
-      bio: 'Beats built in the dark. Music for late nights and early mornings. New album out now.',
+      bio: 'Producer and sound designer working between London and Berlin. My music is built for spaces where it can breathe — clubs, headphones, 3am drives. New album Echo Chamber is out now.',
       theme: 'dark',
       vibe: 'electronic',
-      accent: '#c49438',  /* washed gold — editorial warmth over the deep graphite base */
+      accent: '#c49438',  /* washed gold — editorial warmth over deep graphite */
       tier: 'free',
+      // Background: aurora preset gives new visitors an immediate sense of the aesthetic
+      backgroundPreset: 'aurora',
+      backgroundBlur: 0,
+      backgroundBrightness: 0.6,
+      backgroundOpacity: 0.75,
       topCard: {
         type: 'artwork',
         artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
         title: 'Echo Chamber',
         releaseType: 'Album',
-        creditLine: 'Prod. LUNA · Mix. James Reid'
+        creditLine: 'Prod. LUNA · Mix. James Reid · Master. Calum MacPhail'
       },
+      ctaPrimary:   { label: 'Stream Echo Chamber', url: 'https://open.spotify.com' },
+      ctaSecondary: { label: 'Join the close circle →', url: '#fan-capture-section' },
       platforms: [
-        { label: 'Spotify',      url: 'https://spotify.com',        type: 'spotify' },
+        { label: 'Spotify',      url: 'https://open.spotify.com',    type: 'spotify' },
         { label: 'SoundCloud',   url: 'https://soundcloud.com',      type: 'soundcloud' },
         { label: 'YouTube',      url: 'https://youtube.com',         type: 'youtube' },
         { label: 'Apple Music',  url: 'https://music.apple.com',     type: 'apple' },
-        { label: 'TikTok',       url: 'https://tiktok.com',          type: 'tiktok' },
-        { label: 'Instagram',    url: 'https://instagram.com',       type: 'instagram' },
         { label: 'Bandcamp',     url: 'https://bandcamp.com',        type: 'bandcamp' },
+        { label: 'Instagram',    url: 'https://instagram.com',       type: 'instagram' },
+        { label: 'TikTok',       url: 'https://tiktok.com',          type: 'tiktok' },
         { label: 'Mixcloud',     url: 'https://mixcloud.com',        type: 'mixcloud' },
-      ],
-      ctas: [
-        { label: 'Stream now', url: 'https://spotify.com', type: 'primary' },
       ],
       releases: [
         {
@@ -4310,18 +4314,20 @@
           platform: 'Spotify',
           releaseDate: '2026-01-15',
           artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
-          streamUrl: 'https://open.spotify.com',
+          // Spotify embed — shows player with album info and tracks
+          streamUrl: 'https://open.spotify.com/album/6rqhFgbbKwnb9MLmUQDhG6',
           tracks: [
-            { title: 'Liminal',     duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
-            { title: 'Glass City',  duration: '3:48', artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=100&q=60' },
-            { title: 'Deep Water',  duration: '5:03', artworkUrl: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=100&q=60' },
-            { title: 'Signal Loss', duration: '3:22', artworkUrl: 'https://images.unsplash.com/photo-1526478806334-5fd488fcaabc?w=100&q=60' },
-            { title: 'Corridor',    duration: '6:01', artworkUrl: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=100&q=60' },
-            { title: 'Static',      duration: '4:44', artworkUrl: 'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=100&q=60' },
+            { title: 'Liminal',      duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=100&q=60' },
+            { title: 'Glass City',   duration: '3:48', artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=100&q=60' },
+            { title: 'Deep Water',   duration: '5:03', artworkUrl: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=100&q=60' },
+            { title: 'Signal Loss',  duration: '3:22', artworkUrl: 'https://images.unsplash.com/photo-1526478806334-5fd488fcaabc?w=100&q=60' },
+            { title: 'Corridor',     duration: '6:01', artworkUrl: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=100&q=60' },
+            { title: 'Static',       duration: '4:44', artworkUrl: 'https://images.unsplash.com/photo-1416339306562-f3d12fefd36f?w=100&q=60' },
           ],
           credits: [
-            { name: 'LUNA', role: 'Production, Mixing' },
-            { name: 'James Reid', role: 'Mastering' },
+            { name: 'LUNA',          role: 'Production, Mixing' },
+            { name: 'James Reid',    role: 'Mastering' },
+            { name: 'Calum MacPhail',role: 'Additional Production' },
           ]
         },
         {
@@ -4330,17 +4336,20 @@
           platform: 'SoundCloud',
           releaseDate: '2025-11-20',
           artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=800&q=80',
+          // SoundCloud embed — Bicep's Glue (working real embed)
           streamUrl: 'https://soundcloud.com/bicep-music/glue',
           tracks: [
-            { title: 'Liminal', duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=100&q=60' },
-            { title: 'Liminal (Instrumental)', duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=100&q=60' },
+            { title: 'Liminal',              duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=100&q=60' },
+            { title: 'Liminal (Instrumental)',duration: '4:12', artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=100&q=60' },
           ],
-          credits: []
+          credits: [
+            { name: 'LUNA', role: 'Production, Mixing, Mastering' }
+          ]
         }
       ],
       events: [
         {
-          venue: 'Fabric',
+          venue: 'fabric',
           city: 'London',
           country: 'UK',
           date: new Date(Date.now() + 12 * 86400000).toISOString(),
@@ -4373,58 +4382,92 @@
         {
           published: true,
           sortOrder: 1,
-          imageUrl: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&q=80',
-          title: 'New video out now',
-          body: 'The Liminal video — shot in a derelict power station in East London.',
-          ctaLabel: 'Watch',
-          ctaUrl: 'https://youtube.com'
+          // Concert photography — real atmosphere
+          imageUrl: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80',
+          title: 'Liminal — the video',
+          body: 'Shot over two nights in a derelict power station in Stratford. No script. Just the track and a camera.',
+          ctaLabel: 'Watch on YouTube',
+          // Floating Points live session — real and atmospheric
+          ctaUrl: 'https://www.youtube.com/watch?v=5qm8PH4xAss'
         },
         {
           published: true,
           sortOrder: 2,
-          title: 'Tour dates dropped',
-          body: 'Spring run across London, Amsterdam, Berlin. Tickets below.',
+          imageUrl: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&q=80',
+          title: 'fabric · London · Mar 26',
+          body: 'Playing the main room from 23:30. Doors at 22:00. This one matters to me.',
           ctaLabel: 'Get tickets',
           ctaUrl: 'https://fabriclondon.com'
+        },
+        {
+          published: true,
+          sortOrder: 3,
+          title: 'Echo Chamber is out now',
+          body: '6 tracks. All written and produced alone in a studio in Hackney. The first record that sounds like me.',
+          ctaLabel: 'Stream it',
+          ctaUrl: 'https://open.spotify.com'
         }
       ],
       merch: {
-        storeUrl: 'https://bandcamp.com',
+        storeUrl: 'https://luna.bandcamp.com',
         items: [
           {
-            title: 'Echo Chamber LP',
-            price: 22,
+            title: 'Echo Chamber — Vinyl LP',
+            price: 28,
             currency: '£',
             badge: 'New',
             emoji: '💿',
-            url: 'https://bandcamp.com'
+            imageUrl: 'https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400&q=80',
+            url: 'https://luna.bandcamp.com'
           },
           {
-            title: 'Liminal Tee',
-            price: 35,
+            title: 'Liminal — Limited 12"',
+            price: 18,
             currency: '£',
-            url: 'https://bandcamp.com'
+            badge: 'Ltd',
+            imageUrl: 'https://images.unsplash.com/photo-1548940740-204726a19be3?w=400&q=80',
+            url: 'https://luna.bandcamp.com'
           },
           {
-            title: 'Logo Hoodie',
-            price: 65,
+            title: 'Echo Chamber Tee — Black',
+            price: 32,
             currency: '£',
-            url: 'https://bandcamp.com'
+            imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&q=80',
+            url: 'https://luna.bandcamp.com'
           },
           {
-            title: 'Tote Bag',
-            price: 15,
+            title: 'Studio Hoodie — Charcoal',
+            price: 68,
             currency: '£',
-            url: 'https://bandcamp.com'
-          }
+            imageUrl: 'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=400&q=80',
+            url: 'https://luna.bandcamp.com'
+          },
+          {
+            title: 'Canvas Tote',
+            price: 16,
+            currency: '£',
+            imageUrl: 'https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=400&q=80',
+            url: 'https://luna.bandcamp.com'
+          },
+          {
+            title: 'Sticker Pack',
+            price: 5,
+            currency: '£',
+            imageUrl: 'https://images.unsplash.com/photo-1586936893354-362ad6ae47ba?w=400&q=80',
+            url: 'https://luna.bandcamp.com'
+          },
         ]
       },
+      /* legacy ctas fallback */
+      ctas: [
+        { label: 'Stream Echo Chamber', url: 'https://open.spotify.com', type: 'primary' },
+      ],
       support: {
         packs: [
           {
             emoji: '☕',
-            label: 'Buy me a coffee',
-            description: 'Keep the studio lights on.',
+            label: 'Keep the studio open',
+            description: 'Covers a day of heat and electricity.',
             price: 3,
             currency: '£',
             url: 'https://buymeacoffee.com'
@@ -4432,7 +4475,7 @@
           {
             emoji: '🎧',
             label: 'Support a track',
-            description: 'Help fund the next release.',
+            description: 'Helps fund sampling clearances and mastering.',
             price: 10,
             currency: '£',
             url: 'https://buymeacoffee.com'
@@ -4440,7 +4483,7 @@
           {
             emoji: '🎤',
             label: 'Studio patron',
-            description: 'Monthly access to work-in-progress.',
+            description: 'Early access to demos, session notes, and work-in-progress.',
             price: 5,
             currency: '£',
             url: 'https://patreon.com'
@@ -4451,13 +4494,13 @@
         enabled: true,
         monthlyAmount: 5,
         currency: '£',
-        introText: 'Get closer to LUNA\'s music. Early access, close circle sessions, and more.'
+        introText: 'Hear new music before anyone else. Studio notes, WIP demos, and an honest view of what it takes to make this.'
       },
       moments: [
         {
           id: 'demo-m1',
           type: 'early_access',
-          title: 'Echo Chamber — early access',
+          title: 'Echo Chamber — early access listen',
           date: new Date(Date.now() + 3 * 86400000).toISOString().slice(0,10),
           access: 'supporter',
           active: true,
@@ -4466,16 +4509,16 @@
         {
           id: 'demo-m2',
           type: 'livestream',
-          title: 'Close circle listening session',
+          title: 'Studio session — live Q&A',
           date: new Date(Date.now() + 10 * 86400000).toISOString().slice(0,10),
           access: 'supporter',
           active: true,
-          artistNote: 'Supporters only · Live session'
+          artistNote: 'Supporters only · Live from the studio'
         },
         {
           id: 'demo-m3',
           type: 'show',
-          title: 'Fabric',
+          title: 'fabric',
           date: new Date(Date.now() + 12 * 86400000).toISOString().slice(0,10),
           access: 'public',
           active: true
@@ -4486,13 +4529,7 @@
         feel: 'bold-refined',
         accent: '#c49438',
         accentSource: 'ai',
-        refinements: {
-          darkness: 0,   // -3 (lighter) → +3 (darker)
-          spacing: 0,    // -3 (tighter) → +3 (more space)
-          sharpness: 0,  // -3 (softer)  → +3 (sharper)
-          contrast: 0,   // -3 (quieter) → +3 (bolder)
-          warmth: 0      // -3 (cooler)  → +3 (warmer)
-        }
+        refinements: { darkness: 0, spacing: 0, sharpness: 0, contrast: 0, warmth: 0 }
       },
       credits: [],
       recommendations: [
@@ -4512,6 +4549,12 @@
           name: 'Shackleton',
           note: 'Bass as architecture.',
           url: 'https://bandcamp.com'
+        },
+        {
+          name: 'Floating Points',
+          note: 'Proof that electronic music can be tender.',
+          avatarUrl: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=88&q=80',
+          url: 'https://youtube.com'
         }
       ]
     }
