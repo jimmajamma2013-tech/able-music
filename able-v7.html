@@ -182,6 +182,11 @@
     /* CSS sets --font-d family + letter spacing; JS calls applyDerivedTokens
        for accent + radius (r-mult not safe as CSS custom property in calc) */
 
+    /* === VIBE MOTION PERSONALITY ================================
+       Each vibe gets its own timing + spring character so the page
+       *feels* different — not just looks different. Fast spring for
+       high-energy vibes, slow organic easing for quiet ones.
+    ============================================================== */
     [data-vibe="electronic"] {
       --font-d: 'Barlow Condensed', system-ui, sans-serif;
       --font-d-weight: 700;
@@ -189,6 +194,9 @@
       --font-d-transform: uppercase;
       --ls-d: 0.06em;
       --ls-label: 0.22em;
+      /* Tight, mechanical — snaps into place */
+      --dur-mid: 180ms;
+      --ease-spring: cubic-bezier(0.34, 1.28, 0.64, 1);
     }
 
     [data-vibe="hiphop"] {
@@ -198,6 +206,9 @@
       --font-d-transform: uppercase;
       --ls-d: 0.04em;
       --ls-label: 0.28em;
+      /* Punchy, confident — quick with a solid land */
+      --dur-mid: 200ms;
+      --ease-spring: cubic-bezier(0.34, 1.40, 0.64, 1);
     }
 
     [data-vibe="rnb"] {
@@ -207,6 +218,9 @@
       --font-d-transform: none;
       --ls-d: 0.02em;
       --ls-label: 0.12em;
+      /* Smooth, sensual — lingers at the end */
+      --dur-mid: 320ms;
+      --ease-spring: cubic-bezier(0.34, 1.52, 0.64, 1);
     }
 
     [data-vibe="indie"] {
@@ -216,6 +230,9 @@
       --font-d-transform: none;
       --ls-d: -0.01em;
       --ls-label: 0.08em;
+      /* Natural, unhurried — default spring, mid pace */
+      --dur-mid: 260ms;
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     [data-vibe="pop"] {
@@ -225,6 +242,9 @@
       --font-d-transform: none;
       --ls-d: 0.04em;
       --ls-label: 0.16em;
+      /* Bright, bouncy — exaggerated spring overshoot */
+      --dur-mid: 220ms;
+      --ease-spring: cubic-bezier(0.34, 1.72, 0.64, 1);
     }
 
     [data-vibe="rock"] {
@@ -234,6 +254,9 @@
       --font-d-transform: uppercase;
       --ls-d: 0.08em;
       --ls-label: 0.2em;
+      /* Aggressive, direct — fast with minimal bounce */
+      --dur-mid: 190ms;
+      --ease-spring: cubic-bezier(0.34, 1.20, 0.64, 1);
     }
 
     [data-vibe="acoustic"] {
@@ -243,6 +266,9 @@
       --font-d-transform: none;
       --ls-d: 0.01em;
       --ls-label: 0.10em;
+      /* Organic, unhurried — slow with barely any overshoot */
+      --dur-mid: 350ms;
+      --ease-spring: cubic-bezier(0.34, 1.10, 0.64, 1);
     }
 
     /* === FEEL QUADRANT MODIFIERS ================================
