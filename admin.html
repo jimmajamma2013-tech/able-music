@@ -2228,6 +2228,16 @@ function renderAdminMusic() {
             </div>`).join('')}
         </div>
         <button class="dc-action" style="margin-top:6px;" onclick="addTrack('${rel.id}')">+ Add track</button>
+        <div class="field-label" style="margin-top:14px;margin-bottom:6px;">Credits <span style="font-weight:400;color:var(--t3);">(producer, mixer, feat. artist…)</span></div>
+        <div id="credits-${rel.id}">
+          ${(rel.credits||[]).map((c,ci)=>`
+            <div class="admin-track-row" data-ci="${ci}">
+              <input class="field-input" value="${escHtml(c.name||'')}" oninput="updateCredit('${rel.id}',${ci},'name',this.value)" placeholder="Name" style="flex:1;">
+              <input class="field-input" value="${escHtml(c.role||'')}" oninput="updateCredit('${rel.id}',${ci},'role',this.value)" placeholder="Role (e.g. Mixed by)" style="flex:1;">
+              <button class="snap-btn del" onclick="removeCredit('${rel.id}',${ci})" title="Remove">×</button>
+            </div>`).join('')}
+        </div>
+        <button class="dc-action" style="margin-top:6px;" onclick="addCredit('${rel.id}')">+ Add credit</button>
         <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;">
           <button class="ci-btn ci-btn-connect" onclick="saveAllMusic()">Save music</button>
         </div>
@@ -2332,6 +2342,38 @@ function updateTrack(rid, ti, field, value) {
     if (r.id !== rid) return r;
     const tracks = (r.tracks||[]).map((t,i) => i===ti ? {...t, [field]: value} : t);
     return { ...r, tracks };
+  });
+  setLS(V3_KEY, { ...data, releases });
+}
+
+function addCredit(rid) {
+  const data = safeLS(V3_KEY, {});
+  const releases = (data.releases||[]).map(r => {
+    if (r.id !== rid) return r;
+    const credits = [...(r.credits||[]), { name: '', role: '' }];
+    return { ...r, credits };
+  });
+  setLS(V3_KEY, { ...data, releases });
+  renderAdminMusic();
+}
+
+function removeCredit(rid, ci) {
+  const data = safeLS(V3_KEY, {});
+  const releases = (data.releases||[]).map(r => {
+    if (r.id !== rid) return r;
+    const credits = (r.credits||[]).filter((_,i) => i !== ci);
+    return { ...r, credits };
+  });
+  setLS(V3_KEY, { ...data, releases });
+  renderAdminMusic();
+}
+
+function updateCredit(rid, ci, field, value) {
+  const data = safeLS(V3_KEY, {});
+  const releases = (data.releases||[]).map(r => {
+    if (r.id !== rid) return r;
+    const credits = (r.credits||[]).map((c,i) => i===ci ? {...c, [field]: value} : c);
+    return { ...r, credits };
   });
   setLS(V3_KEY, { ...data, releases });
 }
