@@ -11,15 +11,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:      #0d0b09;
-  --bg-mid:  #141210;
-  --card:    rgba(255,252,240,.05);
-  --card-hv: rgba(255,252,240,.08);
-  --border:  rgba(255,252,240,.08);
-  --bm:      rgba(255,252,240,.16);
-  --text:    #e8e3d8;
-  --t2:      rgba(232,227,216,.52);
-  --t3:      rgba(232,227,216,.3);
+  --bg:      #0f1624;
+  --bg-mid:  #141d2e;
+  --card:    rgba(138,180,206,.06);
+  --card-hv: rgba(138,180,206,.10);
+  --border:  rgba(138,180,206,.10);
+  --bm:      rgba(138,180,206,.18);
+  --text:    #ccddef;
+  --t2:      rgba(204,221,239,.58);
+  --t3:      rgba(204,221,239,.52);
   --acc:     #c9a84c;
   --acc-rgb: 201,168,76;
   --font:    'Plus Jakarta Sans', sans-serif;
@@ -37,6 +37,14 @@ body {
   background:var(--bg); color:var(--text);
   font-family:var(--font); min-height:100vh;
   display:flex;
+}
+
+/* ── GRAIN TEXTURE ── */
+body::before {
+  content:''; position:fixed; inset:0; z-index:9000; pointer-events:none;
+  opacity:0.05;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px;
 }
 
 /* ── SIDEBAR ── */
@@ -133,6 +141,41 @@ body {
 .stat-delta { font-size:11px; color:var(--t3); margin-top:4px; }
 .stat-delta.up { color:#7ec88a; }
 .stat-delta.dn { color:#e05242; }
+
+/* ── SKELETON SHIMMER ── */
+@keyframes shimmer {
+  0%   { background-position:-600px 0; }
+  100% { background-position: 600px 0; }
+}
+.skel {
+  border-radius:6px;
+  background:linear-gradient(90deg,
+    rgba(138,180,206,.06) 25%,
+    rgba(138,180,206,.14) 50%,
+    rgba(138,180,206,.06) 75%);
+  background-size:1200px 100%;
+  animation:shimmer 1.6s ease-in-out infinite;
+  color:transparent !important;
+  min-width:48px; display:inline-block;
+  pointer-events:none; user-select:none;
+}
+.stat-value.skel { height:34px; width:72px; }
+.stat-delta.skel { height:13px; width:110px; margin-top:6px; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:10px;
+  padding:40px 24px; text-align:center;
+}
+.empty-state-icon {
+  width:48px; height:48px; border-radius:14px;
+  background:rgba(138,180,206,.07); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--t3);
+}
+.empty-state-title { font-size:14px; font-weight:600; color:var(--text); }
+.empty-state-body  { font-size:12px; color:var(--t3); max-width:260px; line-height:1.55; }
 
 /* ── SECTION GRID ── */
 .section-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
@@ -483,6 +526,19 @@ body {
 }
 .mn-item.on { color:var(--acc); }
 
+/* ── TOAST ── */
+#adminToast {
+  position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--bg-mid); border:1px solid var(--border);
+  color:var(--text); font-size:12px; font-weight:600;
+  padding:10px 20px; border-radius:100px;
+  box-shadow:0 8px 32px rgba(8,16,40,.4);
+  pointer-events:none; opacity:0;
+  transition:opacity .22s, transform .22s var(--spring);
+  z-index:9999; white-space:nowrap;
+}
+#adminToast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
 /* ── RESPONSIVE ── */
 @media (max-width:960px) {
   .stats-row { grid-template-columns:1fr 1fr; }
@@ -493,9 +549,25 @@ body {
   .main { margin-left:0; }
   .mobile-nav { display:flex; }
   .main { padding-bottom:80px; }
-  .page { padding:20px 16px; }
-  .stats-row { grid-template-columns:1fr 1fr; gap:10px; }
+  .page { padding:16px 14px; }
+  .page-header { padding-bottom:16px; margin-bottom:16px; }
+  .stats-row { grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
+  .stat-card { padding:14px 14px; }
+  .stat-value { font-size:22px; }
   .mode-cards { grid-template-columns:1fr; }
+  .topbar { padding:0 16px; }
+  .topbar-title { font-size:14px; }
+
+  /* Fan table: horizontal scroll container */
+  #fanTable { min-width:520px; }
+  .dc-body { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+
+  /* Identity card section-grid single column on mobile */
+  .identity-card { max-width:100% !important; }
+
+  /* Upgrade bar stacks on mobile */
+  .upgrade-bar { flex-direction:column; gap:10px; text-align:center; padding:14px 16px; }
+  .upgrade-bar-btn { align-self:center; }
 }
 
     /* === YOUR WORLD (Admin) ==================================== */
@@ -980,18 +1052,18 @@ body {
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-label">Page views</div>
-        <div class="stat-value" id="statViews">—</div>
-        <div class="stat-delta" id="statViewsDelta"> </div>
+        <div class="stat-value skel" id="statViews"> </div>
+        <div class="stat-delta skel" id="statViewsDelta"> </div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Link clicks</div>
-        <div class="stat-value" id="statClicks">—</div>
-        <div class="stat-delta" id="statClickRate"> </div>
+        <div class="stat-value skel" id="statClicks"> </div>
+        <div class="stat-delta skel" id="statClickRate"> </div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Fans joined</div>
-        <div class="stat-value" id="statFans">—</div>
-        <div class="stat-delta up" id="statFansDelta"> </div>
+        <div class="stat-value skel" id="statFans"> </div>
+        <div class="stat-delta skel" id="statFansDelta"> </div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Your CTR vs avg</div>
@@ -1226,7 +1298,7 @@ body {
           <div class="dc-body">
             <div class="field-row">
               <div class="field-label">Artist name</div>
-              <input class="field-input" type="text" id="adminName" placeholder="Your artist name">
+              <input class="field-input" type="text" id="adminName" placeholder="Your artist name" onblur="saveProfilePage()">
             </div>
             <div class="field-row">
               <div class="field-label">Genre / style</div>
@@ -1237,8 +1309,12 @@ body {
               <input class="field-input" type="text" id="adminLocation" placeholder="e.g. London, Berlin, New York">
             </div>
             <div class="field-row">
-              <div class="field-label">Bio</div>
-              <textarea class="field-input field-textarea" id="adminBio" placeholder="One line about you…"></textarea>
+              <div class="field-label" style="display:flex;justify-content:space-between;align-items:center;">
+                <span>Bio</span>
+                <span id="adminBioCount" style="font-size:10px;font-weight:400;color:var(--t3);letter-spacing:0;text-transform:none;">0 / 120</span>
+              </div>
+              <textarea class="field-input field-textarea" id="adminBio" placeholder="One honest sentence. Who you are, where you're from, what you make." maxlength="120" oninput="document.getElementById('adminBioCount').textContent=this.value.length+' / 120'" onblur="saveProfilePage()"></textarea>
+              <div class="field-hint" style="margin-top:4px;">Keep it direct. Fans read it in seconds.</div>
             </div>
           </div>
         </div>
@@ -1577,10 +1653,10 @@ body {
     </div>
     <!-- Basic stats (free) -->
     <div class="stats-row" style="margin-bottom:20px;">
-      <div class="stat-card"><div class="stat-label">Page views</div><div class="stat-value" id="aStatViews">—</div><div class="stat-delta up" id="aStatViewsD"> </div></div>
-      <div class="stat-card"><div class="stat-label">Link clicks</div><div class="stat-value" id="aStatClicks">—</div><div class="stat-delta" id="aStatCtr"> </div></div>
-      <div class="stat-card"><div class="stat-label">Fans joined</div><div class="stat-value" id="aStatFans">—</div><div class="stat-delta up" id="aStatFansD"> </div></div>
-      <div class="stat-card"><div class="stat-label">Click rate</div><div class="stat-value" id="aStatRate">—</div><div class="stat-delta">vs 4.2% industry avg</div></div>
+      <div class="stat-card"><div class="stat-label">Page views</div><div class="stat-value skel" id="aStatViews"> </div><div class="stat-delta skel" id="aStatViewsD"> </div></div>
+      <div class="stat-card"><div class="stat-label">Link clicks</div><div class="stat-value skel" id="aStatClicks"> </div><div class="stat-delta skel" id="aStatCtr"> </div></div>
+      <div class="stat-card"><div class="stat-label">Fans joined</div><div class="stat-value skel" id="aStatFans"> </div><div class="stat-delta skel" id="aStatFansD"> </div></div>
+      <div class="stat-card"><div class="stat-label">Click rate</div><div class="stat-value skel" id="aStatRate"> </div><div class="stat-delta">vs 4.2% industry avg</div></div>
     </div>
     <!-- Free: top CTAs clicked -->
     <div class="dash-card" style="margin-bottom:20px;">
@@ -1991,16 +2067,21 @@ function filterFanLevel(level) {
 }
 function renderFanList() {
   const real = JSON.parse(localStorage.getItem('able_fans') || '[]');
+  const tbody = document.getElementById('fanTableBody');
   if (real.length > 0) {
     // Real fans exist — show only real data, no demo noise
     renderFanTable([]);
   } else {
-    // No real fans yet — show demo rows with clear example-data notice
+    // No real fans yet — show demo rows with a clear example-data notice
     renderFanTable(DEMO_FANS);
-    const tbody = document.getElementById('fanTableBody');
     if (tbody) {
       const note = document.createElement('tr');
-      note.innerHTML = `<td colspan="5" style="padding:10px 18px;font-size:11px;color:var(--acc);font-weight:600;letter-spacing:.02em;background:rgba(var(--acc-rgb),.06);border-bottom:1px solid var(--border);">Example data — share your page to get your first real fans.</td>`;
+      note.innerHTML = `<td colspan="5"><div class="empty-state" style="padding:28px 18px;">
+        <div class="empty-state-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><circle cx="10" cy="7" r="3.5"/><path d="M3 17c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke-linecap="round"/></svg></div>
+        <div class="empty-state-title">No fans yet — but the demo gives you the idea</div>
+        <div class="empty-state-body">Share your page link and the first sign-up will appear here in real time. Your list is yours — no algorithm decides who gets it.</div>
+        <button class="tb-btn" onclick="navigator.clipboard?.writeText(document.getElementById('profileLink')?.textContent||'').then(()=>{this.textContent='Copied!';setTimeout(()=>{this.textContent='Copy your link'},2000)})" style="margin-top:4px;">Copy your link</button>
+      </div></td>`;
       tbody.insertBefore(note, tbody.firstChild);
     }
   }
@@ -2431,8 +2512,14 @@ async function autoFillFromUrl(rid, rawUrl) {
       badge.style.background = changed ? 'rgba(100,200,100,0.15)' : 'rgba(255,255,255,0.06)'
       setTimeout(() => { if (badge) badge.style.display = 'none' }, 3000)
     }
-  } catch (_) {
-    if (badge) badge.style.display = 'none'
+  } catch (err) {
+    if (badge) {
+      badge.textContent = 'Couldn\'t fetch info — paste title manually';
+      badge.style.background = 'rgba(224,82,66,.12)';
+      badge.style.color = '#e87060';
+      badge.style.display = 'inline-block';
+      setTimeout(() => { if (badge) badge.style.display = 'none'; }, 4000);
+    }
   }
 }
 
@@ -3165,7 +3252,7 @@ function loadRealStats() {
   const fansWeek    = fans.filter(f => now - f.ts < week).length;
   const ctr         = viewsTotal > 0 ? ((clicksTotal/viewsTotal)*100).toFixed(1)+'%' : '—';
 
-  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  const set = (id, v) => { const el = document.getElementById(id); if (el) { el.classList.remove('skel'); el.textContent = v; } };
   const cls = (id, c) => { const el = document.getElementById(id); if (el) el.className = 'stat-delta' + (c?' '+c:''); };
 
   // Home stats
@@ -3518,7 +3605,11 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('settingsAccountName')) document.getElementById('settingsAccountName').textContent = name;
 
   if (document.getElementById('adminName')) document.getElementById('adminName').value = name;
-  if (document.getElementById('adminBio') && bio) document.getElementById('adminBio').value = bio;
+  if (document.getElementById('adminBio') && bio) {
+    document.getElementById('adminBio').value = bio;
+    const counter = document.getElementById('adminBioCount');
+    if (counter) counter.textContent = bio.length + ' / 120';
+  }
   if (document.getElementById('adminGenre') && genre) document.getElementById('adminGenre').value = genre;
   if (document.getElementById('adminLocation') && v3data.location) document.getElementById('adminLocation').value = v3data.location;
 
@@ -3807,6 +3898,7 @@ function saveProfilePage() {
   }
 
   renderQR();
+  showToast('✓ Profile saved');
   const btn = document.querySelector('.profile-save-btn');
   if (btn) { btn.textContent = '✓ Saved'; setTimeout(() => btn.textContent = 'Save profile changes →', 1800); }
 }
@@ -4028,6 +4120,19 @@ function selectFeel(btn) {
   if (changeBtn) changeBtn.textContent = 'Change →';
   initIdentityCard();
 }
+
+/* ── TOAST ── */
+let _toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('adminToast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
 </script>
+
+<div id="adminToast" role="status" aria-live="polite"></div>
 </body>
 </html>

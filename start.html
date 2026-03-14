@@ -13,17 +13,17 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:      #121a24;
-  --bg-mid:  #171f2a;
-  --card:    #1d2636;
-  --border:  rgba(255,255,255,0.07);
-  --bm:      rgba(255,255,255,0.14);
-  --acc:     #f4b942;
-  --acc-rgb: 244,185,66;
-  --acc-glow:rgba(244,185,66,0.28);
-  --text:    #e8eaf2;
-  --t2:      rgba(232,234,242,0.55);
-  --t3:      rgba(232,234,242,0.28);
+  --bg:      #0f1624;
+  --bg-mid:  #141d2e;
+  --card:    #192438;
+  --border:  rgba(138,180,206,0.10);
+  --bm:      rgba(138,180,206,0.18);
+  --acc:     #8ab4ce;
+  --acc-rgb: 138,180,206;
+  --acc-glow:rgba(138,180,206,0.24);
+  --text:    #ccddef;
+  --t2:      rgba(204,221,239,0.58);
+  --t3:      rgba(204,221,239,0.52);
   --font:    'DM Sans', sans-serif;
   --font-d:  'Barlow Condensed', sans-serif;
   --ease:    cubic-bezier(0.25,0.46,0.45,0.94);
@@ -47,9 +47,9 @@ button { font-family:var(--font); cursor:pointer; border:none; background:none; 
 body::before {
   content:'';
   position:fixed; inset:0; z-index:500; pointer-events:none;
-  opacity:0.025;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:200px;
+  opacity:0.055;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px;
 }
 
 /* ── HEADER ── */
@@ -57,7 +57,7 @@ body::before {
   position:fixed; top:0; left:0; right:0; z-index:100;
   display:flex; align-items:center; justify-content:space-between;
   padding:0 40px; height:56px;
-  background:rgba(18,26,36,0.88);
+  background:rgba(15,22,36,0.92);
   backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);
 }
@@ -1042,9 +1042,9 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
     <!-- DONE -->
     <div class="step" id="stepDone">
-      <div class="step-eyebrow">You're live on ABLE</div>
-      <h1 class="step-title">Your page<br>exists now.</h1>
-      <p class="step-sub">Put the link in your bio. Every platform, every fan — one place.</p>
+      <div class="step-eyebrow">You're on ABLE</div>
+      <h1 class="step-title">That's your<br>page now.</h1>
+      <p class="step-sub">Put the link in your bio tonight. The first fan who signs up — that email is yours. No algorithm. No one between you.</p>
 
       <div class="done-link">
         <div class="done-url" id="doneUrl">able.fm/artist</div>
@@ -1081,10 +1081,10 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
 
       <div class="done-next">
-        <div class="done-next-label">What's next</div>
-        <div class="done-next-item">Your music plays live from Spotify and YouTube — no redirects</div>
-        <div class="done-next-item">Add shows and merch — they live on the page, not behind a link</div>
-        <div class="done-next-item">Set up a pre-release campaign</div>
+        <div class="done-next-label">Three things to do today</div>
+        <div class="done-next-item">Swap the link in your Instagram and TikTok bio to your ABLE page</div>
+        <div class="done-next-item">Open your dashboard — add a show or a release if you have one coming</div>
+        <div class="done-next-item">Tell one person what ABLE is — that conversation is worth more than the algorithm</div>
       </div>
     </div>
 
@@ -1355,7 +1355,11 @@ async function fetchMusicMeta(rawUrl) {
     document.getElementById('musicPreviewSub').textContent = _musicMeta.author
     if (_musicMeta.artwork) document.getElementById('musicPreviewArt').style.backgroundImage = `url(${_musicMeta.artwork})`
     preview.hidden = false
-  } catch { badge.hidden = true }
+  } catch {
+    badge.textContent = 'Couldn\'t fetch info — that\'s OK, carry on';
+    badge.hidden = false;
+    badge.style.color = 'rgba(204,221,239,0.52)';
+  }
 }
 
 function applyMusicStep() {

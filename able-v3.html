@@ -20,21 +20,21 @@
   <style>
     /* ── TOKENS ─────────────────────────────────────────────────── */
     :root {
-      /* Colours */
-      --color-bg:             #0d0e1a;
-      --color-card:           #12152a;
-      --color-card-raised:    #181c35;
-      --color-border:         rgba(255,255,255,0.08);
-      --color-border-mid:     rgba(255,255,255,0.12);
+      /* Colours — ethereal blue base (accent is artist-set) */
+      --color-bg:             #0f1624;
+      --color-card:           #192438;
+      --color-card-raised:    #1f2d45;
+      --color-border:         rgba(138,180,206,0.10);
+      --color-border-mid:     rgba(138,180,206,0.18);
       --color-accent:         #e05242;
       --color-accent-dark:    #c44234;
       --color-accent-rgb:     224,82,66;
       --color-accent-glow:    rgba(224,82,66,0.32);
       --color-accent-subtle:  rgba(224,82,66,0.10);
-      --color-text:           #ffffff;
-      --color-text-secondary: rgba(255,255,255,0.55);
-      --color-text-muted:     rgba(255,255,255,0.35);
-      --color-tab-bar-bg:     rgba(10,11,22,0.97);
+      --color-text:           #ccddef;
+      --color-text-secondary: rgba(204,221,239,0.60);
+      --color-text-muted:     rgba(204,221,239,0.52);
+      --color-tab-bar-bg:     rgba(10,14,28,0.97);
 
       /* Typography */
       --font:         'DM Sans', system-ui, sans-serif;
@@ -59,6 +59,14 @@
       --space-page:   12px;
       --space-card:   14px;
       --space-gap:    12px;
+    }
+
+    /* ── GRAIN TEXTURE ───────────────────────────────────────────── */
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: 900; pointer-events: none;
+      opacity: 0.052;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
     }
 
     /* ── RESET ───────────────────────────────────────────────────── */

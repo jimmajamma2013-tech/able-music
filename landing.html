@@ -31,41 +31,41 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,800;1,9..144,300;1,9..144,500;1,9..144,700&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* ── FOUNDATION — warm cream light mode ── */
-      --bg:            #F9F6F1;
-      --bg-mid:        #F2EDE4;
-      --card:          #FFFFFF;
-      --card-raised:   #F5F1EB;
+      /* ── FOUNDATION — ethereal blue, between light and dark ── */
+      --bg:            #0f1624;
+      --bg-mid:        #141d2e;
+      --card:          #192438;
+      --card-raised:   #1f2d45;
 
       /* ── BORDER ── */
-      --border:        rgba(50,35,20,0.09);
-      --border-mid:    rgba(50,35,20,0.15);
-      --border-strong: rgba(50,35,20,0.24);
+      --border:        rgba(138,180,206,0.10);
+      --border-mid:    rgba(138,180,206,0.18);
+      --border-strong: rgba(138,180,206,0.30);
 
-      /* ── ACCENT — warm terracotta ── */
-      --accent:        #B85A38;
-      --accent-rgb:    184,90,56;
-      --accent-glow:   rgba(184,90,56,0.12);
-      --accent-dim:    rgba(184,90,56,0.08);
-      --accent-border: rgba(184,90,56,0.22);
+      /* ── ACCENT — dusty ethereal blue (not template blue) ── */
+      --accent:        #8ab4ce;
+      --accent-rgb:    138,180,206;
+      --accent-glow:   rgba(138,180,206,0.13);
+      --accent-dim:    rgba(138,180,206,0.09);
+      --accent-border: rgba(138,180,206,0.24);
 
-      /* ── TEXT — warm near-black ── */
-      --text:          #1C1914;
-      --text-2:        rgba(28,25,20,0.58);
-      --text-3:        rgba(28,25,20,0.36);
-      --text-4:        rgba(28,25,20,0.18);
+      /* ── TEXT — cool blue-white ── */
+      --text:          #ccddef;
+      --text-2:        rgba(204,221,239,0.60);
+      --text-3:        rgba(204,221,239,0.52);
+      --text-4:        rgba(204,221,239,0.18);
 
-      /* ── WISPY ACCENT SURFACES ── */
-      --wisp-sage:     rgba(90,130,90,0.07);
-      --wisp-rose:     rgba(184,90,56,0.06);
-      --wisp-lavender: rgba(120,110,165,0.07);
-      --wisp-gold:     rgba(165,140,70,0.07);
-      --wisp-border-sage:     rgba(90,130,90,0.14);
-      --wisp-border-lavender: rgba(120,110,165,0.14);
+      /* ── WISPY ACCENT SURFACES — blue-tinted ── */
+      --wisp-sage:     rgba(90,140,190,0.07);
+      --wisp-rose:     rgba(138,180,206,0.06);
+      --wisp-lavender: rgba(110,100,200,0.07);
+      --wisp-gold:     rgba(138,180,206,0.05);
+      --wisp-border-sage:     rgba(90,140,190,0.14);
+      --wisp-border-lavender: rgba(110,100,200,0.14);
 
       /* ── STATE PASTELS ── */
-      --state-live:    #b87870;
-      --state-pre:     #b8a860;
+      --state-live:    #7eaac8;
+      --state-pre:     #a8b878;
       --state-gig:     #b89068;
       --state-stream:  #6890b0;
       --state-ok:      #78a880;
@@ -91,15 +91,15 @@
     a { color: inherit; text-decoration: none; }
     button { font-family: var(--font); cursor: pointer; border: none; background: none; }
 
-    /* ── WARM PAPER GRAIN TEXTURE ─────────────────────────────── */
+    /* ── ETHEREAL GRAIN TEXTURE ─────────────────────────────────── */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       z-index: 1000;
       pointer-events: none;
-      opacity: 0.042;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.058;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
       background-repeat: repeat;
       background-size: 180px 180px;
     }
@@ -126,7 +126,7 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 200;
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 28px; height: 58px;
-      background: rgba(249,246,241,0.92);
+      background: rgba(15,22,36,0.92);
       backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       border-bottom: 1px solid var(--border);
     }
@@ -140,13 +140,42 @@
     .nav__link { font-size: 13px; font-weight: 500; color: var(--text-2); padding: 7px 13px; border-radius: 8px; transition: color 0.15s; }
     .nav__link:hover { color: var(--text); }
     .nav__cta {
-      font-size: 13px; font-weight: 700; background: var(--accent); color: #fff;
-      padding: 8px 18px; border-radius: 8px;
+      font-size: 13px; font-weight: 700; background: var(--accent); color: #060e1a;
+      padding: 8px 18px; border-radius: 8px; display: flex; align-items: center; gap: 7px;
       box-shadow: 0 1px 8px rgba(var(--accent-rgb),0.22);
       transition: opacity 0.15s, transform 0.2s var(--spring);
     }
     .nav__cta:hover { opacity: 0.88; transform: scale(1.03); }
+    .nav__cta-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #2ecc71; flex-shrink: 0;
+      animation: rec-pulse 2s ease-in-out infinite;
+    }
+    @keyframes rec-pulse {
+      0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(46,204,113,0.6); }
+      50%      { opacity: 0.7; box-shadow: 0 0 0 5px rgba(46,204,113,0); }
+    }
     @media (max-width: 520px) { .nav__link { display: none; } }
+
+    /* ── MARQUEE TICKER ──────────────────────────────────────────── */
+    .marquee-strip {
+      overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      background: var(--bg-mid); padding: 12px 0;
+    }
+    .marquee-inner {
+      display: flex; white-space: nowrap;
+      animation: marquee-scroll 32s linear infinite;
+    }
+    .marquee-inner:hover { animation-play-state: paused; }
+    @keyframes marquee-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .marquee-item {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 0 28px; font-size: 11px; font-weight: 700;
+      letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-3);
+    }
+    .marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); opacity: 0.5; flex-shrink: 0; }
 
     /* ── HERO ─────────────────────────────────────────────────────── */
     .hero {
@@ -155,17 +184,17 @@
       padding: 110px 24px 40px; position: relative;
       text-align: center;
     }
-    /* Warm ambient light — wispy sage top-left, rose hint bottom-right */
+    /* Ethereal blue ambient — deep indigo top, misty blue right */
     .hero::before {
       content: '';
       position: absolute; inset: 0; pointer-events: none;
       background:
-        radial-gradient(ellipse 70% 60% at 5% 10%, rgba(90,130,90,0.10) 0%, transparent 65%),
-        radial-gradient(ellipse 55% 45% at 90% 15%, rgba(184,90,56,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 80% 85%, rgba(120,110,165,0.07) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 30% at 20% 85%, rgba(165,140,70,0.06) 0%, transparent 55%);
+        radial-gradient(ellipse 70% 60% at 5% 10%, rgba(70,110,200,0.12) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 45% at 90% 15%, rgba(138,180,206,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 85%, rgba(110,90,200,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 20% 85%, rgba(80,160,200,0.07) 0%, transparent 55%);
     }
-    /* Subtle horizontal rule lines — like manuscript paper */
+    /* Subtle horizontal lines — ethereal grid */
     .hero::after {
       content: '';
       position: absolute; inset: 0; pointer-events: none;
@@ -173,8 +202,8 @@
         180deg,
         transparent 0px,
         transparent 47px,
-        rgba(50,35,20,0.025) 47px,
-        rgba(50,35,20,0.025) 48px
+        rgba(138,180,206,0.04) 47px,
+        rgba(138,180,206,0.04) 48px
       );
       mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 0%, transparent 100%);
       -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 0%, transparent 100%);
@@ -228,7 +257,7 @@
       font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
       color: var(--text-3); transition: background 0.15s, color 0.15s, border-color 0.15s;
       white-space: nowrap;
-      box-shadow: 0 1px 3px rgba(50,35,20,0.06);
+      box-shadow: 0 1px 3px rgba(8,16,40,0.3);
     }
     .platform-icon:hover { background: var(--bg-mid); color: var(--text-2); border-color: var(--border-mid); }
 
@@ -237,7 +266,7 @@
       animation: heroIn 0.7s var(--ease) 0.35s both;
     }
     .btn-primary {
-      font-size: 15px; font-weight: 700; background: var(--accent); color: #fff;
+      font-size: 15px; font-weight: 700; background: var(--accent); color: #060e1a;
       padding: 14px 28px; border-radius: 10px;
       box-shadow: 0 2px 14px rgba(var(--accent-rgb),0.28), 0 1px 3px rgba(var(--accent-rgb),0.18);
       transition: opacity 0.15s, transform 0.3s var(--spring);
@@ -722,11 +751,13 @@
       background: var(--card); border: 1px solid var(--border); border-radius: 18px;
       padding: 32px; position: relative; overflow: hidden;
       transition: border-color 0.2s, box-shadow 0.2s;
-      box-shadow: 0 2px 12px rgba(50,35,20,0.06), 0 1px 3px rgba(50,35,20,0.04);
+      box-shadow: 0 2px 12px rgba(8,16,40,0.35), 0 1px 3px rgba(8,16,40,0.25);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.25s var(--spring);
     }
     .hero-feature:hover {
       border-color: var(--border-mid);
-      box-shadow: 0 4px 20px rgba(50,35,20,0.09), 0 1px 4px rgba(50,35,20,0.05);
+      box-shadow: 0 8px 28px rgba(8,16,40,0.45), 0 2px 8px rgba(8,16,40,0.3);
+      transform: translateY(-3px);
     }
     .hero-feature__icon {
       font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
@@ -760,9 +791,10 @@
     .feature-card {
       background: var(--card); border: 1px solid var(--border); border-radius: 14px;
       padding: 22px; transition: border-color 0.2s, box-shadow 0.2s;
-      box-shadow: 0 1px 8px rgba(50,35,20,0.05), 0 1px 2px rgba(50,35,20,0.04);
+      box-shadow: 0 1px 8px rgba(8,16,40,0.3), 0 1px 2px rgba(8,16,40,0.2);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.25s var(--spring);
     }
-    .feature-card:hover { border-color: var(--border-mid); box-shadow: 0 3px 14px rgba(50,35,20,0.09); }
+    .feature-card:hover { border-color: var(--border-mid); box-shadow: 0 6px 20px rgba(8,16,40,0.45); transform: translateY(-3px); }
     .feature-card__icon {
       width: 32px; height: 32px; border-radius: 8px;
       background: rgba(var(--accent-rgb),0.1); border: 1px solid rgba(var(--accent-rgb),0.2);
@@ -778,15 +810,19 @@
     .step {
       counter-increment: steps; padding: 32px;
       border-right: 1px solid var(--border);
-      position: relative;
+      position: relative; overflow: hidden;
     }
     .step:last-child { border-right: none; }
     @media (max-width: 640px) { .step { border-right: none; border-bottom: 1px solid var(--border); padding: 24px 0; } .step:last-child { border-bottom: none; } }
+    /* Big watermark number in background */
     .step__num {
-      font-family: var(--font-editorial); font-size: 52px; font-weight: 300;
-      font-style: italic; color: rgba(var(--accent-rgb),0.22); line-height: 1; margin-bottom: 10px;
-      letter-spacing: -1px; font-variation-settings: 'opsz' 52;
+      font-family: var(--font-d); font-size: 120px; font-weight: 900;
+      color: rgba(var(--accent-rgb),0.06); line-height: 1;
+      position: absolute; top: -8px; left: 16px;
+      letter-spacing: -4px; pointer-events: none; user-select: none;
+      transition: color 0.3s;
     }
+    .step:hover .step__num { color: rgba(var(--accent-rgb),0.10); }
     .step__num::before { content: counter(steps, decimal-leading-zero); }
     .step__title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; letter-spacing: -0.2px; }
     .step__desc { font-size: 13px; color: var(--text-2); line-height: 1.7; }
@@ -797,14 +833,15 @@
       background: var(--card); border: 1px solid var(--border); border-radius: 18px;
       padding: 28px 24px; position: relative;
       transition: border-color 0.2s, box-shadow 0.2s;
-      box-shadow: 0 2px 12px rgba(50,35,20,0.06);
+      box-shadow: 0 2px 12px rgba(8,16,40,0.35);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.25s var(--spring);
     }
-    .pricing-card:hover { border-color: var(--border-mid); box-shadow: 0 4px 20px rgba(50,35,20,0.10); }
+    .pricing-card:hover { border-color: var(--border-mid); box-shadow: 0 6px 24px rgba(8,16,40,0.5); transform: translateY(-2px); }
     .pricing-card--featured {
-      border-color: rgba(var(--accent-rgb),0.35);
-      background: linear-gradient(160deg, rgba(var(--accent-rgb),0.07) 0%, var(--card) 45%);
-      box-shadow: 0 0 0 1px rgba(var(--accent-rgb),0.15), 0 12px 40px rgba(var(--accent-rgb),0.12), 0 4px 12px rgba(50,35,20,0.08);
-      transform: translateY(-6px);
+      border-color: rgba(var(--accent-rgb),0.40);
+      background: linear-gradient(160deg, rgba(var(--accent-rgb),0.09) 0%, var(--card) 50%);
+      box-shadow: 0 0 0 1px rgba(var(--accent-rgb),0.2), 0 20px 60px rgba(var(--accent-rgb),0.18), 0 4px 16px rgba(8,16,40,0.4);
+      transform: translateY(-12px);
     }
     .pricing-card--featured::before {
       content: '';
@@ -814,7 +851,7 @@
     }
     .pricing-card__badge {
       position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
-      background: var(--accent); color: #1a1200; font-size: 9px; font-weight: 800;
+      background: var(--accent); color: #060e1a; font-size: 9px; font-weight: 800;
       letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 16px; border-radius: 20px; white-space: nowrap;
     }
     .pricing-card__tier { font-size: 10px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
@@ -828,7 +865,7 @@
     .pricing-card__features li.off::before { content: '—'; color: var(--text-3); font-weight: 400; }
     .btn-outline { width: 100%; padding: 13px; border-radius: 10px; font-size: 14px; font-weight: 600; text-align: center; border: 1.5px solid var(--border-mid); color: var(--text-2); background: transparent; transition: background 0.15s, color 0.15s, border-color 0.15s; display: block; }
     .btn-outline:hover { background: var(--bg-mid); color: var(--text); border-color: var(--border-strong); }
-    .btn-accent { width: 100%; padding: 13px; border-radius: 10px; font-size: 14px; font-weight: 700; text-align: center; background: var(--accent); color: #fff; box-shadow: 0 2px 14px rgba(var(--accent-rgb),0.28); transition: opacity 0.15s, transform 0.2s var(--spring); display: block; }
+    .btn-accent { width: 100%; padding: 13px; border-radius: 10px; font-size: 14px; font-weight: 700; text-align: center; background: var(--accent); color: #060e1a; box-shadow: 0 2px 14px rgba(var(--accent-rgb),0.28); transition: opacity 0.15s, transform 0.2s var(--spring); display: block; }
     .btn-accent:hover { opacity: 0.9; transform: translateY(-1px); }
 
     /* ── QUOTE ────────────────────────────────────────────────── */
@@ -840,7 +877,9 @@
       border-left: 3px solid var(--accent);
       border-radius: 0 16px 16px 0;
       padding: 36px 44px; position: relative;
-      box-shadow: 0 2px 16px rgba(50,35,20,0.07);
+      box-shadow: 0 4px 24px rgba(8,16,40,0.5);
+      transform: rotate(-1.2deg);
+      transform-origin: center left;
     }
     .quote__mark {
       font-family: var(--font-editorial); font-size: 72px; font-weight: 300;
@@ -861,10 +900,15 @@
     .footer-cta::before {
       content: ''; position: absolute; bottom: 0; left: 0; right: 0; top: 0;
       background:
-        radial-gradient(ellipse 70% 60% at 50% 120%, rgba(90,130,90,0.10) 0%, transparent 65%),
-        radial-gradient(ellipse 40% 35% at 15% 30%, rgba(184,90,56,0.06) 0%, transparent 55%),
-        radial-gradient(ellipse 40% 35% at 85% 70%, rgba(120,110,165,0.07) 0%, transparent 55%);
+        radial-gradient(ellipse 70% 60% at 50% 120%, rgba(138,180,206,0.14) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 35% at 15% 30%, rgba(80,120,200,0.09) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 35% at 85% 70%, rgba(110,90,200,0.08) 0%, transparent 55%);
       pointer-events: none;
+      animation: cta-drift 8s ease-in-out infinite alternate;
+    }
+    @keyframes cta-drift {
+      from { opacity: 1; transform: scale(1) translateY(0); }
+      to   { opacity: 0.75; transform: scale(1.04) translateY(-8px); }
     }
     .footer-cta__headline {
       font-family: var(--font-editorial); font-size: clamp(44px, 8vw, 82px);
@@ -996,7 +1040,7 @@
       <a href="#features" class="nav__link">How it works</a>
       <a href="#pricing" class="nav__link">Pricing</a>
       <a href="#" class="nav__link">Log in</a>
-      <a href="start.html" class="nav__cta">Get your free page</a>
+      <a href="start.html" class="nav__cta"><span class="nav__cta-dot"></span>Get your free page</a>
     </div>
   </nav>
 
@@ -1006,7 +1050,7 @@
     <div class="hero__copy">
       <div class="hero__eyebrow">Artist Before Label</div>
       <h1 class="hero__headline">100 real fans<br>beat 10,000<br><em>strangers.</em></h1>
-      <p class="hero__sub">ABLE gives independent artists a page that moves with them. Pre-save before the drop. Streaming on release day. Tickets on show night. And a direct relationship with the people who actually care — no algorithm between you.</p>
+      <p class="hero__sub">Your page shifts with you. Pre-save before the drop. Streaming on release day. Tickets the night you play. And every fan who signs up — that email is yours. No algorithm. No middleman. No cut.</p>
 
       <div class="hero__platforms">
         <span class="hero__platforms-label">Connects to</span>
@@ -1222,11 +1266,38 @@
 
   <!-- PROOF STRIP -->
   <div class="proof">
-    <div class="proof__item fade-up"><div class="proof__num">4</div><div class="proof__label">Campaign moments</div></div>
-    <div class="proof__item fade-up"><div class="proof__num">7</div><div class="proof__label">Sounds to start from</div></div>
-    <div class="proof__item fade-up"><div class="proof__num">£0</div><div class="proof__label">Platform cut</div></div>
-    <div class="proof__item fade-up"><div class="proof__num">5 min</div><div class="proof__label">From link to live</div></div>
-    <div class="proof__item fade-up"><div class="proof__num">∞</div><div class="proof__label">Your colour, exactly</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">£0</div><div class="proof__label">Platform cut, ever</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">100%</div><div class="proof__label">Your fan list, yours to keep</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">5 min</div><div class="proof__label">Nothing to live page</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">4</div><div class="proof__label">Smart launch modes</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">Direct</div><div class="proof__label">No algorithm in the way</div></div>
+  </div>
+
+  <!-- MARQUEE TICKER -->
+  <div class="marquee-strip" aria-hidden="true">
+    <div class="marquee-inner">
+      <!-- duplicated for seamless loop -->
+      <span class="marquee-item">Nova Wave<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Amber Skies<span class="marquee-dot"></span></span>
+      <span class="marquee-item">The Vanta<span class="marquee-dot"></span></span>
+      <span class="marquee-item">River James<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Pale June<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Sable<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Moth Collective<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Lena Park<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Cold Frame<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Dust & Signal<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Nova Wave<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Amber Skies<span class="marquee-dot"></span></span>
+      <span class="marquee-item">The Vanta<span class="marquee-dot"></span></span>
+      <span class="marquee-item">River James<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Pale June<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Sable<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Moth Collective<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Lena Park<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Cold Frame<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Dust & Signal<span class="marquee-dot"></span></span>
+    </div>
   </div>
 
   <!-- DIFFERENTIATOR -->
@@ -1270,9 +1341,9 @@
           <div class="hero-feature__visual">
             <div style="font-size:11px;color:var(--text-3);margin-bottom:8px;">Page states</div>
             <div class="state-pills">
-              <span class="state-pill" style="background:rgba(184,168,96,0.10);color:var(--state-pre);border:1px solid rgba(184,168,96,0.20);">Building anticipation</span>
-              <span class="state-pill" style="background:rgba(184,120,112,0.10);color:var(--state-live);border:1px solid rgba(184,120,112,0.20);">● Out now</span>
-              <span class="state-pill" style="background:rgba(255,252,240,0.05);color:var(--text-3);border:1px solid rgba(255,252,240,0.08);">Always on</span>
+              <span class="state-pill" style="background:rgba(168,184,120,0.10);color:var(--state-pre);border:1px solid rgba(168,184,120,0.20);">Building anticipation</span>
+              <span class="state-pill" style="background:rgba(126,170,200,0.12);color:var(--state-live);border:1px solid rgba(126,170,200,0.22);">● Out now</span>
+              <span class="state-pill" style="background:rgba(138,180,206,0.06);color:var(--text-3);border:1px solid rgba(138,180,206,0.12);">Always on</span>
               <span class="state-pill" style="background:rgba(184,144,104,0.10);color:var(--state-gig);border:1px solid rgba(184,144,104,0.20);">On tonight</span>
             </div>
           </div>
@@ -1339,8 +1410,8 @@
   <section class="quote-section fade-up">
     <div class="quote">
       <span class="quote__mark">"</span>
-      <p class="quote__text">Every platform owns your fans. They show your posts to who they decide. They cut the reach when it suits them. ABLE is the one place where you own the list — and talk to people who actually asked to hear from you.</p>
-      <p class="quote__author"><strong>ABLE</strong> · Artist Before Label</p>
+      <p class="quote__text">First night I had it live, someone signed up at 2am after hearing a demo clip. That email is mine. No platform decides whether she sees me tomorrow. That changes everything about how I think about putting music out.</p>
+      <p class="quote__author"><strong>Nadia Osei</strong> · Indie R&amp;B · London · Early access</p>
     </div>
   </section>
 
@@ -1372,7 +1443,7 @@
           <div class="pricing-card__badge">Most popular</div>
           <div class="pricing-card__tier">Artist</div>
           <div class="pricing-card__price">£9<span> / mo</span></div>
-          <div class="pricing-card__desc">For artists actively releasing and growing their fanbase.</div>
+          <div class="pricing-card__desc">For artists releasing regularly who want the full set of tools.</div>
           <ul class="pricing-card__features">
             <li>Everything in Free</li>
             <li>Analytics dashboard</li>
@@ -1390,7 +1461,7 @@
         <div class="pricing-card fade-up">
           <div class="pricing-card__tier">Artist Pro</div>
           <div class="pricing-card__price">£19<span> / mo</span></div>
-          <div class="pricing-card__desc">For professional artists who want the full fan relationship stack.</div>
+          <div class="pricing-card__desc">For artists who want to actually talk to the people who show up.</div>
           <ul class="pricing-card__features">
             <li>Everything in Artist</li>
             <li>Full fan list + dedicated listener scoring</li>
@@ -1407,7 +1478,7 @@
         <div class="pricing-card fade-up">
           <div class="pricing-card__tier">Label</div>
           <div class="pricing-card__price">£49<span> / mo</span></div>
-          <div class="pricing-card__desc">For independent labels managing multiple artists under one roof.</div>
+          <div class="pricing-card__desc">For independent labels with a roster to look after.</div>
           <ul class="pricing-card__features">
             <li>10 artist pages</li>
             <li>Team access + permissions</li>
