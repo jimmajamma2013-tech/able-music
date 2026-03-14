@@ -4284,7 +4284,7 @@
           date: new Date(Date.now() + 3 * 86400000).toISOString().slice(0,10),
           access: 'supporter',
           active: true,
-          teaserText: 'Close circle hears this first'
+          artistNote: 'Close circle hears this first'
         },
         {
           id: 'demo-m2',
@@ -4293,7 +4293,7 @@
           date: new Date(Date.now() + 10 * 86400000).toISOString().slice(0,10),
           access: 'supporter',
           active: true,
-          teaserText: 'Supporters only · Live session'
+          artistNote: 'Supporters only · Live session'
         },
         {
           id: 'demo-m3',
@@ -4699,7 +4699,7 @@
       } else if (access === 'gate_fan') {
         ctaHtml = '<button class="wm-panel__cta wm-panel__cta--gated" id="wm-fan-gate">Join the list to access this</button>'
       } else if (access === 'gate_supporter') {
-        ctaHtml = '<button class="wm-panel__cta wm-panel__cta--gated" id="wm-supporter-gate">Join the close circle u2192</button>'
+        ctaHtml = '<button class="wm-panel__cta wm-panel__cta--gated" id="wm-supporter-gate">Join the close circle \u2192</button>'
       }
 
       body.style.setProperty('--wm-panel-type-color', typeColor)
