@@ -343,7 +343,6 @@
       justify-content: space-around;
       z-index: 100;
       transition: transform var(--dur-mid) var(--ease-accel);
-      will-change: transform;
       box-shadow: 0 -1px 0 rgba(255,255,255,0.04), 0 -16px 48px rgba(0,0,0,0.5);
     }
 
@@ -357,6 +356,7 @@
 
     #tab-bar.tab-bar--hidden {
       transform: translateX(-50%) translateY(100%);
+      will-change: transform;
     }
 
     .tab-btn {
@@ -422,11 +422,11 @@
     /* Applied to all interactive elements via JS pointer events */
     .pressable {
       transition: transform var(--dur-fast) var(--ease-spring);
-      will-change: transform;
     }
     .pressable:active,
     .pressable.pressing {
       transform: scale(0.97);
+      will-change: transform;
     }
 
     /* === FOCUS STYLES (WCAG 2.2 AA §5) ========================= */
@@ -566,14 +566,14 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: 70%;
+      height: 75%;
       background: linear-gradient(
         to bottom,
         transparent 0%,
-        rgba(0,0,0,0.08) 20%,
-        rgba(0,0,0,0.45) 50%,
-        rgba(0,0,0,0.82) 80%,
-        rgba(0,0,0,0.95) 100%
+        rgba(0,0,0,0.05) 15%,
+        rgba(0,0,0,0.40) 48%,
+        rgba(0,0,0,0.80) 75%,
+        rgba(0,0,0,0.96) 100%
       );
       pointer-events: none;
     }
@@ -595,10 +595,10 @@
       bottom: 0;
       left: 0;
       right: 0;
-      padding: var(--sp-6) var(--sp-5) var(--sp-5);
+      padding: var(--sp-8) var(--sp-5) var(--sp-5);
       display: flex;
       flex-direction: column;
-      gap: var(--sp-2);
+      gap: var(--sp-1);
     }
 
     /* State chip */
@@ -630,24 +630,7 @@
     .hero__state-chip--gig  { background: var(--color-state-gig); }
     .hero__state-chip--profile { display: none; }
 
-    /* Gig pulsing dot (interaction #10) */
-    .state-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background-color: currentColor;
-      flex-shrink: 0;
-      animation: pulse-dot 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse-dot {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50%       { transform: scale(1.5); opacity: 0.6; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .state-dot { animation: none; }
-    }
+    /* Gig pulsing dot — implemented via ::before pseudo-element in Checkpoint 5 */
 
     /* Artist name — poster-grade type treatment */
     .hero__name {
@@ -659,7 +642,7 @@
       letter-spacing: var(--ls-d);
       line-height: var(--lh-tight);
       color: #ffffff;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.6), 0 8px 32px rgba(0,0,0,0.5);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.7), 0 8px 40px rgba(0,0,0,0.65), 0 20px 80px rgba(0,0,0,0.4);
       /* Reveal animation (interaction #3) — fires after fonts.ready */
       opacity: 0;
       transform: translateY(12px);
@@ -688,8 +671,8 @@
     .hero__tag {
       font-size: 11px;
       font-weight: 600;
-      color: rgba(255,255,255,0.55);
-      letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.65);
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       line-height: var(--lh-label);
     }
@@ -708,12 +691,12 @@
 
     /* === BIO STRIP ============================================== */
     .bio-strip {
-      padding: var(--sp-5) var(--sp-5) 0;
+      padding: var(--sp-5) var(--sp-5) var(--sp-4);
     }
 
     .bio-strip__text {
       font-size: var(--text-base);
-      line-height: var(--lh-body);
+      line-height: 1.65;
       color: var(--color-text-2);
       /* Clamp to 3 lines, expandable */
       display: -webkit-box;
@@ -730,18 +713,22 @@
     }
 
     .bio-strip__more {
-      margin-top: var(--sp-2);
+      margin-top: var(--sp-1);
       background: none;
       border: none;
       cursor: pointer;
       font-family: var(--font-body);
       font-size: var(--text-sm);
-      font-weight: 600;
-      color: var(--color-accent);
+      font-weight: 500;
+      color: var(--color-text-3);
       padding: 0;
       min-height: var(--tap-min);
       display: inline-flex;
       align-items: center;
+      letter-spacing: 0.02em;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(255,255,255,0.18);
     }
 
     /* === COUNTDOWN (pre-release state) ========================== */
@@ -795,7 +782,7 @@
 
     /* === HERO CTAs ============================================== */
     .hero-ctas {
-      padding: var(--sp-5) var(--sp-5) var(--sp-3);
+      padding: var(--sp-4) var(--sp-5) var(--sp-5);
       display: flex;
       flex-direction: column;
       gap: var(--sp-3);
@@ -878,7 +865,7 @@
 
     /* === PLATFORM TILES (replaces pills) ======================= */
     .pills-section {
-      padding: var(--sp-5) var(--sp-5) var(--sp-2);
+      padding: var(--sp-5) var(--sp-5) var(--sp-4);
     }
 
     /* Wrapping div still present — now unused */
@@ -904,14 +891,14 @@
       justify-content: center;
       gap: 6px;
       padding: var(--sp-4) var(--sp-2);
-      min-height: 68px;
+      min-height: 72px;
       background-color: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: var(--r-md);
       font-family: var(--font-body);
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 500;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.02em;
       color: var(--color-text-2);
       text-decoration: none;
       cursor: pointer;
@@ -1010,7 +997,7 @@
       margin-bottom: var(--sp-6);
       /* Accent rule above — editorial marker */
       padding-top: var(--sp-5);
-      border-top: 2px solid rgba(var(--color-accent-rgb), 0.7);
+      border-top: 2px solid rgba(var(--color-accent-rgb), 0.8);
     }
 
     /* Secondary section header — quieter hierarchy */
@@ -1029,12 +1016,12 @@
 
     .section-title {
       font-family: var(--font-d);
-      font-size: var(--text-4xl);
+      font-size: clamp(32px, 9vw, var(--text-4xl));
       font-weight: var(--font-d-weight);
       font-style: var(--font-d-style);
       text-transform: var(--font-d-transform);
       letter-spacing: var(--ls-d);
-      line-height: var(--lh-display);
+      line-height: 0.95;
       color: var(--color-text);
     }
 
@@ -1067,11 +1054,11 @@
 
     /* === FAN CAPTURE =========================================== */
     .fan-capture {
-      margin: var(--sp-4) var(--sp-5);
+      margin: var(--sp-2) var(--sp-5) var(--sp-5);
       padding: var(--sp-6);
       background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-top: 2px solid rgba(var(--color-accent-rgb), 0.55);
+      border-top: 3px solid rgba(var(--color-accent-rgb), 0.7);
       border-radius: var(--r-md);
     }
 
@@ -1089,21 +1076,21 @@
 
     .fan-capture__heading {
       font-family: var(--font-d);
-      font-size: var(--text-2xl);
+      font-size: var(--text-3xl);
       font-weight: var(--font-d-weight);
       font-style: var(--font-d-style);
       text-transform: var(--font-d-transform);
       letter-spacing: var(--ls-d);
       color: var(--color-text);
-      line-height: var(--lh-display);
-      margin-bottom: var(--sp-2);
+      line-height: 0.95;
+      margin-bottom: var(--sp-3);
     }
 
     .fan-capture__sub {
       font-size: var(--text-sm);
       color: var(--color-text-2);
-      line-height: var(--lh-body);
-      margin-bottom: var(--sp-4);
+      line-height: 1.6;
+      margin-bottom: var(--sp-5);
     }
 
     .fan-capture__form {}
@@ -1515,7 +1502,7 @@
       background: var(--color-card);
       border: 1px solid var(--color-border);
       box-shadow: var(--shadow-card);
-      border-radius: var(--r-sm);
+      border-radius: var(--r-md);
       overflow: hidden;
       transition: transform var(--dur-fast) var(--ease-spring),
                   box-shadow var(--dur-fast) var(--ease-standard);
@@ -1786,7 +1773,7 @@
       flex-direction: column;
       background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-radius: var(--r-sm);
+      border-radius: var(--r-md);
       overflow: hidden;
       text-decoration: none;
       color: inherit;
@@ -1873,8 +1860,9 @@
     /* Price in info row only shown when no image (emoji fallback) */
     .merch-item__price {
       font-size: var(--text-xs);
+      font-weight: 600;
       color: var(--color-text-2);
-      margin-top: 2px;
+      margin-top: 3px;
     }
 
     /* === SUPPORT SECTION ======================================= */
@@ -1891,7 +1879,7 @@
       padding: var(--sp-4) var(--sp-5);
       background: var(--color-card);
       border: 1px solid var(--color-border);
-      border-radius: var(--r-sm);
+      border-radius: var(--r-md);
       cursor: pointer;
       text-decoration: none;
       color: inherit;
@@ -1903,12 +1891,13 @@
     .support-pack:hover { border-color: var(--color-accent); }
 
     .support-pack__emoji {
-      font-size: 17px;
+      font-size: 18px;
       flex-shrink: 0;
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background: var(--color-accent-soft);
+      border: 1px solid rgba(var(--color-accent-rgb), 0.15);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1927,9 +1916,7 @@
       font-size: var(--text-sm);
       color: var(--color-text-2);
       margin-top: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      line-height: 1.45;
     }
 
     /* Price as text only (no url) */
@@ -2069,8 +2056,8 @@
     .rec-item:hover { opacity: 0.72; }
 
     .rec-item__avatar {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: var(--r-sm);
       object-fit: cover;
       flex-shrink: 0;
@@ -2078,8 +2065,8 @@
     }
 
     .rec-item__avatar-placeholder {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: var(--r-sm);
       background: rgba(var(--color-accent-rgb), 0.12);
       flex-shrink: 0;
@@ -2095,7 +2082,7 @@
     }
 
     .rec-item__name {
-      font-size: var(--text-base);
+      font-size: var(--text-lg);
       font-weight: 600;
       color: var(--color-text);
       white-space: nowrap;
@@ -2105,7 +2092,7 @@
 
     .rec-item__note {
       font-size: var(--text-sm);
-      color: var(--color-text-3);
+      color: var(--color-text-2);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -2114,8 +2101,8 @@
 
     .rec-item__arrow {
       flex-shrink: 0;
-      color: var(--color-text-3);
-      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      font-size: var(--text-base);
     }
 
     /* === FOOTER ================================================ */
@@ -2150,10 +2137,12 @@
       cursor: pointer;
       font-family: var(--font-body);
       font-size: var(--text-xs);
-      color: var(--color-accent);
+      color: var(--color-text-2);
       padding: 0;
       min-height: var(--tap-min);
       display: inline;
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
 
     /* === SECTION: CHECKPOINT 1 PLACEHOLDER ===================== */
@@ -2197,7 +2186,7 @@
       inset: 0;
       z-index: 210;
       background: rgba(0,0,0,0);
-      transition: background var(--dur-normal);
+      transition: background var(--dur-mid);
     }
     #edit-backdrop.open { display: block; background: rgba(0,0,0,0.65); }
 
@@ -2215,7 +2204,7 @@
       display: flex;
       flex-direction: column;
       transform: translateY(100%);
-      transition: transform var(--dur-normal) cubic-bezier(0.25,0.46,0.45,0.94);
+      transition: transform var(--dur-mid) cubic-bezier(0.25,0.46,0.45,0.94);
       overflow: hidden;
     }
     #edit-panel.open { transform: translateY(0); }
@@ -2386,9 +2375,9 @@
     #app-shell.panel-open {
       transform: scale(0.95);
       transform-origin: center top;
-      transition: transform var(--dur-normal) cubic-bezier(0.25,0.46,0.45,0.94);
+      transition: transform var(--dur-mid) cubic-bezier(0.25,0.46,0.45,0.94);
     }
-    #app-shell { transition: transform var(--dur-normal) cubic-bezier(0.25,0.46,0.45,0.94); }
+    #app-shell { transition: transform var(--dur-mid) cubic-bezier(0.25,0.46,0.45,0.94); }
 
     /* === KEYFRAMES ============================================= */
     @keyframes shake {
@@ -2408,11 +2397,6 @@
     @keyframes confetti-fly {
       0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
       100% { transform: translate(var(--cx), var(--cy)) rotate(var(--cr)); opacity: 0; }
-    }
-
-    @keyframes pulse-dot {
-      0%, 100% { transform: scale(1);   opacity: 1;   }
-      50%       { transform: scale(1.4); opacity: 0.7; }
     }
 
     /* Credits accordion height transition */
@@ -2537,9 +2521,9 @@
         <!-- Artwork placeholder (gradient, shows before image loads) -->
         <div class="hero__artwork-placeholder" id="hero-placeholder" aria-hidden="true"></div>
 
-        <!-- Artwork image (lazy loaded) — hidden if video top card -->
+        <!-- Artwork image — LCP element, eager + high priority -->
         <img class="hero__artwork" id="hero-artwork"
-             alt="" role="presentation" loading="lazy"
+             alt="" role="presentation" fetchpriority="high"
              width="430" height="430"
              crossorigin="anonymous">
 
@@ -2569,7 +2553,6 @@
         <div class="hero__text">
           <!-- State chip: pre-release | live | gig | (hidden for profile) -->
           <div class="hero__state-chip" id="hero-state-chip" role="status" aria-live="polite">
-            <span class="state-dot" aria-hidden="true"></span>
             <span id="hero-state-label"></span>
           </div>
 
@@ -2878,6 +2861,17 @@
        ============================================================ */
 
     // === UTILITY =================================================
+
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    }
+
+    const SAFE_URL_RE = /^(https?:|mailto:|tel:)/i
+    function isSafeUrl(url) {
+      if (!url) return false
+      const s = String(url).trim()
+      return SAFE_URL_RE.test(s)
+    }
 
     function hexToRgb(hex) {
       const c = hex.replace('#', '')
@@ -3440,7 +3434,7 @@
     function buildPill(platform) {
       const a = document.createElement('a')
       a.className = 'pill pressable'
-      a.href = platform.url || '#'
+      a.href = isSafeUrl(platform.url) ? platform.url : '#'
       a.target = '_blank'
       a.rel = 'noopener noreferrer'
       a.setAttribute('role', 'listitem')
@@ -3715,7 +3709,7 @@
 
       if (primary.url && primary.url !== '#') {
         ctaPrimary.textContent = primary.label || 'Stream now'
-        ctaPrimary.href = primary.url
+        ctaPrimary.href = isSafeUrl(primary.url) ? primary.url : '#'
         ctaPrimary.hidden = false
         // Click tracking
         ctaPrimary.onclick = () => trackClick(primary.label, 'primary_cta')
@@ -3723,7 +3717,7 @@
 
       if (secondary && secondary.url) {
         ctaSecondary.textContent = secondary.label || 'Get tickets'
-        ctaSecondary.href = secondary.url
+        ctaSecondary.href = isSafeUrl(secondary.url) ? secondary.url : '#'
         ctaSecondary.hidden = false
         ctaSecondary.onclick = () => trackClick(secondary.label, 'secondary_cta')
       }
@@ -4059,12 +4053,13 @@
           ? `<div class="release-card__tracks" aria-label="Track listing">
               ${tracks.slice(0, 5).map((t, ti) => {
                 const trackArt = t.artworkUrl || artworkSrc
+                const safeStreamUrl = t.streamUrl && isSafeUrl(t.streamUrl) ? escHtml(t.streamUrl) : ''
                 return `<div class="release-track" role="button" tabindex="0"
-                    ${t.streamUrl ? `onclick="window.open('${t.streamUrl.replace(/'/g,"\\'")}','_blank','noopener,noreferrer')"` : ''}
-                    ${t.streamUrl ? `aria-label="Play ${t.title || 'Track'}"` : ''}>
-                  ${trackArt ? `<img class="release-track__art" src="${trackArt}" alt="" loading="lazy" aria-hidden="true">` : `<span class="release-track__num">${ti + 1}</span>`}
-                  <span class="release-track__title">${t.title || `Track ${ti + 1}`}</span>
-                  ${t.duration ? `<span class="release-track__duration">${t.duration}</span>` : ''}
+                    ${safeStreamUrl ? `data-stream-url="${safeStreamUrl}"` : ''}
+                    ${safeStreamUrl ? `aria-label="Play ${escHtml(t.title || 'Track')}"` : ''}>
+                  ${trackArt ? `<img class="release-track__art" src="${escHtml(trackArt)}" alt="" loading="lazy" aria-hidden="true">` : `<span class="release-track__num">${ti + 1}</span>`}
+                  <span class="release-track__title">${escHtml(t.title || `Track ${ti + 1}`)}</span>
+                  ${t.duration ? `<span class="release-track__duration">${escHtml(t.duration)}</span>` : ''}
                 </div>`
               }).join('')}
               ${tracks.length > 5 ? `<div class="release-track"><span class="release-track__title" style="color:var(--color-text-3)">+${tracks.length - 5} more tracks</span></div>` : ''}
@@ -4084,21 +4079,22 @@
 
         // Build the media section based on platform
         let mediaHtml
-        if (isSpotify && embedUrl) {
+        const safeStreamUrl = streamUrl && isSafeUrl(streamUrl) ? escHtml(streamUrl) : ''
+        const safeEmbedUrl  = embedUrl  && isSafeUrl(embedUrl)  ? escHtml(embedUrl)  : ''
+        if (isSpotify && safeEmbedUrl) {
           // Spotify: auto-load the iframe — it looks like Spotify natively
           mediaHtml = `<div class="release-card__spotify-embed">
-            <iframe src="${embedUrl}&theme=0" height="${spotifyH}"
-                    title="${rel.title || 'Music player'}"
+            <iframe src="${safeEmbedUrl}&theme=0" height="${spotifyH}"
+                    title="${escHtml(rel.title || 'Music player')}"
                     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                     loading="lazy"></iframe>
           </div>`
         } else if (isYouTube && ytThumb) {
           // YouTube: thumbnail with branded play button, click expands 16:9 iframe
           mediaHtml = `<div class="release-card__artwork-wrap">
-            <img class="release-card__artwork" src="${ytThumb}"
-                 onerror="this.src='https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg'"
-                 alt="${rel.title || 'Video'} thumbnail" loading="lazy">
-            <button class="release-card__play-overlay pressable" aria-label="Watch ${(rel.title || 'video').replace(/'/g,"\\'")} inline">
+            <img class="release-card__artwork" src="${escHtml(ytThumb)}"
+                 alt="${escHtml(rel.title || 'Video')} thumbnail" loading="lazy">
+            <button class="release-card__play-overlay pressable" aria-label="Watch ${escHtml(rel.title || 'video')} inline">
               <svg width="68" height="48" viewBox="0 0 68 48" fill="none" aria-hidden="true">
                 <rect width="68" height="48" rx="10" fill="#FF0000"/>
                 <path d="M27 14l24 10-24 10V14z" fill="white"/>
@@ -4114,7 +4110,7 @@
           </div>
           <div class="release-embed" hidden>
             <div class="release-card__yt-expand">
-              <iframe src="" title="${rel.title || 'Video player'}"
+              <iframe src="" title="${escHtml(rel.title || 'Video player')}"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowfullscreen loading="lazy"></iframe>
             </div>
@@ -4123,33 +4119,31 @@
           // SoundCloud / Mixcloud / generic — artwork + play overlay or external link
           mediaHtml = `<div class="release-card__artwork-wrap">
             ${artworkSrc
-              ? `<img class="release-card__artwork" src="${artworkSrc}"
-                      alt="${rel.title || 'Release'} artwork" loading="lazy">`
+              ? `<img class="release-card__artwork" src="${escHtml(artworkSrc)}"
+                      alt="${escHtml(rel.title || 'Release')} artwork" loading="lazy">`
               : `<div class="release-card__artwork" aria-hidden="true" style="aspect-ratio:1;background:var(--color-surface)"></div>`
             }
-            ${embedUrl ? `<button class="release-card__play-overlay pressable" aria-label="Play ${(rel.title || 'release').replace(/'/g,"\\'")} inline">
+            ${embedUrl ? `<button class="release-card__play-overlay pressable" aria-label="Play ${escHtml(rel.title || 'release')} inline">
               <svg viewBox="0 0 24 24" fill="white" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
             </button>` : ''}
-            ${(platformLabel && streamUrl && !embedUrl)
-              ? `<a class="release-card__platform-badge pressable"
-                    href="${streamUrl}" target="_blank" rel="noopener noreferrer"
-                    onclick="event.stopPropagation();trackClick('${(rel.title||'Release').replace(/'/g,"\\'")}','stream','listen')">
+            ${(platformLabel && safeStreamUrl && !embedUrl)
+              ? `<a class="release-card__platform-badge pressable js-stream-track"
+                    href="${safeStreamUrl}" target="_blank" rel="noopener noreferrer">
                    ${platformIcon ? `<span aria-hidden="true">${platformIcon}</span>` : ''}
-                   ${platformLabel}
+                   ${escHtml(platformLabel)}
                  </a>`
               : ''
             }
           </div>
           ${embedUrl
             ? `<div class="release-embed" hidden>
-                 <iframe src="" height="${embedHeight}" title="${rel.title || 'Music player'}"
+                 <iframe src="" height="${embedHeight}" title="${escHtml(rel.title || 'Music player')}"
                          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                          loading="lazy" scrolling="no"></iframe>
                </div>`
-            : streamUrl
-              ? `<a class="release-card__ext pressable" href="${streamUrl}" target="_blank" rel="noopener noreferrer"
-                    onclick="trackClick('${(rel.title||'Release').replace(/'/g,"\\'")}','stream','listen')">
-                   Open in ${platformLabel || 'streaming app'} ↗
+            : safeStreamUrl
+              ? `<a class="release-card__ext pressable js-stream-track" href="${safeStreamUrl}" target="_blank" rel="noopener noreferrer">
+                   Open in ${escHtml(platformLabel || 'streaming app')} ↗
                  </a>`
               : ''
           }`
@@ -4158,11 +4152,30 @@
         card.innerHTML = `
           ${mediaHtml}
           <div class="release-card__info">
-            <h3 class="release-card__title">${rel.title || 'Untitled'}</h3>
-            <p class="release-card__meta">${type}${year ? ` · ${year}` : ''}${tracks.length ? ` · ${tracks.length} track${tracks.length !== 1 ? 's' : ''}` : ''}</p>
+            <h3 class="release-card__title">${escHtml(rel.title || 'Untitled')}</h3>
+            <p class="release-card__meta">${escHtml(type)}${year ? ` · ${year}` : ''}${tracks.length ? ` · ${tracks.length} track${tracks.length !== 1 ? 's' : ''}` : ''}</p>
             ${tracksHtml}
           </div>
         `
+
+        // Wire platform badge / ext link click tracking
+        card.querySelectorAll('.js-stream-track').forEach(el => {
+          el.addEventListener('click', e => {
+            e.stopPropagation()
+            trackClick(rel.title || 'Release', 'stream', 'listen')
+          })
+        })
+
+        // Wire track clicks via data-stream-url (avoids inline onclick injection)
+        card.querySelectorAll('.release-track[data-stream-url]').forEach(tr => {
+          tr.addEventListener('click', () => {
+            const url = tr.dataset.streamUrl
+            if (url && isSafeUrl(url)) window.open(url, '_blank', 'noopener,noreferrer')
+          })
+          tr.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tr.click() }
+          })
+        })
 
         // Wire embed toggle (YouTube + other embeds — not Spotify which auto-loads)
         if (embedUrl && !isSpotify) {
@@ -4213,31 +4226,36 @@
         const dayStr = date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
         const timeStr = ev.time || ''
 
+        const safeTicketUrl = ev.ticketUrl && isSafeUrl(ev.ticketUrl) ? escHtml(ev.ticketUrl) : ''
         item.innerHTML = `
-          ${hasImage ? `<div class="show-item__bg" style="background-image:url('${ev.venueImageUrl}')" role="presentation"></div>` : ''}
-          <div class="show-item__date" aria-label="${dayStr}">
+          ${hasImage ? `<div class="show-item__bg" style="background-image:url('${escHtml(ev.venueImageUrl)}')" role="presentation"></div>` : ''}
+          <div class="show-item__date" aria-label="${escHtml(dayStr)}">
             <span class="show-item__month">${date.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}</span>
             <span class="show-item__day">${date.getDate()}</span>
           </div>
           <div class="show-item__info">
-            <p class="show-item__venue">${ev.venue || 'TBC'}</p>
-            <p class="show-item__city">${[ev.city, ev.country].filter(Boolean).join(', ') || ''}</p>
-            ${timeStr ? `<p class="show-item__time">${timeStr}</p>` : ''}
+            <p class="show-item__venue">${escHtml(ev.venue || 'TBC')}</p>
+            <p class="show-item__city">${escHtml([ev.city, ev.country].filter(Boolean).join(', ') || '')}</p>
+            ${timeStr ? `<p class="show-item__time">${escHtml(timeStr)}</p>` : ''}
           </div>
           <div class="show-item__cta">
             ${ev.soldOut
               ? `<span class="show-item__sold-out-badge">Sold out</span>`
-              : ev.ticketUrl
+              : safeTicketUrl
                 ? `<a class="btn-show pressable"
-                      href="${ev.ticketUrl}" target="_blank" rel="noopener noreferrer"
-                      aria-label="Buy tickets for ${ev.venue || 'show'} on ${dayStr}"
-                      onclick="trackClick('${(ev.venue || 'show').replace(/'/g, "\\'")}','ticket','shows')">
+                      href="${safeTicketUrl}" target="_blank" rel="noopener noreferrer"
+                      aria-label="Buy tickets for ${escHtml(ev.venue || 'show')} on ${escHtml(dayStr)}"
+                      data-track-label="${escHtml(ev.venue || 'show')}">
                      Tickets
                    </a>`
                 : ''
             }
           </div>
         `
+        if (safeTicketUrl) {
+          const ticketBtn = item.querySelector('.btn-show')
+          if (ticketBtn) ticketBtn.addEventListener('click', () => trackClick(ev.venue || 'show', 'ticket', 'shows'))
+        }
         list.appendChild(item)
       })
 
@@ -4264,25 +4282,29 @@
         el.setAttribute('role', 'listitem')
 
         const hasImg = Boolean(card.imageUrl)
+        const safeCtaUrl = card.ctaUrl && isSafeUrl(card.ctaUrl) ? escHtml(card.ctaUrl) : ''
         el.innerHTML = `
           ${hasImg
-            ? `<img class="snap-card__image" src="${card.imageUrl}"
-                         alt="${card.alt || card.title || ''}"
+            ? `<img class="snap-card__image" src="${escHtml(card.imageUrl)}"
+                         alt="${escHtml(card.alt || card.title || '')}"
                          loading="lazy" width="220" height="220">`
             : `<div class="snap-card__image-placeholder" aria-hidden="true"></div>`
           }
           <div class="snap-card__body">
-            ${card.title ? `<h3 class="snap-card__title">${card.title}</h3>` : ''}
-            ${card.body ? `<p class="snap-card__text">${card.body}</p>` : ''}
-            ${card.ctaLabel && card.ctaUrl
+            ${card.title ? `<h3 class="snap-card__title">${escHtml(card.title)}</h3>` : ''}
+            ${card.body ? `<p class="snap-card__text">${escHtml(card.body)}</p>` : ''}
+            ${card.ctaLabel && safeCtaUrl
               ? `<a class="snap-card__cta pressable"
-                    href="${card.ctaUrl}" target="_blank" rel="noopener noreferrer"
-                    onclick="trackClick('${(card.ctaLabel).replace(/'/g, "\\'")}','snap','snap-cards')">
-                   ${card.ctaLabel}
+                    href="${safeCtaUrl}" target="_blank" rel="noopener noreferrer">
+                   ${escHtml(card.ctaLabel)}
                  </a>`
               : ''}
           </div>
         `
+        if (card.ctaLabel && safeCtaUrl) {
+          const ctaEl = el.querySelector('.snap-card__cta')
+          if (ctaEl) ctaEl.addEventListener('click', () => trackClick(card.ctaLabel, 'snap', 'snap-cards'))
+        }
         track.appendChild(el)
       })
 
@@ -4303,7 +4325,7 @@
       // Show "Shop all" link if storeUrl provided
       const shopLink = document.getElementById('merch-shop-link')
       if (shopLink && merch.storeUrl) {
-        shopLink.href = merch.storeUrl
+        shopLink.href = isSafeUrl(merch.storeUrl) ? merch.storeUrl : '#'
         shopLink.hidden = false
       }
 
@@ -4319,19 +4341,19 @@
         el.innerHTML = `
           <div class="merch-item__image-wrap">
             ${item.imageUrl
-              ? `<img class="merch-item__image loaded" src="${item.imageUrl}"
-                      alt="${item.title || 'Merch item'}"
+              ? `<img class="merch-item__image loaded" src="${escHtml(item.imageUrl)}"
+                      alt="${escHtml(item.title || 'Merch item')}"
                       width="160" height="160" loading="lazy">`
               : item.emoji
-                ? `<div class="merch-item__emoji" aria-hidden="true">${item.emoji}</div>`
+                ? `<div class="merch-item__emoji" aria-hidden="true">${escHtml(item.emoji)}</div>`
                 : ''
             }
-            ${item.badge ? `<span class="merch-item__badge">${item.badge}</span>` : ''}
-            ${item.imageUrl && priceStr ? `<div class="merch-item__price-overlay" aria-hidden="true">${priceStr}</div>` : ''}
+            ${item.badge ? `<span class="merch-item__badge">${escHtml(item.badge)}</span>` : ''}
+            ${item.imageUrl && priceStr ? `<div class="merch-item__price-overlay" aria-hidden="true">${escHtml(priceStr)}</div>` : ''}
           </div>
           <div class="merch-item__info">
-            <p class="merch-item__title">${item.title || 'Item'}</p>
-            ${(!item.imageUrl && priceStr) ? `<p class="merch-item__price">${priceStr}</p>` : ''}
+            <p class="merch-item__title">${escHtml(item.title || 'Item')}</p>
+            ${(!item.imageUrl && priceStr) ? `<p class="merch-item__price">${escHtml(priceStr)}</p>` : ''}
           </div>
         `
 
@@ -4341,7 +4363,7 @@
           el.setAttribute('aria-label', `${item.title || 'Item'} — ${priceStr}. Open in shop.`)
           el.addEventListener('click', () => {
             trackClick(item.title || 'Merch', 'merch', 'merch-section')
-            window.open(item.url, '_blank', 'noopener,noreferrer')
+            if (isSafeUrl(item.url)) window.open(item.url, '_blank', 'noopener,noreferrer')
           })
           el.addEventListener('keydown', e => {
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click() }
@@ -4374,24 +4396,28 @@
           ? (pack.currency || '£') + Number(pack.price).toFixed(2)
           : ''
 
+        const safePackUrl = pack.url && isSafeUrl(pack.url) ? escHtml(pack.url) : ''
         el.innerHTML = `
-          <span class="support-pack__emoji" aria-hidden="true">${pack.emoji || '❤️'}</span>
+          <span class="support-pack__emoji" aria-hidden="true">${escHtml(pack.emoji || '❤️')}</span>
           <div class="support-pack__info">
-            <p class="support-pack__label">${pack.label || 'Support'}</p>
-            ${pack.description ? `<p class="support-pack__desc">${pack.description}</p>` : ''}
+            <p class="support-pack__label">${escHtml(pack.label || 'Support')}</p>
+            ${pack.description ? `<p class="support-pack__desc">${escHtml(pack.description)}</p>` : ''}
           </div>
-          ${priceStr && pack.url
+          ${priceStr && safePackUrl
             ? `<a class="pressable support-pack__price-btn"
-                  href="${pack.url}" target="_blank" rel="noopener noreferrer"
-                  aria-label="${pack.label || 'Support'} — ${priceStr}"
-                  onclick="trackClick('${(pack.label || 'Support').replace(/'/g, "\\'")}','support','support-section')">
-                 ${priceStr}
+                  href="${safePackUrl}" target="_blank" rel="noopener noreferrer"
+                  aria-label="${escHtml(pack.label || 'Support')} — ${escHtml(priceStr)}">
+                 ${escHtml(priceStr)}
                </a>`
             : priceStr
-              ? `<span class="support-pack__price">${priceStr}</span>`
+              ? `<span class="support-pack__price">${escHtml(priceStr)}</span>`
               : ''
           }
         `
+        if (priceStr && safePackUrl) {
+          const priceBtn = el.querySelector('.support-pack__price-btn')
+          if (priceBtn) priceBtn.addEventListener('click', () => trackClick(pack.label || 'Support', 'support', 'support-section'))
+        }
         packsEl.appendChild(el)
       })
 
@@ -4429,8 +4455,8 @@
         const li = document.createElement('li')
         li.className = 'credit-item'
         li.innerHTML = `
-          <span class="credit-item__name">${credit.name}</span>
-          <span class="credit-item__role">${credit.role || 'Contributor'}</span>
+          <span class="credit-item__name">${escHtml(credit.name)}</span>
+          <span class="credit-item__role">${escHtml(credit.role || 'Contributor')}</span>
         `
         list.appendChild(li)
       })
@@ -4486,20 +4512,21 @@
         const el = document.createElement('li')
         const href = rec.url || (rec.ableHandle ? `https://able.fm/${rec.ableHandle}` : null)
 
+        const safeHref = href && isSafeUrl(href) ? escHtml(href) : ''
         el.innerHTML = `
           <a class="rec-item pressable"
-             ${href ? `href="${href}" target="_blank" rel="noopener noreferrer"` : ''}
-             aria-label="${rec.name}${rec.note ? ` — ${rec.note}` : ''}">
+             ${safeHref ? `href="${safeHref}" target="_blank" rel="noopener noreferrer"` : ''}
+             aria-label="${escHtml(rec.name)}${rec.note ? ` — ${escHtml(rec.note)}` : ''}">
             ${rec.avatarUrl
-              ? `<img class="rec-item__avatar" src="${rec.avatarUrl}"
-                      alt="${rec.name}" loading="lazy" width="44" height="44">`
+              ? `<img class="rec-item__avatar" src="${escHtml(rec.avatarUrl)}"
+                      alt="${escHtml(rec.name)}" loading="lazy" width="44" height="44">`
               : `<div class="rec-item__avatar-placeholder" aria-hidden="true">🎵</div>`
             }
             <div class="rec-item__info">
-              <p class="rec-item__name">${rec.name}</p>
-              ${rec.note ? `<p class="rec-item__note">${rec.note}</p>` : ''}
+              <p class="rec-item__name">${escHtml(rec.name)}</p>
+              ${rec.note ? `<p class="rec-item__note">${escHtml(rec.note)}</p>` : ''}
             </div>
-            ${href ? `<span class="rec-item__arrow" aria-hidden="true">↗</span>` : ''}
+            ${safeHref ? `<span class="rec-item__arrow" aria-hidden="true">↗</span>` : ''}
           </a>
         `
         list.appendChild(el)
