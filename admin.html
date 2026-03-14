@@ -2329,9 +2329,14 @@ function renderAdminSupport() {
 function toggleSupportEnabled(enabled) {
   const data = safeLS(V3_KEY, {});
   const support = { ...(data.support||{}), enabled };
-  const updated = { ...data, support };
+  // Also drive sectionVisibility so the public profile respects the toggle
+  const vis = { ...(data.sectionVisibility || {}), 'support-section': enabled };
+  const updated = { ...data, support, sectionVisibility: vis };
   setLS(V3_KEY, updated);
   syncProfile(updated);
+  // Keep the Profile page section-vis toggle in sync if it's visible
+  const visBtn = document.querySelector('.section-vis-toggle[data-section="support-section"]');
+  if (visBtn) visBtn.setAttribute('aria-pressed', String(enabled));
 }
 
 function addSupportPack() {
@@ -2905,6 +2910,9 @@ function initSectionVisibility() {
     const isVisible = vis[sectionId] !== false  // default true
     btn.setAttribute('aria-pressed', String(isVisible))
   })
+  // Keep support-enabled checkbox in sync with sectionVisibility
+  const cb = document.getElementById('supportEnabled')
+  if (cb) cb.checked = vis['support-section'] !== false
 }
 
 function toggleSectionVis(btn) {
@@ -2917,6 +2925,15 @@ function toggleSectionVis(btn) {
   if (!profile.sectionVisibility) profile.sectionVisibility = {}
   profile.sectionVisibility[sectionId] = next
   localStorage.setItem(V3_KEY, JSON.stringify(profile))
+
+  // Keep support-enabled checkbox in sync
+  if (sectionId === 'support-section') {
+    const cb = document.getElementById('supportEnabled')
+    if (cb) cb.checked = next
+    const supportData = profile.support || {}
+    profile.support = { ...supportData, enabled: next }
+    localStorage.setItem(V3_KEY, JSON.stringify(profile))
+  }
 }
 
 // ── PROFILE IDENTITY CARD ─────────────────────────────────────────────────
