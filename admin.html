@@ -586,6 +586,39 @@ body {
     .section-vis-toggle[aria-pressed="true"]::after { transform: translateX(16px); }
 
 /* ── PROFILE IDENTITY CARD ── */
+.feel-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 4px 0 8px;
+  animation: fadeSlide .18s ease;
+}
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.feel-option {
+  width: 100%;
+  padding: 9px 14px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,.09);
+  background: rgba(255,255,255,.03);
+  color: var(--text, #fff);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.feel-option:hover {
+  border-color: rgba(255,255,255,.2);
+  background: rgba(255,255,255,.06);
+}
+.feel-option.active {
+  border-color: var(--acc, #f4b942);
+  color: var(--acc, #f4b942);
+  background: rgba(244,185,66,.07);
+}
 .identity-card {
   background: var(--card, #16181f);
   border-radius: 14px;
@@ -894,7 +927,13 @@ body {
       <div class="identity-row">
         <span class="identity-row__label">Feel</span>
         <span class="identity-row__value" id="idFeelVal">—</span>
-        <button class="identity-row__change" onclick="identityChangeFeel()">Change →</button>
+        <button class="identity-row__change" id="feelChangeBtn" onclick="identityChangeFeel()">Change →</button>
+      </div>
+      <div class="feel-picker" id="feelPicker" hidden>
+        <button class="feel-option" data-feel="intimate-raw"     onclick="selectFeel(this)">Stripped back</button>
+        <button class="feel-option" data-feel="intimate-refined" onclick="selectFeel(this)">Warm and cinematic</button>
+        <button class="feel-option" data-feel="bold-raw"         onclick="selectFeel(this)">Underground and direct</button>
+        <button class="feel-option" data-feel="bold-refined"     onclick="selectFeel(this)">Clean and confident</button>
       </div>
 
       <div class="identity-nudges" id="identityNudges">
@@ -3111,17 +3150,35 @@ function identityChangeGenre() {
 }
 
 function identityChangeFeel() {
-  const options = Object.entries(FEEL_LABELS);
-  const msg = 'Choose feel:\n' + options.map(([k,v],i) => `${i+1}. ${v}`).join('\n');
-  const choice = prompt(msg);
-  const idx = parseInt(choice, 10) - 1;
-  if (idx >= 0 && idx < options.length) {
+  const picker = document.getElementById('feelPicker');
+  const btn    = document.getElementById('feelChangeBtn');
+  if (!picker) return;
+  const opening = picker.hidden;
+  picker.hidden = !opening;
+  if (btn) btn.textContent = opening ? 'Cancel ×' : 'Change →';
+  if (opening) {
+    // Mark current feel as active
     const profile = safeLS(V3_KEY, {});
-    if (!profile.identity) profile.identity = {};
-    profile.identity.feel = options[idx][0];
-    setLS(V3_KEY, profile);
-    initIdentityCard();
+    const feel = (profile.identity || {}).feel || 'bold-refined';
+    picker.querySelectorAll('.feel-option').forEach(b => {
+      b.classList.toggle('active', b.dataset.feel === feel);
+    });
   }
+}
+
+function selectFeel(btn) {
+  const feel = btn.dataset.feel;
+  if (!feel) return;
+  const profile = safeLS(V3_KEY, {});
+  if (!profile.identity) profile.identity = {};
+  profile.identity.feel = feel;
+  setLS(V3_KEY, profile);
+  // Close picker
+  const picker = document.getElementById('feelPicker');
+  const changeBtn = document.getElementById('feelChangeBtn');
+  if (picker) picker.hidden = true;
+  if (changeBtn) changeBtn.textContent = 'Change →';
+  initIdentityCard();
 }
 </script>
 </body>
