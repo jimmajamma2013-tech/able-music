@@ -49,13 +49,14 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 
 ## Current build status
 
-**Last updated: 2026-03-14 — Checkpoint 7 complete.**
+**Last updated: 2026-03-14 — Checkpoint 8 complete.**
 
 | Component | Status |
 |---|---|
-| `able-v6.html` | **COMPLETE through Checkpoint 7** — see checkpoint log below |
+| `able-v6.html` | **COMPLETE through Checkpoint 8** — see checkpoint log below |
 | Design system (tokens, 7 vibes, 4 themes) | Complete — all tokens live in `able-v6.html` |
 | Campaign state machine (profile/pre-release/live/gig) | Complete |
+| State 4 (near-future): world map moment ≤7d → hero chip | Complete — `04f5476` |
 | CTA zone architecture (3 zones, caps, dedupe) | Complete |
 | §7.2 Phase 1 interactions (17 must-builds) | Complete — all 17 shipped |
 | §7.1 animation rule compliance | Complete — btn glow uses `::after` opacity, no box-shadow loops |
@@ -67,11 +68,16 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 | Panel asymmetric timing (350ms spring in / 250ms accel out) | Complete |
 | Admin theme persistence | Complete — `data-theme` chips hydrate from `able_v3_profile.theme` |
 | Fan capture + localStorage schema | Complete — keys frozen |
+| **Artist World Map** — public profile | Complete — `2a426b9` — month grid, 8 types, 4 tiers, half-sheet panel, auto-population, State 4 bridge |
+| **Artist World Map** — admin "Your World" | Complete — `ywInit`, `ywRenderMomentList` in `admin.html` |
+| **Artist World Map** — landing demo state | Complete — `dp-wm` state in `landing.html` |
+| Professional ecosystem spec | Spec complete (`df492b6`) — implementation Phase 2 |
+| Showcase / Campaign Mode spec | Spec in progress — implementation Phase 2 |
 | Supabase migration path | Planned — localStorage keys map 1:1 to table rows |
 | Snap cards CRUD (admin) | Deferred to Phase 2 |
 | Supabase auth + read path | Deferred to Phase 2 |
 | Fan feed (fan.html) | Deferred to Phase 2 |
-| Studio/freelancer mode | Deferred to Phase 2 |
+| Professional/studio profile layer | Deferred to Phase 2 |
 | Skeleton loading system (hero/CTAs/bio) | Deferred to Phase 2 — §7.2 #5 |
 | Full hero content crossfade on state change | Deferred to Phase 2 — §7.2 #9 |
 
@@ -88,6 +94,7 @@ Rooms, Press Pack, Story Mode, Ablers, Studio mode, Fan feed, Globe heatmap, Dis
 | 5 | `69193bf` | Interaction layer — §7.2 Phase 1 |
 | 6 | `69193bf` | a11y + performance pass |
 | 7 | `7d2acd1` | §7.1 + §7.2 audit fixes; admin theme persistence |
+| 8 | `2a426b9` | Artist World Map — State 4 + hero wire-up; V3_KEY fix |
 
 ### Checkpoint 7 spot-check matrix (12/12 pass)
 
