@@ -2224,11 +2224,12 @@ function renderAdminMusic() {
         <div class="field-label" style="margin-bottom:6px;">Tracklist <span style="font-weight:400;color:var(--t3);">(${(rel.tracks||[]).length} tracks)</span></div>
         <div id="tracks-${rel.id}">
           ${(rel.tracks||[]).map((t,ti)=>`
-            <div class="admin-track-row" data-ti="${ti}">
+            <div class="admin-track-row" data-ti="${ti}" style="flex-wrap:wrap;gap:4px;">
               <span class="track-num">${escHtml(t.num)}</span>
-              <input class="field-input" value="${escHtml(t.title)}" oninput="updateTrack('${rel.id}',${ti},'title',this.value)" placeholder="Track title" style="flex:1;">
-              <input class="field-input" value="${escHtml(t.duration||'')}" oninput="updateTrack('${rel.id}',${ti},'duration',this.value)" placeholder="3:42" style="width:56px;">
+              <input class="field-input" value="${escHtml(t.title)}" oninput="updateTrack('${rel.id}',${ti},'title',this.value)" placeholder="Track title" style="flex:1;min-width:80px;">
+              <input class="field-input" value="${escHtml(t.duration||'')}" oninput="updateTrack('${rel.id}',${ti},'duration',this.value)" placeholder="3:42" style="width:52px;">
               <button class="snap-btn del" onclick="removeTrack('${rel.id}',${ti})" title="Remove">×</button>
+              <input class="field-input" type="url" value="${escHtml(t.streamUrl||'')}" oninput="updateTrack('${rel.id}',${ti},'streamUrl',this.value)" placeholder="Individual stream link (optional)" style="flex:1 1 100%;margin-left:28px;font-size:11px;">
             </div>`).join('')}
         </div>
         <button class="dc-action" style="margin-top:6px;" onclick="addTrack('${rel.id}')">+ Add track</button>
