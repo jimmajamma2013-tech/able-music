@@ -4351,11 +4351,11 @@
       const container = document.getElementById('scroll-container')
       if (!container) return
 
-      // Hidden sections
+      // Force-hide sections marked invisible — never force-show (renderers control that)
       DEFAULT_SECTION_ORDER.forEach(id => {
         const el = document.getElementById(id)
         if (!el) return
-        el.hidden = vis[id] === false
+        if (vis[id] === false) el.hidden = true
       })
 
       // Re-order: use credits-section as fixed anchor — orderable sections go before it
