@@ -2462,6 +2462,52 @@
       gap: 8px;
     }
 
+    /* Fan count progress bar — §9.1 */
+    .ep-fan-bar {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--r-md);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ep-fan-bar__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .ep-fan-bar__label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .ep-fan-bar__count {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-text-2);
+      font-variant-numeric: tabular-nums;
+    }
+    .ep-fan-bar__track {
+      height: 4px;
+      background: rgba(255,255,255,0.10);
+      border-radius: var(--r-pill);
+      overflow: hidden;
+    }
+    .ep-fan-bar__fill {
+      height: 100%;
+      background: var(--color-accent);
+      border-radius: var(--r-pill);
+      transition: width 0.6s var(--ease-decel);
+    }
+    .ep-fan-bar__warning {
+      font-size: 12px;
+      color: #f4b942;
+      line-height: 1.45;
+    }
+
     .ep-divider {
       height: 1px;
       background: rgba(255,255,255,0.07);
@@ -5112,6 +5158,27 @@
         const cta1 = ctas[1] || {}
         const accent = p.accent || getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim() || '#e07b3a'
 
+        // Fan count (§9.1)
+        let fanCount = 0
+        try { fanCount = JSON.parse(localStorage.getItem('able_fans') || '[]').length } catch (_) {}
+        const FREE_CAP  = 100
+        const fanPct    = Math.min(100, Math.round((fanCount / FREE_CAP) * 100))
+        const nearFull  = fanCount >= 95
+        const fanBarHTML = `
+          <div class="ep-fan-bar" aria-label="Fan list progress">
+            <div class="ep-fan-bar__header">
+              <span class="ep-fan-bar__label">Fans</span>
+              <span class="ep-fan-bar__count">${fanCount}/${FREE_CAP}</span>
+            </div>
+            <div class="ep-fan-bar__track" role="progressbar"
+                 aria-valuenow="${fanCount}" aria-valuemin="0" aria-valuemax="${FREE_CAP}"
+                 aria-label="${fanCount} of ${FREE_CAP} fans">
+              <div class="ep-fan-bar__fill" style="width:${fanPct}%"></div>
+            </div>
+            ${nearFull ? `<p class="ep-fan-bar__warning">Your list is full. These are ${fanCount} people who asked to hear from you. Don't leave them waiting.</p>` : ''}
+          </div>
+        `
+
         const THEMES = ['dark','light','glass','contrast']
         const VIBES  = ['electronic','hiphop','rnb','indie','pop','rock','acoustic']
 
@@ -5124,6 +5191,10 @@
         ).join('')
 
         body.innerHTML = `
+          ${fanBarHTML}
+
+          <div class="ep-divider"></div>
+
           <div class="ep-field">
             <label class="ep-label" for="ep-name">Artist name</label>
             <input class="ep-input" id="ep-name" type="text" value="${escHtml(p.name||'')}" placeholder="Your name" autocomplete="off">
