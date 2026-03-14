@@ -3474,6 +3474,13 @@
       cursor: pointer;
     }
     .ep-label--sm { font-size: 9px; }
+    .ep-clear-cta {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.03em;
+      color: var(--color-text-3); background: none; border: none;
+      cursor: pointer; padding: 2px 6px; border-radius: 4px;
+      opacity: 0.55; transition: opacity var(--dur-fast);
+    }
+    .ep-clear-cta:hover { opacity: 1; color: var(--color-panel-text); }
 
     /* Shell scale when panel open */
     #app-shell.panel-open {
@@ -7644,19 +7651,26 @@
           </div>
 
           <div class="ep-field">
-            <span class="ep-label">Primary CTA</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+              <span class="ep-label" style="margin:0">Primary CTA</span>
+              <button class="ep-clear-cta" id="ep-clear-cta0" type="button" title="Remove this CTA">✕ Clear</button>
+            </div>
             <div class="ep-cta-row">
-              <input class="ep-input" id="ep-cta0-label" type="text" value="${escHtml(cta0.label||'')}" placeholder="Label">
+              <input class="ep-input" id="ep-cta0-label" type="text" value="${escHtml(cta0.label||'')}" placeholder="Label (leave blank = no button)">
               <input class="ep-input" id="ep-cta0-url"   type="url"  value="${escHtml(cta0.url||'')}"   placeholder="https://…">
             </div>
           </div>
 
           <div class="ep-field">
-            <span class="ep-label">Secondary CTA</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+              <span class="ep-label" style="margin:0">Secondary CTA</span>
+              <button class="ep-clear-cta" id="ep-clear-cta1" type="button" title="Remove this CTA">✕ Clear</button>
+            </div>
             <div class="ep-cta-row">
-              <input class="ep-input" id="ep-cta1-label" type="text" value="${escHtml(cta1.label||'')}" placeholder="Label">
+              <input class="ep-input" id="ep-cta1-label" type="text" value="${escHtml(cta1.label||'')}" placeholder="Label (leave blank = no button)">
               <input class="ep-input" id="ep-cta1-url"   type="url"  value="${escHtml(cta1.url||'')}"   placeholder="https://…">
             </div>
+            <p class="ep-hint" style="margin-top:4px">Leave both labels blank to show no CTA buttons.</p>
           </div>
 
           <div class="ep-divider"></div>
@@ -7677,6 +7691,16 @@
               btn.setAttribute('aria-pressed', 'true')
             })
           })
+        })
+
+        // Clear CTA buttons
+        body.querySelector('#ep-clear-cta0')?.addEventListener('click', () => {
+          body.querySelector('#ep-cta0-label').value = ''
+          body.querySelector('#ep-cta0-url').value = ''
+        })
+        body.querySelector('#ep-clear-cta1')?.addEventListener('click', () => {
+          body.querySelector('#ep-cta1-label').value = ''
+          body.querySelector('#ep-cta1-url').value = ''
         })
 
         // Background preset chips + live preview
@@ -7815,8 +7839,9 @@
             const c1label = body.querySelector('#ep-cta1-label')?.value.trim()
             const c1url   = body.querySelector('#ep-cta1-url')?.value.trim()
 
-            stored.ctaPrimary   = (c0label || c0url) ? { label: c0label || 'Stream now', url: c0url || '#' } : stored.ctaPrimary
-            stored.ctaSecondary = (c1label || c1url) ? { label: c1label || 'Follow',     url: c1url || '#' } : stored.ctaSecondary
+            // CTA optionality: empty label = remove button entirely
+            stored.ctaPrimary   = c0label ? { label: c0label, url: c0url || '#' } : (c0url ? { label: 'Stream now', url: c0url } : null)
+            stored.ctaSecondary = c1label ? { label: c1label, url: c1url || '#' } : (c1url ? { label: 'Follow', url: c1url } : null)
 
             // Background settings
             stored.backgroundUrl    = body.querySelector('#ep-bg-url')?.value?.trim() || stored.backgroundUrl || ''

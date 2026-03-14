@@ -2261,13 +2261,18 @@ function renderAdminMusic() {
           </div>
         </div>
         <div class="field-row">
-          <div class="field-label">Stream link (Spotify, YouTube, SoundCloud, Apple Music)</div>
-          <input class="field-input" type="url" value="${escHtml(rel.platformUrl||'')}" oninput="updateReleaseField('${rel.id}','platformUrl',this.value)" placeholder="open.spotify.com/album/… or youtu.be/…">
+          <div class="field-label" style="display:flex;align-items:center;gap:8px;">
+            Stream link
+            <span class="autofill-badge" style="display:none;font-size:10px;font-weight:600;padding:2px 8px;border-radius:var(--r-pill,999px);background:rgba(255,255,255,0.06);color:var(--t2);">Auto-fill…</span>
+          </div>
+          <input class="field-input" type="url" value="${escHtml(rel.platformUrl||'')}"
+            oninput="updateReleaseField('${rel.id}','platformUrl',this.value);scheduleAutoFill('${rel.id}',this.value)"
+            placeholder="Paste a Spotify, YouTube, or SoundCloud URL — artwork + title auto-fill">
           <div class="embed-preview" id="embed-prev-${rel.id}" style="display:none;"></div>
         </div>
         <div class="field-row">
-          <div class="field-label">Artwork URL <span style="font-weight:400;color:var(--t3);">(optional — shown on release card if no embed)</span></div>
-          <input class="field-input" type="url" value="${escHtml(rel.artworkUrl||'')}" oninput="updateReleaseField('${rel.id}','artworkUrl',this.value)" placeholder="https://…/artwork.jpg">
+          <div class="field-label">Artwork <span style="font-weight:400;color:var(--t3);">(auto-filled from URL above, or paste your own)</span></div>
+          <input class="field-input" type="url" value="${escHtml(rel.artworkUrl||'')}" oninput="updateReleaseField('${rel.id}','artworkUrl',this.value)" placeholder="Auto-filled — or paste a direct image URL">
         </div>
         <div class="field-label" style="margin-bottom:6px;">Tracklist <span style="font-weight:400;color:var(--t3);">(${(rel.tracks||[]).length} tracks)</span></div>
         <div id="tracks-${rel.id}">
@@ -2303,9 +2308,19 @@ function renderAdminMusic() {
 function addRelease() {
   const data = safeLS(V3_KEY, {});
   const releases = data.releases || [];
-  releases.unshift({ id: 'r'+Date.now(), title: 'New Release', type: 'Single', year: String(new Date().getFullYear()), displayMode: 'both', platformUrl: '', artworkUrl: '', tracks: [], credits: [] });
+  const rid = 'r' + Date.now()
+  releases.unshift({ id: rid, title: 'New Release', type: 'Single', year: String(new Date().getFullYear()), displayMode: 'both', platformUrl: '', artworkUrl: '', tracks: [], credits: [] });
   setLS(V3_KEY, { ...data, releases });
   syncProfile({ ...data, releases });
+  // Focus the platform URL field after render so user can paste immediately
+  setTimeout(() => {
+    const card = document.querySelector(`[data-rid="${rid}"]`)
+    if (card) {
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      const urlInput = card.querySelector('input[type="url"]')
+      if (urlInput) urlInput.focus()
+    }
+  }, 120)
   renderAdminMusic();
 }
 
@@ -2323,6 +2338,95 @@ function updateReleaseField(rid, field, value) {
   const releases = (data.releases||[]).map(r => r.id===rid ? {...r, [field]: value} : r);
   setLS(V3_KEY, { ...data, releases });
   if (field === 'platformUrl') showEmbedPreview(rid, value);
+}
+
+// === URL AUTO-FILL (oEmbed) ==================================
+// Paste any stream URL → auto-fills title + artwork instantly.
+// Uses public oEmbed endpoints — no API key needed.
+
+let _autoFillTimers = {}
+
+function scheduleAutoFill(rid, url) {
+  clearTimeout(_autoFillTimers[rid])
+  _autoFillTimers[rid] = setTimeout(() => autoFillFromUrl(rid, url), 600)
+}
+
+async function autoFillFromUrl(rid, rawUrl) {
+  if (!rawUrl || rawUrl.length < 12) return
+  const url = rawUrl.startsWith('http') ? rawUrl : 'https://' + rawUrl
+  const card = document.querySelector(`[data-rid="${rid}"]`)
+  if (!card) return
+
+  let endpoint = null
+  let ytVideoId = null
+
+  if (/youtube\.com|youtu\.be/.test(url)) {
+    const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]+)/)
+    ytVideoId = m?.[1]
+    endpoint = `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`
+  } else if (url.includes('spotify.com')) {
+    endpoint = `https://open.spotify.com/oembed?url=${encodeURIComponent(url)}&format=json`
+  } else if (url.includes('soundcloud.com')) {
+    endpoint = `https://soundcloud.com/oembed?url=${encodeURIComponent(url)}&format=json`
+  } else if (url.includes('vimeo.com')) {
+    endpoint = `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}`
+  }
+
+  if (!endpoint) return
+
+  // Show loading indicator
+  const badge = card.querySelector('.autofill-badge')
+  if (badge) { badge.textContent = 'Fetching…'; badge.style.display = 'inline-block' }
+
+  try {
+    const res = await fetch(endpoint, { mode: 'cors' })
+    if (!res.ok) throw new Error('oembed ' + res.status)
+    const meta = await res.json()
+
+    const stored = safeLS(V3_KEY, {})
+    const release = (stored.releases || []).find(r => r.id === rid)
+    if (!release) return
+
+    let changed = false
+
+    // Auto-fill title if still at default
+    if (meta.title && (release.title === 'New Release' || !release.title)) {
+      const cleanTitle = meta.title
+        .replace(/\s*[\-–—]\s*(official|audio|video|music video|lyrics?|visualis?er?|hd|4k).*/i, '')
+        .replace(/\s*\(official.*\)/i, '')
+        .trim()
+      const titleInput = card.querySelector('input[placeholder*="title"]')
+      if (titleInput) titleInput.value = cleanTitle
+      updateReleaseField(rid, 'title', cleanTitle)
+      changed = true
+    }
+
+    // Auto-fill artwork — YouTube high-res thumbnail preferred
+    if (!release.artworkUrl) {
+      const artwork = ytVideoId
+        ? `https://img.youtube.com/vi/${ytVideoId}/maxresdefault.jpg`
+        : (meta.thumbnail_url || '')
+      if (artwork) {
+        const artInput = card.querySelector('input[placeholder*="Artwork"]')
+        if (artInput) artInput.value = artwork
+        updateReleaseField(rid, 'artworkUrl', artwork)
+        changed = true
+      }
+    }
+
+    // Auto-fill author as credit suggestion if field is empty
+    if (meta.author_name && !(stored.releases || []).find(r => r.id === rid)?.credits?.length) {
+      // Just show it as a hint — don't auto-add a credit (too presumptuous)
+    }
+
+    if (badge) {
+      badge.textContent = changed ? '✓ Auto-filled' : '✓ Loaded'
+      badge.style.background = changed ? 'rgba(100,200,100,0.15)' : 'rgba(255,255,255,0.06)'
+      setTimeout(() => { if (badge) badge.style.display = 'none' }, 3000)
+    }
+  } catch (_) {
+    if (badge) badge.style.display = 'none'
+  }
 }
 
 function showEmbedPreview(rid, url) {
