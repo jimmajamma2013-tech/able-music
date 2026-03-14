@@ -964,6 +964,7 @@ body {
       </div>
       <div class="dc-body">
         <p style="font-size:11px;color:var(--t3);line-height:1.5;">Support packs appear as the last tab on your profile. Fans can buy directly — your link, your platform, your money.</p>
+        <p style="font-size:11px;color:var(--t2);line-height:1.5;margin-top:6px;">0% taken by ABLE. Stripe standard fee only — 1.4% + 20p for UK cards.</p>
       </div>
     </div>
     <div id="adminSupportList"></div>
@@ -1046,8 +1047,24 @@ body {
       <div class="page-sub">The people who showed up. Your list, your relationship — no algorithm in the way.</div>
     </div>
 
+    <!-- Fan cap progress bar (§9.1) -->
+    <div id="fanCapBar" style="margin-bottom:20px;display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+        <span style="font-size:11px;font-weight:600;color:var(--text);" id="fanCapLabel">0 of 100 fans</span>
+        <span style="font-size:10px;color:var(--t3);">Free tier cap</span>
+      </div>
+      <div style="height:4px;border-radius:100px;background:var(--border);overflow:hidden;">
+        <div id="fanCapFill" style="height:100%;border-radius:100px;background:var(--acc);transition:width .4s var(--ease);width:0%;"></div>
+      </div>
+      <div id="fanCapMsg" style="display:none;margin-top:10px;padding:12px 14px;border-radius:10px;background:rgba(var(--acc-rgb),.08);border:1px solid rgba(var(--acc-rgb),.2);">
+        <p style="font-size:12px;font-weight:600;color:var(--text);margin:0 0 4px;">Your list is nearly full.</p>
+        <p style="font-size:11px;color:var(--t2);margin:0 0 10px;line-height:1.5;">These are 100 people who asked to hear from you. Don't leave them waiting.</p>
+        <button style="font-size:11px;font-weight:600;color:var(--acc);background:none;border:none;cursor:pointer;padding:0;font-family:var(--font);">Upgrade to keep growing →</button>
+      </div>
+    </div>
+
     <div class="stats-row" style="margin-bottom:20px;">
-      <div class="stat-card"><div class="stat-label">Total fans</div><div class="stat-value">94</div><div class="stat-delta up">↑ 23 this week</div></div>
+      <div class="stat-card"><div class="stat-label">Total fans</div><div class="stat-value" id="fanStatTotal">—</div><div class="stat-delta up" id="fanStatWeek"> </div></div>
       <div class="stat-card"><div class="stat-label">Superfans</div><div class="stat-value">12</div><div class="stat-delta">12.8% of list</div></div>
       <div class="stat-card"><div class="stat-label">Avg open rate</div><div class="stat-value">47%</div><div class="stat-delta up">vs 22% industry</div></div>
       <div class="stat-card"><div class="stat-label">Top source</div><div class="stat-value" style="font-size:18px;">Instagram</div><div class="stat-delta">41 fans</div></div>
@@ -1978,6 +1995,22 @@ function loadRealStats() {
 
   // Fan stats
   set('statFansTotal', fansTotal  || '0');
+  set('fanStatTotal',  fansTotal  || '—');
+  set('fanStatWeek',   fansWeek   ? '↑ ' + fansWeek + ' this week' : ' ');
+
+  // Fan cap progress bar (§9.1) — show once first fan signs up
+  const CAP = 100;
+  const capBar = document.getElementById('fanCapBar');
+  const capFill = document.getElementById('fanCapFill');
+  const capLabel = document.getElementById('fanCapLabel');
+  const capMsg = document.getElementById('fanCapMsg');
+  if (capBar && fansTotal > 0) {
+    capBar.style.display = 'block';
+    const pct = Math.min(fansTotal / CAP * 100, 100);
+    if (capFill) capFill.style.width = pct + '%';
+    if (capLabel) capLabel.textContent = fansTotal + ' of ' + CAP + ' fans';
+    if (capMsg) capMsg.style.display = fansTotal >= 95 ? 'block' : 'none';
+  }
 
   // Top clicks list
   const topList = document.getElementById('topClicksList');
