@@ -5674,6 +5674,14 @@
 
     // --- Fan capture -------------------------------------------
 
+    const CAPTURE_VARIANTS = {
+      'profile':     { heading: 'Stay close.',                          cta: "I'm in",      trust: 'Just {artist}. No spam.' },
+      'pre-release': { heading: 'Be the first to hear it.',             cta: 'Notify me',   trust: 'First listen, nothing else.' },
+      'live':        { heading: 'Stay on everything I do.',             cta: 'Count me in', trust: 'Just {artist}. No spam.' },
+      'gig':         { heading: "I'll let you know about future dates.", cta: 'Let me know', trust: 'Show news only.' },
+      'near-future': { heading: 'Remind me.',                           cta: "I'm coming",  trust: 'One email, when it matters.' }
+    }
+
     function renderFanCapture(profile) {
       const fc1 = document.getElementById('fan-capture')
       const fc2 = document.getElementById('fan-capture-2')
@@ -5682,6 +5690,26 @@
       // Set artist name in trust lines
       const nameEl = document.getElementById('fan-artist-name')
       if (nameEl && profile.name) nameEl.textContent = profile.name
+
+      // Apply state-driven copy variant
+      const state = computeState(profile)
+      const variant = CAPTURE_VARIANTS[state] || CAPTURE_VARIANTS['profile']
+      const artistName = profile.name || 'the artist'
+
+      const h1 = document.getElementById('fan-capture-heading')
+      const h2 = document.getElementById('fan-capture-2-heading')
+      const submitLabel = fc1.querySelector('.fan-submit-label')
+      const btn2Span = fc2.querySelector('.fan-capture__btn span')
+      const trustEl = document.getElementById('fan-trust')
+      const trustText = variant.trust.replace('{artist}', artistName)
+
+      if (h1) h1.textContent = variant.heading
+      if (h2) h2.textContent = variant.heading
+      if (submitLabel) submitLabel.textContent = variant.cta
+      if (btn2Span) btn2Span.textContent = variant.cta
+      if (trustEl) trustEl.textContent = trustText
+
+      fc1.dataset.captureState = state
 
       // If this visitor signed up in this browser session, show echo state
       const myEmail = sessionStorage.getItem('able_this_fan_email')
@@ -5694,7 +5722,6 @@
           echo.hidden = false
           const echoText = document.getElementById('fan-echo-text')
           if (echoText) {
-            const artistName = profile.name || 'this artist'
             echoText.textContent = `We've got you — ${myEmail} is on ${artistName}'s list.`
           }
         }
