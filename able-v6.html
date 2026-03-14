@@ -1259,7 +1259,7 @@
       outline: none;
       transition: border-color var(--dur-fast) var(--ease-standard),
                   box-shadow var(--dur-fast) var(--ease-standard),
-                  background-color var(--dur-fast) var(--ease-standard);
+                  background-color var(--dur-slow) var(--ease-standard); /* #16: paste flash fades 400ms */
       -webkit-appearance: none;
     }
 
@@ -2708,10 +2708,10 @@
     /* === KEYFRAMES ============================================= */
     @keyframes shake {
       0%   { transform: translateX(0); }
-      20%  { transform: translateX(-6px); }
-      40%  { transform: translateX(6px); }
-      60%  { transform: translateX(-4px); }
-      80%  { transform: translateX(4px); }
+      20%  { transform: translateX(-8px); }
+      40%  { transform: translateX(8px); }
+      60%  { transform: translateX(-5px); }
+      80%  { transform: translateX(5px); }
       100% { transform: translateX(0); }
     }
 
@@ -4336,7 +4336,7 @@
               emailInput.classList.add('error')
               emailInput.setAttribute('aria-invalid', 'true')
               // Shake animation
-              emailInput.style.animation = 'shake 0.35s var(--ease-spring)'
+              emailInput.style.animation = 'shake 0.4s ease-out'
               emailInput.addEventListener('animationend', () => {
                 emailInput.style.animation = ''
               }, { once: true })
@@ -4439,7 +4439,7 @@
           if (!emailRx.test(email)) {
             if (emailInput) {
               emailInput.classList.add('error')
-              emailInput.style.animation = 'shake 0.35s var(--ease-spring)'
+              emailInput.style.animation = 'shake 0.4s ease-out'
               emailInput.addEventListener('animationend', () => {
                 emailInput.style.animation = ''
               }, { once: true })
@@ -5194,26 +5194,43 @@
         card.style.transition = 'none'
       })
 
+      function bloomCard(card, idx) {
+        const delay = (idx % 6) * 60
+        card.style.transition = `opacity var(--dur-slow) var(--ease-decel) ${delay}ms,
+                                 transform var(--dur-slow) var(--ease-decel) ${delay}ms`
+        card.style.opacity = '1'
+        card.style.transform = 'translateY(0)'
+      }
+
+      // System 1: hero (initially visible) cards bloom via rAF on load (§7.2 #4)
+      const vBottom = window.innerHeight
+      let heroIdx = 0
+      const heroCards = []
+      cards.forEach(card => {
+        if (card.getBoundingClientRect().top < vBottom) {
+          heroCards.push(card)
+          heroIdx++
+        }
+      })
+      if (heroCards.length) {
+        requestAnimationFrame(() => heroCards.forEach((card, i) => bloomCard(card, i)))
+      }
+
+      // System 2: below-fold cards via IntersectionObserver
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (!entry.isIntersecting) return
           const card = entry.target
           const siblings = Array.from(card.parentElement.children)
           const idx = Math.min(siblings.indexOf(card), 5)
-          const delay = (idx % 6) * 60
-
-          setTimeout(() => {
-            card.style.transition = `opacity var(--dur-slow) var(--ease-decel) ${delay}ms,
-                                     transform var(--dur-slow) var(--ease-decel) ${delay}ms`
-            card.style.opacity = '1'
-            card.style.transform = 'translateY(0)'
-          }, 0)
-
+          bloomCard(card, idx)
           observer.unobserve(card)
         })
       }, { rootMargin: '0px 0px -40px 0px', threshold: 0.1 })
 
-      cards.forEach(card => observer.observe(card))
+      cards.forEach(card => {
+        if (card.getBoundingClientRect().top >= vBottom) observer.observe(card)
+      })
     }
 
     // --- #5: Skeleton shimmer (on artwork images) ---------------
