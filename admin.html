@@ -3098,7 +3098,7 @@ function renderFanSupportPacksSummary() {
 }
 
 function exportFans() {
-  const real = JSON.parse(localStorage.getItem('able_fans') || '[]');
+  const real = JSON.parse(localStorage.getItem('able_fans') || '[]').filter(f => f.confirmed !== false);
   if (!real.length) { alert('No fans yet — share your page link to see who shows up.'); return; }
   const all = real.map(f => ({ email:f.email, level:'listener', source:f.source||'Direct', ts:f.ts }));
   const csv = 'Email,Level,Source,Joined\n' + all.map(f =>
