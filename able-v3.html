@@ -2716,9 +2716,6 @@
         document.body.style.backgroundImage = '';
       }
 
-      // Page state — drives countdown, CTAs, hero tag
-      applyState(computeState(data), data);
-
       // Top card — featured release media
       applyTopCard(data);
 
@@ -2801,6 +2798,9 @@
           secondary.onclick = () => trackClick(secondary.textContent.trim() + ' (no URL)', 'secondary_cta_no_url');
         }
       }
+
+      // Page state — drives countdown, CTAs, hero tag (must run AFTER CTA wiring so state labels win)
+      applyState(computeState(data), data);
 
       // Quick-action platform pills — dynamic from data.platforms[]
       const pillsWrap = document.getElementById('v3Pills');
