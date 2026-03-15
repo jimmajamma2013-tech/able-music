@@ -7452,6 +7452,20 @@
             const errorEl = document.getElementById('fan-error')
             if (errorEl) errorEl.hidden = true
           })
+          // E15 — Validate on blur (not on type): show error if non-empty and invalid when focus leaves
+          emailInput.addEventListener('blur', function() {
+            const val = this.value.trim()
+            if (val && !EMAIL_RX.test(val)) {
+              this.classList.add('error')
+              this.setAttribute('aria-invalid', 'true')
+              const errorEl = document.getElementById('fan-error')
+              if (errorEl) {
+                errorEl.textContent = "Check your email address."
+                errorEl.hidden = false
+              }
+            }
+          })
+
           // Paste flash feedback
           emailInput.addEventListener('paste', function() {
             this.classList.add('paste-flash')
