@@ -1302,6 +1302,26 @@ body::before {
       </div>
     </div>
 
+    <!-- §9.1 moment 2 — pre-release trial nudge: appears after a future release date is saved -->
+    <div id="preReleaseNudge" style="display:none;margin-bottom:20px;padding:14px 18px;border-radius:14px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);align-items:center;gap:12px;">
+      <div style="font-size:18px;line-height:1;flex-shrink:0;">🚀</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;">You're in launch mode.</div>
+        <div style="font-size:11px;color:var(--t2);line-height:1.5;">Artist plan unlocks the full pre-release toolkit — email your list on drop day, see who pre-saved, and control exactly when fans hear it.</div>
+      </div>
+      <button style="background:none;border:none;padding:0;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;flex-shrink:0;" onclick="this.closest('#preReleaseNudge').style.display='none';sessionStorage.setItem('_preReleaseNudgeDismissed','1');" aria-label="Dismiss">×</button>
+    </div>
+
+    <!-- §9.1 moment 3 — gig mode trial nudge: appears when gig is first activated this session -->
+    <div id="gigModeNudge" style="display:none;margin-bottom:20px;padding:14px 18px;border-radius:14px;background:rgba(139,30,30,.08);border:1px solid rgba(139,30,30,.3);align-items:center;gap:12px;">
+      <div style="font-size:18px;line-height:1;flex-shrink:0;">🎸</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;">Tonight's the night.</div>
+        <div style="font-size:11px;color:var(--t2);line-height:1.5;">Artist plan lets you email your list tonight — your fans hear about gigs before anyone else does.</div>
+      </div>
+      <button style="background:none;border:none;padding:0;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;flex-shrink:0;" onclick="this.closest('#gigModeNudge').style.display='none';sessionStorage.setItem('_gigModeNudgeDismissed','1');" aria-label="Dismiss">×</button>
+    </div>
+
       <!-- YOUR WORLD =========================================== -->
       <section class="yw-section" id="yw-section">
         <div class="yw-section-head">
@@ -2482,6 +2502,12 @@ function saveCampaignHQ() {
   // Visual save feedback
   const btn = document.querySelector('[onclick="saveCampaignHQ()"]');
   if (btn) { btn.textContent = '✓ Saved'; setTimeout(() => btn.textContent = 'Apply to live page →', 1800); }
+
+  // §9.1 moment 2 — show pre-release nudge when a future release date is saved
+  const preNudge = document.getElementById('preReleaseNudge');
+  if (preNudge && releaseDate && new Date(releaseDate) > new Date() && !sessionStorage.getItem('_preReleaseNudgeDismissed')) {
+    preNudge.style.display = 'flex';
+  }
 }
 
 /* ── GIG MODE ── */
@@ -2496,6 +2522,11 @@ function setGigActive(on) {
   if (!strip) return;
   strip.classList.toggle('active', on);
   if (on) {
+    // §9.1 moment 3 — show gig mode nudge on first activation this session
+    const gigNudge = document.getElementById('gigModeNudge');
+    if (gigNudge && !sessionStorage.getItem('_gigModeNudgeDismissed')) {
+      gigNudge.style.display = 'flex';
+    }
     const exp = Date.now() + 86400000;
     setLS(GIG_KEY, exp);
     if (hint) hint.textContent = 'Active — expires in 24 hrs. Your tickets CTA is front and centre.';
