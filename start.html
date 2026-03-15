@@ -950,6 +950,119 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   font-family:var(--font);
 }
 .inline-ai-link:hover { text-decoration-color:var(--acc); }
+
+/* ── V2 WIZARD ── */
+.v2-vibe-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.v2-vibe-btn {
+  padding: 13px 12px;
+  border-radius: 13px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  color: var(--t2);
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: all .16s;
+}
+.v2-vibe-btn:hover { border-color: var(--bm); color: var(--text); }
+.v2-vibe-btn.on {
+  border-color: var(--acc);
+  background: rgba(var(--acc-rgb),.08);
+  color: var(--text);
+  box-shadow: 0 0 0 3px rgba(var(--acc-rgb),.1);
+}
+.v2-colour-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.v2-colour-row .c-swatch {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+}
+/* Mini live preview */
+.v2-mini-preview {
+  margin: 8px 0 4px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: border-color .2s;
+}
+.v2-mini-bar {
+  width: 4px;
+  height: 36px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  background: var(--acc);
+  transition: background .25s;
+}
+.v2-mini-name {
+  font-family: var(--font-d);
+  font-size: 22px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -.01em;
+  color: var(--text);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color .15s;
+}
+.v2-mini-cta {
+  padding: 7px 16px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--acc);
+  color: #121a24;
+  flex-shrink: 0;
+  transition: background .25s;
+}
+/* Slug preview */
+.v2-slug-preview {
+  font-size: 13px;
+  color: var(--t2);
+  background: rgba(var(--acc-rgb),.06);
+  border: 1px solid rgba(var(--acc-rgb),.18);
+  border-radius: 10px;
+  padding: 11px 14px;
+  margin-bottom: 20px;
+  letter-spacing: .01em;
+}
+.v2-slug-preview strong {
+  color: var(--acc);
+  font-weight: 700;
+}
+/* Done pill */
+.v2-done-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 100px;
+  background: rgba(var(--acc-rgb),.12);
+  border: 1.5px solid rgba(var(--acc-rgb),.3);
+  font-family: var(--font-d);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--acc);
+  margin-bottom: 8px;
+}
 </style>
 </head>
 <body>
@@ -964,7 +1077,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     </svg>
     <span class="logo-type">ABLE</span>
   </div>
-  <div class="step-indicator" id="stepInd">Step 1 of 8</div>
+  <div class="step-indicator" id="stepInd">Make it yours</div>
 </header>
 
 <div class="progress">
@@ -982,483 +1095,179 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   <div class="form-side" style="position:relative;">
   <canvas id="confettiCanvas"></canvas>
 
-    <!-- STEP 0 — IMPORT -->
-    <div class="step active" id="step0">
-      <div class="step-eyebrow">Your music</div>
-      <h1 class="step-title">Where does<br>your music live?</h1>
-      <p class="step-sub">Paste a link and we'll fill in your name, bio, and look automatically. Takes about 10 seconds.</p>
+    <!-- STEP A — SPOTIFY IMPORT (optional pre-step) -->
+    <div class="step active" id="stepA">
+      <div class="step-eyebrow">Quick start</div>
+      <h1 class="step-title">Are you on<br>Spotify?</h1>
+      <p class="step-sub">Paste your artist URL — we'll pull in your name, photo, and releases.</p>
 
-      <div class="import-input-wrap" id="importWrap">
-        <input class="field-input import-input" type="url" id="iImportUrl"
-          placeholder="open.spotify.com/artist/… or soundcloud.com/… or youtu.be/…"
-          autocomplete="off" spellcheck="false"
-          oninput="onImportInput(this.value)">
-        <div class="import-status" id="importStatus" hidden></div>
-        <div class="import-preview" id="importPreview" hidden>
-          <div class="import-preview__art" id="importArt"></div>
-          <div>
-            <div class="import-preview__name" id="importName"></div>
-            <div class="import-preview__meta" id="importMeta"></div>
-          </div>
-          <div class="import-preview__check">✓</div>
-        </div>
-      </div>
-
-      <div class="import-why">
-        <span class="import-why__icon">✦</span>
-        We pull your artist name, suggest a bio, and pick a colour from your artwork — you just review and adjust.
+      <div class="field">
+        <input class="field-input import-input" type="url" id="iSpotifyImport"
+          placeholder="https://open.spotify.com/artist/…"
+          autocomplete="off" spellcheck="false">
+        <p class="field-error-msg" id="iSpotifyImportErr" role="alert"></p>
       </div>
 
       <div class="step-nav" style="flex-direction:column;gap:10px;">
-        <button class="btn-next" id="importBtn" onclick="doImport()" disabled>
-          Fill it in for me →
+        <button class="btn-next" id="spotifyImportBtn" onclick="doSpotifyImport()">
+          Find me on Spotify →
         </button>
-        <button class="btn-skip" onclick="skipImport()">
-          I'll fill it in myself →
+        <button class="btn-skip" onclick="goToStep('step1')">
+          Skip — I'll add my music manually →
         </button>
       </div>
     </div>
 
-    <!-- STEP 1 -->
+    <!-- STEP 1 — IDENTITY -->
     <div class="step" id="step1">
+      <!-- progress bar at 33% via JS -->
+      <div class="step-eyebrow">Step 1 of 3</div>
+      <h1 class="step-title">Make it<br>yours.</h1>
 
-      <!-- ── Stage 1a: Name ── -->
-      <div class="stage active" id="stage1a">
-        <div class="step-eyebrow">First things first</div>
-        <h1 class="step-title">What do people<br>call you?</h1>
-        <p class="step-sub">Use whatever name you release music under — it goes at the top of your page.</p>
-        <div class="field">
-          <input class="field-input" type="text" id="iName" placeholder="e.g. Nova, Jamie Reeves, MYLA…" autocomplete="off" autofocus>
-          <p class="field-error-msg" id="iNameErr" role="alert">Enter your artist name to continue.</p>
-        </div>
-        <div class="step-nav">
-          <button class="btn-next" onclick="tryStage1a()">Continue →</button>
+      <div class="field">
+        <label class="field-label" for="iName">Artist name</label>
+        <input class="field-input" type="text" id="iName"
+          placeholder="e.g. Nova, Jamie Reeves, MYLA…"
+          autocomplete="off" autofocus>
+        <p class="field-error-msg" id="iNameErr" role="alert">Enter your artist name to continue.</p>
+      </div>
+
+      <!-- Vibe picker 2×2 -->
+      <div class="field">
+        <label class="field-label">Your vibe</label>
+        <div class="v2-vibe-grid" id="v2VibeGrid">
+          <button class="v2-vibe-btn" data-vibe="atmospheric" type="button" onclick="selectVibe('atmospheric',this)">🌙 Atmospheric</button>
+          <button class="v2-vibe-btn" data-vibe="hype" type="button" onclick="selectVibe('hype',this)">🔥 Hype</button>
+          <button class="v2-vibe-btn" data-vibe="raw" type="button" onclick="selectVibe('raw',this)">🎸 Raw</button>
+          <button class="v2-vibe-btn" data-vibe="chill" type="button" onclick="selectVibe('chill',this)">🌊 Chill</button>
         </div>
       </div>
 
-      <!-- ── Stage 1b: Vibe ── -->
-      <div class="stage" id="stage1b">
-        <div class="step-eyebrow">First things first</div>
-        <h1 class="step-title">What's your<br>sound?</h1>
-        <p class="step-sub">Pick the closest one. Your page adapts the moment you tap.</p>
-        <div class="vibe-grid" id="vibeGrid"></div>
-        <input type="hidden" id="iGenre">
-        <div class="step-nav">
-          <button class="btn-back" onclick="goStage('1a')">← Back</button>
-          <button class="btn-next" onclick="goStage('1c')">Continue →</button>
-        </div>
-      </div>
-
-      <!-- ── Stage 1c: Bio ── -->
-      <div class="stage" id="stage1c">
-        <div class="step-eyebrow">First things first</div>
-        <h1 class="step-title">One sentence<br>about you.</h1>
-        <p class="step-sub">Optional. One real detail beats five adjectives — a city, a mood, a fact.</p>
-        <div class="field">
-          <input class="field-input" type="text" id="iBio" placeholder='e.g. "Making electronic music in East London since I was 16."' maxlength="80">
-          <div class="field-hint">One sentence. Sits under your name. Don't overthink it — say something real.<br>
-<button class="inline-ai-link" type="button" onclick="openBioHelper();generateBio()">✦ Write it for me</button></div>
-          <button class="how-to-btn" type="button" onclick="toggleHowTo('bioTip','bioTipBtn')" id="bioTipBtn" aria-expanded="false">
-            💡 What makes a good one?<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" width="9" height="9"><path d="M1.5 3l3.5 3.5L8.5 3"/></svg>
-          </button>
-          <div class="how-to-guide" id="bioTip" hidden>
-            <div class="how-to-steps">
-              <div class="how-to-step"><span class="how-to-num">→</span><span><strong>"Making lo-fi beats from my bedroom in Manchester."</strong> — specific. Works.</span></div>
-              <div class="how-to-step"><span class="how-to-num">→</span><span><strong>"Genre-blending artist pushing boundaries."</strong> — vague. Skip it.</span></div>
-              <div class="how-to-step"><span class="how-to-num">→</span><span>A city, a mood, a fact. Anything real.</span></div>
-            </div>
-          </div>
-          <button class="ai-btn" type="button" id="aiBioBtn" onclick="openBioHelper()">
-            <span class="ai-btn__spark">✦</span> Help me write this
-          </button>
-          <div class="ai-panel" id="aiBioPanel">
-            <div class="ai-panel__header">
-              <span class="ai-panel__title">✦ Bio helper</span>
-              <button class="ai-panel__close" onclick="closeBioHelper()" aria-label="Close bio helper">×</button>
-            </div>
-            <div class="ai-draft ai-draft--loading" id="aiBioDraft">Generating…</div>
-            <div class="ai-refine-pills" aria-label="Refine options">
-              <button class="ai-refine-pill" type="button" onclick="refineBio('shorter')">Shorter</button>
-              <button class="ai-refine-pill" type="button" onclick="refineBio('warmer')">Warmer</button>
-              <button class="ai-refine-pill" type="button" onclick="refineBio('direct')">More direct</button>
-              <button class="ai-refine-pill" type="button" onclick="refineBio('editorial')">More editorial</button>
-            </div>
-            <div class="ai-actions">
-              <button class="ai-regen" type="button" onclick="generateBio()">↺ Try again</button>
-              <button class="ai-use" type="button" id="aiBioUse" onclick="useBioDraft()" disabled>Use this →</button>
-            </div>
+      <!-- Colour swatches -->
+      <div class="field">
+        <label class="field-label">Accent colour</label>
+        <div class="v2-colour-row" id="v2ColourRow">
+          <div class="c-swatch" style="background:#f4b942" data-hex="#f4b942" title="Amber" onclick="v2SetAccent('#f4b942',this)"></div>
+          <div class="c-swatch" style="background:#e05242" data-hex="#e05242" title="Ember" onclick="v2SetAccent('#e05242',this)"></div>
+          <div class="c-swatch" style="background:#e06b7a" data-hex="#e06b7a" title="Rose" onclick="v2SetAccent('#e06b7a',this)"></div>
+          <div class="c-swatch" style="background:#7ec88a" data-hex="#7ec88a" title="Sage" onclick="v2SetAccent('#7ec88a',this)"></div>
+          <div class="c-swatch" style="background:#9b7cf4" data-hex="#9b7cf4" title="Indigo" onclick="v2SetAccent('#9b7cf4',this)"></div>
+          <div class="c-swatch" style="background:#06b6d4" data-hex="#06b6d4" title="Sky" onclick="v2SetAccent('#06b6d4',this)"></div>
+          <div class="colour-custom" style="padding:0;width:36px;height:36px;border-radius:9px;flex-shrink:0;" onclick="document.getElementById('v2ccPicker').click()" title="Custom colour">
+            <div id="v2ccSwatch" style="width:100%;height:100%;border-radius:7px;background:#fff;"></div>
+            <input type="color" id="v2ccPicker" value="#ffffff" style="position:absolute;opacity:0;width:0;height:0;">
           </div>
         </div>
-        <div class="step-nav">
-          <button class="btn-back" onclick="goStage('1b')">← Back</button>
-          <button class="btn-skip" onclick="goStage('1d')">Skip</button>
-          <button class="btn-next" onclick="goStage('1d')">Continue →</button>
-        </div>
       </div>
 
-      <!-- ── Stage 1d: Location ── -->
-      <div class="stage" id="stage1d">
-        <div class="step-eyebrow">First things first</div>
-        <h1 class="step-title">Where are<br>you based?</h1>
-        <p class="step-sub">Optional. Shows up on your page — fans from the same city notice it.</p>
-        <div class="field">
-          <input class="field-input" type="text" id="iLocation" placeholder="e.g. London, Berlin, Atlanta…" maxlength="40" autocomplete="off">
-        </div>
-        <div class="step-nav">
-          <button class="btn-back" onclick="goStage('1c')">← Back</button>
-          <button class="btn-skip" onclick="goStage('1e')">Skip</button>
-          <button class="btn-next" onclick="goStage('1e')">Continue →</button>
-        </div>
+      <!-- Live mini preview -->
+      <div class="v2-mini-preview" id="v2MiniPreview">
+        <div class="v2-mini-bar" id="v2MiniBar"></div>
+        <div class="v2-mini-name" id="v2MiniName">YOUR NAME</div>
+        <div class="v2-mini-cta" id="v2MiniCta">Stream Now</div>
       </div>
 
-      <!-- ── Stage 1e: Spotify ── -->
-      <div class="stage" id="stage1e">
-        <div class="step-eyebrow">First things first</div>
-        <h1 class="step-title">Are you on<br>Spotify?</h1>
-        <p class="step-sub">Optional. Paste your link and your music plays directly on your page — no app switching needed.</p>
-        <div class="field">
-          <input class="field-input" type="url" id="iSpotify" placeholder="Paste your Spotify link…" autocomplete="off">
-          <button class="how-to-btn" type="button" onclick="toggleHowTo('spotifyGuide','spotifyGuideBtn')" id="spotifyGuideBtn" aria-expanded="false">
-            <span>📱 How do I find my link?</span>
-            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M2 4l4 4 4-4"/></svg>
-          </button>
-          <div class="how-to-guide" id="spotifyGuide" hidden>
-            <div class="how-to-steps">
-              <div class="how-to-step"><span class="how-to-num">1</span><span>Open <strong>Spotify</strong> on your phone</span></div>
-              <div class="how-to-step"><span class="how-to-num">2</span><span>Search your own artist name, tap your profile</span></div>
-              <div class="how-to-step"><span class="how-to-num">3</span><span>Tap <strong>···</strong> → <strong>Share</strong> → <strong>Copy link</strong></span></div>
-              <div class="how-to-step"><span class="how-to-num">4</span><span>Paste it above</span></div>
-            </div>
-            <div class="how-to-note"><strong>YouTube and SoundCloud work too.</strong> Not on streaming yet? Skip — you can add links from your dashboard.</div>
-          </div>
-        </div>
-        <div class="step-nav">
-          <button class="btn-back" onclick="goStage('1d')">← Back</button>
-          <button class="btn-skip" onclick="goStep(2)">Skip →</button>
-          <button class="btn-next" onclick="goStep(2)">Continue →</button>
-        </div>
+      <div class="step-nav">
+        <button class="btn-back" onclick="goToStep('stepA')">← Back</button>
+        <button class="btn-next" onclick="tryStep1()">Next →</button>
       </div>
-
     </div>
 
-    <!-- STEP 2 — FEEL -->
+    <!-- STEP 2 — MOMENT -->
     <div class="step" id="step2">
-      <div class="step-eyebrow">The feel of it</div>
-      <h1 class="step-title">What kind of<br>music do you make?</h1>
-      <p class="step-sub">Not just visual — it shapes how your page moves. Pick the one that sounds like how your music feels.</p>
+      <div class="step-eyebrow">Step 2 of 3</div>
+      <h1 class="step-title">What's<br>happening?</h1>
 
-      <div class="feel-grid" id="feelGrid">
-        <button class="feel-card" data-feel="intimate-raw" onclick="selectFeel('intimate-raw')">
-          <span class="feel-card__label">Personal &amp; raw</span>
-          <span class="feel-card__desc">Lo-fi, bedroom pop, singer-songwriter. Made-at-2am energy.</span>
-          <span class="feel-card__eg">think: Clairo, Rex Orange County, Phoebe Bridgers</span>
-        </button>
-        <button class="feel-card" data-feel="intimate-refined" onclick="selectFeel('intimate-refined')">
-          <span class="feel-card__label">Soulful &amp; deep</span>
-          <span class="feel-card__desc">Neo-soul, jazz, cinematic R&amp;B. Music people actually feel.</span>
-          <span class="feel-card__eg">think: Frank Ocean, Jordan Rakei, Solange</span>
-        </button>
-        <button class="feel-card" data-feel="bold-raw" onclick="selectFeel('bold-raw')">
-          <span class="feel-card__label">Hard &amp; underground</span>
-          <span class="feel-card__desc">Drill, grime, techno, garage. No softening. Dark room energy.</span>
-          <span class="feel-card__eg">think: Central Cee, Skepta, Four Tet</span>
-        </button>
-        <button class="feel-card" data-feel="bold-refined" onclick="selectFeel('bold-refined')">
-          <span class="feel-card__label">Big &amp; polished</span>
-          <span class="feel-card__desc">Pop, commercial hip-hop, radio R&amp;B. Sounds like it belongs.</span>
-          <span class="feel-card__eg">think: SZA, Doja Cat, Drake</span>
-        </button>
-      </div>
-      <p class="feel-suggestion-note" id="feelSuggestionNote" hidden></p>
-      <div class="info-chip" style="margin-top:12px;">
-        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><circle cx="7" cy="7" r="6"/><path d="M7 6v4M7 4.5v.5"/></svg>
-        This shapes the fonts, spacing, and motion on your page. Closest counts — you can change it later.
-      </div>
-
-      <div class="step-nav">
-        <button class="btn-back" onclick="goStep(1)">← Back</button>
-        <button class="btn-next" onclick="goStep(3)">Continue →</button>
-      </div>
-    </div>
-
-    <!-- STEP 3 -->
-    <div class="step" id="step3">
-      <div class="step-eyebrow">Your colour</div>
-      <h1 class="step-title">Your<br>colour.</h1>
-      <p class="step-sub">This runs through every button, chip, and detail on your page. Change one thing — everything shifts. Pick something from your artwork or your brand.</p>
-
-      <div class="colour-presets" id="colourGrid"></div>
-
-      <div class="colour-custom" id="ccWrap" onclick="document.getElementById('ccPicker').click()">
-        <div class="cc-swatch" id="ccSwatch"></div>
-        <span class="cc-label">Pick a custom colour</span>
-        <input type="color" id="ccPicker" value="#f4b942">
-      </div>
-
-      <div class="colour-where" id="colourWherePreview">
-        <div class="colour-where-label">Your colour appears here</div>
-        <div class="colour-where-examples">
-          <div class="cw-btn" id="cwBtn">Stream Now</div>
-          <div class="cw-pill" id="cwPill">Spotify</div>
-          <div style="display:flex;align-items:center;gap:5px;">
-            <div class="cw-highlight" id="cwDot"></div>
-            <span style="font-size:11px;color:var(--t3);">active tab</span>
-          </div>
-        </div>
-        <div class="colour-where-note">Don't overthink it — your fans will just see it as "your vibe". You can change this any time.</div>
-      </div>
-
-      <div class="step-nav" style="margin-top:28px;">
-        <button class="btn-back" onclick="goStep(2)">← Back</button>
-        <button class="btn-next" onclick="goStep(4)">Continue →</button>
-      </div>
-    </div>
-
-    <!-- STEP 4 -->
-    <div class="step" id="step4">
-      <div class="step-eyebrow">The atmosphere</div>
-      <h1 class="step-title">Dark or<br>light?</h1>
-      <p class="step-sub">Dark, light, glass, or high-contrast — pick the atmosphere that suits your music. You can change this any time from your dashboard.</p>
-
-      <div class="theme-grid" id="themeGrid"></div>
-
-      <div class="info-chip" style="margin-top:4px;">
-        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><circle cx="7" cy="7" r="6"/><path d="M7 6v4M7 4.5v.5"/></svg>
-        This is the background of your page — dark or light. Not sure? Dark works for most music.
-      </div>
-
-      <div class="step-nav">
-        <button class="btn-back" onclick="goStep(3)">← Back</button>
-        <button class="btn-next" onclick="goStep(5)">Continue →</button>
-      </div>
-    </div>
-
-    <!-- STEP 5 — MOMENT -->
-    <div class="step" id="step5">
-      <div class="step-eyebrow">Your moment</div>
-      <h1 class="step-title">What's<br>happening<br>for you<br>right now?</h1>
-      <p class="step-sub">Your page leads with whatever makes most sense for where you are. Pick the closest thing.</p>
-
-      <div class="moment-grid" id="momentGrid">
-        <button class="moment-card" data-moment="pre" onclick="selectMoment('pre')">
-          <span class="moment-card__icon">⏳</span>
-          <div>
-            <span class="moment-card__label">Dropping something soon</span>
-            <span class="moment-card__desc">Your page counts down to the release and lets fans pre-save.</span>
-          </div>
-        </button>
-        <button class="moment-card" data-moment="live" onclick="selectMoment('live')">
-          <span class="moment-card__icon">▶</span>
-          <div>
-            <span class="moment-card__label">Just released something</span>
-            <span class="moment-card__desc">Stream links take front and centre. Music plays right on your page.</span>
-          </div>
-        </button>
-        <button class="moment-card" data-moment="gig" onclick="selectMoment('gig')">
-          <span class="moment-card__icon">🎤</span>
-          <div>
-            <span class="moment-card__label">I've got a show coming up</span>
-            <span class="moment-card__desc">Tickets go to the top. Fans see exactly what to do when they land.</span>
-          </div>
-        </button>
-        <button class="moment-card" data-moment="profile" onclick="selectMoment('profile')">
+      <div class="moment-grid" id="v2MomentGrid">
+        <button class="moment-card" data-mode="profile" type="button" onclick="v2SelectMoment('profile',this)">
           <span class="moment-card__icon">✦</span>
           <div>
-            <span class="moment-card__label">Just getting started</span>
-            <span class="moment-card__desc">Your full profile leads — music, links, and who you are.</span>
+            <span class="moment-card__label">Just existing</span>
+            <span class="moment-card__desc">Your full profile — music, links, who you are.</span>
           </div>
         </button>
-      </div>
-
-      <div class="moment-context" id="momentContext" hidden>
-        <span class="moment-context__icon">✓</span>
-        <span id="momentContextText"></span>
-      </div>
-
-      <div class="fan-prop" id="fanProp" hidden>
-        <span class="fan-prop__icon">📬</span>
-        <div>
-          <span class="fan-prop__title">Your page also captures fan emails.</span>
-          <span class="fan-prop__desc">Anyone who signs up is yours — not Spotify's, not Instagram's. You can email them any time from your dashboard.</span>
-        </div>
-      </div>
-
-      <div class="field" id="momentUrlWrap" style="display:none; margin-top:16px;">
-        <label class="field-label" for="iMomentUrl" id="momentUrlLbl">Link</label>
-        <input class="field-input" type="url" id="iMomentUrl" placeholder="https://…">
-        <div class="field-hint" id="momentUrlHint"></div>
-      </div>
-
-      <div class="step-nav">
-        <button class="btn-back" onclick="goStep(4)">← Back</button>
-        <button class="btn-next" id="momentNext" onclick="applyMomentAndContinue()" disabled>Continue →</button>
-      </div>
-    </div>
-
-    <!-- STEP 6 — MUSIC -->
-    <div class="step" id="step6">
-      <div class="step-eyebrow">Your music</div>
-      <h1 class="step-title">Your music,<br>right here.</h1>
-      <p class="step-sub">Paste a Spotify album, SoundCloud track, or YouTube link. Fans listen without leaving your page — the player loads right inside it.</p>
-
-      <div class="music-plat-row" id="musicPlatRow">
-        <button class="music-plat-btn on" type="button" data-plat="spotify" onclick="selectMusicPlat(this)" id="platSpotify">
-          <div class="music-plat-dot" style="background:#1db954;"></div> Spotify
-        </button>
-        <button class="music-plat-btn" type="button" data-plat="youtube" onclick="selectMusicPlat(this)" id="platYoutube">
-          <div class="music-plat-dot" style="background:#ff0000;"></div> YouTube
-        </button>
-        <button class="music-plat-btn" type="button" data-plat="soundcloud" onclick="selectMusicPlat(this)" id="platSoundcloud">
-          <div class="music-plat-dot" style="background:#ff5500;"></div> SoundCloud
-        </button>
-      </div>
-
-      <div class="step-field" id="musicUrlField">
-        <label class="step-label" for="iMusicUrl" id="musicUrlLabel">Paste your Spotify link here</label>
-        <div style="position:relative;">
-          <input class="step-input" type="url" id="iMusicUrl"
-            placeholder="open.spotify.com/album/… or /track/…"
-            oninput="onMusicUrlInput(this.value)"
-            autocomplete="off" spellcheck="false">
-          <div class="step-autofill-badge" id="musicBadge" hidden></div>
-        </div>
-        <div class="step-autofill-preview" id="musicPreview" hidden>
-          <div id="musicPreviewArt" class="step-preview-art"></div>
+        <button class="moment-card" data-mode="pre-release" type="button" onclick="v2SelectMoment('pre-release',this)">
+          <span class="moment-card__icon">⏳</span>
           <div>
-            <div id="musicPreviewTitle" style="font-size:14px;font-weight:600;"></div>
-            <div id="musicPreviewSub" style="font-size:12px;color:var(--t2);margin-top:2px;"></div>
+            <span class="moment-card__label">Something's coming</span>
+            <span class="moment-card__desc">Countdown to your release. Fans can pre-save.</span>
           </div>
-        </div>
-      </div>
-
-      <button class="how-to-btn" type="button" onclick="toggleHowTo('musicGuide','musicGuideBtn')" id="musicGuideBtn" aria-expanded="false">
-        <span id="musicGuideText">📱 How do I find my Spotify link?</span>
-        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M2 4l4 4 4-4"/></svg>
-      </button>
-      <div class="how-to-guide" id="musicGuide" hidden>
-        <div class="how-to-steps" id="musicHowToSteps">
-          <!-- filled by selectMusicPlat() -->
-        </div>
-        <div class="how-to-note" id="musicHowToNote"></div>
-      </div>
-
-      <div class="step-nav">
-        <button class="btn-back" onclick="goStep(5)">← Back</button>
-        <button class="btn-skip" onclick="goStep(7)">Skip — I'll add music later</button>
-        <button class="btn-next" id="musicAddBtn" onclick="applyMusicStep();goStep(7)" style="display:none;">Add it →</button>
-      </div>
-    </div>
-
-    <!-- STEP 7 — SHOW -->
-    <div class="step" id="step7">
-      <div class="step-eyebrow">Any shows coming up?</div>
-      <h1 class="step-title">Playing<br>anywhere?</h1>
-      <p class="step-sub">Add your next show and a ticket link — it goes to the top of your page the moment you turn on Show Mode from your dashboard.</p>
-      <button class="how-to-btn" type="button" onclick="toggleHowTo('showTip','showTipBtn')" id="showTipBtn" aria-expanded="false" style="margin-bottom:14px;">
-        🎤 How does this work on my page?<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" width="9" height="9"><path d="M1.5 3l3.5 3.5L8.5 3"/></svg>
-      </button>
-      <div class="how-to-guide" id="showTip" hidden style="margin-bottom:14px;">
-        <div class="how-to-steps">
-          <div class="how-to-step"><span class="how-to-num">→</span><span>When you add a show, your page flips into <strong>Gig mode</strong> — tickets jump to the front, everything else steps back.</span></div>
-          <div class="how-to-step"><span class="how-to-num">→</span><span>You can also turn it on manually from your dashboard the night of the show.</span></div>
-          <div class="how-to-step"><span class="how-to-num">→</span><span>No ticket link yet? Just add the venue and date — you can add the link later.</span></div>
-        </div>
-        <div class="how-to-note">No shows right now? Skip this. You can add gigs any time from your dashboard — takes 30 seconds before a show.</div>
-      </div>
-
-      <div class="step-field">
-        <label class="step-label" for="iShowVenue">Venue</label>
-        <input class="step-input" type="text" id="iShowVenue" placeholder="fabric / The Jazz Cafe / Berghain…" autocomplete="off">
-      </div>
-      <div class="step-field">
-        <label class="step-label" for="iShowCity">City</label>
-        <input class="step-input" type="text" id="iShowCity" placeholder="London, UK" autocomplete="off">
-      </div>
-      <div class="step-field">
-        <label class="step-label" for="iShowDate">Date</label>
-        <input class="step-input" type="date" id="iShowDate">
-      </div>
-      <div class="step-field">
-        <label class="step-label" for="iShowTickets">Ticket link <span style="font-weight:400;color:var(--t3);">(optional)</span></label>
-        <input class="step-input" type="url" id="iShowTickets" placeholder="https://dice.fm/… or ra.co/…" autocomplete="off">
+        </button>
+        <button class="moment-card" data-mode="live" type="button" onclick="v2SelectMoment('live',this)">
+          <span class="moment-card__icon">▶</span>
+          <div>
+            <span class="moment-card__label">Just dropped</span>
+            <span class="moment-card__desc">Stream links front and centre. Music plays on your page.</span>
+          </div>
+        </button>
+        <button class="moment-card" data-mode="gig" type="button" onclick="v2SelectMoment('gig',this)">
+          <span class="moment-card__icon">🎤</span>
+          <div>
+            <span class="moment-card__label">Playing tonight</span>
+            <span class="moment-card__desc">Tickets jump to the front. Fans know what to do.</span>
+          </div>
+        </button>
       </div>
 
       <div class="step-nav">
-        <button class="btn-back" onclick="goStep(6)">← Back</button>
-        <button class="btn-skip" onclick="goStep(8)">Skip for now →</button>
-        <button class="btn-next" onclick="applyShowStep();goStep(8)">Add it →</button>
+        <button class="btn-back" onclick="goToStep('step1')">← Back</button>
+        <button class="btn-next" id="v2MomentNext" onclick="tryStep2()" disabled>Next →</button>
       </div>
     </div>
 
-    <!-- STEP 8 — ACCOUNT -->
-    <div class="step" id="step8">
-      <div class="step-eyebrow">Save your page</div>
-      <h1 class="step-title">Make it<br>permanent.</h1>
-      <p class="step-sub">Your page is already built. Create a free account so it lives at your own URL and you can update it from any device.</p>
+    <!-- STEP 3 — EMAIL / SAVE -->
+    <div class="step" id="step3">
+      <div class="step-eyebrow">Step 3 of 3</div>
+      <h1 class="step-title">Where do we<br>send the link?</h1>
+      <p class="step-sub">Your page is ready. We'll email you the link so you can get back to it any time.</p>
 
-      <!-- Freelancer toggle -->
-      <label class="freelancer-toggle" id="freelancerToggle">
-        <input type="checkbox" id="iFreelancer" onchange="P.isFreelancer=this.checked">
-        <span class="freelancer-toggle__box"></span>
-        <div class="freelancer-toggle__text">
-          <span>I also offer services</span>
-          <span style="display:block;font-size:12px;color:var(--t2);margin-top:2px;">Production, mixing, mastering, photography, video — add a "Work with me" section</span>
-        </div>
-      </label>
-
-      <div class="auth-options">
-        <!-- Email magic link — only auth method (§2.7) -->
-        <div class="auth-email-wrap" id="authEmailWrap">
-          <input class="step-input" type="email" id="iAuthEmail"
-            placeholder="your@email.com"
-            onkeydown="if(event.key==='Enter')sendMagicLink()">
-          <button class="btn-next" style="margin-top:10px;width:100%;" onclick="sendMagicLink()">Send magic link →</button>
-        </div>
-        <div class="auth-magic-sent" id="authMagicSent" hidden>
-          <div style="font-size:32px;margin-bottom:8px;">✉️</div>
-          <p style="font-weight:600;margin-bottom:4px;">Check your email</p>
-          <p style="font-size:13px;color:var(--t2);">We sent a sign-in link to <strong id="authEmailSent"></strong>. Click it to save your page.</p>
-        </div>
+      <div class="field">
+        <label class="field-label" for="iEmail">Email</label>
+        <input class="field-input" type="email" id="iEmail"
+          autocomplete="email"
+          placeholder="your@email.com">
+        <p class="field-error-msg" id="iEmailErr" role="alert">Enter a valid email to continue.</p>
       </div>
 
-      <button class="auth-skip" onclick="goStep('done')">Skip — I'll save it later →</button>
-      <p class="auth-reassure">Free forever. No card. No lock-in.</p>
+      <div class="v2-slug-preview" id="v2SlugPreview">
+        Your page: <strong id="v2SlugText">able.fm/artist</strong>
+      </div>
 
-      <div class="step-nav" style="margin-top:0;">
-        <button class="btn-back" onclick="goStep(7)">← Back</button>
+      <div class="step-nav" style="flex-direction:column;gap:10px;">
+        <button class="btn-next" style="background:#f4b942;color:#121a24;width:100%;padding:14px;font-size:15px;" onclick="tryStep3()">
+          Make it real →
+        </button>
+        <p style="font-size:11px;color:var(--t3);text-align:center;margin:0;">Magic link — no password needed.</p>
+      </div>
+
+      <div class="step-nav" style="margin-top:8px;">
+        <button class="btn-back" onclick="goToStep('step2')">← Back</button>
       </div>
     </div>
 
     <!-- DONE -->
     <div class="step" id="stepDone">
-      <div class="step-eyebrow">You're live on ABLE</div>
+      <div class="step-eyebrow">You're live</div>
       <h1 class="step-title">Your page<br>is real.</h1>
-      <p class="step-sub" style="margin-bottom:6px;">Your page is already beautiful. All we need now is your stuff.</p>
-      <p class="step-sub" style="font-size:14px;opacity:.65;">Put the link in your bio. Anyone who taps it lands somewhere that actually feels like you.</p>
 
-      <div class="done-link">
-        <div class="done-url" id="doneUrl">able.fm/artist</div>
-        <button class="done-copy" id="doneCopy" onclick="copyLink()">Copy</button>
+      <div class="v2-done-pill" id="v2DonePill">
+        <span id="v2DoneUrl">able.fm/artist</span>
       </div>
 
-      <div class="done-share">
+      <div class="done-share" style="margin-top:20px;">
         <div class="done-share-lbl">Share it now</div>
         <div class="done-share-row">
-          <button class="done-share-btn primary-share" onclick="copyLink()">
+          <button class="done-share-btn primary-share" id="v2CopyBtn" onclick="v2CopyLink()">
             <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><rect x="1" y="4" width="9" height="9" rx="1.5"/><path d="M4 4V2.5A1.5 1.5 0 015.5 1h7A1.5 1.5 0 0114 2.5v7A1.5 1.5 0 0112.5 11H11" fill="currentColor"/></svg>
             Copy link
           </button>
-          <button class="done-share-btn" onclick="shareWhatsApp()">
-            <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><path d="M7 .5C3.4.5.5 3.4.5 7c0 1.2.3 2.3.9 3.3L.5 13.5l3.3-.9C4.8 13.2 5.9 13.5 7 13.5c3.6 0 6.5-2.9 6.5-6.5S10.6.5 7 .5zm3.2 9.1c-.1.4-.8.8-1.1.8-.3 0-.5.1-1.7-.4-1.4-.5-2.3-1.9-2.4-2-.1-.1-.7-1-.7-1.9s.5-1.3.7-1.5c.2-.2.4-.2.5-.2h.4c.1 0 .3 0 .4.3.1.3.5 1.2.5 1.3 0 .1 0 .2-.1.3-.1.1-.1.2-.2.3-.1.1-.2.2-.1.4.1.2.5.8 1 1.3.7.6 1.3.8 1.5.9.2.1.3 0 .4-.1l.6-.7c.1-.2.2-.2.4-.1.2.1 1.1.5 1.3.6.2.1.3.2.3.3 0 .2-.1.6-.2 1z"/></svg>
-            WhatsApp
+          <button class="done-share-btn" onclick="v2ShareInstagram()">
+            <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><path d="M7 1.5c1.47 0 1.64.006 2.22.032 1.4.064 2.054.728 2.118 2.118C11.364 4.23 11.37 4.4 11.37 5.87s-.006 1.64-.032 2.22c-.064 1.39-.716 2.054-2.118 2.118C8.64 10.234 8.47 10.24 7 10.24s-1.64-.006-2.22-.032c-1.4-.064-2.054-.726-2.118-2.118C2.636 7.51 2.63 7.34 2.63 5.87s.006-1.64.032-2.22c.064-1.39.718-2.054 2.118-2.118C5.36 1.506 5.53 1.5 7 1.5zM7 .5C5.504.5 5.32.506 4.732.534 2.888.618 1.868 1.636 1.784 3.482 1.756 4.07 1.75 4.254 1.75 5.75s.006 1.68.034 2.268c.084 1.844 1.1 2.864 2.948 2.948C5.32 10.994 5.504 11 7 11s1.68-.006 2.268-.034c1.844-.084 2.864-1.102 2.948-2.948.028-.588.034-.772.034-2.268s-.006-1.68-.034-2.268c-.084-1.844-1.1-2.862-2.948-2.948C8.68.506 8.496.5 7 .5zm0 2.662a2.588 2.588 0 100 5.176 2.588 2.588 0 000-5.176zm0 4.268a1.68 1.68 0 110-3.36 1.68 1.68 0 010 3.36zm2.692-5.01a.604.604 0 100 1.208.604.604 0 000-1.208z"/></svg>
+            Instagram
           </button>
-          <button class="done-share-btn" onclick="shareTwitter()">
-            <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><path d="M.5 1.5h3.6L7 6 10.5 1.5H14L9 7.8l5 4.7h-3.6L7 8 3.5 12.5H.5L6 6.2z"/></svg>
-            Post on X
-          </button>
-          <button class="done-share-btn" onclick="shareSMS()">
-            <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><path d="M1 1.5A1.5 1.5 0 012.5 0h9A1.5 1.5 0 0113 1.5v8A1.5 1.5 0 0111.5 11H4l-3 3V1.5z"/></svg>
-            Message
+          <button class="done-share-btn" onclick="v2ShareTikTok()">
+            <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><path d="M11.5 3.5A2.5 2.5 0 019 1H7v8a1.5 1.5 0 11-1.5-1.5c.17 0 .33.03.5.07V5.5A4 4 0 005.5 13a4 4 0 004-4V5.62A5.48 5.48 0 0012 6V4a3.5 3.5 0 01-.5-.5z"/></svg>
+            TikTok
           </button>
         </div>
       </div>
@@ -1466,27 +1275,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       <button class="done-preview-toggle" onclick="setView('preview')">See your page →</button>
 
       <div class="done-actions" style="margin-top:20px;">
-        <button class="done-open" onclick="openPage()">Open your page →</button>
-        <button class="done-dash" onclick="window.location.href='admin.html'">Dashboard</button>
-      </div>
-
-      <div class="done-next">
-        <div class="done-next__title">What's next</div>
-        <a href="admin.html" class="done-next__item">
-          <span class="done-next__icon">📊</span>
-          <div>
-            <span class="done-next__label">Go to your dashboard</span>
-            <span class="done-next__desc">Add a release date, check your fan list, edit anything.</span>
-          </div>
-          <span class="done-next__arrow">→</span>
-        </a>
-        <a href="able-v7.html" class="done-next__item" target="_blank">
-          <span class="done-next__icon">✦</span>
-          <div>
-            <span class="done-next__label">See your page</span>
-            <span class="done-next__desc">This is what your fans see when they tap your link.</span>
-          </div>
-          <span class="done-next__arrow">→</span>
+        <a href="/admin.html" class="done-open" style="display:inline-block;text-decoration:none;padding:13px 24px;border-radius:100px;font-size:14px;font-weight:600;background:var(--acc);color:#121a24;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(var(--acc-rgb),.3);transition:all .2s var(--spring);">
+          Go to your dashboard →
         </a>
       </div>
     </div>
@@ -1582,960 +1372,338 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 </div>
 
 <script>
-/* ── DATA ── */
-const VIBES = [
-  { id:'electronic', label:'Electronic',  grad:'linear-gradient(135deg,#06b6d4,#0a1a2e)', accent:'#06b6d4', font:'Barlow Condensed', fontUrl:null,              accents:['#06b6d4','#f4b942','#ffffff','#9b7cf4'] },
-  { id:'hiphop',     label:'Hip Hop',     grad:'linear-gradient(160deg,#f4b942,#c4782a)', accent:'#f4b942', font:'Oswald',           fontUrl:'Oswald:700',      accents:['#f4b942','#e05242','#ffffff','#c4782a'] },
-  { id:'rnb',        label:'R&B / Soul',  grad:'linear-gradient(135deg,#e06b7a,#7c2d42)', accent:'#e06b7a', font:'Cormorant Garamond',fontUrl:'Cormorant+Garamond:600italic,600', accents:['#e06b7a','#f4b942','#9b7cf4','#ffffff'] },
-  { id:'indie',      label:'Indie / Alt', grad:'linear-gradient(150deg,#7ec88a,#2a4a2e)', accent:'#7ec88a', font:'Space Grotesk',    fontUrl:'Space+Grotesk:700',accents:['#7ec88a','#e06b7a','#ffffff','#f4b942'] },
-  { id:'pop',        label:'Pop',         grad:'linear-gradient(135deg,#9b7cf4,#4a1a8a)', accent:'#9b7cf4', font:'Barlow Condensed', fontUrl:null,              accents:['#9b7cf4','#e06b7a','#06b6d4','#f4b942'] },
-  { id:'rock',       label:'Rock',        grad:'linear-gradient(160deg,#e05242,#1a0a0a)', accent:'#e05242', font:'Oswald',           fontUrl:'Oswald:700',      accents:['#e05242','#ffffff','#f4b942','#9b7cf4'] },
-  { id:'acoustic',   label:'Acoustic',    grad:'linear-gradient(135deg,#d4a96a,#5a3a1a)', accent:'#d4a96a', font:'Lora',             fontUrl:'Lora:700',        accents:['#d4a96a','#7ec88a','#e06b7a','#ffffff'] },
-];
-
-const PRESETS = [
-  { name:'Amber',  hex:'#f4b942' },
-  { name:'Ember',  hex:'#e05242' },
-  { name:'Rose',   hex:'#e06b7a' },
-  { name:'Sage',   hex:'#7ec88a' },
-  { name:'Indigo', hex:'#9b7cf4' },
-  { name:'Coral',  hex:'#ff6b52' },
-  { name:'Sky',    hex:'#4a7cf7' },
-  { name:'Clay',   hex:'#b8603a' },
-];
-
-const THEMES = [
-  { id:'dark',     name:'Dark',     desc:'Deep & immersive' },
-  { id:'light',    name:'Light',    desc:'Clean & open' },
-  { id:'glass',    name:'Glass',    desc:'Frosted & layered' },
-  { id:'contrast', name:'Contrast', desc:'Maximum clarity' },
-];
-
-var _prevStep = 0; // D18: direction tracking for directional step entrance
-
-const TS = {
-  dark:     { bg:'#0a0b10',  card:'rgba(255,255,255,.06)', text:'#f0ede8', t2:'rgba(240,237,232,.60)', tabBg:'rgba(9,9,14,.97)',     tabBdr:'rgba(255,255,255,.065)', scrimEnd:'#0a0b10',  stColor:'#f0ede8' },
-  light:    { bg:'#f0ede8',  card:'rgba(0,0,0,.04)',       text:'#0d0e1a', t2:'rgba(13,14,26,.60)',    tabBg:'rgba(240,237,232,.97)',tabBdr:'rgba(0,0,0,.08)',       scrimEnd:'#f0ede8',  stColor:'#0d0e1a' },
-  glass:    { bg:'linear-gradient(155deg,#1a1230 0%,#0a1a28 55%,#1a1008 100%)', card:'rgba(255,255,255,.09)', text:'#ffffff', t2:'rgba(255,255,255,.55)', tabBg:'rgba(0,0,0,.42)', tabBdr:'rgba(255,255,255,.1)', scrimEnd:'rgba(8,12,20,.75)', stColor:'#ffffff' },
-  contrast: { bg:'#000000',  card:'rgba(255,255,255,.08)', text:'#ffffff', t2:'rgba(255,255,255,.80)', tabBg:'#000000',             tabBdr:'rgba(255,255,255,.20)', scrimEnd:'#000000',  stColor:'#ffffff' },
-};
-
-const CTA_GROUPS = [
-  { id:'listen',     label:'Listen' },
-  { id:'connect',    label:'Connect' },
-  { id:'experience', label:'Experience' },
-  { id:'support',    label:'Support' },
-];
-
-const CTA_PRIMARY = [
-  /* listen */
-  { id:'stream',     group:'listen',     label:'Stream Now',    svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M2 1.5v11L13 7z"/></svg>`,       ph:'open.spotify.com/…',          hint:'Spotify, Apple Music, Tidal' },
-  { id:'presave',    group:'listen',     label:'Pre-save',      svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M7 .5 8.8 4.7l4.6.6-3.3 3.1.8 4.6L7 10.8l-3.9 2.2.8-4.6L.7 5.3l4.6-.6z"/></svg>`, ph:'distrokid.com/hyperfollow/…', hint:'Build hype before release' },
-  /* connect */
-  { id:'follow',     group:'connect',    label:'Follow Me',     svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><circle cx="5.5" cy="4" r="3"/><path d="M0 13c0-3 2.5-5.5 5.5-5.5S11 10 11 13z"/><rect x="11" y="7" width="1.5" height="5" rx=".75"/><rect x="9" y="9" width="5" height="1.5" rx=".75"/></svg>`, ph:'', hint:'Spotify, Instagram, TikTok…' },
-  { id:'newsletter', group:'connect',    label:'Join My List',  svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><rect x="1" y="3" width="12" height="8" rx="1.5"/><path d="M1 5l6 4 6-4" fill="none" stroke="#121a24" stroke-width="1.4" stroke-linecap="round"/></svg>`, ph:'', hint:'Email you own directly' },
-  /* experience */
-  { id:'tickets',    group:'experience', label:'Get Tickets',   svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M.5 5A2 2 0 010 9v2.5A1.5 1.5 0 001.5 13h11a1.5 1.5 0 001.5-1.5V9a2 2 0 000-4V2.5A1.5 1.5 0 0012.5 1h-11A1.5 1.5 0 000 2.5z"/></svg>`, ph:'ra.co/…',              hint:'Eventbrite, RA, Dice…' },
-  { id:'livestream', group:'experience', label:'Watch Live',    svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><circle cx="7" cy="8" r="2.5"/><path d="M4.2 5.2a4 4 0 015.6 0M1.8 2.8a7.4 7.4 0 0110.4 0" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`, ph:'youtube.com/…',       hint:'YouTube Live, Twitch' },
-  /* support */
-  { id:'shop',       group:'support',    label:'Shop Merch',    svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M11.5 5H10c0-1.7-1.3-3-3-3S4 3.3 4 5H2.5C1.7 5 1 5.7 1 6.5v5C1 12.3 1.7 13 2.5 13h9c.8 0 1.5-.7 1.5-1.5v-5C13 5.7 12.3 5 11.5 5zm-7 0c0-1.1.9-2 2-2s2 .9 2 2z"/></svg>`, ph:'yourshop.com/…',      hint:'Your merch store' },
-  { id:'support',    group:'support',    label:'Support Me',    svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M7 12.5 1.3 6.8C.3 5.8.3 4.1 1.3 3.1c1-1 2.7-1 3.7 0L7 5l2-1.9c1-1 2.7-1 3.7 0 1 1 1 2.7 0 3.7z"/></svg>`, ph:'ko-fi.com/…',          hint:'Ko-fi, Patreon, tip jar' },
-  /* more */
-  { id:'rsvp',       group:'more', label:'RSVP Free',     svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M7 0C3.1 0 0 3.1 0 7s3.1 7 7 7 7-3.1 7-7S10.9 0 7 0zM5.6 9.8 3 7.2l1-1 1.6 1.6 3.8-3.8 1 1z"/></svg>`, ph:'', hint:'Free event sign-up' },
-  { id:'video',      group:'more', label:'Watch Video',   svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><rect x=".5" y="2.5" width="9" height="9" rx="2"/><path d="M10 5.5 13.5 3v8L10 8.5z"/></svg>`, ph:'youtube.com/…', hint:'Music video, trailer' },
-  { id:'preorder',   group:'more', label:'Pre-order',     svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M7 .5.5 4v6L7 13.5l6.5-3.5V4z"/></svg>`, ph:'', hint:'Album or merch drop' },
-  { id:'book',       group:'more', label:'Book Me',       svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><rect x="1" y="3.5" width="12" height="9" rx="1.5"/><rect x="4" y="1" width="1.5" height="4" rx=".75"/><rect x="8.5" y="1" width="1.5" height="4" rx=".75"/><rect x="1" y="7" width="12" height="1.2" fill-opacity=".2"/></svg>`, ph:'calendly.com/…', hint:'Sessions, collabs…' },
-  { id:'download',   group:'more', label:'Free Download', svg:`<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M7 1.5v8M3.5 6.5 7 10l3.5-3.5M1.5 12.5h11"/></svg>`, ph:'', hint:'Track, EP, sample pack' },
-  { id:'crowdfund',  group:'more', label:'Fund Project',  svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M1 10.5h2v2H1zM4 8h2v4.5H4zM7 5.5h2v7H7zM10 3h2v9.5h-2z"/><path d="M2 8 5 6l3-2.5 3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`, ph:'kickstarter.com/…', hint:'Kickstarter, Indiegogo' },
-  { id:'custom',     group:'more', label:'Custom…',       svg:`<svg viewBox="0 0 14 14" fill="currentColor" width="15" height="15"><path d="M9.5 1.5 12 4l-7.5 7.5L1.5 10z"/><path d="M12.5 1.5l-1 1M1 12.5l1 .5.5-1" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`, ph:'', hint:'Your own label & link', custom:true },
-];
-
-const CTA_SECONDARY = [
-  { id:'s-tickets',    label:'Get Tickets',   ph:'ra.co/…',            needsUrl:true  },
-  { id:'s-shop',       label:'Shop Merch',    ph:'yourshop.com/…',     needsUrl:true  },
-  { id:'s-stream',     label:'Stream Now',    ph:'open.spotify.com/…', needsUrl:true  },
-  { id:'s-video',      label:'Watch Video',   ph:'youtube.com/…',      needsUrl:true  },
-  { id:'s-follow',     label:'Follow me',     ph:'',                   needsUrl:false },
-  { id:'s-rsvp',       label:'RSVP',          ph:'',                   needsUrl:false },
-  { id:'s-newsletter', label:'Join my list',  ph:'',                   needsUrl:false },
-  { id:'s-book',       label:'Book me',       ph:'calendly.com/…',     needsUrl:true  },
-  { id:'s-support',    label:'Support me',    ph:'ko-fi.com/…',        needsUrl:true  },
-  { id:'s-download',   label:'Free download', ph:'',                   needsUrl:false },
-  { id:'s-custom',     label:'Custom…',       ph:'',                   needsUrl:false, custom:true },
-  { id:'s-none',       label:'No secondary',  ph:'',                   needsUrl:false, none:true },
-];
-
-const P = {
-  name:'', genre:'Electronic', bio:'', location:'', spotify:'',
-  vibe:'electronic',
-  feel:'bold-refined',
-  accent:'#f4b942', theme:'dark',
-  ctaId:'stream', ctaLabel:'Stream Now',
-  secId:'s-tickets', secLabel:'Get Tickets',
-};
+/* ═══════════════════════════════════════════════════════════
+   ABLE — Onboarding V2 Wizard
+   Steps: A (Spotify) → 1 (Identity) → 2 (Moment) → 3 (Email) → Done
+   Draft lives in sessionStorage as 'able_wizard_draft'.
+   localStorage written only on the Done screen.
+   ═══════════════════════════════════════════════════════════ */
 
 /* ── HELPERS ── */
 function h2r(hex) {
   return [1,3,5].map(i => parseInt(hex.slice(i,i+2),16)).join(',');
 }
-function darken(hex, a=0.3) {
-  let [r,g,b] = [1,3,5].map(i => parseInt(hex.slice(i,i+2),16));
-  return '#'+[r,g,b].map(v => Math.round(v*(1-a)).toString(16).padStart(2,'0')).join('');
-}
-function slug(s) {
-  return (s||'artist').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-}
-
-/* ── HELPERS ── */
-const SAFE_URL_RE = /^(https?:|mailto:|tel:)/i;
-function isSafeUrl(url) {
-  if (!url) return false;
-  return SAFE_URL_RE.test(String(url).trim());
+function makeSlug(name) {
+  return (name || 'artist')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+    .slice(0, 20);
 }
 
-/* ── STEP NAV ── */
-function goStage(id) {
-  document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
-  const el = document.getElementById('stage' + id);
+/* ── DRAFT (sessionStorage) ── */
+function getDraft() {
+  try { return JSON.parse(sessionStorage.getItem('able_wizard_draft') || '{}'); } catch(e) { return {}; }
+}
+function saveDraft(patch) {
+  const d = Object.assign(getDraft(), patch);
+  sessionStorage.setItem('able_wizard_draft', JSON.stringify(d));
+}
+
+/* ── PROGRESS MAP ── */
+const PROGRESS_MAP = {
+  stepA:    { pct: 5,   msg: 'Quick start' },
+  step1:    { pct: 33,  msg: 'Step 1 of 3' },
+  step2:    { pct: 66,  msg: 'Step 2 of 3' },
+  step3:    { pct: 90,  msg: 'Step 3 of 3' },
+  stepDone: { pct: 100, msg: "You're live on ABLE" },
+};
+
+var _prevStepNum = 0;
+const STEP_ORDER = ['stepA', 'step1', 'step2', 'step3', 'stepDone'];
+
+function goToStep(id) {
+  const curIdx  = STEP_ORDER.indexOf(id);
+  const fwd     = curIdx >= _prevStepNum;
+  _prevStepNum  = curIdx;
+
+  document.querySelectorAll('.step').forEach(s => {
+    s.classList.remove('active', 'enter-fwd', 'enter-back');
+  });
+  const el = document.getElementById(id);
   if (!el) return;
-  el.classList.add('active');
-  const inp = el.querySelector('input:not([type=hidden])');
-  if (inp) setTimeout(() => inp.focus(), 50);
+  el.classList.add('active', fwd ? 'enter-fwd' : 'enter-back');
+  el.addEventListener('animationend', () => el.classList.remove('enter-fwd', 'enter-back'), { once: true });
+
+  const prog = PROGRESS_MAP[id] || PROGRESS_MAP['stepA'];
+  const fill = document.getElementById('progressFill');
+  if (fill) {
+    fill.style.width = prog.pct + '%';
+    if (id === 'stepDone') fill.style.background = '#4caf6e';
+    else fill.style.background = '';
+  }
+  const ind = document.getElementById('stepInd');
+  if (ind) ind.textContent = prog.msg;
+
+  // Step-specific setup
+  if (id === 'step1') initStep1();
+  if (id === 'step3') initStep3();
+  if (id === 'stepDone') initDone();
+
+  if (window.innerWidth <= 860) setView('form');
+  window.scrollTo(0, 0);
 }
 
-function tryStage1a() {
-  const nameVal = document.getElementById('iName').value.trim();
-  const input   = document.getElementById('iName');
-  const err     = document.getElementById('iNameErr');
-  if (!nameVal) {
-    input.classList.add('field-error');
+/* ── VIEW TOGGLE (mobile) ── */
+function setView(v) {
+  const layout = document.getElementById('layout');
+  if (layout) layout.dataset.view = v;
+  const vtForm    = document.getElementById('vtForm');
+  const vtPreview = document.getElementById('vtPreview');
+  if (vtForm)    vtForm.classList.toggle('on',    v === 'form');
+  if (vtPreview) vtPreview.classList.toggle('on', v === 'preview');
+  window.scrollTo(0, 0);
+}
+
+/* ══════════════════════════════════════════════════════
+   STEP A — Spotify Import
+   ══════════════════════════════════════════════════════ */
+function doSpotifyImport() {
+  const err = document.getElementById('iSpotifyImportErr');
+  if (err) {
+    err.textContent = 'Auto-import coming soon — use the skip link for now.';
     err.classList.add('show');
-    input.focus();
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   STEP 1 — Identity
+   ══════════════════════════════════════════════════════ */
+var _v2Accent = '#f4b942';
+var _v2Vibe   = '';
+
+function initStep1() {
+  // Pre-fill name from draft if Spotify import ran
+  const draft = getDraft();
+  const nameEl = document.getElementById('iName');
+  if (nameEl && draft.name && !nameEl.value) {
+    nameEl.value = draft.name;
+    updateMiniPreview();
+  }
+  // Default colour swatch selection
+  const defaultHex = draft.accent || '#f4b942';
+  _v2Accent = defaultHex;
+  document.querySelectorAll('#v2ColourRow .c-swatch').forEach(s => {
+    s.classList.toggle('on', s.dataset.hex === defaultHex);
+  });
+  updateMiniPreview();
+}
+
+function selectVibe(vibe, btn) {
+  _v2Vibe = vibe;
+  document.querySelectorAll('.v2-vibe-btn').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+}
+
+function v2SetAccent(hex, swatch) {
+  _v2Accent = hex;
+  document.querySelectorAll('#v2ColourRow .c-swatch').forEach(s => s.classList.remove('on'));
+  if (swatch) swatch.classList.add('on');
+  updateMiniPreview();
+  // Update CSS variable for wizard UI elements
+  const rgb = h2r(hex);
+  document.documentElement.style.setProperty('--acc', hex);
+  document.documentElement.style.setProperty('--acc-rgb', rgb);
+}
+
+function updateMiniPreview() {
+  const nameEl = document.getElementById('iName');
+  const name   = (nameEl ? nameEl.value.trim() : '') || 'YOUR NAME';
+  const bar    = document.getElementById('v2MiniBar');
+  const nameD  = document.getElementById('v2MiniName');
+  const cta    = document.getElementById('v2MiniCta');
+  if (bar)   bar.style.background   = _v2Accent;
+  if (nameD) nameD.textContent      = name.toUpperCase();
+  if (cta)   cta.style.background   = _v2Accent;
+}
+
+function tryStep1() {
+  const nameEl = document.getElementById('iName');
+  const errEl  = document.getElementById('iNameErr');
+  const name   = nameEl ? nameEl.value.trim() : '';
+  if (!name) {
+    if (nameEl) nameEl.classList.add('field-error');
+    if (errEl)  errEl.classList.add('show');
+    if (nameEl) nameEl.focus();
     return;
   }
-  input.classList.remove('field-error');
-  err.classList.remove('show');
-  goStage('1b');
+  if (nameEl) nameEl.classList.remove('field-error');
+  if (errEl)  errEl.classList.remove('show');
+  saveDraft({ name, vibe: _v2Vibe, accent: _v2Accent });
+  goToStep('step2');
 }
 
-function tryStep1() { tryStage1a(); }
-
-// ── AI VIBE MATCH ────────────────────────────────────────────────
-const GENRE_FEEL_MAP = {
-  'electronic':        'bold-refined',
-  'hip-hop':           'bold-raw',
-  'indie':             'intimate-raw',
-  'r-and-b':           'intimate-refined',
-  'pop':               'bold-refined',
-  'folk':              'intimate-raw',
-  'jazz':              'intimate-refined',
-  'rock':              'bold-raw',
-  'classical':         'intimate-refined',
-  'metal':             'bold-raw',
-  'ambient':           'intimate-refined',
-  'singer-songwriter': 'intimate-raw',
-};
-
-function autoSelectFeel(genre) {
-  const feel = GENRE_FEEL_MAP[genre] || 'intimate-refined';
-  selectFeel(feel);
-  const note = document.getElementById('feelSuggestionNote');
-  if (note) {
-    note.hidden = false;
-    note.textContent = "We've suggested this based on your genre — tap any card to change it.";
-  }
-}
-
-async function generateBioAuto() {
-  const name = P.name || (document.getElementById('iName') ? document.getElementById('iName').value : '');
-  const genre = P.genre || '';
-  if (!name) return;
-  const drafts = [
-    `${name} makes ${genre || 'music'} that sounds like somewhere you've never been but instantly recognise.`,
-    `${genre ? genre.charAt(0).toUpperCase() + genre.slice(1) + ' artist' : 'Artist'} based wherever the music takes them.`,
-    `${name} — independent music, on their own terms.`,
-  ];
-  const draft = drafts[Math.floor(Math.random() * drafts.length)];
-  const bioEl = document.getElementById('iBio');
-  if (!bioEl || bioEl.value) return; // don't overwrite manually entered bio
-  bioEl.value = draft;
-  bioEl.style.borderColor = 'rgba(var(--acc-rgb),.4)';
-  const existing = document.querySelector('.ai-drafted-badge');
-  if (!existing) {
-    const badge = document.createElement('span');
-    badge.className = 'ai-drafted-badge';
-    badge.style.cssText = 'font-size:10px;color:var(--acc);margin-left:6px;opacity:.8;';
-    badge.textContent = '✦ AI drafted';
-    const label = document.querySelector('[for="iBio"]');
-    if (label) label.appendChild(badge);
-  }
-  P.bio = draft;
-}
-
-function selectFeel(feel) {
-  P.feel = feel;
-  document.querySelectorAll('.feel-card').forEach(c => {
-    c.classList.toggle('on', c.dataset.feel === feel);
-  });
-  const previewShell = document.getElementById('previewShell');
-  if (previewShell) previewShell.dataset.feel = feel;
-}
-
-// ── MOMENT DETECTOR ──────────────────────────────────────────────
-const MOMENT_CONFIG = {
-  pre: {
-    state: 'pre-release',
-    ctaLabel: 'Pre-save',
-    ctaType: 'presave',
-    context: 'Your page will count down to your release date and show a pre-save button at the top.',
-    urlLabel: 'Pre-save link',
-    urlHint: 'Your Spotify pre-save, DistroKid, or similar link.',
-    needsUrl: true,
-  },
-  live: {
-    state: 'live',
-    ctaLabel: 'Stream Now',
-    ctaType: 'stream',
-    context: 'Your page leads with your latest release. Fans stream without leaving your page.',
-    urlLabel: 'Streaming link',
-    urlHint: 'Your Spotify, Apple Music, or any streaming link.',
-    needsUrl: false,
-  },
-  gig: {
-    state: 'gig',
-    ctaLabel: 'Get Tickets',
-    ctaType: 'tickets',
-    context: 'Tickets go straight to the top. Your fans see exactly what to do the moment they land.',
-    urlLabel: 'Ticket link',
-    urlHint: 'DICE, RA, Eventbrite, Ticketmaster — anywhere you sell tickets.',
-    needsUrl: true,
-  },
-  profile: {
-    state: 'profile',
-    ctaLabel: 'Stream my music',
-    ctaType: 'stream',
-    context: 'Your full profile leads — who you are, your music, your links. Always ready.',
-    needsUrl: false,
-  },
-};
-
-let selectedMoment = null;
-
-function selectMoment(key) {
-  selectedMoment = key;
-  const cfg = MOMENT_CONFIG[key];
-  document.querySelectorAll('.moment-card').forEach(c => c.classList.toggle('on', c.dataset.moment === key));
-  const ctx = document.getElementById('momentContext');
-  document.getElementById('momentContextText').textContent = cfg.context;
-  ctx.hidden = false;
-  document.getElementById('fanProp').hidden = false;
-  const urlWrap = document.getElementById('momentUrlWrap');
-  if (cfg.needsUrl) {
-    urlWrap.style.display = 'block';
-    document.getElementById('momentUrlLbl').textContent = cfg.urlLabel;
-    document.getElementById('momentUrlHint').textContent = cfg.urlHint;
-  } else {
-    urlWrap.style.display = 'none';
-  }
-  document.getElementById('momentNext').disabled = false;
-  P.stateOverride = cfg.state;
-  P.ctaLabel = cfg.ctaLabel;
-  P.ctaType = cfg.ctaType;
-  updatePreview();
-}
-
-function applyMomentAndContinue() {
-  if (!selectedMoment) return;
-  const cfg = MOMENT_CONFIG[selectedMoment];
-  if (cfg.needsUrl) {
-    const url = document.getElementById('iMomentUrl').value.trim();
-    if (url) {
-      if (!isSafeUrl(url)) {
-        document.getElementById('iMomentUrl').classList.add('field-error');
-        return;
+// Live name preview
+document.addEventListener('DOMContentLoaded', function() {
+  const nameEl = document.getElementById('iName');
+  if (nameEl) {
+    nameEl.addEventListener('input', function() {
+      updateMiniPreview();
+      if (this.value.trim()) {
+        this.classList.remove('field-error');
+        const errEl = document.getElementById('iNameErr');
+        if (errEl) errEl.classList.remove('show');
       }
-      P.ctaUrl = url;
-    }
-  }
-  goStep(6);
-}
-
-// === STEP 0: IMPORT (pre-step) ==============================
-let importData = {};
-
-function onImportInput(val) {
-  const btn = document.getElementById('importBtn');
-  const isUrl = val.startsWith('http') || val.includes('spotify.com') ||
-    val.includes('soundcloud.com') || val.includes('youtu');
-  btn.disabled = !isUrl;
-  document.getElementById('importPreview').hidden = true;
-  document.getElementById('importStatus').hidden = true;
-}
-
-async function doImport() {
-  const url = document.getElementById('iImportUrl').value.trim();
-  const status = document.getElementById('importStatus');
-  const preview = document.getElementById('importPreview');
-  status.hidden = false;
-  status.textContent = '⟳ Fetching your music…';
-  const btn = document.getElementById('importBtn');
-  btn.disabled = true;
-
-  try {
-    if (url.includes('spotify.com')) {
-      const oembed = await fetch(
-        'https://open.spotify.com/oembed?url=' + encodeURIComponent(url)
-      ).then(r => r.json());
-      // Spotify oEmbed returns: title (track/album/artist name), thumbnail_url
-      const artistName = oembed.provider_name !== 'Spotify' ? oembed.provider_name : (oembed.title || '');
-      importData = {
-        name: artistName,
-        artUrl: oembed.thumbnail_url || '',
-        platform: 'Spotify',
-        embedUrl: url,
-        genre: ''
-      };
-    } else if (url.includes('youtu')) {
-      // YouTube oEmbed
-      const oembed = await fetch(
-        'https://www.youtube.com/oembed?url=' + encodeURIComponent(url) + '&format=json'
-      ).then(r => r.json());
-      importData = {
-        name: oembed.author_name || '',
-        artUrl: oembed.thumbnail_url || '',
-        platform: 'YouTube',
-        embedUrl: url,
-        genre: ''
-      };
-    } else {
-      // Unknown platform — still let them continue
-      importData = { name: '', artUrl: '', platform: 'link', embedUrl: url, genre: '' };
-    }
-
-    // Show preview
-    const nameEl = document.getElementById('importName');
-    const metaEl = document.getElementById('importMeta');
-    const artEl  = document.getElementById('importArt');
-    if (nameEl) nameEl.textContent = importData.name || 'Found your music';
-    if (metaEl) metaEl.textContent = importData.platform + (importData.artUrl ? ' · artwork found' : '');
-    if (artEl && importData.artUrl) artEl.style.backgroundImage = 'url(' + importData.artUrl + ')';
-    preview.hidden = false;
-    status.textContent = '✓ Looks good — hit the button to continue';
-    btn.textContent = 'Use this →';
-    btn.disabled = false;
-    btn.onclick = applyImportAndContinue;
-
-  } catch(e) {
-    status.textContent = '⚠ Couldn\'t fetch that link — fill in manually below';
-    btn.disabled = false;
-    btn.textContent = 'Continue manually →';
-    btn.onclick = skipImport;
-  }
-}
-
-function applyImportAndContinue() {
-  // Pre-fill name field from import data
-  if (importData.name) {
-    const nameInput = document.getElementById('iName');
-    if (nameInput) nameInput.value = importData.name;
-    P.name = importData.name;
-  }
-  // Pre-fill music URL field
-  if (importData.embedUrl) {
-    const musicInput = document.getElementById('iMusicUrl');
-    if (musicInput) musicInput.value = importData.embedUrl;
-  }
-  // Store art URL for later bio/colour suggestion
-  if (importData.artUrl) P.importedArtUrl = importData.artUrl;
-
-  goStep(1);
-  // Auto-trigger bio generation after short delay if name was found
-  if (P.name && typeof generateBioAuto === 'function') {
-    setTimeout(generateBioAuto, 500);
-  }
-}
-
-function skipImport() {
-  importData = {};
-  goStep(1);
-}
-
-// === STEP 6: MUSIC ==========================================
-let _musicFetchTimer = null
-let _musicMeta = null
-
-function onMusicUrlInput(val) {
-  clearTimeout(_musicFetchTimer)
-  _musicMeta = null
-  const badge = document.getElementById('musicBadge')
-  const preview = document.getElementById('musicPreview')
-  preview.hidden = true
-  const addBtn = document.getElementById('musicAddBtn')
-  if (addBtn) addBtn.style.display = val && val.length > 10 ? '' : 'none'
-  if (!val || val.length < 12) { badge.hidden = true; return }
-  badge.hidden = false; badge.textContent = 'Fetching…'
-  _musicFetchTimer = setTimeout(() => fetchMusicMeta(val), 700)
-}
-
-async function fetchMusicMeta(rawUrl) {
-  const url = rawUrl.startsWith('http') ? rawUrl : 'https://' + rawUrl
-  let endpoint = null, ytId = null
-  if (/youtube\.com|youtu\.be/.test(url)) {
-    const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]+)/)
-    ytId = m?.[1]
-    endpoint = `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`
-  } else if (url.includes('spotify.com')) {
-    endpoint = `https://open.spotify.com/oembed?url=${encodeURIComponent(url)}&format=json`
-  } else if (url.includes('soundcloud.com')) {
-    endpoint = `https://soundcloud.com/oembed?url=${encodeURIComponent(url)}&format=json`
-  }
-  if (!endpoint) return
-  const badge = document.getElementById('musicBadge')
-  try {
-    const res = await fetch(endpoint, { mode: 'cors' })
-    if (!res.ok) throw new Error()
-    const meta = await res.json()
-    _musicMeta = {
-      title: (meta.title || '').replace(/\s*[\-–—]\s*(official|audio|video|music video|lyrics?|hd|4k).*/i, '').replace(/\s*\(official.*\)/i,'').trim(),
-      artwork: ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : (meta.thumbnail_url || ''),
-      author: meta.author_name || '',
-      url: rawUrl
-    }
-    badge.textContent = '✓ Found'
-    const preview = document.getElementById('musicPreview')
-    document.getElementById('musicPreviewTitle').textContent = _musicMeta.title
-    document.getElementById('musicPreviewSub').textContent = _musicMeta.author
-    if (_musicMeta.artwork) document.getElementById('musicPreviewArt').style.backgroundImage = `url(${_musicMeta.artwork})`
-    preview.hidden = false
-  } catch {
-    badge.textContent = 'Couldn\'t fetch info — that\'s OK, carry on';
-    badge.hidden = false;
-    badge.style.color = 'rgba(204,221,239,0.52)';
-  }
-}
-
-function applyMusicStep() {
-  if (!_musicMeta) return
-  const existing = JSON.parse(localStorage.getItem('able_v3_profile') || '{}')
-  const releases = existing.releases || []
-  releases.unshift({
-    id: 'r' + Date.now(),
-    title: _musicMeta.title || 'New Release',
-    type: 'Single',
-    year: String(new Date().getFullYear()),
-    displayMode: 'both',
-    platformUrl: _musicMeta.url || '',
-    artworkUrl: _musicMeta.artwork || '',
-    tracks: [], credits: []
-  })
-  existing.releases = releases
-  localStorage.setItem('able_v3_profile', JSON.stringify(existing))
-}
-
-// === STEP 7: SHOW ==========================================
-function applyShowStep() {
-  const venue   = document.getElementById('iShowVenue')?.value.trim()
-  const city    = document.getElementById('iShowCity')?.value.trim()
-  const dateVal = document.getElementById('iShowDate')?.value
-  const tickets = document.getElementById('iShowTickets')?.value.trim()
-  if (!venue && !dateVal) return // nothing entered — skip silently
-  const existing = JSON.parse(localStorage.getItem('able_v3_profile') || '{}')
-  const events = existing.events || []
-  const [cityName, country] = (city || 'Unknown').split(',').map(s => s.trim())
-  events.unshift({
-    venue, city: cityName, country: country || '',
-    date: dateVal ? new Date(dateVal).toISOString() : new Date(Date.now() + 14*86400000).toISOString(),
-    time: '20:00',
-    ticketUrl: tickets || '',
-    soldOut: false
-  })
-  existing.events = events
-  localStorage.setItem('able_v3_profile', JSON.stringify(existing))
-}
-
-// === STEP 8: AUTH ===========================================
-async function sendMagicLink() {
-  const emailInput = document.getElementById('iAuthEmail')
-  const email = emailInput?.value.trim()
-  if (!email || !email.includes('@')) { emailInput?.focus(); return }
-  // await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href } })
-  document.getElementById('authEmailSent').textContent = email
-  document.getElementById('authEmailWrap').hidden = true
-  document.getElementById('authMagicSent').hidden = false
-  // After auth would complete: go to done
-  setTimeout(() => goStep('done'), 2000)
-}
-
-const PROGRESS_STEPS = {
-  0:    { pct: 5,  msg: 'A few details first' },
-  1:    { pct: 20, msg: 'Looking good already' },
-  2:    { pct: 35, msg: 'Your page has a personality' },
-  3:    { pct: 50, msg: 'The look is yours' },
-  4:    { pct: 62, msg: 'Almost there' },
-  5:    { pct: 72, msg: 'Your fans will know what to do' },
-  6:    { pct: 82, msg: 'Music on the page' },
-  7:    { pct: 90, msg: 'One last thing' },
-  8:    { pct: 95, msg: 'Nearly live' },
-  done: { pct: 100, msg: "You're live on ABLE ✓" },
-};
-
-function goStep(n) {
-  // D18 — directional entrance: compare with previous step to determine direction
-  const _numN = (n === 'done') ? 99 : Number(n);
-  const _dir  = _numN >= _prevStep ? 'fwd' : 'back';
-  _prevStep   = _numN;
-
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active', 'enter-fwd', 'enter-back'));
-  const id = n === 'done' ? 'stepDone' : `step${n}`;
-  const _el = document.getElementById(id);
-  _el.classList.add('active', `enter-${_dir}`);
-  _el.addEventListener('animationend', () => _el.classList.remove('enter-fwd', 'enter-back'), { once: true });
-
-  const prog = PROGRESS_STEPS[n] || PROGRESS_STEPS[0];
-  document.getElementById('progressFill').style.width = prog.pct + '%';
-  document.getElementById('stepInd').textContent = prog.msg;
-
-  if (n === 'done') {
-    document.getElementById('doneUrl').textContent = `able.fm/${slug(P.name)}`;
-
-    // Seed artist ID on first save — never overwrite an existing one
-    if (!localStorage.getItem('able_artist_id')) {
-      const id = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36));
-      localStorage.setItem('able_artist_id', id);
-    }
-
-    // Write to the canonical v3 key that able-v6.html reads
-    const v3profile = {
-      name:          P.name,
-      handle:        slug(P.name),
-      bio:           P.bio,
-      location:      P.location || '',
-      vibe:          P.vibe,
-      accent:        P.accent,
-      theme:         P.theme,
-      genres:        P.genre ? [P.genre] : [],
-      stateOverride: null,
-      ctaPrimary:    { label: P.ctaLabel,  url: P.ctaUrl    || '' },
-      ctaSecondary:  { label: P.secLabel,  url: P.ctaSecUrl || '' },
-      platforms:     P.spotify ? [{ label: 'Spotify', url: P.spotify, type: 'spotify' }] : [],
-      identity: {
-        genre:       P.vibe,
-        feel:        P.feel || 'bold-refined',
-        accent:      P.accent,
-        accentSource:'artist',
-        refinements: { darkness:0, spacing:0, sharpness:0, contrast:0, warmth:0 }
-      },
-    };
-    localStorage.setItem('able_v3_profile', JSON.stringify(v3profile));
-    // Also keep able_profile for any legacy reads
-    localStorage.setItem('able_profile', JSON.stringify(P));
-
-    setTimeout(launchConfetti, 180);
-  }
-  // on mobile: always go back to form view when advancing
-  if (window.innerWidth <= 860) setView('form');
-  window.scrollTo(0,0);
-}
-
-/* ── VIBE PICKER ── */
-function applyVibe(v) {
-  P.vibe = v.id;
-  P.genre = v.label;
-  document.getElementById('iGenre').value = v.label;
-
-  // Load font if needed
-  if (v.fontUrl && !document.querySelector(`link[data-font="${v.id}"]`)) {
-    const lk = document.createElement('link');
-    lk.rel = 'stylesheet';
-    lk.href = `https://fonts.googleapis.com/css2?family=${v.fontUrl}&display=swap`;
-    lk.dataset.font = v.id;
-    document.head.appendChild(lk);
-  }
-
-  // Apply font to preview
-  const ph = document.getElementById('previewShell');
-  if (ph) ph.style.setProperty('--ph-font-d', `'${v.font}', sans-serif`);
-
-  // Suggest accent from vibe if accent is still default
-  if (!P._accentCustomised) {
-    P.accent = v.accent;
-    const root = document.documentElement;
-    root.style.setProperty('--acc', v.accent);
-    root.style.setProperty('--acc-rgb', h2r(v.accent.replace('#','')));
-    updateColourWhere(v.accent);
-    // sync swatch selection
-    document.querySelectorAll('.c-swatch').forEach(s => {
-      s.classList.toggle('on', s.dataset.hex === v.accent);
     });
   }
 
-  // Reorder colour presets to genre-appropriate
-  const wrap = document.getElementById('colourGrid');
-  if (wrap) {
-    const swatches = [...wrap.querySelectorAll('.c-swatch')];
-    v.accents.forEach(hex => {
-      const match = swatches.find(s => s.dataset.hex === hex);
-      if (match) wrap.prepend(match);
+  const v2cc = document.getElementById('v2ccPicker');
+  if (v2cc) {
+    v2cc.addEventListener('input', function(e) {
+      document.querySelectorAll('#v2ColourRow .c-swatch').forEach(s => s.classList.remove('on'));
+      const sw = document.getElementById('v2ccSwatch');
+      if (sw) sw.style.background = e.target.value;
+      v2SetAccent(e.target.value, null);
     });
   }
-
-  // Auto-select feel based on genre
-  autoSelectFeel(v.id);
-
-  updatePreview();
-}
-
-function initVibe() {
-  const wrap = document.getElementById('vibeGrid');
-  if (!wrap) return;
-  VIBES.forEach(v => {
-    const btn = document.createElement('button');
-    btn.className = 'vibe-card' + (v.id === P.vibe ? ' on' : '');
-    btn.innerHTML = `<div class="vc-swatch" style="background:${v.grad}"></div><div class="vc-label">${v.label}</div>`;
-    btn.onclick = () => {
-      document.querySelectorAll('.vibe-card').forEach(b => b.classList.remove('on'));
-      btn.classList.add('on');
-      applyVibe(v);
-      // Auto-advance from vibe stage after a beat
-      if (document.getElementById('stage1b')?.classList.contains('active')) {
-        setTimeout(() => goStage('1c'), 260);
-      }
-    };
-    wrap.appendChild(btn);
-  });
-  // apply initial vibe
-  const initial = VIBES.find(v => v.id === P.vibe) || VIBES[0];
-  applyVibe(initial);
-}
-
-/* ── COLOUR PRESETS ── */
-function initColour() {
-  const wrap = document.getElementById('colourGrid');
-  PRESETS.forEach(p => {
-    const el = document.createElement('div');
-    el.className = 'c-swatch' + (p.hex === P.accent ? ' on' : '');
-    el.style.background = p.hex;
-    el.title = p.name;
-    el.dataset.hex = p.hex;
-    el.onclick = () => {
-      document.querySelectorAll('.c-swatch').forEach(s => s.classList.remove('on'));
-      el.classList.add('on');
-      setAccent(p.hex);
-    };
-    wrap.appendChild(el);
-  });
-  syncCustomSwatch();
-}
-
-document.getElementById('ccPicker').addEventListener('input', e => {
-  document.querySelectorAll('.c-swatch').forEach(s => s.classList.remove('on'));
-  setAccent(e.target.value);
 });
 
-function syncCustomSwatch() {
-  document.getElementById('ccSwatch').style.background = P.accent;
-  document.getElementById('ccPicker').value = P.accent;
+/* ══════════════════════════════════════════════════════
+   STEP 2 — Moment
+   ══════════════════════════════════════════════════════ */
+var _v2Mode = '';
+
+function v2SelectMoment(mode, btn) {
+  _v2Mode = mode;
+  document.querySelectorAll('#v2MomentGrid .moment-card').forEach(c => c.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  const nextBtn = document.getElementById('v2MomentNext');
+  if (nextBtn) nextBtn.disabled = false;
 }
 
-function setAccent(hex) {
-  P._accentCustomised = true;
-  P.accent = hex;
-  const rgb = h2r(hex);
-  const root = document.documentElement;
-  root.style.setProperty('--acc', hex);
-  root.style.setProperty('--acc-rgb', rgb);
-  root.style.setProperty('--acc-glow', `rgba(${rgb},.28)`);
-  syncCustomSwatch();
-  updateColourWhere(hex);
-  updatePreview();
+function tryStep2() {
+  if (!_v2Mode) return;
+  saveDraft({ stateOverride: _v2Mode });
+  goToStep('step3');
 }
 
-/* ── THEME GRID ── */
-function initTheme() {
-  const wrap = document.getElementById('themeGrid');
-  THEMES.forEach(t => {
-    const el = document.createElement('div');
-    el.className = 'theme-opt' + (t.id === P.theme ? ' on' : '');
-    const pv = themePreviewHTML(t.id);
-    el.innerHTML = `<div class="theme-preview">${pv}</div><div class="theme-name">${t.name}</div><div class="theme-desc">${t.desc}</div>`;
-    el.onclick = () => {
-      document.querySelectorAll('.theme-opt').forEach(o => o.classList.remove('on'));
-      el.classList.add('on');
-      P.theme = t.id;
-      updatePreview();
-    };
-    wrap.appendChild(el);
-  });
+/* ══════════════════════════════════════════════════════
+   STEP 3 — Email / Save
+   ══════════════════════════════════════════════════════ */
+function initStep3() {
+  const draft   = getDraft();
+  const slugEl  = document.getElementById('v2SlugText');
+  if (slugEl) slugEl.textContent = 'able.fm/' + makeSlug(draft.name || '');
 }
 
-function themePreviewHTML(id) {
-  const acc = P.accent;
-  const dk = darken(acc, .35);
-  if (id === 'dark')  return `<div style="height:100%;background:#07080f;border-radius:7px;overflow:hidden;"><div style="height:56%;background:linear-gradient(135deg,${acc},${dk});"></div><div style="height:6px;margin:4px 8px;background:rgba(255,255,255,.1);border-radius:3px;"></div><div style="height:5px;margin:2px 8px;background:rgba(255,255,255,.06);border-radius:3px;"></div></div>`;
-  if (id === 'light') return `<div style="height:100%;background:#f5f5f2;border-radius:7px;overflow:hidden;"><div style="height:56%;background:linear-gradient(135deg,${acc},${dk});"></div><div style="height:6px;margin:4px 8px;background:rgba(0,0,0,.07);border-radius:3px;"></div><div style="height:5px;margin:2px 8px;background:rgba(0,0,0,.05);border-radius:3px;"></div></div>`;
+function tryStep3() {
+  const emailEl = document.getElementById('iEmail');
+  const errEl   = document.getElementById('iEmailErr');
+  const email   = emailEl ? emailEl.value.trim() : '';
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    if (emailEl) emailEl.classList.add('field-error');
+    if (errEl)   errEl.classList.add('show');
+    if (emailEl) emailEl.focus();
+    return;
+  }
+  if (emailEl) emailEl.classList.remove('field-error');
+  if (errEl)   errEl.classList.remove('show');
 
-  if (id === 'glass') return `<div style="height:100%;background:linear-gradient(135deg,#1a1230,#0a1a28);border-radius:7px;overflow:hidden;"><div style="height:56%;background:linear-gradient(135deg,${acc},${dk});"></div><div style="height:6px;margin:4px 8px;background:rgba(255,255,255,.14);border-radius:3px;"></div></div>`;
-  return '';
-}
+  const draft = getDraft();
+  const slug  = makeSlug(draft.name || '');
 
-/* ── CTA GRID ── */
-function makeCtaCard(c, extraClass) {
-  const el = document.createElement('button');
-  el.className = 'cta-gcard' + (extraClass ? ' '+extraClass : '') + (c.id === P.ctaId ? ' on' : '');
-  el.innerHTML = `<div class="cg-icon">${c.svg}</div><div class="cg-label">${c.label}</div><div class="cg-hint">${c.hint}</div>`;
-  el.onclick = () => {
-    document.querySelectorAll('.cta-gcard').forEach(b => b.classList.remove('on'));
-    el.classList.add('on');
-    P.ctaId = c.id;
-    P.ctaLabel = c.label;
-    const needsUrl = !!c.ph;
-    document.getElementById('ctaUrlWrap').style.display = needsUrl ? 'block' : 'none';
-    if (needsUrl) {
-      document.getElementById('ctaUrlLbl').textContent = `Link for "${c.label}"`;
-      document.getElementById('iCtaUrl').placeholder = c.ph;
-    }
-    document.getElementById('ctaPreviewBtn').textContent = c.label;
-    updatePreview();
+  // Write to localStorage
+  const profile = {
+    name:          draft.name   || '',
+    vibe:          draft.vibe   || '',
+    accent:        draft.accent || '#f4b942',
+    stateOverride: draft.stateOverride || 'profile',
+    email:         email,
+    slug:          slug,
+    joinedAt:      Date.now(),
+    handle:        slug,
+    theme:         'dark',
+    genres:        [],
+    ctaPrimary:    { label: 'Stream Now', url: '' },
+    ctaSecondary:  { label: 'Get Tickets', url: '' },
+    platforms:     [],
+    identity: {
+      accent:       draft.accent || '#f4b942',
+      accentSource: 'artist',
+    },
   };
-  return el;
+  localStorage.setItem('able_v3_profile', JSON.stringify(profile));
+  localStorage.setItem('able_session', 'local-' + Date.now());
+
+  // Clear draft
+  sessionStorage.removeItem('able_wizard_draft');
+
+  goToStep('stepDone');
 }
 
-function initCta() {
-  const wrap = document.getElementById('ctaGrid');
+/* ══════════════════════════════════════════════════════
+   DONE
+   ══════════════════════════════════════════════════════ */
+function initDone() {
+  const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+  const url = 'able.fm/' + (profile.slug || 'artist');
+  const urlEl  = document.getElementById('v2DoneUrl');
+  const pillEl = document.getElementById('v2DonePill');
+  if (urlEl)  urlEl.textContent  = url;
+  if (pillEl) pillEl.dataset.url = url;
+  launchConfetti();
 
-  /* — 4 main groups — */
-  CTA_GROUPS.forEach(grp => {
-    const items = CTA_PRIMARY.filter(c => c.group === grp.id);
-    const section = document.createElement('div');
-    const hd = document.createElement('div');
-    hd.className = 'cta-grp-hd';
-    hd.textContent = grp.label;
-    const grid = document.createElement('div');
-    grid.className = 'cta-grp-grid';
-    items.forEach(c => grid.appendChild(makeCtaCard(c, '')));
-    section.appendChild(hd);
-    section.appendChild(grid);
-    wrap.appendChild(section);
-  });
-
-  /* — more options — */
-  const moreItems = CTA_PRIMARY.filter(c => c.group === 'more');
-  const moreBtn = document.createElement('button');
-  moreBtn.className = 'cta-more-btn';
-  moreBtn.innerHTML = `More options <span class="cm-chevron"><svg viewBox="0 0 10 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" width="10" height="7"><path d="M1 1l4 4 4-4"/></svg></span>`;
-  const moreArea = document.createElement('div');
-  moreArea.className = 'cta-more-area';
-  moreItems.forEach(c => moreArea.appendChild(makeCtaCard(c, 'cg-sm')));
-  moreBtn.onclick = () => {
-    moreBtn.classList.toggle('open');
-    moreArea.classList.toggle('open');
-  };
-  wrap.appendChild(moreBtn);
-  wrap.appendChild(moreArea);
-
-  /* — secondary pills — */
-  const secWrap = document.getElementById('ctaSecGrid');
-  CTA_SECONDARY.forEach(c => {
-    const el = document.createElement('button');
-    el.className = 'cta-sec-btn' + (c.id === P.secId ? ' on' : '') + (c.none ? ' is-none' : '');
-    el.textContent = c.label;
-    el.onclick = () => {
-      document.querySelectorAll('.cta-sec-btn').forEach(b => b.classList.remove('on'));
-      el.classList.add('on');
-      P.secId = c.id;
-      P.secLabel = c.none ? '' : (c.custom ? '' : c.label);
-      // secondary URL field
-      const secUrlWrap = document.getElementById('ctaSecUrlWrap');
-      secUrlWrap.style.display = (!c.none && c.needsUrl) ? 'block' : 'none';
-      if (!c.none && c.needsUrl) {
-        document.getElementById('ctaSecUrlLbl').textContent = `Link for "${c.label}"`;
-        document.getElementById('iCtaSecUrl').placeholder = c.ph || 'https://…';
-      }
-      // custom label field
-      const secCustomWrap = document.getElementById('ctaSecCustomWrap');
-      secCustomWrap.style.display = c.custom ? 'block' : 'none';
-      updatePreview();
-    };
-    secWrap.appendChild(el);
-  });
-}
-
-/* ── UPDATE PREVIEW ── */
-function updatePreview() {
-  const ts = TS[P.theme];
-  const acc = P.accent;
-  const rgb = h2r(acc);
-  const dk = darken(acc, .38);
-
-  // phone bg
-  const inner = document.getElementById('previewShell');
-  inner.style.background = P.theme === 'glass'
-    ? 'linear-gradient(155deg,#1a1230 0%,#0a1a28 55%,#1a1008 100%)'
-    : ts.bg;
-
-  // status bar
-  const sb = document.getElementById('phSb');
-  sb.style.color = ts.stColor;
-
-  // hero gradient (accent-driven)
-  document.getElementById('phArt').style.background = `linear-gradient(135deg, ${acc} 0%, ${dk} 100%)`;
-
-  // scrim
-  const scrimEnd = P.theme === 'glass' ? 'rgba(8,12,20,.75)' : ts.bg;
-  document.getElementById('phScrim').style.background = `linear-gradient(to bottom, transparent, ${scrimEnd})`;
-
-  // artist name
-  document.getElementById('phName').textContent = (P.name || 'Your Name').toUpperCase();
-
-  // genre & bio
-  const genEl = document.getElementById('phGenre');
-  genEl.style.color = ts.text;
-  const genreText = P.genre || 'Genre';
-  genEl.textContent = P.location ? `${genreText} · ${P.location}` : genreText;
-
-  const bioEl = document.getElementById('phBio');
-  bioEl.style.color = ts.text;
-  bioEl.textContent = P.bio || 'Your one-line bio.';
-
-  // primary btn + step4 preview chip
-  const pBtn = document.getElementById('phP');
-  pBtn.style.background = acc;
-  pBtn.textContent = P.ctaLabel || 'Stream Now';
-  const previewChip = document.getElementById('ctaPreviewBtn');
-  if (previewChip) {
-    previewChip.style.background = acc;
-    previewChip.style.boxShadow = `0 4px 18px rgba(${rgb},.38)`;
-    previewChip.textContent = P.ctaLabel || 'Stream Now';
+  // Seed artist ID if not set
+  if (!localStorage.getItem('able_artist_id')) {
+    const id = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36));
+    localStorage.setItem('able_artist_id', id);
   }
+}
 
-  // secondary btn
-  const sBtn = document.getElementById('phS');
-  const secIsNone = P.secId === 's-none' || !P.secLabel;
-  sBtn.style.display = secIsNone ? 'none' : '';
-  if (!secIsNone) {
-    sBtn.textContent = P.secLabel;
-    if (P.theme === 'light') {
-      sBtn.style.color = '#1a1a18';
-      sBtn.style.borderColor = 'rgba(26,26,24,.22)';
-    } else {
-      sBtn.style.color = ts.text;
-      sBtn.style.borderColor = 'rgba(255,255,255,.2)';
+function v2GetUrl() {
+  const el = document.getElementById('v2DoneUrl');
+  return el ? el.textContent : 'able.fm/artist';
+}
+
+function v2CopyLink() {
+  const url = v2GetUrl();
+  navigator.clipboard.writeText(url).then(function() {
+    const btn = document.getElementById('v2CopyBtn');
+    if (btn) {
+      const orig = btn.textContent.trim();
+      btn.textContent = 'Copied!';
+      setTimeout(function() { btn.textContent = orig; }, 2000);
     }
-  }
-
-  // pills
-  [1,2,3].forEach(i => {
-    const pill = document.getElementById(`phPill${i}`);
-    pill.style.background = `rgba(${rgb},.13)`;
-    pill.style.color = acc;
-  });
-
-  // section card
-  const sect = document.getElementById('phSect');
-  sect.style.background = P.theme === 'light' ? 'rgba(0,0,0,.04)' : 'rgba(255,255,255,.05)';
-
-  // section title
-  document.getElementById('phSh').style.color = ts.text;
-
-  // track names (find all)
-  sect.querySelectorAll('.ph-tn').forEach(t => t.style.color = ts.text);
-
-  // track arts
-  document.getElementById('phTa1').style.background = `linear-gradient(135deg, ${acc}, ${darken(acc,.18)})`;
-  document.getElementById('phTa2').style.background = `linear-gradient(135deg, ${darken(acc,.18)}, ${dk})`;
-
-  // play buttons
-  document.getElementById('phPl1').style.background = acc;
-  document.getElementById('phPl2').style.background = acc;
-
-  // tab bar
-  const tabs = document.getElementById('phTabs');
-  tabs.style.background = ts.tabBg;
-  tabs.style.borderColor = ts.tabBdr;
-  tabs.querySelectorAll('.ph-tab').forEach(t => t.style.color = ts.text);
-  const tab0 = document.getElementById('phTab0');
-  tab0.style.color = acc;
-  document.getElementById('phDot0').style.background = acc;
-
-  // phone glow
-  document.getElementById('previewPhone').style.boxShadow = `0 40px 80px rgba(0,0,0,.6), 0 0 64px rgba(${rgb},.12)`;
-}
-
-/* ── LIVE INPUTS ── */
-document.getElementById('iName').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { e.preventDefault(); tryStage1a(); }
-});
-document.getElementById('iBio').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { e.preventDefault(); goStage('1d'); }
-});
-document.getElementById('iLocation').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { e.preventDefault(); goStage('1e'); }
-});
-document.getElementById('iSpotify').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { e.preventDefault(); goStep(2); }
-});
-document.getElementById('iName').addEventListener('input', e => {
-  P.name = e.target.value;
-  updatePreview();
-  if (e.target.value.trim()) {
-    e.target.classList.remove('field-error');
-    document.getElementById('iNameErr').classList.remove('show');
-  }
-});
-// iGenre is now a hidden input driven by vibe picker — no change listener needed
-document.getElementById('iBio').addEventListener('input', e => { P.bio = e.target.value; updatePreview(); });
-document.getElementById('iLocation').addEventListener('input', e => { P.location = e.target.value; updatePreview(); });
-document.getElementById('iSpotify').addEventListener('input', e => { P.spotify = e.target.value.trim(); });
-document.getElementById('iCtaSecCustom').addEventListener('input', e => { P.secLabel = e.target.value; updatePreview(); });
-
-/* ── DONE ── */
-function getPageUrl() {
-  return document.getElementById('doneUrl').textContent;
-}
-function copyLink() {
-  navigator.clipboard.writeText(getPageUrl()).then(() => {
-    document.querySelectorAll('.done-share-btn.primary-share, #doneCopy').forEach(b => {
-      const orig = b.textContent.trim();
-      b.textContent = '✓ Copied';
-      setTimeout(() => b.textContent = orig, 1500);
-    });
   });
 }
-function shareWhatsApp() {
-  const msg = `Check out my ABLE page: ${getPageUrl()}`;
-  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-}
-function shareTwitter() {
-  const msg = `Check out my artist page: ${getPageUrl()}`;
-  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(msg)}`, '_blank');
-}
-function shareSMS() {
-  const msg = `Check out my artist page: ${getPageUrl()}`;
-  window.open(`sms:?body=${encodeURIComponent(msg)}`);
-}
-function openPage() { window.open('able-v7.html', '_blank'); }
 
-/* ── CONFETTI ── */
+function v2ShareInstagram() {
+  // Instagram doesn't support direct link-sharing via URL scheme; copy to clipboard instead
+  v2CopyLink();
+  alert('Link copied — paste it into your Instagram bio or story.');
+}
+
+function v2ShareTikTok() {
+  v2CopyLink();
+  alert('Link copied — paste it into your TikTok bio.');
+}
+
+/* ══════════════════════════════════════════════════════
+   CONFETTI
+   ══════════════════════════════════════════════════════ */
 function launchConfetti() {
   const canvas = document.getElementById('confettiCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  canvas.width = canvas.offsetWidth;
+  canvas.width  = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
-  const colors = [P.accent, '#ffffff', '#f4b942', '#e05242', '#9b7cf4', '#7ec88a'];
-  const pts = Array.from({length:70}, () => ({
-    x: Math.random() * canvas.width,
-    y: -12 - Math.random() * 60,
-    w: Math.random()*7+3, h: Math.random()*4+2,
-    color: colors[Math.floor(Math.random()*colors.length)],
-    vx: (Math.random()-.5)*5, vy: Math.random()*3+1.5,
-    rot: Math.random()*360, rv: (Math.random()-.5)*10,
-    op: 1,
-  }));
-  let f = 0; const MAX = 110;
+  const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+  const colors  = [profile.accent || '#f4b942', '#ffffff', '#f4b942', '#e05242', '#9b7cf4', '#7ec88a'];
+  const pts = Array.from({length:70}, function() {
+    return {
+      x: Math.random() * canvas.width,
+      y: -12 - Math.random() * 60,
+      w: Math.random()*7+3, h: Math.random()*4+2,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      vx: (Math.random()-.5)*5, vy: Math.random()*3+1.5,
+      rot: Math.random()*360, rv: (Math.random()-.5)*10,
+      op: 1,
+    };
+  });
+  var f = 0; var MAX = 110;
   (function draw() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    pts.forEach(p => {
+    pts.forEach(function(p) {
       p.x+=p.vx; p.y+=p.vy; p.vy+=0.07; p.rot+=p.rv;
       p.op = Math.max(0, 1 - f/MAX);
       ctx.save(); ctx.globalAlpha=p.op;
@@ -2548,336 +1716,66 @@ function launchConfetti() {
   })();
 }
 
-/* ── AI HELPER ── */
-
-// Demo mode: returns an intelligent template instead of hitting the API.
-// Production: swap callAI() to hit a Netlify function → Anthropic API.
-function callAI(type, context, refinement) {
-  return new Promise(resolve => {
-    setTimeout(() => resolve(generateDemoDraft(type, context, refinement)), 600);
+/* ── PREVIEW SIDE (still live) ── */
+/* Keep preview shell functional with colour updates */
+function updatePreviewAccent(hex) {
+  const rgb = h2r(hex);
+  const phP = document.getElementById('phP');
+  if (phP) phP.style.background = hex;
+  [1,2,3].forEach(function(i) {
+    var pill = document.getElementById('phPill' + i);
+    if (pill) { pill.style.background = 'rgba(' + rgb + ',.13)'; pill.style.color = hex; }
   });
-}
-
-const BIO_TEMPLATES = {
-  electronic: [
-    '{name} makes club music for people who close their eyes.',
-    'Producer, sound designer. Quiet studio, loud mixes.',
-    '{name} — electronic music built for the hours between midnight and 4am.',
-  ],
-  hiphop: [
-    '{name}. Rapper, writer, producer. Everything made from scratch.',
-    'Bars and beats. All original, all intentional.',
-    '{name} — hip hop with something to say.',
-  ],
-  rnb: [
-    '{name} writes about love, grief, and the space in between.',
-    'Soul music. Real feelings, real production.',
-    '{name} — voice, keys, and every word earned.',
-  ],
-  indie: [
-    'Songs about ordinary things that turn out to be everything.',
-    '{name} — indie music made in the margins.',
-    'Guitar, tape, and whatever else the song needs.',
-  ],
-  pop: [
-    '{name} makes pop songs people still remember three days later.',
-    'Big hooks, real feelings. Pop done with intention.',
-    '{name} — pop that earns its chorus.',
-  ],
-  rock: [
-    '{name}. Guitar-driven, heavy where it counts.',
-    'Loud music made carefully. Volume as a choice, not a default.',
-    '{name} — rock with something to prove.',
-  ],
-  acoustic: [
-    'Just a voice, a guitar, and things worth saying.',
-    '{name} — folk music with its feet on the ground.',
-    'Songs that started in a quiet room and stayed honest.',
-  ],
-};
-
-const REFINE_TRANSFORMS = {
-  shorter: (s) => s.split('. ').slice(0, 1).join('. ').replace(/\.$/, '') + '.',
-  warmer: (s) => s.replace(/^(\S+)/, 'Hi — I\'m $1').replace(/\.$/, ' and I\'d love you to listen.'),
-  direct: (s) => s.replace(/^(Hi — I'm |Just |Songs )/, '').replace(/\.$/, '.'),
-  editorial: (s) => s.replace(/\.$/, '') + '. The work is the introduction.',
-};
-
-function generateDemoDraft(type, context, refinement) {
-  if (type === 'bio') {
-    const vibe  = (context.vibe  || 'indie').replace(/[^a-z]/gi, '').toLowerCase();
-    const name  = (context.name  || '').trim();
-    const key   = BIO_TEMPLATES[vibe] ? vibe : 'indie';
-    const pool  = BIO_TEMPLATES[key];
-    const draft = pool[Math.floor(Math.random() * pool.length)].replace(/{name}/g, name || 'Artist');
-    if (refinement && REFINE_TRANSFORMS[refinement]) {
-      return REFINE_TRANSFORMS[refinement](draft);
-    }
-    return draft;
-  }
-  if (type === 'cta') {
-    const vibe  = (context.vibe || 'indie').replace(/[^a-z]/gi, '').toLowerCase();
-    const ctaSets = {
-      electronic: [{ label: 'Stream the drop', type: 'stream' }, { label: 'Tickets', type: 'tickets' }, { label: 'Hear the mix', type: 'stream' }],
-      hiphop:     [{ label: 'Stream now', type: 'stream' }, { label: 'Free download', type: 'download' }, { label: 'Get tickets', type: 'tickets' }],
-      rnb:        [{ label: 'Listen', type: 'stream' }, { label: 'Support my work', type: 'support' }, { label: 'See me live', type: 'tickets' }],
-      indie:      [{ label: 'Stream the album', type: 'stream' }, { label: 'Come to a show', type: 'tickets' }, { label: 'Download free', type: 'download' }],
-      pop:        [{ label: 'Stream now', type: 'stream' }, { label: 'Pre-save', type: 'presave' }, { label: 'Tickets', type: 'tickets' }],
-      rock:       [{ label: 'Listen', type: 'stream' }, { label: 'Tour dates', type: 'tickets' }, { label: 'Merch', type: 'merch' }],
-      acoustic:   [{ label: 'Listen', type: 'stream' }, { label: 'Support my music', type: 'support' }, { label: 'See me live', type: 'tickets' }],
-    };
-    return (ctaSets[vibe] || ctaSets['indie']);
-  }
-  return '';
-}
-
-// ── Bio helper ──
-
-let _bioCurrent = '';
-
-function openBioHelper() {
-  const panel = document.getElementById('aiBioPanel');
-  panel.classList.add('open');
-  document.getElementById('aiBioBtn').style.display = 'none';
-  generateBio();
-}
-
-function closeBioHelper() {
-  document.getElementById('aiBioPanel').classList.remove('open');
-  document.getElementById('aiBioBtn').style.display = '';
-}
-
-function generateBio(refinement) {
-  const draft  = document.getElementById('aiBioDraft');
-  const useBtn = document.getElementById('aiBioUse');
-  draft.classList.add('ai-draft--loading');
-  draft.textContent = 'Generating…';
-  useBtn.disabled = true;
-  _bioCurrent = '';
-
-  const context = {
-    name: (document.getElementById('iName') || {}).value || '',
-    vibe: P.vibe || 'indie',
-  };
-
-  callAI('bio', context, refinement).then(result => {
-    _bioCurrent = result;
-    draft.classList.remove('ai-draft--loading');
-    draft.textContent = result;
-    useBtn.disabled = false;
-  });
-}
-
-function refineBio(type) {
-  if (!_bioCurrent) return;
-  const draft  = document.getElementById('aiBioDraft');
-  const useBtn = document.getElementById('aiBioUse');
-  draft.classList.add('ai-draft--loading');
-  draft.textContent = 'Refining…';
-  useBtn.disabled = true;
-
-  const context = { name: (document.getElementById('iName') || {}).value || '', vibe: P.vibe || 'indie' };
-  callAI('bio', context, type).then(result => {
-    _bioCurrent = result;
-    draft.classList.remove('ai-draft--loading');
-    draft.textContent = result;
-    useBtn.disabled = false;
-  });
-}
-
-function useBioDraft() {
-  if (!_bioCurrent) return;
-  const inp = document.getElementById('iBio');
-  inp.value = _bioCurrent;
-  inp.dispatchEvent(new Event('input'));
-  closeBioHelper();
-  updatePreview();
-}
-
-// ── CTA helper ──
-
-let _ctaSelected = null;
-
-function openCtaHelper() {
-  const panel = document.getElementById('aiCtaPanel');
-  panel.classList.add('open');
-  document.getElementById('aiCtaBtn').style.display = 'none';
-  buildCtaOptions();
-}
-
-function closeCtaHelper() {
-  document.getElementById('aiCtaPanel').classList.remove('open');
-  document.getElementById('aiCtaBtn').style.display = '';
-}
-
-function buildCtaOptions() {
-  const context  = { vibe: P.vibe || 'indie' };
-  const opts     = generateDemoDraft('cta', context, null);
-  const container = document.getElementById('aiCtaOpts');
-  const useBtn   = document.getElementById('aiCtaUse');
-  _ctaSelected   = null;
-  useBtn.disabled = true;
-  container.innerHTML = '';
-
-  opts.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'ai-cta-opt';
-    btn.type = 'button';
-    btn.textContent = opt.label;
-    btn.dataset.idx = i;
-    btn.onclick = () => {
-      container.querySelectorAll('.ai-cta-opt').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      _ctaSelected = opt;
-      useBtn.disabled = false;
-    };
-    container.appendChild(btn);
-  });
-}
-
-function useCtaSuggestion() {
-  if (!_ctaSelected) return;
-  const { label, type } = _ctaSelected;
-
-  // Find matching CTA definition and activate it
-  const found = CTA_PRIMARY.find(c => c.id === type);
-  if (found) {
-    P.ctaId = found.id;
-    document.querySelectorAll('.cta-gcard').forEach(b => {
-      const isMatch = b.querySelector('.cg-label') &&
-                      b.querySelector('.cg-label').textContent === found.label;
-      b.classList.toggle('on', isMatch);
-    });
-    const needsUrl = !!found.ph;
-    document.getElementById('ctaUrlWrap').style.display = needsUrl ? 'block' : 'none';
-    if (needsUrl) {
-      document.getElementById('iCtaUrl').placeholder = found.ph;
-    }
-  }
-
-  // Apply the AI-suggested label (overrides the default label for this CTA type)
-  P.ctaLabel = label;
-  const previewBtn = document.getElementById('ctaPreviewBtn');
-  if (previewBtn) previewBtn.textContent = label;
-  updatePreview();
-
-  closeCtaHelper();
-}
-
-/* ── VIEW TOGGLE ── */
-function setView(v) {
-  document.getElementById('layout').dataset.view = v;
-  document.getElementById('vtForm').classList.toggle('on', v === 'form');
-  document.getElementById('vtPreview').classList.toggle('on', v === 'preview');
-  window.scrollTo(0,0);
-}
-
-/* ── HOW-TO GUIDES ── */
-function toggleHowTo(id, btnId) {
-  const guide = document.getElementById(id);
-  const btn = document.getElementById(btnId);
-  if (!guide) return;
-  const isHidden = guide.hidden;
-  if (isHidden) {
-    guide.hidden = false;
-    // Replay animation on re-open
-    guide.style.animation = 'none';
-    requestAnimationFrame(() => { guide.style.animation = ''; });
-  } else {
-    guide.hidden = true;
-  }
-  if (btn) {
-    btn.classList.toggle('open', isHidden);
-    btn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
-  }
-}
-
-/* ── MUSIC PLATFORM PICKER ── */
-const MUSIC_PLAT_DATA = {
-  spotify: {
-    label: 'Paste your Spotify link here',
-    placeholder: 'open.spotify.com/album/… or /track/…',
-    guideText: '📱 How do I find my Spotify link?',
-    steps: [
-      'Open <strong>Spotify</strong> on your phone',
-      'Tap <strong>Search</strong>, search your own name',
-      'Tap your <strong>artist profile</strong> (with your photo)',
-      'Find a <strong>track or album</strong> you want to add',
-      'Tap the <strong>three dots ···</strong> next to it',
-      'Tap <strong>Share</strong> → <strong>Copy link</strong>',
-      'Paste it into the box above'
-    ],
-    note: '<strong>Tip:</strong> You can add a track, album, or your whole artist profile. We\'ll show it neatly on your page.'
-  },
-  youtube: {
-    label: 'Paste your YouTube link here',
-    placeholder: 'youtube.com/watch?v=… or youtu.be/…',
-    guideText: '📺 How do I find my YouTube link?',
-    steps: [
-      'Open <strong>YouTube</strong> on your phone or computer',
-      'Find the <strong>video</strong> you want to add',
-      'Tap or click the <strong>Share</strong> button (under the video)',
-      'Tap <strong>Copy link</strong>',
-      'Paste it into the box above'
-    ],
-    note: '<strong>Tip:</strong> Any YouTube video works — a music video, a live session, a lyric video. It plays inside your page.'
-  },
-  soundcloud: {
-    label: 'Paste your SoundCloud link here',
-    placeholder: 'soundcloud.com/yourname/track-name',
-    guideText: '🎵 How do I find my SoundCloud link?',
-    steps: [
-      'Open <strong>SoundCloud</strong> on your phone or at soundcloud.com',
-      'Find the <strong>track</strong> you want to add',
-      'Tap the <strong>three dots ···</strong> next to it',
-      'Tap <strong>Share</strong> → <strong>Copy link</strong>',
-      'Paste it into the box above'
-    ],
-    note: '<strong>Tip:</strong> Works with individual tracks or your whole profile. Fans can play it without leaving your page.'
-  }
-};
-
-function selectMusicPlat(btn) {
-  document.querySelectorAll('.music-plat-btn').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  const plat = btn.dataset.plat;
-  const data = MUSIC_PLAT_DATA[plat];
-  if (!data) return;
-  const labelEl = document.getElementById('musicUrlLabel');
-  const inputEl = document.getElementById('iMusicUrl');
-  const guideTextEl = document.getElementById('musicGuideText');
-  const stepsEl = document.getElementById('musicHowToSteps');
-  const noteEl = document.getElementById('musicHowToNote');
-  if (labelEl) labelEl.textContent = data.label;
-  if (inputEl) inputEl.placeholder = data.placeholder;
-  if (guideTextEl) guideTextEl.innerHTML = data.guideText;
-  if (stepsEl) stepsEl.innerHTML = data.steps.map((s, i) => `<div class="how-to-step"><span class="how-to-num">${i+1}</span><span>${s}</span></div>`).join('');
-  if (noteEl) noteEl.innerHTML = data.note;
-}
-
-/* ── COLOUR PREVIEW STRIP ── */
-function updateColourWhere(hex) {
-  const cwBtn = document.getElementById('cwBtn');
-  const cwPill = document.getElementById('cwPill');
-  const cwDot = document.getElementById('cwDot');
-  if (cwBtn) cwBtn.style.background = hex;
-  if (cwPill) { cwPill.style.borderColor = hex; cwPill.style.color = hex; }
-  if (cwDot) cwDot.style.background = hex;
+  var ta1 = document.getElementById('phTa1');
+  var ta2 = document.getElementById('phTa2');
+  if (ta1) ta1.style.background = 'linear-gradient(135deg,' + hex + ',rgba(' + rgb + ',.5))';
+  if (ta2) ta2.style.background = 'linear-gradient(135deg,rgba(' + rgb + ',.5),' + hex + ')';
+  var pl1 = document.getElementById('phPl1');
+  var pl2 = document.getElementById('phPl2');
+  if (pl1) pl1.style.background = hex;
+  if (pl2) pl2.style.background = hex;
+  var phone = document.getElementById('previewPhone');
+  if (phone) phone.style.boxShadow = '0 40px 80px rgba(0,0,0,.6), 0 0 64px rgba(' + rgb + ',.12)';
+  var art = document.getElementById('phArt');
+  var dk = hex;
+  if (art) art.style.background = 'linear-gradient(135deg,' + hex + ' 0%,' + dk + ' 100%)';
+  var tab0 = document.getElementById('phTab0');
+  if (tab0) tab0.style.color = hex;
+  var dot0 = document.getElementById('phDot0');
+  if (dot0) dot0.style.background = hex;
 }
 
 /* ── INIT ── */
-initVibe();
-initColour();
-initTheme();
-initCta();
-updatePreview();
-selectFeel(P.feel);
-// Initialise music platform guide with Spotify data
-document.addEventListener('DOMContentLoaded', () => {
-  const platBtn = document.getElementById('platSpotify');
-  if (platBtn) selectMusicPlat(platBtn);
-  updateColourWhere(P.accent || '#8ab4ce');
-});
+(function init() {
+  // Set initial accent
+  _v2Accent = '#f4b942';
+  updatePreviewAccent(_v2Accent);
+
+  // Mark initial active swatch
+  var firstSwatch = document.querySelector('#v2ColourRow .c-swatch');
+  if (firstSwatch) firstSwatch.classList.add('on');
+
+  // Initialise minipreview
+  updateMiniPreview();
+})();
+
+/* ── LEGACY STUBS (keep preview side working) ── */
+const TS = {
+  dark:     { bg:'#0a0b10',  card:'rgba(255,255,255,.06)', text:'#f0ede8', t2:'rgba(240,237,232,.60)', tabBg:'rgba(9,9,14,.97)', tabBdr:'rgba(255,255,255,.065)', scrimEnd:'#0a0b10',  stColor:'#f0ede8' },
+};
+
+/* Keep old VIBES data for old CSS selectors */
+const VIBES = [
+  { id:'electronic', label:'Electronic',  grad:'linear-gradient(135deg,#06b6d4,#0a1a2e)', accent:'#06b6d4', font:'Barlow Condensed', fontUrl:null,              accents:['#06b6d4','#f4b942','#ffffff','#9b7cf4'] },
+  { id:'hiphop',     label:'Hip Hop',     grad:'linear-gradient(160deg,#f4b942,#c4782a)', accent:'#f4b942', font:'Oswald',           fontUrl:'Oswald:700',      accents:['#f4b942','#e05242','#ffffff','#c4782a'] },
+  { id:'rnb',        label:'R&B / Soul',  grad:'linear-gradient(135deg,#e06b7a,#7c2d42)', accent:'#e06b7a', font:'Cormorant Garamond',fontUrl:'Cormorant+Garamond:600italic,600', accents:['#e06b7a','#f4b942','#9b7cf4','#ffffff'] },
+  { id:'indie',      label:'Indie / Alt', grad:'linear-gradient(150deg,#7ec88a,#2a4a2e)', accent:'#7ec88a', font:'Space Grotesk',    fontUrl:'Space+Grotesk:700',accents:['#7ec88a','#e06b7a','#ffffff','#f4b942'] },
+  { id:'pop',        label:'Pop',         grad:'linear-gradient(135deg,#9b7cf4,#4a1a8a)', accent:'#9b7cf4', font:'Barlow Condensed', fontUrl:null,              accents:['#9b7cf4','#e06b7a','#06b6d4','#f4b942'] },
+  { id:'rock',       label:'Rock',        grad:'linear-gradient(160deg,#e05242,#1a0a0a)', accent:'#e05242', font:'Oswald',           fontUrl:'Oswald:700',      accents:['#e05242','#ffffff','#f4b942','#9b7cf4'] },
+  { id:'acoustic',   label:'Acoustic',    grad:'linear-gradient(135deg,#d4a96a,#5a3a1a)', accent:'#d4a96a', font:'Lora',             fontUrl:'Lora:700',        accents:['#d4a96a','#7ec88a','#e06b7a','#ffffff'] },
+];
+
+/* PRESETS / THEMES / CTA data removed — V2 wizard does not need them */
 </script>
 </body>
 </html>
