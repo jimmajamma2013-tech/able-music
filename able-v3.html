@@ -1674,12 +1674,22 @@
         <div class="v3-divider"></div>
 
         <!-- Music Section (Home preview) -->
-        <div class="v3-section" id="v3HomeMusicSection" style="display:none">
+        <div class="v3-section" id="v3HomeMusicSection">
           <div class="v3-section__header">
             <span class="v3-section__title">Latest Music</span>
             <button class="v3-section__action" data-goto="music">See all</button>
           </div>
-          <div id="v3HomeMusicList"></div>
+          <div id="v3HomeMusicList">
+            <!-- Static ghost — replaced by JS with real data or animated ghost -->
+            <div class="v3-track" style="pointer-events:none;">
+              <div class="v3-ghost-block" style="width:44px;height:44px;border-radius:10px;flex-shrink:0;"></div>
+              <div class="v3-track__info">
+                <div class="v3-ghost-line" style="width:65%;height:12px;border-radius:4px;margin-bottom:6px;"></div>
+                <div class="v3-ghost-line" style="width:40%;height:9px;border-radius:4px;"></div>
+              </div>
+              <div class="v3-ghost-block" style="width:28px;height:28px;border-radius:50%;"></div>
+            </div>
+          </div>
         </div>
 
         <!-- Music placeholder — owner only -->
@@ -1690,12 +1700,22 @@
         </div>
 
         <!-- Events Section (Home preview) -->
-        <div class="v3-section" id="v3HomeEventsSection" style="display:none">
+        <div class="v3-section" id="v3HomeEventsSection">
           <div class="v3-section__header">
             <span class="v3-section__title">Upcoming Shows</span>
             <button class="v3-section__action" data-goto="events">See all</button>
           </div>
-          <div id="v3HomeEventsList"></div>
+          <div id="v3HomeEventsList">
+            <!-- Static ghost — replaced by JS -->
+            <div class="v3-event v3-event--ghost">
+              <div class="v3-ghost-block" style="width:42px;height:44px;border-radius:10px;flex-shrink:0;"></div>
+              <div class="v3-event__info">
+                <div class="v3-ghost-line" style="width:60%;height:12px;border-radius:4px;margin-bottom:6px;"></div>
+                <div class="v3-ghost-line" style="width:42%;height:9px;border-radius:4px;"></div>
+              </div>
+              <div class="v3-ghost-block" style="width:60px;height:32px;border-radius:8px;"></div>
+            </div>
+          </div>
           <div class="v3-section__footer">
             <button class="v3-section__footer-link" data-goto="events">See all shows</button>
           </div>
@@ -2684,35 +2704,61 @@
         supportTab.style.display = hasSupportContent ? '' : 'none';
       }
 
-      // Home tab music preview (up to 2 releases)
+      // Home tab music preview — always visible (ghost when empty)
       const musicSection = document.getElementById('v3HomeMusicSection');
       const musicList = document.getElementById('v3HomeMusicList');
       const releases = data.releases || [];
-      if (musicSection && musicList && releases.length) {
-        const accent = data.accent || '#06b6d4';
-        musicList.innerHTML = releases.slice(0, 2).map(rel => {
-          const artBg = rel.artworkUrl
-            ? `url(${rel.artworkUrl}) center/cover`
-            : `linear-gradient(135deg,rgba(${hexToRgb(accent)},.35),rgba(0,0,0,.6))`;
-          return `<div class="v3-track">
-            <div class="v3-track__art" style="background:${artBg};"></div>
-            <div class="v3-track__info">
-              <div class="v3-track__name">${rel.title || 'Untitled'}</div>
-              <div class="v3-track__meta">${rel.type || 'Release'}${rel.year ? ' · ' + rel.year : ''}</div>
+      if (musicSection && musicList) {
+        const accent = data.accent || '#e05242';
+        if (releases.length) {
+          musicList.innerHTML = releases.slice(0, 2).map(rel => {
+            const artBg = rel.artworkUrl
+              ? `url(${rel.artworkUrl}) center/cover`
+              : `linear-gradient(135deg,rgba(${hexToRgb(accent)},.35),rgba(0,0,0,.6))`;
+            return `<div class="v3-track">
+              <div class="v3-track__art" style="background:${artBg};"></div>
+              <div class="v3-track__info">
+                <div class="v3-track__name">${rel.title || 'Untitled'}</div>
+                <div class="v3-track__meta">${rel.type || 'Release'}${rel.year ? ' · ' + rel.year : ''}</div>
+              </div>
+              <div class="v3-track__play-wrap"><div class="v3-track__play">▶</div></div>
+            </div>`;
+          }).join('');
+          musicSection.classList.remove('is-ghost');
+          const musicAction = musicSection.querySelector('.v3-section__action');
+          if (musicAction) musicAction.style.display = '';
+        } else {
+          // Ghost skeleton — structural presence when no music yet
+          musicList.innerHTML = `
+            <div class="v3-track" style="pointer-events:none;">
+              <div class="v3-ghost-block" style="width:44px;height:44px;border-radius:10px;flex-shrink:0;"></div>
+              <div class="v3-track__info">
+                <div class="v3-ghost-line" style="width:68%;height:12px;border-radius:4px;margin-bottom:6px;"></div>
+                <div class="v3-ghost-line" style="width:40%;height:9px;border-radius:4px;"></div>
+              </div>
+              <div class="v3-ghost-block" style="width:28px;height:28px;border-radius:50%;"></div>
             </div>
-            <div class="v3-track__play-wrap"><div class="v3-track__play">▶</div></div>
-          </div>`;
-        }).join('');
-        musicSection.style.display = '';
+            <div class="v3-track" style="pointer-events:none;opacity:0.55;">
+              <div class="v3-ghost-block" style="width:44px;height:44px;border-radius:10px;flex-shrink:0;animation-delay:0.2s;"></div>
+              <div class="v3-track__info">
+                <div class="v3-ghost-line" style="width:55%;height:12px;border-radius:4px;margin-bottom:6px;animation-delay:0.2s;"></div>
+                <div class="v3-ghost-line" style="width:35%;height:9px;border-radius:4px;animation-delay:0.2s;"></div>
+              </div>
+              <div class="v3-ghost-block" style="width:28px;height:28px;border-radius:50%;animation-delay:0.2s;"></div>
+            </div>`;
+          musicSection.classList.add('is-ghost');
+          const musicAction = musicSection.querySelector('.v3-section__action');
+          if (musicAction) musicAction.style.display = 'none';
+        }
       }
 
-      // Home tab events preview (upcoming only, max 2)
+      // Home tab events preview — always visible (ghost when no upcoming)
       const eventsSection = document.getElementById('v3HomeEventsSection');
       const eventsList = document.getElementById('v3HomeEventsList');
-      const events = (data.events || []).filter(e => e.venue);
-      if (eventsSection && eventsList && events.length) {
+      const eventsAll = (data.events || []).filter(e => e.venue);
+      if (eventsSection && eventsList) {
         const now = Date.now();
-        const upcoming = events.filter(e => !e.date || new Date(e.date).getTime() >= now);
+        const upcoming = eventsAll.filter(e => !e.date || new Date(e.date).getTime() >= now);
         if (upcoming.length) {
           eventsList.innerHTML = upcoming.slice(0, 2).map(e => {
             const d = e.date ? new Date(e.date) : null;
@@ -2727,7 +2773,35 @@
               ${e.ticketUrl ? `<a href="${e.ticketUrl}" target="_blank" rel="noopener" class="v3-event__ticket">Tickets</a>` : ''}
             </div>`;
           }).join('');
-          eventsSection.style.display = '';
+          eventsSection.classList.remove('is-ghost');
+          const eventsAction = eventsSection.querySelector('.v3-section__action');
+          if (eventsAction) eventsAction.style.display = '';
+          const eventsFooter = eventsSection.querySelector('.v3-section__footer');
+          if (eventsFooter) eventsFooter.style.display = '';
+        } else {
+          // Ghost skeleton — shows the shape of what shows would look like
+          eventsList.innerHTML = `
+            <div class="v3-event v3-event--ghost">
+              <div class="v3-ghost-block" style="width:42px;height:44px;border-radius:10px;flex-shrink:0;"></div>
+              <div class="v3-event__info">
+                <div class="v3-ghost-line" style="width:62%;height:12px;border-radius:4px;margin-bottom:6px;"></div>
+                <div class="v3-ghost-line" style="width:44%;height:9px;border-radius:4px;"></div>
+              </div>
+              <div class="v3-ghost-block" style="width:60px;height:32px;border-radius:8px;"></div>
+            </div>
+            <div class="v3-event v3-event--ghost" style="opacity:0.5;">
+              <div class="v3-ghost-block" style="width:42px;height:44px;border-radius:10px;flex-shrink:0;animation-delay:0.25s;"></div>
+              <div class="v3-event__info">
+                <div class="v3-ghost-line" style="width:72%;height:12px;border-radius:4px;margin-bottom:6px;animation-delay:0.25s;"></div>
+                <div class="v3-ghost-line" style="width:38%;height:9px;border-radius:4px;animation-delay:0.25s;"></div>
+              </div>
+              <div class="v3-ghost-block" style="width:60px;height:32px;border-radius:8px;animation-delay:0.25s;"></div>
+            </div>`;
+          eventsSection.classList.add('is-ghost');
+          const eventsAction = eventsSection.querySelector('.v3-section__action');
+          if (eventsAction) eventsAction.style.display = 'none';
+          const eventsFooter = eventsSection.querySelector('.v3-section__footer');
+          if (eventsFooter) eventsFooter.style.display = 'none';
         }
       }
     }
