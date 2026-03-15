@@ -1307,7 +1307,7 @@ body::before {
       <div style="font-size:18px;line-height:1;flex-shrink:0;">🚀</div>
       <div style="flex:1;">
         <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;">You're in launch mode.</div>
-        <div style="font-size:11px;color:var(--t2);line-height:1.5;">Artist plan unlocks the full pre-release toolkit — email your list on drop day, see who pre-saved, and control exactly when fans hear it.</div>
+        <div style="font-size:11px;color:var(--t2);line-height:1.5;">Artist plan gives you the full pre-release toolkit — email your list on drop day, see who pre-saved, and control exactly when fans hear it.</div>
       </div>
       <button style="background:none;border:none;padding:0;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;flex-shrink:0;" onclick="this.closest('#preReleaseNudge').style.display='none';sessionStorage.setItem('_preReleaseNudgeDismissed','1');" aria-label="Dismiss">×</button>
     </div>
@@ -2328,7 +2328,7 @@ function renderFanSupportPacksSummary() {
 
 function exportFans() {
   const real = JSON.parse(localStorage.getItem('able_fans') || '[]');
-  if (!real.length) { alert('No fans yet — share your page to get started.'); return; }
+  if (!real.length) { alert('No fans yet — share your page link to see who shows up.'); return; }
   const all = real.map(f => ({ email:f.email, level:'listener', source:f.source||'Direct', ts:f.ts }));
   const csv = 'Email,Level,Source,Joined\n' + all.map(f =>
     `${f.email},${f.level},${f.source},${new Date(f.ts).toISOString().slice(0,10)}`
