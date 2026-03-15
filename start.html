@@ -798,11 +798,19 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   line-height: 1.2;
 }
 .feel-card__desc {
-  font-size: 11px;
+  font-size: 11.5px;
   color: var(--t2);
-  line-height: 1.4;
+  line-height: 1.45;
+}
+.feel-card__eg {
+  font-size: 10.5px;
+  color: var(--t3);
+  line-height: 1.3;
+  margin-top: 5px;
+  font-style: italic;
 }
 .feel-card.on .feel-card__label { color: var(--acc); }
+.feel-card.on .feel-card__eg { color: rgba(var(--acc-rgb),.55); }
 </style>
 </head>
 <body>
@@ -832,13 +840,13 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <!-- STEP 1 -->
     <div class="step active" id="step1">
       <div class="step-eyebrow">Step 1 of 8</div>
-      <h1 class="step-title">Your name,<br>your vibe.</h1>
-      <p class="step-sub">Your page builds as you go. Hit Preview above to see it take shape.</p>
+      <h1 class="step-title">Let's start<br>with you.</h1>
+      <p class="step-sub">What do you go by? Your page builds as you fill this in — hit Preview up top to see it.</p>
 
       <div class="field">
-        <label class="field-label" for="iName">Artist name</label>
-        <input class="field-input" type="text" id="iName" placeholder="e.g. Nova" autocomplete="off" autofocus>
-        <div class="field-hint">This goes at the top of your page. Use whatever name you release music under.</div>
+        <label class="field-label" for="iName">What do people call you?</label>
+        <input class="field-input" type="text" id="iName" placeholder="e.g. Nova, Jamie Reeves, MYLA…" autocomplete="off" autofocus>
+        <div class="field-hint">Use whatever name you release music under — this goes at the top of your page.</div>
         <p class="field-error-msg" id="iNameErr" role="alert">Enter your artist name to continue.</p>
       </div>
 
@@ -849,9 +857,9 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
 
       <div class="field">
-        <label class="field-label" for="iBio">One-line bio <span class="opt">optional</span></label>
-        <input class="field-input" type="text" id="iBio" placeholder="e.g. Making music from my bedroom to yours." maxlength="80">
-        <div class="field-hint">One sentence. Sits under your name. Say something real.</div>
+        <label class="field-label" for="iBio">One sentence about you <span class="opt">optional</span></label>
+        <input class="field-input" type="text" id="iBio" placeholder="e.g. Making lo-fi beats in my bedroom in Manchester." maxlength="80">
+        <div class="field-hint">Sits under your name. One real detail beats five adjectives every time.</div>
         <button class="how-to-btn" type="button" onclick="toggleHowTo('bioTip','bioTipBtn')" id="bioTipBtn" aria-expanded="false">
           💡 What makes a good bio?<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" width="9" height="9"><path d="M1.5 3l3.5 3.5L8.5 3"/></svg>
         </button>
@@ -886,13 +894,13 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
 
       <div class="field">
-        <label class="field-label" for="iLocation">Based in <span class="opt">optional</span></label>
-        <input class="field-input" type="text" id="iLocation" placeholder="e.g. London, Berlin, New York" maxlength="40" autocomplete="off">
-        <div class="field-hint">Shows next to your genre on your page.</div>
+        <label class="field-label" for="iLocation">Where are you based? <span class="opt">optional</span></label>
+        <input class="field-input" type="text" id="iLocation" placeholder="e.g. London, Berlin, Atlanta…" maxlength="40" autocomplete="off">
+        <div class="field-hint">Shows up next to your sound on your page. Fans from the same city love this.</div>
       </div>
 
       <div class="field">
-        <label class="field-label" for="iSpotify">Your Spotify link <span class="opt">optional — do this later if easier</span></label>
+        <label class="field-label" for="iSpotify">Are you on Spotify? <span class="opt">paste your link here — or skip it</span></label>
         <input class="field-input" type="url" id="iSpotify" placeholder="Paste your Spotify link here…" autocomplete="off">
         <div class="field-hint">Your music plays directly on your page — fans don't need to open another app.</div>
         <button class="how-to-btn" type="button" onclick="toggleHowTo('spotifyGuide','spotifyGuideBtn')" id="spotifyGuideBtn" aria-expanded="false">
@@ -920,30 +928,34 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <!-- STEP 2 — FEEL -->
     <div class="step" id="step2">
       <div class="step-eyebrow">Step 2 of 8</div>
-      <h1 class="step-title">How does<br>your music feel?</h1>
-      <p class="step-sub">This shapes how your page moves and carries itself — not just how it looks.</p>
+      <h1 class="step-title">What kind of<br>music do you make?</h1>
+      <p class="step-sub">Pick the one that feels closest. Doesn't have to be exact — go with your gut.</p>
 
       <div class="feel-grid" id="feelGrid">
         <button class="feel-card" data-feel="intimate-raw" onclick="selectFeel('intimate-raw')">
-          <span class="feel-card__label">Stripped back</span>
-          <span class="feel-card__desc">Personal, unfinished-on-purpose, close — like a voice note</span>
+          <span class="feel-card__label">Personal &amp; raw</span>
+          <span class="feel-card__desc">Lo-fi, bedroom pop, singer-songwriter. Made-at-2am energy.</span>
+          <span class="feel-card__eg">think: Clairo, Rex Orange County, Phoebe Bridgers</span>
         </button>
         <button class="feel-card" data-feel="intimate-refined" onclick="selectFeel('intimate-refined')">
-          <span class="feel-card__label">Warm and cinematic</span>
-          <span class="feel-card__desc">Unhurried, warm, quietly premium — like a vinyl sleeve</span>
+          <span class="feel-card__label">Soulful &amp; deep</span>
+          <span class="feel-card__desc">Neo-soul, jazz, cinematic R&amp;B. Music people actually feel.</span>
+          <span class="feel-card__eg">think: Frank Ocean, Jordan Rakei, Solange</span>
         </button>
         <button class="feel-card" data-feel="bold-raw" onclick="selectFeel('bold-raw')">
-          <span class="feel-card__label">Underground and direct</span>
-          <span class="feel-card__desc">High contrast, no softening — like a club flyer</span>
+          <span class="feel-card__label">Hard &amp; underground</span>
+          <span class="feel-card__desc">Drill, grime, techno, garage. No softening. Dark room energy.</span>
+          <span class="feel-card__eg">think: Central Cee, Skepta, Four Tet</span>
         </button>
         <button class="feel-card" data-feel="bold-refined" onclick="selectFeel('bold-refined')">
-          <span class="feel-card__label">Clean and confident</span>
-          <span class="feel-card__desc">Polished, assured — like a festival headliner</span>
+          <span class="feel-card__label">Big &amp; polished</span>
+          <span class="feel-card__desc">Pop, commercial hip-hop, radio R&amp;B. Sounds like it belongs.</span>
+          <span class="feel-card__eg">think: SZA, Doja Cat, Drake</span>
         </button>
       </div>
       <div class="info-chip" style="margin-top:12px;">
         <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><circle cx="7" cy="7" r="6"/><path d="M7 6v4M7 4.5v.5"/></svg>
-        This affects spacing, typography weight, and motion — not just colours. You can change it later.
+        This shapes the fonts, spacing, and motion on your page. Closest counts — you can change it later.
       </div>
 
       <div class="step-nav">
@@ -955,8 +967,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <!-- STEP 3 -->
     <div class="step" id="step3">
       <div class="step-eyebrow">Step 3 of 8</div>
-      <h1 class="step-title">Your<br>colour.</h1>
-      <p class="step-sub">One colour. It runs through your buttons, highlights, and every detail on your page — like a signature.</p>
+      <h1 class="step-title">Pick<br>a colour.</h1>
+      <p class="step-sub">One colour that runs through everything — buttons, links, highlights. Think of it as your signature.</p>
 
       <div class="colour-presets" id="colourGrid"></div>
 
@@ -988,8 +1000,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <!-- STEP 4 -->
     <div class="step" id="step4">
       <div class="step-eyebrow">Step 4 of 8</div>
-      <h1 class="step-title">The<br>look.</h1>
-      <p class="step-sub">Dark, light, glass, or high-contrast — your page, your atmosphere. Switch any time from your dashboard.</p>
+      <h1 class="step-title">Dark or<br>light?</h1>
+      <p class="step-sub">What's the vibe for your page background? You can switch any time — takes two seconds.</p>
 
       <div class="theme-grid" id="themeGrid"></div>
 
@@ -1007,8 +1019,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <!-- STEP 5 -->
     <div class="step" id="step5">
       <div class="step-eyebrow">Step 5 of 8</div>
-      <h1 class="step-title">One thing,<br>front and centre.</h1>
-      <p class="step-sub">This is the <strong style="color:var(--text);">big button</strong> at the top of your page — the first thing every fan sees when they arrive. What do you want them to do right now?</p>
+      <h1 class="step-title">What do you want<br>fans to do?</h1>
+      <p class="step-sub">This is the <strong style="color:var(--text);">big button</strong> at the top — first thing they see. Pick what makes sense right now.</p>
 
       <div class="cta-preview">
         <div class="cta-preview-lbl">Fans will see</div>
@@ -1075,8 +1087,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <!-- STEP 6 — MUSIC -->
     <div class="step" id="step6">
       <div class="step-eyebrow">Step 6 of 8 — optional</div>
-      <h1 class="step-title">Add your<br>music.</h1>
-      <p class="step-sub">Link a track or album and it plays directly on your page — fans don't need to leave to listen. We grab the artwork automatically.</p>
+      <h1 class="step-title">Got music<br>online?</h1>
+      <p class="step-sub">Paste a link and it plays right on your page. Fans don't need to go anywhere. We grab the artwork too.</p>
 
       <div class="music-plat-row" id="musicPlatRow">
         <button class="music-plat-btn on" type="button" data-plat="spotify" onclick="selectMusicPlat(this)" id="platSpotify">
@@ -1170,8 +1182,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <!-- STEP 8 — ACCOUNT -->
     <div class="step" id="step8">
       <div class="step-eyebrow">Step 8 of 8</div>
-      <h1 class="step-title">Save your<br>page.</h1>
-      <p class="step-sub">Your page is already live locally. Create a free account to make it permanent — and to access it from any device.</p>
+      <h1 class="step-title">Last step —<br>save it.</h1>
+      <p class="step-sub">Create a free account and your page goes live properly. Skip for now if you want — we'll keep it here.</p>
 
       <!-- Freelancer toggle -->
       <label class="freelancer-toggle" id="freelancerToggle">
