@@ -1109,6 +1109,23 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
         <p class="field-error-msg" id="iSpotifyImportErr" role="alert"></p>
       </div>
 
+      <!-- Import preview — shown after successful fetch -->
+      <div id="importPreview" style="display:none;">
+        <div class="import-preview">
+          <div class="import-preview__art" id="importPreviewArt"></div>
+          <div>
+            <div class="import-preview__name" id="importPreviewName"></div>
+            <div class="import-preview__meta" id="importPreviewMeta"></div>
+          </div>
+          <div class="import-preview__check">✓</div>
+        </div>
+      </div>
+
+      <div class="import-why" id="importWhy" style="display:none;">
+        <span class="import-why__icon">🔒</span>
+        <span>We only read public data — your name, image, and music. We never get access to your Spotify account.</span>
+      </div>
+
       <div class="step-nav" style="flex-direction:column;gap:10px;">
         <button class="btn-next" id="spotifyImportBtn" onclick="doSpotifyImport()">
           Find me on Spotify →
@@ -1116,6 +1133,10 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
         <button class="btn-skip" onclick="goToStep('step1')">
           Skip — I'll add my music manually →
         </button>
+      </div>
+
+      <div id="importStatus" class="import-status" style="display:none;">
+        <span id="importStatusText">Looking you up…</span>
       </div>
     </div>
 
@@ -1477,11 +1498,104 @@ function setView(v) {
    STEP A — Spotify Import
    ══════════════════════════════════════════════════════ */
 function doSpotifyImport() {
-  const err = document.getElementById('iSpotifyImportErr');
-  if (err) {
-    err.textContent = 'Auto-import coming soon — use the skip link for now.';
-    err.classList.add('show');
+  var inputEl  = document.getElementById('iSpotifyImport');
+  var errEl    = document.getElementById('iSpotifyImportErr');
+  var btnEl    = document.getElementById('spotifyImportBtn');
+  var statusEl = document.getElementById('importStatus');
+  var statusTx = document.getElementById('importStatusText');
+
+  var url = inputEl ? inputEl.value.trim() : '';
+
+  // Clear previous error
+  if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
+
+  // Basic validation
+  if (!url) {
+    if (errEl) { errEl.textContent = 'Paste your Spotify artist URL to continue.'; errEl.classList.add('show'); }
+    if (inputEl) inputEl.focus();
+    return;
   }
+  if (!url.includes('spotify.com/artist/') && !url.includes('spotify:artist:')) {
+    if (errEl) { errEl.textContent = 'That doesn\'t look like a Spotify artist URL. Try opening your Spotify profile and copying the link from the address bar.'; errEl.classList.add('show'); }
+    if (inputEl) inputEl.focus();
+    return;
+  }
+
+  // Loading state
+  if (btnEl)    { btnEl.disabled = true; btnEl.textContent = 'Looking you up…'; }
+  if (statusEl) statusEl.style.display = 'flex';
+  if (statusTx) statusTx.textContent   = 'Connecting to Spotify…';
+
+  var endpoint = '/.netlify/functions/spotify-import?url=' + encodeURIComponent(url);
+
+  fetch(endpoint)
+    .then(function(res) { return res.json().then(function(data) { return { ok: res.ok, status: res.status, data: data }; }); })
+    .then(function(result) {
+      if (!result.ok) {
+        throw new Error(result.data.error || 'Import failed. Try the skip link below.');
+      }
+      var d = result.data;
+
+      // Show preview card
+      var preview     = document.getElementById('importPreview');
+      var previewArt  = document.getElementById('importPreviewArt');
+      var previewName = document.getElementById('importPreviewName');
+      var previewMeta = document.getElementById('importPreviewMeta');
+      var whyEl       = document.getElementById('importWhy');
+
+      if (previewArt)  { previewArt.style.backgroundImage = d.photo ? 'url(' + d.photo + ')' : ''; }
+      if (previewName) previewName.textContent = d.name;
+
+      var metaParts = [];
+      if (d.genres && d.genres.length) metaParts.push(d.genres.slice(0,2).join(' · '));
+      if (d.listeners) metaParts.push((d.listeners / 1000).toFixed(0) + 'k Last.fm listeners');
+      if (previewMeta) previewMeta.textContent = metaParts.join('  ·  ');
+
+      if (preview) preview.style.display = 'block';
+      if (whyEl)   whyEl.style.display   = 'flex';
+      if (statusEl) statusEl.style.display = 'none';
+
+      // Save to draft
+      var importedShows = (d.shows || []).map(function(s) {
+        return { venue: s.venue + (s.city ? ', ' + s.city : ''), date: s.date, ticketUrl: s.ticketUrl, doorsTime: s.time ? s.time.slice(0,5) : '' };
+      });
+
+      saveDraft({
+        name:        d.name,
+        vibe:        d.vibe || '',
+        photo:       d.photo || '',
+        bio:         d.bio   || '',
+        genres:      d.genres || [],
+        spotifyId:   d.spotifyId || '',
+        spotifyUrl:  d.spotifyUrl || '',
+        platforms:   d.platforms || [],
+        ctaPrimary:  d.ctaPrimary  || null,
+        releases:    d.releases    || [],
+        importedShows: importedShows,
+      });
+
+      // Write shows to localStorage for admin to pick up
+      if (importedShows.length) {
+        var existing = [];
+        try { existing = JSON.parse(localStorage.getItem('able_shows') || '[]'); } catch(e) {}
+        // Merge: avoid duplicates by date+venue combo
+        var combined = existing.slice();
+        importedShows.forEach(function(s) {
+          var dup = combined.some(function(e) { return e.date === s.date && e.venue === s.venue; });
+          if (!dup) combined.push(s);
+        });
+        localStorage.setItem('able_shows', JSON.stringify(combined));
+      }
+
+      // Advance to step 1 after brief confirmation moment
+      if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Looks right — let\'s go →'; }
+      btnEl.onclick = function() { goToStep('step1'); };
+    })
+    .catch(function(err) {
+      if (btnEl)    { btnEl.disabled = false; btnEl.textContent = 'Find me on Spotify →'; btnEl.onclick = doSpotifyImport; }
+      if (statusEl) statusEl.style.display = 'none';
+      if (errEl)    { errEl.textContent = err.message || 'Something went wrong. Try again or use the skip link.'; errEl.classList.add('show'); }
+    });
 }
 
 /* ══════════════════════════════════════════════════════
@@ -1491,13 +1605,20 @@ var _v2Accent = '#f4b942';
 var _v2Vibe   = '';
 
 function initStep1() {
-  // Pre-fill name from draft if Spotify import ran
+  // Pre-fill from draft (name, vibe, accent from Spotify import if ran)
   const draft = getDraft();
   const nameEl = document.getElementById('iName');
   if (nameEl && draft.name && !nameEl.value) {
     nameEl.value = draft.name;
     updateMiniPreview();
   }
+
+  // Pre-select vibe from import
+  if (draft.vibe) {
+    const vibeBtn = document.querySelector('.v2-vibe-btn[data-vibe="' + draft.vibe + '"]');
+    if (vibeBtn) selectVibe(draft.vibe, vibeBtn);
+  }
+
   // Default colour swatch selection
   const defaultHex = draft.accent || '#f4b942';
   _v2Accent = defaultHex;
@@ -1631,10 +1752,15 @@ function tryStep3() {
     joinedAt:      Date.now(),
     handle:        slug,
     theme:         'dark',
-    genres:        [],
-    ctaPrimary:    { label: 'Stream Now', url: '' },
+    genres:        draft.genres    || [],
+    photo:         draft.photo     || '',
+    bio:           draft.bio       || '',
+    spotifyId:     draft.spotifyId || '',
+    spotifyUrl:    draft.spotifyUrl|| '',
+    ctaPrimary:    draft.ctaPrimary  || { label: 'Stream Now', url: '' },
     ctaSecondary:  { label: 'Get Tickets', url: '' },
-    platforms:     [],
+    platforms:     draft.platforms || [],
+    releases:      draft.releases  || [],
     identity: {
       accent:       draft.accent || '#f4b942',
       accentSource: 'artist',
