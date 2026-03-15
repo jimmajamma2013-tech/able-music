@@ -4600,6 +4600,191 @@
       #sticky-artist-bar { transition: opacity 300ms var(--ease-standard); transform: translateX(-50%); }
       #sticky-artist-bar.visible { transform: translateX(-50%); }
     }
+
+    /* === EDIT MODE V2 =========================================== */
+
+    /* Hide legacy FAB when new edit mode is active */
+    .edit-active #edit-fab { display: none !important; }
+
+    /* Floating edit/fan-view pill */
+    .edit-pill {
+      position: fixed;
+      bottom: 88px;
+      right: 16px;
+      z-index: 9999;
+      background: #1a1a2e;
+      border-radius: 24px;
+      display: flex;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+      gap: 2px;
+      padding: 3px;
+    }
+    .pill-tab {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      border-radius: 20px;
+    }
+    .pill-tab.active {
+      background: var(--color-accent, #e05242);
+      color: #fff;
+    }
+
+    /* Dashed amber rings on editable zones */
+    .edit-active [data-editable] {
+      outline: 1.5px dashed rgba(244,185,66,0.7);
+      outline-offset: 3px;
+      border-radius: 8px;
+      position: relative;
+      cursor: pointer;
+    }
+    .edit-active [data-editable]::after {
+      content: '\270E';
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: #f4b942;
+      color: #1a1a2e;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 5px;
+      border-radius: 5px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    /* Fan view — strip edit indicators */
+    .fan-view-active [data-editable] {
+      outline: none !important;
+      cursor: default;
+    }
+    .fan-view-active [data-editable]::after { display: none !important; }
+
+    /* Bottom sheet backdrop */
+    .bs-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 2000;
+    }
+    /* Bottom sheet */
+    .bs-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-radius: 16px 16px 0 0;
+      border-top: 1.5px solid #d4cfc8;
+      z-index: 2001;
+      max-height: 85vh;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .bs-sheet:not([hidden]) { transform: translateY(0); }
+    .bs-handle {
+      width: 28px;
+      height: 3px;
+      background: #e0dbd4;
+      border-radius: 2px;
+      margin: 10px auto 0;
+    }
+    .bs-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0ede8;
+    }
+    .bs-icon { font-size: 16px; }
+    .bs-title { font-size: 14px; font-weight: 700; color: #1a1a2e; flex: 1; }
+    .bs-close {
+      background: none;
+      border: none;
+      color: #aaa;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+    .bs-body { padding: 16px; }
+    .bs-field { margin-bottom: 14px; }
+    .bs-field label {
+      display: block;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #bbb;
+      margin-bottom: 5px;
+      font-weight: 700;
+    }
+    .bs-field input, .bs-field textarea {
+      width: 100%;
+      background: #f5f2ee;
+      border: 1.5px solid #e0dbd4;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 14px;
+      color: #1a1a2e;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    .bs-field input:focus, .bs-field textarea:focus {
+      outline: none;
+      border-color: #c4880a;
+    }
+    .bs-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 16px 8px;
+      font-size: 11px;
+    }
+    .bs-saved { color: #1e9650; font-weight: 600; }
+    .bs-preview-btn {
+      background: none;
+      border: none;
+      font-size: 12px;
+      font-weight: 700;
+      color: #f4b942;
+      cursor: pointer;
+      padding: 0;
+    }
+    .bs-actions {
+      display: flex;
+      gap: 10px;
+      padding: 12px 16px;
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+      border-top: 1px solid #f0ede8;
+    }
+    .bs-cancel {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      background: #f5f2ee;
+      border: none;
+      font-size: 14px;
+      font-weight: 700;
+      color: #555;
+      cursor: pointer;
+    }
+    .bs-save-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      background: #1a1a2e;
+      border: none;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -4665,7 +4850,7 @@
            Rendered by renderHero() — shows artwork, name,
            state chip, bio. State machine drives content.
            ====================================================== -->
-      <section class="hero" id="hero" aria-label="Artist hero">
+      <section class="hero" id="hero" aria-label="Artist hero" data-editable="top-card">
         <!-- Artwork placeholder (gradient, shows before image loads) -->
         <div class="hero__artwork-placeholder" id="hero-placeholder" aria-hidden="true"></div>
 
@@ -4770,7 +4955,7 @@
       <!-- ======================================================
            HERO CTAs (max 2)
            ====================================================== -->
-      <div class="hero-ctas" id="hero-ctas">
+      <div class="hero-ctas" id="hero-ctas" data-editable="hero-ctas">
         <a class="btn-primary pressable" id="cta-primary"
            href="#" role="button" hidden>
           Stream Now
@@ -4793,7 +4978,7 @@
            QUICK ACTION PILLS
            Horizontal scroll, max 4 visible + overflow toggle
            ====================================================== -->
-      <section class="pills-section" id="pills-section" aria-label="Also available on" hidden>
+      <section class="pills-section" id="pills-section" aria-label="Also available on" hidden data-editable="link-pills">
         <p class="pills-section__label" aria-hidden="true" hidden></p>
         <div class="pills-track-wrap">
           <div class="pills-track" id="pills-track" role="list"></div>
@@ -4807,7 +4992,7 @@
       <!-- ======================================================
            FAN CAPTURE (screenful 3 — after hero, bio, pills)
            ====================================================== -->
-      <section class="fan-capture" id="fan-capture" aria-labelledby="fan-capture-heading" hidden>
+      <section class="fan-capture" id="fan-capture" aria-labelledby="fan-capture-heading" hidden data-editable="fan-capture">
         <h2 class="fan-capture__heading" id="fan-capture-heading">Stay close.</h2>
         <p class="fan-capture__sub" id="fan-capture-sub">I'll only reach out when something's actually happening.</p>
         <form class="fan-capture__form" id="fan-form" novalidate>
@@ -4938,7 +5123,7 @@
       <!-- ======================================================
            LISTEN SECTION
            ====================================================== -->
-      <section class="content-section content-section--primary" id="listen-section" aria-labelledby="listen-heading" hidden>
+      <section class="content-section content-section--primary" id="listen-section" aria-labelledby="listen-heading" hidden data-editable="music">
         <header class="section-header">
           <h2 class="section-title" id="listen-heading">Listen</h2>
         </header>
@@ -4958,7 +5143,7 @@
       <!-- ======================================================
            SHOWS SECTION
            ====================================================== -->
-      <section class="content-section content-section--primary" id="shows-section" aria-labelledby="shows-heading" hidden>
+      <section class="content-section content-section--primary" id="shows-section" aria-labelledby="shows-heading" hidden data-editable="events">
         <header class="section-header">
           <h2 class="section-title" id="shows-heading">Shows</h2>
         </header>
@@ -4968,7 +5153,7 @@
       <!-- ======================================================
            SNAP CARDS (horizontal scroll)
            ====================================================== -->
-      <section class="snap-cards-section" id="snap-cards-section" aria-label="Updates" hidden>
+      <section class="snap-cards-section" id="snap-cards-section" aria-label="Updates" hidden data-editable="snap-cards">
         <div class="snap-cards-track" id="snap-cards-track"></div>
       </section>
 
@@ -5166,6 +5351,20 @@
        ============================================================ */
 
     // === UTILITY =================================================
+
+    // === EDIT MODE V2 (§6 — URL param + auth gate) ===============
+    const EDIT_MODE = new URLSearchParams(location.search).get('edit') === '1';
+
+    if (EDIT_MODE) {
+      const session = localStorage.getItem('able_session');
+      if (!session) {
+        // No session — don't activate edit mode silently
+        // (redirect to start.html only when backend auth is live; for now just don't activate)
+        document.documentElement.classList.remove('edit-active');
+      } else {
+        document.documentElement.classList.add('edit-active');
+      }
+    }
 
     const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i
 
@@ -9687,6 +9886,183 @@
     })()
   </script>
 
+  <!-- ============================================================
+       EDIT MODE V2 — Floating pill, bottom sheet, zone taps
+       ============================================================ -->
+
+  <!-- Floating Edit / Fan view pill (shown only in edit mode) -->
+  <div class="edit-pill" id="editPill" hidden>
+    <button class="pill-tab active" id="pillEditTab" aria-pressed="true">✎ Edit</button>
+    <button class="pill-tab" id="pillFanTab" aria-pressed="false">👁 Fan view</button>
+  </div>
+
+  <!-- Bottom sheet backdrop -->
+  <div class="bs-backdrop" id="bsBackdrop" hidden></div>
+
+  <!-- Bottom sheet dialog -->
+  <div class="bs-sheet" id="bsSheet" role="dialog" aria-modal="true" aria-label="Edit" hidden>
+    <div class="bs-handle" aria-hidden="true"></div>
+    <div class="bs-header">
+      <span class="bs-icon" id="bsIcon"></span>
+      <span class="bs-title" id="bsTitle"></span>
+      <button class="bs-close" id="bsClose" aria-label="Close">✕</button>
+    </div>
+    <div class="bs-body" id="bsBody"></div>
+    <div class="bs-footer" id="bsFooter">
+      <span class="bs-saved" id="bsSaved" aria-live="polite"></span>
+      <button class="bs-preview-btn" id="bsPreviewBtn" type="button">Fan preview →</button>
+    </div>
+    <div class="bs-actions">
+      <button class="bs-cancel" id="bsCancel">Cancel</button>
+      <button class="bs-save-btn" id="bsSaveBtn">Save</button>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+    /* === EDIT MODE V2 — Pill, bottom sheet, zone taps === */
+    ;(function() {
+
+      // ── Show pill if edit mode is active ──────────────────────
+      if (EDIT_MODE && localStorage.getItem('able_session')) {
+        document.getElementById('editPill').hidden = false;
+      }
+
+      // ── Pill tab switching ─────────────────────────────────────
+      const pillEditTab = document.getElementById('pillEditTab');
+      const pillFanTab  = document.getElementById('pillFanTab');
+
+      if (pillEditTab) {
+        pillEditTab.addEventListener('click', () => {
+          document.documentElement.classList.add('edit-active');
+          document.documentElement.classList.remove('fan-view-active');
+          pillEditTab.classList.add('active');
+          pillFanTab.classList.remove('active');
+          pillEditTab.setAttribute('aria-pressed', 'true');
+          pillFanTab.setAttribute('aria-pressed', 'false');
+        });
+      }
+      if (pillFanTab) {
+        pillFanTab.addEventListener('click', () => {
+          document.documentElement.classList.remove('edit-active');
+          document.documentElement.classList.add('fan-view-active');
+          pillFanTab.classList.add('active');
+          pillEditTab.classList.remove('active');
+          pillFanTab.setAttribute('aria-pressed', 'true');
+          pillEditTab.setAttribute('aria-pressed', 'false');
+        });
+      }
+
+      // ── Bottom sheet open/close ────────────────────────────────
+      let _bsSaveCallback = null;
+
+      function openSheet(icon, title, bodyHTML, onSave) {
+        document.getElementById('bsIcon').textContent = icon;
+        document.getElementById('bsTitle').textContent = title;
+        document.getElementById('bsBody').innerHTML = bodyHTML;
+        document.getElementById('bsSaved').textContent = '';
+        document.getElementById('bsSheet').hidden = false;
+        document.getElementById('bsBackdrop').hidden = false;
+        _bsSaveCallback = onSave || null;
+        // Wire auto-save on blur for text inputs
+        document.querySelectorAll('#bsBody input, #bsBody textarea').forEach(function(inp) {
+          inp.addEventListener('blur', function() {
+            if (_bsSaveCallback) { _bsSaveCallback(); showBsSaved(); }
+          });
+        });
+        document.querySelectorAll('#bsBody input[type="checkbox"], #bsBody input[type="color"]').forEach(function(inp) {
+          inp.addEventListener('change', function() {
+            if (_bsSaveCallback) { _bsSaveCallback(); showBsSaved(); }
+          });
+        });
+      }
+
+      function closeSheet() {
+        document.getElementById('bsSheet').hidden = true;
+        document.getElementById('bsBackdrop').hidden = true;
+        _bsSaveCallback = null;
+      }
+
+      function showBsSaved() {
+        var el = document.getElementById('bsSaved');
+        if (el) { el.textContent = 'Saved \u2713'; setTimeout(function() { el.textContent = ''; }, 2000); }
+      }
+
+      document.getElementById('bsClose').addEventListener('click', closeSheet);
+      document.getElementById('bsCancel').addEventListener('click', closeSheet);
+      document.getElementById('bsBackdrop').addEventListener('click', closeSheet);
+      document.getElementById('bsSaveBtn').addEventListener('click', function() {
+        if (_bsSaveCallback) _bsSaveCallback();
+        showBsSaved();
+      });
+      document.getElementById('bsPreviewBtn').addEventListener('click', function() {
+        closeSheet();
+        if (pillFanTab) pillFanTab.click();
+      });
+
+      // ── Zone tap handler ───────────────────────────────────────
+      if (EDIT_MODE) {
+        document.addEventListener('click', function(e) {
+          if (!document.documentElement.classList.contains('edit-active')) return;
+          var zone = e.target.closest('[data-editable]');
+          if (!zone) return;
+          e.preventDefault();
+          e.stopPropagation();
+          openZoneSheet(zone.dataset.editable);
+        }, true); // capture phase to intercept before other handlers
+      }
+
+      function openZoneSheet(zone) {
+        var profile = {};
+        try { profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}'); } catch(_) {}
+
+        function save(updates) {
+          var p = {};
+          try { p = JSON.parse(localStorage.getItem('able_v3_profile') || '{}'); } catch(_) {}
+          Object.assign(p, updates);
+          localStorage.setItem('able_v3_profile', JSON.stringify(p));
+        }
+
+        function esc(str) {
+          return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        if (zone === 'top-card') {
+          openSheet('\uD83C\uDFA8', 'Top card',
+            '<div class="bs-field"><label>Artist name</label><input id="bsf-name" value="' + esc(profile.name) + '"></div>' +
+            '<div class="bs-field"><label>Tagline</label><input id="bsf-tagline" value="' + esc(profile.tagline) + '" placeholder="Optional one-liner"></div>' +
+            '<div class="bs-field"><label>Accent colour</label><input type="color" id="bsf-accent" value="' + esc(profile.accent || '#e05242') + '"></div>',
+            function() {
+              save({
+                name:    document.getElementById('bsf-name')    ? document.getElementById('bsf-name').value    : profile.name,
+                tagline: document.getElementById('bsf-tagline') ? document.getElementById('bsf-tagline').value : '',
+                accent:  document.getElementById('bsf-accent')  ? document.getElementById('bsf-accent').value  : profile.accent
+              });
+            }
+          );
+        } else if (zone === 'fan-capture') {
+          openSheet('\uD83D\uDCEC', 'Fan sign-up',
+            '<div class="bs-field"><label>Heading</label><input id="bsf-fc-heading" value="' + esc(profile.fanCaptureHeading || 'Stay close.') + '"></div>' +
+            '<div class="bs-field"><label>Sub-copy</label><input id="bsf-fc-sub" value="' + esc(profile.fanCaptureSub || 'No noise. Just the things that matter.') + '"></div>',
+            function() {
+              save({
+                fanCaptureHeading: document.getElementById('bsf-fc-heading') ? document.getElementById('bsf-fc-heading').value : undefined,
+                fanCaptureSub:     document.getElementById('bsf-fc-sub')     ? document.getElementById('bsf-fc-sub').value     : undefined
+              });
+            }
+          );
+        } else {
+          // Generic sheet for other zones
+          var label = zone.replace(/-/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+          openSheet('\u270E', label,
+            '<div style="color:#555;font-size:14px;padding:8px 0;">Tap Save to open the full editor for this section.</div>',
+            null
+          );
+        }
+      }
+
+    })();
+  </script>
 
 </body>
 </html>
