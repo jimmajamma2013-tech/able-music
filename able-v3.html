@@ -21,9 +21,9 @@
     /* ── TOKENS ─────────────────────────────────────────────────── */
     :root {
       /* Colours — ethereal blue base (accent is artist-set) */
-      --color-bg:             #131a2a;
-      --color-card:           #192438;
-      --color-card-raised:    #1f2d45;
+      --color-bg:             #0d0e1a;
+      --color-card:           #12152a;
+      --color-card-raised:    #1a1e35;
       --color-border:         rgba(138,180,206,0.10);
       --color-border-mid:     rgba(138,180,206,0.18);
       --color-accent:         #e05242;
@@ -236,7 +236,7 @@
     .v3-hero {
       position: relative;
       width: 100%;
-      height: 260px;
+      height: 300px;
       overflow: hidden;
       flex-shrink: 0;
       animation: heroFadeIn 0.4s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
@@ -269,8 +269,8 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: 160px;
-      background: linear-gradient(to bottom, transparent 0%, rgba(19,26,42,0.45) 40%, rgba(19,26,42,0.82) 70%, var(--color-bg) 100%);
+      height: 180px;
+      background: linear-gradient(to bottom, transparent 0%, rgba(13,14,26,0.45) 40%, rgba(13,14,26,0.82) 70%, var(--color-bg) 100%);
     }
     /* Artist name overlaid on hero — Metropolis-style gig-poster identity */
     .v3-hero__artist-name {
@@ -623,9 +623,9 @@
     .v3-cta--secondary {
       background: rgba(255,255,255,0.06);
       border: 1px solid var(--color-border-mid);
-      color: rgba(255,255,255,0.65);
+      color: rgba(255,255,255,0.85);
     }
-    .v3-cta--secondary:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); }
+    .v3-cta--secondary:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
     /* ── QUICK ACTION PILLS ──────────────────────────────────────── */
     .v3-pills {
@@ -847,13 +847,17 @@
     .v3-snap-card {
       width: 155px;
       flex-shrink: 0;
-      border-radius: 16px;
+      border-radius: 18px;
       overflow: hidden;
       position: relative;
       height: 196px;
       cursor: pointer;
       border: 1.5px solid var(--color-border);
       transition: transform 0.22s var(--spring), box-shadow 0.22s;
+    }
+    .v3-snap-feed .v3-snap-card:first-child {
+      height: 220px;
+      width: 170px;
     }
     .v3-snap-card:active { transform: scale(0.97); }
     .v3-snap-card.is-active {
@@ -874,7 +878,7 @@
       text-transform: uppercase; color: var(--color-accent); margin-bottom: 4px;
     }
     .v3-snap-card__msg {
-      font-size: 11.5px; font-weight: 600; color: #fff;
+      font-size: 12.5px; font-weight: 600; color: #fff;
       line-height: 1.3; margin-bottom: 9px;
     }
     .v3-snap-card__btn {
@@ -1608,7 +1612,12 @@
     <div class="v3-status-bar">
       <span class="v3-status-bar__time" id="v3Clock">9:41</span>
       <div class="v3-status-bar__icons">
-        <span>●●●</span>
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor" aria-hidden="true">
+          <rect x="0"  y="8"   width="3" height="4"  rx="0.8" opacity="0.35"/>
+          <rect x="4"  y="5.5" width="3" height="6.5" rx="0.8" opacity="0.55"/>
+          <rect x="8"  y="3"   width="3" height="9"  rx="0.8" opacity="0.75"/>
+          <rect x="12" y="0"   width="3" height="12" rx="0.8"/>
+        </svg>
         <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor">
           <rect x="0" y="4" width="3" height="7" rx="1" opacity="0.4"/>
           <rect x="4" y="2.5" width="3" height="8.5" rx="1" opacity="0.6"/>
@@ -2675,6 +2684,22 @@
         root.setAttribute('data-theme', data.theme || 'dark');
       }
 
+      // Glass theme — needs a background image to blur; fallback to accent gradient
+      if ((data.theme || 'dark') === 'glass') {
+        const heroUrl = data.heroImageUrl || data.release?.artworkUrl || '';
+        if (heroUrl) {
+          document.body.style.backgroundImage = `url(${heroUrl})`;
+        } else {
+          const rgb = hexToRgb(data.accent);
+          document.body.style.backgroundImage =
+            `radial-gradient(ellipse at 30% 20%, rgba(${rgb},0.6) 0%, transparent 55%),
+             radial-gradient(ellipse at 70% 80%, rgba(${rgb},0.3) 0%, transparent 45%),
+             linear-gradient(160deg, #050510 0%, #0a0a1a 100%)`;
+        }
+      } else {
+        document.body.style.backgroundImage = '';
+      }
+
       // Page state — drives countdown, CTAs, hero tag
       applyState(computeState(data), data);
 
@@ -2696,11 +2721,21 @@
       const secondary = document.getElementById('v3CtaSecondary');
       if (primary && data.ctaPrimary) {
         primary.textContent = data.ctaPrimary.label;
-        if (data.ctaPrimary.url && data.ctaPrimary.url !== '#') primary.onclick = () => window.open(data.ctaPrimary.url, '_blank');
+        const pUrl = data.ctaPrimary.url;
+        if (pUrl && pUrl !== '#') {
+          primary.onclick = () => { trackClick(primary.textContent.trim(), 'primary_cta'); window.open(pUrl, '_blank'); };
+        } else {
+          primary.onclick = () => trackClick(primary.textContent.trim() + ' (no URL)', 'primary_cta_no_url');
+        }
       }
       if (secondary && data.ctaSecondary) {
         secondary.textContent = data.ctaSecondary.label;
-        if (data.ctaSecondary.url && data.ctaSecondary.url !== '#') secondary.onclick = () => window.open(data.ctaSecondary.url, '_blank');
+        const sUrl = data.ctaSecondary.url;
+        if (sUrl && sUrl !== '#') {
+          secondary.onclick = () => { trackClick(secondary.textContent.trim(), 'secondary_cta'); window.open(sUrl, '_blank'); };
+        } else {
+          secondary.onclick = () => trackClick(secondary.textContent.trim() + ' (no URL)', 'secondary_cta_no_url');
+        }
       }
 
       // Quick-action platform pills — dynamic from data.platforms[]
@@ -2868,6 +2903,11 @@
       const g = parseInt(accentHex.slice(3,5), 16);
       const b = parseInt(accentHex.slice(5,7), 16);
       document.documentElement.style.setProperty('--color-ambient', `rgba(${r},${g},${b},0.18)`);
+      // Desktop body glow dynamically follows the artist's accent colour
+      if (window.innerWidth >= 480) {
+        document.body.style.setProperty('background-image',
+          `radial-gradient(ellipse at 50% 0%, rgba(${r},${g},${b},0.12) 0%, transparent 60%)`);
+      }
     }
     applyAmbientGlow(v3Profile.accent);
 
@@ -3008,6 +3048,7 @@
 
       syncProfile(updated); // async fire-and-forget to Supabase
       applyProfile(updated);
+      initSnapFeed();
       closeAdmin();
     }
 
@@ -3099,60 +3140,111 @@
     });
 
     // ── SNAP FEED ──────────────────────────────────────────────
-    const SNAP_CARDS = [
-      {
-        id: 'release',
-        eyebrow: 'New Release',
-        msg: 'My debut album is out now on all platforms.',
-        cta: 'Stream Now',
-        bg: 'linear-gradient(160deg, rgba(var(--color-accent-rgb),0.9), rgba(0,0,0,0.85))',
-      },
-      {
-        id: 'show',
-        eyebrow: 'Live This Week',
-        msg: 'Catching me at Fabric, London — March 28.',
-        cta: 'Get Tickets',
-        bg: 'linear-gradient(160deg, #1e3a5f, #05080f)',
-      },
-      {
-        id: 'merch',
-        eyebrow: 'Limited Drop',
-        msg: 'New merch just landed. Limited run — won\'t last.',
-        cta: 'Shop Now',
-        bg: 'linear-gradient(160deg, #3a1a08, #080808)',
-      },
-      {
-        id: 'support',
-        eyebrow: 'Support',
-        msg: 'If my music has meant something — thank you.',
-        cta: 'Support me',
-        bg: 'linear-gradient(160deg, #1a0a2a, #05080f)',
-      },
-    ];
-
     function initSnapFeed() {
       const feed = document.getElementById('v3SnapFeed');
       if (!feed) return;
-      const params = new URLSearchParams(window.location.search);
+
+      const data    = safeGet(V3_KEY, V3_DEFAULTS);
+      const params  = new URLSearchParams(window.location.search);
       const activeId = params.get('snap') || params.get('from') || null;
+      const now     = Date.now();
+
+      // Build cards from real profile data
+      const cards = [];
+
+      // Release card — only if there's a real release title
+      const releaseTitle = data.release?.title;
+      if (releaseTitle && releaseTitle !== V3_DEFAULTS.release.title) {
+        const typeLabel = data.release?.type || 'Release';
+        const ctaLabel  = data.ctaPrimary?.label || 'Stream Now';
+        cards.push({
+          id:      'release',
+          eyebrow: typeLabel + ' Out Now',
+          msg:     releaseTitle + ' — out on all platforms.',
+          cta:     ctaLabel,
+          bg:      'linear-gradient(160deg, var(--color-accent) 0%, rgba(0,0,0,0.88) 100%)',
+          url:     data.ctaPrimary?.url || null,
+        });
+      }
+
+      // Show card — only if there are upcoming events
+      const upcoming = (data.events || []).filter(ev => {
+        try { return new Date(ev.date).getTime() > now; } catch(e) { return false; }
+      });
+      if (upcoming.length) {
+        const next = upcoming[0];
+        const dateStr = (() => {
+          try {
+            return new Date(next.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+          } catch(e) { return next.date; }
+        })();
+        cards.push({
+          id:      'show',
+          eyebrow: 'Live',
+          msg:     (next.venue ? next.venue + ', ' : '') + (next.city || '') + ' — ' + dateStr + '.',
+          cta:     next.ticketUrl ? 'Get Tickets' : 'See Shows',
+          bg:      'linear-gradient(160deg, #1e3a5f, #05080f)',
+          url:     next.ticketUrl || null,
+        });
+      }
+
+      // Merch card — only if there are items
+      const merchItems = (data.merch?.items || []).filter(m => m.title);
+      if (merchItems.length) {
+        const newItem = merchItems.find(m => m.badge === 'New') || merchItems[0];
+        cards.push({
+          id:      'merch',
+          eyebrow: newItem.badge === 'New' ? 'New Drop' : 'Merch',
+          msg:     newItem.title + (newItem.badge === 'Limited' ? ' — limited run.' : ' — available now.'),
+          cta:     'Shop Now',
+          bg:      'linear-gradient(160deg, #3a1a08, #080808)',
+          url:     newItem.url || data.merch?.shopUrl || null,
+        });
+      }
+
+      // Support card — only if support is enabled with packs
+      if (data.support?.enabled && (data.support?.packs || []).some(p => p.label)) {
+        const sub = (data.support.packs || []).find(p => p.type === 'subscription');
+        cards.push({
+          id:      'support',
+          eyebrow: 'Support',
+          msg:     sub ? sub.label + ' — ' + sub.description.split('.')[0] + '.' : 'If my music has meant something — thank you.',
+          cta:     sub ? sub.label : 'Support me',
+          bg:      'linear-gradient(160deg, #1a0a2a, #05080f)',
+          url:     sub?.url || null,
+        });
+      }
+
+      // Fallback: show one branded placeholder if no cards built
+      if (!cards.length) {
+        cards.push({
+          id:      'placeholder',
+          eyebrow: 'Coming Soon',
+          msg:     'Updates coming — follow to be first to know.',
+          cta:     'Sign up',
+          bg:      'linear-gradient(160deg, rgba(var(--color-accent-rgb),0.6) 0%, rgba(0,0,0,0.9) 100%)',
+          url:     null,
+        });
+      }
 
       feed.innerHTML = '';
-      SNAP_CARDS.forEach(card => {
+      cards.forEach(card => {
         const el = document.createElement('div');
         el.className = 'v3-snap-card' + (card.id === activeId ? ' is-active' : '');
-        // Use inline CSS var so accent updates apply
-        const bgStyle = card.id === 'release'
-          ? `background: linear-gradient(160deg, var(--color-accent) 0%, rgba(0,0,0,0.88) 100%);`
-          : `background: ${card.bg};`;
         el.innerHTML = `
-          <div class="v3-snap-card__bg" style="${bgStyle}"></div>
+          <div class="v3-snap-card__bg" style="background:${card.bg};"></div>
           <div class="v3-snap-card__overlay"></div>
           <div class="v3-snap-card__content">
             <div class="v3-snap-card__eyebrow">${card.eyebrow}</div>
             <div class="v3-snap-card__msg">${card.msg}</div>
             <button class="v3-snap-card__btn">${card.cta}</button>
           </div>`;
-        // Scroll active card into view
+        if (card.url) {
+          el.querySelector('.v3-snap-card__btn').addEventListener('click', () => {
+            trackClick(card.cta, 'snap');
+            window.open(card.url, '_blank', 'noopener');
+          });
+        }
         if (card.id === activeId) {
           setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }), 300);
         }
@@ -3190,13 +3282,7 @@
       syncClick(label, type, source); // async to Supabase
     }
 
-    // Wire click tracking to CTAs
-    document.getElementById('v3CtaPrimary')?.addEventListener('click', function() {
-      trackClick(this.textContent.trim(), 'primary_cta');
-    });
-    document.getElementById('v3CtaSecondary')?.addEventListener('click', function() {
-      trackClick(this.textContent.trim(), 'secondary_cta');
-    });
+    // CTA click tracking is wired in applyProfile's onclick handlers
     document.querySelectorAll('.v3-pill').forEach(pill => {
       pill.addEventListener('click', function() {
         trackClick(this.textContent.trim(), 'pill');
