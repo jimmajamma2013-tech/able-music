@@ -3936,16 +3936,17 @@ async function autoFillFromUrl(rid, rawUrl) {
   let endpoint = null
   let ytVideoId = null
 
+  const isKnown = /youtube\.com|youtu\.be|spotify\.com|soundcloud\.com|vimeo\.com/.test(url)
+  if (!isKnown) return
+
   if (/youtube\.com|youtu\.be/.test(url)) {
     const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]+)/)
     ytVideoId = m?.[1]
+    // YouTube allows direct CORS; others go via proxy to avoid CORS blocks
     endpoint = `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`
-  } else if (url.includes('spotify.com')) {
-    endpoint = `https://open.spotify.com/oembed?url=${encodeURIComponent(url)}&format=json`
-  } else if (url.includes('soundcloud.com')) {
-    endpoint = `https://soundcloud.com/oembed?url=${encodeURIComponent(url)}&format=json`
-  } else if (url.includes('vimeo.com')) {
-    endpoint = `https://vimeo.com/api/oembed.json?url=${encodeURIComponent(url)}`
+  } else {
+    // Route all other providers through our serverless proxy (no CORS issues)
+    endpoint = `/.netlify/functions/oembed-proxy?url=${encodeURIComponent(url)}`
   }
 
   if (!endpoint) return
@@ -3955,7 +3956,7 @@ async function autoFillFromUrl(rid, rawUrl) {
   if (badge) { badge.textContent = 'Fetching…'; badge.style.display = 'inline-block' }
 
   try {
-    const res = await fetch(endpoint, { mode: 'cors' })
+    const res = await fetch(endpoint)
     if (!res.ok) throw new Error('oembed ' + res.status)
     const meta = await res.json()
 
