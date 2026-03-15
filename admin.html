@@ -254,6 +254,52 @@ body::before {
 .field-textarea { resize:vertical; min-height:72px; line-height:1.5; }
 .field-hint { font-size:11px; color:var(--dash-t3); line-height:1.4; }
 
+/* ── AI SUGGESTIONS ── */
+.ai-trigger {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:4px 10px; border-radius:8px; border:none; cursor:pointer;
+  font-size:11px; font-weight:600; font-family:var(--font);
+  background:rgba(var(--acc-rgb),.12); color:var(--acc);
+  transition:background .14s, opacity .14s;
+}
+.ai-trigger:hover { background:rgba(var(--acc-rgb),.22); }
+.ai-trigger:disabled { opacity:.45; cursor:not-allowed; }
+.ai-trigger__icon { font-size:12px; }
+.ai-suggestions {
+  display:none; flex-direction:column; gap:6px;
+  margin-top:8px; padding:10px; border-radius:10px;
+  background:rgba(var(--acc-rgb),.06); border:1px solid rgba(var(--acc-rgb),.18);
+  animation:fadeInUp .2s ease both;
+}
+.ai-suggestions.show { display:flex; }
+@keyframes fadeInUp {
+  from { opacity:0; transform:translateY(6px); }
+  to   { opacity:1; transform:none; }
+}
+.ai-suggestion-item {
+  display:flex; align-items:flex-start; justify-content:space-between; gap:8px;
+  padding:9px 11px; border-radius:8px; cursor:pointer;
+  background:var(--dash-bg-card); border:1px solid rgba(var(--acc-rgb),.1);
+  font-size:13px; color:var(--dash-text); line-height:1.45;
+  transition:border-color .14s, background .14s;
+}
+.ai-suggestion-item:hover { border-color:var(--acc); background:rgba(var(--acc-rgb),.06); }
+.ai-suggestion-item__use {
+  flex-shrink:0; font-size:10px; font-weight:700; color:var(--acc);
+  padding:3px 7px; border-radius:5px; background:rgba(var(--acc-rgb),.12);
+  white-space:nowrap;
+}
+.ai-suggestion-label {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:6px;
+}
+.ai-suggestion-label span { font-size:10px; color:var(--dash-t3); }
+.ai-suggestion-dismiss {
+  background:none; border:none; cursor:pointer;
+  font-size:12px; color:var(--dash-t3); padding:2px 4px;
+}
+.ai-suggestion-dismiss:hover { color:var(--dash-text); }
+
 /* ── EMBED PREVIEW ── */
 .embed-preview { margin-top:8px; border-radius:12px; overflow:hidden; }
 .embed-preview iframe { display:block; width:100%; border:none; border-radius:12px; }
@@ -2276,7 +2322,11 @@ body::before {
                 <span id="adminBioCount" style="font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;opacity:0;transition:opacity .2s,color .2s;">0 / 120</span>
               </div>
               <textarea class="field-input field-textarea" id="adminBio" placeholder="One honest sentence. Who you are, where you're from, what you make." maxlength="120" oninput="(function(n){var c=document.getElementById('adminBioCount');c.textContent=n+' / 120';var near=n>=80;c.style.opacity=near?'1':'0';c.style.color=n>=110?'#ef4444':n>=80?'#f4b942':'var(--t3)';})(this.value.length)" onblur="saveProfilePage()"></textarea>
-              <div class="field-hint" style="margin-top:4px;">Keep it direct. Fans read it in seconds.</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+                <div class="field-hint">Keep it direct. Fans read it in seconds.</div>
+                <button class="ai-trigger" id="aiBioBtn" type="button" onclick="aiSuggestBio()"><span class="ai-trigger__icon">✦</span>Write with AI</button>
+              </div>
+              <div class="ai-suggestions" id="aiBioSuggestions"></div>
             </div>
           </div>
         </div>
@@ -2284,8 +2334,12 @@ body::before {
           <div class="dc-head"><div class="dc-title">Hero CTAs</div></div>
           <div class="dc-body">
             <div class="field-row">
-              <div class="field-label">Primary label</div>
+              <div class="field-label" style="display:flex;align-items:center;justify-content:space-between;">
+                <span>Primary label</span>
+                <button class="ai-trigger" id="aiCtaBtn" type="button" onclick="aiSuggestCta()"><span class="ai-trigger__icon">✦</span>Suggest</button>
+              </div>
               <input class="field-input" type="text" id="adminCtaPrimaryLabel" placeholder="e.g. Stream Now" maxlength="32">
+              <div class="ai-suggestions" id="aiCtaSuggestions"></div>
             </div>
             <div class="field-row">
               <div class="field-label">Primary link</div>
@@ -5329,6 +5383,99 @@ function wireProfileSave() {
     saveRow.innerHTML = `<button class="tb-btn tb-btn-acc profile-save-btn" onclick="saveProfilePage()" style="width:100%;max-width:300px;">Save profile changes →</button>`;
     profilePage.appendChild(saveRow);
   }
+}
+
+/* ══════════════════════════════════════════════════════
+   AI COPY — bio writer + CTA suggestions + captions
+   ══════════════════════════════════════════════════════ */
+
+function _getArtistContext() {
+  var data = safeLS('able_v3_profile', {});
+  return {
+    artistName: data.name  || '',
+    genre:      data.vibe  || (data.genres && data.genres[0]) || '',
+    bio:        data.bio   || '',
+  };
+}
+
+function _renderSuggestions(containerId, btnId, suggestions, onUse) {
+  var container = document.getElementById(containerId);
+  var btn       = document.getElementById(btnId);
+  if (!container) return;
+
+  if (!suggestions || !suggestions.length) {
+    container.innerHTML = '<div style="font-size:12px;color:var(--dash-t3);padding:4px 0;">No suggestions returned. Try again.</div>';
+    container.classList.add('show');
+    if (btn) { btn.disabled = false; btn.innerHTML = '<span class="ai-trigger__icon">✦</span>Try again'; }
+    return;
+  }
+
+  var html = '<div class="ai-suggestion-label"><span>AI suggestions — pick one or edit freely</span><button class="ai-suggestion-dismiss" onclick="document.getElementById(\'' + containerId + '\').classList.remove(\'show\')">✕</button></div>';
+  suggestions.forEach(function(s, i) {
+    var safe = s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    html += '<div class="ai-suggestion-item" onclick="(function(){' +
+      'var f=function(){' + onUse + '}; f.call({suggestion:' + JSON.stringify(s) + '});' +
+      'document.getElementById(\'' + containerId + '\').classList.remove(\'show\');' +
+      '})()">' +
+      '<span>' + safe + '</span>' +
+      '<span class="ai-suggestion-item__use">Use</span>' +
+      '</div>';
+  });
+
+  container.innerHTML = html;
+  container.classList.add('show');
+  if (btn) { btn.disabled = false; btn.innerHTML = '<span class="ai-trigger__icon">✦</span>Refresh'; }
+}
+
+function _callAiCopy(payload, containerId, btnId, onUse) {
+  var btn = document.getElementById(btnId);
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="ai-trigger__icon">⟳</span>Writing…'; }
+
+  fetch('/.netlify/functions/ai-copy', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.error) throw new Error(data.error);
+    _renderSuggestions(containerId, btnId, data.suggestions, onUse);
+  })
+  .catch(function(err) {
+    var container = document.getElementById(containerId);
+    if (container) {
+      container.innerHTML = '<div style="font-size:12px;color:#ef4444;padding:4px 0;">' + (err.message || 'Could not reach AI. Check your connection.') + '</div>';
+      container.classList.add('show');
+    }
+    if (btn) { btn.disabled = false; btn.innerHTML = '<span class="ai-trigger__icon">✦</span>Try again'; }
+  });
+}
+
+function aiSuggestBio() {
+  var ctx = _getArtistContext();
+  if (!ctx.artistName) { alert('Add your artist name first.'); return; }
+  _callAiCopy(
+    { mode:'bio', artistName:ctx.artistName, genre:ctx.genre, bio:ctx.bio },
+    'aiBioSuggestions', 'aiBioBtn',
+    'var el=document.getElementById("adminBio");if(el){el.value=this.suggestion;el.dispatchEvent(new Event("input"));el.dispatchEvent(new Event("blur"));}saveProfilePage();'
+  );
+}
+
+function aiSuggestCta() {
+  var ctx = _getArtistContext();
+  if (!ctx.artistName) { alert('Add your artist name first.'); return; }
+  // Detect CTA type from current URL
+  var urlEl = document.getElementById('adminCtaPrimaryUrl');
+  var url = urlEl ? urlEl.value.toLowerCase() : '';
+  var ctaType = url.includes('spotify') || url.includes('apple') || url.includes('soundcloud') ? 'stream'
+    : url.includes('ticketmaster') || url.includes('eventbrite') || url.includes('dice') ? 'tickets'
+    : url.includes('shop') || url.includes('merch') || url.includes('bigcartel') ? 'merch'
+    : 'stream';
+  _callAiCopy(
+    { mode:'cta', artistName:ctx.artistName, genre:ctx.genre, bio:ctx.bio, ctaType:ctaType },
+    'aiCtaSuggestions', 'aiCtaBtn',
+    'var el=document.getElementById("adminCtaPrimaryLabel");if(el){el.value=this.suggestion;el.dispatchEvent(new Event("input"));}saveProfilePage();'
+  );
 }
 
 function saveProfilePage() {
