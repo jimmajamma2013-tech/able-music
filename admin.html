@@ -4524,7 +4524,9 @@ function saveMerchShopUrl() {
   const url = document.getElementById('merchShopUrl')?.value || '';
   const data = safeLS(V3_KEY, {});
   const merch = { ...(data.merch||{}), shopUrl: url };
-  setLS(V3_KEY, { ...data, merch });
+  const updated = { ...data, merch };
+  setLS(V3_KEY, updated);
+  syncProfile(updated);
 }
 
 function addMerchItem() {
@@ -4696,7 +4698,9 @@ function saveSupportMeta() {
     title: document.getElementById('supportTitle')?.value.trim() || '',
     intro: document.getElementById('supportIntro')?.value.trim() || '',
   };
-  setLS(V3_KEY, { ...data, support });
+  const updated = { ...data, support };
+  setLS(V3_KEY, updated);
+  syncProfile(updated);
 }
 
 function updateSupportField(id, field, value) {
@@ -5354,6 +5358,7 @@ function downloadQR() {
 
 /* ── PROFILE PAGE SAVE ── */
 /* ── PLATFORM LINKS ── */
+let _platformSyncTimer = null;
 function savePlatformLinks() {
   const data = safeLS(V3_KEY, {});
   const raw = [
@@ -5367,7 +5372,11 @@ function savePlatformLinks() {
   ];
   // Only save platforms that have a URL
   const platforms = raw.filter(p => p.url);
-  setLS(V3_KEY, { ...data, platforms });
+  const updated = { ...data, platforms };
+  setLS(V3_KEY, updated);
+  // Debounce Supabase sync — don't fire on every keystroke
+  clearTimeout(_platformSyncTimer);
+  _platformSyncTimer = setTimeout(() => syncProfile(updated), 1500);
 }
 
 function hydratePlatformFields(data) {
