@@ -7906,6 +7906,23 @@
       cards.forEach(card => {
         if (card.getBoundingClientRect().top >= vBottom) observer.observe(card)
       })
+
+      // I2 — section header fade-in: below-fold headers start dimmed, fade to full on arrival
+      const headers = document.querySelectorAll('.section-header')
+      const headerObserver = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return
+          e.target.style.transition = 'opacity 200ms var(--ease-decel)'
+          e.target.style.opacity = '1'
+          headerObserver.unobserve(e.target)
+        })
+      }, { rootMargin: '0px 0px -20px 0px', threshold: 0.2 })
+
+      headers.forEach(h => {
+        if (h.getBoundingClientRect().top < vBottom) return // already visible, skip
+        h.style.opacity = '0.35'
+        headerObserver.observe(h)
+      })
     }
 
     // --- #5: Skeleton shimmer (on artwork images) ---------------
