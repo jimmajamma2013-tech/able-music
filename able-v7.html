@@ -878,6 +878,18 @@
       .hero__ambient { animation: none; }
     }
 
+    /* Task 5.1 — Bottom ambient colour glow (extracted from artwork) */
+    .hero__ambient-glow {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: radial-gradient(ellipse at center bottom, var(--ambient-colour, rgba(0,0,0,0)) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
     /* C4 — Gig mode activation flash overlay (session-flagged, one-time) */
     @keyframes gig-flash {
       0%   { opacity: 0; }
@@ -1331,6 +1343,10 @@
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
+
+    /* Task 5.2 — CTA class aliases: .hero-cta--primary and .hero-cta--secondary
+       are semantic aliases applied by JS alongside .btn-primary / .btn-secondary.
+       No additional style declarations needed — the btn-* rules handle all styling. */
 
     /* ============================================================
        ABLE v6 — Checkpoint 3: CTA Architecture
@@ -2343,6 +2359,56 @@
     .media-pip__close:hover { background: rgba(255,255,255,0.14); color: #fff; }
     .media-pip__close:active { transform: scale(0.88); background: rgba(255,255,255,0.20); }
 
+    /* === VIDEOS SECTION (Task 5.6) ============================= */
+    .video-entry {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 8px 0;
+      text-decoration: none;
+      color: inherit;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .video-entry:first-child { border-top: none; }
+    .video-thumb-wrap { position: relative; flex-shrink: 0; }
+    .video-thumb {
+      width: 60px;
+      height: 36px;
+      border-radius: 5px;
+      object-fit: cover;
+      background: #1a1a2e;
+      display: block;
+    }
+    .video-thumb-placeholder {
+      width: 60px;
+      height: 36px;
+      border-radius: 5px;
+      background: #1a1a2e;
+      display: block;
+    }
+    .video-play-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.35);
+      border-radius: 5px;
+      color: #fff;
+      font-size: 10px;
+    }
+    .video-info { flex: 1; min-width: 0; padding-top: 2px; }
+    .video-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .video-meta { font-size: 9px; color: var(--color-text-3); }
+
     /* === SHOWS SECTION — event cards =========================== */
     .shows-list {
       display: flex;
@@ -2534,6 +2600,28 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
       opacity: 0.8;
+    }
+
+    /* Task 5.4 — TONIGHT badge (gig state active) */
+    .tonight-badge {
+      display: inline-block;
+      background: #f4b942;
+      color: #1a1a2e;
+      font-size: 9px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 8px;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+      animation: tonight-pulse 1.5s ease-in-out infinite;
+      text-transform: uppercase;
+    }
+    @keyframes tonight-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tonight-badge { animation: none; }
     }
 
     /* === GHOST SKELETON / EMPTY STATES ========================= */
@@ -4550,6 +4638,9 @@
              width="430" height="430"
              crossorigin="anonymous">
 
+        <!-- Ambient colour glow — extracted from artwork bottom pixels -->
+        <div class="hero__ambient-glow" id="heroAmbientGlow" aria-hidden="true"></div>
+
         <!-- Video top card (lazy — poster shown first) -->
         <div class="hero__video" id="hero-video" hidden>
           <img class="hero__video-poster" id="hero-video-poster" alt="" role="presentation">
@@ -4812,6 +4903,16 @@
           <h2 class="section-title" id="listen-heading">Listen</h2>
         </header>
         <div class="releases-list" id="releases-list"></div>
+      </section>
+
+      <!-- ======================================================
+           VIDEOS SECTION (Task 5.6)
+           ====================================================== -->
+      <section class="content-section content-section--primary" id="videos-section" aria-labelledby="videos-heading" hidden>
+        <header class="section-header">
+          <h2 class="section-title" id="videos-heading">Videos</h2>
+        </header>
+        <div id="videos-list"></div>
       </section>
 
       <!-- ======================================================
@@ -5461,16 +5562,23 @@
         let r = 0, g = 0, b = 0
         for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i+1]; b += d[i+2] }
         const n = d.length / 4
-        root.style.setProperty(
-          '--color-ambient',
-          `${Math.round(r/n)},${Math.round(g/n)},${Math.round(b/n)}`
-        )
+        const rr = Math.round(r/n), gg = Math.round(g/n), bb = Math.round(b/n)
+        root.style.setProperty('--color-ambient', `${rr},${gg},${bb}`)
+        // Also drive the bottom ambient-glow element (Task 5.1)
+        const glowEl = document.getElementById('heroAmbientGlow')
+        if (glowEl) glowEl.style.setProperty('--ambient-colour', `rgba(${rr},${gg},${bb},0.6)`)
       } catch (_) {
         // CORS / taint — stays at default 0,0,0. Degrades cleanly.
       }
     }
 
     // === OWNER / TIER HELPERS =====================================
+
+    // Task 5.4 — gig night active check
+    function isGigNightActive() {
+      const expires = localStorage.getItem('able_gig_expires')
+      return expires && parseInt(expires, 10) > Date.now()
+    }
 
     function getIsOwner(profile) {
       return Boolean(localStorage.getItem('able_v3_profile') && profile && profile.name)
@@ -7325,11 +7433,15 @@
       const trustEl = document.getElementById('fan-trust')
       const trustText = variant.trust.replace('{artist}', artistName)
 
-      if (h1) h1.textContent = variant.heading
-      if (h2) h2.textContent = variant.heading
+      if (h1) h1.textContent = profile.fanCaptureHeading || variant.heading
+      if (h2) h2.textContent = profile.fanCaptureHeading || variant.heading
       if (submitLabel) submitLabel.textContent = variant.cta
       if (btn2Span) btn2Span.textContent = variant.cta
       if (trustEl) trustEl.textContent = trustText
+
+      // Task 5.5 — apply artist-customised sub-copy when set
+      const subEl = document.getElementById('fan-capture-sub')
+      if (subEl && profile.fanCaptureSub) subEl.textContent = profile.fanCaptureSub
 
       fc1.dataset.captureState = state
 
@@ -7414,6 +7526,7 @@
               consent: true,
               consentMethod: 'email_field',
               jurisdiction: 'GDPR',
+              confirmed: false,
               double_opted_in: false
             })
             localStorage.setItem('able_fans', JSON.stringify(fans))
@@ -7522,6 +7635,7 @@
               consent: true,
               consentMethod: 'email_field',
               jurisdiction: 'GDPR',
+              confirmed: false,
               double_opted_in: false
             })
             localStorage.setItem('able_fans', JSON.stringify(fans))
@@ -7922,6 +8036,32 @@
 
     // --- Shows section -----------------------------------------
 
+    // Task 5.6 — Videos section
+    function renderVideosSection(videos) {
+      const section = document.getElementById('videos-section')
+      if (!section) return
+      if (!videos || videos.length === 0) { section.hidden = true; return }
+      section.hidden = false
+      const list = document.getElementById('videos-list')
+      if (!list) return
+      list.innerHTML = videos.map(v => {
+        const safeUrl = v.url && isSafeUrl(v.url) ? escHtml(v.url) : '#'
+        const thumbHtml = v.thumbnail
+          ? `<img class="video-thumb" src="${escHtml(v.thumbnail)}" alt="${escHtml(v.title || '')}" loading="lazy">`
+          : `<div class="video-thumb-placeholder"></div>`
+        return `<a class="video-entry" href="${safeUrl}" target="_blank" rel="noopener noreferrer">
+          <div class="video-thumb-wrap">
+            ${thumbHtml}
+            <div class="video-play-overlay" aria-hidden="true">▶</div>
+          </div>
+          <div class="video-info">
+            <div class="video-title">${escHtml(v.title || 'Video')}</div>
+            ${v.duration ? `<div class="video-meta">${escHtml(v.duration)}</div>` : ''}
+          </div>
+        </a>`
+      }).join('')
+    }
+
     function renderShowsSection(profile) {
       const section = document.getElementById('shows-section')
       const list = document.getElementById('shows-list')
@@ -7960,7 +8100,8 @@
       }
 
       list.innerHTML = ''
-      events.forEach(ev => {
+      const gigActive = isGigNightActive()
+      events.forEach((ev, evIdx) => {
         const item = document.createElement('div')
         const hasImage = Boolean(ev.venueImageUrl)
         item.className = 'show-item' + (hasImage ? ' show-item--has-image' : '')
@@ -7968,6 +8109,11 @@
         const date = new Date(ev.date)
         const dayStr = date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
         const timeStr = ev.time || ''
+
+        // Task 5.4: TONIGHT badge on first show when gig night is active
+        const tonightBadge = (gigActive && evIdx === 0)
+          ? `<span class="tonight-badge">TONIGHT</span>`
+          : ''
 
         const safeTicketUrl = ev.ticketUrl && isSafeUrl(ev.ticketUrl) ? escHtml(ev.ticketUrl) : ''
         item.innerHTML = `
@@ -7977,6 +8123,7 @@
             <span class="show-item__day">${date.getDate()}</span>
           </div>
           <div class="show-item__info">
+            ${tonightBadge}
             <p class="show-item__venue">${escHtml(ev.venue || 'TBC')}</p>
             <p class="show-item__city">${escHtml([ev.city, ev.country].filter(Boolean).join(', ') || '')}</p>
             ${timeStr ? `<p class="show-item__time">${escHtml(timeStr)}</p>` : ''}
@@ -8858,6 +9005,7 @@
       // Render all content sections first, then apply visibility + ordering
       renderFanCapture(profile)
       renderListenSection(profile)
+      renderVideosSection(profile.videos || [])
       renderShowsSection(profile)
       renderSnapCards(profile)
       renderMerchSection(profile)
