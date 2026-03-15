@@ -2602,7 +2602,8 @@
       min-height: 44px;
       display: inline-flex;
       align-items: center;
-      transition: background 0.15s, border-color 0.15s;
+      transition: background var(--dur-fast) var(--ease-standard),
+                  border-color var(--dur-fast) var(--ease-standard);
     }
     .section-empty__action:hover {
       background: rgba(var(--color-accent-rgb), 0.18);
@@ -2708,6 +2709,12 @@
     .wm-cell:nth-child(7n) { border-right: none; }
 
     .wm-cell--empty { cursor: default; }
+
+    @media (hover: hover) and (pointer: fine) {
+      .wm-cell:not(.wm-cell--empty):hover {
+        background: rgba(var(--color-accent-rgb), 0.08);
+      }
+    }
     .wm-cell--past .wm-date-num { opacity: 0.35; }
     .wm-cell--past .wm-dot { opacity: 0.40; }
     .wm-cell--today .wm-date-num {
