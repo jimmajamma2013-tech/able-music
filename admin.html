@@ -2870,27 +2870,36 @@ function getArtistId() {
 
 async function syncProfile(data) {
   if (!sb) return;
+  // able_shows is a separate localStorage key — include it in the upsert
+  const shows = JSON.parse(localStorage.getItem('able_shows') || '[]');
   try {
     await sb.from('profiles').upsert({
-      id:             getArtistId(),
-      name:           data.name           || null,
-      handle:         data.handle         || null,
-      bio:            data.bio            || null,
-      location:       data.location       || null,
-      accent:         data.accent         || '#e05242',
-      theme:          data.theme          || 'dark',
-      vibe:           data.vibe           || 'indie',
-      hero_tag:       data.heroTag        || null,
-      page_state:     data.pageState      || 'profile',
-      state_override: data.stateOverride  || null,
-      release_date:   data.releaseDate    || null,
-      release_json:   data.release        ? JSON.stringify(data.release)      : null,
-      cta_primary:    data.ctaPrimary     ? JSON.stringify(data.ctaPrimary)   : null,
-      cta_secondary:  data.ctaSecondary   ? JSON.stringify(data.ctaSecondary) : null,
-      top_card:       data.topCard        ? JSON.stringify(data.topCard)      : null,
-      platforms:      data.platforms      ? JSON.stringify(data.platforms)    : null,
-      identity:       data.identity       ? JSON.stringify(data.identity)     : null,
-      updated_at:     Date.now(),
+      id:                 getArtistId(),
+      name:               data.name              || null,
+      handle:             data.handle            || null,
+      bio:                data.bio               || null,
+      location:           data.location          || null,
+      accent:             data.accent            || '#e05242',
+      theme:              data.theme             || 'dark',
+      vibe:               data.vibe              || 'indie',
+      hero_tag:           data.heroTag           || null,
+      page_state:         data.pageState         || 'profile',
+      state_override:     data.stateOverride     || null,
+      release_date:       data.releaseDate       || null,
+      release_json:       data.release           ? JSON.stringify(data.release)           : null,
+      cta_primary:        data.ctaPrimary        ? JSON.stringify(data.ctaPrimary)        : null,
+      cta_secondary:      data.ctaSecondary      ? JSON.stringify(data.ctaSecondary)      : null,
+      top_card:           data.topCard           ? JSON.stringify(data.topCard)           : null,
+      platforms:          data.platforms         ? JSON.stringify(data.platforms)         : null,
+      identity:           data.identity          ? JSON.stringify(data.identity)          : null,
+      releases:           data.releases          ? JSON.stringify(data.releases)          : null,
+      events:             data.events            ? JSON.stringify(data.events)            : null,
+      merch:              data.merch             ? JSON.stringify(data.merch)             : null,
+      support:            data.support           ? JSON.stringify(data.support)           : null,
+      section_visibility: data.sectionVisibility ? JSON.stringify(data.sectionVisibility) : null,
+      snap_cards:         data.snapCards         ? JSON.stringify(data.snapCards)         : null,
+      shows:              shows.length           ? JSON.stringify(shows)                  : null,
+      updated_at:         Date.now(),
     }, { onConflict: 'id' });
   } catch(e) {}
 }
