@@ -7568,6 +7568,24 @@
           created_at: Date.now(),
         }, { onConflict: 'profile_id,email', ignoreDuplicates: true })
       } catch (_) {}
+
+      // Send confirmation email (fire-and-forget)
+      try {
+        var profile = {}
+        try { profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}') } catch(_) {}
+        fetch('/.netlify/functions/fan-confirmation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fanEmail:      email,
+            artistName:    profile.name    || '',
+            artistSlug:    profile.slug    || profile.handle || '',
+            campaignState: (typeof computeState === 'function' ? computeState(profile) : profile.stateOverride) || 'profile',
+            accentHex:     profile.accent  || '#f4b942',
+            releaseTitle:  profile.releaseName || profile.releaseTitle || '',
+          }),
+        }).catch(function() {}) // never throw
+      } catch(_) {}
     }
 
     async function sbSyncClick(label, type, source) {
