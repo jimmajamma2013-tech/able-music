@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0d0e1a">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data: blob:; media-src *; frame-src https://open.spotify.com https://w.soundcloud.com https://www.youtube.com https://bandcamp.com https://embed.music.apple.com; connect-src 'self' https:;">
-  <title>ABLE — v7</title>
+  <title>ABLE</title>
 
   <!-- Preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3556,15 +3556,27 @@
       display: flex;
       align-items: center;
       gap: var(--sp-4);
-      padding: var(--sp-4) 0;
+      padding: var(--sp-4) var(--sp-3);
+      margin: 0 calc(-1 * var(--sp-3));
       border-bottom: 1px solid var(--color-border);
+      border-radius: var(--r-sm);
       text-decoration: none;
       color: inherit;
-      transition: opacity var(--dur-fast) var(--ease-standard);
+      transition: background-color var(--dur-fast) var(--ease-standard);
     }
 
     .rec-item:last-child { border-bottom: none; }
-    .rec-item:hover { opacity: 0.72; }
+    .rec-item:hover,
+    .rec-item:focus-visible {
+      background: rgba(var(--color-accent-rgb, 224,82,66), 0.05);
+    }
+    .rec-item:hover .rec-item__name {
+      color: var(--color-accent);
+    }
+    .rec-item:hover .rec-item__arrow {
+      transform: translateX(3px);
+      color: var(--color-accent);
+    }
 
     .rec-item__avatar {
       width: 48px;
@@ -3599,6 +3611,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      transition: color var(--dur-fast) var(--ease-standard);
     }
 
     .rec-item__note {
@@ -3614,6 +3627,8 @@
       flex-shrink: 0;
       color: var(--color-text-2);
       font-size: var(--text-base);
+      transition: transform var(--dur-fast) var(--ease-spring),
+                  color var(--dur-fast) var(--ease-standard);
     }
 
     /* === FOOTER ================================================ */
@@ -4413,7 +4428,7 @@
         <p class="bio-strip__text" id="bio-text"></p>
         <button class="bio-strip__more pressable" id="bio-more"
                 aria-expanded="false" aria-controls="bio-text" hidden>
-          More
+          Read more
         </button>
       </section>
 
@@ -4438,7 +4453,7 @@
         <span class="countdown__sep" aria-hidden="true">:</span>
         <div class="countdown__unit">
           <span class="countdown__num" id="cd-secs">00</span>
-          <span class="countdown__label">Sec</span>
+          <span class="countdown__label">Secs</span>
         </div>
       </div>
 
@@ -4515,7 +4530,7 @@
         <p class="fan-capture__trust" id="fan-trust">Just <span id="fan-artist-name">the artist</span>. No spam.</p>
         <div class="fan-capture__echo" id="fan-echo" hidden>
           <p class="fan-capture__echo-text" id="fan-echo-text"></p>
-          <p class="fan-capture__echo-confirm">Check your email to confirm.</p>
+          <p class="fan-capture__echo-confirm">You're on the list.</p>
         </div>
       </section>
 
