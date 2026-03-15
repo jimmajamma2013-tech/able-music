@@ -697,9 +697,12 @@
     .hero {
       position: relative;
       width: 100%;
-      /* Cinematic ratio — headlining poster energy */
+      /* Cinematic ratio — headlining poster energy.
+         Capped at 58svh so bio+CTAs always appear above fold on any phone.
+         iPhone SE (375×667): 58svh ≈ 387px — leaves ~280px for content.
+         iPhone 14 (390×844): 58svh ≈ 490px — still editorial, more breathing room. */
       aspect-ratio: 3 / 4;
-      max-height: 560px;
+      max-height: min(560px, 58svh);
       overflow: hidden;
       flex-shrink: 0;
       background-color: #0a0a0a;
@@ -1000,6 +1003,9 @@
       line-height: var(--lh-tight);
       color: #ffffff;
       text-shadow: 0 2px 4px rgba(0,0,0,0.7), 0 8px 40px rgba(0,0,0,0.65), 0 20px 80px rgba(0,0,0,0.4);
+      /* Prevent very long artist names from overflowing the hero on narrow screens */
+      word-break: break-word;
+      overflow-wrap: anywhere;
       /* Reveal animation (interaction #3) — fires after fonts.ready */
       opacity: 0;
       transform: translateY(12px);
@@ -1292,7 +1298,7 @@
     }
 
     .pills-section__label {
-      font-size: 9px;
+      font-size: 10px; /* 9px is below accessible threshold; 10px minimum */
       font-weight: 600;
       letter-spacing: 0.22em;
       text-transform: uppercase;
@@ -1387,6 +1393,15 @@
       height: 26px;
     }
 
+    /* Pill label: ellipsis for long names on narrow screens (e.g. "SoundCloud" at 320px) */
+    .pill__label {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+
     /* Glass tile */
     [data-theme="glass"] .pill {
       background-color: rgba(255,255,255,0.07);
@@ -1453,9 +1468,14 @@
       padding: var(--sp-10) var(--sp-5) var(--sp-6);
     }
 
-    /* Primary sections (Listen, Shows) breathe more */
+    /* Primary sections (Listen, Shows) breathe more.
+       Desktop-equivalent breathing room; tightened on narrow phones below. */
     .content-section--primary {
       padding-top: calc(var(--sp-10) + var(--sp-6));
+    }
+    @media (max-width: 390px) {
+      .content-section--primary { padding-top: var(--sp-10); }
+      .content-section { padding-top: var(--sp-8); }
     }
 
     /* Secondary sections (Merch, Support) step back — tighter, quieter */
@@ -1584,13 +1604,21 @@
       border: 1.5px solid var(--color-border);
       border-radius: var(--r-md);
       font-family: var(--font-body);
-      font-size: var(--text-base);
+      /* iOS Safari zooms the viewport on any input with font-size < 16px.
+         16px prevents the zoom; renders the same visually as 15px body. */
+      font-size: 16px;
       color: var(--color-text);
       outline: none;
       transition: border-color var(--dur-fast) var(--ease-standard),
                   box-shadow var(--dur-fast) var(--ease-standard),
                   background-color var(--dur-slow) var(--ease-standard); /* #16: paste flash fades 400ms */
       -webkit-appearance: none;
+    }
+
+    /* Stack input + button vertically on very narrow viewports (iPhone SE width) */
+    @media (max-width: 360px) {
+      .fan-capture__field-wrap { flex-direction: column; }
+      .fan-capture__btn { width: 100%; }
     }
 
     .fan-capture__input::placeholder {
@@ -1709,7 +1737,9 @@
       transform: scale(1.03);
     }
 
-    /* Play overlay — centred on artwork, appears on hover or always visible */
+    /* Play overlay — centred on artwork, appears on hover or always visible.
+       On touch: always slightly visible (opacity 0.55) so tap affordance is clear.
+       On mouse hover: full opacity. No hover capability on touch → use @media hover. */
     .release-card__play-overlay {
       position: absolute;
       inset: 0;
@@ -1717,12 +1747,16 @@
       align-items: center;
       justify-content: center;
       background: rgba(0,0,0,0.28);
-      opacity: 0;
+      opacity: 0.55;   /* Touch-default: always show play indicator */
       transition: opacity var(--dur-fast) var(--ease-standard);
       cursor: pointer;
       border: none;
       width: 100%;
       padding: 0;
+    }
+    /* On pointer-capable devices, hide until hover (restores desktop behaviour) */
+    @media (hover: hover) and (pointer: fine) {
+      .release-card__play-overlay { opacity: 0; }
     }
 
     .release-card__play-overlay svg {
