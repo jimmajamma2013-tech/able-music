@@ -51,7 +51,7 @@ The fan doesn't know or care what ABLE is. They clicked a link. They should feel
 - "Your list. Not Spotify's." — they understand what they signed up for
 
 ### 1.3 Freelancer journey
-`freelancer-start.html` → `freelancer.html` → admin variant (shared admin.html, profileType flag)
+`freelancer-start.html` → `freelancer.html` → admin variant (shared admin.html, freelancer layers activated)
 
 Discovered via credits on artist release cards. A credit with an ABLE handle becomes a live link. A credit without one is plain text. That asymmetry is the entire acquisition mechanic.
 
@@ -392,7 +392,7 @@ The confirmation must be one tap from the notification. "Did you produce '[Track
 
 ### 8.3 Freelancer profile architecture (`freelancer.html`)
 
-Same design system, tokens, and themes as artist profile. `profileType: 'freelancer'` flag disables: campaign states, fan capture, snap cards, gig mode, top card campaign.
+Same design system, tokens, and themes as artist profile. One profile model with activated layers — no `profileType` flag. Freelancer layer disables: campaign states, fan capture, snap cards, gig mode, top card campaign. Artist layer disables: credits hero, portfolio, rate card, booking sheet. Both profile types managed via shared admin.html with context-appropriate sections shown/hidden per activated layer. (Per PROFESSIONAL_ECOSYSTEM_SPEC.md — supersedes FREELANCER_SPEC.md.)
 
 **Tab bar (freelancer-specific):**
 Home · Credits · Work · Rates · Contact
@@ -525,7 +525,7 @@ All localStorage keys map 1:1 to Supabase table rows. No renaming.
 
 ### 11.3 Freelancer profile type
 
-Same admin.html, `profileType: 'freelancer'` flag. Artist sections disabled for freelancer profiles. Not a separate admin page.
+**One profile, activated layers** (PROFESSIONAL_ECOSYSTEM_SPEC.md). No hard `profileType` enum. A user can have artist layers, freelancer layers, or both active simultaneously. Admin.html shows context-appropriate sections per which layers are active. Not a separate admin page — same codebase, sections toggled.
 
 ### 11.4 Directory — post-v8
 
@@ -582,7 +582,7 @@ Ordered by impact on user story score × build complexity. High-impact, lower-co
 
 10. **freelancer-start.html**: 4-step onboarding wizard with credit import step. Share on completion.
 
-11. **freelancer.html**: Credits hero, portfolio, rate card, booking enquiry sheet. `profileType: 'freelancer'` in shared admin.
+11. **freelancer.html**: Credits hero, portfolio, rate card, booking enquiry sheet. Freelancer layers activated in shared admin — one profile model.
 
 ### Phase 4 — Scale features
 
@@ -700,7 +700,7 @@ The build is shippable when:
 - [ ] Cold-start: 2–3 suggested artists shown immediately after sign-up
 
 **Freelancer:**
-- [ ] `freelancer.html` exists and renders from `profileType: 'freelancer'`
+- [ ] `freelancer.html` exists and renders with freelancer layers activated (one profile model)
 - [ ] Credits display with confirmed/unconfirmed visual treatment
 - [ ] Booking enquiry bottom sheet (4 fields, no marketplace signals)
 - [ ] Peer-confirm notification + one-tap confirm
