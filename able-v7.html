@@ -2294,6 +2294,8 @@
       transition: background 0.15s;
     }
     .media-pip__expand:hover { background: rgba(255,255,255,0.12); }
+    /* B18 — icon-only: more prominent press state than label buttons */
+    .media-pip__expand:active { transform: scale(0.88); background: rgba(255,255,255,0.18); }
     .media-pip__title {
       font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.55);
       flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -2306,6 +2308,7 @@
       flex-shrink: 0; font-family: var(--font-body); transition: background 0.15s;
     }
     .media-pip__close:hover { background: rgba(255,255,255,0.14); color: #fff; }
+    .media-pip__close:active { transform: scale(0.88); background: rgba(255,255,255,0.20); }
 
     /* === SHOWS SECTION — event cards =========================== */
     .shows-list {
@@ -3570,6 +3573,8 @@
     }
     #edit-fab.visible { display: flex; }
     #edit-fab:hover   { background: rgba(var(--color-accent-rgb), 0.3); transform: scale(1.05); }
+    /* B18 — icon-only FAB gets prominent press scale */
+    #edit-fab:active  { background: rgba(var(--color-accent-rgb), 0.40); transform: scale(0.92); }
 
     /* ── Edit FAB first-visit hint ───────────────────────────────── */
     #edit-fab-hint {
@@ -4065,11 +4070,12 @@
     .merch-item__image:not(.img-loaded),
     .snap-card__image:not(.img-loaded) {
       opacity: 0;
+      /* F15 — accent-tinted shimmer: artist colour bleeds into the loading placeholder */
       background: linear-gradient(
         90deg,
-        var(--color-surface) 25%,
-        var(--color-card-raised) 50%,
-        var(--color-surface) 75%
+        var(--color-surface) 20%,
+        color-mix(in srgb, var(--color-surface) 82%, var(--color-accent) 18%) 50%,
+        var(--color-surface) 80%
       );
       background-size: 200% 100%;
       animation: shimmer 1.5s ease-in-out infinite;
