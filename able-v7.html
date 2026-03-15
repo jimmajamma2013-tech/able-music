@@ -7573,7 +7573,7 @@
             artistSlug:    profile.slug    || profile.handle || '',
             campaignState: (typeof computeState === 'function' ? computeState(profile) : profile.stateOverride) || 'profile',
             accentHex:     profile.accent  || '#f4b942',
-            releaseTitle:  profile.releaseName || profile.releaseTitle || '',
+            releaseTitle:  profile.release?.title || profile.releaseName || profile.releaseTitle || '',
           }),
         }).catch(function() {}) // never throw
       } catch(_) {}
