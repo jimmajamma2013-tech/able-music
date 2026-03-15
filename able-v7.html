@@ -2992,7 +2992,8 @@
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       width: 100%;
-      scroll-snap-type: x proximity;
+      /* A15 — mandatory snap so cards always land cleanly (not proximity) */
+      scroll-snap-type: x mandatory;
       overscroll-behavior-x: contain;
     }
 
@@ -4245,7 +4246,7 @@
 
         <!-- Artwork image — LCP element, eager + high priority -->
         <img class="hero__artwork" id="hero-artwork"
-             alt="" role="presentation" fetchpriority="high"
+             alt="" role="presentation" loading="eager" fetchpriority="high"
              width="430" height="430"
              crossorigin="anonymous">
 
@@ -6940,6 +6941,14 @@
               const check = submitBtn.querySelector('.fan-submit-check')
               if (spinner) spinner.hidden = true
               if (check) check.hidden = false
+              // G2 — visual haptic: scale pop on success (threshold moment only)
+              submitBtn.style.transition = 'transform 80ms ease-out'
+              submitBtn.style.transform = 'scale(0.95)'
+              requestAnimationFrame(() => requestAnimationFrame(() => {
+                submitBtn.style.transition = `transform var(--dur-fast) var(--ease-spring)`
+                submitBtn.style.transform = 'scale(1.05)'
+                setTimeout(() => { submitBtn.style.transform = 'scale(1)' }, 120)
+              }))
             }
 
             // After brief pause, show echo state
