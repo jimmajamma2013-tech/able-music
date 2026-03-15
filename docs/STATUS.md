@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-15 (session 3) | Update this file at the end of every session.**
+**Updated: 2026-03-15 (session 4) | Update this file at the end of every session.**
 
 ---
 
@@ -45,6 +45,12 @@
 - [x] Section ordering + visibility system
 - [x] Owner-aware mode (edit bar, placeholder states vs fan view)
 - [x] Made with ABLE footer + referral slug
+- [x] Support note copy — explicit "0% ABLE cut, Stripe fee only" (§10 compliance)
+- [x] Copy compliance: snap card lock overlay — removed "Unlock" (banned word)
+- [x] C7 gig badge glow pulse confirmed (badge-glow-pulse keyframe on .hero__state-chip--gig::after)
+- [x] D15 platform pill first-load shimmer confirmed (session-flagged, .pill-shimmer-once)
+- [x] prefers-reduced-motion CSS throughout confirmed
+- [x] touch-action: manipulation on * confirmed
 
 ### admin.html (Artist Dashboard)
 - [x] Campaign HQ (page state control)
@@ -62,6 +68,10 @@
 - [x] Your World moments panel
 - [x] §9.1 moment 2 — pre-release trial nudge card (session-flagged, dismissible)
 - [x] §9.1 moment 3 — gig mode trial nudge card (session-flagged, dismissible)
+- [x] Copy compliance: fan cap CTA — removed "Upgrade to keep growing" (banned), direct artist-voice copy
+- [x] Copy compliance: pre-release nudge — removed "unlocks" (banned word)
+- [x] Copy compliance: export empty state — removed "get started" (banned phrase)
+- [x] "0% taken by ABLE. Stripe standard fee only" in support setup flow confirmed (§10)
 
 ### start.html (Onboarding Wizard)
 - [x] Pre-step 0: Spotify/music link import
@@ -71,6 +81,7 @@
 - [x] Guided identity system (feel selection, AI vibe match)
 - [x] Live preview phone (Reel slot, snap cards, music, merch)
 - [x] E10 progress bar spring easing (--spring, 0.55s)
+- [x] Copy compliance: wizard step 0 message — removed "Let's get started" → "A few details first"
 
 ### landing.html
 - [x] Marketing landing page
@@ -79,6 +90,10 @@
 - [x] FAQ
 - [x] Links correctly to able-v7.html
 - [x] Auth button fixed: magic link "Sign in →" (removed incorrect Google OAuth button)
+- [x] "Most popular" badge removed from Artist pricing card (explicitly forbidden by LANDING.md)
+- [x] Google OAuth hero button removed — ABLE uses magic link only (§2.7); unused CSS cleaned up
+- [x] Copy compliance: free tier CTA — "Get started free" → "Your page is free →"
+- [x] Copy compliance: FAQ — removed "convert" (banned word)
 
 ---
 
@@ -107,6 +122,15 @@
 *(Add issues here as they are discovered)*
 
 ---
+
+## Last session summary (session 4)
+Full spec compliance audit across all 4 active files against V6_BUILD_AUTHORITY.md, COPY_AND_DESIGN_PHILOSOPHY.md, LANDING.md, and V5_RESEARCH_ADDENDUM.md. 6 commits:
+- landing.html: removed "Most popular" badge from Artist pricing card (LANDING.md explicit rule)
+- able-v7.html: support note rewritten — explicit "0% ABLE cut, Stripe fee only" per §10
+- admin.html: fan cap CTA — "Upgrade to keep growing" removed, direct artist-voice copy
+- all files: copy sweep — removed "unlock", "get started", "convert", "unlocks" across all active files
+- landing.html: FAQ "convert" removed, rewritten in ABLE voice
+- landing.html: Google OAuth hero button removed entirely (§2.7 magic link only); unused CSS cleaned up
 
 ## Last session summary (session 3)
 - admin.html: §9.1 moment 2 — pre-release trial nudge card (launches when future release date saved)
