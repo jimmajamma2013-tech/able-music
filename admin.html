@@ -1683,6 +1683,19 @@ body::before {
   padding: 4px 8px;
 }
 .admin-sheet-body { padding: 16px; }
+.btn-save-show {
+  margin-top: 16px;
+  width: 100%;
+  padding: 12px;
+  background: var(--dash-shell);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+}
 
 /* Elements used inside admin sheet body */
 .fan-detail-header {
@@ -2929,7 +2942,7 @@ function renderFanList(filter) {
     const src = normaliseSource(f.source);
     const matchFilter = _activeFanFilter === 'all' || src === _activeFanFilter;
     const matchSearch = !search || (f.email || '').toLowerCase().includes(search);
-    return matchFilter && matchSearch;
+    return matchFilter && matchSearch && f.confirmed !== false;
   });
 
   // Stats (on confirmed fans only)
@@ -3108,13 +3121,17 @@ function showPage(id) {
   window.scrollTo(0,0);
   // Render dynamic pages on navigate
   if (id === 'music')     renderAdminMusic();
-  if (id === 'events')    { initGigToggle(); renderShowsList(); renderAdminEvents(); }
+  if (id === 'events')    { initGigToggle(); renderShowsList(); }
   if (id === 'merch')     renderAdminMerch();
   if (id === 'support')   renderAdminSupport();
   if (id === 'snaps')     renderSnapCardsList();
   if (id === 'connect')   renderRecsList();
   if (id === 'analytics') { loadRealStats(); loadActivityFeed(); }
   if (id === 'fans') {
+    _activeFanFilter = 'all';
+    document.querySelectorAll('#fansFilterPills .filter-pill').forEach(p => {
+      p.classList.toggle('active', p.dataset.filter === 'all');
+    });
     renderFanList();
     // Wire filter pills (guard against double-wiring)
     const pillsContainer = document.getElementById('fansFilterPills');
@@ -3241,13 +3258,22 @@ function openAddShowSheet() {
     const saveBtn = document.createElement('button');
     saveBtn.className = 'btn-save-show';
     saveBtn.textContent = 'Save show';
-    saveBtn.style.cssText = 'margin-top:16px;width:100%;padding:12px;background:var(--dash-shell);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);';
     saveBtn.addEventListener('click', () => {
       const venue = document.getElementById('showVenue')?.value.trim();
       const date = document.getElementById('showDate')?.value;
       const doorsTime = document.getElementById('showDoorsTime')?.value;
       const ticketUrl = document.getElementById('showTicketUrl')?.value.trim();
-      if (!venue || !date) { alert('Venue and date are required.'); return; }
+      if (!venue || !date) {
+        let errEl = sheetBody.querySelector('.sheet-error');
+        if (!errEl) {
+          errEl = document.createElement('p');
+          errEl.className = 'sheet-error';
+          errEl.style.cssText = 'color:var(--dash-red);font-size:12px;margin:0 0 8px;';
+          sheetBody.insertBefore(errEl, sheetBody.querySelector('.btn-save-show'));
+        }
+        errEl.textContent = 'Venue and date are required.';
+        return;
+      }
       const shows = JSON.parse(localStorage.getItem('able_shows') || '[]');
       shows.push({ venue, date, doorsTime, ticketUrl, featured: false });
       shows.sort((a, b) => a.date.localeCompare(b.date));
@@ -4700,20 +4726,6 @@ function loadRealStats() {
       set('fanStatTopSource', topSrc[0]);
       set('fanStatTopSourceCount', topSrc[1] + ' fan' + (topSrc[1] !== 1 ? 's' : ''));
     }
-  }
-
-  // Fan cap progress bar (§9.1) — show once first fan signs up
-  const CAP = 100;
-  const capBar = document.getElementById('fanCapBar');
-  const capFill = document.getElementById('fanCapFill');
-  const capLabel = document.getElementById('fanCapLabel');
-  const capMsg = document.getElementById('fanCapMsg');
-  if (capBar && fansTotal > 0) {
-    capBar.style.display = 'block';
-    const pct = Math.min(fansTotal / CAP * 100, 100);
-    if (capFill) capFill.style.width = pct + '%';
-    if (capLabel) capLabel.textContent = fansTotal + ' of ' + CAP + ' fans';
-    if (capMsg) capMsg.style.display = fansTotal >= 95 ? 'block' : 'none';
   }
 
   // §9.1 moment 4 — "it's working" card: show when click data first arrives
