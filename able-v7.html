@@ -6754,6 +6754,8 @@
               email,
               ts: Date.now(),
               source: signupSource,
+              consent: true,
+              consentMethod: 'email_field',
               double_opted_in: false
             })
             localStorage.setItem('able_fans', JSON.stringify(fans))
@@ -6837,6 +6839,8 @@
               email,
               ts: Date.now(),
               source: signup2Source,
+              consent: true,
+              consentMethod: 'email_field',
               double_opted_in: false
             })
             localStorage.setItem('able_fans', JSON.stringify(fans))
@@ -6857,6 +6861,10 @@
           emailInput2.addEventListener('input', function() {
             this.classList.remove('error')
             this.style.animation = ''
+          })
+          emailInput2.addEventListener('paste', function() {
+            this.classList.add('paste-flash')
+            setTimeout(() => this.classList.remove('paste-flash'), 500)
           })
         }
       }
