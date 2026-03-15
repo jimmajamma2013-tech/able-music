@@ -4625,6 +4625,8 @@
 
     // === UTILITY =================================================
 
+    const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i
+
     function escHtml(str) {
       return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
     }
@@ -5589,7 +5591,7 @@
       if (submitEl && emailEl) {
         submitEl.addEventListener('click', function() {
           var email = emailEl.value.trim()
-          if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          if (!email || !EMAIL_RX.test(email)) {
             emailEl.style.borderColor = 'var(--color-state-pre)'
             emailEl.focus()
             return
@@ -6710,8 +6712,7 @@
           const email = emailInput ? emailInput.value.trim() : ''
 
           // Validate
-          const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-          if (!emailRx.test(email)) {
+          if (!EMAIL_RX.test(email)) {
             if (emailInput) {
               emailInput.classList.add('error')
               emailInput.setAttribute('aria-invalid', 'true')
@@ -6722,7 +6723,7 @@
               }, { once: true })
             }
             if (errorEl) {
-              errorEl.textContent = "That doesn't look like a valid email."
+              errorEl.textContent = "Check your email address."
               errorEl.hidden = false
             }
             return
@@ -6818,8 +6819,7 @@
           e.preventDefault()
           const emailInput = document.getElementById('fan-email-2')
           const email = emailInput ? emailInput.value.trim() : ''
-          const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-          if (!emailRx.test(email)) {
+          if (!EMAIL_RX.test(email)) {
             if (emailInput) {
               emailInput.classList.add('error')
               emailInput.style.animation = 'shake 0.4s ease-out'
@@ -7309,6 +7309,9 @@
               <strong>Unlimited updates</strong><br>Share more with your fans on Artist plan.
             </span>`
           overlay.addEventListener('click', () => window.open('admin.html', '_self'))
+          overlay.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.open('admin.html', '_self') }
+          })
           wrapper.appendChild(blurred)
           wrapper.appendChild(overlay)
           track.appendChild(wrapper)
@@ -7766,6 +7769,7 @@
           border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
           pointer-events: none;
           z-index: 9999;
+          will-change: transform;
           animation: confetti-fly 800ms cubic-bezier(0.25,0.46,0.45,0.94) forwards;
           --cx: ${x}px;
           --cy: ${y}px;
@@ -8501,10 +8505,6 @@
             }
           }
         })
-      }
-
-      function escHtml(str) {
-        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
       }
 
       // ── Focus trap helpers ────────────────────────────────────────
