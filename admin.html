@@ -1215,6 +1215,16 @@ body::before {
       <div class="frc-progress"><div class="frc-progress-fill" id="frcProgress" style="width:0%"></div></div>
     </div>
 
+    <!-- §9.1 moment 4 — "it's working" gentle inline prompt (appears when first click data arrives) -->
+    <div id="itsWorkingCard" style="display:none;margin-bottom:20px;padding:14px 18px;border-radius:14px;background:rgba(var(--acc-rgb),.08);border:1px solid rgba(var(--acc-rgb),.2);display:flex;align-items:center;gap:12px;">
+      <div style="font-size:18px;line-height:1;flex-shrink:0;">↗</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;" id="itsWorkingCopy">It's working.</div>
+        <div style="font-size:11px;color:var(--t2);line-height:1.45;">People are tapping your links. See the full picture in <button style="background:none;border:none;padding:0;font-size:11px;font-weight:600;color:var(--acc);cursor:pointer;font-family:var(--font);" onclick="showPage('analytics')">Analytics →</button></div>
+      </div>
+      <button style="background:none;border:none;padding:0;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;flex-shrink:0;" onclick="this.closest('#itsWorkingCard').style.display='none';sessionStorage.setItem('_itsWorkingDismissed','1');" aria-label="Dismiss">×</button>
+    </div>
+
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-label">Page views</div>
@@ -3554,6 +3564,22 @@ function loadRealStats() {
     if (capFill) capFill.style.width = pct + '%';
     if (capLabel) capLabel.textContent = fansTotal + ' of ' + CAP + ' fans';
     if (capMsg) capMsg.style.display = fansTotal >= 95 ? 'block' : 'none';
+  }
+
+  // §9.1 moment 4 — "it's working" card: show when click data first arrives
+  const itsWorking = document.getElementById('itsWorkingCard');
+  const itsWorkingCopy = document.getElementById('itsWorkingCopy');
+  if (itsWorking && clicksTotal > 0 && !sessionStorage.getItem('_itsWorkingDismissed')) {
+    // Find the top clicked label for personalised copy
+    const _counts = {};
+    clicks.forEach(c => { _counts[c.label] = (_counts[c.label] || 0) + 1; });
+    const _top = Object.entries(_counts).sort((a, b) => b[1] - a[1])[0];
+    if (itsWorkingCopy && _top) {
+      itsWorkingCopy.textContent = `${_top[1]} ${_top[1] === 1 ? 'person' : 'people'} tapped your ${_top[0]} link.`;
+    } else if (itsWorkingCopy) {
+      itsWorkingCopy.textContent = `${clicksTotal} link ${clicksTotal === 1 ? 'tap' : 'taps'} so far. It's working.`;
+    }
+    itsWorking.style.display = 'flex';
   }
 
   // §9.1 moment 5 — broadcast lock overlay: personalise with real fan count
