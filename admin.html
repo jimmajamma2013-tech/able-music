@@ -667,7 +667,7 @@ body::before {
   height: 100%;
   border-radius: 100px;
   background: linear-gradient(90deg, #f46442, #f4b942);
-  transition: width 60s linear;
+  transition: width 1s linear;
 }
 .gig-countdown-label {
   display: none;
@@ -2912,6 +2912,9 @@ if (sb) {
       // Sync whatever profile is in localStorage up to Supabase under the real user ID
       const stored = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
       if (stored.name) syncProfile(stored);
+      // Sync any fans accumulated before auth
+      const fans = JSON.parse(localStorage.getItem('able_fans') || '[]');
+      if (fans.length) syncFans(fans);
     }
   });
 }
@@ -3772,8 +3775,11 @@ function tickGigCountdown(exp) {
     if (fill) fill.style.width = pct + '%';
     const hrs = Math.floor(remaining / 3600000);
     const mins = Math.floor((remaining % 3600000) / 60000);
+    const secs = Math.floor((remaining % 60000) / 1000);
     if (label) label.textContent = remaining > 0
-      ? hrs > 0 ? `${hrs}h ${mins}m remaining` : `${mins} min remaining`
+      ? hrs > 0 ? `${hrs}h ${mins}m remaining`
+        : mins > 0 ? `${mins}m ${secs}s remaining`
+        : `${secs}s remaining`
       : 'Gig mode expired';
     if (remaining <= 0) {
       clearGigCountdown();
@@ -3781,7 +3787,7 @@ function tickGigCountdown(exp) {
     }
   }
   tick();
-  _gigCountdownInterval = setInterval(tick, 60000);
+  _gigCountdownInterval = setInterval(tick, 1000);
 }
 function clearGigCountdown() {
   if (_gigCountdownInterval) { clearInterval(_gigCountdownInterval); _gigCountdownInterval = null; }
@@ -4715,6 +4721,7 @@ function saveCloseCircle() {
   const intro    = document.getElementById('ccIntro')?.value.trim() || '';
   data.closeCircle = { enabled, currency, monthlyAmount: amount, introText: intro };
   setLS(V3_KEY, data);
+  syncProfile(data);
 }
 
 /* ── REAL STATS FROM LOCALSTORAGE ── */
@@ -5203,6 +5210,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   renderFanList();
   renderFanSupportPacksSummary();
+  // Sync any fans in localStorage to Supabase (fire-and-forget)
+  const _storedFans = JSON.parse(localStorage.getItem(FANS_KEY) || '[]');
+  if (_storedFans.length) syncFans(_storedFans);
   initCampaignHQ();
   loadRealStats();
   loadActivityFeed();
@@ -5269,7 +5279,9 @@ function previewArtwork(url) {
 function saveSlug(raw) {
   const slug = raw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   const data = safeLS(V3_KEY, {});
-  setLS(V3_KEY, { ...data, handle: slug });
+  const updated = { ...data, handle: slug };
+  setLS(V3_KEY, updated);
+  syncProfile(updated);
   updateSlugPreview(slug);
   // Keep sidebar URL in sync
   const sbUrl = document.getElementById('sbUrl');
@@ -5615,6 +5627,7 @@ function moveSectionOrder(sectionId, dir) {
   ;[order[idx], order[swapIdx]] = [order[swapIdx], order[idx]]
   profile.sectionOrder = order
   localStorage.setItem(V3_KEY, JSON.stringify(profile))
+  syncProfile(profile)
   renderSectionOrder()
 }
 
@@ -5637,6 +5650,7 @@ function toggleSectionVis(btn) {
     localStorage.setItem(V3_KEY, JSON.stringify(profile))
   }
 
+  syncProfile(profile)
   renderSectionOrder()
 }
 
