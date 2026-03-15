@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data:; connect-src 'self' https:;">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="theme-color" content="#0f1624">
 <title>ABLE — Get Started</title>
 <meta name="description" content="Set up your ABLE artist page in minutes. Free.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,10 +63,12 @@ body::before {
   border-bottom:1px solid var(--border);
 }
 .logo {
+  display:flex; align-items:center; gap:9px;
+}
+.logo-type {
   font-family:var(--font-d);
-  font-size:18px; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
-  color:var(--acc);
-  transition:color .3s;
+  font-size:18px; font-weight:700; letter-spacing:.08em;
+  color:var(--text);
 }
 .step-indicator { font-size:12px; font-weight:500; color:var(--t2); letter-spacing:.04em; }
 
@@ -101,6 +104,8 @@ body::before {
   animation:stepIn .38s var(--ease) both;
 }
 .step.active { display:flex; }
+.stage { display:none; flex-direction:column; width:100%; }
+.stage.active { display:flex; animation:stepIn .32s var(--ease) both; }
 @keyframes stepIn {
   from { opacity:0; transform:translateY(22px); }
   to   { opacity:1; transform:none; }
@@ -403,6 +408,37 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   cursor:pointer; transition:all .18s; background:none; font-family:var(--font);
 }
 .btn-skip:hover { color:var(--text); border-color:var(--bm); }
+
+/* ── IMPORT STEP (pre-step 0) ── */
+.import-input-wrap { position:relative; margin-bottom:16px; }
+.import-input { font-size:14px; padding:14px 16px; }
+.import-status {
+  margin-top:8px; font-size:12px; color:var(--acc); display:flex;
+  align-items:center; gap:6px;
+}
+.import-preview {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 14px; margin-top:10px;
+  background:var(--card); border:1.5px solid rgba(var(--acc-rgb),.3);
+  border-radius:12px; animation:stepIn .3s var(--spring) both;
+}
+.import-preview__art {
+  width:44px; height:44px; border-radius:8px; flex-shrink:0;
+  background:linear-gradient(135deg,var(--acc),rgba(var(--acc-rgb),.4));
+  background-size:cover; background-position:center;
+}
+.import-preview__name { font-size:14px; font-weight:700; color:var(--text); }
+.import-preview__meta { font-size:11px; color:var(--t2); margin-top:2px; }
+.import-preview__check {
+  margin-left:auto; color:var(--acc); font-size:18px; font-weight:700;
+}
+.import-why {
+  display:flex; align-items:flex-start; gap:8px;
+  padding:12px 14px; background:rgba(var(--acc-rgb),.06);
+  border-radius:10px; font-size:12px; color:var(--t2); line-height:1.55;
+  margin-bottom:20px;
+}
+.import-why__icon { color:var(--acc); flex-shrink:0; font-size:13px; margin-top:1px; }
 
 /* Auth step */
 .auth-options { display:flex; flex-direction:column; gap:10px; margin:20px 0 4px; }
@@ -868,7 +904,13 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 <a href="#layout" style="position:absolute;top:-100%;left:8px;z-index:9999;background:var(--card);color:var(--text);padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:2px solid var(--acc);transition:top .15s" onfocus="this.style.top='8px'" onblur="this.style.top='-100%'">Skip to content</a>
 
 <header class="header">
-  <div class="logo" id="logoEl">ABLE</div>
+  <div class="logo" id="logoEl">
+    <svg width="6" height="20" viewBox="0 0 24 90" fill="none" aria-hidden="true">
+      <rect x="4" y="2" width="16" height="64" fill="#e4dfd2"/>
+      <rect x="4" y="66" width="16" height="20" fill="#c9b76c"/>
+    </svg>
+    <span class="logo-type">ABLE</span>
+  </div>
   <div class="step-indicator" id="stepInd">Step 1 of 8</div>
 </header>
 
@@ -887,92 +929,161 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   <div class="form-side" style="position:relative;">
   <canvas id="confettiCanvas"></canvas>
 
-    <!-- STEP 1 -->
-    <div class="step active" id="step1">
-      <div class="step-eyebrow">Step 1 of 8</div>
-      <h1 class="step-title">Let's start<br>with you.</h1>
-      <p class="step-sub">What do you go by? Your page builds as you fill this in — hit Preview up top to see it.</p>
+    <!-- STEP 0 — IMPORT -->
+    <div class="step active" id="step0">
+      <div class="step-eyebrow">Let's get you set up</div>
+      <h1 class="step-title">Where does<br>your music live?</h1>
+      <p class="step-sub">Paste a link and we'll fill in your name, bio, and look automatically. Takes about 10 seconds.</p>
 
-      <div class="field">
-        <label class="field-label" for="iName">What do people call you?</label>
-        <input class="field-input" type="text" id="iName" placeholder="e.g. Nova, Jamie Reeves, MYLA…" autocomplete="off" autofocus>
-        <div class="field-hint">Use whatever name you release music under — this goes at the top of your page.</div>
-        <p class="field-error-msg" id="iNameErr" role="alert">Enter your artist name to continue.</p>
+      <div class="import-input-wrap" id="importWrap">
+        <input class="field-input import-input" type="url" id="iImportUrl"
+          placeholder="open.spotify.com/artist/… or soundcloud.com/… or youtu.be/…"
+          autocomplete="off" spellcheck="false"
+          oninput="onImportInput(this.value)">
+        <div class="import-status" id="importStatus" hidden></div>
+        <div class="import-preview" id="importPreview" hidden>
+          <div class="import-preview__art" id="importArt"></div>
+          <div>
+            <div class="import-preview__name" id="importName"></div>
+            <div class="import-preview__meta" id="importMeta"></div>
+          </div>
+          <div class="import-preview__check">✓</div>
+        </div>
       </div>
 
-      <div class="field">
-        <label class="field-label">Your vibe</label>
+      <div class="import-why">
+        <span class="import-why__icon">✦</span>
+        We pull your artist name, suggest a bio, and pick a colour from your artwork — you just review and adjust.
+      </div>
+
+      <div class="step-nav" style="flex-direction:column;gap:10px;">
+        <button class="btn-next" id="importBtn" onclick="doImport()" disabled>
+          Fill it in for me →
+        </button>
+        <button class="btn-skip" onclick="skipImport()">
+          I'll fill it in myself →
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="step" id="step1">
+
+      <!-- ── Stage 1a: Name ── -->
+      <div class="stage active" id="stage1a">
+        <div class="step-eyebrow">Step 1 of 8</div>
+        <h1 class="step-title">What do people<br>call you?</h1>
+        <p class="step-sub">Use whatever name you release music under — it goes at the top of your page.</p>
+        <div class="field">
+          <input class="field-input" type="text" id="iName" placeholder="e.g. Nova, Jamie Reeves, MYLA…" autocomplete="off" autofocus>
+          <p class="field-error-msg" id="iNameErr" role="alert">Enter your artist name to continue.</p>
+        </div>
+        <div class="step-nav">
+          <button class="btn-next" onclick="tryStage1a()">Continue →</button>
+        </div>
+      </div>
+
+      <!-- ── Stage 1b: Vibe ── -->
+      <div class="stage" id="stage1b">
+        <div class="step-eyebrow">Step 1 of 8</div>
+        <h1 class="step-title">What's your<br>sound?</h1>
+        <p class="step-sub">Pick the closest one. Your page adapts the moment you tap.</p>
         <div class="vibe-grid" id="vibeGrid"></div>
         <input type="hidden" id="iGenre">
-      </div>
-
-      <div class="field">
-        <label class="field-label" for="iBio">One sentence about you <span class="opt">optional</span></label>
-        <input class="field-input" type="text" id="iBio" placeholder="e.g. Making lo-fi beats in my bedroom in Manchester." maxlength="80">
-        <div class="field-hint">Sits under your name. One real detail beats five adjectives every time.</div>
-        <button class="how-to-btn" type="button" onclick="toggleHowTo('bioTip','bioTipBtn')" id="bioTipBtn" aria-expanded="false">
-          💡 What makes a good bio?<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" width="9" height="9"><path d="M1.5 3l3.5 3.5L8.5 3"/></svg>
-        </button>
-        <div class="how-to-guide" id="bioTip" hidden>
-          <div class="how-to-steps">
-            <div class="how-to-step"><span class="how-to-num">→</span><span><strong>"Making lo-fi beats from my bedroom in Manchester."</strong> — specific. Works.</span></div>
-            <div class="how-to-step"><span class="how-to-num">→</span><span><strong>"Genre-blending artist pushing boundaries."</strong> — vague. Skip it.</span></div>
-            <div class="how-to-step"><span class="how-to-num">→</span><span>One real detail beats five adjectives every time. A city, a mood, a fact.</span></div>
-          </div>
-          <div class="how-to-note">You can always hit the <strong>Help me write this</strong> button below if you're stuck.</div>
-        </div>
-        <button class="ai-btn" type="button" id="aiBioBtn" onclick="openBioHelper()">
-          <span class="ai-btn__spark">✦</span> Help me write this
-        </button>
-        <div class="ai-panel" id="aiBioPanel">
-          <div class="ai-panel__header">
-            <span class="ai-panel__title">✦ Bio helper</span>
-            <button class="ai-panel__close" onclick="closeBioHelper()" aria-label="Close bio helper">×</button>
-          </div>
-          <div class="ai-draft ai-draft--loading" id="aiBioDraft">Generating…</div>
-          <div class="ai-refine-pills" aria-label="Refine options">
-            <button class="ai-refine-pill" type="button" onclick="refineBio('shorter')">Shorter</button>
-            <button class="ai-refine-pill" type="button" onclick="refineBio('warmer')">Warmer</button>
-            <button class="ai-refine-pill" type="button" onclick="refineBio('direct')">More direct</button>
-            <button class="ai-refine-pill" type="button" onclick="refineBio('editorial')">More editorial</button>
-          </div>
-          <div class="ai-actions">
-            <button class="ai-regen" type="button" onclick="generateBio()">↺ Try again</button>
-            <button class="ai-use" type="button" id="aiBioUse" onclick="useBioDraft()" disabled>Use this →</button>
-          </div>
+        <div class="step-nav">
+          <button class="btn-back" onclick="goStage('1a')">← Back</button>
+          <button class="btn-next" onclick="goStage('1c')">Continue →</button>
         </div>
       </div>
 
-      <div class="field">
-        <label class="field-label" for="iLocation">Where are you based? <span class="opt">optional</span></label>
-        <input class="field-input" type="text" id="iLocation" placeholder="e.g. London, Berlin, Atlanta…" maxlength="40" autocomplete="off">
-        <div class="field-hint">Shows up next to your sound on your page. Fans from the same city love this.</div>
-      </div>
-
-      <div class="field">
-        <label class="field-label" for="iSpotify">Are you on Spotify? <span class="opt">paste your link here — or skip it</span></label>
-        <input class="field-input" type="url" id="iSpotify" placeholder="Paste your Spotify link here…" autocomplete="off">
-        <div class="field-hint">Your music plays directly on your page — fans don't need to open another app.</div>
-        <button class="how-to-btn" type="button" onclick="toggleHowTo('spotifyGuide','spotifyGuideBtn')" id="spotifyGuideBtn" aria-expanded="false">
-          <span>📱 How do I get my Spotify link?</span>
-          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M2 4l4 4 4-4"/></svg>
-        </button>
-        <div class="how-to-guide" id="spotifyGuide" hidden>
-          <div class="how-to-steps">
-            <div class="how-to-step"><span class="how-to-num">1</span><span>Open <strong>Spotify</strong> on your phone</span></div>
-            <div class="how-to-step"><span class="how-to-num">2</span><span>Tap <strong>Search</strong> at the bottom, then search your own artist name</span></div>
-            <div class="how-to-step"><span class="how-to-num">3</span><span>Tap on <strong>your artist profile</strong> — it'll have your photo on it</span></div>
-            <div class="how-to-step"><span class="how-to-num">4</span><span>Tap the <strong>three dots ···</strong> in the top right corner</span></div>
-            <div class="how-to-step"><span class="how-to-num">5</span><span>Tap <strong>Share</strong> → tap <strong>Copy link</strong></span></div>
-            <div class="how-to-step"><span class="how-to-num">6</span><span>Come back here and paste it into the box above</span></div>
+      <!-- ── Stage 1c: Bio ── -->
+      <div class="stage" id="stage1c">
+        <div class="step-eyebrow">Step 1 of 8</div>
+        <h1 class="step-title">One sentence<br>about you.</h1>
+        <p class="step-sub">Optional. One real detail beats five adjectives — a city, a mood, a fact.</p>
+        <div class="field">
+          <input class="field-input" type="text" id="iBio" placeholder="e.g. Making lo-fi beats in my bedroom in Manchester." maxlength="80">
+          <button class="how-to-btn" type="button" onclick="toggleHowTo('bioTip','bioTipBtn')" id="bioTipBtn" aria-expanded="false">
+            💡 What makes a good one?<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" width="9" height="9"><path d="M1.5 3l3.5 3.5L8.5 3"/></svg>
+          </button>
+          <div class="how-to-guide" id="bioTip" hidden>
+            <div class="how-to-steps">
+              <div class="how-to-step"><span class="how-to-num">→</span><span><strong>"Making lo-fi beats from my bedroom in Manchester."</strong> — specific. Works.</span></div>
+              <div class="how-to-step"><span class="how-to-num">→</span><span><strong>"Genre-blending artist pushing boundaries."</strong> — vague. Skip it.</span></div>
+              <div class="how-to-step"><span class="how-to-num">→</span><span>A city, a mood, a fact. Anything real.</span></div>
+            </div>
           </div>
-          <div class="how-to-note"><strong>Works with YouTube and SoundCloud too.</strong> Just paste whatever link you have — we'll grab the artwork and track info automatically. Not on Spotify? No problem — skip this and add music links from your dashboard instead.</div>
+          <button class="ai-btn" type="button" id="aiBioBtn" onclick="openBioHelper()">
+            <span class="ai-btn__spark">✦</span> Help me write this
+          </button>
+          <div class="ai-panel" id="aiBioPanel">
+            <div class="ai-panel__header">
+              <span class="ai-panel__title">✦ Bio helper</span>
+              <button class="ai-panel__close" onclick="closeBioHelper()" aria-label="Close bio helper">×</button>
+            </div>
+            <div class="ai-draft ai-draft--loading" id="aiBioDraft">Generating…</div>
+            <div class="ai-refine-pills" aria-label="Refine options">
+              <button class="ai-refine-pill" type="button" onclick="refineBio('shorter')">Shorter</button>
+              <button class="ai-refine-pill" type="button" onclick="refineBio('warmer')">Warmer</button>
+              <button class="ai-refine-pill" type="button" onclick="refineBio('direct')">More direct</button>
+              <button class="ai-refine-pill" type="button" onclick="refineBio('editorial')">More editorial</button>
+            </div>
+            <div class="ai-actions">
+              <button class="ai-regen" type="button" onclick="generateBio()">↺ Try again</button>
+              <button class="ai-use" type="button" id="aiBioUse" onclick="useBioDraft()" disabled>Use this →</button>
+            </div>
+          </div>
+        </div>
+        <div class="step-nav">
+          <button class="btn-back" onclick="goStage('1b')">← Back</button>
+          <button class="btn-skip" onclick="goStage('1d')">Skip</button>
+          <button class="btn-next" onclick="goStage('1d')">Continue →</button>
         </div>
       </div>
 
-      <div class="step-nav">
-        <button class="btn-next" onclick="tryStep1()">Continue →</button>
+      <!-- ── Stage 1d: Location ── -->
+      <div class="stage" id="stage1d">
+        <div class="step-eyebrow">Step 1 of 8</div>
+        <h1 class="step-title">Where are<br>you based?</h1>
+        <p class="step-sub">Optional. Shows up on your page — fans from the same city notice it.</p>
+        <div class="field">
+          <input class="field-input" type="text" id="iLocation" placeholder="e.g. London, Berlin, Atlanta…" maxlength="40" autocomplete="off">
+        </div>
+        <div class="step-nav">
+          <button class="btn-back" onclick="goStage('1c')">← Back</button>
+          <button class="btn-skip" onclick="goStage('1e')">Skip</button>
+          <button class="btn-next" onclick="goStage('1e')">Continue →</button>
+        </div>
       </div>
+
+      <!-- ── Stage 1e: Spotify ── -->
+      <div class="stage" id="stage1e">
+        <div class="step-eyebrow">Step 1 of 8</div>
+        <h1 class="step-title">Are you on<br>Spotify?</h1>
+        <p class="step-sub">Optional. Paste your link and your music plays directly on your page — no app switching needed.</p>
+        <div class="field">
+          <input class="field-input" type="url" id="iSpotify" placeholder="Paste your Spotify link…" autocomplete="off">
+          <button class="how-to-btn" type="button" onclick="toggleHowTo('spotifyGuide','spotifyGuideBtn')" id="spotifyGuideBtn" aria-expanded="false">
+            <span>📱 How do I find my link?</span>
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M2 4l4 4 4-4"/></svg>
+          </button>
+          <div class="how-to-guide" id="spotifyGuide" hidden>
+            <div class="how-to-steps">
+              <div class="how-to-step"><span class="how-to-num">1</span><span>Open <strong>Spotify</strong> on your phone</span></div>
+              <div class="how-to-step"><span class="how-to-num">2</span><span>Search your own artist name, tap your profile</span></div>
+              <div class="how-to-step"><span class="how-to-num">3</span><span>Tap <strong>···</strong> → <strong>Share</strong> → <strong>Copy link</strong></span></div>
+              <div class="how-to-step"><span class="how-to-num">4</span><span>Paste it above</span></div>
+            </div>
+            <div class="how-to-note"><strong>YouTube and SoundCloud work too.</strong> Not on streaming yet? Skip — you can add links from your dashboard.</div>
+          </div>
+        </div>
+        <div class="step-nav">
+          <button class="btn-back" onclick="goStage('1d')">← Back</button>
+          <button class="btn-skip" onclick="goStep(2)">Skip →</button>
+          <button class="btn-next" onclick="goStep(2)">Continue →</button>
+        </div>
+      </div>
+
     </div>
 
     <!-- STEP 2 — FEEL -->
@@ -1537,7 +1648,16 @@ function isSafeUrl(url) {
 }
 
 /* ── STEP NAV ── */
-function tryStep1() {
+function goStage(id) {
+  document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('stage' + id);
+  if (!el) return;
+  el.classList.add('active');
+  const inp = el.querySelector('input:not([type=hidden])');
+  if (inp) setTimeout(() => inp.focus(), 50);
+}
+
+function tryStage1a() {
   const nameVal = document.getElementById('iName').value.trim();
   const input   = document.getElementById('iName');
   const err     = document.getElementById('iNameErr');
@@ -1549,8 +1669,10 @@ function tryStep1() {
   }
   input.classList.remove('field-error');
   err.classList.remove('show');
-  goStep(2);
+  goStage('1b');
 }
+
+function tryStep1() { tryStage1a(); }
 
 function selectFeel(feel) {
   P.feel = feel;
@@ -1589,6 +1711,106 @@ function tryStep5() {
     secUrlInput.classList.remove('field-error');
   }
   goStep(6); // continue to content steps
+}
+
+// === STEP 0: IMPORT (pre-step) ==============================
+let importData = {};
+
+function onImportInput(val) {
+  const btn = document.getElementById('importBtn');
+  const isUrl = val.startsWith('http') || val.includes('spotify.com') ||
+    val.includes('soundcloud.com') || val.includes('youtu');
+  btn.disabled = !isUrl;
+  document.getElementById('importPreview').hidden = true;
+  document.getElementById('importStatus').hidden = true;
+}
+
+async function doImport() {
+  const url = document.getElementById('iImportUrl').value.trim();
+  const status = document.getElementById('importStatus');
+  const preview = document.getElementById('importPreview');
+  status.hidden = false;
+  status.textContent = '⟳ Fetching your music…';
+  const btn = document.getElementById('importBtn');
+  btn.disabled = true;
+
+  try {
+    if (url.includes('spotify.com')) {
+      const oembed = await fetch(
+        'https://open.spotify.com/oembed?url=' + encodeURIComponent(url)
+      ).then(r => r.json());
+      // Spotify oEmbed returns: title (track/album/artist name), thumbnail_url
+      const artistName = oembed.provider_name !== 'Spotify' ? oembed.provider_name : (oembed.title || '');
+      importData = {
+        name: artistName,
+        artUrl: oembed.thumbnail_url || '',
+        platform: 'Spotify',
+        embedUrl: url,
+        genre: ''
+      };
+    } else if (url.includes('youtu')) {
+      // YouTube oEmbed
+      const oembed = await fetch(
+        'https://www.youtube.com/oembed?url=' + encodeURIComponent(url) + '&format=json'
+      ).then(r => r.json());
+      importData = {
+        name: oembed.author_name || '',
+        artUrl: oembed.thumbnail_url || '',
+        platform: 'YouTube',
+        embedUrl: url,
+        genre: ''
+      };
+    } else {
+      // Unknown platform — still let them continue
+      importData = { name: '', artUrl: '', platform: 'link', embedUrl: url, genre: '' };
+    }
+
+    // Show preview
+    const nameEl = document.getElementById('importName');
+    const metaEl = document.getElementById('importMeta');
+    const artEl  = document.getElementById('importArt');
+    if (nameEl) nameEl.textContent = importData.name || 'Found your music';
+    if (metaEl) metaEl.textContent = importData.platform + (importData.artUrl ? ' · artwork found' : '');
+    if (artEl && importData.artUrl) artEl.style.backgroundImage = 'url(' + importData.artUrl + ')';
+    preview.hidden = false;
+    status.textContent = '✓ Looks good — hit the button to continue';
+    btn.textContent = 'Use this →';
+    btn.disabled = false;
+    btn.onclick = applyImportAndContinue;
+
+  } catch(e) {
+    status.textContent = '⚠ Couldn\'t fetch that link — fill in manually below';
+    btn.disabled = false;
+    btn.textContent = 'Continue manually →';
+    btn.onclick = skipImport;
+  }
+}
+
+function applyImportAndContinue() {
+  // Pre-fill name field from import data
+  if (importData.name) {
+    const nameInput = document.getElementById('iName');
+    if (nameInput) nameInput.value = importData.name;
+    P.name = importData.name;
+  }
+  // Pre-fill music URL field
+  if (importData.embedUrl) {
+    const musicInput = document.getElementById('iMusicUrl');
+    if (musicInput) musicInput.value = importData.embedUrl;
+  }
+  // Store art URL for later bio/colour suggestion
+  if (importData.artUrl) P.importedArtUrl = importData.artUrl;
+
+  goStep(1);
+  // Auto-trigger bio generation after short delay if name was found
+  if (P.name && typeof generateBioAuto === 'function') {
+    setTimeout(generateBioAuto, 500);
+  }
+}
+
+function skipImport() {
+  importData = {};
+  goStep(1);
 }
 
 // === STEP 6: MUSIC ==========================================
@@ -1719,9 +1941,15 @@ function goStep(n) {
   document.getElementById(id).classList.add('active');
 
   const TOTAL = 8;
+  // step 0 = 0% progress (pre-step, not counted in 8)
+  // steps 1–8 = 1/8 through 8/8
   const num = n === 'done' ? TOTAL + 1 : Number(n);
-  document.getElementById('progressFill').style.width = (num > TOTAL ? 100 : (num/TOTAL)*100) + '%';
-  document.getElementById('stepInd').textContent = (n === 'done') ? 'All done' : (Number(n) >= 6 ? `Step ${n} of ${TOTAL} — optional` : `Step ${n} of ${TOTAL}`);
+  const pct = n === 0 || n === '0' ? 0 : (num > TOTAL ? 100 : (num / TOTAL) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('stepInd').textContent =
+    n === 0 || n === '0' ? 'Let\'s go'
+    : (n === 'done') ? 'All done'
+    : (Number(n) >= 6 ? `Step ${n} of ${TOTAL} — optional` : `Step ${n} of ${TOTAL}`);
 
   if (n === 'done') {
     document.getElementById('doneUrl').textContent = `able.fm/${slug(P.name)}`;
@@ -1821,6 +2049,10 @@ function initVibe() {
       document.querySelectorAll('.vibe-card').forEach(b => b.classList.remove('on'));
       btn.classList.add('on');
       applyVibe(v);
+      // Auto-advance from vibe stage after a beat
+      if (document.getElementById('stage1b')?.classList.contains('active')) {
+        setTimeout(() => goStage('1c'), 260);
+      }
     };
     wrap.appendChild(btn);
   });
@@ -2083,6 +2315,18 @@ function updatePreview() {
 }
 
 /* ── LIVE INPUTS ── */
+document.getElementById('iName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); tryStage1a(); }
+});
+document.getElementById('iBio').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); goStage('1d'); }
+});
+document.getElementById('iLocation').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); goStage('1e'); }
+});
+document.getElementById('iSpotify').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); goStep(2); }
+});
 document.getElementById('iName').addEventListener('input', e => {
   P.name = e.target.value;
   updatePreview();

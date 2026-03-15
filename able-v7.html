@@ -3543,6 +3543,9 @@
     .recs-section {
       padding: 0 0 var(--sp-5);
     }
+    .recs-section .section-header {
+      margin: 0 var(--sp-5) var(--sp-5);
+    }
 
     .recs-list {
       display: flex;
@@ -4697,7 +4700,7 @@
            RECOMMENDATIONS — artist's picks (optional)
            ====================================================== -->
       <section class="recs-section" id="recs-section" aria-labelledby="recs-heading" hidden>
-        <header class="section-header section-header--secondary" style="margin: 0 var(--sp-5) var(--sp-5);">
+        <header class="section-header section-header--secondary">
           <h2 class="section-title" id="recs-heading">Worth hearing</h2>
         </header>
         <ul class="recs-list" id="recs-list" role="list"></ul>
@@ -7207,7 +7210,7 @@
 
       // SoundCloud: pass as soundcloud widget
       if (u.includes('soundcloud.com')) {
-        return `https://w.soundcloud.com/player/?url=${encodeURIComponent(u)}&color=%23${''}&auto_play=false&show_artwork=true&visual=true&show_comments=false`
+        return `https://w.soundcloud.com/player/?url=${encodeURIComponent(u)}&auto_play=false&show_artwork=true&visual=true&show_comments=false`
       }
 
       // Mixcloud: /user/show/ → widget
@@ -8223,8 +8226,6 @@
       }, 400)
     }
 
-    // --- #17: Copy link flash -----------------------------------
-
     // --- Reduced motion -------------------------------------------
 
     function respectReducedMotion() {
@@ -9012,6 +9013,15 @@
         lbTitle.textContent = _title
         lbExt.href = _ext
         lbExt.style.display = _ext ? '' : 'none'
+        // Set label from URL domain
+        if (_ext) {
+          const platform = _ext.includes('youtube') || _ext.includes('youtu.be') ? 'YouTube'
+            : _ext.includes('spotify.com') ? 'Spotify'
+            : _ext.includes('soundcloud.com') ? 'SoundCloud'
+            : _ext.includes('mixcloud.com') ? 'Mixcloud'
+            : 'Open'
+          lbExt.textContent = `↗ ${platform}`
+        }
         lightbox.classList.add('active')
         document.body.style.overflow = 'hidden'
         setTimeout(() => lbClose.focus(), 50)

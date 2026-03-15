@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data: blob:; frame-src https://open.spotify.com https://w.soundcloud.com https://www.youtube.com; connect-src 'self' https:;">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="theme-color" content="#0f1624">
 <title>Dashboard — ABLE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,11 +57,13 @@ body::before {
 }
 .sb-logo {
   padding:18px 20px 16px;
-  font-family:var(--font-d); font-size:22px; font-weight:700;
-  letter-spacing:.08em; color:var(--text);
+  display:flex; align-items:center; gap:10px;
   border-bottom:1px solid var(--border);
 }
-.sb-logo span { color:var(--acc); }
+.sb-logo-type {
+  font-family:var(--font-d); font-size:22px; font-weight:700;
+  letter-spacing:.08em; color:var(--text);
+}
 
 .sb-artist {
   display:flex; align-items:center; gap:10px;
@@ -1029,7 +1032,13 @@ body::before {
 
 <!-- ── SIDEBAR ── -->
 <aside class="sidebar">
-  <div class="sb-logo">ABLE<span>.</span></div>
+  <div class="sb-logo">
+    <svg width="8" height="28" viewBox="0 0 24 90" fill="none" aria-hidden="true">
+      <rect x="4" y="2" width="16" height="64" fill="#e4dfd2"/>
+      <rect x="4" y="66" width="16" height="20" fill="#c9b76c"/>
+    </svg>
+    <span class="sb-logo-type">ABLE</span>
+  </div>
 
   <div class="sb-artist">
     <div class="sb-av" id="sbAv">N</div>
