@@ -7863,7 +7863,19 @@
         .filter(c => c.published !== false)
         .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
 
-      if (!cards.length) return
+      if (!cards.length) {
+        if (getIsOwner(profile)) {
+          track.innerHTML = `<div class="section-empty">
+            <div class="section-empty__circle" aria-hidden="true">📌</div>
+            <p class="section-empty__eyebrow">Only you can see this</p>
+            <p class="section-empty__headline">Post an update.</p>
+            <p class="section-empty__sub">A snippet, a link, a note — sits at the top of your page so your fans see it first.</p>
+            <a class="section-empty__action pressable" href="admin.html">Add an update →</a>
+          </div>`
+          section.hidden = false
+        }
+        return
+      }
 
       // Tier gate: free tier shows 1 card; remaining are blurred with gold lock overlay
       const isOwner = getIsOwner(profile)
