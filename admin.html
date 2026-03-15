@@ -4296,6 +4296,7 @@ function addSnapCard() {
   }
   data.snapCards = [...cards, newCard]
   setLS(V3_KEY, data)
+  syncProfile(data)
   renderSnapCardsList()
   // Auto-open the edit form for the new card
   setTimeout(() => toggleSnapEdit(newCard.id), 50)
@@ -4306,6 +4307,7 @@ function removeSnapCard(id) {
   const data = safeLS(V3_KEY, {})
   data.snapCards = (data.snapCards || []).filter(c => c.id !== id)
   setLS(V3_KEY, data)
+  syncProfile(data)
   renderSnapCardsList()
 }
 
@@ -4315,6 +4317,7 @@ function toggleSnapPublished(id) {
     c.id === id ? { ...c, published: c.published === false ? true : false } : c
   )
   setLS(V3_KEY, data)
+  syncProfile(data)
   renderSnapCardsList()
 }
 
@@ -4346,6 +4349,7 @@ function saveSnapCard(id) {
     }
   })
   setLS(V3_KEY, data)
+  syncProfile(data)
   renderSnapCardsList()
 }
 
@@ -4360,6 +4364,7 @@ function moveSnapCard(id, dir) {
   cards.forEach((c, i) => { c.sortOrder = i })
   data.snapCards = cards
   setLS(V3_KEY, data)
+  syncProfile(data)
   renderSnapCardsList()
 }
 
