@@ -1203,6 +1203,10 @@
 
     /* ── OWNER PLACEHOLDER SECTIONS ── */
     .v3-ph {
+      display: none; /* hidden from fans — JS shows via .owner-visible */
+    }
+    .v3-ph.owner-visible {
+      display: flex;
       margin: 0 var(--space-page) var(--space-gap);
       padding: 22px 18px;
       border-radius: var(--radius-card);
@@ -1210,16 +1214,11 @@
       background:
         linear-gradient(160deg, rgba(var(--color-accent-rgb),0.05) 0%, transparent 55%),
         var(--color-card);
-      display: flex;
       flex-direction: column;
       align-items: center;
       gap: 8px;
       text-align: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
     }
-    .v3-ph.owner-visible { opacity: 1; pointer-events: auto; }
     .v3-ph__owner-badge {
       font-size: 9px;
       font-weight: 700;
@@ -2392,7 +2391,7 @@
 
     function buildEmbedHtml(parsed, accent) {
       if (!parsed) return '';
-      const ac = (accent||'#06b6d4').replace('#','');
+      const ac = (accent || V3_DEFAULTS.accent).replace('#','');
       switch (parsed.platform) {
         case 'spotify':
           return `<iframe style="border-radius:10px;display:block;" src="https://open.spotify.com/embed/${parsed.type}/${parsed.id}?utm_source=generator&theme=0" width="100%" height="152" frameborder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
@@ -2430,7 +2429,7 @@
       const el = document.getElementById('musicPanelContent');
       if (!el) return;
       const releases = data.releases || [];
-      const accent = data.accent || '#06b6d4';
+      const accent = data.accent || V3_DEFAULTS.accent;
 
       if (!releases.length) {
         el.innerHTML = `
@@ -3060,7 +3059,7 @@
         setVal('adminReleaseDate', '');
       }
 
-      const accent = data.accent || '#06b6d4';
+      const accent = data.accent || V3_DEFAULTS.accent;
       const accentInput = document.getElementById('adminAccent');
       const accentHex   = document.getElementById('adminAccentHex');
       if (accentInput) accentInput.value = accent;
