@@ -8387,7 +8387,7 @@
         footerAble.hidden = (profile.tier && profile.tier !== 'free')
         // Referral link: ?ref=artist-handle so we know which profile drove the signup
         const handle = profile.handle || getArtistId().slice(0, 8)
-        footerAble.href = `https://ablemusic.co?ref=${encodeURIComponent(handle)}`
+        footerAble.href = `https://able.fm?ref=${encodeURIComponent(handle)}`
       }
 
       // Fan list export — show if any fans captured

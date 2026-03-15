@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-15 (session 2) | Update this file at the end of every session.**
+**Updated: 2026-03-15 (session 3) | Update this file at the end of every session.**
 
 ---
 
@@ -30,7 +30,12 @@
 - [x] Accent colour system (single CSS var, artist-owned)
 - [x] Identity system (applyIdentity() — data-feel CSS system)
 - [x] Spring-feel motion system
-- [x] Micro-interactions: B1, D1, D2, C1, F1+F9, E1, E4+E6, G1, G7+E18, C2, C6, A6, D5+D12, E9, G5, H1+H3, H4, C4, C5, D20, I5, I7, H5, B19, B9, A4, A11, E15
+- [x] Micro-interactions: B1, B3, B4, B9, B18, B19, C1, C2, C4, C5, C6, D1, D2, D5+D12, D20, E1, E4+E6, E9, E11, E15, F1+F9, F15, G1, G5, G7+E18, H1+H3, H4, H5, H9, I2, I5, I7, A4, A6, A10/D3, A11
+- [x] A10/D3 platform pill entrance — horizontal wave (translateX -8px→0, 220ms, 50ms stagger)
+- [x] B3/B4 CTA press flash + glow (color-mix lighter accent + ::after opacity pulse)
+- [x] E11 error message delayed reveal (400ms after shake, not simultaneous)
+- [x] F15 accent shimmer on artwork placeholder (loading state)
+- [x] H9 pre-release ambient intensification (0.12+0.16×(1-daysLeft/14), clamped 0.12–0.28)
 - [x] Tab scroll sync (I7)
 - [x] A4 sticky artist bar — frosted glass, fan-view only, triggers at 70% hero scroll
 - [x] A11 artist name scale compression on scroll — lerp 48px→24px over hero height
@@ -55,6 +60,8 @@
 - [x] Broadcast page (Pro tier locked)
 - [x] First-run checklist (auto-dismisses when all done)
 - [x] Your World moments panel
+- [x] §9.1 moment 2 — pre-release trial nudge card (session-flagged, dismissible)
+- [x] §9.1 moment 3 — gig mode trial nudge card (session-flagged, dismissible)
 
 ### start.html (Onboarding Wizard)
 - [x] Pre-step 0: Spotify/music link import
@@ -63,6 +70,7 @@
 - [x] Release info capture
 - [x] Guided identity system (feel selection, AI vibe match)
 - [x] Live preview phone (Reel slot, snap cards, music, merch)
+- [x] E10 progress bar spring easing (--spring, 0.55s)
 
 ### landing.html
 - [x] Marketing landing page
@@ -70,6 +78,7 @@
 - [x] Pricing: £0/£9/£19/£49 (correct per V6 authority)
 - [x] FAQ
 - [x] Links correctly to able-v7.html
+- [x] Auth button fixed: magic link "Sign in →" (removed incorrect Google OAuth button)
 
 ---
 
@@ -99,10 +108,12 @@
 
 ---
 
-## Last session summary
-- able-v7.html: A4 sticky artist bar (frosted glass, fan-view, 70% hero trigger), A11 name compression (lerp 48→24px), E15 blur validation
-- able-v7.html: fixed pop vibe --ls-d 0.04em → 0.03em per V6_BUILD_AUTHORITY §3.1
-- admin.html: E3 bio char count — hidden until 80+ chars, amber→red colour ramp
+## Last session summary (session 3)
+- admin.html: §9.1 moment 2 — pre-release trial nudge card (launches when future release date saved)
+- admin.html: §9.1 moment 3 — gig mode trial nudge card (launches when gig mode activated)
+- start.html: E10 progress bar fixed — now uses --spring easing (was incorrectly --ease)
+- able-v7.html: A10/D3 pill entrance fixed — horizontal wave translateX(-8px)→0 (was vertical translateY)
+- landing.html: removed incorrect "Sign in with Google" button — ABLE uses magic link (§2.7)
 
 ---
 
