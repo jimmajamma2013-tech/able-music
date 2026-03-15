@@ -2272,6 +2272,46 @@
     }
     .release-card__able-open:hover { color: var(--color-text); }
 
+    /* ── RELEASE CARD — Stream/Watch buttons + type badge ───── */
+    .release-type-badge {
+      font-size: 8px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .release-btn-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .release-stream-btn {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: var(--color-accent);
+      color: #fff;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+    .release-watch-btn {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.25);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+
     /* ── MEDIA LIGHTBOX ──────────────────────────────────────── */
     .media-lightbox {
       position: fixed; inset: 0; z-index: 9000;
@@ -7763,6 +7803,9 @@
 
         card.className = 'release-card' + ((embedUrl && !isSpotify) ? ' release-card--has-embed' : '')
         card.setAttribute('role', 'listitem')
+        const hasVideo = !!rel.videoUrl
+        const borderColour = hasVideo ? '#7c3aed' : '#1e9650'
+        card.style.borderLeft = `3px solid ${borderColour}`
 
         // Build tracks list
         let tracksHtml = tracks.length
@@ -7924,11 +7967,24 @@
             ${hiddenCredits.length ? `<button class="credits-toggle" aria-expanded="false">+${hiddenCredits.length} more</button>` : ''}
           </div>` : ''
 
+        // Stream + Watch buttons
+        const cardStreamUrl = streamUrl || rel.spotifyUrl || rel.appleUrl || ''
+        const safeCardStreamUrl = cardStreamUrl && isSafeUrl(cardStreamUrl) ? escHtml(cardStreamUrl) : ''
+        const streamBtn = safeCardStreamUrl
+          ? `<a class="release-stream-btn pressable js-stream-track" href="${safeCardStreamUrl}" target="_blank" rel="noopener noreferrer">&#9654; Stream</a>`
+          : ''
+        const safeVideoUrl = rel.videoUrl && isSafeUrl(rel.videoUrl) ? escHtml(rel.videoUrl) : ''
+        const watchBtn = safeVideoUrl
+          ? `<a class="release-watch-btn pressable" href="${safeVideoUrl}" target="_blank" rel="noopener noreferrer">&#9654; Watch</a>`
+          : ''
+        const releaseBtns = (streamBtn || watchBtn) ? `<div class="release-btn-row">${streamBtn}${watchBtn}</div>` : ''
+
         card.innerHTML = `
           ${mediaHtml}
           <div class="release-card__info">
             <h3 class="release-card__title">${escHtml(rel.title || 'Untitled')}</h3>
-            <p class="release-card__meta">${escHtml(type)}${year ? ` · ${year}` : ''}${tracks.length ? ` · ${tracks.length} track${tracks.length !== 1 ? 's' : ''}` : ''}</p>
+            <p class="release-card__meta"><span class="release-type-badge">${escHtml(type)}</span>${year ? ` · ${year}` : ''}${tracks.length ? ` · ${tracks.length} track${tracks.length !== 1 ? 's' : ''}` : ''}</p>
+            ${releaseBtns}
             ${tracksHtml}
             ${creditsHtml}
           </div>
