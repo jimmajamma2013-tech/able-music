@@ -2912,7 +2912,7 @@ function renderAdminEvents() {
   const data = safeLS(V3_KEY, {});
   const events = (data.events||[]).slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
   if (!events.length) {
-    el.innerHTML = `<div class="admin-empty">No shows yet — add your first one below.</div>`;
+    el.innerHTML = `<div class="admin-empty">No shows listed yet. Add one and ABLE will surface it to fans on your page automatically.</div>`;
     return;
   }
   const now = new Date(); now.setHours(0,0,0,0);
@@ -3268,7 +3268,7 @@ function renderAdminMerch() {
   if (shopInput) shopInput.value = merch.shopUrl || '';
 
   if (!items.length) {
-    el.innerHTML = `<div class="admin-empty">No items yet — add your first one below.</div>`;
+    el.innerHTML = `<div class="admin-empty">Nothing in the shop yet. Add a piece and fans can tap straight to it from your page.</div>`;
     return;
   }
   el.innerHTML = items.map((item, i) => `
@@ -3374,7 +3374,7 @@ function renderAdminSupport() {
   if (ccIntroEl)    ccIntroEl.value      = cc.introText || '';
 
   if (!packs.length) {
-    el.innerHTML = `<div class="admin-empty">No packs yet — add your first one below.</div>`;
+    el.innerHTML = `<div class="admin-empty">No support packs yet. Add one and fans can contribute directly — 0% goes to ABLE, Stripe fee only.</div>`;
     return;
   }
 
