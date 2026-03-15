@@ -1449,6 +1449,97 @@
     .v3-empty-state__icon { font-size: 2rem; margin-bottom: 10px; }
     .v3-empty-state__text { font-size: 13px; color: var(--color-text-muted); }
 
+    /* ── RICH EMPTY STATES ───────────────────────────────────────── */
+    .v3-empty-state--rich {
+      padding: 48px 28px 52px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+    }
+    .v3-empty-state__circle {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--color-accent-subtle);
+      border: 1.5px solid rgba(var(--color-accent-rgb), 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 4px;
+      flex-shrink: 0;
+    }
+    .v3-empty-state__headline {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--color-text);
+      letter-spacing: -0.3px;
+    }
+    .v3-empty-state__sub {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      line-height: 1.55;
+      max-width: 240px;
+    }
+    .v3-empty-state__action {
+      margin-top: 6px;
+      padding: 10px 22px;
+      border-radius: var(--radius-pill);
+      background: var(--color-accent-subtle);
+      border: 1px solid rgba(var(--color-accent-rgb), 0.28);
+      color: var(--color-accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      display: inline-block;
+      font-family: var(--font);
+    }
+    .v3-empty-state__action:hover {
+      background: rgba(var(--color-accent-rgb), 0.18);
+      border-color: rgba(var(--color-accent-rgb), 0.42);
+    }
+
+    /* ── GHOST / SKELETON UI ─────────────────────────────────────── */
+    .v3-ghost-block {
+      display: block;
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.04) 0%,
+        rgba(255,255,255,0.09) 50%,
+        rgba(255,255,255,0.04) 100%);
+      background-size: 200% 100%;
+      animation: ghostShimmer 1.8s ease-in-out infinite;
+    }
+    .v3-ghost-line {
+      display: block;
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.04) 0%,
+        rgba(255,255,255,0.08) 50%,
+        rgba(255,255,255,0.04) 100%);
+      background-size: 200% 100%;
+      animation: ghostShimmer 1.8s ease-in-out infinite;
+    }
+    [data-theme="light"] .v3-ghost-block,
+    [data-theme="mid"]   .v3-ghost-block,
+    [data-theme="light"] .v3-ghost-line,
+    [data-theme="mid"]   .v3-ghost-line {
+      background: linear-gradient(90deg,
+        rgba(0,0,0,0.05) 0%,
+        rgba(0,0,0,0.10) 50%,
+        rgba(0,0,0,0.05) 100%);
+      background-size: 200% 100%;
+      animation: ghostShimmer 1.8s ease-in-out infinite;
+    }
+    @keyframes ghostShimmer {
+      0%   { background-position: 200% center; }
+      100% { background-position: -200% center; }
+    }
+    .v3-event--ghost  { pointer-events: none; }
+
     .v3-event__ticket--tba { font-size: 11px; font-weight: 600; color: var(--color-text-muted); padding: 4px 10px; border-radius: var(--r-full, 999px); background: var(--color-card-raised); border: 1px solid var(--color-border); }
     .v3-event__ticket--sold { font-size: 11px; font-weight: 600; color: #ef4444; padding: 4px 10px; border-radius: var(--r-full, 999px); background: rgba(239,68,68,0.1); }
 
@@ -2251,7 +2342,16 @@
       const accent = data.accent || '#06b6d4';
 
       if (!releases.length) {
-        el.innerHTML = `<div class="v3-panel-header"><h2>Music</h2></div><div class="v3-empty-state"><div class="v3-empty-state__icon">🎵</div><div class="v3-empty-state__text">No releases yet</div></div>`;
+        el.innerHTML = `
+          <div class="v3-panel-header"><h2>Music</h2><p>More coming.</p></div>
+          <div class="v3-empty-state v3-empty-state--rich">
+            <div class="v3-empty-state__circle">🎵</div>
+            <div class="v3-empty-state__headline">Something's being made.</div>
+            <div class="v3-empty-state__sub">Sign up and you'll hear it first — before it hits the platforms.</div>
+            <a class="v3-empty-state__action" href="#" onclick="document.getElementById('v3Scroll').scrollTo({top:99999,behavior:'smooth'});setTimeout(()=>document.getElementById('v3Email')?.focus(),400);return false;">
+              Hear it first
+            </a>
+          </div>`;
         return;
       }
 
@@ -2342,10 +2442,20 @@
       const upcoming = events.filter(e => new Date(e.date) >= now);
       const past     = events.filter(e => new Date(e.date) < now);
 
-      let html = `<div class="v3-panel-header"><h2>Shows</h2><p>${upcoming.length} upcoming${past.length ? ` · ${past.length} past` : ''}</p></div>`;
+      const upcomingStr = upcoming.length ? `${upcoming.length} upcoming` : 'Nothing booked yet';
+      const pastStr = past.length ? ` · ${past.length} past` : '';
+      let html = `<div class="v3-panel-header"><h2>Shows</h2><p>${upcomingStr}${pastStr}</p></div>`;
 
       if (!upcoming.length && !past.length) {
-        html += `<div class="v3-empty-state"><div class="v3-empty-state__icon">🗓</div><div class="v3-empty-state__text">No shows listed yet</div></div>`;
+        html += `
+          <div class="v3-empty-state v3-empty-state--rich">
+            <div class="v3-empty-state__circle">🎤</div>
+            <div class="v3-empty-state__headline">Nothing booked yet.</div>
+            <div class="v3-empty-state__sub">Sign up below — you'll hear about dates before they're anywhere else.</div>
+            <a class="v3-empty-state__action" href="#" onclick="document.getElementById('v3Scroll').scrollTo({top:99999,behavior:'smooth'});setTimeout(()=>document.getElementById('v3Email')?.focus(),400);return false;">
+              Get notified
+            </a>
+          </div>`;
         el.innerHTML = html; return;
       }
 
@@ -2395,7 +2505,15 @@
       let html = `<div class="v3-panel-header"><h2>Merch</h2><p>${items.length ? `${items.length} items` : 'Official store'}</p></div>`;
 
       if (!items.length) {
-        html += `<div class="v3-empty-state"><div class="v3-empty-state__icon">🛍</div><div class="v3-empty-state__text">No merch listed yet</div></div>`;
+        html += `
+          <div class="v3-empty-state v3-empty-state--rich">
+            <div class="v3-empty-state__circle">🛒</div>
+            <div class="v3-empty-state__headline">Drop coming.</div>
+            <div class="v3-empty-state__sub">Sign up to get first access when the store goes live.</div>
+            <a class="v3-empty-state__action" href="#" onclick="document.getElementById('v3Scroll').scrollTo({top:99999,behavior:'smooth'});setTimeout(()=>document.getElementById('v3Email')?.focus(),400);return false;">
+              Get first access
+            </a>
+          </div>`;
         el.innerHTML = html; return;
       }
 
@@ -2430,7 +2548,12 @@
       let html = `<div class="v3-panel-header"><h2>Support</h2><p>Help the music keep going</p></div>`;
 
       if (!support.enabled || !packs.length) {
-        html += `<div class="v3-empty-state"><div class="v3-empty-state__icon">💙</div><div class="v3-empty-state__text">Support not set up yet</div></div>`;
+        html += `
+          <div class="v3-empty-state v3-empty-state--rich">
+            <div class="v3-empty-state__circle">💙</div>
+            <div class="v3-empty-state__headline">More ways to support coming.</div>
+            <div class="v3-empty-state__sub">For now — sharing the music is everything.</div>
+          </div>`;
         el.innerHTML = html; return;
       }
 
@@ -2553,6 +2676,13 @@
       renderEventsPanel(data);
       renderMerchPanel(data);
       renderSupportPanel(data);
+
+      // Hide support tab when not enabled and no packs
+      const supportTab = document.getElementById('tab-support');
+      if (supportTab) {
+        const hasSupportContent = data.support?.enabled && (data.support?.packs||[]).filter(p=>p.label).length > 0;
+        supportTab.style.display = hasSupportContent ? '' : 'none';
+      }
 
       // Home tab music preview (up to 2 releases)
       const musicSection = document.getElementById('v3HomeMusicSection');
