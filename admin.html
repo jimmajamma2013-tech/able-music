@@ -450,6 +450,31 @@ body::before {
 .gig-strip.active .gig-toggle { background:#f46442; }
 .gig-strip.active .gig-toggle::after { transform:translateX(18px); background:#fff; }
 
+/* C16 — Gig mode countdown bar: thin depletion bar showing time remaining */
+.gig-countdown {
+  display: none;
+  height: 3px;
+  border-radius: 100px;
+  background: rgba(244,100,66,.12);
+  overflow: hidden;
+  margin-top: 8px;
+}
+.gig-strip.active + .gig-countdown { display: block; }
+.gig-countdown-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, #f46442, #f4b942);
+  transition: width 60s linear;
+}
+.gig-countdown-label {
+  display: none;
+  font-size: 10px;
+  color: rgba(244,100,66,.7);
+  margin-top: 4px;
+  font-weight: 500;
+}
+.gig-strip.active ~ .gig-countdown-label { display: block; }
+
 /* ── GOLD LOCK (Pro upgrade teaser) ── */
 .gold-lock {
   position:relative; border-radius:16px; overflow:hidden;
@@ -1248,6 +1273,8 @@ body::before {
           </div>
           <button class="gig-toggle" id="gigToggle" aria-label="Toggle gig mode"></button>
         </div>
+        <div class="gig-countdown" id="gigCountdown"><div class="gig-countdown-fill" id="gigCountdownFill"></div></div>
+        <div class="gig-countdown-label" id="gigCountdownLabel"></div>
 
         <div style="margin-top:14px;">
           <button class="tb-btn tb-btn-acc" style="width:100%;" onclick="saveCampaignHQ()">Apply to live page →</button>
@@ -2355,7 +2382,13 @@ function initCampaignHQ() {
   // Check gig mode
   const gigExp = safeLS(GIG_KEY, 0);
   if (gigExp && Date.now() < gigExp) {
-    setGigActive(true);
+    // Restore gig state without resetting the timer
+    const strip = document.getElementById('gigStrip');
+    const hint  = document.getElementById('gigHint');
+    if (strip) strip.classList.add('active');
+    if (hint) hint.textContent = 'Active — expires in 24 hrs. Your tickets CTA is front and centre.';
+    updateChqPill('gig');
+    tickGigCountdown(gigExp);
   }
 }
 
@@ -2438,12 +2471,47 @@ function setGigActive(on) {
     setLS(GIG_KEY, exp);
     if (hint) hint.textContent = 'Active — expires in 24 hrs. Your tickets CTA is front and centre.';
     updateChqPill('gig');
+    tickGigCountdown(exp);
   } else {
     setLS(GIG_KEY, 0);
     if (hint) hint.textContent = 'Flip this on show day — puts tickets front and centre. Auto-expires in 24 hrs.';
     const data = safeLS(V3_KEY, {});
     updateChqPill(computeEffectiveState(data));
+    clearGigCountdown();
   }
+}
+
+/* C16 — Gig mode depletion bar */
+var _gigCountdownInterval = null;
+function tickGigCountdown(exp) {
+  clearGigCountdown();
+  const fill  = document.getElementById('gigCountdownFill');
+  const label = document.getElementById('gigCountdownLabel');
+  function tick() {
+    const now = Date.now();
+    const total = 86400000;
+    const remaining = Math.max(0, exp - now);
+    const pct = (remaining / total * 100).toFixed(1);
+    if (fill) fill.style.width = pct + '%';
+    const hrs = Math.floor(remaining / 3600000);
+    const mins = Math.floor((remaining % 3600000) / 60000);
+    if (label) label.textContent = remaining > 0
+      ? hrs > 0 ? `${hrs}h ${mins}m remaining` : `${mins} min remaining`
+      : 'Gig mode expired';
+    if (remaining <= 0) {
+      clearGigCountdown();
+      setGigActive(false);
+    }
+  }
+  tick();
+  _gigCountdownInterval = setInterval(tick, 60000);
+}
+function clearGigCountdown() {
+  if (_gigCountdownInterval) { clearInterval(_gigCountdownInterval); _gigCountdownInterval = null; }
+  const fill  = document.getElementById('gigCountdownFill');
+  const label = document.getElementById('gigCountdownLabel');
+  if (fill) fill.style.width = '0%';
+  if (label) label.textContent = '';
 }
 
 /* ── MUSIC MANAGEMENT ── */
