@@ -5352,19 +5352,10 @@
 
     // === UTILITY =================================================
 
-    // === EDIT MODE V2 (§6 — URL param + auth gate) ===============
-    const EDIT_MODE = new URLSearchParams(location.search).get('edit') === '1';
-
-    if (EDIT_MODE) {
-      const session = localStorage.getItem('able_session');
-      if (!session) {
-        // No session — don't activate edit mode silently
-        // (redirect to start.html only when backend auth is live; for now just don't activate)
-        document.documentElement.classList.remove('edit-active');
-      } else {
-        document.documentElement.classList.add('edit-active');
-      }
-    }
+    // === EDIT MODE (§6) — activated by initEditBar for owners ====
+    // EDIT_MODE kept as a legacy flag; initEditBar now sets edit-active
+    // and shows the pill directly for all profile owners.
+    const EDIT_MODE = true; // initEditBar gates on getIsOwner(profile)
 
     const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i
 
