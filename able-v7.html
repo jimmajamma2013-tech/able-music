@@ -7579,6 +7579,66 @@
       } catch(_) {}
     }
 
+    // Write artist to able_fan_following + seed feed for fan.html
+    function writeFanFollow() {
+      try {
+        var p = getProfile()
+        if (!p || !p.name) return
+        var artistId = p.slug || p.handle || p.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,20)
+
+        // Add to following list (dedupe by id)
+        var following = safeLS('able_fan_following', [])
+        if (!following.some(function(a) { return a.id === artistId })) {
+          following.push({
+            id:     artistId,
+            name:   p.name,
+            accent: p.accent || '#f4b942',
+            genre:  p.vibe || (p.genres && p.genres[0]) || '',
+            photo:  p.photo  || '',
+          })
+          localStorage.setItem('able_fan_following', JSON.stringify(following))
+        }
+
+        // Seed feed items from current profile data
+        var feed = safeLS('able_fan_feed', [])
+
+        // Release item
+        var releases = p.releases || []
+        if (releases.length && !feed.some(function(f) { return f.artistId === artistId && f.type === 'release' })) {
+          var rel = releases[0]
+          feed.unshift({ type:'release', artistId:artistId, title:rel.title || 'New release', sub:rel.type || 'New single', age:Date.now()-2*3600000 })
+        } else if (p.releaseName && !feed.some(function(f) { return f.artistId === artistId && f.type === 'release' })) {
+          feed.unshift({ type:'release', artistId:artistId, title:p.releaseName, sub:'New single', age:Date.now()-2*3600000 })
+        }
+
+        // Show item
+        var shows = safeLS('able_shows', [])
+        if (shows.length && !feed.some(function(f) { return f.artistId === artistId && f.type === 'event' })) {
+          var nextShow = shows.slice().sort(function(a,b){ return (a.date||'') < (b.date||'') ? -1 : 1 })[0]
+          if (nextShow) {
+            var sub = nextShow.date || ''
+            if (nextShow.doorsTime) sub += ' · Doors ' + nextShow.doorsTime
+            feed.unshift({ type:'event', artistId:artistId, title:nextShow.venue || 'Show', sub:sub, age:Date.now()-3600000 })
+          }
+        }
+
+        // Snap card item (most recent)
+        var snaps = p.snapCards || []
+        if (snaps.length && !feed.some(function(f) { return f.artistId === artistId && f.type === 'snap' })) {
+          var snap = snaps[0]
+          feed.unshift({ type:'snap', artistId:artistId, title:snap.title || 'Update', sub:snap.body ? snap.body.slice(0,60) : 'Drop from the artist', age:Date.now()-4*3600000 })
+        }
+
+        // Keep feed capped at 50 items
+        if (feed.length > 50) feed = feed.slice(0, 50)
+        localStorage.setItem('able_fan_feed', JSON.stringify(feed))
+
+        // Also seed suggested artists (2-3 connected) from releases credits
+        // (Credit-based discovery seeded when freelancer data is available — Phase 3)
+
+      } catch(_) {}
+    }
+
     async function sbSyncClick(label, type, source) {
       if (!sb) return
       try {
@@ -7781,6 +7841,9 @@
             sessionStorage.setItem('able_this_fan_email', email)
           } catch (_) {}
 
+          // Write artist to fan.html following list (enables real data in fan dashboard)
+          writeFanFollow()
+
           // Sync to Supabase (fire-and-forget — localStorage is the fallback)
           sbSyncFanSignup(email, signupSource)
 
@@ -7889,6 +7952,7 @@
             localStorage.setItem('able_fans', JSON.stringify(fans))
             sessionStorage.setItem('able_this_fan_email', email)
           } catch (_) {}
+          writeFanFollow() // seed fan.html following + feed
           sbSyncFanSignup(email, signup2Source) // async fire-and-forget
           form2.hidden = true
           // Show brief confirmation
