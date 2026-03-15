@@ -9361,20 +9361,19 @@
         }
       }
 
-      fab.classList.add('visible')
-
-      // First-visit hint — show "Edit page" label for 3s, then hide forever
-      const hint = document.getElementById('edit-fab-hint')
-      if (hint && !localStorage.getItem('able_edit_hinted')) {
-        if (hint.parentElement !== document.body) document.body.appendChild(hint)
-        setTimeout(() => { hint.classList.add('show') }, 600)
-        setTimeout(() => {
-          hint.classList.remove('show')
-          localStorage.setItem('able_edit_hinted', '1')
-        }, 3600)
-      } else if (hint) {
-        hint.remove()
+      // V2 edit mode: show pill immediately for owners
+      // V1 FAB acts as entry point → activates V2 (no longer opens old panel)
+      const pill = document.getElementById('editPill')
+      if (pill) {
+        pill.hidden = false
+        document.documentElement.classList.add('edit-active')
       }
+      // Keep FAB hidden — pill is the primary edit UI
+      fab.style.display = 'none'
+
+      // Suppress first-visit hint (V1 pattern, replaced by pill)
+      const hint = document.getElementById('edit-fab-hint')
+      if (hint) hint.remove()
 
       // ── Build panel content ──────────────────────────────────────
       function buildPanel(p) {
@@ -9923,10 +9922,7 @@
     /* === EDIT MODE V2 — Pill, bottom sheet, zone taps === */
     ;(function() {
 
-      // ── Show pill if edit mode is active ──────────────────────
-      if (EDIT_MODE && localStorage.getItem('able_session')) {
-        document.getElementById('editPill').hidden = false;
-      }
+      // ── Pill is shown by initEditBar for owners — no extra init needed ──
 
       // ── Pill tab switching ─────────────────────────────────────
       const pillEditTab = document.getElementById('pillEditTab');
@@ -10051,11 +10047,72 @@
               });
             }
           );
+        } else if (zone === 'hero-ctas') {
+          var cta0 = profile.ctaPrimary   || {};
+          var cta1 = profile.ctaSecondary || {};
+          openSheet('\uD83D\uDD17', 'Your CTAs',
+            '<div class="bs-field"><label>Primary button — label</label><input id="bsf-cta0-label" value="' + esc(cta0.label || 'Stream Now') + '" placeholder="Stream Now"></div>' +
+            '<div class="bs-field"><label>Primary button — link</label><input id="bsf-cta0-url" type="url" value="' + esc(cta0.url || '') + '" placeholder="https://open.spotify.com/…"></div>' +
+            '<div class="bs-field" style="margin-top:16px"><label>Second button — label</label><input id="bsf-cta1-label" value="' + esc(cta1.label || '') + '" placeholder="Get Tickets (optional)"></div>' +
+            '<div class="bs-field"><label>Second button — link</label><input id="bsf-cta1-url" type="url" value="' + esc(cta1.url || '') + '" placeholder="https://…"></div>',
+            function() {
+              var l0 = document.getElementById('bsf-cta0-label'); var u0 = document.getElementById('bsf-cta0-url');
+              var l1 = document.getElementById('bsf-cta1-label'); var u1 = document.getElementById('bsf-cta1-url');
+              var updates = { ctaPrimary: { label: l0 ? l0.value : (cta0.label || ''), url: u0 ? u0.value : (cta0.url || '') } };
+              if (l1 && l1.value.trim()) updates.ctaSecondary = { label: l1.value, url: u1 ? u1.value : '' };
+              else updates.ctaSecondary = null;
+              save(updates);
+              if (typeof renderHero === 'function') renderHero(JSON.parse(localStorage.getItem('able_v3_profile') || '{}')); // re-render
+            }
+          );
+        } else if (zone === 'link-pills') {
+          var pls = profile.platforms || [];
+          var PLATS = ['Spotify','Apple Music','YouTube','SoundCloud','Bandcamp','Instagram','TikTok','Twitter'];
+          var fields = PLATS.map(function(name) {
+            var existing = pls.find(function(p) { return p.label === name || (p.id && name.toLowerCase().startsWith(p.id)); }) || {};
+            return '<div class="bs-field" style="margin-bottom:8px"><label style="font-size:11px">' + esc(name) + '</label><input class="bsf-platform" data-name="' + esc(name) + '" type="url" value="' + esc(existing.url || '') + '" placeholder="https://…"></div>';
+          }).join('');
+          openSheet('\uD83D\uDD17', 'Your links',
+            fields,
+            function() {
+              var inputs = document.querySelectorAll('#bsBody .bsf-platform');
+              var newPlatforms = [];
+              inputs.forEach(function(inp) {
+                if (inp.value.trim()) newPlatforms.push({ label: inp.dataset.name, url: inp.value.trim() });
+              });
+              save({ platforms: newPlatforms });
+              if (typeof renderHero === 'function') renderHero(JSON.parse(localStorage.getItem('able_v3_profile') || '{}'));
+            }
+          );
+        } else if (zone === 'music' || zone === 'snap-cards') {
+          var zoneLabel = zone === 'music' ? 'Releases' : 'Updates';
+          var zoneHash  = zone === 'music' ? '#releases' : '#snap-cards';
+          openSheet('\uD83C\uDFB5', zoneLabel,
+            '<div style="padding:8px 0;"><p style="font-size:14px;color:var(--color-fg-muted);margin:0 0 16px;">Manage your ' + zoneLabel.toLowerCase() + ' in your dashboard.</p>' +
+            '<a href="/admin.html' + zoneHash + '" style="display:block;text-align:center;padding:12px 20px;background:var(--color-accent);color:#000;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none">Open dashboard \u2192</a></div>',
+            null
+          );
+        } else if (zone === 'events') {
+          openSheet('\uD83D\uDCC5', 'Add a show',
+            '<div class="bs-field"><label>Venue</label><input id="bsf-ev-venue" placeholder="Fabric, London"></div>' +
+            '<div class="bs-field"><label>Date</label><input id="bsf-ev-date" type="date"></div>' +
+            '<div class="bs-field"><label>Doors time</label><input id="bsf-ev-time" type="time" placeholder="21:00"></div>' +
+            '<div class="bs-field"><label>Ticket link</label><input id="bsf-ev-url" type="url" placeholder="https://…"></div>',
+            function() {
+              var v = document.getElementById('bsf-ev-venue'); var d = document.getElementById('bsf-ev-date');
+              var t = document.getElementById('bsf-ev-time'); var u = document.getElementById('bsf-ev-url');
+              if (!v || !v.value.trim() || !d || !d.value) return;
+              var shows = [];
+              try { shows = JSON.parse(localStorage.getItem('able_shows') || '[]'); } catch(_) {}
+              shows.push({ id: Date.now().toString(36), venue: v.value.trim(), date: d.value, doorsTime: t ? t.value : '', ticketUrl: u ? u.value : '', featured: false });
+              localStorage.setItem('able_shows', JSON.stringify(shows));
+              if (typeof renderHero === 'function') renderHero(JSON.parse(localStorage.getItem('able_v3_profile') || '{}'));
+            }
+          );
         } else {
-          // Generic sheet for other zones
-          var label = zone.replace(/-/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
-          openSheet('\u270E', label,
-            '<div style="color:#555;font-size:14px;padding:8px 0;">Tap Save to open the full editor for this section.</div>',
+          // Unhandled zone — direct to admin
+          openSheet('\u270E', 'Edit',
+            '<div style="padding:8px 0;"><a href="/admin.html" style="display:block;text-align:center;padding:12px 20px;background:var(--color-accent);color:#000;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none">Open dashboard \u2192</a></div>',
             null
           );
         }
