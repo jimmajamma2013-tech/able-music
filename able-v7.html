@@ -847,10 +847,11 @@
 
     /* H17 — State-specific ambient glow tint (pre-release amber, live warm red) */
     /* Only overrides when artwork hasn't provided a colour (--color-ambient stays 0,0,0 = neutral) */
+    /* H9 — opacity driven by JS (--pre-release-glow) to intensify as release day approaches */
     [data-campaign-state="pre-release"] .hero__ambient {
       background: radial-gradient(
         ellipse at 50% 100%,
-        rgba(251,191,36,0.22) 0%,
+        rgba(251,191,36, var(--pre-release-glow, 0.16)) 0%,
         transparent 65%
       );
     }
@@ -6488,6 +6489,17 @@
       const state = computeState(profile)
       // H17 — stamp state on shell so CSS can drive state-specific ambient tints
       shell.dataset.campaignState = state
+
+      // H9 — pre-release ambient intensification: brighter as release day approaches
+      // Formula: 0.12 + (0.16 × (1 - daysLeft/14)); clamp 0.12–0.28
+      if (state === 'pre-release' && profile.releaseDate) {
+        const msLeft  = new Date(profile.releaseDate).getTime() - Date.now()
+        const daysLeft = Math.max(0, Math.min(14, msLeft / 86400000))
+        const glow    = 0.12 + 0.16 * (1 - daysLeft / 14)
+        shell.style.setProperty('--pre-release-glow', glow.toFixed(3))
+      } else {
+        shell.style.removeProperty('--pre-release-glow')
+      }
 
       // Artist name
       const nameEl = document.getElementById('hero-name')
