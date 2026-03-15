@@ -1485,9 +1485,9 @@ body::before {
             <div class="field-row">
               <div class="field-label" style="display:flex;justify-content:space-between;align-items:center;">
                 <span>Bio</span>
-                <span id="adminBioCount" style="font-size:10px;font-weight:400;color:var(--t3);letter-spacing:0;text-transform:none;">0 / 120</span>
+                <span id="adminBioCount" style="font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;opacity:0;transition:opacity .2s,color .2s;">0 / 120</span>
               </div>
-              <textarea class="field-input field-textarea" id="adminBio" placeholder="One honest sentence. Who you are, where you're from, what you make." maxlength="120" oninput="document.getElementById('adminBioCount').textContent=this.value.length+' / 120'" onblur="saveProfilePage()"></textarea>
+              <textarea class="field-input field-textarea" id="adminBio" placeholder="One honest sentence. Who you are, where you're from, what you make." maxlength="120" oninput="(function(n){var c=document.getElementById('adminBioCount');c.textContent=n+' / 120';var near=n>=80;c.style.opacity=near?'1':'0';c.style.color=n>=110?'#ef4444':n>=80?'#f4b942':'var(--t3)';})(this.value.length)" onblur="saveProfilePage()"></textarea>
               <div class="field-hint" style="margin-top:4px;">Keep it direct. Fans read it in seconds.</div>
             </div>
           </div>
@@ -3857,7 +3857,12 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('adminBio') && bio) {
     document.getElementById('adminBio').value = bio;
     const counter = document.getElementById('adminBioCount');
-    if (counter) counter.textContent = bio.length + ' / 120';
+    if (counter) {
+      counter.textContent = bio.length + ' / 120';
+      const near = bio.length >= 80;
+      counter.style.opacity = near ? '1' : '0';
+      counter.style.color = bio.length >= 110 ? '#ef4444' : bio.length >= 80 ? '#f4b942' : 'var(--t3)';
+    }
   }
   if (document.getElementById('adminGenre') && genre) document.getElementById('adminGenre').value = genre;
   if (document.getElementById('adminLocation') && v3data.location) document.getElementById('adminLocation').value = v3data.location;
