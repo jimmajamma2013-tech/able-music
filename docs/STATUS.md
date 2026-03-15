@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-15 | Update this file at the end of every session.**
+**Updated: 2026-03-15 (session 2) | Update this file at the end of every session.**
 
 ---
 
@@ -30,8 +30,11 @@
 - [x] Accent colour system (single CSS var, artist-owned)
 - [x] Identity system (applyIdentity() — data-feel CSS system)
 - [x] Spring-feel motion system
-- [x] Micro-interactions: B1, D1, D2, C1, F1+F9, E1, E4+E6, G1, G7+E18, C2, C6, A6, D5+D12, E9, G5, H1+H3, H4, C4, C5, D20, I5, I7, H5, B19, B9
+- [x] Micro-interactions: B1, D1, D2, C1, F1+F9, E1, E4+E6, G1, G7+E18, C2, C6, A6, D5+D12, E9, G5, H1+H3, H4, C4, C5, D20, I5, I7, H5, B19, B9, A4, A11, E15
 - [x] Tab scroll sync (I7)
+- [x] A4 sticky artist bar — frosted glass, fan-view only, triggers at 70% hero scroll
+- [x] A11 artist name scale compression on scroll — lerp 48px→24px over hero height
+- [x] E15 email blur validation — validate on blur, clear on retype
 - [x] Section header fade-in on scroll (I2)
 - [x] World map (calendar view with moments)
 - [x] Section ordering + visibility system
@@ -48,6 +51,7 @@
 - [x] Profile identity card (genre, feel, nudges)
 - [x] Section order + visibility toggles
 - [x] Analytics page (top clicks, activity feed)
+- [x] E3 bio char count — fades in amber at 80+ chars, red at 110+
 - [x] Broadcast page (Pro tier locked)
 - [x] First-run checklist (auto-dismisses when all done)
 - [x] Your World moments panel
@@ -73,7 +77,7 @@
 
 ### High priority
 - [ ] Fan dashboard (fan.html) — spec at `docs/v6/operational/FAN_DASHBOARD_SPEC.md` — Phase 12
-- [ ] A4/A11 sticky hero collapse + artist name compression — Phase 2, complex
+- [x] A4/A11 sticky hero collapse + artist name compression — DONE
 
 ### Medium priority
 - [ ] Supabase auth (magic link — so artists own data, not just localStorage)
@@ -96,11 +100,9 @@
 ---
 
 ## Last session summary
-- admin.html: G14 (stat counter animation from zero, session-flagged), D13 (fan row stagger, session-flagged), C16 (gig countdown bar)
-- able-v7.html: batch 13 (recs owner empty state, I7 tab scroll sync, H5 glass depth, B19 card tilt)
-- able-v7.html: snap cards owner empty state — all 6 sections now have owner-only placeholders
-- landing.html: fixed stale able-v6 link → able-v7, fixed pricing accuracy (free tier basic stats, artist unlimited fans)
-- start.html: fixed stale able-v6 link → able-v7
+- able-v7.html: A4 sticky artist bar (frosted glass, fan-view, 70% hero trigger), A11 name compression (lerp 48→24px), E15 blur validation
+- able-v7.html: fixed pop vibe --ls-d 0.04em → 0.03em per V6_BUILD_AUTHORITY §3.1
+- admin.html: E3 bio char count — hidden until 80+ chars, amber→red colour ramp
 
 ---
 
