@@ -1174,6 +1174,13 @@
       text-decoration: underline;
       text-underline-offset: 3px;
       text-decoration-color: rgba(255,255,255,0.18);
+      transition: color var(--dur-fast) var(--ease-standard),
+                  text-decoration-color var(--dur-fast) var(--ease-standard);
+    }
+
+    .bio-strip__more:hover {
+      color: var(--color-text-2);
+      text-decoration-color: rgba(255,255,255,0.40);
     }
 
     /* === COUNTDOWN (pre-release state) ========================== */
@@ -1586,10 +1593,18 @@
       font-size: var(--text-xs);
       font-weight: 600;
       color: var(--color-accent);
-      text-decoration: none;
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      text-underline-offset: 3px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       flex-shrink: 0;
+      transition: text-decoration-color var(--dur-fast) var(--ease-standard),
+                  opacity var(--dur-fast) var(--ease-standard);
+    }
+
+    .section-action:hover {
+      text-decoration-color: rgba(var(--color-accent-rgb, 224,82,66), 0.55);
     }
 
     /* H11 — accent hairline between sections */
