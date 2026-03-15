@@ -163,6 +163,15 @@ body::before {
   padding:18px 20px; border-radius:14px;
   background:var(--dash-card); border:1px solid var(--dash-border);
   box-shadow:0 1px 4px rgba(0,0,0,.06);
+  position: relative; overflow: hidden;
+}
+.sparkline {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 60px;
+  height: 24px;
+  opacity: 0.7;
 }
 .stat-label { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:#888; margin-bottom:8px; }
 .stat-value { font-size:28px; font-weight:700; font-family:var(--font-d); letter-spacing:.02em; color:#1a1a2e; }
@@ -826,6 +835,108 @@ body::before {
   .upgrade-bar-btn { align-self:center; }
 }
 
+    /* === NUDGE CARD ============================================ */
+    .nudge-card {
+      background: var(--dash-card);
+      border: 1.5px solid var(--dash-border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .nudge-body { flex: 1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .nudge-text { font-size: 13px; color: var(--dash-text); }
+    .nudge-action {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--dash-amber);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .nudge-dismiss {
+      background: none;
+      border: none;
+      color: #aaa;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 4px;
+      flex-shrink: 0;
+    }
+
+    /* === TWO-COLUMN FAN BODY =================================== */
+    .fan-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .fan-col {
+      background: var(--dash-card);
+      border-radius: 12px;
+      padding: 14px;
+      min-height: 160px;
+    }
+    .col-header {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #aaa;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .fan-rows { display: flex; flex-direction: column; gap: 8px; }
+    .fan-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+    .fan-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 11px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .fan-email { flex: 1; color: var(--dash-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .fan-time { font-size: 10px; color: #aaa; white-space: nowrap; }
+    .source-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 8px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .source-badge.ig { background: var(--source-ig); }
+    .source-badge.sp { background: var(--source-sp); color: #000; }
+    .source-badge.tt { background: var(--source-tt); }
+    .source-badge.direct { background: var(--source-direct); }
+    .tap-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .tap-label { font-size: 12px; color: var(--dash-text); }
+    .tap-count { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 20px; color: #1a1a2e; }
+    .col-footer-link {
+      display: block;
+      margin-top: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--dash-amber);
+      text-decoration: none;
+    }
+
     /* === YOUR WORLD (Admin) ==================================== */
     .yw-section { margin: 0 0 var(--sp-6, 24px); }
     .yw-section-head {
@@ -1359,16 +1470,31 @@ body::before {
 
     <div class="stats-row">
       <div class="stat-card">
+        <svg class="sparkline" viewBox="0 0 60 24" preserveAspectRatio="none"
+             aria-hidden="true" id="spark-views">
+          <polyline class="spark-line" points="" fill="none" stroke="var(--dash-amber)"
+                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
         <div class="stat-label">Visits</div>
         <div class="stat-value skel" id="statViews"> </div>
         <div class="stat-delta skel" id="statViewsDelta"> </div>
       </div>
       <div class="stat-card">
+        <svg class="sparkline" viewBox="0 0 60 24" preserveAspectRatio="none"
+             aria-hidden="true" id="spark-clicks">
+          <polyline class="spark-line" points="" fill="none" stroke="#999"
+                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
         <div class="stat-label">Link clicks</div>
         <div class="stat-value skel" id="statClicks"> </div>
         <div class="stat-delta skel" id="statClickRate"> </div>
       </div>
       <div class="stat-card">
+        <svg class="sparkline" viewBox="0 0 60 24" preserveAspectRatio="none"
+             aria-hidden="true" id="spark-fans">
+          <polyline class="spark-line" points="" fill="none" stroke="var(--dash-green)"
+                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
         <div class="stat-label">Fans joined</div>
         <div class="stat-value skel" id="statFans"> </div>
         <div class="stat-delta skel" id="statFansDelta"> </div>
@@ -1472,6 +1598,28 @@ body::before {
       </div>
       <button style="background:none;border:none;padding:0;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;flex-shrink:0;" onclick="this.closest('#gigModeNudge').style.display='none';sessionStorage.setItem('_gigModeNudgeDismissed','1');" aria-label="Dismiss">×</button>
     </div>
+
+      <!-- NUDGE CARD -->
+      <div class="nudge-card" id="nudgeCard" style="display:none;">
+        <div class="nudge-body">
+          <span class="nudge-text" id="nudgeText"></span>
+          <a class="nudge-action" id="nudgeAction" href="#">&nbsp;</a>
+        </div>
+        <button class="nudge-dismiss" id="nudgeDismiss" aria-label="Dismiss">✕</button>
+      </div>
+
+      <!-- TWO-COLUMN FAN BODY -->
+      <div class="fan-body" id="fanBody">
+        <div class="fan-col">
+          <div class="col-header">Latest fans</div>
+          <div id="latestFansList" class="fan-rows"></div>
+          <a class="col-footer-link" id="viewAllFansLink" href="#" onclick="showPage('fans');return false;">View all fans →</a>
+        </div>
+        <div class="fan-col">
+          <div class="col-header">What fans tapped today</div>
+          <div id="tapsTodayList" class="fan-rows"></div>
+        </div>
+      </div>
 
       <!-- YOUR WORLD =========================================== -->
       <section class="yw-section" id="yw-section">
@@ -2560,6 +2708,165 @@ function relTime(ts) {
 }
 function escHtml(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ── SPARKLINES ── */
+function renderSparkline(svgId, data, colour) {
+  const svg = document.getElementById(svgId);
+  if (!svg) return;
+  const line = svg.querySelector('.spark-line');
+  if (!data || data.length === 0) { line.setAttribute('points', ''); return; }
+  const max = Math.max(...data, 1);
+  const w = 60, h = 24;
+  const pts = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * w;
+    const y = h - (v / max) * (h - 4) - 2;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  line.setAttribute('points', pts);
+  if (colour) line.setAttribute('stroke', colour);
+}
+
+function get7DayBuckets(events) {
+  const buckets = Array(7).fill(0);
+  const now = Date.now();
+  (events || []).forEach(e => {
+    const daysAgo = Math.floor((now - e.ts) / 86400000);
+    if (daysAgo >= 0 && daysAgo < 7) buckets[6 - daysAgo]++;
+  });
+  return buckets;
+}
+
+/* ── NUDGE CARD ── */
+function evaluateNudge() {
+  const dismissed = JSON.parse(localStorage.getItem('able_dismissed_nudges') || '[]');
+  const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+  const fans = JSON.parse(localStorage.getItem('able_fans') || '[]');
+
+  const nudges = [
+    () => {
+      if (!profile.releaseDate) return null;
+      const daysLeft = Math.ceil((new Date(profile.releaseDate) - Date.now()) / 86400000);
+      if (daysLeft > 0 && daysLeft <= 14 && profile.primaryCta !== 'presave') {
+        return {
+          id: 'presave-cta',
+          text: `${daysLeft} day${daysLeft !== 1 ? 's' : ''} to release — your hero button isn't set to Pre-save.`,
+          action: 'Switch to Pre-save →',
+          href: '/able-v7.html?edit=1'
+        };
+      }
+      return null;
+    },
+    () => {
+      const confirmedFans = fans.filter(f => f.confirmed !== false).length;
+      if (confirmedFans >= 80 && confirmedFans < 100) {
+        return {
+          id: 'fan-limit',
+          text: `Your list is nearly full — ${confirmedFans} people who asked to hear from you.`,
+          action: "Don't leave them waiting →",
+          href: '#upgrade'
+        };
+      }
+      return null;
+    },
+    () => {
+      const shows = JSON.parse(localStorage.getItem('able_shows') || '[]');
+      if (shows.length === 0 && !dismissed.includes('add-show')) {
+        return {
+          id: 'add-show',
+          text: 'Playing anywhere soon? Add a show — fans on your page see it automatically.',
+          action: 'Add a show →',
+          href: '#shows'
+        };
+      }
+      return null;
+    }
+  ];
+
+  for (const fn of nudges) {
+    const n = fn();
+    if (n && !dismissed.includes(n.id)) {
+      showNudge(n);
+      return;
+    }
+  }
+  document.getElementById('nudgeCard').style.display = 'none';
+}
+
+function showNudge({ id, text, action, href }) {
+  const card = document.getElementById('nudgeCard');
+  document.getElementById('nudgeText').textContent = text;
+  const actionEl = document.getElementById('nudgeAction');
+  actionEl.textContent = action;
+  actionEl.href = href;
+  card.style.display = 'flex';
+  card.dataset.nudgeId = id;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const dismissBtn = document.getElementById('nudgeDismiss');
+  if (dismissBtn) {
+    dismissBtn.addEventListener('click', () => {
+      const id = document.getElementById('nudgeCard').dataset.nudgeId;
+      if (id) {
+        const dismissed = JSON.parse(localStorage.getItem('able_dismissed_nudges') || '[]');
+        if (!dismissed.includes(id)) dismissed.push(id);
+        localStorage.setItem('able_dismissed_nudges', JSON.stringify(dismissed));
+      }
+      document.getElementById('nudgeCard').style.display = 'none';
+    });
+  }
+});
+
+/* ── TWO-COLUMN FAN BODY ── */
+function normaliseSource(source) {
+  const s = (source || '').toLowerCase();
+  if (s.includes('instagram') || s === 'ig') return 'ig';
+  if (s.includes('tiktok') || s === 'tt') return 'tt';
+  if (s.includes('spotify') || s === 'sp') return 'sp';
+  return 'direct';
+}
+
+function renderFanBody() {
+  const fans = JSON.parse(localStorage.getItem('able_fans') || '[]');
+  const clicks = JSON.parse(localStorage.getItem('able_clicks') || '[]');
+
+  const recent = [...fans].filter(f => f.confirmed !== false).sort((a, b) => b.ts - a.ts).slice(0, 5);
+  const fansList = document.getElementById('latestFansList');
+  if (fansList) {
+    const colours = ['#e05242','#4e7cff','#9b59b6','#27ae60','#e67e22'];
+    fansList.innerHTML = recent.length ? recent.map(f => {
+      const initial = (f.email || '?')[0].toUpperCase();
+      const src = normaliseSource(f.source);
+      const colour = colours[initial.charCodeAt(0) % colours.length];
+      const timeAgo = relTime(f.ts);
+      return `<div class="fan-row">
+        <div class="fan-avatar" style="background:${colour}">${initial}</div>
+        <span class="fan-email">${escHtml(f.email || '')}</span>
+        <span class="source-badge ${src}">${src.toUpperCase()}</span>
+        <span class="fan-time">${timeAgo}</span>
+      </div>`;
+    }).join('') : '<div style="color:#aaa;font-size:12px;padding:4px 0;">No fans yet — share your link.</div>';
+  }
+
+  const viewAll = document.getElementById('viewAllFansLink');
+  const confirmedCount = fans.filter(f => f.confirmed !== false).length;
+  if (viewAll) viewAll.textContent = `View all ${confirmedCount} fans →`;
+
+  const midnight = new Date(); midnight.setHours(0,0,0,0);
+  const todayClicks = clicks.filter(c => c.ts >= midnight.getTime());
+  const tapCounts = {};
+  todayClicks.forEach(c => { tapCounts[c.label] = (tapCounts[c.label] || 0) + 1; });
+  const sorted = Object.entries(tapCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const tapsList = document.getElementById('tapsTodayList');
+  if (tapsList) {
+    tapsList.innerHTML = sorted.length ? sorted.map(([label, count]) =>
+      `<div class="tap-row">
+        <span class="tap-label">${escHtml(label)}</span>
+        <span class="tap-count">${count}</span>
+      </div>`
+    ).join('') : '<div style="color:#aaa;font-size:12px;padding:4px 0;">No taps today yet.</div>';
+  }
 }
 
 /* ── CAMPAIGN HQ ── */
@@ -3850,6 +4157,11 @@ function loadRealStats() {
         <div style="font-size:12px;color:var(--text);width:30px;text-align:right;">${count}</div>
       </div>`).join('');
   }
+
+  // Sparklines
+  renderSparkline('spark-views',  get7DayBuckets(views),  'var(--dash-amber)');
+  renderSparkline('spark-fans',   get7DayBuckets(fans),   'var(--dash-green)');
+  renderSparkline('spark-clicks', get7DayBuckets(clicks), '#999');
 }
 
 /* ── LIVE ACTIVITY FEED ── */
@@ -4208,6 +4520,8 @@ window.addEventListener('DOMContentLoaded', () => {
   initCampaignHQ();
   loadRealStats();
   loadActivityFeed();
+  renderFanBody();
+  evaluateNudge();
   updateFanPageStats();
   renderAdminMusic();
   renderAdminEvents();
