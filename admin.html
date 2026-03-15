@@ -1308,6 +1308,123 @@ body::before {
   color: var(--t2, rgba(255,255,255,.45));
   margin-top: 6px;
 }
+
+/* ── ADMIN BOTTOM SHEET ── */
+.admin-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1000;
+}
+.admin-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 14px 14px 0 0;
+  border-top: 1.5px solid var(--dash-border, #d4cfc8);
+  z-index: 1001;
+  max-height: 80vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.admin-sheet:not([hidden]) { transform: translateY(0); }
+.admin-sheet-handle {
+  width: 28px;
+  height: 3px;
+  background: #e0dbd4;
+  border-radius: 2px;
+  margin: 10px auto 0;
+}
+.admin-sheet-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0ede8;
+}
+.admin-sheet-icon { font-size: 16px; }
+.admin-sheet-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a2e;
+  flex: 1;
+}
+.admin-sheet-close {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.admin-sheet-body { padding: 16px; }
+
+/* Elements used inside admin sheet body */
+.fan-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.fan-detail-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 16px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.fan-detail-email { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+.fan-detail-meta { font-size: 11px; color: #aaa; }
+.fan-detail-stats { font-size: 13px; color: #555; margin-bottom: 16px; }
+.fan-detail-actions { display: flex; flex-direction: column; gap: 10px; }
+.btn-locked {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f5f2ee;
+  border: 1px solid #e0dbd4;
+  color: #aaa;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: not-allowed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.lock-badge {
+  font-size: 10px;
+  background: #f4b942;
+  color: #1a1a2e;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.btn-danger {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  background: #fff0ef;
+  border: 1px solid #f8b4af;
+  color: #c04030;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.locked-feature {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.locked-feature .btn-locked { flex: 1; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
@@ -4561,6 +4678,12 @@ window.addEventListener('DOMContentLoaded', () => {
     const bar = document.getElementById('upgradeBar');
     if (bar) bar.style.display = 'none';
   }
+
+  // Admin sheet close button listeners
+  const closeBtn = document.getElementById('adminSheetClose');
+  const backdrop = document.getElementById('adminSheetBackdrop');
+  if (closeBtn) closeBtn.addEventListener('click', closeAdminSheet);
+  if (backdrop) backdrop.addEventListener('click', closeAdminSheet);
 });
 
 function dismissUpgradeBar() {
@@ -4997,6 +5120,20 @@ function selectFeel(btn) {
   initIdentityCard();
 }
 
+/* ── ADMIN BOTTOM SHEET ── */
+function openAdminSheet(icon, title, bodyHTML) {
+  document.getElementById('adminSheetIcon').textContent = icon;
+  document.getElementById('adminSheetTitle').textContent = title;
+  document.getElementById('adminSheetBody').innerHTML = bodyHTML;
+  document.getElementById('adminSheet').hidden = false;
+  document.getElementById('adminSheetBackdrop').hidden = false;
+}
+
+function closeAdminSheet() {
+  document.getElementById('adminSheet').hidden = true;
+  document.getElementById('adminSheetBackdrop').hidden = true;
+}
+
 /* ── TOAST ── */
 let _toastTimer;
 function showToast(msg) {
@@ -5055,6 +5192,18 @@ function dismissFirstRun() {
   if (frc) { frc.style.opacity = '0'; frc.style.transition = 'opacity .3s'; setTimeout(() => frc.hidden = true, 300); }
 }
 </script>
+
+<!-- Admin shared bottom sheet -->
+<div class="admin-sheet-backdrop" id="adminSheetBackdrop" hidden></div>
+<div class="admin-sheet" id="adminSheet" role="dialog" aria-modal="true" aria-labelledby="adminSheetTitle" hidden>
+  <div class="admin-sheet-handle" aria-hidden="true"></div>
+  <div class="admin-sheet-header">
+    <span class="admin-sheet-icon" id="adminSheetIcon"></span>
+    <span class="admin-sheet-title" id="adminSheetTitle"></span>
+    <button class="admin-sheet-close" id="adminSheetClose" aria-label="Close">✕</button>
+  </div>
+  <div class="admin-sheet-body" id="adminSheetBody"></div>
+</div>
 
 <div id="adminToast" role="status" aria-live="polite"></div>
 </body>
