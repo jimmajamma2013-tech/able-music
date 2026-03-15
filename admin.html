@@ -3358,6 +3358,7 @@ function openAddShowSheet() {
       shows.push({ venue, date, doorsTime, ticketUrl, featured: false });
       shows.sort((a, b) => a.date.localeCompare(b.date));
       localStorage.setItem('able_shows', JSON.stringify(shows));
+      syncProfile(safeLS(V3_KEY, {}));
       closeAdminSheet();
       renderShowsList();
     });
@@ -3392,6 +3393,7 @@ function removeShow(index) {
   const shows = JSON.parse(localStorage.getItem('able_shows') || '[]');
   shows.splice(index, 1);
   localStorage.setItem('able_shows', JSON.stringify(shows));
+  syncProfile(safeLS(V3_KEY, {}));
   renderShowsList();
 }
 
