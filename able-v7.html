@@ -2474,7 +2474,16 @@
       writing-mode: horizontal-tb;
     }
 
-    .btn-show:hover { opacity: 0.88; }
+    @media (hover: hover) and (pointer: fine) {
+      .btn-show:hover {
+        background: color-mix(in srgb, var(--color-accent) 82%, white 18%);
+      }
+    }
+    .btn-show:active,
+    .btn-show.pressing {
+      background: color-mix(in srgb, var(--color-accent) 72%, white 28%);
+      transform: scale(0.97);
+    }
 
     .show-item__sold-out-badge {
       display: flex;
@@ -3296,10 +3305,20 @@
       object-fit: cover;
       display: block;
       opacity: 0;
-      transition: opacity var(--dur-slow) var(--ease-decel);
+      transition: opacity var(--dur-slow) var(--ease-decel),
+                  transform 300ms var(--ease-decel);
     }
 
     .merch-item__image.loaded { opacity: 1; }
+
+    @media (hover: hover) and (pointer: fine) {
+      .merch-item:hover .merch-item__image.loaded {
+        transform: scale(1.04);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .merch-item:hover .merch-item__image.loaded { transform: none; }
+    }
 
     .merch-item__emoji {
       position: absolute;
@@ -7960,7 +7979,19 @@
       if (!section || !list) return
 
       const recs = (profile.recommendations || []).slice(0, 5)
-      if (!recs.length) return
+      if (!recs.length) {
+        if (getIsOwner(profile)) {
+          list.innerHTML = `<div class="section-empty">
+            <div class="section-empty__circle" aria-hidden="true">🎵</div>
+            <p class="section-empty__eyebrow">Only you can see this</p>
+            <p class="section-empty__headline">Recommend other artists.</p>
+            <p class="section-empty__sub">Artists you rate. Fans who love you will find them here.</p>
+            <a class="section-empty__action pressable" href="admin.html">Add recommendations →</a>
+          </div>`
+          section.hidden = false
+        }
+        return
+      }
 
       list.innerHTML = ''
       recs.forEach(rec => {
