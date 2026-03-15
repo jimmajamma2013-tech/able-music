@@ -1637,7 +1637,7 @@
       <div class="v3-panel is-active" id="panel-home" role="tabpanel" aria-labelledby="tab-home">
         <!-- Artwork Hero -->
         <div class="v3-hero" id="v3Hero">
-          <div class="v3-hero__image" id="v3HeroImage">
+          <div class="v3-hero__image" id="v3HeroImage" role="img">
             <div class="v3-hero__gradient-placeholder"></div>
           </div>
           <div class="v3-hero__scrim"></div>
@@ -1714,7 +1714,7 @@
         </div>
 
         <!-- Snap Feed — contextual moment cards -->
-        <div class="v3-snap-feed" id="v3SnapFeed" aria-label="Moments"></div>
+        <div class="v3-snap-feed" id="v3SnapFeed" role="region" aria-label="Quick updates"></div>
 
         <!-- Snap card placeholder — owner only -->
         <div class="v3-ph" id="v3PhSnaps">
@@ -1799,10 +1799,8 @@
           <div class="v3-stay-close__note" id="v3FanNote">No noise. Unsubscribe any time.</div>
         </div>
 
-        <!-- Engagement Nudge -->
-        <div class="v3-engage">
-          Drop a comment on my latest — <strong>it genuinely helps.</strong>
-        </div>
+        <!-- Engagement Nudge — filled dynamically by applyProfile -->
+        <div class="v3-engage" id="v3Engage"></div>
 
         <!-- Theme switcher (dev helper) -->
         <div style="padding:16px var(--space-page) 8px;">
@@ -1986,7 +1984,7 @@
 
       </div><!-- /.v3-admin-body -->
       <div class="v3-admin-footer">
-        <button class="v3-cta v3-cta--primary" id="v3AdminSave" style="width:100%;">Save changes</button>
+        <button class="v3-cta v3-cta--primary" id="v3AdminSave" style="width:100%;">Save</button>
       </div>
     </div><!-- /.v3-admin-sheet -->
   </div><!-- /.v3-admin-overlay -->
@@ -2163,9 +2161,7 @@
             { num: 5, title: 'Open Water',   duration: '5:01' },
             { num: 6, title: 'Drift',        duration: '3:57' },
           ],
-          credits: [
-            { name: 'Edit in Admin',  role: 'Replace with your credits' },
-          ],
+          credits: [],
         },
       ],
       events: [
@@ -2624,7 +2620,7 @@
       const support = data.support || {};
       const packs = (support.packs || []).filter(p => p.label);
 
-      let html = `<div class="v3-panel-header"><h2>Support</h2><p>Help the music keep going</p></div>`;
+      let html = `<div class="v3-panel-header"><h2>Support</h2><p>Direct support</p></div>`;
 
       if (!support.enabled || !packs.length) {
         html += `
@@ -2715,6 +2711,21 @@
       setText('v3ArtistMeta', metaParts.join(' · '));
       setText('v3ArtistBio', data.bio);
       setText('v3HeroTag', data.heroTag || 'Out Now');
+
+      // Hero image accessibility
+      const heroEl = document.getElementById('v3HeroImage');
+      if (heroEl) heroEl.setAttribute('aria-label', `${data.name || 'Artist'} — profile artwork`);
+
+      // Engagement nudge — references release title if available
+      const nudgeEl = document.getElementById('v3Engage');
+      if (nudgeEl) {
+        const nudgeTitle = data.release?.title || (data.releases && data.releases[0]?.title);
+        if (nudgeTitle && nudgeTitle !== V3_DEFAULTS.release.title) {
+          nudgeEl.innerHTML = `Drop a comment on <strong>${nudgeTitle}</strong> — it genuinely helps.`;
+        } else {
+          nudgeEl.innerHTML = `Drop a comment on my latest — <strong>it genuinely helps.</strong>`;
+        }
+      }
 
       // CTAs
       const primary = document.getElementById('v3CtaPrimary');
@@ -2918,13 +2929,22 @@
     function openAdmin() {
       populateAdmin(safeGet(V3_KEY, V3_DEFAULTS));
       adminOverlay.removeAttribute('hidden');
-      requestAnimationFrame(() => adminOverlay.classList.add('is-open'));
+      requestAnimationFrame(() => {
+        adminOverlay.classList.add('is-open');
+        // Move focus to first input after animation settles
+        setTimeout(() => {
+          const first = adminSheet.querySelector('input, textarea, button:not(.v3-admin-head__done)');
+          if (first) first.focus();
+        }, 350);
+      });
     }
 
     function closeAdmin() {
       adminOverlay.classList.remove('is-open');
       adminSheet.addEventListener('transitionend', () => {
         adminOverlay.setAttribute('hidden', '');
+        // Return focus to admin button
+        document.getElementById('v3AdminBtn')?.focus();
       }, { once: true });
     }
 
@@ -3331,14 +3351,15 @@
     initSnapFeed();
     initWelcomeBanner();
 
-    // Fan count social proof — show "Join X others" when count > 0
+    // Fan count social proof — only shown when locally meaningful (≥3 signups)
     (function() {
       try {
         const fans = JSON.parse(localStorage.getItem('able_fans') || '[]');
-        if (fans.length > 0) {
-          const note = document.getElementById('v3FanNote');
-          if (note) note.textContent = `Join ${fans.length.toLocaleString()} ${fans.length === 1 ? 'person' : 'people'} already close. No noise. Unsubscribe any time.`;
+        const note = document.getElementById('v3FanNote');
+        if (note && fans.length >= 3) {
+          note.textContent = `${fans.length} people have signed up from this link. No noise. Unsubscribe any time.`;
         }
+        // Otherwise keep default HTML copy ("No noise. Unsubscribe any time.")
       } catch(e) {}
     })();
   </script>
