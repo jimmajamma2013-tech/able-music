@@ -34,6 +34,9 @@
 [hidden] { display: none !important; }
 *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
 html { font-size:16px; }
+/* ── FOCUS VISIBILITY (WCAG 2.2 AA) ── */
+*:focus:not(:focus-visible) { outline: none; }
+*:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
 body {
   background:var(--bg); color:var(--text);
   font-family:var(--font); min-height:100vh;
@@ -1972,8 +1975,8 @@ body::before {
         </div>
         <div class="dc-body" style="padding:0;">
           <div style="display:flex;gap:8px;padding:12px 18px;border-bottom:1px solid var(--border);">
-            <input style="flex:1;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);font-size:12px;font-family:var(--font);outline:none;" placeholder="Search fans…" oninput="filterFans(this.value)">
-            <select style="padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--t2);font-size:12px;font-family:var(--font);outline:none;" onchange="filterFanLevel(this.value)">
+            <input style="flex:1;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);font-size:12px;font-family:var(--font);" placeholder="Search fans…" oninput="filterFans(this.value)">
+            <select style="padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--t2);font-size:12px;font-family:var(--font);" onchange="filterFanLevel(this.value)">
               <option value="">All fans</option>
               <option value="superfan">Core fans</option>
               <option value="supporter">Supporters</option>
@@ -3014,7 +3017,7 @@ function renderSnapCardsList() {
           <div class="snap-actions">
             <button class="snap-btn${isPublished?' published':''}" onclick="toggleSnapPublished('${card.id}')">${isPublished?'Live':'Hidden'}</button>
             <button class="snap-btn" onclick="toggleSnapEdit('${card.id}')">Edit</button>
-            <button class="snap-btn del" onclick="removeSnapCard('${card.id}')">×</button>
+            <button class="snap-btn del" onclick="removeSnapCard('${card.id}')" aria-label="Remove snap card" title="Remove">×</button>
           </div>
         </div>
         <div class="snap-item-edit" id="snap-edit-${card.id}" hidden>
@@ -3163,7 +3166,7 @@ function renderRecsList() {
         </div>
         <div class="snap-actions">
           <button class="snap-btn" onclick="toggleRecEdit(${i})">Edit</button>
-          <button class="snap-btn del" onclick="removeRec(${i})">×</button>
+          <button class="snap-btn del" onclick="removeRec(${i})" aria-label="Remove recommendation" title="Remove">×</button>
         </div>
       </div>
       <div class="snap-item-edit" id="rec-edit-${i}" hidden>
