@@ -4286,6 +4286,32 @@
       transition: background-color 0.4s var(--ease-decel);
     }
 
+    /* H5 — Glass depth deepens on card press (glass theme only) */
+    [data-theme="glass"] .release-card,
+    [data-theme="glass"] .snap-card,
+    [data-theme="glass"] .event-card,
+    [data-theme="glass"] .merch-item,
+    [data-theme="glass"] .support-pack {
+      transition: backdrop-filter 80ms var(--ease-decel),
+                  transform var(--dur-fast) var(--ease-decel);
+    }
+    [data-theme="glass"] .release-card:active,
+    [data-theme="glass"] .snap-card:active,
+    [data-theme="glass"] .event-card:active,
+    [data-theme="glass"] .merch-item:active,
+    [data-theme="glass"] .support-pack:active {
+      backdrop-filter: blur(36px) saturate(200%);
+    }
+
+    /* B19 — Card tilt on hover (glass theme, desktop pointer only) */
+    @media (hover: hover) and (pointer: fine) {
+      [data-theme="glass"] .card-tilt {
+        transition: transform 120ms ease-out;
+        transform-style: preserve-3d;
+        will-change: transform;
+      }
+    }
+
     /* Reduced motion — override bloom stagger */
     @media (prefers-reduced-motion: reduce) {
       .release-card, .show-item, .merch-item, .support-pack, .snap-card, .fan-capture {
@@ -6091,6 +6117,111 @@
           ticking = false
         })
       }, { passive: true })
+    }
+
+    // === I7 — TAB SCROLL SYNC ====================================
+    // As the user scrolls, update the active tab to reflect the most visible section.
+    // Uses IntersectionObserver on the scroll container root so it tracks the
+    // actual scroll viewport (not the window).
+
+    function initTabScrollSync() {
+      const scrollRoot = document.getElementById('scroll-container')
+      const tabBar = document.getElementById('tab-bar')
+      if (!scrollRoot || !tabBar) return
+
+      // Section → tab id mapping
+      const SECTION_TAB = {
+        'listen-section':  'tab-music',
+        'shows-section':   'tab-shows',
+        'merch-section':   'tab-merch',
+        'support-section': 'tab-support',
+      }
+
+      // Track which sections are currently intersecting + their ratio
+      const sectionRatios = {}
+      let scrollLocked = false  // Don't update during programmatic scrolls
+
+      const tabs = tabBar.querySelectorAll('.tab-btn')
+
+      function setActiveTab(tabId) {
+        tabs.forEach(t => {
+          const isTarget = t.id === tabId
+          t.setAttribute('aria-selected', String(isTarget))
+          t.setAttribute('tabindex', isTarget ? '0' : '-1')
+        })
+      }
+
+      function resolveBestTab() {
+        // Find the visible section with highest intersection ratio
+        let bestSection = null
+        let bestRatio = 0
+        for (const [sectionId, ratio] of Object.entries(sectionRatios)) {
+          if (ratio > bestRatio) { bestRatio = ratio; bestSection = sectionId }
+        }
+        // If we're near the top (no section prominent), go back to Home
+        if (bestRatio < 0.12) {
+          setActiveTab('tab-home')
+          return
+        }
+        const targetTab = SECTION_TAB[bestSection]
+        if (targetTab) setActiveTab(targetTab)
+        else setActiveTab('tab-home')
+      }
+
+      const sections = Object.keys(SECTION_TAB)
+        .map(id => document.getElementById(id))
+        .filter(Boolean)
+
+      if (!sections.length) return
+
+      const observer = new IntersectionObserver((entries) => {
+        if (scrollLocked) return
+        entries.forEach(e => {
+          sectionRatios[e.target.id] = e.intersectionRatio
+        })
+        resolveBestTab()
+      }, {
+        root: scrollRoot,
+        rootMargin: '0px 0px -30% 0px',
+        threshold: [0, 0.12, 0.3, 0.5, 0.8, 1.0],
+      })
+
+      sections.forEach(s => observer.observe(s))
+
+      // Pause sync during programmatic tab-click scrolls (700ms)
+      tabBar.addEventListener('click', () => {
+        scrollLocked = true
+        setTimeout(() => { scrollLocked = false }, 700)
+      })
+    }
+
+    // === B19 — GLASS CARD TILT (desktop hover, glass theme only) ====
+
+    function initGlassCardTilt() {
+      // Only on devices that support hover (desktop pointer)
+      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
+      const shell = document.getElementById('app-shell')
+      if (!shell || shell.dataset.theme !== 'glass') return
+
+      const TILT_MAX = 5 // degrees
+      const cards = document.querySelectorAll('.release-card, .snap-card, .event-card')
+
+      cards.forEach(card => {
+        card.classList.add('card-tilt')
+        card.addEventListener('mousemove', e => {
+          const r = card.getBoundingClientRect()
+          const cx = r.left + r.width / 2
+          const cy = r.top + r.height / 2
+          const dx = (e.clientX - cx) / (r.width / 2)
+          const dy = (e.clientY - cy) / (r.height / 2)
+          const rx = (-dy * TILT_MAX).toFixed(2)
+          const ry = ( dx * TILT_MAX).toFixed(2)
+          card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.015)`
+        })
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = ''
+        })
+      })
     }
 
     // === GLOBAL PRESS SCALE INIT =================================
@@ -8533,6 +8664,8 @@
       // Boot UI systems
       initTabBar(shell)
       initScrollHide()
+      initTabScrollSync()
+      initGlassCardTilt()
       initPressScale()
       initBackGesture()
       initKeyboardAvoid()
