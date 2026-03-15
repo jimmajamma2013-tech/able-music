@@ -1,5 +1,7 @@
 # ABLE — Claude Code Project Guide
-**Last updated: 2026-03-13**
+**Last updated: 2026-03-15**
+
+> **Start every session by reading `CONTEXT.md` first** — it's the fast-orientation file with tokens, rules, and active file list. Then check `docs/STATUS.md` for current build state.
 
 ## What this project is
 
@@ -17,13 +19,18 @@ ABLE (Artist Before Label) is a premium mobile-first platform for independent mu
 
 | File | Role | Status |
 |---|---|---|
-| `able-v3.html` | **Artist public profile** — the fan-facing page | ACTIVE — edit this |
+| `able-v7.html` | **Artist public profile** — the fan-facing page | ACTIVE — edit this |
 | `admin.html` | **Artist dashboard** — where artists manage everything | ACTIVE — edit this |
 | `start.html` | **Onboarding wizard** — how new artists set up | ACTIVE — edit this |
 | `landing.html` | **Marketing landing page** — able.fm homepage | ACTIVE — edit this |
 | `index.html` | Redirect only | DO NOT EDIT |
-| `able-merged.html` | Legacy v1 reference only | DO NOT EDIT |
-| `able-v2.html` | Abandoned | IGNORE |
+| `_archive/able-merged.html` | Legacy v1 reference only | DO NOT EDIT |
+| `_archive/able-v2.html` | Abandoned | IGNORE |
+| `_archive/able-v4.html` | Superseded | IGNORE |
+| `_archive/able-v5.html` | Superseded | IGNORE |
+| `able-v3.html` | Superseded by v7 | DO NOT EDIT |
+| `able-v6.html` | Superseded by v7 | DO NOT EDIT |
+| `screenshots/` | Playwright audit output | NEVER reference in code |
 
 **No build pipeline. No bundler. No npm. All files edited directly.**
 
@@ -39,6 +46,9 @@ ABLE (Artist Before Label) is a premium mobile-first platform for independent mu
 | `able_views` | Page view events [{ts, source}] | able-v3.html, admin.html |
 | `able_gig_expires` | Unix timestamp when gig mode expires | admin.html |
 | `able_profile` | Wizard output (legacy, merged into able_v3_profile) | start.html → admin.html |
+| `able_shows` | Shows list `[{ venue, date, doorsTime, ticketUrl, featured }]` | admin.html, able-v7.html |
+| `able_dismissed_nudges` | Dismissed nudge IDs `['presave-cta', 'add-show', ...]` | admin.html |
+| `able_starred_fans` | Starred fan email strings `['fan@example.com', ...]` | admin.html |
 
 **All localStorage keys will map 1:1 to Supabase table rows when backend is added. Do not rename keys.**
 
@@ -171,7 +181,7 @@ When backend is added:
 ## Working rules for autonomous development
 
 1. **Parse check every JS block** after editing — use `node -e "new Function(src)"` pattern
-2. **Never touch index.html or able-merged.html**
+2. **Never touch index.html or anything in _archive/**
 3. **Mobile-first**: min 44px tap targets, no horizontal scroll at 375px, iframe containment
 4. **Tokenised CSS only** — no inline styles except where dynamic JS requires it
 5. **Verify all 4 themes** work after any CSS change
@@ -187,6 +197,8 @@ When backend is added:
 
 | File | What's in it |
 |---|---|
+| `CONTEXT.md` | **Read first every session** — fast orientation, tokens, active files, rules |
+| `docs/STATUS.md` | **Current build state** — what's built, what's next, known issues |
 | `docs/v6/core/V6_BUILD_AUTHORITY.md` | **Primary authority** — all resolved decisions for v6 |
 | `docs/v6/00_AUTHORITY_ORDER.md` | Precedence order — read this first |
 | `docs/v6/core/VISUAL_SYSTEM.md` | 7 genre vibes, fonts, accent suggestions |
