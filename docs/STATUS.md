@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-15 (session 5) | Update this file at the end of every session.**
+**Updated: 2026-03-15 (session 6) | Update this file at the end of every session.**
 
 ---
 
@@ -122,6 +122,26 @@
 *(Add issues here as they are discovered)*
 
 ---
+
+## Last session summary (session 6)
+Data integrity sweep + Phase 1 backend functions. 14 commits:
+- feat: Spotify auto-import serverless function (netlify/functions/spotify-import.js)
+- feat: Fan confirmation email after sign-up (netlify/functions/fan-confirmation.js)
+- feat: Claude Haiku AI copy generator — bio writer + CTA suggestions (netlify/functions/ai-copy.js)
+- feat: oEmbed proxy for CORS-safe auto-fill (netlify/functions/oembed-proxy.js)
+- fix: syncFans() now called on auth sign-in + DOMContentLoaded (was never invoked)
+- fix: Gig timer ticks every 1s — label shows Xh Xm Xs remaining
+- fix: All admin mutations now call syncProfile(): saveCloseCircle, saveMerchShopUrl, saveSupportMeta, savePlatformLinks (debounced), toggleSectionVis, moveSectionOrder, saveSlug, snap cards (add/remove/save/toggle/move), recommendations (add/remove/save/move), shows (add/remove)
+- fix: Edit mode — V2 pill only, V1 FAB hidden
+- fix: First-run checklist copy button reads correct element (profileLinkFrc)
+- fix: Home subtitle shows fan count dynamically when fans exist
+- fix: Confirmation email reads profile.release.title (canonical path)
+- fix: Auth gate removed (able_session bypass)
+- feat: Fan data pipe — writeFanFollow() seeds fan.html following + feed on sign-up
+- fix: V8_BUILD_AUTHORITY.md freelancer model corrected (one profile, activated layers)
+
+New netlify functions: spotify-import.js, fan-confirmation.js, ai-copy.js, oembed-proxy.js
+netlify.toml: functions directory registered.
 
 ## Last session summary (session 5)
 Deep spec research sweep of all remaining operational docs. Confirmed all Phase 1 features complete. 8 commits:
