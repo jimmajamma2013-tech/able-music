@@ -2958,7 +2958,11 @@ async function syncProfile(data) {
       merch:              data.merch             ? JSON.stringify(data.merch)             : null,
       support:            data.support           ? JSON.stringify(data.support)           : null,
       section_visibility: data.sectionVisibility ? JSON.stringify(data.sectionVisibility) : null,
+      section_order:      data.sectionOrder      ? JSON.stringify(data.sectionOrder)      : null,
       snap_cards:         data.snapCards         ? JSON.stringify(data.snapCards)         : null,
+      recommendations:    data.recommendations   ? JSON.stringify(data.recommendations)   : null,
+      moments:            data.moments           ? JSON.stringify(data.moments)           : null,
+      close_circle:       data.closeCircle       ? JSON.stringify(data.closeCircle)       : null,
       shows:              shows.length           ? JSON.stringify(shows)                  : null,
       updated_at:         Date.now(),
     }, { onConflict: 'id' });
