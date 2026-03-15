@@ -1064,6 +1064,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   margin-bottom: 8px;
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 
@@ -1233,15 +1234,27 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
         Your page: <strong id="v2SlugText">able.fm/artist</strong>
       </div>
 
-      <div class="step-nav" style="flex-direction:column;gap:10px;">
-        <button class="btn-next" style="background:#f4b942;color:#121a24;width:100%;padding:14px;font-size:15px;" onclick="tryStep3()">
-          Make it real →
-        </button>
-        <p style="font-size:11px;color:var(--t3);text-align:center;margin:0;">Magic link — no password needed.</p>
+      <div id="step3Form">
+        <div class="step-nav" style="flex-direction:column;gap:10px;">
+          <button class="btn-next" style="background:#f4b942;color:#121a24;width:100%;padding:14px;font-size:15px;" onclick="tryStep3()">
+            Make it real →
+          </button>
+          <p style="font-size:11px;color:var(--t3);text-align:center;margin:0;">Magic link — no password needed.</p>
+        </div>
+        <div class="step-nav" style="margin-top:8px;">
+          <button class="btn-back" onclick="goToStep('step2')">← Back</button>
+        </div>
       </div>
 
-      <div class="step-nav" style="margin-top:8px;">
-        <button class="btn-back" onclick="goToStep('step2')">← Back</button>
+      <div id="step3Sent" style="display:none;">
+        <div class="auth-magic-sent">
+          <div style="font-size:28px;margin-bottom:12px;">✉️</div>
+          <p style="font-size:15px;font-weight:600;color:var(--text);margin:0 0 8px;">Check your inbox.</p>
+          <p style="font-size:13px;color:var(--t2);margin:0 0 4px;">We sent a link to <strong id="step3SentEmail" style="color:var(--text);"></strong></p>
+          <p style="font-size:12px;color:var(--t3);margin:0;">Click it and you'll land straight in your dashboard.</p>
+        </div>
+        <p style="font-size:11px;color:var(--t3);text-align:center;margin:16px 0 8px;">Can't find it? Try your spam folder, or search for "able.fm".</p>
+        <button class="auth-skip" onclick="goToStep('stepDone')">Continue without signing in →</button>
       </div>
     </div>
 
@@ -1372,6 +1385,11 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 </div>
 
 <script>
+/* ── SUPABASE ── */
+const SB_URL = 'https://jgspraqrnjrerzhnnhtb.supabase.co';
+const SB_KEY = 'sb_publishable_pRmYph3-GYIeZEeKyY1_sg_5sOPkQp_';
+const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null;
+
 /* ═══════════════════════════════════════════════════════════
    ABLE — Onboarding V2 Wizard
    Steps: A (Spotify) → 1 (Identity) → 2 (Moment) → 3 (Email) → Done
@@ -1602,7 +1620,7 @@ function tryStep3() {
   const draft = getDraft();
   const slug  = makeSlug(draft.name || '');
 
-  // Write to localStorage
+  // Always write to localStorage first — profile persists even if auth is slow
   const profile = {
     name:          draft.name   || '',
     vibe:          draft.vibe   || '',
@@ -1624,11 +1642,28 @@ function tryStep3() {
   };
   localStorage.setItem('able_v3_profile', JSON.stringify(profile));
   localStorage.setItem('able_session', 'local-' + Date.now());
-
-  // Clear draft
   sessionStorage.removeItem('able_wizard_draft');
 
-  goToStep('stepDone');
+  // Send magic link via Supabase — show magic-sent state on success, proceed to done on failure
+  if (sb) {
+    const redirectTo = window.location.origin + '/admin.html';
+    sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo, shouldCreateUser: true } })
+      .then(({ error }) => {
+        if (error) {
+          // Auth failed gracefully — still proceed to done screen
+          console.warn('Magic link error:', error.message);
+          goToStep('stepDone');
+          return;
+        }
+        // Show magic-sent state
+        const sentEl = document.getElementById('step3SentEmail');
+        if (sentEl) sentEl.textContent = email;
+        document.getElementById('step3Form').style.display = 'none';
+        document.getElementById('step3Sent').style.display = 'block';
+      });
+  } else {
+    goToStep('stepDone');
+  }
 }
 
 /* ══════════════════════════════════════════════════════

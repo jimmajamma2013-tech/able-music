@@ -2848,6 +2848,20 @@ const SB_URL = 'https://jgspraqrnjrerzhnnhtb.supabase.co';
 const SB_KEY = 'sb_publishable_pRmYph3-GYIeZEeKyY1_sg_5sOPkQp_';
 const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null;
 
+/* ── AUTH ── */
+if (sb) {
+  sb.auth.onAuthStateChange((event, session) => {
+    if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user) {
+      // Use Supabase user ID as the canonical artist ID
+      const uid = session.user.id;
+      localStorage.setItem('able_artist_id', uid);
+      // Sync whatever profile is in localStorage up to Supabase under the real user ID
+      const stored = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+      if (stored.name) syncProfile(stored);
+    }
+  });
+}
+
 function getArtistId() {
   let id = localStorage.getItem('able_artist_id');
   if (!id) { id = crypto.randomUUID(); localStorage.setItem('able_artist_id', id); }
