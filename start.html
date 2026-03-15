@@ -110,6 +110,15 @@ body::before {
   from { opacity:0; transform:translateY(22px); }
   to   { opacity:1; transform:none; }
 }
+/* D18 — directional step entrance: forward from right, back from left */
+.step.enter-fwd  { animation: stepIn-fwd  .34s var(--spring) both; }
+.step.enter-back { animation: stepIn-back .34s var(--spring) both; }
+@keyframes stepIn-fwd  { from { opacity:0; transform:translateX(28px); } to { opacity:1; transform:none; } }
+@keyframes stepIn-back { from { opacity:0; transform:translateX(-28px); } to { opacity:1; transform:none; } }
+@media (prefers-reduced-motion: reduce) {
+  .step, .stage { animation-duration:0.01ms !important; }
+  .step.enter-fwd, .step.enter-back { animation:none; opacity:1; }
+}
 .step-eyebrow {
   font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
   color:var(--acc); margin-bottom:14px;
@@ -1637,6 +1646,8 @@ const THEMES = [
   { id:'contrast', name:'Contrast', desc:'Maximum clarity' },
 ];
 
+var _prevStep = 0; // D18: direction tracking for directional step entrance
+
 const TS = {
   dark:     { bg:'#0a0b10',  card:'rgba(255,255,255,.06)', text:'#f0ede8', t2:'rgba(240,237,232,.60)', tabBg:'rgba(9,9,14,.97)',     tabBdr:'rgba(255,255,255,.065)', scrimEnd:'#0a0b10',  stColor:'#f0ede8' },
   light:    { bg:'#f0ede8',  card:'rgba(0,0,0,.04)',       text:'#0d0e1a', t2:'rgba(13,14,26,.60)',    tabBg:'rgba(240,237,232,.97)',tabBdr:'rgba(0,0,0,.08)',       scrimEnd:'#f0ede8',  stColor:'#0d0e1a' },
@@ -2120,9 +2131,16 @@ const PROGRESS_STEPS = {
 };
 
 function goStep(n) {
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  // D18 — directional entrance: compare with previous step to determine direction
+  const _numN = (n === 'done') ? 99 : Number(n);
+  const _dir  = _numN >= _prevStep ? 'fwd' : 'back';
+  _prevStep   = _numN;
+
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active', 'enter-fwd', 'enter-back'));
   const id = n === 'done' ? 'stepDone' : `step${n}`;
-  document.getElementById(id).classList.add('active');
+  const _el = document.getElementById(id);
+  _el.classList.add('active', `enter-${_dir}`);
+  _el.addEventListener('animationend', () => _el.classList.remove('enter-fwd', 'enter-back'), { once: true });
 
   const prog = PROGRESS_STEPS[n] || PROGRESS_STEPS[0];
   document.getElementById('progressFill').style.width = prog.pct + '%';
