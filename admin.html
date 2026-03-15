@@ -5042,6 +5042,7 @@ function ywInit(profile) {
     var p = safeLS(V3_KEY, {})
     p.privateAccessOpen = e.target.checked
     setLS(V3_KEY, p)
+    syncProfile(p)
   })
 }
 
@@ -5122,6 +5123,7 @@ function ywSaveMoment() {
   })
   p.moments = moments
   setLS(V3_KEY, p)
+  syncProfile(p)
   ywRenderMomentList(p)
   ywToggleAddForm(false)
 }
@@ -5130,6 +5132,7 @@ function removeMoment(id) {
   var p = safeLS(V3_KEY, {})
   p.moments = (p.moments || []).filter(function(m) { return m.id !== id })
   setLS(V3_KEY, p)
+  syncProfile(p)
   ywRenderMomentList(p)
 }
 
