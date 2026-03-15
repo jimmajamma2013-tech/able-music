@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-15 (session 4) | Update this file at the end of every session.**
+**Updated: 2026-03-15 (session 5) | Update this file at the end of every session.**
 
 ---
 
@@ -122,6 +122,21 @@
 *(Add issues here as they are discovered)*
 
 ---
+
+## Last session summary (session 5)
+Deep spec research sweep of all remaining operational docs. Confirmed all Phase 1 features complete. 8 commits:
+- start.html: Google/Apple OAuth removed — ABLE uses magic link only (§2.7 / V1_SCOPE.md)
+- admin.html: WCAG 2.2 AA focus visibility + aria-labels on icon-only delete buttons
+- admin.html: copy link 300ms accent flash per V5_RESEARCH_ADDENDUM §10
+- landing.html: "Fan CRM" → "Broadcasts + advanced fan list" in pricing
+- start.html: eyebrow "Let's get you set up" → "Your music"
+- able-v7.html: fan limit banner exact copy per §9.1 ("Your list is full. These are 100 people...")
+- landing.html: "Nothing to live page" → "Zero to live page"
+- admin.html: empty states — specific ABLE voice (shows, merch, support)
+
+Operational spec docs verified (all Phase 2+): PROFESSIONAL_DISCOVERY, DISCOVERY_DIRECTORY_SPEC, MOMENT_CALENDAR_INTEGRATION, WORLD_MAP_CROSS_PRODUCT, SHOWCASE_INTERACTION_LAYER, CLOSE_CIRCLE_SPEC, STREAMING_MOMENTS_SPEC, LIVE_MOMENTS_UI_SPEC, SHOWCASE_CAMPAIGN_MODE_SPEC.
+
+File sizes (gzipped): able-v7.html 78kB · admin.html 45kB · start.html 31kB · landing.html 18kB · fan.html 10kB — all within 340kB budget.
 
 ## Last session summary (session 4)
 Full spec compliance audit across all 4 active files against V6_BUILD_AUTHORITY.md, COPY_AND_DESIGN_PHILOSOPHY.md, LANDING.md, and V5_RESEARCH_ADDENDUM.md. 6 commits:
