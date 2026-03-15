@@ -4427,6 +4427,7 @@ function addRec() {
   recs.push({ name: '', note: '', avatarUrl: '', url: '' })
   data.recommendations = recs
   setLS(V3_KEY, data)
+  syncProfile(data)
   renderRecsList()
   setTimeout(() => toggleRecEdit(recs.length - 1), 50)
 }
@@ -4437,6 +4438,7 @@ function removeRec(idx) {
   recs.splice(idx, 1)
   data.recommendations = recs
   setLS(V3_KEY, data)
+  syncProfile(data)
   renderRecsList()
 }
 
@@ -4448,6 +4450,7 @@ function moveRec(idx, dir) {
   ;[recs[idx], recs[swapIdx]] = [recs[swapIdx], recs[idx]]
   data.recommendations = recs
   setLS(V3_KEY, data)
+  syncProfile(data)
   renderRecsList()
 }
 
@@ -4478,6 +4481,7 @@ function saveRec(idx) {
   }
   data.recommendations = recs
   setLS(V3_KEY, data)
+  syncProfile(data)
   renderRecsList()
 }
 
