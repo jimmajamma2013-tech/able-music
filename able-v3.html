@@ -1192,6 +1192,7 @@
       bottom: calc(env(safe-area-inset-bottom, 10px) + 68px);
       right: 12px;
       z-index: 210;
+      display: none;
       width: 40px;
       height: 40px;
       border-radius: 50%;
@@ -1522,10 +1523,7 @@
         <div class="v3-artist">
           <h1 class="v3-artist__name" id="v3ArtistName">Artist Name</h1>
           <p class="v3-artist__meta" id="v3ArtistMeta">London · Hip Hop · Since 2019</p>
-          <p class="v3-artist__bio" id="v3ArtistBio">
-            Genre-blending producer known for cinematic sound design and atmospheric storytelling.
-            Signed to independent label. Debut album out now on all platforms.
-          </p>
+          <p class="v3-artist__bio" id="v3ArtistBio"></p>
           <span class="v3-artist__bio-toggle" id="v3BioToggle">More</span>
         </div>
 
@@ -1551,66 +1549,23 @@
         <div class="v3-divider"></div>
 
         <!-- Music Section (Home preview) -->
-        <div class="v3-section">
+        <div class="v3-section" id="v3HomeMusicSection" style="display:none">
           <div class="v3-section__header">
             <span class="v3-section__title">Latest Music</span>
             <button class="v3-section__action" data-goto="music">See all</button>
           </div>
-          <div class="v3-track">
-            <div class="v3-track__art"></div>
-            <div class="v3-track__info">
-              <div class="v3-track__name">New Single Title</div>
-              <div class="v3-track__meta">Single · 2026</div>
-            </div>
-            <div class="v3-track__play-wrap">
-              <div class="v3-track__play">▶</div>
-            </div>
-          </div>
-          <div class="v3-track">
-            <div class="v3-track__art" style="background:linear-gradient(135deg,#1e3a5f,#6366f1);"></div>
-            <div class="v3-track__info">
-              <div class="v3-track__name">Previous EP Title</div>
-              <div class="v3-track__meta">EP · 4 tracks · 2025</div>
-            </div>
-            <div class="v3-track__play-wrap">
-              <div class="v3-track__play">▶</div>
-            </div>
-          </div>
-          <div class="v3-section__footer">
-            <button class="v3-section__footer-link" data-goto="music">Show all 8 releases</button>
-          </div>
+          <div id="v3HomeMusicList"></div>
         </div>
 
         <!-- Events Section (Home preview) -->
-        <div class="v3-section">
+        <div class="v3-section" id="v3HomeEventsSection" style="display:none">
           <div class="v3-section__header">
             <span class="v3-section__title">Upcoming Shows</span>
             <button class="v3-section__action" data-goto="events">See all</button>
           </div>
-          <div class="v3-event">
-            <div class="v3-event__date">
-              <span class="v3-event__month">Mar</span>
-              <span class="v3-event__day">28</span>
-            </div>
-            <div class="v3-event__info">
-              <div class="v3-event__name">Fabric, London</div>
-              <div class="v3-event__venue">London, UK · Doors 10pm</div>
-            </div>
-            <button class="v3-event__ticket">Tickets</button>
-          </div>
-          <div class="v3-event">
-            <div class="v3-event__date">
-              <span class="v3-event__month">Apr</span>
-              <span class="v3-event__day">12</span>
-            </div>
-            <div class="v3-event__info">
-              <div class="v3-event__name">Printworks</div>
-              <div class="v3-event__venue">London, UK · All Ages</div>
-            </div>
-            <button class="v3-event__ticket">Tickets</button>
-          </div>
+          <div id="v3HomeEventsList"></div>
           <div class="v3-section__footer">
-            <button class="v3-section__footer-link" data-goto="events">View all 3 shows</button>
+            <button class="v3-section__footer-link" data-goto="events">See all shows</button>
           </div>
         </div>
 
@@ -1623,7 +1578,7 @@
             <button class="v3-stay-close__btn" onclick="fanSignUp()">I'm in</button>
           </div>
           <div class="v3-stay-close__done" id="v3EmailDone">You're in. I'll keep it close.</div>
-          <div class="v3-stay-close__note">No noise. Unsubscribe any time.</div>
+          <div class="v3-stay-close__note" id="v3FanNote">No noise. Unsubscribe any time.</div>
         </div>
 
         <!-- Engagement Nudge -->
@@ -2533,6 +2488,53 @@
       renderEventsPanel(data);
       renderMerchPanel(data);
       renderSupportPanel(data);
+
+      // Home tab music preview (up to 2 releases)
+      const musicSection = document.getElementById('v3HomeMusicSection');
+      const musicList = document.getElementById('v3HomeMusicList');
+      const releases = data.releases || [];
+      if (musicSection && musicList && releases.length) {
+        const accent = data.accent || '#06b6d4';
+        musicList.innerHTML = releases.slice(0, 2).map(rel => {
+          const artBg = rel.artworkUrl
+            ? `url(${rel.artworkUrl}) center/cover`
+            : `linear-gradient(135deg,rgba(${hexToRgb(accent)},.35),rgba(0,0,0,.6))`;
+          return `<div class="v3-track">
+            <div class="v3-track__art" style="background:${artBg};"></div>
+            <div class="v3-track__info">
+              <div class="v3-track__name">${rel.title || 'Untitled'}</div>
+              <div class="v3-track__meta">${rel.type || 'Release'}${rel.year ? ' · ' + rel.year : ''}</div>
+            </div>
+            <div class="v3-track__play-wrap"><div class="v3-track__play">▶</div></div>
+          </div>`;
+        }).join('');
+        musicSection.style.display = '';
+      }
+
+      // Home tab events preview (upcoming only, max 2)
+      const eventsSection = document.getElementById('v3HomeEventsSection');
+      const eventsList = document.getElementById('v3HomeEventsList');
+      const events = (data.events || []).filter(e => e.venue);
+      if (eventsSection && eventsList && events.length) {
+        const now = Date.now();
+        const upcoming = events.filter(e => !e.date || new Date(e.date).getTime() >= now);
+        if (upcoming.length) {
+          eventsList.innerHTML = upcoming.slice(0, 2).map(e => {
+            const d = e.date ? new Date(e.date) : null;
+            const month = d ? d.toLocaleString('en', {month:'short'}) : '';
+            const day   = d ? d.getDate() : '';
+            return `<div class="v3-event">
+              <div class="v3-event__date"><span class="v3-event__month">${month}</span><span class="v3-event__day">${day}</span></div>
+              <div class="v3-event__info">
+                <div class="v3-event__name">${e.venue}</div>
+                <div class="v3-event__venue">${e.city || ''}${e.city && e.time ? ' · ' : ''}${e.time || ''}</div>
+              </div>
+              ${e.ticketUrl ? `<a href="${e.ticketUrl}" target="_blank" rel="noopener" class="v3-event__ticket">Tickets</a>` : ''}
+            </div>`;
+          }).join('');
+          eventsSection.style.display = '';
+        }
+      }
     }
 
     // Run on load
@@ -2698,6 +2700,11 @@
       if (el && n) el.textContent = n;
     });
 
+    // Only show the edit button for the page owner (they have profile data in localStorage)
+    if (localStorage.getItem('able_v3_profile') || localStorage.getItem('able_profile')) {
+      const adminBtn = document.getElementById('v3AdminBtn');
+      if (adminBtn) adminBtn.style.display = 'flex';
+    }
     document.getElementById('v3AdminBtn')?.addEventListener('click', openAdmin);
     document.getElementById('v3AdminClose')?.addEventListener('click', closeAdmin);
     document.getElementById('v3AdminSave')?.addEventListener('click', saveAdmin);
@@ -2900,6 +2907,17 @@
     // Init on load
     initSnapFeed();
     initWelcomeBanner();
+
+    // Fan count social proof — show "Join X others" when count > 0
+    (function() {
+      try {
+        const fans = JSON.parse(localStorage.getItem('able_fans') || '[]');
+        if (fans.length > 0) {
+          const note = document.getElementById('v3FanNote');
+          if (note) note.textContent = `Join ${fans.length.toLocaleString()} ${fans.length === 1 ? 'person' : 'people'} already close. No noise. Unsubscribe any time.`;
+        }
+      } catch(e) {}
+    })();
   </script>
 </body>
 </html>

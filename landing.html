@@ -896,6 +896,25 @@
     .quote__author strong { color: var(--text-2); font-weight: 700; }
 
     /* ── FOOTER CTA ───────────────────────────────────────────── */
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-q {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      width: 100%; text-align: left; background: none; border: none; cursor: pointer;
+      padding: 22px 0; font-size: 15px; font-weight: 600; color: var(--text);
+      font-family: var(--font); line-height: 1.4; transition: color .15s;
+    }
+    .faq-q:hover { color: var(--accent); }
+    .faq-chevron { flex-shrink: 0; transition: transform .22s; color: var(--text-3); }
+    .faq-q[aria-expanded="true"] .faq-chevron { transform: rotate(180deg); color: var(--accent); }
+    .faq-a {
+      font-size: 14.5px; color: var(--text-2); line-height: 1.7;
+      padding-bottom: 20px; max-width: 600px;
+      animation: faqSlide .2s ease both;
+    }
+    @keyframes faqSlide { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+
     .footer-cta { padding: 100px 24px 96px; text-align: center; position: relative; overflow: hidden; background: var(--bg-mid); border-top: 1px solid var(--border); }
     .footer-cta::before {
       content: ''; position: absolute; bottom: 0; left: 0; right: 0; top: 0;
@@ -1039,7 +1058,7 @@
     <div class="nav__links">
       <a href="#features" class="nav__link">How it works</a>
       <a href="#pricing" class="nav__link">Pricing</a>
-      <a href="#" class="nav__link">Log in</a>
+      <a href="admin.html" class="nav__link">Log in</a>
       <a href="start.html" class="nav__cta"><span class="nav__cta-dot"></span>Get your free page</a>
     </div>
   </nav>
@@ -1495,6 +1514,40 @@
     </div>
   </section>
 
+  <!-- FAQ -->
+  <section class="section" id="faq" style="background:var(--bg-mid);border-top:1px solid var(--border);">
+    <div class="section__inner" style="max-width:720px;">
+      <div class="section__eyebrow">Questions</div>
+      <h2 class="section__title" style="margin-bottom:40px;">The things people<br>actually ask.</h2>
+      <div class="faq-list" id="faqList">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Will this replace my Linktree?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>ABLE is built for music specifically — it changes based on what's happening with your career. Pre-release, drop day, gig night — the page shifts automatically. Linktree just lists links. You can run both, but most artists end up switching their bio link here within a week.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What happens to my fan list if I leave?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>It's yours. You can export every email address any time from your dashboard as a CSV. We don't hold it hostage — that's the whole point.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Do I need to be on Spotify?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>No. ABLE works with Spotify, Apple Music, YouTube, SoundCloud, Bandcamp, and anything else — just paste the link. If you're not on any streaming platform yet, that's fine too. Your page still works.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What do fans have to do to sign up?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>Just an email address. No app to download, no account to create. They type it in and they're on your list. You own that relationship — it lives in your dashboard.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Is it actually free?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>Yes. Free forever for a real working page — not a trial, not a watermarked demo. You get your profile, fan sign-ups, and the smart mode system at no cost. Paid plans add more fans, email broadcasts, and deeper analytics when you're ready.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">How long does setup take?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>Five minutes if you have your links handy. We grab artwork and track info from Spotify automatically — you paste the link, we do the rest. You can always add more later.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- FOOTER CTA -->
   <section class="footer-cta fade-up">
     <h2 class="footer-cta__headline">Your best fans<br>are already out there.<br><em style="color:var(--accent);">Give them a home.</em></h2>
@@ -1507,19 +1560,35 @@
 
   <!-- FOOTER -->
   <footer class="footer">
+    <div id="privacy" style="display:none"></div>
+    <div id="terms" style="display:none"></div>
     <div class="footer__logo">Abl<em>e</em></div>
     <div class="footer__links">
       <a href="#features" class="footer__link">Features</a>
       <a href="#pricing" class="footer__link">Pricing</a>
-      <a href="#" class="footer__link">For Labels</a>
-      <a href="#" class="footer__link">Blog</a>
-      <a href="#" class="footer__link">Privacy</a>
-      <a href="#" class="footer__link">Terms</a>
+      <a href="#pricing" class="footer__link">For Labels</a>
+      <a href="#faq" class="footer__link">FAQ</a>
+      <a href="#privacy" class="footer__link">Privacy</a>
+      <a href="#terms" class="footer__link">Terms</a>
     </div>
     <div class="footer__copy">© 2026 ABLE Music</div>
   </footer>
 
   <script>
+    function toggleFaq(btn) {
+      const answer = btn.nextElementSibling;
+      const isOpen = !answer.hidden;
+      // Close all others
+      document.querySelectorAll('.faq-a').forEach(a => { a.hidden = true; });
+      document.querySelectorAll('.faq-q').forEach(q => q.setAttribute('aria-expanded', 'false'));
+      if (!isOpen) {
+        answer.hidden = false;
+        answer.style.animation = 'none';
+        requestAnimationFrame(() => { answer.style.animation = ''; });
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    }
+
     // Progressive enhancement — hide fade-up elements only when JS is available
     document.documentElement.classList.add('js');
 
