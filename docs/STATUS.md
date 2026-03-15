@@ -100,7 +100,7 @@
 ## In progress / planned next
 
 ### High priority
-- [ ] Fan dashboard (fan.html) — spec at `docs/v6/operational/FAN_DASHBOARD_SPEC.md` — Phase 12
+- [x] Fan dashboard (fan.html) — Following feed (Today/This week), Discover (Emerging/Connected/By vibe/Just dropped), Near me — copy-compliant, demo data, spec-aligned
 - [x] A4/A11 sticky hero collapse + artist name compression — DONE
 
 ### Medium priority
