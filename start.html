@@ -79,8 +79,8 @@ body::before {
 }
 .progress-fill {
   height:100%; background:var(--acc);
-  transition:width .55s var(--ease), background .3s;
-  box-shadow:0 0 10px rgba(var(--acc-rgb),.5);
+  transition:width .65s var(--ease), background .3s;
+  box-shadow:0 0 12px rgba(var(--acc-rgb),.6), 0 0 4px rgba(var(--acc-rgb),.4);
 }
 
 /* ── LAYOUT ── */
@@ -387,6 +387,41 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   background:rgba(255,255,255,.04); border-color:var(--bm); color:var(--t2);
 }
 
+/* ── MOMENT CARDS ── */
+.moment-grid { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+.moment-card {
+  display:flex; align-items:flex-start; gap:14px;
+  padding:16px 18px; border-radius:14px;
+  background:var(--card); border:1.5px solid var(--border);
+  text-align:left; cursor:pointer;
+  transition:border-color .2s, background .2s, transform .2s var(--spring);
+}
+.moment-card:hover { border-color:var(--bm); transform:translateY(-1px); }
+.moment-card.on { border-color:var(--acc); background:rgba(var(--acc-rgb),.08); }
+.moment-card__icon { font-size:22px; flex-shrink:0; margin-top:1px; }
+.moment-card__label {
+  display:block; font-size:14px; font-weight:700; color:var(--text);
+  margin-bottom:3px; transition:color .15s;
+}
+.moment-card.on .moment-card__label { color:var(--acc); }
+.moment-card__desc { display:block; font-size:12px; color:var(--t2); line-height:1.5; }
+.moment-context {
+  display:flex; align-items:flex-start; gap:8px;
+  padding:12px 14px; background:rgba(var(--acc-rgb),.07);
+  border-radius:10px; font-size:12px; color:var(--t2); line-height:1.55;
+  margin-bottom:12px; animation:stepIn .3s var(--ease) both;
+}
+.moment-context__icon { color:var(--acc); flex-shrink:0; }
+.fan-prop {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:14px 16px; margin-bottom:16px;
+  background:var(--card); border:1.5px solid var(--border);
+  border-radius:12px; animation:stepIn .35s var(--ease) both;
+}
+.fan-prop__icon { font-size:20px; flex-shrink:0; }
+.fan-prop__title { display:block; font-size:13px; font-weight:700; color:var(--text); margin-bottom:3px; }
+.fan-prop__desc { display:block; font-size:12px; color:var(--t2); line-height:1.5; }
+
 /* Nav buttons */
 .step-nav { display:flex; align-items:center; gap:12px; margin-top:8px; }
 .btn-back {
@@ -472,6 +507,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   transition:color .18s;
 }
 .auth-skip:hover { color:var(--text); }
+.auth-reassure { font-size:12px; color:var(--t3); text-align:center; margin-top:12px; }
 
 /* Freelancer toggle */
 .freelancer-toggle {
@@ -546,10 +582,20 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   cursor:pointer; font-family:var(--font); transition:all .18s;
 }
 .done-dash:hover { color:var(--text); border-color:var(--bm); }
-.done-next { margin-top:28px; padding-top:24px; border-top:1px solid var(--border); }
-.done-next-label { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--t3); margin-bottom:12px; }
-.done-next-item { font-size:13px; color:var(--t2); margin-bottom:8px; display:flex; align-items:center; gap:8px; }
-.done-next-item::before { content:''; width:4px; height:4px; border-radius:50%; background:var(--acc); flex-shrink:0; }
+.done-next { margin-top:28px; }
+.done-next__title { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--t3); margin-bottom:10px; }
+.done-next__item {
+  display:flex; align-items:center; gap:12px;
+  padding:14px 16px; border-radius:12px;
+  background:var(--card); border:1.5px solid var(--border);
+  margin-bottom:8px; cursor:pointer; text-decoration:none;
+  transition:border-color .2s, transform .2s var(--spring);
+}
+.done-next__item:hover { border-color:var(--bm); transform:translateY(-2px); }
+.done-next__icon { font-size:20px; flex-shrink:0; }
+.done-next__label { display:block; font-size:13px; font-weight:700; color:var(--text); }
+.done-next__desc { display:block; font-size:11px; color:var(--t2); margin-top:2px; }
+.done-next__arrow { margin-left:auto; color:var(--t3); font-size:16px; flex-shrink:0; }
 /* share row */
 .done-share { margin-top:20px; }
 .done-share-lbl { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--t3); margin-bottom:10px; }
@@ -741,6 +787,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   .form-side { padding:32px 24px; }
   .step-title { font-size:44px; }
   .preview-phone { width:200px; height:420px; }
+  .moment-grid { gap:8px; }
+  .moment-card { padding:13px 14px; }
 }
 
 /* ── AI HELPER ── */
@@ -897,6 +945,17 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 }
 .feel-card.on .feel-card__label { color: var(--acc); }
 .feel-card.on .feel-card__eg { color: rgba(var(--acc-rgb),.55); }
+.feel-suggestion-note {
+  font-size:11.5px; color:var(--acc); margin-top:8px; margin-bottom:4px;
+  opacity:.8; line-height:1.5;
+}
+.inline-ai-link {
+  color:var(--acc); font-size:11.5px; font-weight:600; background:none;
+  border:none; cursor:pointer; padding:0; margin-top:4px;
+  text-decoration:underline; text-decoration-color:rgba(var(--acc-rgb),.3);
+  font-family:var(--font);
+}
+.inline-ai-link:hover { text-decoration-color:var(--acc); }
 </style>
 </head>
 <body>
@@ -971,7 +1030,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
       <!-- ── Stage 1a: Name ── -->
       <div class="stage active" id="stage1a">
-        <div class="step-eyebrow">Step 1 of 8</div>
+        <div class="step-eyebrow">First things first</div>
         <h1 class="step-title">What do people<br>call you?</h1>
         <p class="step-sub">Use whatever name you release music under — it goes at the top of your page.</p>
         <div class="field">
@@ -985,7 +1044,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
       <!-- ── Stage 1b: Vibe ── -->
       <div class="stage" id="stage1b">
-        <div class="step-eyebrow">Step 1 of 8</div>
+        <div class="step-eyebrow">First things first</div>
         <h1 class="step-title">What's your<br>sound?</h1>
         <p class="step-sub">Pick the closest one. Your page adapts the moment you tap.</p>
         <div class="vibe-grid" id="vibeGrid"></div>
@@ -998,11 +1057,13 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
       <!-- ── Stage 1c: Bio ── -->
       <div class="stage" id="stage1c">
-        <div class="step-eyebrow">Step 1 of 8</div>
+        <div class="step-eyebrow">First things first</div>
         <h1 class="step-title">One sentence<br>about you.</h1>
         <p class="step-sub">Optional. One real detail beats five adjectives — a city, a mood, a fact.</p>
         <div class="field">
-          <input class="field-input" type="text" id="iBio" placeholder="e.g. Making lo-fi beats in my bedroom in Manchester." maxlength="80">
+          <input class="field-input" type="text" id="iBio" placeholder='e.g. "Making electronic music in East London since I was 16."' maxlength="80">
+          <div class="field-hint">One sentence. Sits under your name. Don't overthink it — say something real.<br>
+<button class="inline-ai-link" type="button" onclick="openBioHelper();generateBio()">✦ Write it for me</button></div>
           <button class="how-to-btn" type="button" onclick="toggleHowTo('bioTip','bioTipBtn')" id="bioTipBtn" aria-expanded="false">
             💡 What makes a good one?<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" width="9" height="9"><path d="M1.5 3l3.5 3.5L8.5 3"/></svg>
           </button>
@@ -1043,7 +1104,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
       <!-- ── Stage 1d: Location ── -->
       <div class="stage" id="stage1d">
-        <div class="step-eyebrow">Step 1 of 8</div>
+        <div class="step-eyebrow">First things first</div>
         <h1 class="step-title">Where are<br>you based?</h1>
         <p class="step-sub">Optional. Shows up on your page — fans from the same city notice it.</p>
         <div class="field">
@@ -1058,7 +1119,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
       <!-- ── Stage 1e: Spotify ── -->
       <div class="stage" id="stage1e">
-        <div class="step-eyebrow">Step 1 of 8</div>
+        <div class="step-eyebrow">First things first</div>
         <h1 class="step-title">Are you on<br>Spotify?</h1>
         <p class="step-sub">Optional. Paste your link and your music plays directly on your page — no app switching needed.</p>
         <div class="field">
@@ -1088,9 +1149,9 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
     <!-- STEP 2 — FEEL -->
     <div class="step" id="step2">
-      <div class="step-eyebrow">Step 2 of 8</div>
+      <div class="step-eyebrow">The feel of it</div>
       <h1 class="step-title">What kind of<br>music do you make?</h1>
-      <p class="step-sub">Pick the one that feels closest. Doesn't have to be exact — go with your gut.</p>
+      <p class="step-sub">Not just visual — it shapes how your page moves. Pick the one that sounds like how your music feels.</p>
 
       <div class="feel-grid" id="feelGrid">
         <button class="feel-card" data-feel="intimate-raw" onclick="selectFeel('intimate-raw')">
@@ -1114,6 +1175,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
           <span class="feel-card__eg">think: SZA, Doja Cat, Drake</span>
         </button>
       </div>
+      <p class="feel-suggestion-note" id="feelSuggestionNote" hidden></p>
       <div class="info-chip" style="margin-top:12px;">
         <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><circle cx="7" cy="7" r="6"/><path d="M7 6v4M7 4.5v.5"/></svg>
         This shapes the fonts, spacing, and motion on your page. Closest counts — you can change it later.
@@ -1127,9 +1189,9 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
     <!-- STEP 3 -->
     <div class="step" id="step3">
-      <div class="step-eyebrow">Step 3 of 8</div>
-      <h1 class="step-title">Pick<br>a colour.</h1>
-      <p class="step-sub">One colour that runs through everything — buttons, links, highlights. Think of it as your signature.</p>
+      <div class="step-eyebrow">Your colour</div>
+      <h1 class="step-title">Your<br>colour.</h1>
+      <p class="step-sub">This runs through every button, chip, and detail on your page. Change one thing — everything shifts. Pick something from your artwork or your brand.</p>
 
       <div class="colour-presets" id="colourGrid"></div>
 
@@ -1160,9 +1222,9 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
     <!-- STEP 4 -->
     <div class="step" id="step4">
-      <div class="step-eyebrow">Step 4 of 8</div>
+      <div class="step-eyebrow">The atmosphere</div>
       <h1 class="step-title">Dark or<br>light?</h1>
-      <p class="step-sub">What's the vibe for your page background? You can switch any time — takes two seconds.</p>
+      <p class="step-sub">Dark, light, glass, or high-contrast — pick the atmosphere that suits your music. You can change this any time from your dashboard.</p>
 
       <div class="theme-grid" id="themeGrid"></div>
 
@@ -1177,79 +1239,73 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
     </div>
 
-    <!-- STEP 5 -->
+    <!-- STEP 5 — MOMENT -->
     <div class="step" id="step5">
-      <div class="step-eyebrow">Step 5 of 8</div>
-      <h1 class="step-title">What do you want<br>fans to do?</h1>
-      <p class="step-sub">This is the <strong style="color:var(--text);">big button</strong> at the top — first thing they see. Pick what makes sense right now.</p>
+      <div class="step-eyebrow">Your moment</div>
+      <h1 class="step-title">What's<br>happening<br>for you<br>right now?</h1>
+      <p class="step-sub">Your page leads with whatever makes most sense for where you are. Pick the closest thing.</p>
 
-      <div class="cta-preview">
-        <div class="cta-preview-lbl">Fans will see</div>
-        <div class="cta-preview-btn" id="ctaPreviewBtn">Stream Now</div>
+      <div class="moment-grid" id="momentGrid">
+        <button class="moment-card" data-moment="pre" onclick="selectMoment('pre')">
+          <span class="moment-card__icon">⏳</span>
+          <div>
+            <span class="moment-card__label">Dropping something soon</span>
+            <span class="moment-card__desc">Your page counts down to the release and lets fans pre-save.</span>
+          </div>
+        </button>
+        <button class="moment-card" data-moment="live" onclick="selectMoment('live')">
+          <span class="moment-card__icon">▶</span>
+          <div>
+            <span class="moment-card__label">Just released something</span>
+            <span class="moment-card__desc">Stream links take front and centre. Music plays right on your page.</span>
+          </div>
+        </button>
+        <button class="moment-card" data-moment="gig" onclick="selectMoment('gig')">
+          <span class="moment-card__icon">🎤</span>
+          <div>
+            <span class="moment-card__label">I've got a show coming up</span>
+            <span class="moment-card__desc">Tickets go to the top. Fans see exactly what to do when they land.</span>
+          </div>
+        </button>
+        <button class="moment-card" data-moment="profile" onclick="selectMoment('profile')">
+          <span class="moment-card__icon">✦</span>
+          <div>
+            <span class="moment-card__label">Just getting started</span>
+            <span class="moment-card__desc">Your full profile leads — music, links, and who you are.</span>
+          </div>
+        </button>
       </div>
 
-      <div class="cta-groups" id="ctaGrid"></div>
+      <div class="moment-context" id="momentContext" hidden>
+        <span class="moment-context__icon">✓</span>
+        <span id="momentContextText"></span>
+      </div>
 
-      <button class="how-to-btn" type="button" onclick="toggleHowTo('ctaTip','ctaTipBtn')" id="ctaTipBtn" aria-expanded="false" style="margin-top:10px;">
-        🤔 Not sure which to pick?<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" width="9" height="9"><path d="M1.5 3l3.5 3.5L8.5 3"/></svg>
-      </button>
-      <div class="how-to-guide" id="ctaTip" hidden>
-        <div class="how-to-steps">
-          <div class="how-to-step"><span class="how-to-num">→</span><span>Just dropped something? → <strong>Stream Now</strong></span></div>
-          <div class="how-to-step"><span class="how-to-num">→</span><span>Got a release coming up? → <strong>Pre-save</strong></span></div>
-          <div class="how-to-step"><span class="how-to-num">→</span><span>Playing shows? → <strong>Get Tickets</strong></span></div>
-          <div class="how-to-step"><span class="how-to-num">→</span><span>Nothing specific right now? → <strong>Coming Soon</strong> or <strong>Subscribe</strong></span></div>
+      <div class="fan-prop" id="fanProp" hidden>
+        <span class="fan-prop__icon">📬</span>
+        <div>
+          <span class="fan-prop__title">Your page also captures fan emails.</span>
+          <span class="fan-prop__desc">Anyone who signs up is yours — not Spotify's, not Instagram's. You can email them any time from your dashboard.</span>
         </div>
-        <div class="how-to-note">This changes automatically as things happen — pre-release mode, drop day, gig night. So don't overthink the default.</div>
       </div>
 
-      <!-- CTA AI helper -->
-      <button class="ai-btn" type="button" id="aiCtaBtn" onclick="openCtaHelper()" style="margin-top:10px;">
-        <span class="ai-btn__spark">✦</span> Not sure? Get a suggestion
-      </button>
-      <div class="ai-panel" id="aiCtaPanel">
-        <div class="ai-panel__header">
-          <span class="ai-panel__title">✦ CTA helper</span>
-          <button class="ai-panel__close" onclick="closeCtaHelper()" aria-label="Close CTA helper">×</button>
-        </div>
-        <p class="ai-panel__desc">Based on your vibe, here's what tends to land.</p>
-        <div id="aiCtaOpts" class="ai-cta-opts"></div>
-        <div class="ai-actions">
-          <button class="ai-use" type="button" id="aiCtaUse" onclick="useCtaSuggestion()" disabled>Use this →</button>
-        </div>
-      </div>
-
-      <div class="field" id="ctaUrlWrap" style="display:none; margin-top:10px;">
-        <label class="field-label" for="iCtaUrl" id="ctaUrlLbl">Link</label>
-        <input class="field-input" type="url" id="iCtaUrl" placeholder="https://…">
-      </div>
-
-      <div style="margin-top:24px; margin-bottom:10px;">
-        <div class="cta-grp-hd" style="margin-bottom:10px;">Secondary <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:10px;color:var(--t3);opacity:.7;">optional</span></div>
-        <div class="cta-sec-pills" id="ctaSecGrid"></div>
-      </div>
-
-      <div class="field" id="ctaSecUrlWrap" style="display:none;">
-        <label class="field-label" for="iCtaSecUrl" id="ctaSecUrlLbl">Link for secondary</label>
-        <input class="field-input" type="url" id="iCtaSecUrl" placeholder="https://…">
-      </div>
-
-      <div class="field" id="ctaSecCustomWrap" style="display:none;">
-        <label class="field-label" for="iCtaSecCustom">Custom label</label>
-        <input class="field-input" type="text" id="iCtaSecCustom" placeholder="e.g. Pre-order now, Book me…" maxlength="32">
+      <div class="field" id="momentUrlWrap" style="display:none; margin-top:16px;">
+        <label class="field-label" for="iMomentUrl" id="momentUrlLbl">Link</label>
+        <input class="field-input" type="url" id="iMomentUrl" placeholder="https://…">
+        <div class="field-hint" id="momentUrlHint"></div>
       </div>
 
       <div class="step-nav">
         <button class="btn-back" onclick="goStep(4)">← Back</button>
-        <button class="btn-next" onclick="tryStep5()">Continue →</button>
+        <button class="btn-next" id="momentNext" onclick="applyMomentAndContinue()" disabled>Continue →</button>
       </div>
     </div>
 
     <!-- STEP 6 — MUSIC -->
     <div class="step" id="step6">
-      <div class="step-eyebrow">Step 6 of 8 — optional</div>
-      <h1 class="step-title">Got music<br>online?</h1>
-      <p class="step-sub">Paste a link and it plays right on your page. Fans don't need to go anywhere. We grab the artwork too.</p>
+      <div class="step-eyebrow">Your music</div>
+      <h1 class="step-title">Your music,<br>right here.</h1>
+      <p class="step-sub">Paste a Spotify album, SoundCloud track, or YouTube link. Fans listen without leaving your page — the player loads right inside it.</p>
 
       <div class="music-plat-row" id="musicPlatRow">
         <button class="music-plat-btn on" type="button" data-plat="spotify" onclick="selectMusicPlat(this)" id="platSpotify">
@@ -1301,9 +1357,9 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
     <!-- STEP 7 — SHOW -->
     <div class="step" id="step7">
-      <div class="step-eyebrow">Step 7 of 8 — optional</div>
-      <h1 class="step-title">Playing<br>anywhere soon?</h1>
-      <p class="step-sub">Got a show coming up? Add it and the tickets go straight to the top of your page. No shows yet — that's fine, skip this entirely.</p>
+      <div class="step-eyebrow">Any shows coming up?</div>
+      <h1 class="step-title">Playing<br>anywhere?</h1>
+      <p class="step-sub">Add your next show and a ticket link — it goes to the top of your page the moment you turn on Show Mode from your dashboard.</p>
       <button class="how-to-btn" type="button" onclick="toggleHowTo('showTip','showTipBtn')" id="showTipBtn" aria-expanded="false" style="margin-bottom:14px;">
         🎤 How does this work on my page?<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" width="9" height="9"><path d="M1.5 3l3.5 3.5L8.5 3"/></svg>
       </button>
@@ -1342,9 +1398,9 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
     <!-- STEP 8 — ACCOUNT -->
     <div class="step" id="step8">
-      <div class="step-eyebrow">Step 8 of 8</div>
-      <h1 class="step-title">Last step —<br>save it.</h1>
-      <p class="step-sub">Create a free account and your page goes live properly. Skip for now if you want — we'll keep it here.</p>
+      <div class="step-eyebrow">Save your page</div>
+      <h1 class="step-title">Make it<br>permanent.</h1>
+      <p class="step-sub">Your page is already built. Create a free account so it lives at your own URL and you can update it from any device.</p>
 
       <!-- Freelancer toggle -->
       <label class="freelancer-toggle" id="freelancerToggle">
@@ -1393,6 +1449,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
 
       <button class="auth-skip" onclick="goStep('done')">Skip — I'll save it later →</button>
+      <p class="auth-reassure">Free forever. No card. No lock-in.</p>
 
       <div class="step-nav" style="margin-top:0;">
         <button class="btn-back" onclick="goStep(7)">← Back</button>
@@ -1401,9 +1458,9 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
     <!-- DONE -->
     <div class="step" id="stepDone">
-      <div class="step-eyebrow">You're on ABLE</div>
-      <h1 class="step-title">That's your<br>page now.</h1>
-      <p class="step-sub">Put the link in your bio tonight. The first fan who signs up — that email is yours. No algorithm. No one between you.</p>
+      <div class="step-eyebrow">You're live on ABLE</div>
+      <h1 class="step-title">Your page<br>is real.</h1>
+      <p class="step-sub">Put the link in your bio on every platform. Anyone who taps it lands somewhere that actually feels like you.</p>
 
       <div class="done-link">
         <div class="done-url" id="doneUrl">able.fm/artist</div>
@@ -1440,10 +1497,23 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
 
       <div class="done-next">
-        <div class="done-next-label">Three things to do today</div>
-        <div class="done-next-item">Swap the link in your Instagram and TikTok bio to your ABLE page</div>
-        <div class="done-next-item">Open your dashboard — add a show or a release if you have one coming</div>
-        <div class="done-next-item">Tell one person what ABLE is — that conversation is worth more than the algorithm</div>
+        <div class="done-next__title">What's next</div>
+        <a href="admin.html" class="done-next__item">
+          <span class="done-next__icon">📊</span>
+          <div>
+            <span class="done-next__label">Go to your dashboard</span>
+            <span class="done-next__desc">Add a release date, check your fan list, edit anything.</span>
+          </div>
+          <span class="done-next__arrow">→</span>
+        </a>
+        <a href="able-v7.html" class="done-next__item" target="_blank">
+          <span class="done-next__icon">✦</span>
+          <div>
+            <span class="done-next__label">See your page</span>
+            <span class="done-next__desc">This is what your fans see when they tap your link.</span>
+          </div>
+          <span class="done-next__arrow">→</span>
+        </a>
       </div>
     </div>
 
@@ -1674,6 +1744,58 @@ function tryStage1a() {
 
 function tryStep1() { tryStage1a(); }
 
+// ── AI VIBE MATCH ────────────────────────────────────────────────
+const GENRE_FEEL_MAP = {
+  'electronic':        'bold-refined',
+  'hip-hop':           'bold-raw',
+  'indie':             'intimate-raw',
+  'r-and-b':           'intimate-refined',
+  'pop':               'bold-refined',
+  'folk':              'intimate-raw',
+  'jazz':              'intimate-refined',
+  'rock':              'bold-raw',
+  'classical':         'intimate-refined',
+  'metal':             'bold-raw',
+  'ambient':           'intimate-refined',
+  'singer-songwriter': 'intimate-raw',
+};
+
+function autoSelectFeel(genre) {
+  const feel = GENRE_FEEL_MAP[genre] || 'intimate-refined';
+  selectFeel(feel);
+  const note = document.getElementById('feelSuggestionNote');
+  if (note) {
+    note.hidden = false;
+    note.textContent = "We've suggested this based on your genre — tap any card to change it.";
+  }
+}
+
+async function generateBioAuto() {
+  const name = P.name || (document.getElementById('iName') ? document.getElementById('iName').value : '');
+  const genre = P.genre || '';
+  if (!name) return;
+  const drafts = [
+    `${name} makes ${genre || 'music'} that sounds like somewhere you've never been but instantly recognise.`,
+    `${genre ? genre.charAt(0).toUpperCase() + genre.slice(1) + ' artist' : 'Artist'} based wherever the music takes them.`,
+    `${name} — independent music, on their own terms.`,
+  ];
+  const draft = drafts[Math.floor(Math.random() * drafts.length)];
+  const bioEl = document.getElementById('iBio');
+  if (!bioEl || bioEl.value) return; // don't overwrite manually entered bio
+  bioEl.value = draft;
+  bioEl.style.borderColor = 'rgba(var(--acc-rgb),.4)';
+  const existing = document.querySelector('.ai-drafted-badge');
+  if (!existing) {
+    const badge = document.createElement('span');
+    badge.className = 'ai-drafted-badge';
+    badge.style.cssText = 'font-size:10px;color:var(--acc);margin-left:6px;opacity:.8;';
+    badge.textContent = '✦ AI drafted';
+    const label = document.querySelector('[for="iBio"]');
+    if (label) label.appendChild(badge);
+  }
+  P.bio = draft;
+}
+
 function selectFeel(feel) {
   P.feel = feel;
   document.querySelectorAll('.feel-card').forEach(c => {
@@ -1683,34 +1805,83 @@ function selectFeel(feel) {
   if (previewShell) previewShell.dataset.feel = feel;
 }
 
-function tryStep5() {
-  // Read CTA URL if visible
-  const urlWrap = document.getElementById('ctaUrlWrap');
-  const urlInput = document.getElementById('iCtaUrl');
-  if (urlWrap && urlWrap.style.display !== 'none' && urlInput.value.trim()) {
-    const rawUrl = urlInput.value.trim();
-    if (!isSafeUrl(rawUrl)) {
-      urlInput.classList.add('field-error');
-      urlInput.focus();
-      return;
-    }
-    P.ctaUrl = rawUrl;
-    urlInput.classList.remove('field-error');
+// ── MOMENT DETECTOR ──────────────────────────────────────────────
+const MOMENT_CONFIG = {
+  pre: {
+    state: 'pre-release',
+    ctaLabel: 'Pre-save',
+    ctaType: 'presave',
+    context: 'Your page will count down to your release date and show a pre-save button at the top.',
+    urlLabel: 'Pre-save link',
+    urlHint: 'Your Spotify pre-save, DistroKid, or similar link.',
+    needsUrl: true,
+  },
+  live: {
+    state: 'live',
+    ctaLabel: 'Stream Now',
+    ctaType: 'stream',
+    context: 'Your page leads with your latest release. Fans stream without leaving your page.',
+    urlLabel: 'Streaming link',
+    urlHint: 'Your Spotify, Apple Music, or any streaming link.',
+    needsUrl: false,
+  },
+  gig: {
+    state: 'gig',
+    ctaLabel: 'Get Tickets',
+    ctaType: 'tickets',
+    context: 'Tickets go straight to the top. Your fans see exactly what to do the moment they land.',
+    urlLabel: 'Ticket link',
+    urlHint: 'DICE, RA, Eventbrite, Ticketmaster — anywhere you sell tickets.',
+    needsUrl: true,
+  },
+  profile: {
+    state: 'profile',
+    ctaLabel: 'Stream my music',
+    ctaType: 'stream',
+    context: 'Your full profile leads — who you are, your music, your links. Always ready.',
+    needsUrl: false,
+  },
+};
+
+let selectedMoment = null;
+
+function selectMoment(key) {
+  selectedMoment = key;
+  const cfg = MOMENT_CONFIG[key];
+  document.querySelectorAll('.moment-card').forEach(c => c.classList.toggle('on', c.dataset.moment === key));
+  const ctx = document.getElementById('momentContext');
+  document.getElementById('momentContextText').textContent = cfg.context;
+  ctx.hidden = false;
+  document.getElementById('fanProp').hidden = false;
+  const urlWrap = document.getElementById('momentUrlWrap');
+  if (cfg.needsUrl) {
+    urlWrap.style.display = 'block';
+    document.getElementById('momentUrlLbl').textContent = cfg.urlLabel;
+    document.getElementById('momentUrlHint').textContent = cfg.urlHint;
+  } else {
+    urlWrap.style.display = 'none';
   }
-  // Read secondary CTA URL if visible
-  const secUrlWrap = document.getElementById('ctaSecUrlWrap');
-  const secUrlInput = document.getElementById('iCtaSecUrl');
-  if (secUrlWrap && secUrlWrap.style.display !== 'none' && secUrlInput.value.trim()) {
-    const rawSecUrl = secUrlInput.value.trim();
-    if (!isSafeUrl(rawSecUrl)) {
-      secUrlInput.classList.add('field-error');
-      secUrlInput.focus();
-      return;
+  document.getElementById('momentNext').disabled = false;
+  P.stateOverride = cfg.state;
+  P.ctaLabel = cfg.ctaLabel;
+  P.ctaType = cfg.ctaType;
+  updatePreview();
+}
+
+function applyMomentAndContinue() {
+  if (!selectedMoment) return;
+  const cfg = MOMENT_CONFIG[selectedMoment];
+  if (cfg.needsUrl) {
+    const url = document.getElementById('iMomentUrl').value.trim();
+    if (url) {
+      if (!isSafeUrl(url)) {
+        document.getElementById('iMomentUrl').classList.add('field-error');
+        return;
+      }
+      P.ctaUrl = url;
     }
-    P.ctaSecUrl = rawSecUrl;
-    secUrlInput.classList.remove('field-error');
   }
-  goStep(6); // continue to content steps
+  goStep(6);
 }
 
 // === STEP 0: IMPORT (pre-step) ==============================
@@ -1935,21 +2106,27 @@ function showAuthPending(provider) {
   goStep('done')
 }
 
+const PROGRESS_STEPS = {
+  0:    { pct: 5,  msg: "Let's get started" },
+  1:    { pct: 20, msg: 'Looking good already' },
+  2:    { pct: 35, msg: 'Your page has a personality' },
+  3:    { pct: 50, msg: 'The look is yours' },
+  4:    { pct: 62, msg: 'Almost there' },
+  5:    { pct: 72, msg: 'Your fans will know what to do' },
+  6:    { pct: 82, msg: 'Music on the page' },
+  7:    { pct: 90, msg: 'One last thing' },
+  8:    { pct: 95, msg: 'Nearly live' },
+  done: { pct: 100, msg: "You're live on ABLE ✓" },
+};
+
 function goStep(n) {
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
   const id = n === 'done' ? 'stepDone' : `step${n}`;
   document.getElementById(id).classList.add('active');
 
-  const TOTAL = 8;
-  // step 0 = 0% progress (pre-step, not counted in 8)
-  // steps 1–8 = 1/8 through 8/8
-  const num = n === 'done' ? TOTAL + 1 : Number(n);
-  const pct = n === 0 || n === '0' ? 0 : (num > TOTAL ? 100 : (num / TOTAL) * 100);
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('stepInd').textContent =
-    n === 0 || n === '0' ? 'Let\'s go'
-    : (n === 'done') ? 'All done'
-    : (Number(n) >= 6 ? `Step ${n} of ${TOTAL} — optional` : `Step ${n} of ${TOTAL}`);
+  const prog = PROGRESS_STEPS[n] || PROGRESS_STEPS[0];
+  document.getElementById('progressFill').style.width = prog.pct + '%';
+  document.getElementById('stepInd').textContent = prog.msg;
 
   if (n === 'done') {
     document.getElementById('doneUrl').textContent = `able.fm/${slug(P.name)}`;
@@ -2034,6 +2211,9 @@ function applyVibe(v) {
       if (match) wrap.prepend(match);
     });
   }
+
+  // Auto-select feel based on genre
+  autoSelectFeel(v.id);
 
   updatePreview();
 }
