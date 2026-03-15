@@ -2041,7 +2041,7 @@ body::before {
           Artist Pro
         </div>
         <div class="glo-title">Email broadcasts</div>
-        <div class="glo-sub">Send directly to your fans' inboxes. 47% avg open rate — 10× better than social reach.</div>
+        <div class="glo-sub" id="broadcastGloSub">Send directly to your fans' inboxes. 47% avg open rate — 10× better than social reach.</div>
         <button class="glo-btn">Upgrade to Artist Pro — £19/mo</button>
       </div>
     </div>
@@ -3554,6 +3554,12 @@ function loadRealStats() {
     if (capFill) capFill.style.width = pct + '%';
     if (capLabel) capLabel.textContent = fansTotal + ' of ' + CAP + ' fans';
     if (capMsg) capMsg.style.display = fansTotal >= 95 ? 'block' : 'none';
+  }
+
+  // §9.1 moment 5 — broadcast lock overlay: personalise with real fan count
+  const broadcastSub = document.getElementById('broadcastGloSub');
+  if (broadcastSub && fansTotal > 0) {
+    broadcastSub.textContent = `You have ${fansTotal} ${fansTotal === 1 ? 'person' : 'people'} waiting to hear your news. Send them something.`;
   }
 
   // Top clicks list
