@@ -1939,7 +1939,7 @@ body::before {
     </div>
 
     <div class="stats-row" style="margin-bottom:20px;">
-      <div class="stat-card"><div class="stat-label">Total fans</div><div class="stat-value" id="fanStatTotal">—</div><div class="stat-delta up" id="fanStatWeek"> </div></div>
+      <div class="stat-card"><div class="stat-label">Total fans</div><div class="stat-value" id="fanStatTotal">—</div><div class="stat-delta up" id="fanStatWeek"> </div><div class="stat-delta" id="fanStatConfirmed" style="color:var(--t3);margin-top:1px;"> </div></div>
       <div class="stat-card" style="position:relative;overflow:hidden;">
         <div class="stat-label">Core fans</div>
         <div class="stat-value" style="filter:blur(6px);user-select:none;" aria-hidden="true">8</div>
@@ -3568,6 +3568,11 @@ function loadRealStats() {
   set('statFansTotal', fansTotal  || '0');
   set('fanStatTotal',  fansTotal  || '—');
   set('fanStatWeek',   fansWeek   ? '↑ ' + fansWeek + ' this week' : ' ');
+  // GDPR transparency — spec: "X fans on your list. Y confirmed for emails." (never hidden)
+  const fanConfirmed = fans.filter(f => f.double_opted_in).length;
+  if (fansTotal > 0) {
+    set('fanStatConfirmed', fanConfirmed + ' confirmed for emails');
+  }
 
   // Top fan source — calculated from real sign-up data
   if (fansTotal > 0) {
