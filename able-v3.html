@@ -21,7 +21,7 @@
     /* ── TOKENS ─────────────────────────────────────────────────── */
     :root {
       /* Colours — ethereal blue base (accent is artist-set) */
-      --color-bg:             #0f1624;
+      --color-bg:             #131a2a;
       --color-card:           #192438;
       --color-card-raised:    #1f2d45;
       --color-border:         rgba(138,180,206,0.10);
@@ -31,6 +31,7 @@
       --color-accent-rgb:     224,82,66;
       --color-accent-glow:    rgba(224,82,66,0.32);
       --color-accent-subtle:  rgba(224,82,66,0.10);
+      --color-on-accent:      #ffffff;
       --color-text:           #ccddef;
       --color-text-secondary: rgba(204,221,239,0.60);
       --color-text-muted:     rgba(204,221,239,0.52);
@@ -269,7 +270,7 @@
       left: 0;
       right: 0;
       height: 160px;
-      background: linear-gradient(to bottom, transparent 0%, rgba(13,14,26,0.45) 40%, rgba(13,14,26,0.82) 70%, var(--color-bg) 100%);
+      background: linear-gradient(to bottom, transparent 0%, rgba(19,26,42,0.45) 40%, rgba(19,26,42,0.82) 70%, var(--color-bg) 100%);
     }
     /* Artist name overlaid on hero — Metropolis-style gig-poster identity */
     .v3-hero__artist-name {
@@ -1037,7 +1038,7 @@
       color: #fff;
       font-size: 11px;
       font-weight: 700;
-      padding: 6px 12px;
+      padding: 8px 14px;
       border-radius: var(--radius-button-sm);
       cursor: pointer;
       flex-shrink: 0;
@@ -1045,7 +1046,7 @@
       -webkit-tap-highlight-color: transparent;
       font-family: var(--font);
       border: none;
-      min-height: 36px;
+      min-height: 44px;
       display: inline-flex;
       align-items: center;
     }
@@ -1134,6 +1135,7 @@
       --color-text-secondary: rgba(13,14,26,0.6);
       --color-text-muted:     rgba(13,14,26,0.4);
       --color-tab-bar-bg:     rgba(248,249,255,0.97);
+      --color-on-accent:      #0d0e1a;
     }
 
     /* ── THEME: MID (dark bg · white cards) ─────────────────────── */
@@ -1171,7 +1173,7 @@
       --color-tab-bar-bg:     rgba(8,9,20,0.72);
     }
     [data-theme="glass"] body {
-      background-color: #0d0e1a;
+      background-color: #131a2a;
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -2512,6 +2514,7 @@
       const pillsWrap = document.getElementById('v3Pills');
       if (pillsWrap) {
         const activePlatforms = (data.platforms || []).filter(p => p.url && p.url.trim());
+        const isOwner = !!(localStorage.getItem('able_v3_profile') || localStorage.getItem('able_profile'));
         if (activePlatforms.length) {
           const MAX_VISIBLE = 4;
           const visible  = activePlatforms.slice(0, MAX_VISIBLE);
@@ -2524,6 +2527,22 @@
           ).join('') + (overflow.length
             ? `<button class="v3-pill v3-pill--overflow" id="v3PillsToggle">+${overflow.length} more</button>`
             : '');
+          // Wire overflow click handler — was missing, button was silently broken
+          if (overflow.length) {
+            document.getElementById('v3PillsToggle')?.addEventListener('click', function() {
+              const extra = overflow.map(p =>
+                `<a href="${p.url}" target="_blank" rel="noopener" class="v3-pill" onclick="trackClick('${p.label}','pill')" style="text-decoration:none;">${platformIconHtml(p.type, 12)} ${p.label}</a>`
+              ).join('');
+              this.insertAdjacentHTML('beforebegin', extra);
+              this.remove();
+            }, { once: true });
+          }
+        } else if (isOwner) {
+          // Owner with no platforms set — ghost skeleton as invitation
+          pillsWrap.innerHTML = `
+            <div class="v3-ghost-block" style="width:88px;height:38px;border-radius:20px;"></div>
+            <div class="v3-ghost-block" style="width:76px;height:38px;border-radius:20px;animation-delay:0.15s;"></div>
+            <div class="v3-ghost-block" style="width:70px;height:38px;border-radius:20px;animation-delay:0.3s;"></div>`;
         } else {
           pillsWrap.innerHTML = '';
         }
