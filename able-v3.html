@@ -1186,6 +1186,30 @@
       -webkit-backdrop-filter: blur(32px) saturate(200%);
     }
 
+    /* ── OWNER PLACEHOLDER SECTIONS ── */
+    .v3-ph {
+      margin: 8px var(--space-page);
+      padding: 18px 16px;
+      border-radius: 14px;
+      border: 1.5px dashed rgba(138,180,206,.2);
+      display: flex; flex-direction: column; align-items: center;
+      gap: 6px; text-align: center;
+      opacity: 0; pointer-events: none; /* hidden by default — JS shows for owner */
+      transition: opacity .3s;
+    }
+    .v3-ph.owner-visible { opacity: 1; pointer-events: auto; }
+    .v3-ph__icon { font-size: 22px; opacity: .35; }
+    .v3-ph__label {
+      font-size: 12px; font-weight: 600;
+      color: rgba(204,221,239,.45); line-height: 1.4;
+    }
+    .v3-ph__cta {
+      font-size: 11px; color: rgba(138,180,206,.55);
+      text-decoration: underline; background: none; border: none;
+      cursor: pointer; font-family: inherit; padding: 2px 0;
+    }
+    .v3-ph__cta:hover { color: rgba(138,180,206,.85); }
+
     /* ── ADMIN EDIT BUTTON ──────────────────────────────────── */
     .v3-admin-btn {
       position: fixed;
@@ -1545,6 +1569,13 @@
         <!-- Snap Feed — contextual moment cards -->
         <div class="v3-snap-feed" id="v3SnapFeed" aria-label="Moments"></div>
 
+        <!-- Snap card placeholder — owner only -->
+        <div class="v3-ph" id="v3PhSnaps">
+          <div class="v3-ph__icon">📌</div>
+          <div class="v3-ph__label">Post updates to your fans.<br>A snippet, a link, a note — sits at the top of your page.</div>
+          <button class="v3-ph__cta" onclick="window.location.href='admin.html'">Add an update →</button>
+        </div>
+
         <!-- Section divider -->
         <div class="v3-divider"></div>
 
@@ -1557,6 +1588,13 @@
           <div id="v3HomeMusicList"></div>
         </div>
 
+        <!-- Music placeholder — owner only -->
+        <div class="v3-ph" id="v3PhMusic">
+          <div class="v3-ph__icon">🎵</div>
+          <div class="v3-ph__label">Your music goes here.<br>Paste a Spotify, YouTube or SoundCloud link.</div>
+          <button class="v3-ph__cta" onclick="window.location.href='admin.html'">Add music in your dashboard →</button>
+        </div>
+
         <!-- Events Section (Home preview) -->
         <div class="v3-section" id="v3HomeEventsSection" style="display:none">
           <div class="v3-section__header">
@@ -1567,6 +1605,13 @@
           <div class="v3-section__footer">
             <button class="v3-section__footer-link" data-goto="events">See all shows</button>
           </div>
+        </div>
+
+        <!-- Events placeholder — owner only -->
+        <div class="v3-ph" id="v3PhEvents">
+          <div class="v3-ph__icon">🎤</div>
+          <div class="v3-ph__label">Got a gig coming up?<br>Your show dates go here — tickets go front and centre.</div>
+          <button class="v3-ph__cta" onclick="window.location.href='admin.html'">Add a show →</button>
         </div>
 
         <!-- Fan email capture -->
@@ -2705,6 +2750,24 @@
       const adminBtn = document.getElementById('v3AdminBtn');
       if (adminBtn) adminBtn.style.display = 'flex';
     }
+
+    // Show owner-only placeholder sections when content is empty
+    if (localStorage.getItem('able_v3_profile') || localStorage.getItem('able_profile')) {
+      // Music placeholder: show if no releases
+      const profileData = safeGet('able_v3_profile', {});
+      const hasMusic = profileData.releases && profileData.releases.length > 0;
+      const hasEvents = profileData.events && profileData.events.filter(e => e.venue).length > 0;
+      const hasSnaps = (JSON.parse(localStorage.getItem('able_snap_cards') || '[]')).length > 0;
+
+      const phMusic = document.getElementById('v3PhMusic');
+      const phEvents = document.getElementById('v3PhEvents');
+      const phSnaps = document.getElementById('v3PhSnaps');
+
+      if (phMusic && !hasMusic) phMusic.classList.add('owner-visible');
+      if (phEvents && !hasEvents) phEvents.classList.add('owner-visible');
+      if (phSnaps && !hasSnaps) phSnaps.classList.add('owner-visible');
+    }
+
     document.getElementById('v3AdminBtn')?.addEventListener('click', openAdmin);
     document.getElementById('v3AdminClose')?.addEventListener('click', closeAdmin);
     document.getElementById('v3AdminSave')?.addEventListener('click', saveAdmin);
