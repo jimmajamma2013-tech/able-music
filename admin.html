@@ -1941,10 +1941,10 @@ body::before {
     <div class="stats-row" style="margin-bottom:20px;">
       <div class="stat-card"><div class="stat-label">Total fans</div><div class="stat-value" id="fanStatTotal">—</div><div class="stat-delta up" id="fanStatWeek"> </div></div>
       <div class="stat-card" style="position:relative;overflow:hidden;">
-        <div class="stat-label">Superfans</div>
+        <div class="stat-label">Core fans</div>
         <div class="stat-value" style="filter:blur(6px);user-select:none;" aria-hidden="true">8</div>
         <div class="stat-delta" style="filter:blur(4px);user-select:none;" aria-hidden="true">9.4% of list</div>
-        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;" onclick="showPage('settings')" title="Upgrade to unlock">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;" onclick="showPage('settings')" title="Artist Pro">
           <svg viewBox="0 0 12 12" fill="currentColor" width="10" height="10" style="color:var(--acc);opacity:.8;"><path d="M9.5 5H9V3.5a3 3 0 00-6 0V5h-.5A1.5 1.5 0 001 6.5v4A1.5 1.5 0 002.5 12h7A1.5 1.5 0 0011 10.5v-4A1.5 1.5 0 009.5 5zm-5-1.5a1.5 1.5 0 013 0V5h-3V3.5z"/></svg>
           <span style="font-size:9px;font-weight:700;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;">Pro</span>
         </div>
@@ -1953,7 +1953,7 @@ body::before {
         <div class="stat-label">Avg open rate</div>
         <div class="stat-value" style="filter:blur(6px);user-select:none;" aria-hidden="true">47%</div>
         <div class="stat-delta" style="filter:blur(4px);user-select:none;" aria-hidden="true">vs 22% industry</div>
-        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;" onclick="showPage('settings')" title="Upgrade to unlock">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;" onclick="showPage('settings')" title="Artist Pro">
           <svg viewBox="0 0 12 12" fill="currentColor" width="10" height="10" style="color:var(--acc);opacity:.8;"><path d="M9.5 5H9V3.5a3 3 0 00-6 0V5h-.5A1.5 1.5 0 001 6.5v4A1.5 1.5 0 002.5 12h7A1.5 1.5 0 0011 10.5v-4A1.5 1.5 0 009.5 5zm-5-1.5a1.5 1.5 0 013 0V5h-3V3.5z"/></svg>
           <span style="font-size:9px;font-weight:700;color:var(--acc);letter-spacing:.08em;text-transform:uppercase;">Pro</span>
         </div>
@@ -1975,7 +1975,7 @@ body::before {
             <input style="flex:1;padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text);font-size:12px;font-family:var(--font);outline:none;" placeholder="Search fans…" oninput="filterFans(this.value)">
             <select style="padding:8px 12px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--t2);font-size:12px;font-family:var(--font);outline:none;" onchange="filterFanLevel(this.value)">
               <option value="">All fans</option>
-              <option value="superfan">Superfans</option>
+              <option value="superfan">Core fans</option>
               <option value="supporter">Supporters</option>
               <option value="fan">Fans</option>
               <option value="listener">Listeners</option>
@@ -2000,14 +2000,14 @@ body::before {
 
       <div>
         <div class="dash-card" style="margin-bottom:16px;">
-          <div class="dc-head"><div class="dc-title">Superfan scoring</div></div>
+          <div class="dc-head"><div class="dc-title">Fan scoring</div></div>
           <div class="dc-body" style="padding:14px 16px;">
             <div style="display:flex;flex-direction:column;gap:8px;">
-              <p style="font-size:12px;color:var(--t2);line-height:1.5;margin:0;">ABLE scores your fans automatically — based on how often they show up, click, support, and engage. Your most dedicated listeners surface to the top.</p>
+              <p style="font-size:12px;color:var(--t2);line-height:1.5;margin:0;">ABLE scores your fans automatically — based on how often they show up, click, and support. Your most dedicated listeners surface to the top.</p>
               <div style="margin-top:4px;padding:10px 12px;border-radius:10px;background:rgba(var(--acc-rgb),.07);border:1px solid rgba(var(--acc-rgb),.2);">
                 <div style="font-size:11px;font-weight:700;color:var(--acc);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">Artist Pro</div>
                 <div style="font-size:12px;color:var(--t2);line-height:1.5;">See individual fan scores, filter by tier, and set exclusive perks for your top supporters.</div>
-                <button onclick="showPage('settings')" style="margin-top:10px;font-size:11px;font-weight:700;color:var(--acc);background:none;border:none;cursor:pointer;padding:0;font-family:var(--font);">Upgrade to unlock →</button>
+                <button onclick="showPage('settings')" style="margin-top:10px;font-size:11px;font-weight:700;color:var(--acc);background:none;border:none;cursor:pointer;padding:0;font-family:var(--font);">See who your most dedicated fans are →</button>
               </div>
             </div>
           </div>
@@ -2057,7 +2057,7 @@ body::before {
                 <div style="font-size:10px;color:var(--t3);">Everyone who signed up</div>
               </div>
               <div style="padding:10px 12px;border-radius:10px;border:1px solid var(--border);">
-                <div style="font-size:12px;font-weight:600;color:var(--text);">Superfans only</div>
+                <div style="font-size:12px;font-weight:600;color:var(--text);">Core fans only</div>
                 <div style="font-size:10px;color:var(--t3);">Most engaged fans</div>
               </div>
             </div>
@@ -2227,7 +2227,7 @@ const DEMO_FANS = [
 ];
 
 const LEVEL_STYLES = {
-  superfan:  { label:'Superfan',  bg:'rgba(var(--acc-rgb),.15)',  color:'var(--acc)' },
+  superfan:  { label:'Core fan',  bg:'rgba(var(--acc-rgb),.15)',  color:'var(--acc)' },
   supporter: { label:'Supporter', bg:'rgba(126,200,138,.12)',     color:'#7ec88a' },
   fan:       { label:'Fan',       bg:'rgba(255,255,255,.07)',      color:'var(--t2)' },
   listener:  { label:'Listener',  bg:'rgba(255,255,255,.04)',      color:'var(--t3)' },
