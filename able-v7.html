@@ -1388,13 +1388,13 @@
                   background-color var(--dur-fast) var(--ease-standard),
                   transform var(--dur-fast) var(--ease-spring);
     }
-    /* A10 — Pill entrance bloom: staggered fade-in on first load (session-flagged) */
+    /* A10/D3 — Pill entrance: horizontal left-to-right wave per spec (pills are a horizontal element) */
     @keyframes pill-bloom {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateX(-8px); }
+      to   { opacity: 1; transform: translateX(0); }
     }
     .pill.pill-bloom {
-      animation: pill-bloom 200ms var(--ease-decel) var(--pill-bloom-delay, 0ms) both;
+      animation: pill-bloom 220ms var(--ease-decel) var(--pill-bloom-delay, 0ms) both;
     }
     @media (prefers-reduced-motion: reduce) {
       .pill.pill-bloom { animation: none; opacity: 1; }
