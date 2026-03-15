@@ -14,6 +14,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Artist Name — ABLE</title>
+  <meta name="description" id="metaDescription" content="Music, shows, merch and more — on ABLE.">
+  <meta property="og:title" id="ogTitle" content="Artist Name — ABLE">
+  <meta property="og:description" id="ogDescription" content="Music, shows, merch and more.">
+  <meta property="og:type" content="profile">
+  <meta property="og:site_name" content="ABLE">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" id="twTitle" content="Artist Name — ABLE">
+  <meta name="twitter:description" id="twDescription" content="Music, shows, merch and more.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
@@ -611,7 +619,7 @@
     .v3-cta:active { transform: scale(0.97); }
     .v3-cta--primary {
       background: var(--color-accent);
-      color: #fff;
+      color: var(--color-on-accent);
       box-shadow: 0 4px 20px var(--color-accent-glow), 0 1px 0 rgba(255,255,255,0.18) inset;
       transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.15s;
     }
@@ -884,7 +892,7 @@
     .v3-snap-card__btn {
       display: inline-block; padding: 5px 11px; border-radius: 100px;
       font-size: 10px; font-weight: 700; background: var(--color-accent);
-      color: #fff; border: none; cursor: pointer; font-family: var(--font-body);
+      color: #fff; border: none; cursor: pointer; font-family: var(--font);
       transition: opacity 0.15s;
     }
     .v3-snap-card__btn:active { opacity: 0.8; }
@@ -1039,7 +1047,7 @@
     }
     .v3-event__ticket {
       background: var(--color-accent);
-      color: #fff;
+      color: var(--color-on-accent);
       font-size: 11px;
       font-weight: 700;
       padding: 8px 14px;
@@ -1177,7 +1185,7 @@
       --color-tab-bar-bg:     rgba(8,9,20,0.72);
     }
     [data-theme="glass"] body {
-      background-color: #131a2a;
+      background-color: #0d0e1a;
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -1672,7 +1680,9 @@
             <div class="v3-top-card__video" id="v3TopCardVideo">
               <div class="v3-top-card__video-frame" id="v3TopCardVideoFrame">
                 <div class="v3-top-card__video-placeholder">
-                  <div class="v3-top-card__play-circle" id="v3TopCardPlayBtn">▶</div>
+                  <div class="v3-top-card__play-circle" id="v3TopCardPlayBtn" aria-label="Play video">
+                    <svg width="16" height="18" viewBox="0 0 16 18" fill="currentColor" aria-hidden="true"><path d="M2 1.5l13 7-13 7V1.5z"/></svg>
+                  </div>
                   <div class="v3-top-card__video-label" id="v3TopCardVideoLabel">Play video</div>
                 </div>
               </div>
@@ -1698,14 +1708,8 @@
           <span class="v3-artist__bio-toggle" id="v3BioToggle">More</span>
         </div>
 
-        <!-- Quick Action Pills -->
-        <div class="v3-pills" id="v3Pills">
-          <button class="v3-pill">Spotify</button>
-          <button class="v3-pill">Apple Music</button>
-          <button class="v3-pill">SoundCloud</button>
-          <button class="v3-pill">YouTube</button>
-          <button class="v3-pill v3-pill--overflow" id="v3PillsToggle">+2 more</button>
-        </div>
+        <!-- Quick Action Pills — populated by applyProfile() -->
+        <div class="v3-pills" id="v3Pills"></div>
 
         <!-- Fan Welcome Banner (shown when ?from= URL param present) -->
         <div class="v3-welcome" id="v3Welcome">
@@ -1802,8 +1806,8 @@
         <!-- Engagement Nudge — filled dynamically by applyProfile -->
         <div class="v3-engage" id="v3Engage"></div>
 
-        <!-- Theme switcher (dev helper) -->
-        <div style="padding:16px var(--space-page) 8px;">
+        <!-- Theme switcher — owner preview only, hidden from fans by applyProfile -->
+        <div id="v3ThemeSwitcher" style="display:none;padding:16px var(--space-page) 8px;">
           <div class="v3-section-label" style="margin-bottom:10px;">Theme preview</div>
           <div style="display:flex;gap:6px;">
             <button class="v3-pill" onclick="document.documentElement.setAttribute('data-theme','dark')" style="flex:1;">Dark</button>
@@ -2103,6 +2107,18 @@
           profile_id: getArtistId(),
           label,
           type,
+          source,
+          ts:         Date.now(),
+        });
+      } catch(e) {}
+    }
+
+    async function syncPageView(source) {
+      if (!sb) return;
+      try {
+        await sb.from('views').insert({
+          id:         crypto.randomUUID(),
+          profile_id: getArtistId(),
           source,
           ts:         Date.now(),
         });
@@ -2712,6 +2728,39 @@
       setText('v3ArtistBio', data.bio);
       setText('v3HeroTag', data.heroTag || 'Out Now');
 
+      // Bio toggle — hide "More" if bio isn't long enough to clamp
+      const bioToggleEl = document.getElementById('v3BioToggle');
+      if (bioToggleEl) {
+        // Show toggle only if bio exceeds 3 lines (roughly 120 chars)
+        const bio = data.bio || '';
+        bioToggleEl.style.display = bio.length > 120 ? 'inline-block' : 'none';
+      }
+
+      // Update page title + social meta tags
+      if (data.name && data.name !== V3_DEFAULTS.name) {
+        const pageTitle = `${data.name} — ABLE`;
+        document.title = pageTitle;
+        const genre = (data.genres || [])[0] || '';
+        const loc   = data.location || '';
+        const tagline = [genre, loc].filter(Boolean).join(' · ');
+        const desc = data.bio
+          ? data.bio.slice(0, 120) + (data.bio.length > 120 ? '…' : '')
+          : `${data.name}${tagline ? ' — ' + tagline : ''} · Music, shows, and more on ABLE.`;
+        const setMeta = (id, val) => { const el = document.getElementById(id); if (el) el.setAttribute('content', val); };
+        setMeta('metaDescription', desc);
+        setMeta('ogTitle', pageTitle);
+        setMeta('ogDescription', desc);
+        setMeta('twTitle', pageTitle);
+        setMeta('twDescription', desc);
+      }
+
+      // Theme switcher — only owners should see this
+      const themeSwitcher = document.getElementById('v3ThemeSwitcher');
+      if (themeSwitcher) {
+        const isOwner = !!(localStorage.getItem('able_v3_profile') || localStorage.getItem('able_profile'));
+        themeSwitcher.style.display = isOwner ? 'block' : 'none';
+      }
+
       // Hero image accessibility
       const heroEl = document.getElementById('v3HeroImage');
       if (heroEl) heroEl.setAttribute('aria-label', `${data.name || 'Artist'} — profile artwork`);
@@ -2817,7 +2866,7 @@
                 <div class="v3-track__name">${rel.title || 'Untitled'}</div>
                 <div class="v3-track__meta">${rel.type || 'Release'}${rel.year ? ' · ' + rel.year : ''}</div>
               </div>
-              <div class="v3-track__play-wrap"><div class="v3-track__play">▶</div></div>
+              <div class="v3-track__play-wrap"><div class="v3-track__play" aria-label="Play"><svg width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true"><path d="M1 1.5l8 4.5-8 4.5V1.5z"/></svg></div></div>
             </div>`;
           }).join('');
           musicSection.classList.remove('is-ghost');
@@ -3107,9 +3156,12 @@
     document.getElementById('v3AdminClose')?.addEventListener('click', closeAdmin);
     document.getElementById('v3AdminSave')?.addEventListener('click', saveAdmin);
 
-    // Close on backdrop tap
+    // Close on backdrop tap or Escape key
     adminOverlay?.addEventListener('click', e => {
       if (e.target === adminOverlay) closeAdmin();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && adminOverlay && !adminOverlay.hasAttribute('hidden')) closeAdmin();
     });
 
     // Live accent preview
@@ -3317,10 +3369,12 @@
     // Track page view
     (function() {
       try {
+        const source = new URLSearchParams(location.search).get('from') || 'direct';
         const views = JSON.parse(localStorage.getItem('able_views') || '[]');
-        views.unshift({ ts: Date.now(), source: new URLSearchParams(location.search).get('from') || 'direct' });
+        views.unshift({ ts: Date.now(), source });
         if (views.length > 500) views.length = 500;
         localStorage.setItem('able_views', JSON.stringify(views));
+        syncPageView(source); // async fire-and-forget to Supabase
       } catch(e) {}
     })();
 
@@ -3328,16 +3382,22 @@
     function fanSignUp() {
       const emailEl = document.getElementById('v3Email');
       const email = emailEl.value.trim();
-      if (!email || !email.includes('@')) {
+      // Basic email validation
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         emailEl.focus();
-        emailEl.style.borderColor = '#e05242';
-        setTimeout(() => emailEl.style.borderColor = '', 1200);
+        emailEl.style.borderColor = 'var(--color-accent)';
+        setTimeout(() => emailEl.style.borderColor = '', 1400);
         return;
       }
-      // Store locally (will POST to backend when wired)
+      const source = new URLSearchParams(location.search).get('from') || 'direct';
+      // Deduplicate locally
       const fans = JSON.parse(localStorage.getItem('able_fans') || '[]');
-      fans.push({ email, ts: Date.now(), source: new URLSearchParams(location.search).get('from') || 'direct' });
-      localStorage.setItem('able_fans', JSON.stringify(fans));
+      if (!fans.some(f => f.email === email)) {
+        fans.push({ email, ts: Date.now(), source });
+        localStorage.setItem('able_fans', JSON.stringify(fans));
+      }
+      // Sync to Supabase (fire-and-forget)
+      syncFanSignup(email, source);
       // Show confirmation
       document.getElementById('v3StayClose').querySelector('.v3-stay-close__row').style.display = 'none';
       document.getElementById('v3EmailDone').classList.add('show');
