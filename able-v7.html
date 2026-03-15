@@ -1770,6 +1770,18 @@
       padding: var(--sp-4) 0 0;
     }
 
+    /* Echo entrance — this is a key moment, it should land softly */
+    @keyframes echo-enter {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fan-capture__echo:not([hidden]) {
+      animation: echo-enter 280ms var(--ease-decel) both;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fan-capture__echo:not([hidden]) { animation: none; }
+    }
+
     .fan-capture__echo-text {
       font-size: var(--text-sm);
       font-weight: 500;
