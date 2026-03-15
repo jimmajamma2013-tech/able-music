@@ -629,6 +629,8 @@
     .tab-btn[aria-selected="true"] .tab-dot {
       transform: translateX(-50%) scale(1);
       opacity: 1;
+      /* I1 — barely-there accent halo at rest */
+      box-shadow: 0 0 0 4px rgba(var(--color-accent-rgb, 224,82,66), 0.14);
     }
 
     /* B14 — Tab icon bounce on selection */
@@ -1372,6 +1374,18 @@
       .pill.pill-bloom { animation: none; opacity: 1; }
     }
 
+    /* C10 — Overflow pill scale-in entrance (staggered when "+N more" expands) */
+    @keyframes pill-scale-in {
+      from { opacity: 0; transform: scale(0.80); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .pill.pill-overflow-enter {
+      animation: pill-scale-in 160ms var(--ease-spring) var(--pill-enter-delay, 0ms) both;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pill.pill-overflow-enter { animation: none; opacity: 1; }
+    }
+
     /* D15 — First-load shimmer wave: one sweep per pill, staggered, session-flagged */
     @keyframes pill-shimmer {
       0%   { transform: translateX(-100%); }
@@ -1658,9 +1672,10 @@
       color: var(--color-text-3);
     }
 
-    /* Focus glow (interaction #6) */
+    /* Focus glow (interaction #6) + E17 border thickens */
     .fan-capture__input:focus {
       border-color: var(--color-accent);
+      border-width: 2px;
       box-shadow: 0 0 0 3px var(--color-accent-soft);
     }
 
@@ -2899,6 +2914,8 @@
     .cc-sheet__input:focus {
       outline: none;
       border-color: var(--color-accent);
+      border-width: 2px; /* E17 — thickens on focus */
+      box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb, 224,82,66), 0.12);
     }
     [data-theme="light"] .cc-sheet__input {
       background: rgba(0,0,0,0.04);
@@ -6081,10 +6098,12 @@
             moreBtn.setAttribute('aria-expanded', 'false')
             moreLabel.textContent = `+${overflow.length} more`
           } else {
-            // Expand inline
-            overflow.forEach(platform => {
+            // Expand inline — C10: staggered scale-in entrance (60ms per pill)
+            overflow.forEach((platform, i) => {
               const pill = buildPill(platform)
-              pill.classList.add('pill--overflow')
+              pill.classList.add('pill--overflow', 'pill-overflow-enter')
+              pill.style.setProperty('--pill-enter-delay', `${i * 60}ms`)
+              pill.addEventListener('animationend', () => pill.classList.remove('pill-overflow-enter'), { once: true })
               track.appendChild(pill)
             })
             moreBtn.setAttribute('aria-expanded', 'true')
