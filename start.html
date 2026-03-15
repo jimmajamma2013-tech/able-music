@@ -154,45 +154,45 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 .field-error-msg.show { display:block; }
 
 /* ── HOW-TO GUIDES ── */
+/* ── HOW-TO / TIP SYSTEM ── */
 .how-to-btn {
-  display:flex; align-items:center; gap:8px;
-  margin-top:12px; padding:10px 14px; border-radius:10px;
-  font-size:12.5px; font-weight:600; color:rgba(255,255,255,.75);
-  background:rgba(138,180,206,.10); border:1.5px solid rgba(138,180,206,.22);
-  cursor:pointer; transition:all .18s; font-family:var(--font); width:100%;
-  text-align:left; letter-spacing:.01em;
+  display:inline-flex; align-items:center; gap:5px;
+  margin-top:9px; padding:3px 0;
+  font-size:11.5px; font-weight:500;
+  color:rgba(138,180,206,.65);
+  background:none; border:none;
+  border-bottom:1px dashed rgba(138,180,206,.28);
+  cursor:pointer; transition:color .15s, border-color .15s;
+  font-family:var(--font); text-align:left; letter-spacing:0;
 }
-.how-to-btn:hover { background:rgba(138,180,206,.18); color:#fff; border-color:rgba(138,180,206,.45); }
-.how-to-btn.open { background:rgba(138,180,206,.18); color:#fff; border-color:rgba(138,180,206,.45); border-bottom-left-radius:0; border-bottom-right-radius:0; margin-bottom:0; }
-.how-to-btn svg { margin-left:auto; flex-shrink:0; transition:transform .22s; color:rgba(255,255,255,.5); }
-.how-to-btn.open svg { transform:rotate(180deg); color:#fff; }
+.how-to-btn:hover { color:var(--acc); border-bottom-color:var(--acc); }
+.how-to-btn.open { color:var(--acc); border-bottom-color:transparent; }
+.how-to-btn svg { flex-shrink:0; transition:transform .2s; }
+.how-to-btn.open svg { transform:rotate(180deg); }
 @keyframes slideDown {
-  from { opacity:0; transform:translateY(-6px); }
+  from { opacity:0; transform:translateY(-5px); }
   to   { opacity:1; transform:translateY(0); }
 }
 .how-to-guide {
-  padding:18px 18px 16px; border-radius:0 0 12px 12px;
-  background:rgba(20,30,55,.95); border:1.5px solid rgba(138,180,206,.45);
-  border-top:none; animation:slideDown .22s ease both;
-  backdrop-filter:blur(8px);
+  margin-top:10px; padding:13px 15px 11px; border-radius:10px;
+  background:rgba(10,16,38,.58); border:1px solid rgba(138,180,206,.14);
+  animation:slideDown .2s ease both;
 }
-.how-to-steps { display:flex; flex-direction:column; gap:12px; margin-bottom:14px; }
+.how-to-steps { display:flex; flex-direction:column; gap:9px; margin-bottom:11px; }
 .how-to-step {
-  display:flex; align-items:flex-start; gap:12px;
-  font-size:13.5px; color:rgba(255,255,255,.88); line-height:1.5;
+  display:flex; align-items:flex-start; gap:9px;
+  font-size:12.5px; color:rgba(204,221,239,.66); line-height:1.5;
 }
 .how-to-num {
-  width:24px; height:24px; border-radius:50%; flex-shrink:0;
-  background:var(--acc); color:#0f1624;
-  display:flex; align-items:center; justify-content:center;
-  font-size:11px; font-weight:800; margin-top:1px;
+  font-size:10px; font-weight:700; color:var(--acc);
+  width:14px; flex-shrink:0; margin-top:2px; opacity:.75; text-align:center;
 }
-.how-to-step strong { color:#fff; font-weight:700; }
+.how-to-step strong { color:rgba(204,221,239,.9); font-weight:600; }
 .how-to-note {
-  font-size:12px; color:rgba(255,255,255,.6); line-height:1.6;
-  padding-top:12px; border-top:1px solid rgba(138,180,206,.15);
+  font-size:11.5px; color:rgba(204,221,239,.44); line-height:1.6;
+  padding-top:9px; border-top:1px solid rgba(138,180,206,.08);
 }
-.how-to-note strong { color:rgba(255,255,255,.85); font-weight:600; }
+.how-to-note strong { color:rgba(204,221,239,.68); font-weight:600; }
 
 /* ── PLATFORM PICKER (music step) ── */
 .music-plat-row {
@@ -852,6 +852,17 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
         <label class="field-label" for="iBio">One-line bio <span class="opt">optional</span></label>
         <input class="field-input" type="text" id="iBio" placeholder="e.g. Making music from my bedroom to yours." maxlength="80">
         <div class="field-hint">One sentence. Sits under your name. Say something real.</div>
+        <button class="how-to-btn" type="button" onclick="toggleHowTo('bioTip','bioTipBtn')" id="bioTipBtn" aria-expanded="false">
+          💡 What makes a good bio?<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" width="9" height="9"><path d="M1.5 3l3.5 3.5L8.5 3"/></svg>
+        </button>
+        <div class="how-to-guide" id="bioTip" hidden>
+          <div class="how-to-steps">
+            <div class="how-to-step"><span class="how-to-num">→</span><span><strong>"Making lo-fi beats from my bedroom in Manchester."</strong> — specific. Works.</span></div>
+            <div class="how-to-step"><span class="how-to-num">→</span><span><strong>"Genre-blending artist pushing boundaries."</strong> — vague. Skip it.</span></div>
+            <div class="how-to-step"><span class="how-to-num">→</span><span>One real detail beats five adjectives every time. A city, a mood, a fact.</span></div>
+          </div>
+          <div class="how-to-note">You can always hit the <strong>Help me write this</strong> button below if you're stuck.</div>
+        </div>
         <button class="ai-btn" type="button" id="aiBioBtn" onclick="openBioHelper()">
           <span class="ai-btn__spark">✦</span> Help me write this
         </button>
@@ -885,7 +896,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
         <input class="field-input" type="url" id="iSpotify" placeholder="Paste your Spotify link here…" autocomplete="off">
         <div class="field-hint">Your music plays directly on your page — fans don't need to open another app.</div>
         <button class="how-to-btn" type="button" onclick="toggleHowTo('spotifyGuide','spotifyGuideBtn')" id="spotifyGuideBtn" aria-expanded="false">
-          <span>📱 How do I find my Spotify link?</span>
+          <span>📱 How do I get my Spotify link?</span>
           <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M2 4l4 4 4-4"/></svg>
         </button>
         <div class="how-to-guide" id="spotifyGuide" hidden>
@@ -1006,6 +1017,19 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
       <div class="cta-groups" id="ctaGrid"></div>
 
+      <button class="how-to-btn" type="button" onclick="toggleHowTo('ctaTip','ctaTipBtn')" id="ctaTipBtn" aria-expanded="false" style="margin-top:10px;">
+        🤔 Not sure which to pick?<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" width="9" height="9"><path d="M1.5 3l3.5 3.5L8.5 3"/></svg>
+      </button>
+      <div class="how-to-guide" id="ctaTip" hidden>
+        <div class="how-to-steps">
+          <div class="how-to-step"><span class="how-to-num">→</span><span>Just dropped something? → <strong>Stream Now</strong></span></div>
+          <div class="how-to-step"><span class="how-to-num">→</span><span>Got a release coming up? → <strong>Pre-save</strong></span></div>
+          <div class="how-to-step"><span class="how-to-num">→</span><span>Playing shows? → <strong>Get Tickets</strong></span></div>
+          <div class="how-to-step"><span class="how-to-num">→</span><span>Nothing specific right now? → <strong>Coming Soon</strong> or <strong>Subscribe</strong></span></div>
+        </div>
+        <div class="how-to-note">This changes automatically as things happen — pre-release mode, drop day, gig night. So don't overthink the default.</div>
+      </div>
+
       <!-- CTA AI helper -->
       <button class="ai-btn" type="button" id="aiCtaBtn" onclick="openCtaHelper()" style="margin-top:10px;">
         <span class="ai-btn__spark">✦</span> Not sure? Get a suggestion
@@ -1107,6 +1131,17 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       <div class="step-eyebrow">Step 7 of 8 — optional</div>
       <h1 class="step-title">Playing<br>anywhere soon?</h1>
       <p class="step-sub">Got a show coming up? Add it and the tickets go straight to the top of your page. No shows yet — that's fine, skip this entirely.</p>
+      <button class="how-to-btn" type="button" onclick="toggleHowTo('showTip','showTipBtn')" id="showTipBtn" aria-expanded="false" style="margin-bottom:14px;">
+        🎤 How does this work on my page?<svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" width="9" height="9"><path d="M1.5 3l3.5 3.5L8.5 3"/></svg>
+      </button>
+      <div class="how-to-guide" id="showTip" hidden style="margin-bottom:14px;">
+        <div class="how-to-steps">
+          <div class="how-to-step"><span class="how-to-num">→</span><span>When you add a show, your page flips into <strong>Gig mode</strong> — tickets jump to the front, everything else steps back.</span></div>
+          <div class="how-to-step"><span class="how-to-num">→</span><span>You can also turn it on manually from your dashboard the night of the show.</span></div>
+          <div class="how-to-step"><span class="how-to-num">→</span><span>No ticket link yet? Just add the venue and date — you can add the link later.</span></div>
+        </div>
+        <div class="how-to-note">No shows right now? Skip this. You can add gigs any time from your dashboard — takes 30 seconds before a show.</div>
+      </div>
 
       <div class="step-field">
         <label class="step-label" for="iShowVenue">Venue</label>
