@@ -2205,10 +2205,10 @@
       padding: 6px 10px; background: #111;
     }
     .media-pip__expand {
-      width: 22px; height: 22px; border-radius: 6px;
+      width: 32px; height: 32px; border-radius: 6px;
       border: 1px solid rgba(255,255,255,0.15);
       background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
-      font-size: 10px; cursor: pointer;
+      font-size: 12px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; font-family: var(--font-body);
       transition: background 0.15s;
@@ -2219,10 +2219,10 @@
       flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .media-pip__close {
-      width: 22px; height: 22px; border-radius: 50%;
+      width: 32px; height: 32px; border-radius: 50%;
       border: 1px solid rgba(255,255,255,0.15);
       background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
-      font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; font-family: var(--font-body); transition: background 0.15s;
     }
     .media-pip__close:hover { background: rgba(255,255,255,0.14); color: #fff; }
@@ -4315,7 +4315,7 @@
       <!-- Fan near-full owner banner (hidden by default, shown via JS for owner on free tier) -->
       <div class="fan-limit-banner" id="fan-limit-banner" role="status" aria-live="polite" aria-atomic="true">
         <strong>Your list is almost full.</strong>
-        These are real people who asked to hear from you. <a href="admin.html">Upgrade to keep the door open →</a>
+        These are real people who asked to hear from you. <a href="admin.html">Move to Artist plan to keep growing your list →</a>
       </div>
 
       <!-- ======================================================
@@ -4390,7 +4390,9 @@
             <div class="cc-sheet__price" id="cc-price"></div>
           </div>
         </div>
-        <p class="cc-sheet__intro" id="cc-intro" id="cc-sheet-title"></p>
+        <!-- aria-labelledby title (sr-only; JS updates cc-intro for visible copy) -->
+        <p class="sr-only" id="cc-sheet-title">Join the close circle</p>
+        <p class="cc-sheet__intro" id="cc-intro"></p>
         <label class="sr-only" for="cc-email">Email address</label>
         <input class="cc-sheet__input" id="cc-email" type="email"
                inputmode="email" autocomplete="email" autocapitalize="off"
@@ -5058,6 +5060,15 @@
       } catch (_) {
         // CORS / taint — stays at default 0,0,0. Degrades cleanly.
       }
+    }
+
+    // === OWNER / TIER HELPERS =====================================
+
+    function getIsOwner(profile) {
+      return Boolean(localStorage.getItem('able_v3_profile') && profile && profile.name)
+    }
+    function getIsFree(profile) {
+      return !profile || !profile.tier || profile.tier === 'free'
     }
 
     // === CAMPAIGN STATE MACHINE (§6.3) ===========================
@@ -7269,8 +7280,8 @@
       if (!cards.length) return
 
       // Tier gate: free tier shows 1 card; remaining are blurred with gold lock overlay
-      const isOwner = Boolean(localStorage.getItem('able_v3_profile') && profile.name)
-      const isFree = !profile.tier || profile.tier === 'free'
+      const isOwner = getIsOwner(profile)
+      const isFree  = getIsFree(profile)
       const FREE_SNAP_LIMIT = 1
 
       track.innerHTML = ''
@@ -7292,10 +7303,10 @@
           overlay.className = 'snap-card-lock-overlay pressable'
           overlay.setAttribute('role', 'button')
           overlay.setAttribute('tabindex', '0')
-          overlay.setAttribute('aria-label', 'Unlock unlimited updates — upgrade to Artist plan')
+          overlay.setAttribute('aria-label', 'Unlock unlimited updates — move to Artist plan')
           overlay.innerHTML = `<span class="snap-card-lock-overlay__icon">🔒</span>
             <span class="snap-card-lock-overlay__text">
-              <strong>Unlimited updates</strong>Share more with your fans on Artist plan.
+              <strong>Unlimited updates</strong><br>Share more with your fans on Artist plan.
             </span>`
           overlay.addEventListener('click', () => window.open('admin.html', '_self'))
           wrapper.appendChild(blurred)
@@ -8057,8 +8068,8 @@
       initEditBar(profile)
 
       // Tier gate: fan near-full banner for free-tier owners (§9.1)
-      const isOwner = Boolean(localStorage.getItem('able_v3_profile') && profile.name)
-      const isFree  = !profile.tier || profile.tier === 'free'
+      const isOwner = getIsOwner(profile)
+      const isFree  = getIsFree(profile)
       if (isOwner && isFree) {
         let fanCount = 0
         try { fanCount = safeLS('able_fans', []).length } catch (_) {}
@@ -8088,8 +8099,7 @@
       if (!fab || !panel) return
 
       // Show FAB only if artist owns this profile (has their own localStorage data)
-      const isOwner = Boolean(localStorage.getItem('able_v3_profile') && profile.name)
-      if (!isOwner) return
+      if (!getIsOwner(profile)) return
 
       // Owner context bar — dashboard link + share button
       const ownerBar = document.getElementById('owner-bar')
