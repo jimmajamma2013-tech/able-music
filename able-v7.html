@@ -6339,14 +6339,19 @@
       }
 
       // Crossfade when transitioning (§7.2 #9): fade out → swap → fade in
+      // C13 — asymmetric crossfade: 100ms out (content exits fast), 200ms in (arrives settled)
       if (animate && chip.classList.contains('visible')) {
-        chip.style.transition = 'opacity 150ms ease'
+        chip.style.transition = 'opacity 100ms ease-in'
         chip.style.opacity = '0'
         setTimeout(() => {
           applyConfig()
-          chip.style.opacity = ''
-          chip.style.transition = ''
-        }, 160)
+          chip.style.transition = 'opacity 200ms var(--ease-decel)'
+          chip.style.opacity = '1'
+          setTimeout(() => {
+            chip.style.transition = ''
+            chip.style.opacity = ''
+          }, 220)
+        }, 110)
       } else {
         applyConfig()
       }
