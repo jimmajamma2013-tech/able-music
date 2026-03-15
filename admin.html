@@ -4075,7 +4075,15 @@ function copyPageUrl() {
     if (!btn) return;
     const orig = btn.innerHTML;
     btn.textContent = 'Copied!';
-    setTimeout(() => { btn.innerHTML = orig; }, 1800);
+    btn.style.transition = 'background 0ms';
+    btn.style.background = 'var(--acc)';
+    btn.style.color = '#0a0b0f';
+    setTimeout(() => {
+      btn.style.transition = 'background 300ms';
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 300);
+    setTimeout(() => { btn.innerHTML = orig; btn.style.transition = ''; }, 1800);
   });
 }
 
