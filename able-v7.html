@@ -629,6 +629,20 @@
       opacity: 1;
     }
 
+    /* B14 — Tab icon bounce on selection */
+    @keyframes tab-icon-bounce {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.18); }
+      70%  { transform: scale(0.97); }
+      100% { transform: scale(1); }
+    }
+    .tab-btn.icon-bounce svg {
+      animation: tab-icon-bounce 320ms var(--ease-spring) forwards;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tab-btn.icon-bounce svg { animation: none; }
+    }
+
     /* === GLOBAL PRESS SCALE (interaction #1) ==================== */
     /* Applied to all interactive elements via JS pointer events.
        B2: Directional easing — fast compress on press, spring overshoot on release.
@@ -1710,9 +1724,11 @@
                   box-shadow var(--dur-fast) var(--ease-standard);
     }
 
-    .release-card:hover {
-      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-      transform: translateY(-3px);
+    @media (hover: hover) and (pointer: fine) {
+      .release-card:hover {
+        box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+        transform: translateY(-3px);
+      }
     }
 
     /* Large artwork — full width, ~70% of card height */
@@ -1733,8 +1749,10 @@
       transition: transform var(--dur-slow) var(--ease-decel);
     }
 
-    .release-card:hover .release-card__artwork {
-      transform: scale(1.03);
+    @media (hover: hover) and (pointer: fine) {
+      .release-card:hover .release-card__artwork {
+        transform: scale(1.03);
+      }
     }
 
     /* Play overlay — centred on artwork, appears on hover or always visible.
@@ -2250,9 +2268,11 @@
       min-height: 80px;
     }
 
-    .show-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    @media (hover: hover) and (pointer: fine) {
+      .show-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      }
     }
 
     /* Venue image variant — full-bleed image behind card content */
@@ -2904,6 +2924,8 @@
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       width: 100%;
+      scroll-snap-type: x proximity;
+      overscroll-behavior-x: contain;
     }
 
     .snap-cards-track::-webkit-scrollbar { display: none; }
@@ -2916,14 +2938,17 @@
       border-radius: var(--r-sm);
       overflow: hidden;
       display: flex;
+      scroll-snap-align: start;
       flex-direction: column;
       transition: transform var(--dur-fast) var(--ease-spring),
                   box-shadow var(--dur-fast) var(--ease-standard);
     }
 
-    .snap-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    @media (hover: hover) and (pointer: fine) {
+      .snap-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      }
     }
 
     /* Square image — native social post crop */
@@ -3075,10 +3100,12 @@
                   transform var(--dur-fast) var(--ease-spring);
     }
 
-    .merch-item:hover {
-      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
-      transform: translateY(-1px);
-      border-color: rgba(var(--color-accent-rgb), 0.45);
+    @media (hover: hover) and (pointer: fine) {
+      .merch-item:hover {
+        box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+        transform: translateY(-1px);
+        border-color: rgba(var(--color-accent-rgb), 0.45);
+      }
     }
 
     .merch-item__image-wrap {
@@ -3180,10 +3207,12 @@
                   transform var(--dur-fast) var(--ease-spring);
     }
 
-    .support-pack:hover {
-      border-color: var(--color-accent);
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(var(--color-accent-rgb), 0.12);
+    @media (hover: hover) and (pointer: fine) {
+      .support-pack:hover {
+        border-color: var(--color-accent);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(var(--color-accent-rgb), 0.12);
+      }
     }
 
     .support-pack__emoji {
@@ -5730,6 +5759,13 @@
           })
           tab.setAttribute('aria-selected', 'true')
           tab.setAttribute('tabindex', '0')
+
+          // B14 — icon bounce on selection (not on re-tap)
+          tab.classList.remove('icon-bounce')
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => tab.classList.add('icon-bounce'))
+          })
+          tab.addEventListener('animationend', () => tab.classList.remove('icon-bounce'), { once: true })
 
           // Scroll to section
           const sectionId = TAB_SECTIONS[tabId]
