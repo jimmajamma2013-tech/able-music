@@ -4405,6 +4405,73 @@
     .owner-bar__share:hover { color: #fff; background: rgba(255,255,255,0.08); }
     /* Push app shell down when owner bar is visible */
     body.has-owner-bar #app-shell { margin-top: 38px; }
+
+    /* ── A4 — Sticky artist mini-header ───────────────────────────
+       Appears when the hero scrolls out of view. Shows artist name
+       at reduced size with frosted-glass strip. Fan view only.
+       GPU-only transform/opacity — no layout side-effects.
+    ────────────────────────────────────────────────────────────── */
+    #sticky-artist-bar {
+      position: fixed;
+      top: 0; left: 50%;
+      transform: translateX(-50%) translateY(-100%);
+      width: 100%; max-width: 430px;
+      height: 44px;
+      padding: 0 var(--sp-5);
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      z-index: 140;
+      background-color: rgba(13,14,26, 0.82);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border-bottom: 1px solid rgba(255,255,255,0.055);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.03), 0 4px 24px rgba(0,0,0,0.5);
+      pointer-events: none;
+      opacity: 0;
+      transition: transform 300ms var(--ease-decel), opacity 300ms var(--ease-decel);
+    }
+    #sticky-artist-bar.visible {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    /* Theme overrides */
+    body:has([data-theme="light"]) #sticky-artist-bar {
+      background-color: rgba(240,237,232,0.90);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.08);
+    }
+    body:has([data-theme="glass"]) #sticky-artist-bar {
+      background-color: rgba(13,14,26,0.40);
+      backdrop-filter: blur(24px) saturate(200%);
+      -webkit-backdrop-filter: blur(24px) saturate(200%);
+    }
+    body:has([data-theme="contrast"]) #sticky-artist-bar {
+      background-color: rgba(0,0,0,0.96);
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+    .sticky-bar__name {
+      font-family: var(--font-d);
+      font-size: 18px;
+      font-weight: var(--font-d-weight, 700);
+      font-style: var(--font-d-style, normal);
+      text-transform: var(--font-d-transform, none);
+      letter-spacing: var(--ls-d, 0.01em);
+      line-height: 1;
+      color: var(--color-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+    body:has([data-theme="light"]) .sticky-bar__name {
+      color: var(--color-text);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #sticky-artist-bar { transition: opacity 300ms var(--ease-standard); transform: translateX(-50%); }
+      #sticky-artist-bar.visible { transform: translateX(-50%); }
+    }
   </style>
 </head>
 <body>
@@ -4421,6 +4488,11 @@
     <button class="owner-bar__share" id="owner-bar-share" aria-label="Copy profile link">
       Share ↗
     </button>
+  </div>
+
+  <!-- A4 — Sticky artist mini-header (fan view, appears when hero scrolls away) -->
+  <div id="sticky-artist-bar" aria-hidden="true" aria-label="Artist name">
+    <span class="sticky-bar__name" id="sticky-bar-name"></span>
   </div>
 
   <!-- Glass full-bleed blurred background (glass theme only) -->
@@ -5912,6 +5984,11 @@
         }, { passive: true })
       }
 
+      // Escape key to close
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sheet && !sheet.hidden) closeSheet()
+      })
+
       // Supporter gate button inside World Map panel → opens join sheet
       document.addEventListener('click', function(e) {
         if (e.target && e.target.id === 'wm-supporter-gate') {
@@ -6126,6 +6203,49 @@
             tabBar.classList.remove('tab-bar--hidden')
           }
           lastY = y
+          ticking = false
+        })
+      }, { passive: true })
+    }
+
+    // === A4 — STICKY ARTIST BAR ==================================
+    // Appears when the hero has scrolled out of view. Shows artist name
+    // in compact Barlow Condensed with frosted-glass strip. Fan view only.
+
+    function initStickyHero() {
+      // Owners always have the owner bar — skip this for them
+      const profile = getProfile()
+      if (getIsOwner(profile)) return
+
+      const scrollEl  = document.getElementById('scroll-container')
+      const stickyBar = document.getElementById('sticky-artist-bar')
+      const stickyName = document.getElementById('sticky-bar-name')
+      const heroEl    = document.getElementById('hero')
+      if (!scrollEl || !stickyBar || !heroEl) return
+
+      // Sync name from the live hero heading
+      const heroName = document.getElementById('hero-name')
+      if (heroName && stickyName) stickyName.textContent = heroName.textContent
+
+      // Also watch for changes (renderHero fires after this)
+      const nameObs = new MutationObserver(() => {
+        if (heroName && stickyName) stickyName.textContent = heroName.textContent
+      })
+      if (heroName) nameObs.observe(heroName, { childList: true, characterData: true, subtree: true })
+
+      let ticking = false
+      scrollEl.addEventListener('scroll', () => {
+        if (ticking) return
+        ticking = true
+        requestAnimationFrame(() => {
+          const heroBottom = heroEl.offsetHeight
+          // Show bar when scroll is past 70% of hero height
+          const threshold = Math.max(80, heroBottom * 0.70)
+          const isVisible = scrollEl.scrollTop > threshold
+          if (isVisible !== stickyBar.classList.contains('visible')) {
+            stickyBar.classList.toggle('visible', isVisible)
+            stickyBar.setAttribute('aria-hidden', String(!isVisible))
+          }
           ticking = false
         })
       }, { passive: true })
@@ -8688,6 +8808,7 @@
       // Boot UI systems
       initTabBar(shell)
       initScrollHide()
+      initStickyHero()
       initTabScrollSync()
       initGlassCardTilt()
       initPressScale()
