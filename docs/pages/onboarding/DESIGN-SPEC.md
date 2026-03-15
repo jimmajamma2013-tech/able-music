@@ -505,7 +505,7 @@ Margin:       auto (horizontal), 0 0 32px 0 (bottom)
 | Colour | `var(--color-text)` |
 | Placeholder colour | `var(--color-muted)` |
 | Outline | none |
-| Focus border | `border-color: var(--color-accent)`, transition `200ms var(--ease-standard)` |
+| Focus border | `border-color: var(--color-accent)`, `box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb), 0.25)`, transition `200ms var(--ease-standard)` — glow at 0.25 opacity so the ring feels alive, not clinical |
 
 **Placeholder cycling.** The placeholder text cycles through 4 strings on a timer. Each string is shown for 2500ms with a 300ms crossfade. Use a `<span>` overlay positioned absolutely inside the container rather than the native `placeholder` attribute — this allows crossfade animation.
 
@@ -546,12 +546,13 @@ Crossfade implementation:
 - Border: `1.5px solid var(--color-border)`
 - Right side of input: dot-pulse animation (3 dots, 4px diameter, `var(--color-muted)`, animating scale 0.5→1→0.5 at 400ms stagger). 20px total width.
 - Input `disabled`.
+- Below input: "Looking you up… (just public data, nothing that needs access)" — DM Sans 13px, weight 400, `var(--color-muted)`, `margin-top: 8px`. The parenthetical signals a human wrote this. Do not shorten it.
 
 **Import success:**
 - Border: `1.5px solid var(--color-success)`
 - Left of input value: check icon (16px, `var(--color-success)`)
 - Below input — two lines:
-  - Line 1: "We found you on Spotify." — DM Sans 14px, weight 600, `var(--color-success)`, `margin-top: 8px`
+  - Line 1: "There you are." — DM Sans 14px, weight 600, `var(--color-success)`, `margin-top: 8px`
   - Line 2: "[N] monthly listeners · [X] releases imported" — DM Sans 13px, weight 400, `var(--color-muted)`, `margin-top: 2px`
   - `N` = `followers.total` from Spotify API response (format with comma separator, e.g. "45,200")
   - `X` = count of albums/singles returned by import
@@ -582,11 +583,11 @@ Crossfade implementation:
 - User presses Enter → trigger import
 - Pressing Enter when input is empty → advance to Screen 1 directly
 
-### 5.7 "Start from scratch →" link
+### 5.7 "I'm not on Spotify →" link
 
 ```
 Element:     <button> styled as link (no button appearance)
-Text:        "Start from scratch →"
+Text:        "I'm not on Spotify →"
 Font:        DM Sans, 14px, weight 400
 Colour:      var(--color-muted)
 Margin-top:  12px
@@ -1122,6 +1123,20 @@ document.documentElement.style.setProperty('--color-accent-rgb', `${r}, ${g}, ${
 
 The preview panel updates instantaneously with the new accent colour.
 
+**Transient colour caption.** After each swatch selection, show a one-line caption below the swatch grid:
+
+```
+Text:     "Looking good in [colour name]."
+Font:     DM Sans, 12px, weight 400, var(--color-muted)
+Position: below swatch grid, above continue button
+Entrance: opacity 0 → 1, 150ms ease-out
+Exit:     opacity 1 → 0, 300ms ease-in, after 1800ms
+```
+
+Colour names by hex: Ember `#e05242` → "ember", Amber `#f4b942` → "amber", Rose `#e06b7a` → "rose", Sage `#7ec88a` → "sage", Indigo `#9b7cf4` → "indigo", Sky `#06b6d4` → "sky". Custom hex: "that colour". Full line: "Looking good in amber." — full stop.
+
+Implementation: set a `setTimeout(hideCaption, 1800)`. Cancel and restart on each new swatch click.
+
 ### 8.6 Custom hex input
 
 ```
@@ -1369,6 +1384,29 @@ Only shown when `wizardState.importedLinks.length > 0`.
 
 **Unchecked state:** Row opacity drops to `0.5`. Badge hidden.
 
+**Staggered entrance animation (Linktree import).** When links come from a Linktree import, do not render all rows simultaneously. Reveal them one at a time with an 80ms stagger to create the perception of careful, individual handling:
+
+```css
+.link-row { opacity: 0; transform: translateY(4px); }
+.link-row.visible { opacity: 1; transform: translateY(0); transition: opacity 160ms ease-out, transform 160ms ease-out; }
+```
+
+```js
+// On Screen 5 enter, after import:
+links.forEach((link, i) => {
+  setTimeout(() => row.classList.add('visible'), i * 80);
+});
+```
+
+This creates the feeling that the system is carefully placing each link — not bulk-dumping them.
+
+**Post-import autonomy line.** Below the links list (Linktree import only):
+```
+Text:     "Add, remove, or reorder them any time."
+Font:     DM Sans, 12px, weight 400, var(--color-muted)
+Margin-top: 8px
+```
+
 ### 10.4 "Add another link" input
 
 **Element:** `<input type="url" id="input-add-link">`
@@ -1555,6 +1593,8 @@ Enabled as soon as any choice is selected.
 **ID:** `screen-moment`
 **Step:** 7 of 7
 **Progress bar width:** `calc(7/7 * 100%)` = 100%
+
+**Eyebrow:** "Right now" (not "Step 7 of 7" — matches the copy voice and frames this as a present-moment question, not a form field)
 
 ### 12.1 Headline
 
@@ -1886,13 +1926,13 @@ setTimeout(() => {
 
 One loop. Stops. No repeating pulse — that would feel anxious, not celebratory. Tonally correct for ABLE.
 
-**Beat 4 (460ms) — Slug and CTAs stagger in:**
+**Beat 4 (460ms) — Slug and CTAs stagger in.** The slug appears first, then the CTAs, then the share row. An 800ms gap before the share row creates a breath — the artist reads "Your page is live." and sees their URL, then the sharing options appear. This pause is intentional craft, not delay.
 
 ```css
 #done-slug      { animation: content-enter 280ms ease-out 460ms both; }
 #done-cta-primary   { animation: content-enter 280ms ease-out 540ms both; }
 #done-cta-secondary { animation: content-enter 280ms ease-out 600ms both; }
-#done-share-row     { animation: content-enter 280ms ease-out 660ms both; }
+#done-share-row     { animation: content-enter 280ms ease-out 860ms both; }  /* 860ms: 200ms after slug — deliberate breath */
 ```
 
 No confetti. The accent ring, the spring scale, the staggered arrival of each element — this is the celebration. ABLE's tone does not permit generic confetti.
