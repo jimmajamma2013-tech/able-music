@@ -7734,7 +7734,19 @@
 
       const merch = profile.merch || {}
       const items = merch.items || []
-      if (!items.length) return
+      if (!items.length) {
+        if (getIsOwner(profile)) {
+          grid.innerHTML = `<div class="section-empty">
+            <div class="section-empty__circle" aria-hidden="true">🛒</div>
+            <p class="section-empty__eyebrow">Only you can see this</p>
+            <p class="section-empty__headline">Add your merch.</p>
+            <p class="section-empty__sub">Add items and fans can browse and buy right from your page.</p>
+            <a class="section-empty__action pressable" href="admin.html">Add merch →</a>
+          </div>`
+          section.hidden = false
+        }
+        return
+      }
 
       // Show "Shop all" link if shopUrl provided (admin saves as shopUrl)
       const shopLink = document.getElementById('merch-shop-link')
@@ -7803,7 +7815,19 @@
 
       const support = profile.support || {}
       const packs = support.packs || []
-      if (!packs.length) return
+      if (!packs.length) {
+        if (getIsOwner(profile)) {
+          packsEl.innerHTML = `<div class="section-empty">
+            <div class="section-empty__circle" aria-hidden="true">💙</div>
+            <p class="section-empty__eyebrow">Only you can see this</p>
+            <p class="section-empty__headline">Set up support packs.</p>
+            <p class="section-empty__sub">Let fans support you directly — coffee, sessions, bundles. You keep everything beyond Stripe's standard rate.</p>
+            <a class="section-empty__action pressable" href="admin.html">Set up support →</a>
+          </div>`
+          section.hidden = false
+        }
+        return
+      }
 
       // Artist-customizable section title and optional intro
       const headingEl = document.getElementById('support-heading')
