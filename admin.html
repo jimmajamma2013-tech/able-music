@@ -1938,7 +1938,7 @@ body::before {
             <div class="frc-step-sub">Goes at the top of your page — this is the first thing fans see</div>
           </div>
         </button>
-        <button class="frc-step" id="frc2" onclick="navigator.clipboard?.writeText(document.getElementById('profileLink')?.textContent||'').then(()=>{markFrcDone(2)})">
+        <button class="frc-step" id="frc2" onclick="navigator.clipboard?.writeText('https://'+document.getElementById('profileLinkFrc')?.textContent||'').then(()=>{markFrcDone(2)})">
           <div class="frc-check" id="frc2check">✓</div>
           <div class="frc-step-body">
             <div class="frc-step-title">Copy your page link</div>
@@ -5192,6 +5192,15 @@ window.addEventListener('DOMContentLoaded', () => {
   // Greet by name
   const greeting = document.getElementById('homeGreeting');
   if (greeting && name !== 'Your Artist Name') greeting.textContent = `Good to see you, ${name.split(' ')[0]}.`;
+
+  // Dynamic home subtitle — show fan count when there are fans
+  const subEl = document.getElementById('homeSub');
+  if (subEl) {
+    const fanCount = JSON.parse(localStorage.getItem(FANS_KEY) || '[]').length;
+    if (fanCount > 0) {
+      subEl.textContent = `${fanCount} ${fanCount === 1 ? 'person' : 'people'} on your list.`;
+    }
+  }
 
   // Page URL + Member Since
   const pageUrlEl = document.getElementById('homePageUrl');
