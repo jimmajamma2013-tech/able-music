@@ -362,6 +362,8 @@
     html {
       height: 100%;
       overscroll-behavior: none;
+      /* H7 — overscroll area shows accent-tinted dark, not plain black */
+      background-color: color-mix(in srgb, #0d0e1a 92%, var(--color-accent, #e05242) 8%);
     }
 
     body {
@@ -1555,9 +1557,14 @@
       flex-shrink: 0;
     }
 
+    /* H11 — accent hairline between sections */
     .section-divider {
       height: 1px;
-      background: var(--color-border);
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(var(--color-accent-rgb, 240,93,66), 0.10) 25%,
+        rgba(var(--color-accent-rgb, 240,93,66), 0.10) 75%,
+        transparent 100%);
       margin: 0 var(--sp-5);
     }
 
@@ -4707,6 +4714,9 @@
       root.style.setProperty('--r-md',  `${Math.round(8  * rMult)}px`)
       root.style.setProperty('--r-lg',  `${Math.round(16 * rMult)}px`)
       root.style.setProperty('--r-xl',  `${Math.round(24 * rMult)}px`)
+      // Cascade accent to :root so html/body-level uses (overscroll tint, section dividers) work
+      document.documentElement.style.setProperty('--color-accent-rgb', `${r},${g},${b}`)
+      document.documentElement.style.setProperty('--color-accent', accentHex)
     }
 
     // === §3.1 VIBE CONFIGURATION ==================================
