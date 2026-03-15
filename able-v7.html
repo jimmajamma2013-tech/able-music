@@ -2549,6 +2549,14 @@
       font-size: 24px;
       margin-bottom: 4px;
     }
+    .section-empty__eyebrow {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(var(--color-accent-rgb), 0.6);
+      margin-bottom: -2px;
+    }
     .section-empty__headline {
       font-size: 16px;
       font-weight: 800;
@@ -6170,7 +6178,19 @@
       const moreLabel = document.getElementById('pills-more-label')
 
       const platforms = profile.platforms || []
-      if (!platforms.length) { section.hidden = true; return }
+      if (!platforms.length) {
+        // Owner: show ghost placeholder pills as invitation to add streaming links
+        if (getIsOwner(profile)) {
+          track.innerHTML = `
+            <div class="ghost-block" style="width:88px;height:36px;border-radius:var(--r-pill);" aria-hidden="true"></div>
+            <div class="ghost-block" style="width:76px;height:36px;border-radius:var(--r-pill);animation-delay:0.15s;" aria-hidden="true"></div>
+            <div class="ghost-block" style="width:70px;height:36px;border-radius:var(--r-pill);animation-delay:0.30s;" aria-hidden="true"></div>`
+          section.hidden = false
+        } else {
+          section.hidden = true
+        }
+        return
+      }
 
       section.hidden = false
       track.innerHTML = ''
@@ -7199,21 +7219,28 @@
 
       const releases = profile.releases || []
       if (!releases.length) {
-        // Rich empty state — forward-looking voice, fan directed to sign up
-        list.innerHTML = `
-          <div class="section-empty">
-            <div class="section-empty__circle" aria-hidden="true">🎵</div>
-            <p class="section-empty__headline">Something's being made.</p>
-            <p class="section-empty__sub">Sign up and you'll hear it first — before it hits the platforms.</p>
-            <a class="section-empty__action pressable"
-               href="#fan-capture"
-               onclick="event.preventDefault();
-                 const fc=document.getElementById('fan-capture');
-                 if(fc){fc.scrollIntoView({behavior:'smooth',block:'center'});
-                 const inp=document.getElementById('fan-email');if(inp)setTimeout(()=>inp.focus(),350);}">
-              Hear it first
-            </a>
-          </div>`
+        const isOwner = getIsOwner(profile)
+        list.innerHTML = isOwner
+          ? `<div class="section-empty">
+               <div class="section-empty__circle" aria-hidden="true">🎵</div>
+               <p class="section-empty__eyebrow">Only you can see this</p>
+               <p class="section-empty__headline">Add your music.</p>
+               <p class="section-empty__sub">Paste a Spotify, Apple Music, or SoundCloud link and it appears here instantly.</p>
+               <a class="section-empty__action pressable" href="admin.html">Add music →</a>
+             </div>`
+          : `<div class="section-empty">
+               <div class="section-empty__circle" aria-hidden="true">🎵</div>
+               <p class="section-empty__headline">Something's being made.</p>
+               <p class="section-empty__sub">Sign up and you'll hear it first — before it hits the platforms.</p>
+               <a class="section-empty__action pressable"
+                  href="#fan-capture"
+                  onclick="event.preventDefault();
+                    const fc=document.getElementById('fan-capture');
+                    if(fc){fc.scrollIntoView({behavior:'smooth',block:'center'});
+                    const inp=document.getElementById('fan-email');if(inp)setTimeout(()=>inp.focus(),350);}">
+                 Hear it first
+               </a>
+             </div>`
         section.hidden = false
         return
       }
@@ -7526,21 +7553,28 @@
       }).sort((a, b) => new Date(a.date) - new Date(b.date))
 
       if (!events.length) {
-        // Rich empty state — fan-facing, directs to sign-up
-        list.innerHTML = `
-          <div class="section-empty">
-            <div class="section-empty__circle" aria-hidden="true">🎤</div>
-            <p class="section-empty__headline">Nothing booked yet.</p>
-            <p class="section-empty__sub">Sign up below — you'll hear about dates before anywhere else.</p>
-            <a class="section-empty__action pressable"
-               href="#fan-capture"
-               onclick="event.preventDefault();
-                 const fc=document.getElementById('fan-capture');
-                 if(fc){fc.scrollIntoView({behavior:'smooth',block:'center'});
-                 const inp=document.getElementById('fan-email');if(inp)setTimeout(()=>inp.focus(),350);}">
-              Get notified
-            </a>
-          </div>`
+        const isOwner = getIsOwner(profile)
+        list.innerHTML = isOwner
+          ? `<div class="section-empty">
+               <div class="section-empty__circle owner-badge-wrap" aria-hidden="true">🎤</div>
+               <p class="section-empty__eyebrow">Only you can see this</p>
+               <p class="section-empty__headline">Add a show date.</p>
+               <p class="section-empty__sub">When you add a show, the ticket button goes front and centre for every fan who visits.</p>
+               <a class="section-empty__action pressable" href="admin.html">Add a show →</a>
+             </div>`
+          : `<div class="section-empty">
+               <div class="section-empty__circle" aria-hidden="true">🎤</div>
+               <p class="section-empty__headline">Nothing booked yet.</p>
+               <p class="section-empty__sub">Sign up below — you'll hear about dates before anywhere else.</p>
+               <a class="section-empty__action pressable"
+                  href="#fan-capture"
+                  onclick="event.preventDefault();
+                    const fc=document.getElementById('fan-capture');
+                    if(fc){fc.scrollIntoView({behavior:'smooth',block:'center'});
+                    const inp=document.getElementById('fan-email');if(inp)setTimeout(()=>inp.focus(),350);}">
+                 Get notified
+               </a>
+             </div>`
         section.hidden = false
         return
       }
