@@ -1273,6 +1273,14 @@
       opacity: 1;
     }
 
+    /* B3 — background flash on press (lighter accent); B4 — glow intensifies */
+    .btn-primary.pressing {
+      background: color-mix(in srgb, var(--color-accent) 80%, white 20%);
+    }
+    .btn-primary.pressing::after {
+      opacity: 1;
+    }
+
     /* Secondary CTA — quiet, clearly subordinate, authority §3.5 */
     .btn-secondary {
       display: flex;
@@ -6854,15 +6862,18 @@
             if (emailInput) {
               emailInput.classList.add('error')
               emailInput.setAttribute('aria-invalid', 'true')
-              // Shake animation
+              // E5 — shake animation
               emailInput.style.animation = 'shake 0.4s ease-out'
               emailInput.addEventListener('animationend', () => {
                 emailInput.style.animation = ''
               }, { once: true })
             }
+            // E11 — error text appears 400ms after shake (not simultaneously)
             if (errorEl) {
-              errorEl.textContent = "Check your email address."
-              errorEl.hidden = false
+              setTimeout(() => {
+                errorEl.textContent = "Check your email address."
+                errorEl.hidden = false
+              }, 400)
             }
             return
           }
