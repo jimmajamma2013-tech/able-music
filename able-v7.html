@@ -1358,6 +1358,18 @@
                   background-color var(--dur-fast) var(--ease-standard),
                   transform var(--dur-fast) var(--ease-spring);
     }
+    /* A10 — Pill entrance bloom: staggered fade-in on first load (session-flagged) */
+    @keyframes pill-bloom {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .pill.pill-bloom {
+      animation: pill-bloom 200ms var(--ease-decel) var(--pill-bloom-delay, 0ms) both;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pill.pill-bloom { animation: none; opacity: 1; }
+    }
+
     /* D15 — First-load shimmer wave: one sweep per pill, staggered, session-flagged */
     @keyframes pill-shimmer {
       0%   { transform: translateX(-100%); }
@@ -5863,6 +5875,39 @@
       })
     }
 
+    // === KEYBOARD AVOIDING VIEW (interaction E16) =================
+    // When virtual keyboard opens on mobile, ensure focused inputs scroll into view.
+    // Uses visualViewport API (iOS 13+ / Android 4.4+).
+
+    function initKeyboardAvoid() {
+      if (!window.visualViewport) return
+      const scrollEl = document.getElementById('scroll-container')
+      if (!scrollEl) return
+
+      let lastHeight = window.visualViewport.height
+
+      window.visualViewport.addEventListener('resize', () => {
+        const newHeight = window.visualViewport.height
+        const keyboardHeight = window.innerHeight - newHeight
+
+        if (keyboardHeight > 100) {
+          // Keyboard opened — add bottom padding so content scrolls above keyboard
+          scrollEl.style.paddingBottom = keyboardHeight + 'px'
+          // Scroll focused input into view after a frame
+          requestAnimationFrame(() => {
+            const focused = document.activeElement
+            if (focused && (focused.tagName === 'INPUT' || focused.tagName === 'TEXTAREA')) {
+              focused.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            }
+          })
+        } else {
+          // Keyboard closed — restore padding
+          scrollEl.style.paddingBottom = ''
+        }
+        lastHeight = newHeight
+      })
+    }
+
     // ============================================================
     // CHECKPOINT 3: CTA Architecture
     // ============================================================
@@ -5993,15 +6038,23 @@
       const overflow  = deduped.slice(maxVisible)
 
       const doShimmer = !sessionStorage.getItem('pills-shimmer-done')
+      const doBloom   = !sessionStorage.getItem('pills-bloom-done')
       visible.forEach((platform, i) => {
         const pill = buildPill(platform)
+        if (doBloom) {
+          pill.style.setProperty('--pill-bloom-delay', `${i * 50}ms`)
+          pill.classList.add('pill-bloom')
+          pill.addEventListener('animationend', () => pill.classList.remove('pill-bloom'), { once: true })
+        }
         if (doShimmer) {
-          pill.style.setProperty('--pill-shimmer-delay', `${i * 60}ms`)
+          const shimmerDelay = (doBloom ? 200 : 0) + i * 60
+          pill.style.setProperty('--pill-shimmer-delay', `${shimmerDelay}ms`)
           pill.classList.add('pill-shimmer-once')
           pill.addEventListener('animationend', () => pill.classList.remove('pill-shimmer-once'), { once: true })
         }
         track.appendChild(pill)
       })
+      if (doBloom)   sessionStorage.setItem('pills-bloom-done',   '1')
       if (doShimmer) sessionStorage.setItem('pills-shimmer-done', '1')
 
       if (overflow.length) {
@@ -8071,6 +8124,7 @@
       initScrollHide()
       initPressScale()
       initBackGesture()
+      initKeyboardAvoid()
       initBioExpand()
 
       // Render hero (local-first from localStorage)
