@@ -1146,6 +1146,13 @@
       overflow: visible;
     }
 
+    /* H16 — barely perceptible accent warmth behind expanded bio */
+    .bio-strip:has(.bio-strip__text.expanded) {
+      background: rgba(var(--color-accent-rgb, 224,82,66), 0.03);
+      border-radius: var(--r-md);
+      transition: background var(--dur-mid) var(--ease-standard);
+    }
+
     .bio-strip__more {
       margin-top: var(--sp-1);
       background: none;
@@ -1580,6 +1587,19 @@
         rgba(var(--color-accent-rgb, 240,93,66), 0.10) 75%,
         transparent 100%);
       margin: 0 var(--sp-5);
+    }
+
+    /* G9 — deep-link section highlight (1.5s pulsing accent ring after hash navigate) */
+    @keyframes section-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(var(--color-accent-rgb, 224,82,66), 0.0); }
+      50%       { box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb, 224,82,66), 0.22); }
+    }
+    .section-highlighted {
+      border-radius: var(--r-md);
+      animation: section-pulse 750ms var(--ease-standard) 2; /* two pulses = 1.5s */
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .section-highlighted { animation: none; }
     }
 
     /* Screen reader only */
@@ -7944,6 +7964,20 @@
       })
     }
 
+    // --- G9: Deep-link section highlight -------------------------
+    // 400ms after load, highlight hash-targeted section with a 1.5s pulse
+
+    function initDeepLinkHighlight() {
+      const hash = window.location.hash
+      if (!hash) return
+      const target = document.querySelector(hash)
+      if (!target) return
+      setTimeout(() => {
+        target.classList.add('section-highlighted')
+        target.addEventListener('animationend', () => target.classList.remove('section-highlighted'), { once: true })
+      }, 400)
+    }
+
     // --- #17: Copy link flash -----------------------------------
 
     // --- Reduced motion -------------------------------------------
@@ -8186,6 +8220,7 @@
       initTabIndicator(shell)
       initCardBloom()
       initLazyImageBlurUp()
+      initDeepLinkHighlight()
       patchFanFormConfetti()
       respectReducedMotion()
 
