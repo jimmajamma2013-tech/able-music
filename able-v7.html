@@ -6233,19 +6233,36 @@
       })
       if (heroName) nameObs.observe(heroName, { childList: true, characterData: true, subtree: true })
 
+      // A11 — capture base font-size after fonts are ready (clamp resolves to px at paint time)
+      let a11StartSize = 0
+      const A11_END_SIZE = 24 // px
+      document.fonts.ready.then(() => {
+        if (heroName) a11StartSize = parseFloat(getComputedStyle(heroName).fontSize) || 48
+      })
+
       let ticking = false
       scrollEl.addEventListener('scroll', () => {
         if (ticking) return
         ticking = true
         requestAnimationFrame(() => {
           const heroBottom = heroEl.offsetHeight
-          // Show bar when scroll is past 70% of hero height
+          const scrollTop  = scrollEl.scrollTop
+
+          // A4 — sticky bar: show when scroll past 70% of hero
           const threshold = Math.max(80, heroBottom * 0.70)
-          const isVisible = scrollEl.scrollTop > threshold
+          const isVisible = scrollTop > threshold
           if (isVisible !== stickyBar.classList.contains('visible')) {
             stickyBar.classList.toggle('visible', isVisible)
             stickyBar.setAttribute('aria-hidden', String(!isVisible))
           }
+
+          // A11 — name scale compression: lerp font-size as hero scrolls away
+          if (heroName && heroName.classList.contains('revealed') && a11StartSize > 0) {
+            const progress = Math.min(1, scrollTop / Math.max(1, heroBottom))
+            const fontSize = a11StartSize + (A11_END_SIZE - a11StartSize) * progress
+            heroName.style.fontSize = fontSize + 'px'
+          }
+
           ticking = false
         })
       }, { passive: true })
