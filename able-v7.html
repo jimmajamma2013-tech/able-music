@@ -2827,8 +2827,8 @@
     }
 
     .wm-nav-btn {
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
       border-radius: var(--r-full);
       border: 1px solid rgba(255,255,255,0.10);
       background: transparent;
@@ -3076,6 +3076,13 @@
     .wm-panel__access--fan       { background: rgba(78,205,196,0.15); color: #4ecdc4; }
     .wm-panel__access--supporter { background: rgba(212,168,75,0.15); color: #d4a84b; }
     .wm-panel__access--private   { background: rgba(255,255,255,0.06); color: var(--color-text-3); }
+
+    .wm-panel__moment-item {
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .wm-panel__moment-item:last-child { border-bottom: none; }
+    [data-theme="light"] .wm-panel__moment-item { border-bottom-color: rgba(0,0,0,0.07); }
 
     .wm-panel__note {
       font-size: var(--text-sm);
@@ -5104,6 +5111,9 @@
            WORLD MAP SECTION
            ====================================================== -->
       <section class="world-map-section" id="world-map-section" aria-label="What's coming" hidden>
+        <div class="section-header">
+          <h2 class="section-title">What's coming</h2>
+        </div>
         <div class="world-map-card" id="world-map-card">
 
           <!-- Month header -->
@@ -6206,77 +6216,84 @@
       var backdrop = document.getElementById('wm-backdrop')
       if (!panel || !body) return
 
-      var moment = dayMoments[0]
-      var typeColor = WM_TYPE_COLOR[moment.type] || 'var(--color-accent)'
-      var typeLabel = WM_TYPE_LABEL[moment.type] || 'Moment'
-      var accessCfg = WM_ACCESS[moment.access] || WM_ACCESS.public
-
       var profile = safeLS('able_v3_profile', {})
       var fans = safeLS('able_fans', [])
       var userState = {
         isFan: fans.length > 0,
         isSupporter: !!(profile.supporterSince),
       }
-      var access = resolveAccess(moment, userState)
-
-      var dateObj = new Date(moment.date + 'T00:00:00')
-      var dateStr = dateObj.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long' })
-
       var artistName = escHtml(profile.name || 'the artist')
-      var ctaHtml = ''
 
-      if (access === 'enquire' || (access === 'full' && moment.access === 'private')) {
-        ctaHtml = '<div class="wm-panel__enquiry">'
-          + '<textarea class="wm-panel__enquiry-field" id="wm-enquiry-msg"'
-          + ' placeholder="Tell ' + artistName + ' what you have in mind."'
-          + ' maxlength="600" aria-label="Your message"></textarea>'
-          + '<input type="email" class="wm-panel__enquiry-email" id="wm-enquiry-email"'
-          + ' placeholder="Your email" aria-label="Your email"/>'
-          + '<p class="wm-panel__enquiry-hint">I read everything. I\'ll be in touch if it feels right.</p>'
-          + '<button class="wm-panel__cta" id="wm-enquiry-submit"'
-          + ' style="--wm-panel-type-color:' + typeColor + '">Express interest</button>'
-          + '</div>'
-      } else if (access === 'full' && moment.cta) {
-        if (moment.cta.url && isSafeUrl(moment.cta.url)) {
-          var safeUrl = escHtml(moment.cta.url)
-          ctaHtml = '<a class="wm-panel__cta" href="' + safeUrl + '" target="_blank" rel="noopener noreferrer"'
-            + ' style="--wm-panel-type-color:' + typeColor + '">' + escHtml(moment.cta.label || 'View') + '</a>'
-        } else if (moment.cta.type === 'notify') {
-          ctaHtml = '<button class="wm-panel__cta" style="--wm-panel-type-color:' + typeColor + '">'
-            + escHtml(moment.cta.label || 'Notify me') + '</button>'
+      // Build HTML for all moments on this day
+      var itemsHtml = dayMoments.map(function(moment, idx) {
+        var typeColor = WM_TYPE_COLOR[moment.type] || 'var(--color-accent)'
+        var typeLabel = WM_TYPE_LABEL[moment.type] || 'Moment'
+        var accessCfg = WM_ACCESS[moment.access] || WM_ACCESS.public
+        var access = resolveAccess(moment, userState)
+        var dateObj = new Date(moment.date + 'T00:00:00')
+        var dateStr = dateObj.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long' })
+        var enquiryId = 'wm-enquiry-submit-' + idx
+
+        var ctaHtml = ''
+        if (access === 'enquire' || (access === 'full' && moment.access === 'private')) {
+          ctaHtml = '<div class="wm-panel__enquiry">'
+            + '<textarea class="wm-panel__enquiry-field" data-idx="' + idx + '"'
+            + ' placeholder="Tell ' + artistName + ' what you have in mind."'
+            + ' maxlength="600" aria-label="Your message"></textarea>'
+            + '<input type="email" class="wm-panel__enquiry-email" data-idx="' + idx + '"'
+            + ' placeholder="Your email" aria-label="Your email"/>'
+            + '<p class="wm-panel__enquiry-hint">I read everything. I\'ll be in touch if it feels right.</p>'
+            + '<button class="wm-panel__cta" id="' + enquiryId + '" data-moment-id="' + escHtml(moment.id) + '"'
+            + ' style="--wm-panel-type-color:' + typeColor + '">Express interest</button>'
+            + '</div>'
+        } else if (access === 'full' && moment.cta) {
+          if (moment.cta.url && isSafeUrl(moment.cta.url)) {
+            ctaHtml = '<a class="wm-panel__cta" href="' + escHtml(moment.cta.url) + '" target="_blank" rel="noopener noreferrer"'
+              + ' style="--wm-panel-type-color:' + typeColor + '">' + escHtml(moment.cta.label || 'View') + '</a>'
+          } else if (moment.cta.type === 'notify') {
+            ctaHtml = '<button class="wm-panel__cta" style="--wm-panel-type-color:' + typeColor + '">'
+              + escHtml(moment.cta.label || 'Notify me') + '</button>'
+          }
+        } else if (access === 'gate_fan') {
+          ctaHtml = '<button class="wm-panel__cta wm-panel__cta--gated" class="wm-fan-gate">Join the list to access this</button>'
+        } else if (access === 'gate_supporter') {
+          ctaHtml = '<button class="wm-panel__cta wm-panel__cta--gated" class="wm-supporter-gate">Join the close circle \u2192</button>'
         }
-      } else if (access === 'gate_fan') {
-        ctaHtml = '<button class="wm-panel__cta wm-panel__cta--gated" id="wm-fan-gate">Join the list to access this</button>'
-      } else if (access === 'gate_supporter') {
-        ctaHtml = '<button class="wm-panel__cta wm-panel__cta--gated" id="wm-supporter-gate">Join the close circle \u2192</button>'
-      }
 
-      body.style.setProperty('--wm-panel-type-color', typeColor)
-      body.innerHTML = '<div class="wm-panel__type">' + escHtml(typeLabel) + '</div>'
-        + '<div class="wm-panel__title">' + escHtml(moment.title) + '</div>'
-        + '<div class="wm-panel__date">' + escHtml(dateStr) + '</div>'
-        + '<div class="wm-panel__access ' + accessCfg.cls + '">' + escHtml(accessCfg.label) + '</div>'
-        + (moment.artistNote ? '<div class="wm-panel__note">' + escHtml(moment.artistNote) + '</div>' : '')
-        + ctaHtml
+        return '<div class="wm-panel__moment-item" style="--wm-panel-type-color:' + typeColor + '">'
+          + '<div class="wm-panel__type">' + escHtml(typeLabel) + '</div>'
+          + '<div class="wm-panel__title">' + escHtml(moment.title) + '</div>'
+          + '<div class="wm-panel__date">' + escHtml(dateStr) + '</div>'
+          + '<div class="wm-panel__access ' + accessCfg.cls + '">' + escHtml(accessCfg.label) + '</div>'
+          + (moment.artistNote ? '<div class="wm-panel__note">' + escHtml(moment.artistNote) + '</div>' : '')
+          + ctaHtml
+          + '</div>'
+      }).join('')
 
-      var submitBtn = body.querySelector('#wm-enquiry-submit')
-      if (submitBtn) {
+      body.innerHTML = itemsHtml
+
+      // Wire enquiry submit buttons
+      body.querySelectorAll('[id^="wm-enquiry-submit-"]').forEach(function(submitBtn) {
+        var momentId = submitBtn.dataset.momentId
+        var idx = parseInt(submitBtn.id.split('-').pop())
         submitBtn.addEventListener('click', function() {
-          var msg   = document.getElementById('wm-enquiry-msg')?.value.trim() || ''
-          var email = document.getElementById('wm-enquiry-email')?.value.trim() || ''
+          var msgEl   = body.querySelectorAll('.wm-panel__enquiry-field')[idx]
+          var emailEl = body.querySelectorAll('.wm-panel__enquiry-email')[idx]
+          var msg   = msgEl ? msgEl.value.trim() : ''
+          var email = emailEl ? emailEl.value.trim() : ''
           if (msg.length < 50) { submitBtn.textContent = 'Write a bit more first'; return }
           if (!email.includes('@')) { submitBtn.textContent = 'Add your email'; return }
           var enq = safeLS('able_v3_profile', {})
           var enquiries = enq.privateAccessEnquiries || []
-          enquiries.push({ momentId: moment.id, email: email, message: msg, submittedAt: new Date().toISOString(), status: 'pending' })
+          enquiries.push({ momentId: momentId, email: email, message: msg, submittedAt: new Date().toISOString(), status: 'pending' })
           enq.privateAccessEnquiries = enquiries
           setLS('able_v3_profile', enq)
           submitBtn.textContent = "Sent — I'll be in touch if it feels right."
           submitBtn.disabled = true
         })
-      }
+      })
 
-      var fanGateBtn = body.querySelector('#wm-fan-gate')
+      var fanGateBtn = body.querySelector('.wm-fan-gate')
       if (fanGateBtn) {
         fanGateBtn.addEventListener('click', function() {
           closeWorldMapPanel()
@@ -6478,9 +6495,19 @@
       var today = isoDate(new Date())
       var in12mo = isoDate(new Date(Date.now() + 365 * 86400000))
       var hasUpcoming = wmAllMoments.some(function(m) { return m.date >= today && m.date <= in12mo })
-      if (!hasUpcoming) return
-
       section.hidden = false
+      if (!hasUpcoming) {
+        renderWorldMapGrid(wmYear, wmMonth, [], null, null)
+        var footer = document.getElementById('wm-footer')
+        if (footer) {
+          footer.hidden = false
+          var isOwner = getIsOwner(profile)
+          footer.innerHTML = isOwner
+            ? '<a class="wm-footer-link" href="admin.html">Add shows and moments to your world →</a>'
+            : '<span style="font-size:var(--text-sm);color:var(--color-text-3);font-style:italic;">Nothing announced yet. Check back.</span>'
+        }
+        return
+      }
 
       var now = new Date()
       wmYear  = now.getFullYear()
