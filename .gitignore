@@ -1,10 +1,21 @@
 # Local Netlify folder
 .netlify
 
-# Screenshots and iteration images (root level only — keep design-references/)
+# Screenshots and iteration images
 /*.png
 /*.jpg
 /*.jpeg
+/screenshots/
+
+# Production OG images — tracked despite jpg rule above
+!og-default.jpg
+!og-image.jpg
+
+# Archived legacy files (keep in repo but excluded from CI)
+# _archive/ is tracked — do not ignore
+
+# Brainstorm temp files
+.superpowers/brainstorm/
 
 # macOS
 .DS_Store
