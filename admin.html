@@ -2879,10 +2879,21 @@ body::before {
       Turns off automatically 24 hours after you switch it on.
     </p>
     <div id="adminEventsList"></div>
-    <button class="admin-add-btn" onclick="openAddShowSheet()">
-      <svg viewBox="0 0 12 12" fill="currentColor" width="14" height="14"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      Add show
-    </button>
+    <div style="display:flex;gap:10px;align-items:center;margin-top:4px;flex-wrap:wrap;">
+      <button class="admin-add-btn" onclick="openAddShowSheet()" style="margin-top:0;">
+        <svg viewBox="0 0 12 12" fill="currentColor" width="14" height="14"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Add show
+      </button>
+      <button class="admin-add-btn" id="tmImportBtn" onclick="openTicketmasterImport()" style="margin-top:0;background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.12);">
+        Import shows →
+      </button>
+    </div>
+    <div id="tmImportPanel" hidden style="margin-top:16px;padding:16px;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px;">Find your shows on Ticketmaster</div>
+      <input id="tmArtistNameInput" class="field-input" type="text" placeholder="Your artist name…" style="width:100%;margin-bottom:10px;" maxlength="100">
+      <button class="dc-action" id="tmFetchBtn" onclick="fetchTicketmasterShows()">Find shows →</button>
+      <p id="tmImportStatus" style="font-size:12px;color:var(--dash-t2);margin-top:8px;min-height:18px;"></p>
+    </div>
   </div>
 
   <!-- ── SNAP CARDS PAGE ── -->
@@ -3933,6 +3944,69 @@ function initGigToggle() {
 }
 
 /* ── SHOWS LIST ── */
+function openTicketmasterImport() {
+  const panel = document.getElementById('tmImportPanel');
+  if (!panel) return;
+  panel.hidden = !panel.hidden;
+  if (!panel.hidden) {
+    const profile = safeLS('able_v3_profile', {});
+    const input = document.getElementById('tmArtistNameInput');
+    if (input && !input.value && profile.name) input.value = profile.name;
+    input?.focus();
+  }
+}
+
+async function fetchTicketmasterShows() {
+  const input  = document.getElementById('tmArtistNameInput');
+  const status = document.getElementById('tmImportStatus');
+  const btn    = document.getElementById('tmFetchBtn');
+  const name   = (input?.value || '').trim();
+  if (!name) { if (status) status.textContent = 'Enter your artist name first.'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Finding your shows…';
+  if (status) status.textContent = '';
+
+  try {
+    const res = await fetch('/.netlify/functions/ticketmaster-import', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ artistName: name }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      const msgs = {
+        NOT_FOUND: "We didn't find any upcoming shows for that name. Add them manually.",
+        CONFIG_ERROR: "Shows import not yet configured. Add your shows manually.",
+        SEARCH_FAILED: "Couldn't reach Ticketmaster right now. Add your shows manually.",
+        EVENTS_FAILED: "Couldn't reach Ticketmaster right now. Add your shows manually.",
+      };
+      if (status) status.textContent = msgs[data.code] || "Couldn't reach Ticketmaster right now. Add your shows manually.";
+    } else if (!data.shows || !data.shows.length) {
+      if (status) status.textContent = "No upcoming shows found. Add them manually.";
+    } else {
+      const existing = safeLS('able_shows', []);
+      const merged   = _mergeShows(existing, data.shows);
+      setLS('able_shows', merged);
+      const added = merged.length - existing.length;
+      if (status) status.textContent = `${added} show${added !== 1 ? 's' : ''} added. ${data.attribution || ''}`;
+      document.getElementById('tmImportPanel').hidden = true;
+      renderAdminEvents();
+    }
+  } catch {
+    if (status) status.textContent = "Couldn't reach Ticketmaster right now. Add your shows manually.";
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Find shows →';
+}
+
+function _mergeShows(existing, incoming) {
+  const keys = new Set(existing.map(s => `${s.date}__${s.venue}`));
+  const newShows = incoming.filter(s => !keys.has(`${s.date}__${s.venue}`));
+  return [...existing, ...newShows].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+}
+
 function openAddShowSheet() {
   const body = `
     <div class="admin-sheet-field-group">

@@ -6672,6 +6672,32 @@
         panel.classList.add('open')
         if (backdrop) backdrop.style.opacity = '1'
       })
+
+      // P0.5: Focus trap
+      var _wmTrapFn = null
+      var _wmTriggerCell = document.activeElement
+      function _wmTrap(e) {
+        if (e.key !== 'Tab') return
+        var focusable = panel.querySelectorAll('a[href], button:not([disabled]), input, textarea, [tabindex]:not([tabindex="-1"])')
+        if (!focusable.length) return
+        var first = focusable[0], last = focusable[focusable.length - 1]
+        if (e.shiftKey) {
+          if (document.activeElement === first) { e.preventDefault(); last.focus() }
+        } else {
+          if (document.activeElement === last) { e.preventDefault(); first.focus() }
+        }
+        // Escape closes
+      }
+      function _wmKeyClose(e) { if (e.key === 'Escape') { e.stopPropagation(); closeWorldMapPanel() } }
+      _wmTrapFn = _wmTrap
+      panel.addEventListener('keydown', _wmTrap)
+      panel.addEventListener('keydown', _wmKeyClose)
+      panel._wmCleanup = function() {
+        panel.removeEventListener('keydown', _wmTrap)
+        panel.removeEventListener('keydown', _wmKeyClose)
+        if (_wmTriggerCell && typeof _wmTriggerCell.focus === 'function') _wmTriggerCell.focus()
+      }
+
       panel.focus()
     }
 
@@ -6679,6 +6705,7 @@
       var panel = document.getElementById('wm-panel')
       var backdrop = document.getElementById('wm-backdrop')
       if (!panel) return
+      if (panel._wmCleanup) { panel._wmCleanup(); panel._wmCleanup = null }
       panel.classList.remove('open')
       panel.classList.add('closing')
       if (backdrop) backdrop.style.opacity = '0'
