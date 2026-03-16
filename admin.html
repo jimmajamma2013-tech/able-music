@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data: blob:; frame-src https://open.spotify.com https://w.soundcloud.com https://www.youtube.com; connect-src 'self' https:;">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="theme-color" content="#0f1624">
-<title>Dashboard — ABLE</title>
+<title>ABLE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1809,6 +1809,22 @@ body::before {
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+        <!-- PostHog Analytics -->
+    <script>
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId setPersonPropertiesForFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        posthog.init("phc_dyzmnJIRrL8CKVverRnJgngpEOvPgQdMM1AmZbfNdJH", {
+            api_host: "https://eu.i.posthog.com",
+            person_profiles: "identified_only"
+        });
+    </script>
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vwbqr4zdzn");
+    </script>
 </head>
 <body>
 
@@ -1826,7 +1842,7 @@ body::before {
     <div class="sb-av" id="sbAv">N</div>
     <div class="sb-artist-info">
       <div class="sb-artist-name" id="sbName">Your Artist Name</div>
-      <div class="sb-artist-url" id="sbUrl">able.fm/artist</div>
+      <div class="sb-artist-url" id="sbUrl">ablemusic.co/artist</div>
     </div>
   </div>
 
@@ -1946,7 +1962,7 @@ body::before {
           <div class="frc-check" id="frc2check">✓</div>
           <div class="frc-step-body">
             <div class="frc-step-title">Copy your page link</div>
-            <div class="frc-step-sub">Your link: <span id="profileLinkFrc" style="color:var(--acc);font-size:11px;">able.fm/you</span> — tap to copy</div>
+            <div class="frc-step-sub">Your link: <span id="profileLinkFrc" style="color:var(--acc);font-size:11px;">ablemusic.co/you</span> — tap to copy</div>
           </div>
         </button>
         <button class="frc-step" id="frc3" onclick="markFrcDone(3)">
@@ -2846,13 +2862,13 @@ body::before {
         <div class="field-row">
           <div class="field-label">Slug</div>
           <div style="display:flex;gap:8px;align-items:center;">
-            <span style="font-size:13px;color:var(--t3);flex-shrink:0;">able.fm/</span>
+            <span style="font-size:13px;color:var(--t3);flex-shrink:0;">ablemusic.co/</span>
             <input class="field-input" type="text" id="settingsSlug" placeholder="yourname" style="flex:1;" oninput="saveSlug(this.value)" autocomplete="off" autocapitalize="none" spellcheck="false">
           </div>
           <div class="field-hint" style="margin-top:4px;">Lowercase letters, numbers, and hyphens only. Changes take effect immediately.</div>
         </div>
         <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
-          <div id="settingsUrlPreview" style="flex:1;font-size:12px;color:var(--t2);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">able.fm/yourname</div>
+          <div id="settingsUrlPreview" style="flex:1;font-size:12px;color:var(--t2);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">ablemusic.co/yourname</div>
           <button class="tb-btn tb-btn-ghost" onclick="copyPageUrl()" style="flex-shrink:0;gap:6px;" id="settingsCopyBtn">
             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M2 10V3a1 1 0 011-1h7"/></svg>
             Copy
@@ -3002,18 +3018,18 @@ const PAGE_TITLES = {
 
 /* ── FAN TABLE ── */
 const DEMO_FANS = [
-  { email:'jamie@example.com',    level:'superfan',  source:'Instagram reel', ts: Date.now()-86400000*2  },
+  { email:'jamie@example.com',    level:'core',      source:'Instagram reel', ts: Date.now()-86400000*2  },
   { email:'maya.k@gmail.com',     level:'supporter', source:'TikTok bio',     ts: Date.now()-86400000*5  },
   { email:'tomw@outlook.com',     level:'fan',       source:'Direct',         ts: Date.now()-86400000*8  },
   { email:'asha.r@hotmail.com',   level:'fan',       source:'Instagram reel', ts: Date.now()-86400000*12 },
   { email:'carlos.m@gmail.com',   level:'listener',  source:'YouTube',        ts: Date.now()-86400000*18 },
-  { email:'priya.s@example.com',  level:'superfan',  source:'Instagram bio',  ts: Date.now()-86400000*22 },
+  { email:'priya.s@example.com',  level:'core',      source:'Instagram bio',  ts: Date.now()-86400000*22 },
   { email:'dan.t@gmail.com',      level:'listener',  source:'Direct',         ts: Date.now()-86400000*30 },
   { email:'lea.f@example.com',    level:'supporter', source:'TikTok bio',     ts: Date.now()-86400000*35 },
 ];
 
 const LEVEL_STYLES = {
-  superfan:  { label:'Core fan',  bg:'rgba(var(--acc-rgb),.15)',  color:'var(--acc)' },
+  core:      { label:'Core fan',  bg:'rgba(var(--acc-rgb),.15)',  color:'var(--acc)' },
   supporter: { label:'Supporter', bg:'rgba(126,200,138,.12)',     color:'#7ec88a' },
   fan:       { label:'Fan',       bg:'rgba(255,255,255,.07)',      color:'var(--t2)' },
   listener:  { label:'Listener',  bg:'rgba(255,255,255,.04)',      color:'var(--t3)' },
@@ -5156,7 +5172,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('sbAv').textContent = name.charAt(0).toUpperCase();
   document.getElementById('sbName').textContent = name;
-  document.getElementById('sbUrl').textContent = `able.fm/${handle}`;
+  document.getElementById('sbUrl').textContent = `ablemusic.co/${handle}`;
 
   // Settings page
   if (document.getElementById('settingsSlug')) document.getElementById('settingsSlug').value = handle;
@@ -5215,7 +5231,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Page URL + Member Since
   const pageUrlEl = document.getElementById('homePageUrl');
-  if (pageUrlEl && name !== 'Your Artist Name') pageUrlEl.textContent = `able.fm/${handle}`;
+  if (pageUrlEl && name !== 'Your Artist Name') pageUrlEl.textContent = `ablemusic.co/${handle}`;
   const memberSinceEl = document.getElementById('homeMemberSince');
   if (memberSinceEl) {
     const joinedKey = 'able_joined';
@@ -5321,16 +5337,16 @@ function saveSlug(raw) {
   updateSlugPreview(slug);
   // Keep sidebar URL in sync
   const sbUrl = document.getElementById('sbUrl');
-  if (sbUrl) sbUrl.textContent = `able.fm/${slug || 'yourname'}`;
+  if (sbUrl) sbUrl.textContent = `ablemusic.co/${slug || 'yourname'}`;
 }
 function updateSlugPreview(slug) {
   const el = document.getElementById('settingsUrlPreview');
-  if (el) el.textContent = `able.fm/${slug || 'yourname'}`;
+  if (el) el.textContent = `ablemusic.co/${slug || 'yourname'}`;
 }
 function copyPageUrl() {
   const data = safeLS(V3_KEY, {});
   const slug = data.handle || (data.name || 'artist').toLowerCase().replace(/[^a-z0-9]+/g, '-');
-  const url = `https://able.fm/${slug}`;
+  const url = `https://ablemusic.co/${slug}`;
   navigator.clipboard.writeText(url).then(() => {
     const btn = document.getElementById('settingsCopyBtn');
     if (!btn) return;
@@ -5353,7 +5369,7 @@ function renderQR() {
   const data = safeLS(V3_KEY, {});
   const derivedHandle = (data.name || 'artist').toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const handle = data.handle || derivedHandle;
-  const url = `https://able.fm/${handle}?src=qr`;
+  const url = `https://ablemusic.co/${handle}?src=qr`;
   const accent = data.accent || getComputedStyle(document.documentElement).getPropertyValue('--acc').trim() || '#c9a84c';
   const canvas = document.getElementById('qrCanvas');
   if (!canvas) return;
@@ -5592,7 +5608,7 @@ function saveProfilePage() {
     document.getElementById('sbAv').textContent = updated.name.charAt(0).toUpperCase();
     document.getElementById('sbName').textContent = updated.name;
     const resolvedHandle = updated.handle || updated.name.toLowerCase().replace(/[^a-z0-9]+/g,'-');
-    document.getElementById('sbUrl').textContent = `able.fm/${resolvedHandle}`;
+    document.getElementById('sbUrl').textContent = `ablemusic.co/${resolvedHandle}`;
     const greeting = document.getElementById('homeGreeting');
     if (greeting) greeting.textContent = `Good to see you, ${updated.name.split(' ')[0]}.`;
   }
@@ -5872,7 +5888,7 @@ function initFirstRun() {
   const derivedHandle = (data.name || 'you').toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const handle = data.handle || derivedHandle;
   const el = document.getElementById('profileLinkFrc');
-  if (el) el.textContent = `able.fm/${handle}`;
+  if (el) el.textContent = `ablemusic.co/${handle}`;
 }
 
 function markFrcDone(n) {

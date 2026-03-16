@@ -4786,6 +4786,22 @@
       cursor: pointer;
     }
   </style>
+        <!-- PostHog Analytics -->
+    <script>
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId setPersonPropertiesForFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        posthog.init("phc_dyzmnJIRrL8CKVverRnJgngpEOvPgQdMM1AmZbfNdJH", {
+            api_host: "https://eu.i.posthog.com",
+            person_profiles: "identified_only"
+        });
+    </script>
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vwbqr4zdzn");
+    </script>
 </head>
 <body>
 
@@ -4911,7 +4927,7 @@
           <!-- Copy your ABLE link — subtle utility -->
           <button class="hero__copy-link pressable" id="hero-copy-link"
                   aria-label="Copy your ABLE link" hidden>
-            <span class="hero__copy-prefix">able.fm/</span><span id="hero-handle-display"></span>
+            <span class="hero__copy-prefix">ablemusic.co/</span><span id="hero-handle-display"></span>
           </button>
         </div>
       </section>
@@ -5234,7 +5250,7 @@
            ====================================================== -->
       <footer class="profile-footer" id="profile-footer">
         <a class="footer-able-link" id="footer-able"
-           href="https://able.fm" target="_blank" rel="noopener noreferrer" hidden>
+           href="https://ablemusic.co" target="_blank" rel="noopener noreferrer" hidden>
           Made with ABLE
         </a>
         <p class="footer-export" id="footer-export" hidden>
@@ -7241,7 +7257,7 @@
       let copyTimeout = null
       btn.addEventListener('click', () => {
         if (copyTimeout) return
-        const url = `https://able.fm/${handle}`
+        const url = `https://ablemusic.co/${handle}`
         navigator.clipboard.writeText(url).catch(() => {})
         btn.classList.add('copied')
         if (prefixSpan) prefixSpan.hidden = true
@@ -8826,7 +8842,7 @@
       list.innerHTML = ''
       recs.forEach(rec => {
         const el = document.createElement('li')
-        const href = rec.url || (rec.ableHandle ? `https://able.fm/${rec.ableHandle}` : null)
+        const href = rec.url || (rec.ableHandle ? `https://ablemusic.co/${rec.ableHandle}` : null)
 
         const safeHref = href && isSafeUrl(href) ? escHtml(href) : ''
         el.innerHTML = `
@@ -8862,7 +8878,7 @@
         footerAble.hidden = (profile.tier && profile.tier !== 'free')
         // Referral link: ?ref=artist-handle so we know which profile drove the signup
         const handle = profile.handle || getArtistId().slice(0, 8)
-        footerAble.href = `https://able.fm?ref=${encodeURIComponent(handle)}`
+        footerAble.href = `https://ablemusic.co?ref=${encodeURIComponent(handle)}`
       }
 
       // Fan list export — show if any fans captured
@@ -9133,7 +9149,7 @@
       const name = profile.name || 'Artist'
       const bio  = profile.bio  || 'Music, events, and more — direct from the artist.'
       const handle = (profile.handle || name).toLowerCase().replace(/[^a-z0-9]+/g, '-')
-      const url  = `https://able.fm/${handle}`
+      const url  = `https://ablemusic.co/${handle}`
       const art  = profile.topCard?.artworkUrl || ''
 
       const setMeta = (id, val) => { const el = document.getElementById(id); if (el) el.setAttribute('content', val); }
@@ -9600,7 +9616,7 @@
           <div class="ep-divider"></div>
 
           <button class="ep-save-btn" id="ep-save">Save changes</button>
-          <a class="ep-dash-link" href="admin.html" target="_blank" rel="noopener noreferrer">Full dashboard — events, merch, fans, analytics →</a>
+          <a class="ep-dash-link" href="admin.html" target="_blank" rel="noopener noreferrer">Manage your page — events, merch, fans, analytics →</a>
         `
 
         // Chip selection
@@ -10161,8 +10177,8 @@
           var zoneLabel = zone === 'music' ? 'Releases' : 'Updates';
           var zoneHash  = zone === 'music' ? '#releases' : '#snap-cards';
           openSheet('\uD83C\uDFB5', zoneLabel,
-            '<div style="padding:8px 0;"><p style="font-size:14px;color:var(--color-fg-muted);margin:0 0 16px;">Manage your ' + zoneLabel.toLowerCase() + ' in your dashboard.</p>' +
-            '<a href="/admin.html' + zoneHash + '" style="display:block;text-align:center;padding:12px 20px;background:var(--color-accent);color:#000;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none">Open dashboard \u2192</a></div>',
+            '<div style="padding:8px 0;"><p style="font-size:14px;color:var(--color-fg-muted);margin:0 0 16px;">Manage your ' + zoneLabel.toLowerCase() + ' in your ABLE page.</p>' +
+            '<a href="/admin.html' + zoneHash + '" style="display:block;text-align:center;padding:12px 20px;background:var(--color-accent);color:#000;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none">Manage this \u2192</a></div>',
             null
           );
         } else if (zone === 'events') {
@@ -10185,7 +10201,7 @@
         } else {
           // Unhandled zone — direct to admin
           openSheet('\u270E', 'Edit',
-            '<div style="padding:8px 0;"><a href="/admin.html" style="display:block;text-align:center;padding:12px 20px;background:var(--color-accent);color:#000;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none">Open dashboard \u2192</a></div>',
+            '<div style="padding:8px 0;"><a href="/admin.html" style="display:block;text-align:center;padding:12px 20px;background:var(--color-accent);color:#000;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none">Manage this \u2192</a></div>',
             null
           );
         }

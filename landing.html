@@ -13,20 +13,20 @@
   <meta name="theme-color" content="#0f1624">
   <title>ABLE — Your fans. Direct.</title>
   <meta name="description" content="A page that moves with your music. Pre-save before the drop, streaming on release day, tickets on show night. Own the relationship — no algorithm in the middle.">
-  <link rel="canonical" href="https://able.fm/">
+  <link rel="canonical" href="https://ablemusic.co/">
   <!-- Open Graph -->
   <meta property="og:type"        content="website">
   <meta property="og:site_name"   content="ABLE">
   <meta property="og:title"       content="ABLE — Your fans. Direct.">
   <meta property="og:description" content="A page that moves with your music. Pre-save before the drop, streaming on release day, tickets on show night. Own the relationship — no algorithm in the middle.">
-  <meta property="og:url"         content="https://able.fm/">
-  <meta property="og:image"       content="https://able.fm/og-image.jpg">
+  <meta property="og:url"         content="https://ablemusic.co/">
+  <meta property="og:image"       content="https://ablemusic.co/og-image.jpg">
   <!-- Twitter / X -->
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:site"        content="@ablefm">
   <meta name="twitter:title"       content="ABLE — Your fans. Direct.">
   <meta name="twitter:description" content="A page that moves with your music. Pre-save before the drop, streaming on release day, tickets on show night. Own the relationship — no algorithm in the middle.">
-  <meta name="twitter:image"       content="https://able.fm/og-image.jpg">
+  <meta name="twitter:image"       content="https://ablemusic.co/og-image.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,800;1,9..144,300;1,9..144,500;1,9..144,700&display=swap" rel="stylesheet">
@@ -1025,6 +1025,22 @@
       50%      { opacity: 0.88; transform: scale(1.04); }
     }
   </style>
+        <!-- PostHog Analytics -->
+    <script>
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId setPersonPropertiesForFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        posthog.init("phc_dyzmnJIRrL8CKVverRnJgngpEOvPgQdMM1AmZbfNdJH", {
+            api_host: "https://eu.i.posthog.com",
+            person_profiles: "identified_only"
+        });
+    </script>
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vwbqr4zdzn");
+    </script>
 </head>
 <body>
 
@@ -1437,7 +1453,7 @@
           <div class="pricing-card__desc">For artists releasing regularly who want the full set of tools.</div>
           <ul class="pricing-card__features">
             <li>Everything in Free</li>
-            <li>Analytics dashboard</li>
+            <li>Analytics</li>
             <li>All 4 themes incl. Glass</li>
             <li>Unlimited fan sign-ups</li>
             <li>Pre-release countdown</li>
@@ -1479,7 +1495,7 @@
             <li>API access</li>
             <li>Custom label branding</li>
           </ul>
-          <a href="mailto:labels@able.fm" class="btn-outline">Talk to us →</a>
+          <a href="mailto:labels@ablemusic.co" class="btn-outline">Talk to us →</a>
         </div>
       </div>
       <p style="text-align:center;margin-top:28px;font-size:13px;color:var(--text-3);">All plans: 0% ABLE cut on support pack income. Stripe standard rate only (1.4% + 20p UK cards). Compare: Beacons charges 9% on their free plan.</p>
@@ -1498,7 +1514,7 @@
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What happens to my fan list if I leave?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
-          <div class="faq-a" hidden>It's yours. You can export every email address any time from your dashboard as a CSV. We don't hold it hostage — that's the whole point.</div>
+          <div class="faq-a" hidden>It's yours. You can export every email address any time from your ABLE page as a CSV. We don't hold it hostage — that's the whole point.</div>
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Do I need to be on Spotify?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
@@ -1506,7 +1522,7 @@
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What do fans have to do to sign up?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
-          <div class="faq-a" hidden>Just an email address. No app to download, no account to create. They type it in and they're on your list. You own that relationship — it lives in your dashboard.</div>
+          <div class="faq-a" hidden>Just an email address. No app to download, no account to create. They type it in and they're on your list. You own that relationship — it lives on your ABLE page.</div>
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Is it actually free?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
