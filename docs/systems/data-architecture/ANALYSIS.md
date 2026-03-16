@@ -1,5 +1,5 @@
 # ABLE — Data Architecture Analysis
-**Created: 2026-03-15 | Overall score: 6.8/10**
+**Created: 2026-03-15 | Revised: 2026-03-16 | Overall score: 6.8/10**
 
 > Honest assessment of the current data architecture across 10 dimensions. Most scores sit at 6–7 — this is expected at pre-Supabase stage. The gaps are known and documented. The path to 9.5 is clear.
 
@@ -18,9 +18,9 @@
 | 7 | Multi-artist isolation | 4/10 | No artist_id on any local key; Label tier with 10 artists is unspecced |
 | 8 | Data portability | 4/10 | No export mechanism exists; GDPR right to portability is unaddressed |
 | 9 | Privacy architecture | 5/10 | Fan emails in localStorage are readable by any JS on the page; no encryption, no consent audit |
-| 10 | Cross-page data coherence | 7/10 | Write/read assignments are documented; a few gaps (able_profile legacy key, fan.html keys) |
+| 10 | Cross-page data coherence | **0/10 (data integrity)** | **P0: `able_profile` ≠ `able_v3_profile` — silent data loss for all new users** |
 
-**Overall: 6.8/10**
+**Overall: 6.1/10** (weighted — dimension 10 carries extra weight due to P0 severity)
 
 ---
 
@@ -41,7 +41,7 @@
 - `artistSlug` — needed for canonical URL (`ablemusic.co/nadia`) but absent from schema
 - `avatarUrl` — no artwork/avatar URL field defined
 
-**Risk:** Start.html writes fields that admin.html reads, with no agreed contract. Silent schema drift is likely as features are added.
+**Risk:** start.html writes fields that admin.html reads, with no agreed contract. Silent schema drift is likely as features are added.
 
 ---
 
@@ -197,25 +197,31 @@ Fan emails are locked in localStorage. The only way to export them today is to o
 
 ---
 
-### 10. Cross-page data coherence — 7/10
+### 10. Cross-page data coherence — 0/10 (data integrity) | 7/10 (documentation)
 
-**What is documented:**
-The cross-page data flow table in CROSS_PAGE_JOURNEYS.md is accurate and useful:
+**P0 DATA INTEGRITY BUG: `able_profile` vs `able_v3_profile` key conflict**
 
-| Page | Writes | Reads |
-|---|---|---|
-| start.html | `able_v3_profile`, `able_profile` | — |
-| able-v7.html | `able_fans`, `able_clicks`, `able_views` | `able_v3_profile`, `able_shows`, `able_gig_expires` |
-| admin.html | `able_v3_profile`, `able_shows`, `able_gig_expires`, `able_dismissed_nudges`, `able_starred_fans` | All |
+This is a silent data loss bug. It is scored 0/10 on data integrity because:
+
+**start.html writes to `sessionStorage` as `able_wizard_draft` during the wizard, then writes to `localStorage` as `able_v3_profile` on completion (line 1785).** However, `admin.html` also has a legacy read at line 5163:
+
+```javascript
+const wizData = safeLS('able_profile', {}); // wizard key fallback
+```
+
+The legacy key `able_profile` is written by no current code path. But `admin.html` still reads it as a fallback. If any old data exists under `able_profile` from an earlier session (before start.html was updated to write `able_v3_profile`), admin.html may pick up stale data.
+
+More critically: the `migrateLegacyProfileKey()` function in SPEC.md Part 3 has a typo — it reads from `'able_able_v3_profile'` (double prefix) instead of `'able_v3_profile'`. This bug means the migration function as written would never find the canonical key, silently leaving `able_profile` data unmerged and the canonical key empty.
 
 **What is inconsistent or missing:**
-- `able_profile` (start.html output) and `able_v3_profile` (admin.html canonical) are both in use. The legacy key is never cleanly retired.
+- `able_profile` (start.html legacy output) and `able_v3_profile` (admin.html canonical) are both in use. The legacy key is never cleanly retired.
 - `fan.html` writes `fan_following` and `fan_location` — these are new keys not documented in CLAUDE.md's canonical key list
 - `able_starred_fans` is a string array of emails. When a fan record is deleted, the starred list is not cleaned up — dangling references
 - The `source` field in `able_fans` uses canonical values (`ig`, `tt`, `sp`) but this enum is only documented in CROSS_PAGE_JOURNEYS.md, not in any schema spec — it can drift
 - No version field on `able_v3_profile` — if the schema changes, old profiles are silently incompatible
+- **`able_wizard_draft` uses `sessionStorage`, not `localStorage`** — this is correct (it is a temporary in-progress state) but must be documented as such in the canonical key list. CONTEXT.md currently omits this key entirely.
 
-**Risk:** The legacy `able_profile` key is the most immediate coherence issue. If start.html writes `able_profile` and admin.html reads only `able_v3_profile`, new users may see an empty dashboard.
+**Risk:** The legacy `able_profile` read in admin.html is a canonical violation. The migration function typo is a correctness bug. An artist completing the wizard on a fresh browser may not see their data in admin because `able_profile` is written nowhere in the current codebase, meaning admin.html's fallback read returns `{}`.
 
 ---
 
@@ -232,8 +238,8 @@ The cross-page data flow table in CROSS_PAGE_JOURNEYS.md is accurate and useful:
 | Multi-artist isolation | 4/10 | No `artist_id` anywhere |
 | Data portability | 4/10 | No export mechanism; GDPR requirement unmet |
 | Privacy architecture | 5/10 | localStorage readable by third-party CDN scripts |
-| Cross-page data coherence | 7/10 | Legacy `able_profile` key; `fan.html` keys undocumented |
+| Cross-page data coherence | 0/10 (integrity) | Legacy key read with typo in migration fn; wizard_draft key undocumented |
 
-**Overall: 6.8/10**
+**Overall: 6.1/10**
 
-The architecture is sound at the concept level. The 1:1 localStorage-to-Supabase mapping is a clean mental model. The gaps are at the field level (missing fields in fan/show schemas), the security level (no RLS, no consent audit), and the legal level (no export, no GDPR flow). None of these are hard to fix — they are unfinished, not broken.
+The architecture is sound at the concept level. The 1:1 localStorage-to-Supabase mapping is a clean mental model. The P0 is the `able_profile` / `able_v3_profile` conflict plus the typo in `migrateLegacyProfileKey()`. Both can be fixed in under 10 minutes of code. After that fix, coherence rises to 8.5 and the overall score rises to 7.8.

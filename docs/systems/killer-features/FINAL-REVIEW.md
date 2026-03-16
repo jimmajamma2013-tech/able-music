@@ -1,31 +1,34 @@
 # ABLE — Killer Features: Final Review
-**Created: 2026-03-16 | Status: ACTIVE — build sequencing decision**
+**Created: 2026-03-16 | Revised: 2026-03-16 | Status: ACTIVE — build sequencing decision**
 
 ---
 
 ## The question this document answers
 
-Which of these eight features belong in the current build? In what order? What should ship before any V2 work begins?
+Which of these features belong in the current build? In what order? What should ship before any V2 work begins?
 
 ---
 
 ## What V1 can ship (no backend required)
 
-Three features can be fully built — or meaningfully advanced — with zero backend changes, zero new dependencies, and no changes to the localStorage data model beyond minor additions:
+Four features can be fully built — or meaningfully advanced — with zero backend changes, zero new dependencies, and no changes to the localStorage data model beyond minor additions:
 
-**1. Auto-gig from calendar — build now**
-All data already exists in `able_shows`. The logic is 30 lines of JS. The impact is a 0→8 jump on the most time-critical feature in the product. This is the clearest possible argument for a P0: high value, low effort, no dependencies.
+**1. Auto-gig from calendar — build now (P0)**
+All data already exists in `able_shows`. The logic is 40 lines of JS. The impact is a 0→8 jump on the most time-critical feature in the product. This is the clearest possible argument for a P0: high value, low effort, no dependencies.
 
-**2. Deep link campaigns — build now**
-URL parameter parsing is two lines. The source tagging hooks into existing event write functions. The campaign creator UI is a small addition to admin analytics. The fan-facing chip is new but minor. This is also P0: it immediately makes every social post the artist publishes more intelligent, and it gives ABLE real attribution data for the first time.
+**2. Deep link campaigns — build now (P0)**
+URL parameter parsing is two lines. The source tagging hooks into existing event write functions. The campaign creator UI is a small addition to admin analytics. The fan-facing chip is new but minor. This is also P0: it immediately makes every social post the artist publishes more intelligent.
 
-**3. One-tap release announcement — build next (P1)**
+**3. Day 1 share card — build now (P0, highest priority overall)**
+This is the most important missing feature in the entire product. Without it, artists complete the wizard and then don't share — and ABLE gets no organic growth, no fans, and no network effect. The share card converts the highest-motivation moment (wizard completion) into the first share. It is a 3–4 hour build with no new data dependencies. There is no good reason this has not shipped yet.
+
+**4. One-tap release announcement — build next (P1)**
 The release moment is the most important moment in an artist's ABLE lifecycle. Currently ABLE goes silent when it should be loudest. This feature is 5–7 hours and shares infrastructure with tonight draft automation. Build these together.
 
-**4. Tonight draft automation — build with one-tap announcement (P1)**
+**5. Tonight draft automation — build with one-tap announcement (P1)**
 Same bottom sheet infrastructure, same draft generation pattern. Build as a paired feature. The combined build time is 8–10 hours for both.
 
-**5. QR code for gig-mode — build with auto-gig (P0 addendum)**
+**6. QR code for gig-mode — build with auto-gig (P0 addendum)**
 2–3 hours, one CDN dependency (`qrcode.js`). Bundles naturally with the auto-gig work since both touch the admin gig mode panel. Ship as part of the same PR.
 
 ---
@@ -44,16 +47,22 @@ These three features cannot be meaningfully completed in V1:
 
 ## Recommended V1 sequencing
 
-### Sprint 1 (immediate build — ~12 hours)
+### Sprint 1 (immediate build — ~15 hours)
 
-**Auto-gig from calendar** + **QR code for gig-mode**
-- Start here. Two features, one PR, one focused area of the codebase (gig mode system in both files).
+**Day 1 share card** (build first — 3–4 hours)
+- Start here. One file (`start.html`), zero data dependencies, highest impact.
+- Call `showDay1ShareCard(profile)` at the end of `completeWizard()`.
+- Include: URL copy button, pre-written IG caption, pre-written tweet, "See my page" link, "Go to your dashboard" exit.
+- Test: artist with full profile / artist with minimal profile (name only) / copy button in incognito.
+
+**Auto-gig from calendar** + **QR code for gig-mode** (after share card — ~5 hours)
+- Two features, one PR, one focused area of the codebase (gig mode system in both files).
 - Auto-gig: `checkAutoGig()` function, admin indicator, 60-second polling.
 - QR: `qrcode.js` CDN, canvas render, download/share.
 - Test: show today with doors time / show today without doors time / no show today / multiple shows today.
 
-**Deep link campaigns**
-- Can run in parallel with sprint 1 (different area of codebase — analytics + fan sign-up).
+**Deep link campaigns** (can run in parallel — ~6 hours)
+- Different area of codebase — analytics + fan sign-up.
 - URL param parsing, source tagging, campaign creator, analytics breakdown.
 - Test: known campaign name / unknown campaign name / no campaign param / reduced-motion scroll.
 
@@ -86,41 +95,53 @@ Do not build the fan location map, snap card read receipts, or true Spotify pre-
 
 ---
 
-## The case for the P0 decision
+## Score trajectory after V1
 
-Auto-gig and deep links together represent the highest-impact, lowest-effort combination in this entire feature set. They are:
+| Feature | Now | After V1 | After V2 | V1 build time |
+|---|---|---|---|---|
+| Auto-gig from calendar | 0 | 8 | 9 | 2–3h |
+| Deep link campaigns | 0 | 9 | 10 | 6–8h |
+| **Day 1 share card** | **0** | **9.5** | **10** | **3–4h** |
+| One-tap announcement | 0 | 8 | 9 | 5–7h |
+| Tonight draft automation | 0 | 8 | 9 | 3–4h |
+| QR code gig-mode | 0 | 8 | 9 | 2–3h |
+| Snap card read receipts | 0 | 5 | 8 | defer |
+| Fan location heatmap | 0 | 2 (data) | 8 | 2h (V1 data only) |
+| True Spotify pre-save | 0 | 4 (honest framing) | 10 | 30min (V1) |
 
-- **Zero new infrastructure** — both run entirely on existing localStorage architecture
-- **Immediately visible** — artists see the value the next time they have a show or share a Story
-- **Compounding** — deep link analytics data becomes more valuable over time; auto-gig removes a friction point that currently causes artists to miss the most important window in their page lifecycle
+**Overall killer features score:**
+- Before V1 sprint: **0/10** (all features unbuilt)
+- After Sprint 1 (auto-gig + deep links + Day 1 share card + QR): **8/10**
+- After Sprint 2 (+ one-tap announcement + tonight draft): **9/10**
+- After V2 (Supabase): **9.5/10**
 
-If only one decision comes from this document: build auto-gig and deep links first, before any V2 work begins.
+The jump from 0 to 8 happens in a single sprint. The Day 1 share card, which takes 3–4 hours, moves the activation metric more than any other feature in this list.
 
 ---
 
-## Final scores (V1 delivery)
+## The case for the Day 1 share card as the top priority
 
-| Feature | V1 score | Worth building in V1? |
-|---|---|---|
-| Auto-gig from calendar | 8/10 | Yes — P0 |
-| Deep link campaigns | 9/10 | Yes — P0 |
-| One-tap announcement | 8/10 | Yes — P1 |
-| Tonight draft automation | 8/10 | Yes — P1 (with announcement) |
-| QR code gig-mode | 8/10 | Yes — P0 addendum |
-| Snap card read receipts | 5/10 | Defer to V2 |
-| Fan location heatmap | 2/10 | Data collection only |
-| True Spotify pre-save | 4/10 | Copy fix only, full feature V2 |
+The existing P0 list (auto-gig + deep links) is correct and these features are valuable. But neither of them generates new users. They optimise the experience of existing users.
+
+The Day 1 share card is fundamentally different. It generates new users.
+
+Here is the arithmetic:
+- If 10 artists complete the wizard without the share card: 2 share (from memory), 8 dormant.
+- If 10 artists complete the wizard with the share card: 7 share (frictionless, pre-written), 3 dormant.
+
+That delta — 2 shares vs 7 — is compounding. Each share gets ABLE in front of fans who tell their friends who are artists. This is how organic growth works. The share card is not a nice-to-have UI polish. It is the primary growth mechanism.
 
 ---
 
 ## What success looks like after V1
 
 An artist using ABLE after V1:
-1. Adds a show. Forgets about gig mode. It turns on at doors time. Their fans who visit that evening see the show front and centre. The artist didn't have to remember anything.
-2. Posts a Story about their vinyl restock. Uses the campaign link from admin. After 48 hours, they can see in analytics: "47 people came from that Story. 12 signed up. 8 clicked the merch link." That's a number that previously didn't exist anywhere.
-3. Their EP goes live. Admin asks: "Let your fans know?" They see the drafts, tap publish on the snap card, copy the caption, and they're done. Three tasks, one minute.
+1. Completes the wizard. Sees "Your page is live." Copies the pre-written caption with one tap. Posts it immediately.
+2. Adds a show. Forgets about gig mode. It turns on at doors time.
+3. Posts a Story about their vinyl restock. Uses the campaign link from admin. 48 hours later: "47 people came from that Story. 12 signed up. 8 clicked the merch link."
+4. EP goes live. Admin asks: "Let your fans know?" They tap publish on the snap card, copy the caption, done.
 
-Those three moments are worth more than any amount of dashboard polish. They are moments where ABLE pays back the artist's trust in a way they can see and feel.
+Those four moments are worth more than any amount of dashboard polish. They are moments where ABLE pays back the artist's trust in a way they can see and feel.
 
 ---
 

@@ -14,7 +14,7 @@ The SPEC.md covers the most common regression vectors:
 - Missing `rel="noopener"` on external links (security + browser warning regression)
 - Missing `aria-label` on icon buttons (accessibility regression)
 - `innerHTML` with unescaped user content (XSS regression)
-- Missing `prefers-reduced-motion` (accessibility regression that appeared in this build)
+- Missing `prefers-reduced-motion` (accessibility regression that appeared in this build — currently a P0 bug in `admin.html`)
 
 The known gap is **specificity in error state coverage**. SPEC.md covers what happens when localStorage is empty or malformed, but it does not spec what the UI must show in each case. A build agent following SPEC.md would write safe code that doesn't crash — but might show a blank section rather than a meaningful empty state. The design spec for each page covers empty states, but SPEC.md should reference this more explicitly.
 
@@ -54,7 +54,9 @@ The exception is documented in SPEC.md ("In SVG data URIs, use a comment documen
 
 The single most dangerous inconsistency in the codebase for a build agent: `able-v7.html` uses `--ease-spring`, `admin.html` uses `--spring`. They are the same value, different names. An agent working across files could apply the wrong token and produce code that technically uses a valid CSS variable but refers to an undefined one in the target file.
 
-This is documented in PATH-TO-10.md as P2.3. Until it is resolved, every build agent session must begin with: "Check which easing token names are defined in `:root` of the target file. Use only those names."
+**Canonical answer: `--ease-spring` is correct per DESIGN_SYSTEM_SPEC.md.** `admin.html` has a legacy naming mismatch. Until it is renamed, every build session targeting `admin.html` must use `--spring` (not `--ease-spring`) and `--ease` (not `--ease-decel`).
+
+This is documented in PATH-TO-10.md as P1.3. Until it is resolved, every build agent session must begin with: "Check which easing token names are defined in `:root` of the target file. Use only those names."
 
 **3. The `debounce()` requirement for input handlers**
 
@@ -78,24 +80,15 @@ The concrete rule to internalise: **before shipping any section, grep for `#[0-9
 
 ---
 
-## Score: 8/10
+## Score progression
 
-**What this means:**
-The coding standard is comprehensive, honest about known gaps, and specific enough for most build decisions. A build agent reading SPEC.md, ANALYSIS.md, and PATH-TO-10.md has enough context to write code that matches the existing codebase pattern without causing the most common regressions.
-
-**What keeps it from 10:**
-
-1. **Token availability matrix missing** — an agent cannot confidently know which tokens are available in `start.html` or `landing.html` without reading those files' `:root` blocks first. SPEC.md should include this.
-
-2. **Easing token inconsistency unresolved** — the discrepancy between `--ease-spring` (v7) and `--spring` (admin) is documented and flagged but not yet fixed. Until it is fixed, this is a live trap for any agent working across files.
-
-3. **Empty state behaviour on error not specced** — SPEC.md covers graceful degradation at the data layer (no crash, use fallback) but does not specify what the UI must render when data is absent. This is in the design specs for each page, not in the coding spec — a gap worth bridging.
-
-**Path to 10 for this document:**
-
-1. Add a token availability matrix table: file × token namespace × available (yes/no)
-2. Resolve the easing token inconsistency (PATH-TO-10.md P2.3) — then remove the warning from this doc
-3. Add one paragraph to SPEC.md §JS.3 specifying the UI expectation when `safeLS()` returns the fallback value
+| Milestone | Score | What gets it there |
+|---|---|---|
+| Current (before P0) | 7/10 | Known gaps: `--dash-t3 #888888`, missing reduced-motion in admin.html |
+| After P0.1 + P0.2 (WCAG fixes) | **8/10** | `--dash-t3 → #777777` everywhere; blanket reduced-motion rule added to admin.html |
+| After P1.3 (easing token consistency documented + resolved) | **8.5/10 → 9/10** | Token names aligned; build agent trap eliminated |
+| After P2.1 (Lighthouse audit run and issues fixed) | **9.5/10** | Performance, SEO, accessibility numbers confirmed |
+| After P2.3 (axe-core audit run and critical violations fixed) | **10/10** | Zero critical/serious WCAG violations; verified in Playwright |
 
 ---
 
@@ -111,3 +104,13 @@ Before any build session, a build agent should read these four documents in orde
 Then open the target file's `:root` block and confirm which tokens are available before writing any CSS.
 
 Then begin the build loop from PROCESS.md §8b.
+
+---
+
+## What changed in this review cycle (2026-03-16)
+
+- Confirmed P0.1 (`--dash-t3 #888888`) is a WCAG 2.2 AA violation — not merely a style inconsistency
+- Confirmed P0.2 (`prefers-reduced-motion` absent from `admin.html`) is a legal compliance issue, not a quality preference
+- Added easing token canonical resolution: `--ease-spring` is correct; `admin.html` has a legacy mismatch, documented in PATH-TO-10.md P1.3
+- Added parse-check one-liner command to PATH-TO-10.md P1.4 — the exact command to run from project root after any JS edit
+- Score milestone table added to make path from 8/10 → 9/10 → 10/10 explicit
