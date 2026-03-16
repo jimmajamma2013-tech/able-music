@@ -1129,47 +1129,83 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   <div class="form-side" style="position:relative;">
   <canvas id="confettiCanvas"></canvas>
 
-    <!-- STEP A — SPOTIFY IMPORT (optional pre-step) -->
+    <!-- STEP A — IMPORT (Spotify by default; Linktree when ?import=linktree) -->
     <div class="step active" id="stepA">
-      <div class="step-eyebrow">Quick start</div>
-      <h1 class="step-title">Are you on<br>Spotify?</h1>
-      <p class="step-sub">Paste your artist URL — we'll pull in your name, photo, and releases.</p>
+      <!-- Spotify mode (default) -->
+      <div id="stepA-spotify">
+        <div class="step-eyebrow">Quick start</div>
+        <h1 class="step-title">Are you on<br>Spotify?</h1>
+        <p class="step-sub">Paste your artist URL — we'll pull in your name, photo, and releases.</p>
 
-      <div class="field">
-        <input class="field-input import-input" type="url" id="iSpotifyImport"
-          placeholder="https://open.spotify.com/artist/…"
-          autocomplete="off" spellcheck="false">
-        <p class="field-error-msg" id="iSpotifyImportErr" role="alert"></p>
-      </div>
+        <div class="field">
+          <input class="field-input import-input" type="url" id="iSpotifyImport"
+            placeholder="https://open.spotify.com/artist/…"
+            autocomplete="off" spellcheck="false">
+          <p class="field-error-msg" id="iSpotifyImportErr" role="alert"></p>
+        </div>
 
-      <!-- Import preview — shown after successful fetch -->
-      <div id="importPreview" style="display:none;">
-        <div class="import-preview">
-          <div class="import-preview__art" id="importPreviewArt"></div>
-          <div>
-            <div class="import-preview__name" id="importPreviewName"></div>
-            <div class="import-preview__meta" id="importPreviewMeta"></div>
+        <!-- Import preview — shown after successful fetch -->
+        <div id="importPreview" style="display:none;">
+          <div class="import-preview">
+            <div class="import-preview__art" id="importPreviewArt"></div>
+            <div>
+              <div class="import-preview__name" id="importPreviewName"></div>
+              <div class="import-preview__meta" id="importPreviewMeta"></div>
+            </div>
+            <div class="import-preview__check">✓</div>
           </div>
-          <div class="import-preview__check">✓</div>
+        </div>
+
+        <div class="import-why" id="importWhy" style="display:none;">
+          <span class="import-why__icon">🔒</span>
+          <span>We only read public data — your name, image, and music. We never get access to your Spotify account.</span>
+        </div>
+
+        <div class="step-nav" style="flex-direction:column;gap:10px;">
+          <button class="btn-next" id="spotifyImportBtn" onclick="doSpotifyImport()">
+            Find me on Spotify →
+          </button>
+          <button class="btn-skip" onclick="goToStep('step1')">
+            I'm not on Spotify →
+          </button>
+        </div>
+
+        <div id="importStatus" class="import-status" style="display:none;">
+          <span id="importStatusText">Looking you up…</span>
         </div>
       </div>
 
-      <div class="import-why" id="importWhy" style="display:none;">
-        <span class="import-why__icon">🔒</span>
-        <span>We only read public data — your name, image, and music. We never get access to your Spotify account.</span>
-      </div>
+      <!-- Linktree mode (activated by ?import=linktree) -->
+      <div id="stepA-linktree" style="display:none;">
+        <div class="step-eyebrow">Coming from Linktree?</div>
+        <h1 class="step-title">Bring your<br>links across.</h1>
+        <p class="step-sub">Paste your Linktree URL and we'll import all your links in one step.</p>
 
-      <div class="step-nav" style="flex-direction:column;gap:10px;">
-        <button class="btn-next" id="spotifyImportBtn" onclick="doSpotifyImport()">
-          Find me on Spotify →
-        </button>
-        <button class="btn-skip" onclick="goToStep('step1')">
-          I'm not on Spotify →
-        </button>
-      </div>
+        <div class="field">
+          <input class="field-input import-input" type="url" id="iLinktreeImport"
+            placeholder="https://linktr.ee/yourname"
+            autocomplete="off" spellcheck="false">
+          <p class="field-error-msg" id="iLinktreeImportErr" role="alert"></p>
+        </div>
 
-      <div id="importStatus" class="import-status" style="display:none;">
-        <span id="importStatusText">Looking you up…</span>
+        <!-- Link preview — shown after successful fetch -->
+        <div id="ltPreview" style="display:none;margin:16px 0 0;">
+          <p style="font-size:12px;color:var(--t3);margin-bottom:8px;" id="ltPreviewCount"></p>
+          <div id="ltLinkList" style="display:flex;flex-direction:column;gap:6px;"></div>
+        </div>
+
+        <div class="step-nav" style="flex-direction:column;gap:10px;margin-top:20px;">
+          <button class="btn-next" id="ltImportBtn" onclick="doLinktreeImport()">
+            Import my links →
+          </button>
+          <button class="btn-skip" onclick="goToStep('step1')">
+            I'll add links manually →
+          </button>
+        </div>
+
+        <div id="ltImportStatus" class="import-status" style="display:none;">
+          <span id="ltImportStatusText">Reading your Linktree…</span>
+        </div>
       </div>
     </div>
 
@@ -1652,6 +1688,110 @@ function doSpotifyImport() {
 }
 
 /* ══════════════════════════════════════════════════════
+   LINKTREE IMPORT
+   ══════════════════════════════════════════════════════ */
+var _ltLinks = []; // imported links, awaiting confirm
+
+function doLinktreeImport() {
+  var inputEl   = document.getElementById('iLinktreeImport');
+  var errEl     = document.getElementById('iLinktreeImportErr');
+  var btnEl     = document.getElementById('ltImportBtn');
+  var statusEl  = document.getElementById('ltImportStatus');
+  var statusTx  = document.getElementById('ltImportStatusText');
+  var previewEl = document.getElementById('ltPreview');
+  var listEl    = document.getElementById('ltLinkList');
+  var countEl   = document.getElementById('ltPreviewCount');
+
+  if (!inputEl) return;
+  var raw = inputEl.value.trim();
+  if (!raw) {
+    if (errEl) { errEl.textContent = 'Paste your Linktree URL first.'; errEl.classList.add('show'); }
+    return;
+  }
+  // Normalise
+  if (!raw.startsWith('http')) raw = 'https://' + raw;
+  if (!/linktr\.ee\//.test(raw)) {
+    if (errEl) { errEl.textContent = 'That doesn\'t look like a Linktree URL — try https://linktr.ee/yourname'; errEl.classList.add('show'); }
+    return;
+  }
+  if (errEl) errEl.classList.remove('show');
+  if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Reading your Linktree…'; }
+  if (statusEl) { statusEl.style.display = 'block'; }
+  if (statusTx) statusTx.textContent = 'Reading your Linktree…';
+
+  fetch('/.netlify/functions/linktree-import', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url: raw }),
+  })
+    .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, d: d }; }); })
+    .then(function(result) {
+      if (statusEl) statusEl.style.display = 'none';
+      if (!result.ok || !result.d.links) {
+        var msg = result.d.error || 'Couldn\'t read that Linktree — try pasting your links manually.';
+        if (errEl) { errEl.textContent = msg; errEl.classList.add('show'); }
+        if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Import my links →'; }
+        return;
+      }
+
+      _ltLinks = result.d.links;
+      var name  = result.d.name || '';
+
+      // Show link preview with toggleable checkboxes
+      if (listEl) {
+        listEl.innerHTML = '';
+        _ltLinks.forEach(function(link, i) {
+          var row = document.createElement('label');
+          row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--card);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);';
+          row.innerHTML = '<input type="checkbox" data-idx="' + i + '" checked style="accent-color:var(--acc);width:15px;height:15px;flex-shrink:0;">'
+            + '<span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escHtml(link.title) + '</span>'
+            + '<span style="font-size:11px;color:var(--t3);flex-shrink:0;">' + escHtml(link.platform) + '</span>';
+          listEl.appendChild(row);
+        });
+      }
+      if (countEl) countEl.textContent = 'Found ' + _ltLinks.length + ' link' + (_ltLinks.length !== 1 ? 's' : '') + '. Untick any you don\'t want.';
+      if (previewEl) previewEl.style.display = 'block';
+
+      // Persist name if not already set
+      if (name) saveDraft({ name: name });
+
+      // Change button to confirm
+      if (btnEl) {
+        btnEl.disabled = false;
+        btnEl.textContent = 'Import selected links →';
+        btnEl.onclick = confirmLinktreeImport;
+      }
+    })
+    .catch(function() {
+      if (statusEl) statusEl.style.display = 'none';
+      if (errEl) { errEl.textContent = 'Couldn\'t read that page. Try pasting your links manually.'; errEl.classList.add('show'); }
+      if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Import my links →'; }
+    });
+}
+
+function confirmLinktreeImport() {
+  var listEl = document.getElementById('ltLinkList');
+  if (!listEl) { goToStep('step1'); return; }
+
+  var selected = [];
+  listEl.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
+    if (cb.checked) {
+      var idx = parseInt(cb.dataset.idx, 10);
+      if (_ltLinks[idx]) selected.push(_ltLinks[idx]);
+    }
+  });
+
+  // Save to draft — links become Quick Action pills
+  saveDraft({ linktreeLinks: selected, linktreeImported: true });
+
+  goToStep('step1');
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ══════════════════════════════════════════════════════
    STEP 1 — Identity
    ══════════════════════════════════════════════════════ */
 var _v2Accent = '#f4b942';
@@ -1716,7 +1856,7 @@ function tryStep1() {
   goToStep('step2');
 }
 
-// Live name preview
+// Live name preview + Linktree import param detection
 document.addEventListener('DOMContentLoaded', function() {
   const nameEl = document.getElementById('iName');
   if (nameEl) {
@@ -1738,6 +1878,17 @@ document.addEventListener('DOMContentLoaded', function() {
       if (sw) sw.style.background = e.target.value;
       v2SetAccent(e.target.value, null);
     });
+  }
+
+  // Activate Linktree import mode when ?import=linktree
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('import') === 'linktree') {
+    const spotifyPanel = document.getElementById('stepA-spotify');
+    const ltPanel      = document.getElementById('stepA-linktree');
+    if (spotifyPanel) spotifyPanel.style.display = 'none';
+    if (ltPanel)      ltPanel.style.display = 'block';
+    const ltInput = document.getElementById('iLinktreeImport');
+    if (ltInput) setTimeout(function() { ltInput.focus(); }, 200);
   }
 });
 
