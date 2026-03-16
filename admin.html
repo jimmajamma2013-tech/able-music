@@ -316,10 +316,10 @@ body::before {
 /* ── CTA MODE CARDS ── */
 .mode-cards { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .mode-card {
-  padding:12px; border-radius:12px; border:1.5px solid var(--border);
-  cursor:pointer; transition:all .16s; background:rgba(255,255,255,.03);
+  padding:12px; border-radius:12px; border:1px solid var(--dash-border);
+  cursor:pointer; transition:all .16s; background:var(--dash-card);
 }
-.mode-card:hover { border-color:var(--bm); }
+.mode-card:hover { border-color:var(--dash-border); opacity:.85; }
 .mode-card.on { border-color:var(--acc); background:rgba(var(--acc-rgb),.07); }
 .mc-label { font-size:12px; font-weight:600; color:var(--text); margin-bottom:2px; }
 .mc-hint { font-size:10px; color:var(--t3); }
@@ -445,7 +445,7 @@ body::before {
 
 /* ── CAMPAIGN HQ ── */
 .campaign-hq {
-  border-radius:16px; background:var(--dash-card); border:1px solid var(--dash-border);
+  border-radius:14px; background:var(--dash-card); border:1px solid var(--dash-border);
   overflow:hidden; margin-bottom:20px;
   box-shadow:0 1px 4px rgba(0,0,0,.06);
 }
@@ -1561,7 +1561,8 @@ body::before {
   background: rgba(244,185,66,.07);
 }
 .identity-card {
-  background: var(--card, #16181f);
+  background: var(--dash-card);
+  border: 1px solid var(--dash-border);
   border-radius: 14px;
   padding: 18px 16px 16px;
   margin-bottom: 12px;
