@@ -472,6 +472,163 @@ Write the answers down. Five sentences. The log starts here.
 
 ---
 
+## Part 11: The Exit Trigger — Specific, Unambiguous, Non-Negotiable
+
+This section exists because Part 1 defines the trigger conditions in aggregate but does not answer the one question that matters most: exactly when does James hand in notice? That question has been left partially open. This section closes it.
+
+---
+
+### The precise formula
+
+**Primary trigger — all five conditions must be simultaneously true:**
+
+| Condition | Threshold | Measurement |
+|---|---|---|
+| MRR | £5,000+ for **3 consecutive complete calendar months** | Stripe MRR report |
+| Churn | Below 5%/month across those 3 months | Stripe churn report |
+| Emergency fund | £18,000 (or 6× your actual calculated monthly spend) in instant-access cash | Savings account balance |
+| Business operating buffer | 3 months of operating costs in Starling business account | Starling balance |
+| Tier diversity | At least 2 revenue tiers generating income | Stripe subscription breakdown |
+
+When all five are green simultaneously — and have been green for a full calendar month — the exit window is open. James then has a 60-day window to act. If he does not hand in notice within 60 days, he reviews the secondary trigger conditions below and reassesses.
+
+**Why 60 days:** Indefinite windows become indefinite deferrals. The 60-day cap forces a decision rather than allowing the trigger to become a floating ambition.
+
+---
+
+### The secondary trigger — health override
+
+If James's C5/C6 condition deteriorates to the point where the job is **causally making it worse** — meaning the commute, desk setup, stress load, or specific workplace conditions are traceable contributors to an active flare — the exit trigger fires regardless of MRR.
+
+This is not a loophole for a bad week. It requires all three of:
+1. The flare has lasted more than 21 consecutive days
+2. James has seen a physiotherapist or specialist who has explicitly connected the workplace to the deterioration
+3. James has raised the issue with his employer and the situation has not improved within 14 days
+
+If all three are true, the MRR condition is waived. Exit within 30 days. Financial preparation must be as advanced as possible — this is the scenario the emergency fund exists for.
+
+---
+
+### The exit timing rule
+
+**Do not hand in notice in any of the following windows:**
+- During a known acute C5/C6 flare (delay until stable for 14 days minimum)
+- Within 30 days of a major product incident (data loss, payment failure, security breach)
+- During the period of a close family illness or personal emergency — unless the job is the cause
+- In December (reduces your employer options to act quickly, which creates bad blood)
+- On a Monday (gives your manager the whole week to manage a difficult situation; Wednesday gives you both 2 days and a natural end-of-week reset)
+
+**The right day to hand in notice:** A Wednesday morning. You have slept well. MRR confirmation arrived on Monday. The resignation letter is already written and has been in drafts for at least 3 months.
+
+---
+
+### The exact checklist for green-lighting exit
+
+Every item must be ticked before the letter is sent. Not "mostly done" — done.
+
+**Legal and financial (the floor):**
+- [ ] ABLE Labs Ltd incorporated and operational
+- [ ] Starling business account open with 3 months operating costs
+- [ ] FreeAgent connected, 3+ months of real transactions visible
+- [ ] Accountant engaged and briefed; Year 1 tax plan discussed
+- [ ] Emergency fund at target (£18,000 or 6× monthly spend — whichever is higher)
+- [ ] Income protection insurance policy active
+- [ ] Private health insurance policy active (no gap between employer scheme ending and new policy starting)
+- [ ] ISA maxed for the current tax year
+- [ ] HMRC self-assessment registration ready (Government Gateway login tested)
+- [ ] Director salary/dividend structure agreed with accountant
+- [ ] First self-assessment payment-on-account amount known and budgeted
+
+**Product (the stability floor):**
+- [ ] No P0 bugs open
+- [ ] All 5 pages pass Playwright smoke tests
+- [ ] Fan sign-up to confirmation email: working and tested
+- [ ] Stripe webhooks: reliable for 60+ days
+- [ ] At least 10 paying artists
+- [ ] NPS score received and above 30
+
+**Infrastructure (the continuity floor):**
+- [ ] n8n automations running reliably for 60+ days without manual intervention
+- [ ] Supabase Pro active (no inactivity pauses)
+- [ ] Uptime monitoring active
+- [ ] 1Password: all credentials stored, 2FA everywhere
+
+**Personal (the readiness floor):**
+- [ ] Active physiotherapy relationship in place
+- [ ] Routine test completed (1 week working from home full-time — patterns reviewed)
+- [ ] Co-working space identified and visited
+- [ ] 5 specific people who will hear the news personally, identified and told in advance
+- [ ] Resignation letter written and in drafts for at least 4 weeks
+
+When all 25 items are ticked, the trigger is not a decision. It is a confirmation.
+
+---
+
+### The counter-offer protocol
+
+There will likely be a counter-offer. The employer values James and will offer more money, a different role, or flexible working. This is a decision point that catches many people off guard.
+
+The rule: if ABLE is at £5k MRR for 3 months with sub-5% churn, no counter-offer changes the calculus. Not because money is irrelevant, but because the constraint on ABLE's growth is James's available time and focus — not income. A salary increase does not change that equation. It defers the exit by 12–18 months and costs James a year of compounding.
+
+The exception: if the employer offers to go to 3 days/week or contract at a rate above £600/day, and ABLE MRR is between £2,000–4,000 (not yet at the trigger), this is worth considering as Phase 2 (see Part 7 of master strategy). It is not a counter to the exit trigger — it is a separate conversation that belongs to the hybrid phase.
+
+**At the £5k MRR trigger: the answer to any counter-offer is warm, specific, and firm.** "I genuinely appreciate that. It matters. But what I'm building requires my full attention and I've been preparing for this for a long time. I want to leave well — let's talk about the handover."
+
+---
+
+### The notice period plan
+
+James's contract likely requires 4 weeks notice. Handle the notice period as follows:
+
+**Week 1 (Day 1–7 after handing in notice):**
+- Agree handover plan in writing with your manager
+- Identify every process, system, or knowledge that lives only in James's head — document it
+- Do not start any new long-horizon projects
+- Inform colleagues at a time and pace agreed with your manager — do not let news spread ahead of the announcement
+
+**Week 2 (Day 8–14):**
+- Begin active handover of responsibilities
+- Ensure all running projects are transferred or clearly documented for continuation
+- Confirm P45 date and pension arrangements with HR
+
+**Week 3 (Day 15–21):**
+- Complete handover documentation
+- Brief successor or covering colleague on all in-flight work
+- Decline any work that cannot be completed before your last day — be honest, not apologetic
+
+**Week 4 (Day 22–Final day):**
+- Finish with every item handed over cleanly
+- Write a personal note to your manager and any colleagues you want to maintain a relationship with — not because you have to, but because these relationships have value beyond employment
+- Return equipment, clear access, confirm email forwarding
+
+**On the final day:**
+- Get P45 confirmed
+- Register with HMRC as self-employed (online, 10 minutes)
+- Update LinkedIn
+- Post
+- Email your founding artists
+- Do not open your laptop for the rest of the day
+
+---
+
+### The first week as a solo founder
+
+This is the week most people either nail or get wrong in a way that sets a difficult pattern.
+
+**Monday:** Do not build. Call or message your 5 closest artist relationships. Ask one question: "What's the hardest thing about promoting your music right now?" Record every answer.
+
+**Tuesday–Wednesday:** Do the same with 5 more artists. By end of Wednesday you have 10 real conversations. Feed the transcripts to Claude and extract the 3 recurring themes. That is your sprint backlog.
+
+**Thursday:** Build one thing from the backlog. Ship it by end of day.
+
+**Friday:** Tell the 10 artists what you built and why. This is not a newsletter — it is a personal email. 10 separate emails with the artist's name and one specific detail from your conversation.
+
+**What changes:** Your time is yours. Your calendar is blank except what you put in it.
+
+**What stays the same:** The work. The discipline. The morning health routine. The Sunday review. These things do not change because you're now full-time — they are the structure that makes full-time sustainable.
+
+---
+
 ## Part 10: The Portugal / Nomad Transition
 
 The exit from employment and the transition to Portugal/nomad life are two separate events. Do not conflate them.
