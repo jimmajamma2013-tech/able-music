@@ -1076,7 +1076,7 @@
     <div class="hero__copy">
       <div class="hero__eyebrow">Artist Before Label</div>
       <h1 class="hero__headline">100 real fans<br>beat 10,000<br><em>strangers.</em></h1>
-      <p class="hero__sub">Your page shifts with your moment — pre-save before the drop, streaming on release day, tickets the night you play. Every fan who signs up goes straight to your list. Their email is yours. Not the platform's.</p>
+      <p class="hero__sub">Your page moves with your moment — pre-save, drop day, show night. Set it once and forget it. Every fan who signs up: their email lands in your list. Not the algorithm's. Yours.</p>
 
       <div class="hero__platforms">
         <span class="hero__platforms-label">Connects to</span>
@@ -1280,11 +1280,11 @@
 
   <!-- PROOF STRIP -->
   <div class="proof">
-    <div class="proof__item fade-up"><div class="proof__num">£0</div><div class="proof__label">Platform cut, ever</div></div>
-    <div class="proof__item fade-up"><div class="proof__num">100%</div><div class="proof__label">Your fan list, yours to keep</div></div>
-    <div class="proof__item fade-up"><div class="proof__num">5 min</div><div class="proof__label">Zero to live page</div></div>
-    <div class="proof__item fade-up"><div class="proof__num">4</div><div class="proof__label">Smart launch modes</div></div>
-    <div class="proof__item fade-up"><div class="proof__num">Direct</div><div class="proof__label">No algorithm in the way</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">£0</div><div class="proof__label">ABLE cut. Ever.</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">100%</div><div class="proof__label">Your fan list — not ours</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">5 min</div><div class="proof__label">From nothing to live</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">4</div><div class="proof__label">Modes that move with you</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">0</div><div class="proof__label">Algorithms between you and your fans</div></div>
   </div>
 
   <!-- MARQUEE TICKER -->
@@ -1324,7 +1324,7 @@
   <!-- FEATURES -->
   <section class="section" id="features">
     <div class="section__inner">
-      <div class="section__eyebrow fade-up">Built for music</div>
+      <div class="section__eyebrow fade-up">What it does</div>
       <h2 class="section__title fade-up">Built for the<br>moment you're in.</h2>
       <p class="section__sub fade-up">They tapped your link because they already care. Give them somewhere that feels like you — not a list of ten blue links.</p>
 
@@ -1408,8 +1408,8 @@
         </div>
         <div class="step fade-up">
           <div class="step__num"></div>
-          <div class="step__title">Set your release date</div>
-          <div class="step__desc">Got something dropping? Set the date. The page shifts into pre-save mode, then flips to streaming the morning it's out.</div>
+          <div class="step__title">Tell it what's coming</div>
+          <div class="step__desc">Set a release date and your page builds anticipation with a countdown. The morning it drops, it flips to streaming. A show coming up? One toggle puts tickets front and centre.</div>
         </div>
         <div class="step fade-up">
           <div class="step__num"></div>
@@ -1505,7 +1505,9 @@
           <a href="mailto:labels@ablemusic.co" class="btn-outline">Talk to us →</a>
         </div>
       </div>
-      <p style="text-align:center;margin-top:28px;font-size:13px;color:var(--text-3);">All plans: 0% ABLE cut on support pack income. Stripe standard rate only (1.4% + 20p UK cards). Compare: Beacons charges 9% on their free plan.</p>
+      <div style="margin-top:36px;padding:18px 24px;background:rgba(var(--accent-rgb),0.05);border:1px solid rgba(var(--accent-rgb),0.15);border-radius:12px;text-align:center;max-width:580px;margin-left:auto;margin-right:auto;">
+        <p style="font-size:13px;color:var(--text-2);line-height:1.65;">0% ABLE cut on everything you earn. Stripe's standard rate only (1.4% + 20p for UK cards). <span style="color:var(--text-3);">Beacons charges 9% on their free plan.</span></p>
+      </div>
     </div>
   </section>
 
@@ -1727,6 +1729,12 @@
       applyState('live');
       applyTheme('dark');
     })();
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function() {});
+    }
   </script>
 </body>
 </html>

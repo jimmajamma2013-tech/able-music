@@ -1,9 +1,33 @@
 # fan.html — Path to 10
 **Last updated: 2026-03-16**
 **Stage 6A of the 8-stage strategy process**
-**Baseline score: 5.9/10**
+**Baseline score: 5.9/10 → Current: ~7.8/10 (P0 + P1 implemented)**
 **Target: 10/10**
 **V1 ceiling (localStorage only): 9.4/10**
+
+## Implementation status
+
+### P0 — IMPLEMENTED 2026-03-16
+- [x] P0.1 — URL arrival flow (`?artist=slug&ref=signup`)
+- [x] P0.2 — Empty state rewrites (three scenarios, no emoji, no "all caught up")
+- [x] P0.4 — Cold-start suggestions row ("Because you follow X —")
+- [x] P0.5 — Title fix (`ABLE`), "Feed" → "Following", caught-up copy, snap badge copy, artist name weight/color
+- [x] P0.6 — Feed artist name raised to color-text-2 / weight 500; release badge "New music"; snap "From the artist"
+
+### P1 — IMPLEMENTED 2026-03-16
+- [x] P1.1 — Discover defaults to Connected (not Emerging)
+- [x] P1.1 — Filter copy: "Emerging" → "New to ABLE", "By vibe" → "By sound"
+- [x] P1.1 — Follower counts removed; location shown instead
+- [x] P1.1 — "Creatives" → "The people behind the music"
+- [x] P1.1 — "Artists connected to yours" Connected section header
+- [ ] P1.2 — Near me location input on first visit (structural — needs location capture UI)
+- [ ] P1.3 — Pre-release countdown strip in Following view
+- [ ] P1.4 — Notification pip real logic
+
+### P2 — TODO
+- [ ] Close Circle invitation copy stub
+- [ ] Supabase query specs
+- [ ] View transitions
 
 ---
 
