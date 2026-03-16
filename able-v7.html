@@ -9541,9 +9541,9 @@
           {
             '@type': 'MusicGroup',
             name,
-            description: bio,
+            description: rawBio || undefined,
             url,
-            image: art || undefined,
+            image: ogImage !== FALLBACK_OG ? ogImage : undefined,
             genre: profile.genres || [],
           },
           ...(profile.events || [])

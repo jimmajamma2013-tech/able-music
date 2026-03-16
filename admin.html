@@ -3221,6 +3221,17 @@ body::before {
             Copy
           </button>
         </div>
+        <div style="margin-top:8px;display:flex;gap:8px;">
+          <button class="tb-btn tb-btn-ghost" onclick="copyUtmUrl('instagram')" id="igCopyBtn" style="flex:1;gap:5px;font-size:11px;justify-content:center;">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="11" height="11"><rect x="2" y="2" width="10" height="10" rx="3"/><circle cx="7" cy="7" r="2.5"/><circle cx="10.2" cy="3.8" r=".6" fill="currentColor" stroke="none"/></svg>
+            Instagram link
+          </button>
+          <button class="tb-btn tb-btn-ghost" onclick="copyUtmUrl('tiktok')" id="ttCopyBtn" style="flex:1;gap:5px;font-size:11px;justify-content:center;">
+            <svg viewBox="0 0 14 14" fill="currentColor" width="11" height="11"><path d="M11.5 4.5a3.5 3.5 0 01-3.5-3.5h-2v8a1.5 1.5 0 11-1.5-1.5V5.4A3.6 3.6 0 104.5 9V9a3.5 3.5 0 003.5-3.5V4.7a5.5 5.5 0 003.5 1.2V3.8a3.5 3.5 0 01-3.5-3.3h-2.5"/></svg>
+            TikTok link
+          </button>
+        </div>
+        <div style="font-size:10px;color:var(--t3);margin-top:5px;">These links tell you which platform your fans came from.</div>
       </div>
     </div>
 
@@ -6208,6 +6219,28 @@ function copyPageUrl() {
   const url = `https://ablemusic.co/${slug}`;
   navigator.clipboard.writeText(url).then(() => {
     const btn = document.getElementById('settingsCopyBtn');
+    if (!btn) return;
+    const orig = btn.innerHTML;
+    btn.textContent = 'Copied!';
+    btn.style.transition = 'background 0ms';
+    btn.style.background = 'var(--acc)';
+    btn.style.color = '#0a0b0f';
+    setTimeout(() => {
+      btn.style.transition = 'background 300ms';
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 300);
+    setTimeout(() => { btn.innerHTML = orig; btn.style.transition = ''; }, 1800);
+  });
+}
+
+function copyUtmUrl(source) {
+  const data = safeLS(V3_KEY, {});
+  const slug = data.handle || (data.name || 'artist').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const url = `https://ablemusic.co/${slug}?utm_source=${source}&utm_medium=bio`;
+  const btnId = source === 'instagram' ? 'igCopyBtn' : 'ttCopyBtn';
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById(btnId);
     if (!btn) return;
     const orig = btn.innerHTML;
     btn.textContent = 'Copied!';
