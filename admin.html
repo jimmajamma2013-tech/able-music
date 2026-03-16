@@ -2906,6 +2906,7 @@ body::before {
 
     <div class="filter-pills" id="fansFilterPills">
       <button class="filter-pill active" data-filter="all">All</button>
+      <button class="filter-pill" data-filter="starred">Starred</button>
       <button class="filter-pill" data-filter="ig">Instagram</button>
       <button class="filter-pill" data-filter="tt">TikTok</button>
       <button class="filter-pill" data-filter="sp">Spotify</button>
@@ -2927,6 +2928,10 @@ body::before {
     <div class="source-breakdown" id="sourceBreakdown">
       <div class="breakdown-title">Where fans found you</div>
       <div id="sourceBreakdownBars"></div>
+    </div>
+    <div class="source-breakdown" id="campaignBreakdown" style="display:none;margin-top:10px;">
+      <div class="breakdown-title">When they signed up</div>
+      <div id="campaignBreakdownBars"></div>
     </div>
   </div>
 
@@ -3178,9 +3183,12 @@ function renderFanList(filter) {
   if (filter !== undefined) _activeFanFilter = filter;
   const allFans = safeLS('able_fans', []);
   const search = (document.getElementById('fansSearch')?.value || '').toLowerCase();
+  const legacyStarredForFilter = safeLS('able_starred_fans', []);
   const filtered = allFans.filter(f => {
     const src = normaliseSource(f.source);
-    const matchFilter = _activeFanFilter === 'all' || src === _activeFanFilter;
+    const matchFilter = _activeFanFilter === 'all'
+      || src === _activeFanFilter
+      || (_activeFanFilter === 'starred' && (f.isStarred || legacyStarredForFilter.includes(f.email)));
     const matchSearch = !search || (f.email || '').toLowerCase().includes(search);
     return matchFilter && matchSearch && f.confirmed !== false;
   });
@@ -3228,6 +3236,7 @@ function renderFanList(filter) {
 
   // Source breakdown
   renderSourceBreakdown(confirmed);
+  renderCampaignBreakdown(confirmed);
 
   // Wire row taps → fan detail sheet
   listEl.querySelectorAll('.fan-list-row').forEach(row => {
@@ -3282,6 +3291,34 @@ function renderSourceBreakdown(fans) {
       <span class="breakdown-pct">${pct}%</span>
     </div>`;
   }).join('');
+}
+
+function renderCampaignBreakdown(fans) {
+  const el = document.getElementById('campaignBreakdownBars');
+  const wrap = document.getElementById('campaignBreakdown');
+  if (!el) return;
+  const counts = { 'pre-release': 0, live: 0, gig: 0, profile: 0 };
+  fans.forEach(f => {
+    const state = f.campaignState || 'profile';
+    if (counts[state] !== undefined) counts[state]++;
+  });
+  const uniqueStates = Object.values(counts).filter(v => v > 0).length;
+  if (uniqueStates <= 1) { el.innerHTML = ''; if (wrap) wrap.style.display = 'none'; return; }
+  if (wrap) wrap.style.display = '';
+  const total = fans.length || 1;
+  const labels = { 'pre-release': 'Pre-release', live: 'Release day', gig: 'Gig night', profile: 'Profile mode' };
+  const colours = { 'pre-release': '#fbbf24', live: '#ef4444', gig: '#f46442', profile: '#999' };
+  el.innerHTML = Object.entries(counts)
+    .filter(([, count]) => count > 0)
+    .sort(([, a], [, b]) => b - a)
+    .map(([state, count]) => {
+      const pct = Math.round(count / total * 100);
+      return `<div class="breakdown-row">
+        <span class="breakdown-label">${labels[state]}</span>
+        <div class="breakdown-bar-wrap"><div class="breakdown-bar" style="width:${pct}%;background:${colours[state]}"></div></div>
+        <span class="breakdown-pct">${count}</span>
+      </div>`;
+    }).join('');
 }
 
 function buildCampaignContextLine(fan) {
@@ -3404,12 +3441,24 @@ function renderFanSupportPacksSummary() {
 }
 
 function exportFans() {
+  const legacyStarred = safeLS('able_starred_fans', []);
   const real = safeLS('able_fans', []).filter(f => f.confirmed !== false);
   if (!real.length) { alert('No fans yet — share your page link to see who shows up.'); return; }
-  const all = real.map(f => ({ email:f.email, level:'listener', source:f.source||'Direct', ts:f.ts }));
-  const csv = 'Email,Level,Source,Joined\n' + all.map(f =>
-    `${f.email},${f.level},${f.source},${new Date(f.ts).toISOString().slice(0,10)}`
-  ).join('\n');
+  const csvRows = [['Email','Level','Date joined','Source','Campaign state','Starred','Opted in','Confirmed']];
+  real.forEach(f => {
+    const isStarred = !!(f.isStarred || legacyStarred.includes(f.email));
+    csvRows.push([
+      f.email || '',
+      f.level || 'listener',
+      new Date(f.ts).toISOString().slice(0,10),
+      normaliseSource(f.source),
+      f.campaignState || 'profile',
+      isStarred ? 'yes' : 'no',
+      f.optIn ? 'yes' : 'no',
+      f.double_opted_in ? 'yes' : 'no'
+    ]);
+  });
+  const csv = csvRows.map(row => row.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = 'able-fans.csv';
