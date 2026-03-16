@@ -67,10 +67,10 @@ Step [N] of 7
 
 ```
 Your page.
-Set up in 5 minutes.
+No algorithm.
 ```
 
-*Line break is intentional — "Your page." lands first, then the promise.*
+*Line break is intentional — "Your page." lands first. "No algorithm." is the reason.*
 
 ---
 
@@ -78,7 +78,7 @@ Set up in 5 minutes.
 *16px, line-height 1.6, muted. Tells them exactly what to do.*
 
 ```
-Paste your Spotify or Linktree link — we'll build the rest.
+Paste your Spotify or Linktree — we'll build the rest.
 ```
 
 ---
@@ -284,7 +284,7 @@ Artist name
 
 ### Continue button
 ```
-Continue →
+That's my name →
 ```
 
 *Enter key also advances.*
@@ -397,7 +397,7 @@ Based on your Spotify genres — change it if it doesn't fit.
 
 ### Continue button
 ```
-Continue →
+That's my vibe →
 ```
 
 ---
@@ -463,7 +463,7 @@ Suggested for your vibe — swap it if you want something different.
 
 ### Continue button
 ```
-Continue →
+That's my colour →
 ```
 
 ---
@@ -536,7 +536,7 @@ Glass works best with a high-resolution artwork image.
 
 ### Continue button
 ```
-Continue →
+That's my feel →
 ```
 
 ---
@@ -596,7 +596,7 @@ Each link shown as a row with a badge:
 
 #### Continue button
 ```
-Continue →
+Those are my links →
 ```
 
 ---
@@ -650,7 +650,7 @@ That's 6 links — enough for now. You can manage them from your dashboard.
 
 #### Continue button
 ```
-Continue →
+Those are my links →
 ```
 
 ---
@@ -737,7 +737,7 @@ This is what your fans will see.
 
 ### Continue button
 ```
-Continue →
+Set my fan CTA →
 ```
 
 ---

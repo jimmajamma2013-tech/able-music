@@ -321,7 +321,7 @@ Action: [Copy my link]
 
 **If 1–9 fans:**
 ```
-"Your list is starting. The fastest growth comes from sharing in a story — not just the bio."
+"Your list is starting. Sharing in a story reaches people that the bio link misses."
 ```
 Action: [Copy my link]
 
@@ -335,7 +335,7 @@ Action: [Set up a broadcast →] (tier-gated if free)
 ```
 "[N] fans. You're past the point where this is an experiment."
 ```
-Action: [See Artist plan →] (if still free)
+Action: [See Artist plans →] (if still free)
 
 Dismiss key: `'day30-summary'` — stores permanently, never reappears.
 

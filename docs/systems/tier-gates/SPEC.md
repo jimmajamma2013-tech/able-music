@@ -339,7 +339,7 @@ function closeUpgradeSheet() {
         <div class="upgrade-tier-price">£19<span>/mo</span></div>
         <ul class="upgrade-tier-benefits">
           <li>Email broadcasts</li>
-          <li>Full fan CRM</li>
+          <li>Full fan list + export</li>
           <li>Advanced analytics</li>
         </ul>
         <button class="upgrade-tier-cta" onclick="handleTierSelect('artist-pro')">
@@ -557,7 +557,7 @@ function handleTierSelect(tier) {
   // Interim (pre-Stripe): open waitlist/notification flow
   // Once Stripe is wired: redirect to checkout session
   closeUpgradeSheet();
-  showToast(`We'll let you know when ${tier === 'artist' ? 'Artist' : tier === 'artist-pro' ? 'Artist Pro' : 'Label'} billing is live.`);
+  showToast(`Noted. We'll reach out when ${tier === 'artist' ? 'Artist' : tier === 'artist-pro' ? 'Artist Pro' : 'Label'} billing is ready.`);
   // TODO: POST to waitlist endpoint with { tier, artist_id }
 }
 ```

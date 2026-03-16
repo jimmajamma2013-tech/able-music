@@ -165,8 +165,8 @@
 
 **Step 3:**
 - Icon context: email / people
-- Headline: `Every sign-up builds your list.`
-- Body: `Fans tap "Stay close." — that email is yours instantly. Watch your list grow in real time. When you're ready to reach them, they're there.`
+- Headline: `Every fan is yours.`
+- Body: `Fans tap "Stay close." — that email goes straight to your list. Yours to keep, yours to export. When you're ready to reach them, they're there.`
 
 **CTA below steps:**
 `Your page is free →`
@@ -195,7 +195,7 @@
 **Tier 3 — Artist Pro:**
 - Name: `Artist Pro`
 - Price: `£19 / month`
-- Descriptor: `For artists building a serious fanbase.`
+- Descriptor: `For artists who want the full picture.`
 - Key line: `Full fan data, email broadcasts, Close Circle`
 - CTA: `Start Pro →`
 
@@ -231,7 +231,7 @@
 
 **Q4:**
 - Q: `Who owns my fans' emails?`
-- A: `You do. 100%. We cannot contact your fans. You can export your full list at any time, even on the free tier. The relationship is yours.`
+- A: `You do. We cannot contact your fans. Export your full list at any time, even on the free tier. The relationship is yours.`
 
 **Q5:**
 - Q: `How is this different from Linktree?`

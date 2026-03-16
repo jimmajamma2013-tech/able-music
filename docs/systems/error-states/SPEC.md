@@ -320,7 +320,7 @@ Copy is written in the artist's voice (first person for the profile page):
 | localStorage corrupt (profile) | Amber nudge in admin | "Your profile data may be incomplete. Re-run setup or contact support." |
 | Shows load error | Inline in shows section | "Couldn't load your shows. Try refreshing." |
 | Empty shows | Empty state (neutral) | "No shows added yet." + "Add a show" action |
-| Empty fan list | Empty state (neutral) | "No fans yet. Share your page and they'll show up here." |
+| Empty fan list | Empty state (neutral) | "When fans sign up on your page, they'll appear here. Your list. Your relationship. No algorithm in the way." |
 
 ### Voice rules for error copy
 - Never: "Something went wrong" without a specific follow-up action

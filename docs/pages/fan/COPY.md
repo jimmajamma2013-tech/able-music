@@ -680,9 +680,9 @@ One tap to see what's new from your artists.
 Triggered after 2+ followed artists and 3+ visits:
 
 ```
-Get notified when [Artist name] drops something.
+Know when [Artist name] drops something.
 
-We'll only message you when something real happens.
+We'll only reach out when something real happens.
 
 [Turn on]     [Not now]
 ```

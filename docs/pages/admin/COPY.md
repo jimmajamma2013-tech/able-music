@@ -194,7 +194,7 @@ aria-label="[Stat name] over the past 7 days"
 ### Zero state copy (shown instead of shimmer on day 1)
 ```
 0 visits yet
-Your first visitor is on their way.
+Put your link in your bio and they'll find you.
 ```
 → This replaces the indefinite shimmer for new artists
 
@@ -236,9 +236,8 @@ Your list. Your relationship. No algorithm in the way.
 
 ### First fan milestone
 ```
-Your first fan signed up.
-[email] — just now
-This is how it starts.
+Your first fan.
+This is how every list starts.
 ```
 (Appears as a card above the list, dismissible, shown once)
 
@@ -278,8 +277,8 @@ No fans yet.
 
 ### "It's working" card (first click data)
 ```
-It's working.
-People are tapping your links. See the full picture in [Analytics →]
+Someone tapped a link.
+See which one in [Analytics →]
 ```
 
 ### Fan milestone cards
@@ -305,8 +304,7 @@ This is how every list starts.
 **Fan #100**
 ```
 100 fans.
-This is the free tier limit — and it means 100 people found you on their own.
-Artist tier removes the cap.
+100 people who asked to hear from you directly. Artist tier removes the cap.
 ```
 
 ### Streak / consistency (optional, future)

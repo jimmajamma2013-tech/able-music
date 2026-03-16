@@ -177,7 +177,7 @@ This module is the most important piece of copy on the page. It must feel like a
 This is artist-voiced. It should sound like the artist said it, not like a system confirmation.
 
 **Confirmation email subject (Resend / not yet wired):**
-> "Confirm you want to hear from [Artist Name]"
+> "[Artist Name] — just checking"
 
 **Confirmation email body:**
 > "[Artist Name] asked me to check this is actually you.
@@ -187,8 +187,8 @@ This is artist-voiced. It should sound like the artist said it, not like a syste
 Note: The email is sent on behalf of ABLE but voiced as the artist. It uses the artist's name throughout. ABLE's branding is in the footer of the email only ("Sent via ABLE · Unsubscribe").
 
 **Post-confirmation (in fan dashboard, not on profile):**
-> "You've signed up to hear from [Artist Name]."
-> "They can now reach you directly. You can leave at any time."
+> "You're on [Artist Name]'s list."
+> "They'll reach out when something's worth saying. You can leave at any time."
 
 ---
 

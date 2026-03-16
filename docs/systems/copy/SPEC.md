@@ -354,3 +354,167 @@ Each of the 4 campaign states has specific copy across every surface it appears 
 3. Check it against the register table in section 2.2
 4. Check it against the calibration examples in section 2.6
 5. If still unsure: write it shorter. Shorter is almost always better on ABLE.
+
+---
+
+## §7 Copy patterns that work — with examples from the product
+
+These are live strings from across the ABLE platform that have been through the full voice audit. They are the reference standard. When writing new copy, compare it to these.
+
+---
+
+### Pattern 1: The honest zero state
+
+The empty state is not a failure. Treat it as a fact.
+
+**Fan list — no fans yet:**
+> "When fans sign up on your page, they'll appear here. Your list. Your relationship. No algorithm in the way."
+
+**Events section — no shows added:**
+> "Playing anywhere soon? Your fans want to know →"
+
+**Fan dashboard — nothing new from followed artists:**
+> "Nothing new from your artists today."
+
+**Why these work:** They name reality without apologising for it or spinning it. They state the situation, then give a reason to care.
+
+---
+
+### Pattern 2: The single true thing
+
+The best ABLE copy makes one true statement and stops. It does not explain itself.
+
+**Hero headline:** `100 real fans beat 10,000 strangers.`
+**Saved toast:** `Saved.`
+**Done screen:** `Your page is live.`
+**First fan milestone:** `Your first fan. This is how every list starts.`
+**Post-sign-up:** `You're in.`
+
+**Why these work:** There is nothing to add. Explanation would dilute them. The period is doing work — it closes the thought before the reader can doubt it.
+
+---
+
+### Pattern 3: Name what they actually get
+
+Tier gates and upgrade prompts always name the specific thing, then the price. Never abstract value.
+
+**Broadcasts gate:**
+> "Write to your fans directly. Not a broadcast. Not a newsletter. Just you and the people who signed up. From £19/month."
+
+**Close Circle invitation:**
+> "Stay closer. A small group of people get things a bit earlier — new music before it's out, first shot at tickets, occasional messages that don't go everywhere. £5 a month. You can leave whenever."
+
+**Fan list export gate:**
+> "Download your full fan list with source data — which platform sent each fan, when they signed up. From £19/month."
+
+**Why these work:** The feature is described as the artist experiences it, not as a product SKU. "Write to your fans directly" is more honest than "Email broadcasting". The price appears last, after the value is clear.
+
+---
+
+### Pattern 4: Context-aware nudges
+
+A nudge that reads the artist's actual situation lands. A nudge that fires on a timer doesn't.
+
+**Zero views after 24 hours:**
+> "Your page is live at ablemusic.co/[slug]. Have you shared it yet?"
+
+**Views with no sign-ups after 3 days:**
+> "You've had [N] visitors. None have signed up yet. That usually means: the sign-up form is below the fold, or the page doesn't have enough content yet to earn it. The most common fix: add a photo and a bio."
+
+**Artist approaching fan cap:**
+> "You have [N] fans. The free tier holds up to 100. When you hit 100, sign-ups will stop."
+
+**Why these work:** They state the specific situation first. They give a reason for it. They give one clear action. No pep talk, no manufactured urgency.
+
+---
+
+### Pattern 5: The artist-voiced default
+
+Defaults on the artist profile must feel like the artist typed them, not like ABLE filled in a placeholder.
+
+**Fan sign-up heading:** `Stay close.`
+**Fan sign-up sub:** `Just your email. I'll reach out when something's actually happening.`
+**Gig mode fan sign-up heading:** `I'm playing tonight.`
+**Pre-release fan sign-up heading:** `You signed up right before something.`
+**Post-submit module:** `You're in. I'll keep you close.`
+
+**Why these work:** First person. Specific to the moment. Short. The fan reads them and hears the artist, not a platform.
+
+---
+
+### Pattern 6: Fan-first CTAs
+
+Fan CTAs are in the fan's voice. The fan is making a choice, not receiving an action.
+
+**Fan sign-up button:** `I'm in`
+**Close Circle join:** `Come closer`
+**Close Circle non-join:** `Keep as is`
+**PWA prompt — accept:** `Add`
+**PWA prompt — decline:** `Not now`
+**Push notification — accept:** `Turn on`
+
+**Why these work:** The fan is speaking as themselves. "I'm in" is a commitment the fan makes willingly. "Come closer" is a direction the fan chooses to move, not a product action done to them.
+
+---
+
+### Pattern 7: Milestone copy — warm but not sycophantic
+
+Fan milestones in the admin are the warmest copy on the platform. They acknowledge the moment without celebrating it for ABLE's benefit.
+
+| Milestone | Copy |
+|---|---|
+| First fan | "Your first fan. This is how every list starts." |
+| 3 fans | "3 people who showed up. They came because of you." |
+| 10 fans | "10 fans. A real group. Someone in that list will come to your show." |
+| 50 fans | "50 fans. You're past the point where this is an experiment." |
+| 100 fans | "100 fans. A real list. These people chose to hear from you directly." |
+
+**Why these work:** Each one names the number, then says one true thing about what that number means for a working artist — without cheerleading, without attributing the success to ABLE.
+
+---
+
+### Pattern 8: Notification copy — specific and immediate
+
+Fan notifications name the artist, the action, and the detail. They read like something a person sent, not an alert.
+
+**New release:**
+> "[Artist name] just dropped [Release title]."
+
+**Show tonight:**
+> "[Artist name] is playing tonight at [Venue], [City]. Doors [time]."
+
+**Pre-release countdown (< 7 days):**
+> "[Release title] by [Artist name] drops in [N] days."
+
+**Why these work:** The subject of each sentence is the artist, not the platform. "Nova Reign just dropped Somewhere Else." is a sentence a person might say. "New music has been added from an artist you follow." is not.
+
+---
+
+### Pattern 9: Confirmation email voice
+
+Confirmation emails are sent by ABLE but voiced as the artist. ABLE's branding appears only in the footer.
+
+**Fan confirmation subject (pre-release state):**
+> "[Release title] — [N] days"
+
+**Fan confirmation body:**
+> "[Artist Name] asked me to check this is actually you.
+> [Confirm →]
+> If you didn't sign up, ignore this."
+
+**Artist welcome subject:**
+> "Your ABLE page is live."
+
+**Why these work:** "Asked me to check" positions ABLE as a messenger, not a platform. The confirmation is framed as the artist verifying the relationship, not a system verifying an account.
+
+---
+
+### Pattern 10: The gig mode tonight note
+
+The tonight note in gig mode is mandatory artist-written copy. It is the most human moment on the platform. Examples of what it should sound like:
+
+> "I've been looking forward to this for months. The room is small. It's going to be good."
+> "Playing [venue] tonight. Doors at 8. Come early."
+> "This might be my favourite venue I've ever played. Come if you can."
+
+**Why these work:** They are written by the artist before the show, while they still care about it. They are not event listings. They are someone talking to another person. ABLE does not generate them. ABLE protects the space for them.
