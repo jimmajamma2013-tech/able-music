@@ -14,41 +14,38 @@
 
 ## P0 — Must be done before real users
 
-### P0.1 — GDPR consent line on fan sign-up form
+### P0.1 — GDPR consent disclosure on fan sign-up form
 
 **File:** `able-v7.html` — the fan sign-up section
+**Exact location:** Search for the fan email `<input>` element in able-v7.html. Add the consent paragraph immediately after the input field and before the submit button. It must be visible without any scrolling within the sign-up form.
 
-**What to add:**
+**This is not a checkbox. It is a disclosure paragraph.** UK GDPR and PECR accept the act of typing an email and tapping a clearly-labelled submit button as a valid affirmative act, provided the purpose is stated clearly and specifically before the button is tapped. A checkbox is only required if the consent is bundled with other purposes (e.g., signing up AND agreeing to a newsletter). Here the purpose is single and clear: the artist will contact you about their music.
 
-Below the email input, above or alongside the submit button, add:
-
+**Exact HTML to add (3 lines):**
 ```html
-<p class="signup-consent">
-  By signing up, <span id="consentArtistName">this artist</span> can contact
-  you about their music. They own your contact details — ABLE stores them
-  on their behalf. Unsubscribe anytime.
+<p class="signup-consent" style="font-size:11px;color:rgba(255,255,255,0.5);margin:8px 0 0;text-align:center;line-height:1.4;">
+  By signing up, <span class="consent-artist-name">this artist</span> can contact you about their music.
+  They own your contact details — ABLE stores them on their behalf. Unsubscribe anytime.
 </p>
 ```
 
+**JavaScript to populate the artist name (add near the sign-up form initialisation):**
 ```javascript
-// Populate artist name from profile
-const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
-const consentEl = document.getElementById('consentArtistName');
-if (consentEl && profile.name) consentEl.textContent = profile.name;
+(function() {
+  var p = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+  var els = document.querySelectorAll('.consent-artist-name');
+  els.forEach(function(el) { if (p.name) el.textContent = p.name; });
+})();
 ```
 
-**Write to able_fans on submit:**
-
+**Updated fan record on submit — add these fields to whatever object is being pushed to `able_fans`:**
 ```javascript
-fans.push({
-  email:          emailValue,
-  ts:             Date.now(),
-  source:         source,
-  optIn:          true,
-  consentVersion: '2026-03-16',
-  consentSource:  `profile-signup-${source}`,
-});
+optIn:          true,
+consentVersion: '2026-03-16',   // ISO date of this consent copy — update if copy changes
+consentSource:  'profile-signup-' + (source || 'direct'),
 ```
+
+**What this achieves:** Every fan record written after this change has a documented consent timestamp (the `ts` field), the version of the copy they saw, and their opt-in status. This is the minimum for a valid UK GDPR consent record.
 
 **Ticket:** `p0-gdpr-consent-form`
 
@@ -58,19 +55,28 @@ fans.push({
 
 **File to create:** `/privacy.html`
 
-Use the copy in `SPEC.md §2`. Static page, ABLE header, minimal styling.
+The full policy copy is in `SPEC.md §2` — use it verbatim. Do not paraphrase it.
+Static page, ABLE header (wordmark only), no nav, no artist-specific content.
 
-Footer link text: `Privacy`
+**Key clauses that must appear (do not omit any of these):**
+1. What is collected: email address, sign-up timestamp, source attribution — and nothing else
+2. Who controls it: the artist, not ABLE (ABLE is processor; artist is controller)
+3. Purpose: artist sends updates about their music — that is the only stated purpose
+4. Access: only the artist; ABLE staff only on technical support request
+5. Retention: until artist deletes account or fan requests deletion
+6. Rights: access, erasure, portability, objection — contact `privacy@ablemusic.co`
+7. Right to complain: ico.org.uk
+8. Third-party embeds: Spotify/YouTube may set cookies when embeds are loaded
+9. Last updated: `[DATE]` — replace with actual publication date
 
-**Add to footers of:**
-- `able-v7.html`
-- `admin.html`
-- `start.html`
-- `landing.html`
-
+**Footer link to add to these 4 files:**
 ```html
-<a href="/privacy.html">Privacy</a>
+<a href="/privacy.html" style="color:inherit;opacity:0.5;text-decoration:none;">Privacy</a>
 ```
+
+Add to: `able-v7.html`, `admin.html`, `start.html`, `landing.html`
+
+**After this page is live, the privacy contact address `privacy@ablemusic.co` must be monitored. A fan who emails it requesting erasure has a 30-day legal deadline.**
 
 **Ticket:** `p0-privacy-page`
 
@@ -96,9 +102,28 @@ Every email template in `docs/systems/email/SPEC.md` already includes the unsubs
 
 **File to create:** `/terms.html`
 
-Use the copy in `SPEC.md §3`. Same design approach as `/privacy.html`.
+The full terms copy is in `SPEC.md §3` — use it verbatim.
+Same design approach as `/privacy.html`: ABLE header (wordmark), no nav, no artist-specific content.
 
-Add `Terms` link to all page footers alongside `Privacy`.
+**The 10 key clauses that must appear in the terms — do not omit any:**
+
+1. **ABLE is a tool, not a publisher.** "ABLE provides infrastructure. Artists provide content. ABLE does not editorially control what artists post."
+2. **Artist content responsibility.** Artists agree: no illegal content, they own/have rights to all uploaded material.
+3. **Fan data ownership.** "When a fan signs up on your ABLE page, they are giving their contact details to you, not to ABLE. ABLE stores those details on your behalf."
+4. **Artist's data protection obligation.** "You are responsible for complying with data protection law when contacting your fans."
+5. **ABLE's 0% cut.** "ABLE takes 0% of any transactions between you and your fans. Stripe's processing fee applies (typically 1.4% + 20p for UK/EU cards). ABLE receives none of it."
+6. **Subscription fees.** "Free: £0. Artist: £9/mo. Artist Pro: £19/mo. Label: £49/mo."
+7. **Service availability.** "No uptime guarantee on free tier. We will notify you before any material changes to the service."
+8. **Prohibited content.** "ABLE will remove content that is illegal under UK law, infringes third-party intellectual property, or is reported and verified as harmful."
+9. **Governing law.** "England and Wales."
+10. **Changes to terms.** "We will notify you by email at least 14 days before material changes take effect. Continued use constitutes acceptance."
+
+**Footer link to add alongside Privacy:**
+```html
+<a href="/terms.html" style="color:inherit;opacity:0.5;text-decoration:none;">Terms</a>
+```
+
+Add to: `able-v7.html`, `admin.html`, `start.html`, `landing.html`
 
 **Ticket:** `p1-terms-page`
 
@@ -109,6 +134,68 @@ Add `Terms` link to all page footers alongside `Privacy`.
 **What:** A live email address `privacy@ablemusic.co` that someone on the ABLE team monitors. Process documented in `SPEC.md §6`.
 
 No automation required at this stage — manual process is sufficient below 1,000 users.
+
+**The fan deletion SQL query — must be tested before launch, not after:**
+
+When a fan emails `privacy@ablemusic.co` requesting erasure (GDPR Right to Erasure), this is the query that must be run in Supabase against the `fans` table. It performs a soft delete: all PII fields are nulled, the row is retained for audit purposes, and `deleted_at` is set.
+
+```sql
+-- GDPR Right to Erasure — run for each artist_id that holds a record for this email
+-- Replace 'fan@example.com' with the actual requesting fan email
+-- Run in Supabase SQL editor or via admin Netlify function
+
+UPDATE fans
+SET
+  email           = NULL,
+  name            = NULL,
+  notes           = NULL,
+  tags            = '{}',
+  deleted_at      = NOW(),
+  optIn           = FALSE,
+  unsubscribedAt  = NOW()
+WHERE email = 'fan@example.com'
+  AND deleted_at IS NULL;
+
+-- Verify the deletion:
+SELECT id, email, deleted_at FROM fans
+WHERE id IN (
+  SELECT id FROM fans WHERE email IS NULL AND deleted_at IS NOT NULL
+  ORDER BY deleted_at DESC LIMIT 10
+);
+```
+
+**In localStorage phase (pre-Supabase):** Run this JavaScript in the browser console on the artist's admin page:
+
+```javascript
+// localStorage phase erasure — replaces the record with a tombstone
+var fans = JSON.parse(localStorage.getItem('able_fans') || '[]');
+var email = 'fan@example.com'; // replace with actual email
+fans = fans.map(function(f) {
+  if (f.email === email) {
+    return { deleted_at: Date.now(), optIn: false }; // PII stripped
+  }
+  return f;
+});
+localStorage.setItem('able_fans', JSON.stringify(fans));
+// Also remove from starred list:
+var starred = JSON.parse(localStorage.getItem('able_starred_fans') || '[]');
+localStorage.setItem('able_starred_fans', JSON.stringify(starred.filter(function(e) { return e !== email; })));
+console.log('Done. Record tombstoned for: ' + email);
+```
+
+**Response to the fan:** Must be sent within 30 days. Template:
+
+```
+Subject: Your data deletion request — ABLE
+
+Hi,
+
+Your contact details have been removed from ABLE's systems. The artist you signed up with no longer has access to your email address.
+
+If you signed up with multiple artists on ABLE and would like your data removed from all of them, reply to this email with the artist names or page URLs.
+
+ABLE Labs Ltd · privacy@ablemusic.co
+```
 
 **Ticket:** `p1-deletion-request-flow`
 

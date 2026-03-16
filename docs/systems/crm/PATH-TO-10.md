@@ -11,31 +11,57 @@ All changes in this phase require no backend. They improve the CRM within the cu
 
 ### P0.1 — Capture `campaignState` at fan sign-up (CRITICAL)
 
-**Where:** `able-v7.html`, fan sign-up submit handler.
+**File:** `able-v7.html`
+**Where exactly:** Search for the fan sign-up submit handler — look for the function that handles the fan email form submission. It will contain a push to `able_fans` in localStorage. Add the campaign context fields to the fan object being pushed.
 
-**What:** When a fan submits their email, read the current page state from `able_v3_profile.state` (or the computed state if no override) and write it to the fan record.
-
+**Find this pattern in able-v7.html:**
 ```javascript
-// In the fan sign-up handler in able-v7.html:
-const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
-const computedState = computePageState(profile);  // existing function
-
-fanRecord.campaignState = computedState;
-fanRecord.releaseId = profile.releaseDate
-  ? `${(profile.releaseTitle || 'release').toLowerCase().replace(/[^a-z0-9]+/g,'-')}-${profile.releaseDate}`
-  : null;
-
-// If gig mode: find featured show and set momentId
-if (computedState === 'gig') {
-  const shows = JSON.parse(localStorage.getItem('able_shows') || '[]');
-  const featured = shows.find(s => s.featured) || shows[0] || null;
-  fanRecord.momentId = featured ? featured.id : null;
-}
+// Look for something like:
+// able_fans.push({ email: ..., ts: ..., source: ... })
+// or
+// fanRecord = { email: ..., ts: ..., source: ... }
+// ADD the campaign state fields to this object, immediately before the push.
 ```
 
-**Impact:** This single change raises the music-context awareness dimension from 2/10 to 8/10. It is the highest-value change in the entire CRM backlog and requires approximately 20 lines of code.
+**Exact code to add (approximately 20 lines):**
+```javascript
+// --- CAMPAIGN CONTEXT (P0.1) --- add these lines immediately before writing to able_fans ---
+const _profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+const _computedState = (function() {
+  if (_profile.stateOverride && _profile.stateOverride !== 'auto') return _profile.stateOverride;
+  const now = Date.now();
+  const releaseMs = _profile.releaseDate ? new Date(_profile.releaseDate).getTime() : null;
+  if (!releaseMs) return 'profile';
+  if (now < releaseMs) return 'pre-release';
+  if (now < releaseMs + 14 * 24 * 60 * 60 * 1000) return 'live';
+  return 'profile';
+})();
+
+const _releaseId = _profile.releaseDate
+  ? `${(_profile.releaseTitle || 'release').toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${_profile.releaseDate}`
+  : null;
+
+let _momentId = null;
+if (_computedState === 'gig') {
+  const _shows = JSON.parse(localStorage.getItem('able_shows') || '[]');
+  const _featured = _shows.find(function(s) { return s.featured; }) || _shows[0] || null;
+  _momentId = _featured ? (_featured.id || _featured.venue || null) : null;
+}
+// --- END CAMPAIGN CONTEXT ---
+
+// Then add to the fan object:
+// campaignState: _computedState,
+// releaseId:     _releaseId,
+// momentId:      _momentId,
+// optIn:         true,
+// consentVersion:'2026-03-16',
+```
+
+**Impact:** This single change raises the music-context awareness dimension from 2/10 to 8/10. It is the highest-value change in the entire CRM backlog and requires approximately 20 lines of code. After this is done, every new fan record carries the story of which moment in the artist's campaign they arrived in.
 
 **Existing fans:** will have no `campaignState`. That is acceptable — it is captured going forward. No retrospective derivation.
+
+**Verification:** After adding this, sign up a test fan while each campaign state is active (profile / pre-release / live / gig). Open localStorage and confirm `campaignState` is set correctly on each fan record.
 
 ---
 

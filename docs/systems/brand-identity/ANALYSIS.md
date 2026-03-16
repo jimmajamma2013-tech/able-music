@@ -1,5 +1,7 @@
 # ABLE — Brand Identity Analysis
-**Created: 2026-03-16 | Current score: 5/10**
+**Created: 2026-03-16 | Current score: 5/10 | After favicon + OG image: 8.5/10 | With full rollout: 9.5/10**
+
+> **The two missing assets:** (1) No favicon exists — every open tab is anonymous. (2) No OG image exists — every share of an ABLE URL is a missed brand moment. Both can be created in under 2 hours total. The PATH-TO-10.md has exact 30-minute steps for each. These are the highest-ROI brand actions available.
 
 > Brand identity for ABLE is complicated by a deliberate design decision: on artist pages, ABLE's identity is meant to recede. The artist's accent colour, vibe, and feel are the brand on that surface. But ABLE still needs to be a coherent brand on landing.html, admin.html, emails, and the "Made with ABLE" touchpoint. This document scores how well that coherence is currently achieved.
 

@@ -14,6 +14,106 @@ The tier architecture is well-documented. The pricing is competitive. The gold l
 
 ## Path to 10
 
+### Step 0: Free-tier fan cap enforcement (P0 — before any paying users)
+**Must be implemented before billing ships. Without this, paying artists receive no differentiation.**
+**Moves score from 5.2/10 to 6.5/10**
+
+The 100-fan cap is the primary Free-tier constraint and the highest-intent upgrade trigger. It must be enforced in `able-v7.html` at the point of sign-up — not just shown as a number in admin.
+
+**Exact implementation — add this check in the fan sign-up submit handler in able-v7.html:**
+
+```javascript
+// FREE TIER FAN CAP — check before writing to able_fans
+// Add this check at the START of the fan sign-up submit handler,
+// before any validation or localStorage write.
+(function enforceFanCap() {
+  var TIER_KEY = 'able_v3_profile';
+  var FANS_KEY = 'able_fans';
+  var FREE_TIER_CAP = 100;
+
+  var profile = JSON.parse(localStorage.getItem(TIER_KEY) || '{}');
+  var tier = profile.tier || 'free';  // 'free' | 'artist' | 'artist_pro' | 'label'
+
+  // Only enforce cap on free tier
+  if (tier !== 'free') return;  // paid tiers: no cap, proceed normally
+
+  var fans = JSON.parse(localStorage.getItem(FANS_KEY) || '[]');
+  var activeFans = fans.filter(function(f) { return !f.deleted_at; });
+
+  if (activeFans.length >= FREE_TIER_CAP) {
+    // Show the cap gate overlay — do NOT write the fan record
+    showFanCapGate(activeFans.length);
+    return;  // stop sign-up processing here
+  }
+  // Under cap — proceed with sign-up normally
+})();
+
+function showFanCapGate(currentCount) {
+  // Show the upgrade prompt instead of the success state
+  // Find the sign-up form container and replace its content with the gate message
+  var formEl = document.getElementById('fan-signup-form');  // adjust selector to match actual element ID
+  if (!formEl) return;
+
+  formEl.innerHTML = [
+    '<div style="text-align:center;padding:24px 16px;">',
+    '  <div style="font-size:13px;font-weight:600;color:var(--color-text-1,#fff);margin-bottom:8px;">',
+    '    100 people are on this list.',
+    '  </div>',
+    '  <div style="font-size:12px;color:var(--color-text-2,rgba(255,255,255,0.6));line-height:1.5;margin-bottom:16px;">',
+    '    Sign-ups are paused while this artist is on the free plan.',
+    '    If you want to stay close, check back soon.',
+    '  </div>',
+    '</div>'
+  ].join('');
+}
+```
+
+**What this does:**
+- Reads `able_v3_profile.tier` to determine if this is a free-tier page
+- Counts active (non-deleted) fans in `able_fans`
+- If count is at or above 100 and the artist is on free tier: shows the cap message instead of accepting the sign-up
+- If the artist has upgraded: no cap is applied, sign-ups proceed normally
+
+**The gate message for the fan (on able-v7.html):** The fan-facing message must not be embarrassing to the artist. It says "Sign-ups are paused" — not "this artist hasn't paid." Artists care deeply about how their page represents them.
+
+**The gate message for the artist (in admin.html):**
+When the fan count reaches 95, show this in-dashboard nudge (not a modal — an inline card in the fans section):
+
+```javascript
+// In admin.html renderFanList() or equivalent:
+var activeFans = fans.filter(function(f) { return !f.deleted_at; });
+var tier = (profile.tier || 'free');
+
+if (tier === 'free' && activeFans.length >= 95 && activeFans.length < 100) {
+  // Show amber progress warning
+  showNudge('fan-cap-warning',
+    activeFans.length + '/100 — ' + (100 - activeFans.length) + ' spots left on your list.');
+}
+if (tier === 'free' && activeFans.length >= 100) {
+  // Show the upgrade prompt
+  showNudge('fan-cap-full',
+    '100 people asked to hear from you. Your list is full.');
+}
+
+function showNudge(id, message) {
+  var dismissed = JSON.parse(localStorage.getItem('able_dismissed_nudges') || '[]');
+  if (dismissed.indexOf(id + '-session') !== -1) return;  // dismissed this session
+  // Render the nudge card in the admin UI
+  // The nudge card should show: message + "Keep your list growing — Artist plan" CTA
+  // Dismiss stores the id in able_dismissed_nudges with a session suffix
+}
+```
+
+**Verification test before shipping billing:**
+1. Set `able_v3_profile.tier = 'free'` in localStorage
+2. Add 99 records to `able_fans`
+3. Attempt to sign up fan 100 — should succeed
+4. Attempt to sign up fan 101 — should show the gate message, not add to the list
+5. Change `able_v3_profile.tier = 'artist'`
+6. Attempt to sign up fan 101 again — should succeed (no cap on paid tiers)
+
+---
+
 ### Step 1: Subscription billing (prerequisite)
 **Moves score to: 7/10**
 

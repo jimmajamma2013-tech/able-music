@@ -11,39 +11,139 @@ These are the brand elements that are visible to anyone encountering ABLE right 
 
 ### P0.1 — Favicon
 **Done when:** Every browser tab open to an ABLE page shows the ABLE favicon. No exceptions.
+**Estimated time: 30 minutes**
 
-**Steps:**
-- [ ] Design the favicon: "A" in Barlow Condensed 700, white on #0d0e1a, 70% canvas fill
-- [ ] Export as SVG: `/assets/favicon/favicon.svg`
-- [ ] Export as PNG 32×32: `/assets/favicon/favicon-32.png`
-- [ ] Export as PNG 16×16: `/assets/favicon/favicon-16.png`
-- [ ] Export as Apple touch icon 180×180: `/assets/favicon/apple-touch-icon.png`
-- [ ] Export as PNG 192×192 (PWA): `/assets/favicon/favicon-192.png`
-- [ ] Add HTML `<link>` tags to landing.html
-- [ ] Add HTML `<link>` tags to admin.html
-- [ ] Add HTML `<link>` tags to able-v7.html
-- [ ] Add HTML `<link>` tags to start.html
-- [ ] Verify in Chrome, Safari, and Firefox on both macOS and mobile
-- [ ] Verify Apple touch icon appears when adding to iOS home screen
+**Exact steps — use realfavicongenerator.net:**
 
-**Design tool note:** Figma is sufficient. Export the "A" as text converted to outlines at 700 weight. The SVG should have no embedded fonts — outlines only.
+1. **Create the source image (5 minutes)**
+   - Open https://figma.com (free account is fine)
+   - Create a new frame: 512×512px
+   - Fill it with `#0d0e1a`
+   - Add a text layer: type `A` in Barlow Condensed, weight 700, colour `#ffffff`
+   - Size: approximately 360px tall — it should fill about 70% of the canvas vertically, centred
+   - Select the text layer → Right-click → Outline stroke (converts text to paths — removes font dependency)
+   - Export the frame as PNG at 1× — save as `able-favicon-source.png`
+
+2. **Generate all sizes (5 minutes)**
+   - Go to https://realfavicongenerator.net
+   - Click "Select your Favicon image" — upload `able-favicon-source.png`
+   - On the iOS configuration page: set background colour to `#0d0e1a` (not white)
+   - On the Android/Chrome page: set theme colour to `#0d0e1a`
+   - On the Windows Metro page: set tile colour to `#0d0e1a`
+   - Leave all other settings at defaults
+   - Click "Generate your Favicons and HTML code" at the bottom
+
+3. **Download and place files (5 minutes)**
+   - Download the generated favicon package (ZIP file)
+   - Create `/assets/favicon/` directory at the project root if it does not exist
+   - Extract all files from the ZIP into `/assets/favicon/`
+   - Key files to confirm are present:
+     - `favicon.ico` (multi-size, for legacy browsers)
+     - `favicon-16x16.png`
+     - `favicon-32x32.png`
+     - `apple-touch-icon.png` (180×180)
+     - `android-chrome-192x192.png`
+     - `android-chrome-512x512.png`
+     - `site.webmanifest`
+
+4. **Add the HTML (10 minutes — 4 files)**
+   - The site copies the HTML snippet from realfavicongenerator. It will look like this:
+   ```html
+   <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
+   <link rel="manifest" href="/assets/favicon/site.webmanifest">
+   ```
+   - Paste this block into the `<head>` of: `landing.html`, `admin.html`, `able-v7.html`, `start.html`
+   - Place it after the `<title>` tag and before any `<style>` or `<script>` tags
+
+5. **Verify (5 minutes)**
+   - Open each of the 4 files in a browser
+   - Check the browser tab — the ABLE "A" icon should appear
+   - On macOS Safari: bookmark the page and check the bookmark icon
+   - On iPhone: use "Add to Home Screen" — the apple-touch-icon should appear
+
+**Common failure:** The path in the `href` must match exactly where the files are served from. If running locally via a file:// URL, use relative paths. If served from the root, `/assets/favicon/...` is correct.
+
+**After this step, brand identity dimension 3 (favicon) moves from 2/10 to 10/10.**
 
 ---
 
 ### P0.2 — OG image for landing.html
-**Done when:** Sharing `ablemusic.co` on Twitter, LinkedIn, iMessage, and WhatsApp shows the correct OG card with the ABLE wordmark, headline copy, and domain.
+**Done when:** Sharing `ablemusic.co` on Twitter/X, LinkedIn, iMessage, and WhatsApp shows the correct OG card with the ABLE wordmark, headline copy, and domain.
+**Estimated time: 45 minutes**
 
-**Steps:**
-- [ ] Design the OG card at 1200×630px following the layout spec in SPEC.md §6
-- [ ] Headline copy finalised: "The page that belongs to you, not to the platform."
-- [ ] Export as PNG: `/assets/og/og-landing.png`
-- [ ] Add Open Graph meta tags to landing.html `<head>` (full spec in SPEC.md §6)
-- [ ] Add Twitter card meta tags to landing.html `<head>`
-- [ ] Test with Twitter Card Validator (cards-dev.twitter.com/validator)
-- [ ] Test with Facebook Sharing Debugger (developers.facebook.com/tools/debug)
-- [ ] Test by sharing the URL in iMessage and WhatsApp — confirm the card appears
+**Exact layout specification — 1200×630px:**
 
-**Common failure:** OG image not refreshing in Facebook debugger because the URL was cached with the old (empty) meta. Use the "Scrape Again" button in the Facebook Sharing Debugger.
+```
+Canvas: 1200×630px
+Background: #0d0e1a (fill entire canvas)
+
+ABLE wordmark:
+  Text: "ABLE"
+  Font: Barlow Condensed 700
+  Size: 48px
+  Colour: #ffffff
+  Position: top-left, 48px from left edge, 48px from top edge
+
+Headline (centred):
+  Text: "The page that belongs to you,\nnot to the platform."
+  Font: Barlow Condensed 700
+  Size: 52px
+  Line height: 1.1
+  Colour: #ffffff
+  Position: horizontal centre, vertical centre (about y=280 from top)
+  Max width: 800px — if text is wider, reduce size to 46px
+
+✦ symbol:
+  Text: "✦" (U+2726, copy-paste this character)
+  Font: any — or use the character directly
+  Size: 28px
+  Colour: #ffffff, opacity 60%
+  Position: centred horizontally, 48px below the headline text block
+
+Domain text:
+  Text: "ablemusic.co"
+  Font: DM Sans 400 (or Inter 400 if DM Sans not available in Figma)
+  Size: 20px
+  Colour: #666a8a
+  Position: bottom-right corner, 48px from right edge, 48px from bottom edge
+```
+
+**Creation steps:**
+1. Open Figma — create a new frame: 1200×630px
+2. Fill the frame with `#0d0e1a`
+3. Add each text element above at the specified positions
+4. Google Fonts are available in Figma — search "Barlow Condensed" and "DM Sans"
+5. Export as PNG at 1× — save as `og-landing.png`
+6. Create `/assets/og/` directory at project root
+7. Place the file at `/assets/og/og-landing.png`
+
+**Meta tags to add to landing.html `<head>`:**
+```html
+<meta property="og:title" content="ABLE — The page that belongs to you">
+<meta property="og:description" content="Your link-in-bio that owns the fan relationship. Pre-save, gig mode, fan capture. Free to start.">
+<meta property="og:image" content="https://ablemusic.co/assets/og/og-landing.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ablemusic.co">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ABLE — The page that belongs to you">
+<meta name="twitter:description" content="Your link-in-bio that owns the fan relationship.">
+<meta name="twitter:image" content="https://ablemusic.co/assets/og/og-landing.png">
+```
+
+**Verification:**
+- [ ] Deploy landing.html to the live domain (meta tags referencing absolute URLs only work on a live server)
+- [ ] Test with Twitter Card Validator: https://cards-dev.twitter.com/validator
+- [ ] Test with Facebook Sharing Debugger: https://developers.facebook.com/tools/debug
+- [ ] Share the URL in iMessage — confirm the card preview appears
+- [ ] Share in WhatsApp — confirm the card preview appears
+
+**Common failure:** OG image not refreshing in Facebook debugger because the URL was previously cached as empty. Use the "Scrape Again" button in the Facebook debugger after deploying.
+
+**After this step, brand identity dimension 4 (OG image) moves from 3/10 to 8/10.**
 
 ---
 

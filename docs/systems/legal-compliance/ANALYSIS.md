@@ -1,6 +1,8 @@
 # ABLE — Legal/Compliance Analysis
 **Created: 2026-03-16 | System: Legal / Compliance**
-**Current score: 2/10 | Target: 8.5/10 (10 requires legal counsel + GDPR audit)**
+**Current score: 2/10 (privacy policy: 0/10, terms: 0/10, GDPR consent: 0/10) | Target: 8/10 (10 requires solicitor review + ICO registration)**
+
+> **Critical note:** Collecting fan emails without a consent disclosure, without a published privacy policy, and without terms of service is not a design gap. It is a legal violation under UK GDPR. The ICO can fine up to £17.5m or 4% of global annual turnover. At ABLE's current scale the fine would be proportionate and small — but the reputational damage to a platform built on fan trust is disproportionate. P0.1 (consent line on the fan sign-up form) is a single `<p>` tag. It should be added before any artist makes their ABLE link public.
 
 ---
 
