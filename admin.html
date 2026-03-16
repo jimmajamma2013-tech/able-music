@@ -4569,6 +4569,7 @@ function saveSnapCard(id) {
   setLS(V3_KEY, data)
   syncProfile(data)
   renderSnapCardsList()
+  showToast('Saved')
 }
 
 function moveSnapCard(id, dir) {
@@ -4754,6 +4755,7 @@ function saveMerchShopUrl() {
   const updated = { ...data, merch };
   setLS(V3_KEY, updated);
   syncProfile(updated);
+  showToast('Saved');
 }
 
 function addMerchItem() {
@@ -4928,6 +4930,7 @@ function saveSupportMeta() {
   const updated = { ...data, support };
   setLS(V3_KEY, updated);
   syncProfile(updated);
+  showToast('Saved');
 }
 
 function updateSupportField(id, field, value) {
@@ -4954,6 +4957,7 @@ function saveCloseCircle() {
   data.closeCircle = { enabled, currency, monthlyAmount: amount, introText: intro };
   setLS(V3_KEY, data);
   syncProfile(data);
+  showToast('Saved');
 }
 
 /* ── REAL STATS FROM LOCALSTORAGE ── */
