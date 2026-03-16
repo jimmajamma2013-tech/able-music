@@ -1013,22 +1013,37 @@ AI in the dashboard is infrastructure, not a feature. It should make existing su
 - Mobile: bottom tab bar, stacked state buttons, 2×2 stats
 - Light-theme token corrections
 
-**V1.5 (4–6 weeks post-launch):**
-- Data-driven nudge selection
-- Milestone system (fan count milestones)
-- Streak signal in stats
-- Better stats time-window labelling
-- Smart greeting sub-line
-- AI bio first-draft (opt-in)
-- Checklist lifecycle awareness refinement
+**Build order — Phase 1 (core control surface):**
+- Greeting + lifecycle sub-line (state-aware)
+- Campaign HQ: 4 states, mini-preview desktop, consequence copy, spring animation
+- Stats row: 4 metrics, state-specific CTA label, trend direction
+- Fan list: 5 rows + see all, new badge, starred, export
+- Checklist: collapsed strip, auto-dismiss on complete or 7 days
+- 3–4 contextual nudge cards (hardcoded logic)
+- Content sections: Releases, Shows, Snap Cards (edit existing)
+- Topbar: name, "See your page →", tab nav
+- Mobile: bottom tab bar, stacked state buttons, 2×2 stats
+- Light-theme token corrections
 
-**Phase 2 (post-traction):**
+**Build order — Phase 2 (intelligence + depth — also required for launch):**
+- Data-driven nudge selection (context + data aware)
+- Milestone system (fan count milestones with copy)
+- Streak signal in stats row
+- Smart greeting sub-line (state synthesis)
+- AI bio first-draft on import failure (opt-in)
+- Checklist lifecycle awareness (day-1 vs returning artist)
 - Fan segmentation + filters
-- Email broadcast (Artist Pro)
-- Analytics deep-dive tab
+- Email broadcast (Artist Pro gate)
+- Analytics deep-dive tab (source breakdown, 7d/30d/all-time)
 - AI next-best-action engine
-- Label tier dashboard
 - Campaign performance scoring
+
+*Both phases ship at launch. Phase 1 is built first because Phase 2 depends on it. There is no post-launch deferral.*
+
+**Post-launch (traction-dependent):**
+- Label tier dashboard (10-artist aggregate)
+- Advanced A/B testing
+- Fan journey visualisation
 
 ---
 
