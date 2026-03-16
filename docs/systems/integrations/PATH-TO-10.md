@@ -8,7 +8,47 @@
 
 ## P0 — Blocking (Build Before Launch)
 
-### P0-1: Ticketmaster Discovery API — events auto-import
+### P0-1: oEmbed proxy — fix security and deploy (HIGHEST LEVERAGE INTEGRATION IN V1)
+**Why P0:** The oEmbed proxy already exists. One security fix + one deployment unlocks rich embeds across every ABLE page. This is the function that makes every music URL paste work — Spotify players, YouTube videos, SoundCloud tracks, Bandcamp players, Vimeo and Mixcloud embeds. Without it, snap cards and release cards are static links only.
+
+**Current state:** `netlify/functions/oembed-proxy.js` is built. The canonical spec is at `docs/systems/oembed-proxy/SPEC.md`. Not yet deployed.
+
+**Security fix required before deploy (`oembed-proxy/SPEC.md §3`):**
+
+The current implementation uses regex substring matching to validate URLs. This is insufficient. A crafted URL like `https://evil.spotify.com.attacker.example.com/` passes a `/spotify\.com/` test. The fix is to validate against parsed hostname, not a regex match against the full URL string.
+
+The `oembed-proxy/SPEC.md` contains the correct `ALLOWED_HOSTS` Set with parsed hostname validation. Implement that before deploy.
+
+**Netlify deployment checklist:**
+1. `git push` to the branch connected to Netlify (or main after review)
+2. In Netlify dashboard → Site settings → Build & deploy → verify `netlify/functions/` is in the functions directory
+3. No environment variables needed for the oEmbed proxy itself (it only calls public oEmbed endpoints)
+4. Test in Netlify function logs: POST a YouTube URL → confirm `{"type":"video","html":"<iframe ..."}` response
+5. Test a crafted URL (e.g. `https://evil.youtube.com.example.com/watch?v=xxx`) → confirm 400 rejection
+6. Test each supported platform: Spotify track, YouTube video, SoundCloud track, Vimeo video
+7. Confirm `Access-Control-Allow-Origin: *` header is present (allows able-v7.html to call it)
+
+**After deploy, wire in able-v7.html and admin.html:**
+```javascript
+// Anywhere a music URL is pasted, call the proxy instead of direct oEmbed:
+async function resolveOEmbed(url) {
+  const res = await fetch('/.netlify/functions/oembed-proxy', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url })
+  });
+  if (!res.ok) return null;
+  return res.json(); // { type, html, title, author_name, thumbnail_url }
+}
+```
+
+**Score impact:** oEmbed proxy: 5/10 → 9/10 on deploy. Overall integrations: 4/10 → 5.5/10.
+
+**Effort:** ~2 hours (security fix + deployment config + testing). The function is already written.
+
+---
+
+### P0-2: Ticketmaster Discovery API — events auto-import
 **Why P0:** For any artist with upcoming shows, manually entering events is a conversion-killer during onboarding. This eliminates that friction entirely with zero artist setup.
 - Register for a free Ticketmaster Discovery API key (developer.ticketmaster.com)
 - Set `TICKETMASTER_API_KEY` in Netlify environment variables
@@ -23,7 +63,7 @@
 
 ---
 
-### P0-2: Spotify import — deploy and make operational
+### P0-3: Spotify import — deploy and make operational
 **Why P0:** The function is built but the product is not deployed. No integration works until Netlify + ablemusic.co DNS is live.
 - Deploy to Netlify
 - Set `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET` environment variables
@@ -84,7 +124,7 @@
 - Merges with Ticketmaster-imported and manually-entered shows
 - Relevant for artists who already maintain their Bandsintown profile
 
-**Effort:** ~3 hours. Depends on P0-1 (shows merge function).
+**Effort:** ~3 hours. Depends on P0-2 (shows merge function).
 
 ### P2-2: YouTube Data API v3 — latest video import
 - Register for YouTube Data API v3 key
@@ -143,17 +183,16 @@
 
 ---
 
-## Revised Integration Priority Stack (from Part 8 of research doc)
+## Revised Integration Priority Stack
 
-Corrected from `MASTER_PLAN.md Section 16`:
-
-1. **Ticketmaster Discovery API** — free, single key, events by name, zero per-artist setup (P0)
-2. **Spotify Web API** — artist photos, top tracks, discography, genres (P0, deploy existing function)
-3. **Linktree import** — Linktree page parse, no API (P1)
-4. **Last.fm artist.getInfo** — reach proxy + bio text (P1)
-5. **YouTube Data API v3** — latest video auto-import (P2)
-6. **Bandsintown** — opt-in secondary events source (P2)
-7. **Mailchimp/Kit export** — data portability trust signal (P2)
+1. **oEmbed proxy — fix security + deploy** — already built, one fix + one deploy = instant value (P0)
+2. **Ticketmaster Discovery API** — free, single key, events by name, zero per-artist setup (P0)
+3. **Spotify Web API** — artist photos, top tracks, discography, genres (P0, deploy existing function)
+4. **Linktree import** — Linktree page parse, no API (P1)
+5. **Last.fm artist.getInfo** — reach proxy + bio text (P1)
+6. **YouTube Data API v3** — latest video auto-import (P2)
+7. **Bandsintown** — opt-in secondary events source (P2)
+8. **Mailchimp/Kit export** — data portability trust signal (P2)
 
 ---
 
@@ -161,7 +200,7 @@ Corrected from `MASTER_PLAN.md Section 16`:
 
 | After | Expected score |
 |---|---|
-| P0 complete (Ticketmaster + Spotify deployed) | 6.5/10 |
+| P0 complete (oEmbed deployed + Ticketmaster + Spotify deployed) | 7/10 |
 | P1 complete (Last.fm + Linktree + UTM) | 8/10 |
 | P2 complete (Bandsintown + YouTube + email export) | 9/10 |
 | P3 complete (Stripe + Apple Music) | 9.5/10 |

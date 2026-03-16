@@ -310,41 +310,121 @@ This is the §9.1 moment 2 nudge, extended. Currently the nudge informs; it shou
 
 ## Section 5: Fan Dashboard view (fan.html)
 
-### 5.1 "Your calendar" section
+### 5.1 Date-strip layout for fan.html
 
-This is a Phase 2 feature (requires Supabase — real `moments` table, real `fan_follows` table). It is specced here for completeness.
+The fan dashboard calendar is a horizontal scroll date-strip — not a monthly grid. A monthly grid is the right tool for a single artist's calendar. For a fan following 10 artists, a grid becomes noise. The date-strip is designed for fast scanning: what is happening, and when.
 
-The fan's Following view gains a calendar mode toggle alongside the current feed mode.
-
-```
-[Feed mode] [Calendar mode] — toggle, top of Following view
-```
-
-**Calendar mode:** A merged timeline of moments from all followed artists, sorted by date.
-
-This is not a full monthly grid (that would be noise for fans following 20 artists). It is a **date-strip** — a horizontal or vertical list of upcoming dates, each showing which artist and what type.
+**Date-strip structure:**
 
 ```
-[Today]
-  No moments today. Nothing new.
-
-[This week]
-  Thu 18 Apr   ● Nova Reign — Release · Echoes
-  Fri 19 Apr   ● Drift — Show · The Jazz Café, London
-
-[Next month]
-  Wed 7 May    ● Luna Waves — Livestream · YouTube
+← swipe to scroll →
+[Today] [Tomorrow] [Wed 18] [Thu 19] [Fri 20] [Sat 21] [Sun 22] [Mon 23] …
+  ●       ·           ·       ●●        ●         ·         ·       ●
 ```
 
-Each item is tappable — opens the artist's profile in live state.
+Each date chip in the strip shows:
+- Short date label: "Today", "Tomorrow", then "Wed 18", "Thu 19", etc. to 30 days out
+- Dot(s) below indicating number and type of moments on that date
+- Today is always visible and centred on load; the strip auto-scrolls so today is in the middle of the visible area
 
-### 5.2 Fan-gated and supporter-gated moments in fan.html
+**Date chip states:**
+- `active` — has moments: white chip with type-coloured dots
+- `empty` — no moments: faint border, date number at 40% opacity
+- `today` — current date: accent-colour border, "Today" label in accent colour, weight 700
+- `selected` — tapped: accent fill background, white text label, dots white-on-accent
 
-**Signed-up fans:** If a moment has `access.level: 'fan'` and the fan is signed up to that artist (i.e., their `fan_follows` record exists for that artist), they see the moment fully.
+**On tap — moment panel:**
+When a date chip is tapped, a panel slides up (same bottom-sheet pattern as the profile page) showing all moments for that date from all followed artists. Each moment row in the panel:
 
-**Non-signed-up fans (fan.html visitor who hasn't signed up to a specific artist):** They see a blurred/locked version if `teaserVisible: true`. The teaser text is shown. The CTA is "Sign up to [artist name] →" which opens the artist's profile.
+```
+[Artist accent dot] [Artist name] — [Moment type label] · [Moment title]
+[CTA button if applicable: "Get tickets →" / "Listen →" / "Watch →"]
+```
 
-**Supporter moments:** If `access.level: 'supporter'` and the fan is not a supporter of that artist, they see the lock-ring entry with teaser text and a "Join close circle →" CTA.
+Moments are sorted within the panel by: shows first, then releases, then other types.
+
+**V1 (localStorage) implementation:**
+The date-strip renders from `able_fan_feed[]` items that have a `futureDate` field. See §6.4 for the feed seeding improvement. The strip only shows dates with at least one `futureDate` item within 30 days.
+
+**V2 (Supabase) implementation:**
+The date-strip renders from a live query of the `moments` table, joined to `fan_follows`. All moments the fan is entitled to see (public + fan-gated where they're signed up + supporter-gated where they're a supporter) are fetched once on load and cached for the session. The strip renders all dates with moments in the next 60 days.
+
+**Horizontal scroll implementation:**
+```css
+.fan-date-strip {
+  display: flex;
+  gap: var(--sp-2);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--sp-3) var(--sp-4);
+  scrollbar-width: none;
+}
+.fan-date-strip::-webkit-scrollbar { display: none; }
+
+.fan-date-chip {
+  flex-shrink: 0;
+  min-width: 52px;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  text-align: center;
+  scroll-snap-align: start;
+  cursor: pointer;
+}
+```
+
+**Auto-centre today:**
+On mount, call `todayChip.scrollIntoView({ inline: 'center', behavior: 'smooth' })`. This ensures today is not at the far left — the fan sees context on both sides.
+
+---
+
+### 5.2 Fan/supporter gating in fan.html
+
+The date-strip and panel observe the same access rules as the profile page, but identity resolution in V1 is weaker — fan.html has no per-artist sign-up state, only a global `able_fan_following[]` array.
+
+**V1 gating rules (localStorage):**
+
+```javascript
+function resolveAccess_fanDashboard(moment, artistId) {
+  var following = safeGet('able_fan_following') || []
+  var artistRecord = following.find(function(f) { return f.id === artistId })
+
+  if (!artistRecord) {
+    // Fan is not following this artist at all
+    return 'none'  // moment hidden entirely (only visible on the artist's own profile)
+  }
+
+  var level = (typeof moment.access === 'object') ? moment.access.level : (moment.access || 'public')
+
+  switch (level) {
+    case 'public':    return 'full'
+    case 'fan':       return 'full'         // being in fan_following = signed up = fan
+    case 'supporter': return artistRecord.isSupporter ? 'full' : 'gate_supporter'
+    case 'invite':    return 'gate_invite'
+    default:          return 'full'
+  }
+}
+```
+
+**What a free fan sees vs a Close Circle member:**
+
+| Moment type | Free fan (following, not supporter) | Close Circle member |
+|---|---|---|
+| `public` | Full access — title, date, CTA | Full access |
+| `fan` | Full access — they signed up, so they see it | Full access |
+| `supporter` | Lock-ring entry in the panel — teaser text shown, "Join close circle →" CTA | Full access — title, date, CTA |
+| `invite` | Not shown in fan dashboard (invite-only moments do not appear in the cross-artist feed) | Not shown unless on invite list |
+
+**Teaser in panel for supporter-gated moments (fan dashboard context):**
+```
+[Lock icon] Close circle only
+"[Artist name]'s close circle gets this first."
+[Join [artist name]'s close circle →]
+```
+
+The CTA navigates to the artist's profile with `?join_circle=1` query param, which auto-opens the Close Circle join sheet on arrival.
+
+---
 
 ### 5.3 Filter pills
 
@@ -352,22 +432,287 @@ Each item is tappable — opens the artist's profile in live state.
 [All] [Shows] [Releases] [Early Access]
 ```
 
-"All" is default. Filter applies to the date-strip in calendar mode and the feed in feed mode.
+These are positioned at the top of the fan dashboard Following view, above the date-strip.
+
+"All" is selected by default. Filter applies to both the date-strip (chips without matching moment types become visually muted) and the panel (only matching moments shown when a date is tapped).
+
+**Filter interaction spec:**
+- Selecting "Shows": only dates with `type: 'show'` moments show active chips. Other dates fade to empty-chip appearance even if they have other moment types.
+- "Early Access": shows moments with `type: 'early_access'` or moments where `access.earlyAccessHours > 0` and the fan is in the entitled window.
+- Filter state is not persisted to localStorage — resets on each visit. The default "All" is the right starting view for most fans.
+
+---
 
 ### 5.4 Tonight highlight
 
-If a followed artist has a moment on today's date of type `show` or `livestream`, the Today section gains a special treatment:
+If a followed artist has a moment on today's date of type `show` or `livestream`, fan.html renders a "Tonight" highlight banner **above the date-strip** as the most prominent element in the Following view.
 
+**Tonight highlight structure:**
 ```
-[Tonight section — amber/red accent]
-[Artist name] is playing tonight.
-[Venue, city] — [time if known]
-[Get tickets →]
+┌─────────────────────────────────────────────────────┐
+│  ● TONIGHT                                          │
+│  Nova Reign is playing at The Jazz Café, London.    │
+│  Doors 8pm                                          │
+│  [Get tickets →]                                    │
+└─────────────────────────────────────────────────────┘
 ```
 
-This renders above the standard Today strip, not inside it. It is the most prominent thing on the fan's dashboard when it is active.
+**Design spec:**
+```css
+.fan-tonight-banner {
+  background: linear-gradient(135deg,
+    rgba(var(--acc-rgb), 0.15) 0%,
+    rgba(232, 113, 90, 0.10) 100%
+  );
+  border: 1px solid rgba(232, 113, 90, 0.30);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4) var(--sp-5);
+  margin: var(--sp-4) var(--sp-4) 0;
+}
 
-### 5.5 Near me filter (Phase 2)
+.fan-tonight-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #e8715a;  /* coral — show type colour */
+  text-transform: uppercase;
+  margin-bottom: var(--sp-1);
+}
+
+.fan-tonight-title {
+  font-family: var(--font-d);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.2;
+  margin-bottom: var(--sp-1);
+}
+```
+
+**Logic:**
+```javascript
+function buildTonightBanner(feed) {
+  var isoToday = new Date().toISOString().slice(0, 10)
+  var tonightItems = (feed || []).filter(function(item) {
+    return item.futureDate === isoToday &&
+           (item.type === 'event' || item.type === 'livestream')
+  })
+  if (!tonightItems.length) return null
+
+  // Multiple shows tonight: show the first, append "+ N more tonight" if >1
+  return tonightItems
+}
+```
+
+**Multiple shows tonight:** If 2+ followed artists have shows on the same night, the banner shows the first (by creation order / nearest doors time if known) and a "+N more tonight →" link that scrolls to the Today date chip in the strip.
+
+**Livestream variant:**
+When `type === 'livestream'` rather than `show`, the banner copy changes:
+```
+● LIVE TONIGHT
+[Artist name] is live on [platform if known].
+[Watch live →]
+```
+
+---
+
+### 5.5 `resolveAccess()` function specification
+
+`resolveAccess()` is the single function that determines whether a fan can see a moment's full content. It must handle both the legacy string format (`access: 'public'`) and the canonical object format (`access: { level: 'fan', earlyAccessHours: 48, ... }`).
+
+**Function signature and full implementation:**
+
+```javascript
+/**
+ * Determines what a fan can access for a given moment.
+ *
+ * @param {Object} moment       — the moment object from able_v3_profile.moments[]
+ * @param {Object} userState    — { isFan: boolean, isSupporter: boolean }
+ * @returns {string}            — 'full' | 'gate_fan' | 'gate_supporter' | 'enquire'
+ */
+function resolveAccess(moment, userState) {
+  // Handle both legacy string format and canonical object format
+  var accessObj = (typeof moment.access === 'object' && moment.access !== null)
+    ? moment.access
+    : { level: moment.access || 'public' }
+
+  var level = accessObj.level || 'public'
+
+  // Early access window check — if fan/supporter is in the early window, treat as full
+  if (accessObj.earlyAccessHours && accessObj.earlyAccessHours > 0) {
+    var isFanOrSupporter = (level === 'fan' && userState.isFan) ||
+                           (level === 'supporter' && userState.isSupporter)
+    if (!isFanOrSupporter) {
+      // Not entitled yet — check if in the window
+      var releaseMs = new Date(moment.date + 'T00:00:00').getTime()
+      var windowOpenMs = releaseMs - (accessObj.earlyAccessHours * 3600000)
+      // If we're past window open but before release date AND fan/supporter, grant full
+      // (This branch is for when the fan IS entitled — see level switch below)
+    }
+  }
+
+  switch (level) {
+    case 'public':
+      return 'full'
+
+    case 'fan':
+      if (userState.isFan) return 'full'
+      // Check early access: fan is not signed up, but are we in the early window?
+      // If teaserVisible, still gate — they need to sign up to access
+      return 'gate_fan'
+
+    case 'supporter':
+      if (userState.isSupporter) return 'full'
+      return 'gate_supporter'
+
+    case 'invite':
+      // Invite list matching requires Supabase auth — in V1, always gate
+      return 'enquire'
+
+    case 'private':
+      return 'enquire'
+
+    default:
+      return 'full'
+  }
+}
+```
+
+**`userState` determination in V1:**
+```javascript
+function getUserState() {
+  var fans = safeGet('able_fans') || []
+  var profile = safeGet('able_v3_profile') || {}
+  return {
+    isFan:       fans.length > 0,
+    isSupporter: !!(profile.supporterSince)
+  }
+}
+```
+
+Note: V1 identity resolution is prototype-grade — `isFan: fans.length > 0` means any device with fan records is treated as a fan. This is acceptable for V1 single-device demos. See PATH-TO-10.md §P3 for the Supabase-backed replacement.
+
+**`resolveAccess()` in fan.html:**
+In fan.html, the `userState` is constructed per-artist from `able_fan_following[]`:
+```javascript
+function getUserStateForArtist(artistId) {
+  var following = safeGet('able_fan_following') || []
+  var record = following.find(function(f) { return f.id === artistId || f.handle === artistId })
+  if (!record) return { isFan: false, isSupporter: false }
+  return {
+    isFan: true,  // if they're in fan_following, they signed up
+    isSupporter: !!(record.isSupporter)
+  }
+}
+```
+
+---
+
+### 5.6 V1 feed improvement: shows update when artist updates `able_shows`
+
+**The current V1 problem:**
+`able_fan_feed` is seeded once at sign-up time. If an artist updates their shows after a fan has signed up, the fan's feed does not reflect the change. The fan.html is a snapshot, not a live view.
+
+**The V1 fix — dynamic re-render from latest profile data:**
+
+In fan.html, when rendering the Following view, do not render solely from the static `able_fan_feed[]` snapshot. Instead, for each followed artist in `able_fan_following[]`, read their current `able_v3_profile` directly and merge with the static feed:
+
+```javascript
+function buildLiveFeed() {
+  var following = safeGet('able_fan_following') || []
+  var isoToday  = new Date().toISOString().slice(0, 10)
+  var liveFeed  = []
+
+  following.forEach(function(artistRecord) {
+    var profileKey = 'able_v3_profile'
+    // If the artist has a keyed profile (multi-artist support), use it:
+    // profileKey = 'able_v3_profile_' + artistRecord.handle (Phase 2)
+    var profile = safeGet(profileKey)
+    if (!profile) return
+
+    // Add shows from current profile (not just seeded snapshot)
+    var shows = profile.events || profile.shows || []
+    shows.forEach(function(ev) {
+      if (!ev.date || ev.date < isoToday) return  // skip past shows
+      liveFeed.push({
+        id:          'evt_live_' + (ev.id || ev.date),
+        artistId:    artistRecord.id || artistRecord.handle,
+        artistName:  profile.name,
+        artistAccent: profile.accent || profile.accentColor,
+        type:        'event',
+        title:       ev.venue || 'Live show',
+        sub:         ev.city || ev.location || '',
+        url:         ev.ticketUrl || '',
+        futureDate:  ev.date,
+        age:         Date.now(),
+      })
+    })
+
+    // Add release if set and in future
+    if (profile.releaseDate && profile.releaseDate >= isoToday) {
+      liveFeed.push({
+        id:          'rel_live_' + profile.releaseDate,
+        artistId:    artistRecord.id || artistRecord.handle,
+        artistName:  profile.name,
+        artistAccent: profile.accent || profile.accentColor,
+        type:        'release',
+        title:       profile.releaseName || 'New release',
+        sub:         '',
+        url:         (profile.ctaPrimary && profile.ctaPrimary.url) || '',
+        futureDate:  profile.releaseDate,
+        age:         Date.now(),
+      })
+    }
+
+    // Add World Map moments from current profile
+    var moments = profile.moments || []
+    moments.forEach(function(m) {
+      if (!m.active || !m.date || m.date < isoToday) return
+      if (m.access && (m.access.level || m.access) === 'invite') return  // skip invite-only
+      liveFeed.push({
+        id:          'wm_live_' + m.id,
+        artistId:    artistRecord.id || artistRecord.handle,
+        artistName:  profile.name,
+        artistAccent: profile.accent || profile.accentColor,
+        type:        m.type,
+        title:       m.title,
+        sub:         '',
+        url:         (m.cta && m.cta.url) || '',
+        futureDate:  m.date,
+        accessLevel: (typeof m.access === 'object') ? m.access.level : (m.access || 'public'),
+        age:         Date.now(),
+      })
+    })
+  })
+
+  // Deduplicate by id (live feed items replace static feed items)
+  var seen = {}
+  liveFeed = liveFeed.filter(function(item) {
+    if (seen[item.id]) return false
+    seen[item.id] = true
+    return true
+  })
+
+  // Sort by futureDate ascending
+  liveFeed.sort(function(a, b) {
+    if (!a.futureDate) return 1
+    if (!b.futureDate) return -1
+    return a.futureDate.localeCompare(b.futureDate)
+  })
+
+  return liveFeed
+}
+```
+
+**Key behaviour change:** This function reads from `able_v3_profile` on every fan.html page load. When an artist adds a new show in admin.html, the change is written to `able_v3_profile.events[]`. The next time the fan visits fan.html (on the same device — V1 limitation), `buildLiveFeed()` reads the updated profile and the new show appears in the date-strip.
+
+This is not true real-time (that requires Supabase Realtime — see SPEC.md §6.3). But it means the fan feed is a live read of the current profile state, not a frozen snapshot from sign-up. The difference: a fan who signed up 3 months ago still sees new shows added last week.
+
+**V2 upgrade path:** When Supabase lands, `buildLiveFeed()` is replaced by a Supabase query (the SQL in PATH-TO-10.md §P2.2). The fan.html rendering code does not change — only the data source changes.
+
+---
+
+### 5.7 Near me filter (Phase 2)
 
 When the fan has opted into location (city-level, stored in `fan_location`), the Near me tab gains a moments view:
 

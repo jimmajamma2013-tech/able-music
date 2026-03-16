@@ -123,9 +123,9 @@ Label tier (£49/mo) is specced: 10 artist pages, team access, aggregate analyti
 ## Angle 13: Freelancer revenue
 **Current score: 1/10**
 
-Freelancer profiles are a Phase 13 feature. No monetisation is specified for freelancer accounts in current docs. The question of whether freelancers pay a subscription, pay per booking, or are free has not been resolved.
+Freelancer profiles are a Phase 2 feature. No monetisation is specified for freelancer accounts in current docs. The question of whether freelancers pay a subscription, pay per booking, or are free has not been resolved.
 
-**Gap:** No pricing for freelancer tier. Freelancers may be free (funded by the organic growth they drive for the platform) or paid (funded by their own commercial value). See SPEC.md in freelancer-auth for recommended resolution.
+**Gap:** No pricing for freelancer tier. SPEC.md §7 recommends: free in V1 (funded by the organic growth they drive), Premium Freelancer upgrade in Phase 2. This recommendation is correct but not committed anywhere outside this doc.
 
 ---
 
@@ -183,12 +183,16 @@ No unit economics have been documented. CAC (customer acquisition cost), LTV (li
 
 ---
 
-## Angle 20: "We only earn when you earn" copy and philosophy
-**Current score: 8/10**
+## Angle 20: Fan cap upgrade prompt (execution — the P0 monetisation activation mechanism)
+**Current score: 0/10**
 
-This principle is articulated clearly and is aligned with ABLE's anti-platform positioning. It differentiates ABLE from Spotify (30%), Patreon (8–12%), YouTube (45%), and Bandcamp (15%). The take rate ambition is honest and specific.
+The fan cap is the single highest-leverage monetisation trigger in V1. When a Free artist's `able_fans` array reaches 80, they should see a progress bar in admin.html showing how close they are to the limit. When it reaches 100, they see an upgrade overlay. This is the clearest, most honest upgrade moment in the product — the artist has demonstrated they can grow a fan list, and the cost of upgrading is directly justified by the audience they've built.
 
-**Gap:** The phrase "we only earn when you earn" needs to appear explicitly on: the Support Pack setup flow in admin.html, the landing page pricing section, and the freelancer booking enquiry spec. Currently it lives only in docs.
+**Current state:** The fan cap limit exists as a concept and is specced in `docs/systems/tier-gates/SPEC.md` §2.4 and §2.5. The progress bar and upgrade overlay are not implemented. The trigger logic exists only in documentation.
+
+**Gap:** Nothing in admin.html shows a fan count progress bar. There is no visual indicator of approach to the 100-fan limit. There is no upgrade overlay at 100 fans in the live admin.html. The most important monetisation activation mechanism in V1 is 0% built.
+
+**This is the P0 execution gap.** See PATH-TO-10.md for the exact implementation spec.
 
 ---
 
@@ -215,8 +219,8 @@ This principle is articulated clearly and is aligned with ABLE's anti-platform p
 | Transparent fee display | 5 |
 | Revenue diversification | 3 |
 | Unit economics | 2 |
-| "We only earn when you earn" | 8 |
+| Fan cap upgrade prompt (execution) | 0 |
 
 **Average: 3.8/10**
 
-The average is low because most of the aspirational architecture is unbuilt. That is honest and expected for a V1 product. The philosophy and vision score well. The infrastructure does not yet exist.
+The average is low because most of the aspirational architecture is unbuilt. That is honest and expected for a V1 product. The philosophy and vision score well. The execution does not yet exist. The single most important thing to build right now is the fan cap progress bar and upgrade overlay in admin.html — it is the clearest path from 0 to first revenue.

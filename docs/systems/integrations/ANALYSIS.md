@@ -175,6 +175,27 @@ A scored audit of every integration currently present or absent across all activ
 
 ---
 
+### 11. oEmbed proxy (Spotify, YouTube, SoundCloud, Bandcamp, Vimeo, Mixcloud) — 5/10
+
+**What exists:**
+- `netlify/functions/oembed-proxy.js` is built and handles YouTube, SoundCloud, Bandcamp
+- Spec in `docs/systems/oembed-proxy/SPEC.md` (complete canonical spec)
+- Supports Spotify oEmbed at `open.spotify.com/oembed`
+- Vimeo and Mixcloud support specced
+
+**What is missing:**
+- Not deployed — the function exists but Netlify is not live yet
+- Security: the spec (`oembed-proxy/SPEC.md §3`) identifies a URL allowlist gap — current regex-based check is insufficient against crafted URLs; must use parsed hostname validation before deploying
+- No Bandcamp embed construction (Bandcamp has no oEmbed endpoint — requires URL parsing to construct the embed iframe)
+- Rate limiting not implemented (spec calls for it)
+- No caching layer (spec recommends 1-hour TTL)
+
+**This is the highest-leverage V1 integration: one function, once deployed, unlocks rich embeds for Spotify, YouTube, SoundCloud, Bandcamp, TikTok across all ABLE pages.** Every snap card with a music URL depends on it.
+
+**Path to 10:** Fix hostname allowlist security issue first. Deploy to Netlify. Implement caching. Score jumps to 9/10 immediately on deploy.
+
+---
+
 ## Summary: Score by Category
 
 | # | Integration | Current Score | Max Possible | Gap |
@@ -189,15 +210,22 @@ A scored audit of every integration currently present or absent across all activ
 | 8 | Stripe payments | 2/10 | 10/10 | Full build (P2) |
 | 9 | Linktree import | 0/10 | 10/10 | Full build needed |
 | 10 | DistroKid/distributor | 0/10 | 3/10 | MusicBrainz async job only |
+| 11 | oEmbed proxy | 5/10 | 9/10 | Fix security + deploy |
 
 **Overall integrations system score: 4/10**
-The infrastructure is sound (oEmbed proxy, Spotify function) but the two highest-value new integrations (Bandsintown/Ticketmaster events, Linktree import) have not been built.
+The infrastructure is sound (oEmbed proxy, Spotify function) but the three highest-leverage immediate actions are all undeployed or unbuilt: oEmbed proxy needs security fix + deployment, Ticketmaster events import needs building, and Linktree import needs building.
 
 ---
 
 ## Key Finding
 
-**Bandsintown/Ticketmaster integration is completely missing from all active build files.**
+**The oEmbed proxy is the single highest-leverage undeployed asset in the entire integrations stack.**
+
+It already exists as `netlify/functions/oembed-proxy.js`. The canonical spec is at `docs/systems/oembed-proxy/SPEC.md`. One fix (hostname allowlist security) + one deployment unlocks rich embeds for Spotify, YouTube, SoundCloud, Bandcamp, Vimeo, and Mixcloud across every ABLE page. Every snap card, every release card, every top card media embed depends on this function being live.
+
+This is a 1–2 hour task. The function is already written.
+
+**Second finding: Bandsintown/Ticketmaster integration is completely missing from all active build files.**
 
 For any artist with a touring presence — which is ABLE's primary audience — manually entering upcoming shows is painful, repetitive, and a conversion-killer during onboarding. An events auto-import (via Ticketmaster Discovery API) would:
 - Require zero per-artist setup (single platform-wide API key)

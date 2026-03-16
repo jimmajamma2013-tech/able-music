@@ -1,7 +1,15 @@
 # ABLE — Email System Analysis
-**Date: 2026-03-15**
+**Date: 2026-03-16**
 **Overall score: 4.0/10**
 **Status: Pre-implementation. Nothing is actually sent yet.**
+
+---
+
+## What actually works (honest assessment)
+
+Nothing is automated. No email is sent by ABLE under any circumstance. When a fan signs up on able-v7.html, they see optimistic UI ("You're in. I'll keep you close.") and nothing else happens. There is no Netlify function. There is no Resend account. There are no DNS records. The sign-up ceremony is a promise that is currently unfulfilled on the backend.
+
+The specs are complete. `docs/systems/email/SPEC.md` has full email body copy for all four page states (profile, pre-release, live, gig), the artist welcome email, release broadcast, gig broadcast, and magic link auth. `docs/systems/notifications/EMAIL-TEMPLATES.md` has 18 templates written in full. The architecture decisions are correct. The problem is that none of it is wired.
 
 ---
 
@@ -9,55 +17,97 @@
 
 ### 1. Fan confirmation — voice/tone: 2/10
 
-Nothing is sent, so the score is a floor. But the spec for what *should* be sent doesn't exist either. The only reference is a line in CROSS_PAGE_JOURNEYS.md: "Confirmation email: sounds like the artist wrote it." That's a principle, not a spec. There is no defined from-name, no copy template, no handling of the four page states. If someone wired a basic Resend.com call tomorrow with a generic "Thanks for signing up" body, it would actively harm the product — it would be exactly the kind of platform-voice email ABLE is trying not to be. Score: 2 (principle stated, nothing built, risk of default-SaaS fallback is high).
+Nothing is sent, so the score is a floor. The spec for what *should* be sent is complete (SPEC.md §1, EMAIL-TEMPLATES.md T01–T04). Each of the four page states has a distinct email body, written in the artist's voice, with the artist's name as the from-name. The copy is correct: "Hey —", "It's Nadia.", no "Welcome" or "You're all set", no platform-voice language. If someone wired a basic Resend.com call tomorrow with a generic "Thanks for signing up" body, it would actively harm the product. Score: 2 (principle and copy are right, zero delivery infrastructure exists, risk of default-SaaS fallback is real).
 
-### 2. Fan confirmation — timing/delivery: 1/10
+---
 
-60-second delivery is the stated target. There is no Netlify function, no Resend.com account, no email infrastructure at all. The sign-up ceremony is optimistic UI ("You're in. I'll keep you close.") — which is correct — but there is no backend leg to that promise. Score: 1 (requirement stated, zero infrastructure exists).
+### 2. Fan confirmation — timing/delivery: 0/10
 
-### 3. Fan confirmation — content (release state reference): 2/10
+60-second delivery is the stated target. There is no Netlify function. No Resend.com account. No email infrastructure. The fan gets nothing. Score: 0 (no implementation, no partial credit).
 
-The spec in CROSS_PAGE_JOURNEYS.md notes that the confirmation email should "reference the release if the artist is in pre-release/live state." Nothing more is defined. There are four page states (profile, pre-release, live, gig) and the email body should differ meaningfully for each. Currently there are no body variants, no token list, no conditional logic defined. Score: 2 (awareness of the requirement, no spec).
+---
 
-### 4. Fan confirmation — fan.html invitation: 2/10
+### 3. Fan confirmation — content (page state reference): 2/10
 
-CROSS_PAGE_JOURNEYS.md mentions the confirmation email footer should carry "See all the artists you follow →" — a link to fan.html. This is the right instinct: the email is the first moment a fan could be invited into the broader platform without it feeling like a platform push. But there is no spec for how to do this without it sounding like a marketing upsell. The line between "artist wrote this" and "ABLE added a button at the bottom" is delicate and unresolved. Score: 2 (goal identified, not specced, risk of clunky execution).
+Four state-specific email bodies are fully written in SPEC.md and EMAIL-TEMPLATES.md:
+- Profile state: "It's Nadia. You signed up, so I'll keep you in the loop."
+- Pre-release state: "You signed up right before something. [Release title] comes out in [N] days."
+- Live state: "[Release title] is out today."
+- Gig state: "I'm playing tonight. [Venue]. Doors at [time]."
 
-### 5. Artist welcome — does it reinforce what they built: 2/10
+Each body is distinctive and references real data from `able_v3_profile`. None of them send. Score: 2 (spec is complete and excellent, nothing is implemented).
 
-No artist welcome email exists. The onboarding wizard (start.html) ends with a Done screen. There is no follow-up. The ideal email would arrive within a few minutes of wizard completion, name the artist's page specifically ("Your page is live. ablemusic.co/nadia"), give one concrete next step (share your link), and feel like a quiet confirmation rather than an onboarding flow. Currently: nothing. Score: 2 (gap identified, zero spec or infrastructure).
+---
 
-### 6. Release/gig emails — artist broadcast capability: 2/10
+### 4. Fan confirmation — DNS and sending infrastructure: 0/10
 
-No broadcast system exists. admin.html has no "Email your fans" CTA. The data is available (able_fans stores all sign-ups), but there is no mechanism for an artist to trigger a broadcast — neither a UI affordance nor a backend function. The gig reminder and release reminder email types are mentioned in this strategy brief as requirements; they do not appear anywhere else in existing docs. Score: 2 (requirement raised here for the first time, nothing built or specced prior).
+The DNS records required to send from `mail.ablemusic.co` are documented in SPEC.md §4:
+- SPF: `v=spf1 include:_spf.resend.com ~all`
+- DKIM: Resend-generated CNAME records (retrieved from Resend dashboard after domain registration)
+- DMARC: `v=DMARC1; p=none; rua=mailto:dmarc@ablemusic.co`
 
-### 7. Magic link auth email: 3/10
+None of these records are configured. The domain `ablemusic.co` has not been connected to Resend. There is no Resend account. Score: 0.
 
-Supabase auth is not yet wired into the product. When it is, Supabase handles magic link delivery natively. The risk is that the default Supabase magic link email looks like every other Supabase project — plain, generic, branded by Supabase in the footer. ABLE will need a custom email template in Supabase's email editor (HTML template, custom from-domain). The architecture exists (Supabase supports custom SMTP and custom templates), but ABLE has not configured it. Score: 3 (Supabase will handle the mechanism, but the template is unspecced and unconfigured; default would be embarrassing).
+---
 
-### 8. Unsubscribe/compliance — GDPR and CAN-SPAM: 2/10
+### 5. Unsubscribe mechanism: 0/10
 
-No unsubscribe mechanism. No opt-in language on the sign-up form. able_fans stores emails without a consent timestamp or consent source. GDPR requires: lawful basis (legitimate interest or explicit consent), right to erasure, transparent purpose. CAN-SPAM requires: physical address, unsubscribe mechanism, honest subject line. The fan sign-up form copy ("Stay close. I'll keep you in the loop.") implies consent, but implied is not explicit. Score: 2 (no compliance architecture, no unsubscribe, no consent recording — this is the most serious gap if emails are ever sent at volume).
+No unsubscribe mechanism exists. `able_fans` stores email addresses with no mechanism for removal. Resend's native unsubscribe handling (which writes a webhook back to ABLE) is the correct architecture, but it is not wired. An email blast without a functioning unsubscribe link is a GDPR violation. Score: 0.
 
-### 9. Personalisation depth: 4/10
+---
 
-The raw ingredients for personalisation are good. able_fans stores email, timestamp, and source. able_v3_profile stores artist name, release title, release date, page state, accent colour. The fan's name is not currently captured in the sign-up form. The plan to make the email sound like the artist wrote it is inherently a personalisation system — each email is artist-specific. But the personalisation is at the level of "per-artist template" rather than "per-fan." Fan-name personalisation requires adding a name field to the sign-up form, which is a UX trade-off (friction vs. warmth). Score: 4 (data is partially there, token system not defined, fan-name capture not built, but artist-level personalisation is achievable with current data).
+### 6. GDPR consent recording: 0/10
 
-### 10. Technical architecture: 3/10
+The sign-up form on able-v7.html does not show a consent notice. `able_fans` records do not include `consent_ts` or `consent_source`. GDPR requires: lawful basis for processing, right to erasure, transparent purpose stated before or at the point of consent. None of these are in place. SPEC.md §5 and PATH-TO-10.md §P0.4–P0.5 specify exactly how to fix this (consent line, consent timestamp). Score: 0 — this is the most serious gap if emails are ever sent at volume.
 
-The correct architecture is clear: fan sign-up triggers a Netlify serverless function → function calls Resend.com API → email delivered within 60 seconds. Resend.com is the right tool: it has generous free tier, clean API, excellent deliverability, and React Email for templates. Netlify functions are already the hosting plan. The Supabase project is set up and the anon key is available. None of this is wired together. There is no `netlify/functions/fan-confirmation.js` file, no Resend API key, no DNS records (DKIM, SPF, DMARC) for the sending domain. Score: 3 (architecture is decidable and correct, zero implementation exists).
+---
+
+### 7. GDPR delete flow: 0/10
+
+There is no "forget me" mechanism for fans. A fan who wishes to be removed from an artist's list has no in-product path. The closest mechanism would be an unsubscribe link in an email, but no emails are sent. There is no admin fan list delete action. There is no API endpoint to handle a deletion request. Score: 0.
+
+---
+
+### 8. Artist welcome email: 2/10
+
+The spec is complete (SPEC.md §2, EMAIL-TEMPLATES.md T05). Subject: "Your page is live, [Artist name]." From: ABLE. Body is under 60 words. One next step. Copy is in the correct register ("Good to see you here."). No implementation exists — no Netlify function, no trigger from start.html wizard completion, no artist email capture in the wizard (the email field is not yet added to start.html). Score: 2 (spec complete, zero infrastructure).
+
+---
+
+### 9. Artist broadcast capability: 0/10
+
+No broadcast system exists. admin.html has no "Email your fans" CTA. The data is available (`able_fans` stores all sign-ups), but there is no mechanism for an artist to trigger a broadcast. Score: 0.
+
+---
+
+### 10. Magic link auth email: 3/10
+
+Supabase auth is not yet wired into the product. When it is, Supabase handles magic link delivery natively. The risk is that the default Supabase email template is generic and Supabase-branded. ABLE must configure a custom HTML template in Supabase's email settings. The spec is written (SPEC.md §5, EMAIL-TEMPLATES.md T09). Subject: "Your ABLE link." Body: 3 lines, one button. Supabase's SMTP can be pointed at Resend for consistent deliverability. Score: 3 (spec written, Supabase will handle mechanism once auth is wired, but template is unconfigured and default is embarrassing).
 
 ---
 
 ## Overall: 4.0/10
 
-The score is generous. It reflects that ABLE has thought about what the email system should feel like (artist voice, not platform voice) and that the data architecture could support a good email system. It does not reflect any actual email being sent. The single most important gap is the fan confirmation email: it is the product's first communication with a fan, it must sound like the artist, and it doesn't exist yet in any form. Build this first.
+The score is generous. It reflects that ABLE has thought carefully about what the email system should feel like and that the specs are complete. The `docs/systems/notifications/EMAIL-TEMPLATES.md` file contains 18 fully written templates. The `docs/systems/email/SPEC.md` has the complete delivery architecture. The GDPR requirements are understood. None of it works.
+
+The score does not reflect any actual email being sent.
 
 ---
 
 ## Key risks if unaddressed
 
-1. **Voice failure**: first email sent is a Supabase notification or a generic Resend test — immediately breaks the "artist wrote this" illusion, never recovered.
-2. **Compliance exposure**: sending to able_fans without documented consent basis and an unsubscribe mechanism is a GDPR liability. Small now (localStorage, no real sends). Serious the moment Supabase is wired up and the first broadcast goes out.
-3. **Timing failure**: 60-second delivery is the spec. If the function is slow or batched, fans receive the confirmation email hours later — the warmth of the moment is gone.
+1. **Voice failure**: the first email sent is a Supabase notification or a generic Resend test — immediately breaks the "artist wrote this" illusion, likely never recovered.
+2. **GDPR exposure**: sending to `able_fans` without documented consent basis and a functioning unsubscribe mechanism is a regulatory liability. Small now (localStorage, no real sends). Serious the moment Supabase is wired and the first broadcast goes out.
+3. **Timing failure**: 60-second delivery is the spec. If the function is slow or batched, fans receive the email hours later — the warmth of the moment is gone.
 4. **Missing artist welcome**: artists complete the wizard, nothing arrives, the product feels unfinished. Low cost to fix. High cost to ignore.
+5. **Critical dependency on lead generation**: the email P0 must be live before the first outreach DM is sent to an artist. Without it, the first fan who signs up gets no confirmation and the artist gets no notification. This is the weakest link in the entire acquisition and retention chain.
+
+---
+
+## The most important email in the entire system
+
+The fan confirmation email (T01–T04) is the most important email ABLE will ever send. It is sent within 60 seconds of a fan signing up. It is the first time the fan hears from the artist after expressing interest. It either sounds like the artist wrote it, or it sounds like a platform. If it sounds like a platform, the artist loses credibility with their fan at the most important moment. If it sounds like the artist, it closes the loop between the sign-up ceremony ("You're in. I'll keep you close.") and a real email that makes the fan feel seen.
+
+Every other email in the system builds on this foundation. The artist welcome, the broadcast, the magic link — they all matter. But the fan confirmation is the one that happens the most, at the most critical moment, to the most important audience.
+
+**Build this first. Build nothing else in the email system until it works.**

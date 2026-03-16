@@ -681,13 +681,68 @@ if (featured) {
 
 ---
 
+## P0 — Three fixes that take the calendar from 2/10 (fan dashboard) to deployable
+
+The fan dashboard calendar (Dimension 3 in ANALYSIS.md) scores 2/10 — the calendar view does not exist, the feed is a one-time snapshot, and multi-moment days are broken. The following three fixes address the most critical gaps and make the calendar reach a deployable 6.5/10 state.
+
+---
+
+### Fix 1: Multi-moment panel — render all moments on a date, not just index 0
+
+**Current bug:** When multiple moments fall on the same date, the panel shows only `dayMoments[0]`.
+
+**Exact fix (able-v7.html):** In the `openWorldMapPanel()` function, replace:
+```javascript
+var moment = dayMoments[0]  // WRONG
+```
+with a loop that renders a card for each moment in `dayMoments`. Each card needs its own type label, title, date string, access badge, and CTA. CSS to add:
+```css
+.wm-panel__moment-item {
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.wm-panel__moment-item:last-child { border-bottom: none; }
+```
+**Impact:** Any artist with a show and a release on the same date currently loses one of them from fan view. This is a data loss bug from the fan's perspective.
+
+---
+
+### Fix 2: Nav buttons — 36px to 44px touch targets
+
+**Current violation:** `.wm-nav-btn { width: 36px; height: 36px; }` is below the 44px CLAUDE.md rule.
+
+**Exact fix (able-v7.html):** One CSS change:
+```css
+.wm-nav-btn { width: 44px; height: 44px; }
+```
+The icon inside the button does not change size. Only the tap target grows. No visual difference on screen — just a larger hit area for thumbs.
+
+---
+
+### Fix 3: Section heading — add the `<h2>` for the events section in able-v7.html
+
+**Current state:** The World Map section has `aria-label="What's coming"` (accessibility label only) but no visible heading. A fan scrolling past the calendar does not know what section this is.
+
+**Exact fix (able-v7.html):** Add above the World Map card:
+```html
+<div class="section-header">
+  <h2 class="section-title">What's coming</h2>
+</div>
+```
+Use the same `.section-header` and `.section-title` classes used by the Music, Events, and Merch sections. This gives the World Map the same visual weight as other sections and makes it scannable when scrolling.
+
+---
+
 ## Score projection after each priority level
 
-| Stage | Score | What ships |
-|---|---|---|
-| P0 (current bugs) | 6.5/10 | Multi-moment panel, nav button size, section heading, empty state, focus trap |
-| P1 (admin management) | 7.5/10 | Edit moments, canonical types, teaser text, early access hours field |
-| P1 + visual | 8.5/10 | Oversized month label, 64px cells, featured bar, card gradient |
-| P2 (fan.html) | 9.0/10 | Future-date aware feed, "Coming up" strip, Tonight treatment |
-| P3 (Supabase gating) | 9.5/10 | Real identity, early access window, Realtime subscription |
-| All complete | 10/10 | Everything in SPEC.md implemented and tested |
+| Stage | Dimension 3 score | Overall score | What ships |
+|---|---|---|---|
+| Before P0 fixes | 2/10 | 5.2/10 | Current state — fan dashboard not built, multi-moment bug, small nav buttons, no heading |
+| P0 (3 fixes above) | 4.5/10 | 6.5/10 | Multi-moment panel, 44px nav buttons, section heading — calendar is now deployable |
+| P0 + P1 (admin edit, types, teaser) | 5.5/10 | 7.5/10 | Edit moments, canonical types, teaser text, early access hours field |
+| P0 + P1 + visual | 5.5/10 | 8.5/10 | Oversized month label, 64px cells, featured bar, card gradient |
+| P0 + P1 + visual + P2 (fan.html) | 7.5/10 | 9.0/10 | Live feed from profile (SPEC.md §5.6), date-strip, Tonight banner |
+| P3 (Supabase gating) | 9.5/10 | 9.5/10 | Real identity, early access window, Realtime subscription |
+| All complete | 10/10 | 10/10 | Everything in SPEC.md implemented and tested |
+
+The fan dashboard jumps from 2/10 to 6.5/10 with the three P0 fixes, because those fixes unblock the basic calendar experience. The jump to 8.5/10 with the P2 fan.html work (live feed from profile + date-strip + Tonight banner) is the most significant single step — that is when the fan dashboard becomes a genuinely useful product surface, not just a placeholder.

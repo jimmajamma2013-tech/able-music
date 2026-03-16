@@ -18,10 +18,223 @@ A 10/10 monetisation system means:
 
 ---
 
-## The path, in order
+## P0 — Fan cap upgrade prompt (the most important monetisation activation in V1)
 
-### Step 1: Wire subscription billing (prerequisite for everything)
-**Priority: P0 — must happen before launch**
+**Score impact: 0/10 → 5/10**
+**Why this is P0:** This is the highest-leverage monetisation action available right now, with no backend dependency. It requires only front-end JavaScript in admin.html. The fan cap already exists as a hard limit. The only missing piece is the UI that surfaces it — the progress bar at 80 fans and the upgrade overlay at 100 fans.
+
+**The logic:** A Free artist who has signed up 80 fans has already proved they can grow an audience. That is the exact moment when upgrading makes sense to them — not before. At 100, they've hit the wall. The upgrade prompt at that moment is not a dark pattern; it is honest information delivered at the moment it is most relevant.
+
+---
+
+### P0.1 — Fan count progress bar in admin.html (at 80 fans)
+
+When `able_fans.length >= 80` and `able_tier === 'free'`, show a progress bar in admin.html on the Fans page header, above the fan list.
+
+**Exact component HTML:**
+
+```html
+<!-- Fan cap progress bar — shown when Free tier artist has 80+ fans -->
+<!-- Inject before the fan list, hidden by default -->
+<div class="fan-cap-progress" id="fanCapProgress" style="display:none;">
+  <div class="fan-cap-progress-header">
+    <span class="fan-cap-progress-label" id="fanCapProgressLabel">
+      80 of 100 fans — your free list is nearly full
+    </span>
+    <button
+      class="fan-cap-progress-cta"
+      onclick="openUpgradeSheet('fan-list')"
+      aria-label="See Artist plans to grow your fan list">
+      See Artist plans
+    </button>
+  </div>
+  <div class="fan-cap-bar-track" role="progressbar"
+       aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"
+       aria-label="Fan list capacity">
+    <div class="fan-cap-bar-fill" id="fanCapBarFill" style="width: 80%;"></div>
+  </div>
+  <p class="fan-cap-progress-sub" id="fanCapProgressSub">
+    20 spots left. Artist gives you 2,000.
+  </p>
+</div>
+```
+
+**CSS:**
+
+```css
+/* ── Fan cap progress bar ── */
+.fan-cap-progress {
+  padding: 14px 16px;
+  background: rgba(var(--acc-rgb), 0.07);
+  border: 1px solid rgba(var(--acc-rgb), 0.22);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.fan-cap-progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.fan-cap-progress-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--dash-text);
+  flex: 1;
+}
+
+.fan-cap-progress-cta {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--acc);
+  background: none;
+  border: 1px solid rgba(var(--acc-rgb), 0.35);
+  border-radius: 100px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-family: var(--font);
+  white-space: nowrap;
+  min-height: 30px;
+  transition: background 0.14s ease, border-color 0.14s ease;
+}
+
+.fan-cap-progress-cta:hover {
+  background: rgba(var(--acc-rgb), 0.12);
+  border-color: rgba(var(--acc-rgb), 0.55);
+}
+
+.fan-cap-bar-track {
+  height: 4px;
+  background: rgba(var(--acc-rgb), 0.15);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.fan-cap-bar-fill {
+  height: 100%;
+  background: var(--acc);
+  border-radius: 100px;
+  transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.fan-cap-progress-sub {
+  font-size: 11px;
+  color: var(--dash-t2);
+  margin: 0;
+}
+```
+
+**JS — call this on Fans page load and after every new fan sign-up:**
+
+```javascript
+function renderFanCapProgress() {
+  const fans = JSON.parse(localStorage.getItem('able_fans') || '[]');
+  const tier = localStorage.getItem('able_tier') || 'free';
+  const cap = document.getElementById('fanCapProgress');
+  if (!cap) return;
+
+  // Only show for Free artists with 80+ fans
+  if (tier !== 'free' || fans.length < 80) {
+    cap.style.display = 'none';
+    return;
+  }
+
+  const count = fans.length;
+  const limit = 100;
+  const pct = Math.min(100, Math.round((count / limit) * 100));
+  const remaining = limit - count;
+
+  document.getElementById('fanCapProgressLabel').textContent =
+    count >= limit
+      ? `You've reached 100 fans — your free list is full`
+      : `${count} of ${limit} fans — your free list is nearly full`;
+
+  document.getElementById('fanCapBarFill').style.width = `${pct}%`;
+  document.getElementById('fanCapBarFill').parentElement.setAttribute('aria-valuenow', pct);
+
+  document.getElementById('fanCapProgressSub').textContent =
+    count >= limit
+      ? `Your list is full. Upgrade to keep growing.`
+      : `${remaining} spot${remaining === 1 ? '' : 's'} left. Artist gives you 2,000.`;
+
+  // Amber fill when >= 95%, red fill when full
+  const fill = document.getElementById('fanCapBarFill');
+  if (count >= limit) {
+    fill.style.background = 'var(--color-error, #e05242)';
+  } else if (pct >= 95) {
+    fill.style.background = 'var(--acc)';
+  }
+
+  cap.style.display = 'block';
+}
+```
+
+**Copy for each threshold:**
+
+| Fans | Label text | Sub text | Bar colour |
+|---|---|---|---|
+| 80–94 | "80 of 100 fans — your free list is nearly full" | "[N] spots left. Artist gives you 2,000." | Amber |
+| 95–99 | "95 of 100 fans — almost at your limit" | "[N] spots left. Artist gives you 2,000." | Amber |
+| 100 | "You've reached 100 fans — your free list is full" | "Your list is full. Upgrade to keep growing." | Red (error) |
+
+---
+
+### P0.2 — Upgrade overlay at 100 fans in admin.html
+
+When `able_fans.length >= 100` and `able_tier === 'free'`, show the full upgrade overlay above the fan list. The progress bar (P0.1) transitions to this state automatically — the bar fills completely and the label changes to the 100-fan state. Additionally, show the dedicated cap prompt component from `docs/systems/tier-gates/SPEC.md §2.5`:
+
+**Exact copy for the overlay (admin.html Fans page, 100-fan state):**
+
+```
+Headline: You've reached 100 fans.
+
+Body: That's a real audience. Your next 1,900 are one step away.
+
+CTA: See Artist plans
+
+Dismiss: Stay on Free
+```
+
+**What the upgrade sheet shows when opened from this prompt:**
+- Context headline (pre-populated): "You've reached 100 fans. Your next 1,900 are one step away. Artist."
+- Featured tier card: Artist (£9/mo)
+- This uses the existing `openUpgradeSheet('fan-list')` call from `GATE_COPY`
+
+---
+
+### P0.3 — Fan cap message on able-v7.html (fan-facing)
+
+When `able_fans.length >= 100` and `able_tier === 'free'`, the fan sign-up form on the public profile converts to a neutral closed message. Fans never see upgrade prompts — that is the artist's problem, not theirs.
+
+**Exact copy:**
+
+```
+This list is currently closed.
+```
+
+No explanation. No upgrade language. No broken form. The fan experience is clean. The artist-facing admin.html has the upgrade prompt; the fan-facing profile has a graceful closed state.
+
+---
+
+### P0 score impact
+
+| State | Score |
+|---|---|
+| Before P0 (no fan cap UI) | 0/10 execution |
+| After P0.1 (progress bar at 80 fans) | 4/10 execution |
+| After P0.2 (upgrade overlay at 100 fans) | 5/10 execution |
+| After P0.3 (fan-facing closed message) | 5/10 execution |
+
+**The fan cap + upgrade prompt is the most important monetisation activation mechanism in V1.** An artist who sees their list filling up, with a specific number ("20 spots left") and a specific next step ("Artist gives you 2,000"), has all the information they need to make a rational decision to upgrade. This is honest, direct, and not manipulative — it is exactly the kind of information the artist needs at exactly the right moment.
+
+---
+
+## Step 1: Wire subscription billing (prerequisite for everything beyond P0)
+**Priority: P1 — must happen before launch**
 - Stripe subscriptions for Free, Artist, Artist Pro, Label tiers
 - Annual billing toggle ("2 months free" framing)
 - Auto-trial: release date set → 14-day Artist trial (Stripe trial on subscription object)
