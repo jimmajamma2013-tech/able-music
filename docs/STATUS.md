@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-16 (session 10 — coherence review) | Update this file at the end of every session.**
+**Updated: 2026-03-16 (session 11 — V8 build sprint) | Update this file at the end of every session.**
 
 ---
 
@@ -204,11 +204,27 @@
 - **og-default.jpg**: `injectSEO()` falls back to `https://ablemusic.netlify.app/og-default.jpg` — this file must exist at that URL or social share cards will be blank. Not yet verified as deployed. Create/deploy before first artist.
 - **RESEND_API_KEY**: Not set in Netlify env. fan-confirmation.js will silently skip sending. Manual task — James only at resend.com/domains + netlify.com.
 - **No service worker**: PWA is installable (manifest.json + icons exist) but not offline-capable. fan.html home screen promise is half-kept.
-- **noindex missing**: admin.html and fan.html should have `<meta name="robots" content="noindex">` to prevent them from appearing in search.
+- ~~**noindex missing**~~: ✅ Both admin.html and fan.html already have `<meta name="robots" content="noindex,nofollow">`.
 - **Campaign mode per-mode explanations**: Campaign HQ tooltip exists but individual mode descriptions below arc nodes not yet added.
-- **"Preview your page →" link**: Not present in admin top bar — artists can't easily see their live profile while working in admin.
+- ~~**"Preview your page →" link**~~: ✅ `topbarViewBtn` wired — `href` updated with artist handle in `renderProfile()`.
 
 ---
+
+## Last session summary (session 11 — V8 build sprint)
+V8 build mode. Multiple P0 fixes across admin.html and able-v7.html. Recommendations system (V1) fully built. Save feedback standardised. Doc doctrine files created.
+
+Key changes this session:
+- **Recommendations system V1**: Pool model, two card types (artist/professional), campaign-state headings, admin management panel (`#page-profile` "Your world" card), full `renderRecommendations()` in able-v7.html, backwards-compat migration shim
+- **Save toast standardisation**: `saveMerchShopUrl`, `saveSupportMeta`, `saveCloseCircle` now call `showToast('Saved')`. `saveSnapCard` also wired.
+- **Admin spacing rhythm**: 36px between all major structural sections (first-run-card, campaign-hq, analytics stats-row and top-actions card)
+- **`--dash-t3` WCAG fix**: `#888888` → `#767676` (4.54:1 on white, passes AA). Three hardcoded `#888` instances replaced with `var(--dash-t3)`.
+- **Shows sort**: Upcoming shows ascending (soonest first), past shows at end — was reversed descending.
+- **Close Circle payments-required state**: Amber notice with "Connect Stripe → (coming soon)" appears when enabled. Matches spec copy exactly.
+- **Copy violations**: `able-v7.html` owner bar "Dashboard" → "← Your page"; release empty state "from your dashboard" → "from ABLE". All other P0 violations confirmed already fixed.
+- **Doctrine docs created**: `PRODUCT-DOCTRINE.md`, `ARTIST-PROFILE-RECOMMENDATIONS-DOCTRINE.md`, `ORDERING-AND-VISIBILITY-DOCTRINE.md` under `docs/systems/freelancer-auth/`
+- **`DESIGN-SPEC.md` §6.12**: Expanded to cover both card types, no-profile state, campaign-aware headings, doctrine pointer
+- **`CLAUDE.md`**: Three new doctrine files added to V8 strategy docs table
+- **Known issues resolved**: noindex (was already done), "Preview your page →" link (was already wired)
 
 ## Last session summary (session 10 — coherence review)
 Product-wide coherence review. Read all FINAL-REVIEW.md files across docs/systems/ and docs/pages/. Updated CONTEXT.md, STATUS.md, and MASTER-SCORECARD.md to reflect current state.
