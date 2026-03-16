@@ -11,14 +11,14 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data:; connect-src 'self' https:;">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <meta name="theme-color" content="#0f1624">
-  <title>ABLE — The page that belongs to you</title>
-  <meta name="description" content="Your link-in-bio that owns the fan relationship. Pre-save, gig mode, fan capture. Free to start.">
+  <title>ABLE — Your artist page, built for real fans</title>
+  <meta name="description" content="Your page shifts with your moment. Release day, gig night, new drop — ABLE knows. Every fan sign-up goes straight to your list. Free forever.">
   <link rel="canonical" href="https://ablemusic.co/">
   <!-- Open Graph -->
   <meta property="og:type"        content="website">
   <meta property="og:site_name"   content="ABLE">
-  <meta property="og:title"       content="ABLE — The page that belongs to you">
-  <meta property="og:description" content="Your link-in-bio that owns the fan relationship. Pre-save, gig mode, fan capture. Free to start.">
+  <meta property="og:title"       content="ABLE — Your artist page, built for real fans">
+  <meta property="og:description" content="Build your fan list. Own your relationship. Free forever.">
   <meta property="og:url"         content="https://ablemusic.co/">
   <meta property="og:image"       content="https://ablemusic.co/assets/og/og-landing.png">
   <meta property="og:image:width"  content="1200">
@@ -26,8 +26,8 @@
   <!-- Twitter / X -->
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:site"        content="@ablefm">
-  <meta name="twitter:title"       content="ABLE — The page that belongs to you">
-  <meta name="twitter:description" content="Your link-in-bio that owns the fan relationship. Pre-save, gig mode, fan capture. Free to start.">
+  <meta name="twitter:title"       content="ABLE — Your artist page, built for real fans">
+  <meta name="twitter:description" content="Your page shifts with your moment. Release day, gig night, new drop — ABLE knows. Every fan sign-up goes straight to your list.">
   <meta name="twitter:image"       content="https://ablemusic.co/assets/og/og-landing.png">
   <!-- PWA -->
   <link rel="manifest" href="/manifest.json">
@@ -166,6 +166,15 @@
       0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(46,204,113,0.6); }
       50%      { opacity: 0.7; box-shadow: 0 0 0 5px rgba(46,204,113,0); }
     }
+    .nav__cta-dot { position: relative; }
+    .nav__cta-dot::after {
+      content: attr(title);
+      position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+      background: rgba(20,22,40,0.95); color: #fff; font-size: 11px; white-space: nowrap;
+      padding: 4px 8px; border-radius: 6px; pointer-events: none;
+      opacity: 0; transition: opacity 0.15s;
+    }
+    .nav__cta-dot:hover::after { opacity: 1; }
     @media (max-width: 520px) { .nav__link { display: none; } }
 
     /* ── MARQUEE TICKER ──────────────────────────────────────────── */
@@ -821,7 +830,7 @@
       position: relative; overflow: hidden;
     }
     .step:last-child { border-right: none; }
-    @media (max-width: 640px) { .step { border-right: none; border-bottom: 1px solid var(--border); padding: 24px 0; } .step:last-child { border-bottom: none; } }
+    @media (max-width: 640px) { .steps { grid-template-columns:1fr; } .step { border-right: none; border-bottom: 1px solid var(--border); padding: 24px 0; } .step:last-child { border-bottom: none; } }
     /* Big watermark number in background */
     .step__num {
       font-family: var(--font-d); font-size: 120px; font-weight: 900;
@@ -1050,22 +1059,6 @@
       50%      { opacity: 0.88; transform: scale(1.04); }
     }
   </style>
-        <!-- PostHog Analytics -->
-    <script>
-        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId setPersonPropertiesForFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-        posthog.init("phc_dyzmnJIRrL8CKVverRnJgngpEOvPgQdMM1AmZbfNdJH", {
-            api_host: "https://eu.i.posthog.com",
-            person_profiles: "identified_only"
-        });
-    </script>
-    <!-- Microsoft Clarity -->
-    <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "vwbqr4zdzn");
-    </script>
 </head>
 <body>
 
@@ -1084,7 +1077,7 @@
       <a href="#features" class="nav__link">How it works</a>
       <a href="#pricing" class="nav__link">Pricing</a>
       <a href="admin.html" class="nav__link">Log in</a>
-      <a href="start.html" class="nav__cta"><span class="nav__cta-dot"></span>Your page is free →</a>
+      <a href="start.html" class="nav__cta"><span class="nav__cta-dot" aria-label="ABLE is live" title="ABLE is live and accepting new artists"></span>Your page is free →</a>
     </div>
   </nav>
 
@@ -1092,34 +1085,36 @@
   <section class="hero" id="hero">
     <!-- Left: copy -->
     <div class="hero__copy">
-      <div class="hero__eyebrow">Artist Before Label</div>
+      <div class="hero__eyebrow">For independent artists</div>
       <h1 class="hero__headline">100 real fans<br>beat 10,000<br><em>strangers.</em></h1>
-      <p class="hero__sub">Your page moves with your moment — pre-save, drop day, show night. Set it once and forget it. Every fan who signs up: their email lands in your list. Not the algorithm's. Yours.</p>
+      <p class="hero__sub">Your page shifts with your moment. Release day. Tonight's gig. What's dropping next. Every fan who signs up — that email is yours. Forever.</p>
 
-      <div class="hero__platforms">
-        <span class="hero__platforms-label">Connects to</span>
-        <div class="platform-icon">Spotify</div>
-        <div class="platform-icon">Apple Music</div>
-        <div class="platform-icon">YouTube</div>
-        <div class="platform-icon">TikTok</div>
-        <div class="platform-icon">Bandcamp</div>
+      <div class="hero__platforms" role="list" aria-label="Compatible platforms">
+        <span class="hero__platforms-label" aria-hidden="true">Connects to</span>
+        <span class="platform-icon" role="listitem">Spotify</span>
+        <span class="platform-icon" role="listitem">Apple Music</span>
+        <span class="platform-icon" role="listitem">YouTube</span>
+        <span class="platform-icon" role="listitem">TikTok</span>
+        <span class="platform-icon" role="listitem">Bandcamp</span>
       </div>
 
       <div class="hero__actions">
-        <a href="start.html" class="btn-primary">Get your free page →</a>
+        <a href="start.html" class="btn-primary">Your page is free →</a>
         <a href="able-v7.html" class="btn-ghost">See a live example</a>
       </div>
 
       <div class="hero__auth">
-        <span class="hero__auth-email"><a href="start.html">Sign up with your email</a> — free forever, no card needed</span>
+        <span class="hero__auth-email"><a href="start.html">Start with your email</a> — free forever, no card needed</span>
       </div>
       <p class="hero__micro">Live in 5 minutes<span class="micro-dot"></span>No platform cut<span class="micro-dot"></span>No lock-in</p>
+      <p style="font-size:12px;color:var(--text-3);margin-top:10px;font-style:italic;">Built by an independent artist, for independent artists.</p>
     </div>
 
     <!-- Right: phone mockup + interactive demo -->
     <div class="hero__visual">
       <div class="demo-phone-wrap">
         <!-- Proof lines — interactive copy triggers -->
+        <p style="font-size:11px;color:var(--text-3);margin-bottom:8px;text-align:center;">Tap to see how your page changes →</p>
         <div class="proof-lines" role="group" aria-label="See how ABLE works">
           <button class="proof-line active" data-proof="moment">
             <span class="proof-line__num">01</span>
@@ -1162,6 +1157,9 @@
               <span class="dp-badge-text"></span>
             </div>
           </div>
+
+          <!-- Fan count (live state only) -->
+          <div class="dp-fan-count" id="dp-fan-count" style="display:none;font-size:8px;color:rgba(255,255,255,0.5);text-align:center;padding:2px 0 4px;letter-spacing:0.04em;">● 47 fans signed up</div>
 
           <!-- Hero CTAs -->
           <div class="dp-ctas">
@@ -1309,26 +1307,26 @@
   <div class="marquee-strip" aria-hidden="true">
     <div class="marquee-inner">
       <!-- duplicated for seamless loop -->
-      <span class="marquee-item">Nova Wave<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Amber Skies<span class="marquee-dot"></span></span>
-      <span class="marquee-item">The Vanta<span class="marquee-dot"></span></span>
-      <span class="marquee-item">River James<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Pale June<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Sable<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Moth Collective<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Lena Park<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Cold Frame<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Dust & Signal<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Nova Wave<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Amber Skies<span class="marquee-dot"></span></span>
-      <span class="marquee-item">The Vanta<span class="marquee-dot"></span></span>
-      <span class="marquee-item">River James<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Pale June<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Sable<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Moth Collective<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Lena Park<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Cold Frame<span class="marquee-dot"></span></span>
-      <span class="marquee-item">Dust & Signal<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Free forever<span class="marquee-dot"></span></span>
+      <span class="marquee-item">0% platform cut<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Every email is yours<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Pre-release countdown<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Gig mode<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Fan sign-ups<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Works with Spotify<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Works with Bandcamp<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Works with SoundCloud<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Live in 5 minutes<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Free forever<span class="marquee-dot"></span></span>
+      <span class="marquee-item">0% platform cut<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Every email is yours<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Pre-release countdown<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Gig mode<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Fan sign-ups<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Works with Spotify<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Works with Bandcamp<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Works with SoundCloud<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Live in 5 minutes<span class="marquee-dot"></span></span>
     </div>
   </div>
 
@@ -1396,8 +1394,8 @@
         </div>
         <div class="feature-card fade-up">
           <div class="feature-card__icon">03</div>
-          <div class="feature-card__title">Seven sounds. Four feels.</div>
-          <div class="feature-card__desc">Electronic, hip-hop, indie, R&B — pick your genre and the whole page shifts. Then dial in your feel: intimate or bold, raw or refined. It's not a skin. It's an identity.</div>
+          <div class="feature-card__title">Your page looks like you.</div>
+          <div class="feature-card__desc">Pick your genre — electronic, hip-hop, indie, R&B and more — and the whole page shifts to match. Then set your feel: intimate or bold, raw or refined. Not a template. Your identity.</div>
         </div>
         <div class="feature-card fade-up">
           <div class="feature-card__icon">04</div>
@@ -1488,6 +1486,10 @@
           <div class="step__desc">One URL. Every platform, every post, every caption. Wherever fans come from, they land somewhere that makes sense.</div>
         </div>
       </div>
+      <div style="text-align:center;margin-top:48px;">
+        <a href="start.html" class="btn-primary fade-up" style="display:inline-flex;">Your page is free →</a>
+        <p style="font-size:13px;color:var(--text-3);margin-top:16px;line-height:1.6;">Works with SoundCloud, Bandcamp, YouTube — or nothing at all.<br>You don't need a Spotify page to get started.</p>
+      </div>
     </div>
   </section>
 
@@ -1524,6 +1526,7 @@
             <li class="off">Remove ABLE branding</li>
           </ul>
           <a href="start.html" class="btn-outline">Your page is free →</a>
+          <p style="font-size:12px;color:var(--text-3);margin-top:12px;line-height:1.5;">When your list reaches 100, Artist is £9/mo — no auto-upgrade, your choice.</p>
         </div>
         <div class="pricing-card pricing-card--featured fade-up">
           <div class="pricing-card__tier">Artist</div>
@@ -1549,7 +1552,7 @@
           <div class="pricing-card__desc">For artists who want to actually talk to the people who show up.</div>
           <ul class="pricing-card__features">
             <li>Everything in Artist</li>
-            <li>Full fan list + dedicated listener scoring</li>
+            <li>Full fan list — who signed up, from where, when</li>
             <li>Email broadcasts to fans</li>
             <li>Credits + recommend section</li>
             <li>Advanced analytics + exports</li>
@@ -1558,7 +1561,7 @@
             <li>Priority support</li>
             <li>Early access to features</li>
           </ul>
-          <a href="start.html" class="btn-outline">Start Artist Pro →</a>
+          <a href="start.html" class="btn-outline">Start Pro →</a>
         </div>
         <div class="pricing-card fade-up">
           <div class="pricing-card__tier">Label</div>
@@ -1589,35 +1592,39 @@
       <h2 class="section__title" style="margin-bottom:40px;">The things people<br>actually ask.</h2>
       <div class="faq-list" id="faqList">
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Will this replace my Linktree?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <button class="faq-q" aria-expanded="false">Will this replace my Linktree?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
           <div class="faq-a" hidden>ABLE is built for music specifically — it changes based on what's happening with your career. Pre-release, drop day, gig night — the page shifts automatically. Linktree just lists links. You can run both in parallel while you're setting this up. Most artists who try it switch their bio link over pretty quickly.</div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What happens to my fan list if I leave?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <button class="faq-q" aria-expanded="false">What happens to my fan list if I leave?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
           <div class="faq-a" hidden>It's yours. You can export every email address any time from your ABLE page as a CSV. We don't hold it hostage — that's the whole point.</div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Do I need to be on Spotify?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <button class="faq-q" aria-expanded="false">Do I need to be on Spotify?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
           <div class="faq-a" hidden>No. ABLE works with Spotify, Apple Music, YouTube, SoundCloud, Bandcamp, and anything else — just paste the link. If you're not on any streaming platform yet, that's fine too. Your page still works.</div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What do fans have to do to sign up?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <button class="faq-q" aria-expanded="false">What do fans have to do to sign up?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
           <div class="faq-a" hidden>Just an email address. No app to download, no account to create. They type it in and they're on your list. You own that relationship — it lives on your ABLE page.</div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Is it actually free?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <button class="faq-q" aria-expanded="false">Is it actually free?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
           <div class="faq-a" hidden>Yes. Free forever for a real working page — not a trial, not a watermarked demo. You get your profile, fan sign-ups, and the smart mode system at no cost. Paid plans add more fans, email broadcasts, and deeper analytics when you're ready.</div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">How long does setup take?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <button class="faq-q" aria-expanded="false">How long does setup take?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
           <div class="faq-a" hidden>Five minutes if you have your links handy. We grab artwork and track info from Spotify automatically — you paste the link, we do the rest. You can always add more later.</div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What about Beacons?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <button class="faq-q" aria-expanded="false">Who owns my fans' emails?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>You do. We cannot contact your fans. Export your full list at any time, even on the free tier. The relationship is yours — we are just the conduit.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">What about Beacons?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
           <div class="faq-a" hidden>Beacons takes 9% of every sale you make on their free plan. We take 0% — on every plan, always. Beyond that: Beacons has no concept of a release cycle. You get a link page. ABLE gets out of the way and lets the moment lead — whether that's a pre-save, a drop, or a show tonight.</div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">What about Feature.fm or Hypeddit?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <button class="faq-q" aria-expanded="false">What about Feature.fm or Hypeddit?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
           <div class="faq-a" hidden>Great campaign tools — ABLE doesn't replace them for paid promotion. But they're not a home. Feature.fm meters how many fan emails you can access (200 per link until you pay $39/mo). Hypeddit has no persistent profile at all. ABLE is where fans land and stay, not just where the click ends.</div>
         </div>
       </div>
@@ -1629,15 +1636,13 @@
     <h2 class="footer-cta__headline">Your best fans<br>are already out there.<br><em style="color:var(--accent);">Give them a home.</em></h2>
     <p class="footer-cta__sub">Free to start. Live in five minutes. Your list, your relationship — no algorithm in the way.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;position:relative;z-index:1;">
-      <a href="start.html" class="btn-primary" style="display:inline-flex;">Get your free page →</a>
+      <a href="start.html" class="btn-primary" style="display:inline-flex;">Your page is free →</a>
       <a href="admin.html" class="btn-ghost" style="display:inline-flex;">Sign in →</a>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer class="footer">
-    <div id="privacy" style="display:none"></div>
-    <div id="terms" style="display:none"></div>
     <div class="footer__logo">
       <svg width="6" height="20" viewBox="0 0 24 90" fill="none" aria-hidden="true">
         <rect x="4" y="2" width="16" height="64" fill="#e4dfd2"/>
@@ -1658,19 +1663,26 @@
   </footer>
 
   <script>
-    function toggleFaq(btn) {
-      const answer = btn.nextElementSibling;
-      const isOpen = !answer.hidden;
-      // Close all others
-      document.querySelectorAll('.faq-a').forEach(a => { a.hidden = true; });
-      document.querySelectorAll('.faq-q').forEach(q => q.setAttribute('aria-expanded', 'false'));
-      if (!isOpen) {
-        answer.hidden = false;
-        answer.style.animation = 'none';
-        requestAnimationFrame(() => { answer.style.animation = ''; });
-        btn.setAttribute('aria-expanded', 'true');
+    // FAQ — event delegation (no inline handlers)
+    document.addEventListener('DOMContentLoaded', function() {
+      const faqList = document.getElementById('faqList');
+      if (faqList) {
+        faqList.addEventListener('click', function(e) {
+          const btn = e.target.closest('.faq-q');
+          if (!btn) return;
+          const answer = btn.nextElementSibling;
+          const isOpen = !answer.hidden;
+          faqList.querySelectorAll('.faq-a').forEach(a => { a.hidden = true; });
+          faqList.querySelectorAll('.faq-q').forEach(q => q.setAttribute('aria-expanded', 'false'));
+          if (!isOpen) {
+            answer.hidden = false;
+            answer.style.animation = 'none';
+            requestAnimationFrame(() => { answer.style.animation = ''; });
+            btn.setAttribute('aria-expanded', 'true');
+          }
+        });
       }
-    }
+    });
 
     // Progressive enhancement — hide fade-up elements only when JS is available
     document.documentElement.classList.add('js');
@@ -1729,6 +1741,8 @@
         if (evEl) evEl.style.display = s.event     ? 'block' : 'none';
         const wmEl = document.getElementById('dp-worldmap');
         if (wmEl) wmEl.style.display = s.worldmap  ? 'block' : 'none';
+        const fcEl = document.getElementById('dp-fan-count');
+        if (fcEl) fcEl.style.display = (key === 'live') ? 'block' : 'none';
         if (updateDesc !== false && descEl && s.desc) {
           descEl.style.opacity = '0';
           setTimeout(function() { descEl.innerHTML = s.desc; descEl.style.opacity = '1'; }, 110);
@@ -1805,8 +1819,75 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(function() {});
+      navigator.serviceWorker.register('/sw.js').catch(function(err) {
+        // Log unexpected failures for debugging (not shown to user)
+        if (err && err.name !== 'SecurityError') console.warn('[SW]', err.message);
+      });
     }
+  </script>
+
+  <!-- PostHog Analytics — deferred to end of body, no render-blocking -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId setPersonPropertiesForFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init("phc_dyzmnJIRrL8CKVverRnJgngpEOvPgQdMM1AmZbfNdJH", { api_host: "https://eu.i.posthog.com", person_profiles: "identified_only" });
+  </script>
+  <!-- Microsoft Clarity — deferred to end of body -->
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "vwbqr4zdzn");
+  </script>
+
+  <!-- PostHog event capture — CTAs, demo, FAQ, comparison -->
+  <script>
+    (function() {
+      function ph(event, props) {
+        if (typeof posthog === 'undefined') return;
+        posthog.capture(event, props || {});
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        // Primary CTAs
+        document.querySelectorAll('a[href="start.html"]').forEach(function(el) {
+          el.addEventListener('click', function() {
+            ph('cta_click', { label: el.textContent.trim(), location: el.closest('section,nav,footer') ? (el.closest('[id]') || {id:'unknown'}).id : 'unknown' });
+          });
+        });
+
+        // Demo proof line interactions
+        document.querySelectorAll('.proof-line').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            ph('demo_proof_click', { proof: btn.dataset.proof });
+          });
+        });
+
+        // FAQ interactions (via faqList delegation)
+        const faqList = document.getElementById('faqList');
+        if (faqList) {
+          faqList.addEventListener('click', function(e) {
+            const btn = e.target.closest('.faq-q');
+            if (!btn) return;
+            const isNowOpen = btn.getAttribute('aria-expanded') === 'true';
+            if (isNowOpen) ph('faq_open', { question: btn.textContent.replace(/[\u2039\u203a]/g, '').trim().slice(0, 80) });
+          }, true); // capture phase so this fires after the toggle handler
+        }
+
+        // Linktree import CTA
+        document.querySelectorAll('a[href*="import=linktree"]').forEach(function(el) {
+          el.addEventListener('click', function() { ph('linktree_import_click'); });
+        });
+
+        // Pricing CTAs
+        document.querySelectorAll('.pricing-card a').forEach(function(el) {
+          el.addEventListener('click', function() {
+            const tier = el.closest('.pricing-card').querySelector('.pricing-card__tier');
+            ph('pricing_cta_click', { tier: tier ? tier.textContent.trim() : 'unknown' });
+          });
+        });
+      });
+    })();
   </script>
 </body>
 </html>
