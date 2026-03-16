@@ -1316,6 +1316,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <div class="step" id="stepDone">
       <div class="step-eyebrow">You're live</div>
       <h1 class="step-title" id="doneTitle">Your page<br>is real.</h1>
+      <div id="doneSubline" style="display:none;font-size:13px;font-weight:500;color:var(--acc);margin-top:6px;letter-spacing:0.01em;"></div>
 
       <div class="v2-done-pill" id="v2DonePill">
         <span id="v2DoneUrl">ablemusic.co/artist</span>
@@ -1857,6 +1858,25 @@ function initDone() {
   const titleEl = document.getElementById('doneTitle');
   if (titleEl && profile.name) {
     titleEl.innerHTML = profile.name.trim() + '\u2019s page<br>is real.';
+  }
+  // Objective sub-line — reflects the page state the artist chose
+  const sublineEl = document.getElementById('doneSubline');
+  if (sublineEl) {
+    const now = new Date();
+    const rel  = profile.releaseDate ? new Date(profile.releaseDate) : null;
+    const state = profile.stateOverride || (() => {
+      if (rel && now < rel) return 'pre-release';
+      if (rel && now < new Date(rel.getTime() + 14 * 86400000)) return 'live';
+      return 'profile';
+    })();
+    const sublines = {
+      'pre-release': 'Pre-save campaign active.',
+      'live':        'Stream link is live.',
+      'gig':         'Tickets are front and centre.',
+    };
+    const text = sublines[state] || '';
+    sublineEl.textContent = text;
+    sublineEl.style.display = text ? 'block' : 'none';
   }
   // Point "See your page" to the real live profile (with handle for correct preview)
   const viewBtn = document.getElementById('doneViewPageBtn');
