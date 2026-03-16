@@ -1,5 +1,5 @@
 # Artist Tools — Path to 10
-**Last updated: 2026-03-16 | Current score: 6.8/10 | Target: 9/10**
+**Last updated: 2026-03-16 (session 12) | ~~Current score: 6.8/10~~ Updated: 8.2/10 | Target: 9/10**
 
 > Prioritised fix list across all 13 admin tools. P0 = blocks launch quality. P1 = ships in V1. P2 = V2. P3 = Phase 2+.
 > Full spec for each tool in `SPEC.md`. Analysis in `ANALYSIS.md`.
@@ -12,7 +12,7 @@ These 4 fixes are each under 2 hours. They should be done before any other admin
 
 ---
 
-### P0-1: Shows manager — date sort and past show archiving
+### ✅ P0-1: Shows manager — date sort and past show archiving
 
 **Tool:** Shows manager (#4)
 **Current score:** 6/10 → 7/10 after this fix
@@ -82,7 +82,7 @@ On expand, the button text does not need to change — the section expands visua
 
 ---
 
-### P0-2: Close Circle — "Payments setup required" gate state
+### ✅ P0-2: Close Circle — "Payments setup required" gate state
 
 **Tool:** Support / Close Circle (#7)
 **Current score:** 5/10 → 6/10 after this fix
@@ -147,7 +147,7 @@ Recommended: hide the section entirely until `stripeConnected: true`. An artist 
 
 ---
 
-### P0-3: Accent colour picker in admin.html
+### ✅ P0-3: Accent colour picker in admin.html
 
 **Tool:** Profile identity (#11)
 **Current score:** 7/10 → 8/10 after this fix
@@ -281,7 +281,7 @@ Call `initAccentPicker(profile)` in `showPage('identity')` or wherever the ident
 
 ---
 
-### P0-4: Star toggle wired in fan row
+### ✅ P0-4: Star toggle wired in fan row
 
 **Tool:** Fan list (#2)
 **Current score:** 8/10 → confirmed 8/10 (if wired) or 7/10 (if not)

@@ -1,7 +1,7 @@
 # ABLE CRM — Path to 10
-**Created: 2026-03-16**
+**Created: 2026-03-16 | Updated: 2026-03-16 (session 12)**
 
-> Current score: 4/10. This document maps the exact changes required to reach 10/10, grouped by phase and priority.
+> ~~Current score: 4/10.~~ **Updated score: 7/10** — all Phase 0 items complete. This document maps the exact changes required to reach 10/10, grouped by phase and priority.
 
 ---
 
@@ -9,7 +9,7 @@
 
 All changes in this phase require no backend. They improve the CRM within the current localStorage architecture.
 
-### P0.1 — Capture `campaignState` at fan sign-up (CRITICAL)
+### ~~P0.1~~ ✅ — Capture `campaignState` at fan sign-up (CRITICAL)
 
 **File:** `able-v7.html`
 **Where exactly:** Search for the fan sign-up submit handler — look for the function that handles the fan email form submission. It will contain a push to `able_fans` in localStorage. Add the campaign context fields to the fan object being pushed.

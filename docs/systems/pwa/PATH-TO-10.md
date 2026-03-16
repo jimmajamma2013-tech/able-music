@@ -1,5 +1,5 @@
 # ABLE — PWA / Installability: Path to 10
-**Created: 2026-03-16 | Updated: 2026-03-16 | Current: 2/10 | Spec-complete target: 8.5/10**
+**Created: 2026-03-16 | Updated: 2026-03-16 (session 12) | ~~Current: 2/10~~ Updated: 5/10 (P0 complete) | Spec-complete target: 8.5/10**
 
 > This is a copy-paste implementation guide. Every code block is ready to use. The spec is done — this PATH-TO-10 is the literal checklist to get from 0 to deployed.
 
@@ -12,7 +12,7 @@ These are static file additions. No JavaScript. No service worker. Just files an
 
 ---
 
-### P0.1 — Create `site.webmanifest`
+### ✅ P0.1 — Create `site.webmanifest`
 
 **File location:** `/manifest.json` (project root — served at `https://ablemusic.co/manifest.json`)
 
@@ -69,7 +69,7 @@ These are static file additions. No JavaScript. No service worker. Just files an
 
 ---
 
-### P0.2 — `<link rel="manifest">` tag
+### ✅ P0.2 — `<link rel="manifest">` tag
 
 **Add to `<head>` of each file listed:**
 
@@ -81,7 +81,7 @@ Files to add this to: `fan.html`, `able-v7.html`, `landing.html`
 
 ---
 
-### P0.3 — iOS meta tags for Add to Home Screen
+### ✅ P0.3 — iOS meta tags for Add to Home Screen
 
 **Add to `<head>` of `fan.html` (required) and `able-v7.html` (recommended):**
 
