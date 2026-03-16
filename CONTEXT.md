@@ -43,7 +43,7 @@ Single-developer + AI agents. Active file = ship immediately.
 
 | Page | Build spec | Score |
 |---|---|---|
-| `able-v7.html` (profile) | `docs/pages/profile/DESIGN-SPEC.md` | 9.7/10 |
+| `able-v7.html` (profile) | `docs/pages/profile/SPEC.md` | 9.7/10 |
 | `admin.html` | `docs/pages/admin/DESIGN-SPEC.md` | 9.7/10 |
 | `start.html` | `docs/pages/onboarding/DESIGN-SPEC.md` | 9.9/10 |
 | `landing.html` | `docs/pages/landing/DESIGN-SPEC.md` | 9.65/10 |
@@ -72,6 +72,7 @@ Single-developer + AI agents. Active file = ship immediately.
 | PWA | `docs/systems/pwa/SPEC.md` | in progress |
 | Team operating system | `docs/systems/team/TEAM.md` | 9.2/10 |
 | AI agent infrastructure | `docs/systems/ai-agents/AI-AGENTS.md` | 9.4/10 |
+| Instagram data + leads | `docs/systems/instagram-strategy/INSTAGRAM-DATA-AND-LEADS.md` | 9.6/10 |
 
 ### V6 core docs — still authoritative for product truth (not superseded)
 1. `docs/v6/core/V6_BUILD_AUTHORITY.md` — resolved design decisions
@@ -80,7 +81,7 @@ Single-developer + AI agents. Active file = ship immediately.
 4. `docs/v6/core/COPY_AND_DESIGN_PHILOSOPHY.md` — copy voice, banned phrases
 
 ### **DEPRECATED** — do not use for build decisions
-- `docs/v6/surfaces/ARTIST_PROFILE.md` → superseded by `docs/pages/profile/DESIGN-SPEC.md`
+- `docs/v6/surfaces/ARTIST_PROFILE.md` → superseded by `docs/pages/profile/SPEC.md`
 - `docs/v6/surfaces/ADMIN.md` → superseded by `docs/pages/admin/DESIGN-SPEC.md`
 - `docs/v6/surfaces/ONBOARDING.md` → superseded by `docs/pages/onboarding/DESIGN-SPEC.md`
 - `docs/v6/surfaces/LANDING.md` → superseded by `docs/pages/landing/DESIGN-SPEC.md`
@@ -88,6 +89,8 @@ Single-developer + AI agents. Active file = ship immediately.
 ### Orientation
 5. `docs/STATUS.md` — current build state (what's built, what's next)
 6. `CLAUDE.md` — working rules and constraints
+7. `docs/FILE-STRUCTURE.md` — complete docs navigation map (347 files)
+8. `docs/INDEX.md` — alphabetical index of every document
 
 ---
 
