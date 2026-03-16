@@ -2387,6 +2387,14 @@ body::before {
         <div class="gig-countdown" id="gigCountdown"><div class="gig-countdown-fill" id="gigCountdownFill"></div></div>
         <div class="gig-countdown-label" id="gigCountdownLabel"></div>
 
+        <!-- Auto-gig nudge: fires when a show is today but gig mode is not active -->
+        <div id="autoGigNudge" style="display:none;margin-top:10px;padding:10px 14px;border-radius:10px;background:rgba(var(--acc-rgb),.07);border:1px solid rgba(var(--acc-rgb),.18);font-size:12px;color:var(--dash-t2);line-height:1.5;">
+          <strong id="autoGigNudgeShow" style="color:var(--dash-text);font-size:13px;display:block;margin-bottom:4px;"></strong>
+          You have a show today. Gig mode puts tickets front and centre.
+          <button onclick="setGigActive(true);document.getElementById('autoGigNudge').style.display='none';"
+                  style="display:block;margin-top:8px;background:none;border:1px solid rgba(var(--acc-rgb),.4);border-radius:7px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--acc);cursor:pointer;font-family:var(--font);">Turn on now →</button>
+        </div>
+
         <div style="margin-top:14px;">
           <button class="tb-btn tb-btn-acc" style="width:100%;" onclick="saveCampaignHQ()">Update your page →</button>
         </div>
@@ -4586,7 +4594,7 @@ function toggleGigHQ() {
   const isActive = strip.classList.contains('active');
   setGigActive(!isActive);
 }
-function setGigActive(on) {
+function setGigActive(on, source) {
   const strip = document.getElementById('gigStrip');
   const hint  = document.getElementById('gigHint');
   if (!strip) return;
@@ -4599,15 +4607,84 @@ function setGigActive(on) {
     }
     const exp = Date.now() + 86400000;
     setLS(GIG_KEY, exp);
-    if (hint) hint.textContent = 'Active — expires in 24 hrs. Your tickets CTA is front and centre.';
+    localStorage.setItem('able_gig_source', source || 'manual');
+    const src = source === 'auto' ? 'Auto-activated from your shows.' : 'Active — expires in 24 hrs. Your tickets CTA is front and centre.';
+    if (hint) hint.textContent = src;
     updateChqPill('gig');
     tickGigCountdown(exp);
   } else {
     setLS(GIG_KEY, 0);
+    localStorage.removeItem('able_gig_source');
     if (hint) hint.textContent = 'Flip this on show day — puts tickets front and centre. Auto-expires in 24 hrs.';
     const data = safeLS(V3_KEY, {});
     updateChqPill(computeEffectiveState(data));
     clearGigCountdown();
+  }
+}
+
+function checkAutoGig() {
+  const now = Date.now();
+  const gigExpires = parseInt(localStorage.getItem(GIG_KEY) || '0', 10);
+  const isGigActive = gigExpires > now;
+  const gigSource = localStorage.getItem('able_gig_source') || 'manual';
+
+  // If manually set, respect it
+  if (isGigActive && gigSource === 'manual') {
+    document.getElementById('autoGigNudge') && (document.getElementById('autoGigNudge').style.display = 'none');
+    return;
+  }
+
+  const shows = safeLS('able_shows', []);
+  const today = new Date().toISOString().split('T')[0];
+  const todayShows = shows.filter(s => s.date === today);
+  if (!todayShows.length) {
+    document.getElementById('autoGigNudge') && (document.getElementById('autoGigNudge').style.display = 'none');
+    return;
+  }
+
+  const show = todayShows[0];
+
+  // Try to compute activation time from doorsTime
+  let activationMs = null;
+  if (show.doorsTime) {
+    const m = show.doorsTime.match(/(\d{1,2}):(\d{2})/);
+    if (m) {
+      const d = new Date(today);
+      d.setHours(parseInt(m[1], 10), parseInt(m[2], 10), 0, 0);
+      activationMs = d.getTime();
+    }
+  }
+  // Default: noon if no doors time
+  if (!activationMs) {
+    const d = new Date(today);
+    d.setHours(12, 0, 0, 0);
+    activationMs = d.getTime();
+  }
+
+  const autoExpiry = activationMs + 4 * 3600000; // 4 hours after doors
+
+  if (now >= activationMs && now < autoExpiry) {
+    // Auto-activate if not already active
+    if (!isGigActive) {
+      setGigActive(true, 'auto');
+    }
+    document.getElementById('autoGigNudge') && (document.getElementById('autoGigNudge').style.display = 'none');
+  } else if (now < activationMs) {
+    // Pre-doors: show nudge
+    if (!isGigActive) {
+      const nudge = document.getElementById('autoGigNudge');
+      const label = document.getElementById('autoGigNudgeShow');
+      if (nudge) {
+        if (label) label.textContent = show.venue ? `${show.venue}${show.city ? ', ' + show.city : ''}` : 'Show tonight';
+        nudge.style.display = 'block';
+      }
+    } else {
+      document.getElementById('autoGigNudge') && (document.getElementById('autoGigNudge').style.display = 'none');
+    }
+  } else {
+    // Show is over — clear auto gig
+    if (isGigActive && gigSource === 'auto') setGigActive(false);
+    document.getElementById('autoGigNudge') && (document.getElementById('autoGigNudge').style.display = 'none');
   }
 }
 
@@ -6645,6 +6722,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const _storedFans = JSON.parse(localStorage.getItem(FANS_KEY) || '[]');
   if (_storedFans.length) syncFans(_storedFans);
   initCampaignHQ();
+  checkAutoGig();
+  setInterval(checkAutoGig, 60000); // re-check every minute for real-time activation
   loadRealStats();
   loadActivityFeed();
   renderFanBody();

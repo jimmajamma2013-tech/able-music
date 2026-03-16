@@ -10408,6 +10408,66 @@
       draw()
     }
 
+    // Auto-gig: set able_gig_expires from today's shows, re-checked every 60s
+    function checkAutoGig() {
+      const GIG_KEY = 'able_gig_expires'
+      const now = Date.now()
+      const gigExpires = parseInt(localStorage.getItem(GIG_KEY) || '0', 10)
+      const isActive = gigExpires > now
+      const gigSource = localStorage.getItem('able_gig_source') || 'manual'
+
+      // Manual gig takes priority — do not override it
+      if (isActive && gigSource === 'manual') return
+
+      const shows = safeLS('able_shows', [])
+      const today = new Date().toISOString().split('T')[0]
+      const todayShow = shows.find(s => s.date === today)
+
+      if (!todayShow) {
+        // Clear any stale auto-gig
+        if (isActive && gigSource === 'auto') {
+          localStorage.setItem(GIG_KEY, '0')
+          localStorage.removeItem('able_gig_source')
+        }
+        return
+      }
+
+      let activationMs = null
+      if (todayShow.doorsTime) {
+        const m = todayShow.doorsTime.match(/(\d{1,2}):(\d{2})/)
+        if (m) {
+          const d = new Date(today)
+          d.setHours(parseInt(m[1], 10), parseInt(m[2], 10), 0, 0)
+          activationMs = d.getTime()
+        }
+      }
+      if (!activationMs) {
+        const d = new Date(today)
+        d.setHours(12, 0, 0, 0)
+        activationMs = d.getTime()
+      }
+
+      const autoExpiry = activationMs + 4 * 3600000 // 4 hours after doors
+
+      if (now >= activationMs && now < autoExpiry) {
+        if (!isActive) {
+          localStorage.setItem(GIG_KEY, autoExpiry.toString())
+          localStorage.setItem('able_gig_source', 'auto')
+          // Re-render to reflect gig state
+          const profile = getProfile()
+          renderHero(profile)
+          renderFanCapture(profile)
+        }
+      } else if (now >= autoExpiry && isActive && gigSource === 'auto') {
+        // Show over — clear
+        localStorage.setItem(GIG_KEY, '0')
+        localStorage.removeItem('able_gig_source')
+        const profile = getProfile()
+        renderHero(profile)
+        renderFanCapture(profile)
+      }
+    }
+
     function init() {
       // Generate stable device ID on first load — used for Supabase migration (§6.2)
       if (!localStorage.getItem('able_artist_id')) {
@@ -10485,6 +10545,10 @@
       patchFanFormConfetti()
       respectReducedMotion()
       _initClipPlayerEvents()
+
+      // Auto-gig: activate from shows list when on show day
+      checkAutoGig()
+      setInterval(checkAutoGig, 60000)
 
       // Track page view
       trackView()
