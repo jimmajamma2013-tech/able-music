@@ -172,6 +172,7 @@
       --color-text-2:      rgba(240,237,232,0.75);
       --color-text-3:      rgba(240,237,232,0.55);
       --backdrop:          blur(28px) saturate(180%);
+      --shadow-card:       0 2px 12px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.10);
       /* Glass panels are solid dark — editing on glass must be readable */
       --color-panel:       #1a1a24;
       --color-panel-raised:#22222e;
@@ -2132,6 +2133,17 @@
       width: 100%;
       border: none;
       display: block;
+    }
+    /* Glass theme: embed containers get a glass-compatible background (backdrop-filter
+       doesn't propagate into iframes — this keeps them from looking opaque/wrong) */
+    [data-theme="glass"] .release-card__spotify-embed,
+    [data-theme="glass"] .release-card__soundcloud-embed,
+    [data-theme="glass"] .release-card__yt-embed-wrap {
+      backdrop-filter: var(--backdrop);
+      -webkit-backdrop-filter: var(--backdrop);
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: var(--r-lg, 16px);
+      overflow: hidden;
     }
 
     /* YouTube — thumbnail with branded play button */

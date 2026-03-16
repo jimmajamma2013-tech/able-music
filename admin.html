@@ -117,7 +117,7 @@ body::before {
 .sb-item {
   display:flex; align-items:center; gap:10px;
   padding:9px 12px; border-radius:10px; font-size:13px; font-weight:500;
-  color:rgba(255,255,255,.6); cursor:pointer; transition:all .14s; text-decoration:none;
+  color:rgba(255,255,255,.6); cursor:pointer; transition:background-color 140ms var(--ease,ease), color 140ms var(--ease,ease); text-decoration:none;
   border:none; background:none; font-family:var(--font); text-align:left; width:100%;
 }
 .sb-item:hover { background:rgba(255,255,255,.07); color:#fff; }
@@ -133,7 +133,7 @@ body::before {
   width:100%; padding:10px; border-radius:10px; font-size:12px; font-weight:600;
   background:rgba(var(--acc-rgb),.12); color:var(--acc);
   border:1px solid rgba(var(--acc-rgb),.25); cursor:pointer;
-  font-family:var(--font); transition:all .16s; text-decoration:none;
+  font-family:var(--font); transition:background-color 160ms var(--ease,ease); text-decoration:none;
 }
 .sb-view-btn:hover { background:rgba(var(--acc-rgb),.2); }
 
@@ -160,7 +160,7 @@ body::before {
 .topbar-edit-cta:hover { opacity:0.85; }
 .tb-btn {
   padding:7px 16px; border-radius:100px; font-size:12px; font-weight:600;
-  cursor:pointer; font-family:var(--font); transition:all .16s;
+  cursor:pointer; font-family:var(--font); transition:transform 160ms var(--ease,ease), box-shadow 160ms var(--ease,ease), border-color 160ms var(--ease,ease), color 160ms var(--ease,ease);
 }
 .tb-btn-ghost { background:none; border:1.5px solid var(--border); color:var(--t2); }
 .tb-btn-ghost:hover { border-color:var(--bm); color:var(--text); }
@@ -989,6 +989,9 @@ body::before {
   .page { padding:16px 14px; }
   .page-header { padding-bottom:16px; margin-bottom:16px; }
   .stats-row { grid-template-columns:1fr 1fr; gap:8px; margin-bottom:24px; }
+}
+@media (max-width:420px) {
+  .stats-row { grid-template-columns:1fr; }
   .stat-card { padding:14px 14px; }
   .stat-value { font-size:26px; }
   .mode-cards { grid-template-columns:1fr; }
@@ -6759,6 +6762,12 @@ function closeAdminSheet() {
   document.getElementById('adminSheet').hidden = true;
   document.getElementById('adminSheetBackdrop').hidden = true;
 }
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && !document.getElementById('adminSheet').hidden) {
+    closeAdminSheet();
+  }
+});
 
 /* ── TOAST ── */
 let _toastTimer;
