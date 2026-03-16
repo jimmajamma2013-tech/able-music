@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap">
 
   <!-- Meta -->
-  <meta name="description" content="Artist profile powered by ABLE">
+  <meta name="description" id="meta-description" content="Artist profile powered by ABLE">
   <meta name="robots" content="index,follow">
 
   <!-- Open Graph -->
@@ -27,10 +27,15 @@
   <meta property="og:title"       id="og-title"       content="Artist on ABLE">
   <meta property="og:description" id="og-description" content="Music, events, and more — direct from the artist.">
   <meta property="og:url"         id="og-url"         content="">
-  <meta property="og:image"       id="og-image"       content="">
-  <meta name="twitter:card"       content="summary_large_image">
-  <meta name="twitter:title"      id="tw-title"       content="Artist on ABLE">
+  <meta property="og:image"       id="og-image"       content="https://ablemusic.co/og-fallback.jpg">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt"    id="og-image-alt"  content="Artist on ABLE">
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       id="tw-title"       content="Artist on ABLE">
   <meta name="twitter:description" id="tw-description" content="Music, events, and more — direct from the artist.">
+  <meta name="twitter:image"       id="tw-image"       content="https://ablemusic.co/og-fallback.jpg">
+  <meta name="twitter:site"        content="@ablefm">
 
   <!-- PWA -->
   <link rel="manifest" href="/manifest.json">
@@ -9443,23 +9448,35 @@
 
     // === SEO / STRUCTURED DATA (§12) =============================
 
+    const FALLBACK_OG = 'https://ablemusic.co/og-fallback.jpg'
+
     function injectSEO(profile) {
-      const name = profile.name || 'Artist'
-      const bio  = profile.bio  || 'Music, events, and more — direct from the artist.'
-      const handle = (profile.handle || name).toLowerCase().replace(/[^a-z0-9]+/g, '-')
-      const url  = `https://ablemusic.co/${handle}`
-      const rawArt = profile.topCard?.artworkUrl || ''
+      const name    = profile.name || 'Artist'
+      const rawBio  = profile.bio  || ''
+      const handle  = (profile.handle || name).toLowerCase().replace(/[^a-z0-9]+/g, '-')
+      const url     = `https://ablemusic.co/${handle}`
+      const rawArt  = profile.topCard?.artworkUrl || ''
       // Only use artwork as OG image if it's a real https URL — data: URIs break social previews
-      const art = rawArt.startsWith('https://') ? rawArt : 'https://ablemusic.netlify.app/og-default.jpg'
+      const ogImage = (rawArt.startsWith('https://') || rawArt.startsWith('http://'))
+        ? rawArt
+        : FALLBACK_OG
+
+      // Cap description at 152 chars for clean snippet truncation
+      const desc = rawBio
+        ? rawBio.replace(/\s+/g, ' ').trim().substring(0, 152) + (rawBio.length > 152 ? '…' : '')
+        : `${name}'s music, upcoming shows, and more. Follow on ABLE for direct updates.`
 
       const setMeta = (id, val) => { const el = document.getElementById(id); if (el) el.setAttribute('content', val); }
       setMeta('og-title',       `${name} on ABLE`)
-      setMeta('og-description', bio)
+      setMeta('og-description', desc)
       setMeta('og-url',         url)
-      setMeta('og-image',       art)
+      setMeta('og-image',       ogImage)
+      setMeta('og-image-alt',   `${name} on ABLE — music, shows & more`)
       setMeta('tw-title',       `${name} on ABLE`)
-      setMeta('tw-description', bio)
-      document.title = `${name} — ABLE`
+      setMeta('tw-description', desc)
+      setMeta('tw-image',       ogImage)
+      setMeta('meta-description', desc)
+      document.title = `${name} — Music, shows & more | ABLE`
 
       // JSON-LD: MusicGroup + upcoming Event entries
       const schema = {
