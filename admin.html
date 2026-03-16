@@ -2025,9 +2025,9 @@ body::before {
         <div class="stat-delta skel" id="statFansDelta"> </div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Your CTR vs avg</div>
+        <div class="stat-label">Click-through rate</div>
         <div class="stat-value" id="statCtr">—</div>
-        <div class="stat-delta">industry avg 4.2%</div>
+        <div class="stat-delta" id="statCtrDelta"> </div>
       </div>
     </div>
 
@@ -2217,7 +2217,7 @@ body::before {
       <!-- Recent activity — now driven by real click data -->
       <div class="dash-card">
         <div class="dc-head">
-          <div class="dc-title"><span class="stat-live-dot"></span>Live activity</div>
+          <div class="dc-title">Recent activity</div>
         </div>
         <div class="dc-body">
           <div class="activity-list" id="activityFeed">
@@ -2702,7 +2702,7 @@ body::before {
       <div class="stat-card"><div class="stat-label">Visits</div><div class="stat-value skel" id="aStatViews"> </div><div class="stat-delta skel" id="aStatViewsD"> </div></div>
       <div class="stat-card"><div class="stat-label">Link clicks</div><div class="stat-value skel" id="aStatClicks"> </div><div class="stat-delta skel" id="aStatCtr"> </div></div>
       <div class="stat-card"><div class="stat-label">Fans joined</div><div class="stat-value skel" id="aStatFans"> </div><div class="stat-delta skel" id="aStatFansD"> </div></div>
-      <div class="stat-card"><div class="stat-label">Click rate</div><div class="stat-value skel" id="aStatRate"> </div><div class="stat-delta">vs 4.2% industry avg</div></div>
+      <div class="stat-card"><div class="stat-label">Click rate</div><div class="stat-value skel" id="aStatRate"> </div><div class="stat-delta" id="aStatRateDelta"> </div></div>
     </div>
     <!-- Free: top CTAs clicked -->
     <div class="dash-card" style="margin-bottom:20px;">
@@ -4915,7 +4915,7 @@ function loadActivityFeed() {
     feed.innerHTML = `<div class="empty-state" style="padding:20px 0 8px;">
       <div class="empty-state__icon">📡</div>
       <div class="empty-state__title">Nothing yet</div>
-      <div class="empty-state__body">Put your link in your Instagram bio — the first tap shows up here in real time.</div>
+      <div class="empty-state__body">Put your link in your Instagram bio — the first tap shows up here.</div>
     </div>`;
     return;
   }
@@ -5156,11 +5156,34 @@ function removeMoment(id) {
   ywRenderMomentList(p)
 }
 
+/* ── MIGRATE LEGACY WIZARD KEY ── */
+(function migrateWizardKey() {
+  try {
+    const legacy = localStorage.getItem('able_profile');
+    if (!legacy) return;
+    const v3 = localStorage.getItem('able_v3_profile');
+    if (!v3 || v3 === '{}') {
+      // No v3 profile yet — promote the legacy key
+      localStorage.setItem('able_v3_profile', legacy);
+    } else {
+      // v3 exists — merge any fields the legacy key has that v3 doesn't
+      const legacyData = JSON.parse(legacy);
+      const v3data = JSON.parse(v3);
+      let merged = false;
+      ['name','bio','accent','genre','genres','location'].forEach(k => {
+        if (legacyData[k] && !v3data[k]) { v3data[k] = legacyData[k]; merged = true; }
+      });
+      if (merged) localStorage.setItem('able_v3_profile', JSON.stringify(v3data));
+    }
+    localStorage.removeItem('able_profile');
+  } catch(e) { /* silent — never break on migration */ }
+})();
+
 /* ── LOAD STATE FROM LOCALSTORAGE ── */
 window.addEventListener('DOMContentLoaded', () => {
   // Hydrate from v3 profile key (wizard or admin saves)
   const v3data = safeLS(V3_KEY, {});
-  const wizData = safeLS('able_profile', {}); // wizard key fallback
+  const wizData = {}; // legacy key already migrated above
 
   const name   = v3data.name   || wizData.name   || 'Your Artist Name';
   const accent = v3data.accent || wizData.accent  || null;

@@ -1151,14 +1151,15 @@
       /* Clamp to 3 lines, expandable */
       display: -webkit-box;
       -webkit-line-clamp: 3;
+      line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      transition: -webkit-line-clamp var(--dur-mid);
     }
 
     .bio-strip__text.expanded {
       display: block;
       -webkit-line-clamp: unset;
+      line-clamp: unset;
       overflow: visible;
     }
 
@@ -1701,7 +1702,7 @@
       margin-bottom: var(--sp-5);
     }
 
-    .fan-capture__form {}
+    .fan-capture__form { display: block; }
 
     .fan-capture__field-wrap {
       display: flex;
@@ -1725,6 +1726,7 @@
                   box-shadow var(--dur-fast) var(--ease-standard),
                   background-color var(--dur-slow) var(--ease-standard); /* #16: paste flash fades 400ms */
       -webkit-appearance: none;
+      appearance: none;
     }
 
     /* Stack input + button vertically on very narrow viewports (iPhone SE width) */
@@ -1773,6 +1775,18 @@
       margin-top: var(--sp-2);
       font-size: var(--text-sm);
       color: var(--color-state-live);
+    }
+
+    .fan-capture__gdpr {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+      line-height: 1.5;
+      margin-top: var(--sp-3);
+    }
+    .fan-capture__gdpr a {
+      color: var(--color-text-2);
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
 
     .fan-capture__trust {
@@ -4786,22 +4800,6 @@
       cursor: pointer;
     }
   </style>
-        <!-- PostHog Analytics -->
-    <script>
-        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId setPersonPropertiesForFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-        posthog.init("phc_dyzmnJIRrL8CKVverRnJgngpEOvPgQdMM1AmZbfNdJH", {
-            api_host: "https://eu.i.posthog.com",
-            person_profiles: "identified_only"
-        });
-    </script>
-    <!-- Microsoft Clarity -->
-    <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "vwbqr4zdzn");
-    </script>
 </head>
 <body>
 
@@ -5038,7 +5036,8 @@
           </div>
           <p class="fan-capture__error" id="fan-error" role="alert" aria-live="polite" hidden></p>
         </form>
-        <p class="fan-capture__trust" id="fan-trust">Just <span id="fan-artist-name">the artist</span>. No spam.</p>
+        <p class="fan-capture__trust" id="fan-trust">Your email goes to <span id="fan-artist-name">the artist</span> — not to ABLE. Unsubscribe any time.</p>
+        <p class="fan-capture__gdpr"><a href="/privacy.html" target="_blank" rel="noopener">Privacy policy</a></p>
         <div class="fan-capture__echo" id="fan-echo" hidden>
           <p class="fan-capture__echo-text" id="fan-echo-text"></p>
           <p class="fan-capture__echo-confirm">You're on the list.</p>
@@ -5243,6 +5242,8 @@
             </button>
           </div>
         </form>
+        <p class="fan-capture__trust" id="fan-trust-2">Your email goes to the artist — not to ABLE. Unsubscribe any time.</p>
+        <p class="fan-capture__gdpr"><a href="/privacy.html" target="_blank" rel="noopener">Privacy policy</a></p>
       </section>
 
       <!-- ======================================================
@@ -6289,7 +6290,7 @@
       if (nameEl)  nameEl.textContent  = profile.name || ''
       if (priceEl) priceEl.textContent = currency + amount + '/month'
       if (introEl) introEl.textContent = intro
-      if (termsEl) termsEl.textContent = currency + amount + '/month \u00b7 Cancel any time'
+      if (termsEl) termsEl.innerHTML = currency + amount + '/month &middot; Cancel any time &middot; <a href="/privacy.html" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;opacity:0.7;">Privacy policy</a>'
 
       // Open/close sheet
       function openSheet() {
@@ -7690,14 +7691,35 @@
 
     // === VIEW TRACKING ===========================================
 
+    function getSessionId() {
+      let sid = sessionStorage.getItem('able_session_id')
+      if (!sid) {
+        sid = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36))
+        sessionStorage.setItem('able_session_id', sid)
+      }
+      return sid
+    }
+
+    function isOwnerVisit() {
+      // Suppress analytics when the artist is viewing their own page
+      try {
+        const artistId = localStorage.getItem('able_artist_id')
+        const profileId = safeLS('able_v3_profile', {}).artistId
+        return !!(artistId && profileId && artistId === profileId)
+      } catch { return false }
+    }
+
     function trackView() {
+      if (isOwnerVisit()) return // anti-self-visit
       const source = getUtmSource()
+      const sessionId = getSessionId()
       try {
         const views = safeLS('able_views', [])
-        views.push({ ts: Date.now(), source })
+        views.push({ ts: Date.now(), source, sessionId })
         if (views.length > 500) views.splice(0, views.length - 500)
         localStorage.setItem('able_views', JSON.stringify(views))
       } catch (_) {}
+
       sbSyncView(source) // async fire-and-forget
     }
 
@@ -7762,6 +7784,8 @@
       if (submitLabel) submitLabel.textContent = variant.cta
       if (btn2Span) btn2Span.textContent = variant.cta
       if (trustEl) trustEl.textContent = trustText
+      const trustEl2 = document.getElementById('fan-trust-2')
+      if (trustEl2) trustEl2.textContent = trustText
 
       // Task 5.5 — apply artist-customised sub-copy when set
       const subEl = document.getElementById('fan-capture-sub')
@@ -7840,6 +7864,15 @@
 
           // Write to localStorage (double_opted_in: false — confirmed via email later)
           const signupSource = getUtmSource()
+          const _cp = safeLS('able_v3_profile', {})
+          const campaignState = (function() {
+            if (_cp.stateOverride) return _cp.stateOverride
+            const now = Date.now()
+            const rd = _cp.releaseDate ? new Date(_cp.releaseDate).getTime() : null
+            if (rd && now < rd) return 'pre-release'
+            if (rd && now < rd + 14 * 24 * 60 * 60 * 1000) return 'live'
+            return 'profile'
+          })()
           try {
             const fans = safeLS('able_fans', [])
             fans.push({
@@ -7847,6 +7880,7 @@
               email,
               ts: Date.now(),
               source: signupSource,
+              campaignState,
               consent: true,
               consentMethod: 'email_field',
               jurisdiction: 'GDPR',
@@ -9150,7 +9184,9 @@
       const bio  = profile.bio  || 'Music, events, and more — direct from the artist.'
       const handle = (profile.handle || name).toLowerCase().replace(/[^a-z0-9]+/g, '-')
       const url  = `https://ablemusic.co/${handle}`
-      const art  = profile.topCard?.artworkUrl || ''
+      const rawArt = profile.topCard?.artworkUrl || ''
+      // Only use artwork as OG image if it's a real https URL — data: URIs break social previews
+      const art = rawArt.startsWith('https://') ? rawArt : 'https://ablemusic.netlify.app/og-default.jpg'
 
       const setMeta = (id, val) => { const el = document.getElementById(id); if (el) el.setAttribute('content', val); }
       setMeta('og-title',       `${name} on ABLE`)
