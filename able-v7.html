@@ -4873,6 +4873,26 @@
     .toast-action { color: currentColor; text-decoration: underline; margin-left: 4px; }
     .toast-close { background: none; border: none; color: currentColor; cursor: pointer; opacity: 0.6; padding: 0; margin-left: 4px; }
   </style>
+
+  <!-- PostHog analytics — EU Cloud, manual events only, privacy-first -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_dyzmnJIRrL8CKVverRnJgngpEOvPgQdMM1AmZbfNdJH', {
+      api_host: 'https://eu.i.posthog.com',
+      autocapture: false,
+      capture_pageview: false,
+      disable_session_recording: true,
+      persistence: 'localStorage+cookie',
+      bootstrap: {
+        distinctID: (function() {
+          try {
+            var p = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+            return p.slug || null;
+          } catch(_) { return null; }
+        })(),
+      },
+    });
+  </script>
 </head>
 <body>
 
@@ -7817,20 +7837,36 @@
 
     // === CLICK TRACKING ==========================================
 
-    function trackClick(label, type, source) {
+    function trackClick(label, type, url) {
+      const _src = getUtmSource()
+      const _sid = getSessionId()
       try {
         let clicks = safeLS('able_clicks', [])
-        clicks = rotateEvents('able_clicks', clicks, 90) // 90-day retention
+        clicks = rotateEvents('able_clicks', clicks, 180) // 180-day retention
         clicks.push({
           id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2),
           label,
           type,
           ts: Date.now(),
-          source: source || getUtmSource()
+          source: _src,
+          sessionId: _sid,
+          ...(url ? { url } : {}),
         })
         localStorage.setItem('able_clicks', JSON.stringify(clicks))
       } catch (_) {}
-      sbSyncClick(label, type, source || getUtmSource()) // async fire-and-forget
+      // PostHog cta_tap
+      try {
+        if (typeof posthog !== 'undefined') {
+          posthog.capture('cta_tap', {
+            session_id: _sid,
+            source:     _src,
+            label:      label,
+            type:       type,
+            url:        url || null,
+          })
+        }
+      } catch (_) {}
+      sbSyncClick(label, type, _src) // async fire-and-forget
     }
 
     // === VIEW TRACKING ===========================================
@@ -7863,17 +7899,33 @@
     }
 
     function trackView() {
-      if (isOwnerVisit()) return // anti-self-visit
+      const _isArtist = isOwnerVisit()
       const source = getUtmSource()
       const sessionId = getSessionId()
+      if (!_isArtist) {
+        try {
+          let views = safeLS('able_views', [])
+          views = rotateEvents('able_views', views, 90) // 90-day retention
+          // Session dedup — one view per tab session
+          if (!views.some(v => v.sessionId === sessionId)) {
+            views.push({ ts: Date.now(), source, sessionId })
+            localStorage.setItem('able_views', JSON.stringify(views))
+          }
+        } catch (_) {}
+        sbSyncView(source) // async fire-and-forget
+      }
+      // PostHog page_view — fired always (artist flag lets us filter in PostHog)
       try {
-        let views = safeLS('able_views', [])
-        views = rotateEvents('able_views', views, 90) // 90-day retention
-        views.push({ ts: Date.now(), source, sessionId })
-        localStorage.setItem('able_views', JSON.stringify(views))
+        if (typeof posthog !== 'undefined') {
+          posthog.capture('page_view', {
+            session_id:  sessionId,
+            source:      source,
+            referrer:    document.referrer || null,
+            is_artist:   _isArtist,
+            artist_slug: (function() { try { return safeLS('able_v3_profile', {}).slug || null; } catch(_) { return null; } })(),
+          })
+        }
       } catch (_) {}
-
-      sbSyncView(source) // async fire-and-forget
     }
 
     async function sbSyncView(source) {
@@ -8095,6 +8147,17 @@
 
           // Write artist to fan.html following list (enables real data in fan dashboard)
           writeFanFollow()
+
+          // PostHog fan_signup
+          try {
+            if (typeof posthog !== 'undefined') {
+              posthog.capture('fan_signup', {
+                session_id:  getSessionId(),
+                source:      signupSource,
+                artist_slug: (function() { try { return safeLS('able_v3_profile', {}).slug || null; } catch(_) { return null; } })(),
+              })
+            }
+          } catch (_) {}
 
           // Sync to Supabase (fire-and-forget — localStorage is the fallback)
           sbSyncFanSignup(email, signupSource)

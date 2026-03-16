@@ -1098,6 +1098,18 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
         })(window, document, "clarity", "script", "vwbqr4zdzn");
     </script>
+
+  <!-- PostHog analytics — EU Cloud -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_dyzmnJIRrL8CKVverRnJgngpEOvPgQdMM1AmZbfNdJH', {
+      api_host: 'https://eu.i.posthog.com',
+      autocapture: false,
+      capture_pageview: false,
+      disable_session_recording: true,
+      persistence: 'localStorage+cookie',
+    });
+  </script>
 </head>
 <body>
 
@@ -1498,7 +1510,14 @@ function safeLS(key, fallback) {
 }
 function setLS(key, val) {
   try { localStorage.setItem(key, JSON.stringify(val)); return true; }
-  catch (e) { console.error('[ABLE] localStorage write error for "' + key + '"', e); return false; }
+  catch (e) {
+    if (e.name === 'QuotaExceededError') {
+      showWizToast('Your device is running low on storage.', 'amber');
+    } else {
+      console.error('[ABLE] localStorage write error for "' + key + '"', e);
+    }
+    return false;
+  }
 }
 
 /* ── HELPERS ── */
@@ -2045,6 +2064,18 @@ function initDone() {
     const id = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36));
     localStorage.setItem('able_artist_id', id);
   }
+
+  // PostHog wizard_complete
+  try {
+    if (typeof posthog !== 'undefined') {
+      posthog.capture('wizard_complete', {
+        genre:               profile.genres?.[0] || profile.genre || null,
+        cta_type:            profile.ctas?.[0]?.type || null,
+        has_release_date:    Boolean(profile.releaseDate),
+        used_spotify_import: Boolean(safeLS('able_v3_profile', {}).spotifyImported),
+      });
+    }
+  } catch (_) {}
 }
 
 function showDay1ShareCard(profile, url) {
@@ -2316,37 +2347,35 @@ const VIBES = [
 /* PRESETS / THEMES / CTA data removed — V2 wizard does not need them */
 
 /* ── NETWORK STATUS TOAST ── */
-(function() {
-  var _toastEl = null;
-  var _toastTimer = null;
+var _wizToastEl = null;
+var _wizToastTimer = null;
 
-  function showWizToast(msg, tone) {
-    if (!_toastEl) {
-      _toastEl = document.createElement('div');
-      _toastEl.className = 'wiz-toast';
-      _toastEl.innerHTML = '<span class="wiz-toast-dot"></span><span></span>';
-      document.body.appendChild(_toastEl);
-    }
-    clearTimeout(_toastTimer);
-    _toastEl.className = 'wiz-toast wiz-toast--' + (tone || 'amber') + ' visible';
-    _toastEl.querySelector('span:last-child').textContent = msg;
-    if (tone !== 'amber') {
-      _toastTimer = setTimeout(function() { _toastEl.classList.remove('visible'); }, 3000);
-    }
+function showWizToast(msg, tone) {
+  if (!_wizToastEl) {
+    _wizToastEl = document.createElement('div');
+    _wizToastEl.className = 'wiz-toast';
+    _wizToastEl.innerHTML = '<span class="wiz-toast-dot"></span><span></span>';
+    document.body.appendChild(_wizToastEl);
   }
+  clearTimeout(_wizToastTimer);
+  _wizToastEl.className = 'wiz-toast wiz-toast--' + (tone || 'amber') + ' visible';
+  _wizToastEl.querySelector('span:last-child').textContent = msg;
+  if (tone !== 'amber') {
+    _wizToastTimer = setTimeout(function() { _wizToastEl.classList.remove('visible'); }, 3000);
+  }
+}
 
-  window.addEventListener('offline', function() {
+window.addEventListener('offline', function() {
+  showWizToast("No connection — your progress is saved. Finish setup when you're back online.", 'amber');
+});
+window.addEventListener('online', function() {
+  showWizToast('Back online.', 'green');
+});
+if (!navigator.onLine) {
+  document.addEventListener('DOMContentLoaded', function() {
     showWizToast("No connection — your progress is saved. Finish setup when you're back online.", 'amber');
   });
-  window.addEventListener('online', function() {
-    showWizToast('Back online.', 'green');
-  });
-  if (!navigator.onLine) {
-    document.addEventListener('DOMContentLoaded', function() {
-      showWizToast("No connection — your progress is saved. Finish setup when you're back online.", 'amber');
-    });
-  }
-})();
+}
 </script>
 </body>
 </html>
