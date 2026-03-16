@@ -4540,7 +4540,7 @@ async function autoFillFromUrl(rid, rawUrl) {
   let endpoint = null
   let ytVideoId = null
 
-  const isKnown = /youtube\.com|youtu\.be|spotify\.com|soundcloud\.com|vimeo\.com/.test(url)
+  const isKnown = /youtube\.com|youtu\.be|spotify\.com|soundcloud\.com|vimeo\.com|mixcloud\.com/.test(url)
   if (!isKnown) return
 
   if (/youtube\.com|youtu\.be/.test(url)) {
