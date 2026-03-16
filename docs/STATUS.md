@@ -205,7 +205,7 @@
 - **RESEND_API_KEY**: Not set in Netlify env. fan-confirmation.js will silently skip sending. Manual task — James only at resend.com/domains + netlify.com.
 - **No service worker**: PWA is installable (manifest.json + icons exist) but not offline-capable. fan.html home screen promise is half-kept.
 - ~~**noindex missing**~~: ✅ Both admin.html and fan.html already have `<meta name="robots" content="noindex,nofollow">`.
-- **Campaign mode per-mode explanations**: Campaign HQ tooltip exists but individual mode descriptions below arc nodes not yet added.
+- ~~**Campaign mode per-mode explanations**~~: ✅ `MODE_DESCS` object + `#chqModeDesc` wired — mode description updates on every arc state change.
 - ~~**"Preview your page →" link**~~: ✅ `topbarViewBtn` wired — `href` updated with artist handle in `renderProfile()`.
 
 ---

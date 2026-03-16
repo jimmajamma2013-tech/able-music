@@ -7758,7 +7758,8 @@
 
     function trackClick(label, type, source) {
       try {
-        const clicks = safeLS('able_clicks', [])
+        let clicks = safeLS('able_clicks', [])
+        clicks = rotateEvents('able_clicks', clicks, 90) // 90-day retention
         clicks.push({
           id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2),
           label,
@@ -7766,8 +7767,6 @@
           ts: Date.now(),
           source: source || getUtmSource()
         })
-        // FIFO cap at 200
-        if (clicks.length > 200) clicks.splice(0, clicks.length - 200)
         localStorage.setItem('able_clicks', JSON.stringify(clicks))
       } catch (_) {}
       sbSyncClick(label, type, source || getUtmSource()) // async fire-and-forget
@@ -7793,14 +7792,23 @@
       } catch { return false }
     }
 
+    function rotateEvents(key, events, maxDays) {
+      const cutoff = Date.now() - maxDays * 86400000
+      const pruned = events.filter(e => e.ts && e.ts > cutoff)
+      if (pruned.length !== events.length) {
+        try { localStorage.setItem(key, JSON.stringify(pruned)) } catch (_) {}
+      }
+      return pruned
+    }
+
     function trackView() {
       if (isOwnerVisit()) return // anti-self-visit
       const source = getUtmSource()
       const sessionId = getSessionId()
       try {
-        const views = safeLS('able_views', [])
+        let views = safeLS('able_views', [])
+        views = rotateEvents('able_views', views, 90) // 90-day retention
         views.push({ ts: Date.now(), source, sessionId })
-        if (views.length > 500) views.splice(0, views.length - 500)
         localStorage.setItem('able_views', JSON.stringify(views))
       } catch (_) {}
 
@@ -7824,10 +7832,22 @@
 
     function getUtmSource() {
       const params = new URLSearchParams(window.location.search)
-      const src = params.get('src') || params.get('utm_source') || 'direct'
-      // Normalise to frozen taxonomy
-      const map = { reel:'instagram', story:'instagram', post:'instagram', bio:'direct' }
-      return map[src] || (['instagram','tiktok','youtube','qr','email','other'].includes(src) ? src : 'direct')
+      const raw = params.get('src') || params.get('utm_source')
+      if (raw) {
+        const map = { reel:'instagram', story:'instagram', post:'instagram', bio:'direct', ig:'instagram' }
+        return map[raw] || (['instagram','tiktok','youtube','qr','email','other','spotify','twitter','fb','footer'].includes(raw) ? raw : 'direct')
+      }
+      // Referrer fallback — catches Instagram in-app browser when no ?src= param
+      const ref = (document.referrer || '').toLowerCase()
+      if (!ref) return 'direct'
+      if (ref.includes('instagram.com') || ref.includes('l.instagram.com')) return 'instagram'
+      if (ref.includes('tiktok.com') || ref.includes('vm.tiktok.com'))      return 'tiktok'
+      if (ref.includes('twitter.com') || ref.includes('x.com') || ref.includes('t.co')) return 'twitter'
+      if (ref.includes('facebook.com') || ref.includes('fb.me'))             return 'fb'
+      if (ref.includes('youtube.com') || ref.includes('youtu.be'))           return 'youtube'
+      if (ref.includes('spotify.com'))                                        return 'spotify'
+      if (ref.includes('ablemusic.co'))                                       return 'footer'
+      return 'other'
     }
 
     // === CHECKPOINT 4: MAIN CONTENT RENDERING ====================
