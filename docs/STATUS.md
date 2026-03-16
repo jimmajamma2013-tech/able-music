@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-16 (session 12 — brand elevation + P0 sweep) | Update this file at the end of every session.**
+**Updated: 2026-03-16 (session 13 — ai-copy P0 + email consent + fan.html polish) | Update this file at the end of every session.**
 
 ---
 
@@ -211,6 +211,24 @@
 
 ---
 
+## Last session summary (session 13 — ai-copy P0 + email consent + fan.html polish)
+P0 sweep continued. All code-implementable P0 items from PATH-TO-10 files now complete. Draft deployed.
+
+Key changes this session:
+- **ai-copy.js P0 complete**: bio mode → `claude-sonnet-4-6`; `buildSystemPrompt(vibeId, feel)` injects per-vibe and per-feel register context blocks from SPEC.md §3; in-memory IP rate limiting 20 req/24h; `hasBannedPhrase()` detects 14 patterns, drops violating suggestions and logs server-side; `getFallbackSuggestions()` curated bank for all modes/vibes; 422 when all suggestions banned; fallbacks returned on any API failure
+- **able-v7.html email P0.4**: added `consent_ts` (ISO timestamp) and `consent_source` (snake_case) to fan records in both sign-up handlers — alongside existing camelCase fields for backwards compat
+- **fan.html P1.3 pre-release countdown strips**: `renderPreReleaseStrips()` checks `able_v3_profile` (same-browser demo) and followed artist data; renders accent-colour strips above the feed with countdown, release title, and pre-save CTA; max 3 shown with overflow count
+- **fan.html P1.4 source tracking**: feed item click now navigates to `able-v7.html?slug=…&src=fan-dashboard` when no `item.url` set
+- **P0 sweep verification** (many items confirmed already done): analytics sessionId + anti-self-visit + source detection, copy violations (dashboard/superfan), SEO og:image data: URI fix, admin.html title, email P0.5 consent notice + P0.6 fire-and-forget call all already correct
+- **Draft deploy**: `69b88d191628e293cdd116d6--ablemusic.netlify.app`
+
+**Open after session 13:**
+- og-default.jpg — needs Figma creation + Netlify upload (James's task)
+- RESEND_API_KEY — set in Netlify env vars at resend.com + netlify.com (James's task)
+- Supabase wiring — when ready, all localStorage keys map 1:1
+- fan.html P1.2 near-me location input (structural feature)
+- fan.html P1.5 notification bell `fan_last_seen_ts` logic
+
 ## Last session summary (session 12 — brand elevation + P0 sweep)
 Brand improvements and P0 fixes. Draft deployed to Netlify. Playwright smoke tests passed.
 
@@ -224,13 +242,6 @@ Key changes this session:
 - **PATH-TO-10 files updated**: crm (4→7/10), artist-tools (6.8→8.2/10), pwa (2→5/10) — all P0 items marked complete
 - **Launch hardening plan verified**: All 5 tasks already complete in prior sessions
 - **Draft deploy**: `netlify deploy` to `69b8581493b06a12c83eb87a--ablemusic.netlify.app`; all 5 pages + manifest.json return 200; smoke test passed
-
-**Open after session 12:**
-- Error states P0.1 — safeGet/safeSet in start.html (able-v7 + admin have it; start needs audit)
-- Error states P0.3 — offline toast in admin.html + start.html
-- Legal compliance P0.1 — GDPR consent on fan sign-up (full audit vs spec)
-- Analytics P0.3-P0.6 — PostHog events, source detection, retention (PostHog init is admin-only by design)
-- og-default.jpg — needs Figma creation + Netlify upload (James's task)
 
 ---
 
