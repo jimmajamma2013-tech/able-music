@@ -1,165 +1,483 @@
 # Artist Tools — Path to 10
-**Date: 2026-03-16 | Current score: 6.8/10 | Target: 9/10**
+**Last updated: 2026-03-16 | Current score: 6.8/10 | Target: 9/10**
 
 > Prioritised fix list across all 13 admin tools. P0 = blocks launch quality. P1 = ships in V1. P2 = V2. P3 = Phase 2+.
 > Full spec for each tool in `SPEC.md`. Analysis in `ANALYSIS.md`.
 
 ---
 
-## P0 — Blocking (Fix Before Launch)
+## P0 — Blocking (Fix Before Any Artist Touches the Product)
 
-### P0-1: Shows manager — date sort and past show archiving
-**Tool:** Shows manager (#4)
-**Why P0:** Artists entering real shows will immediately notice that entries display in order of entry rather than chronological. An artist with 10 shows entered out of order will see a broken experience. Past shows staying in the active list creates noise.
-
-**Fix:**
-```javascript
-// In renderShowsList() — sort before render:
-shows.sort((a, b) => a.date.localeCompare(b.date));
-
-// Filter: hide past shows by default
-const now = new Date().toISOString().split('T')[0];
-const upcoming = shows.filter(s => s.date >= now);
-const past = shows.filter(s => s.date < now);
-// Render upcoming first, then a collapsed "Past shows ([N])" section
-```
-
-**Effort:** ~1 hour. Pure JS sort and filter.
+These 4 fixes are each under 2 hours. They should be done before any other admin work begins.
 
 ---
 
-### P0-2: Close Circle — "Payments setup required" state
+### P0-1: Shows manager — date sort and past show archiving
+
+**Tool:** Shows manager (#4)
+**Current score:** 6/10 → 7/10 after this fix
+**Effort:** ~1 hour
+
+**Why P0:** An artist entering their first 3 shows will immediately see them in entry order, not chronological order. If they enter a March show first, then a February show, the list shows March above February. This is wrong, obviously wrong, and will cause artists to distrust the admin immediately.
+
+Past shows staying permanently in the active list creates noise. An artist with 5 past shows and 2 upcoming sees a confusing 7-item list with no way to tell what's current.
+
+**Exact JS fix — shows date sort:**
+
+In `renderShowsList()` (or wherever `able_shows` is rendered in `admin.html`), sort before rendering:
+
+```javascript
+// Sort shows chronologically (ascending — soonest first)
+shows.sort((a, b) => new Date(a.date) - new Date(b.date));
+```
+
+`new Date(a.date)` works correctly when `date` is stored as `YYYY-MM-DD` (ISO format). If `date` is stored as a different format, convert to ISO first. Confirm the date format in `able_shows` before applying this fix.
+
+**Alternative using string comparison (faster, works for ISO dates only):**
+
+```javascript
+shows.sort((a, b) => a.date.localeCompare(b.date));
+```
+
+`localeCompare` on ISO date strings (`YYYY-MM-DD`) sorts chronologically because the string comparison matches date order for this format. Use `new Date()` comparison if date format is not confirmed as ISO.
+
+**Exact JS fix — past show archiving:**
+
+After sorting, split into upcoming and past:
+
+```javascript
+const today = new Date().toISOString().split('T')[0]; // 'YYYY-MM-DD'
+const upcoming = shows.filter(s => s.date >= today);
+const past = shows.filter(s => s.date < today);
+
+// Render upcoming shows
+renderShowItems(upcoming, container);
+
+// Render past shows as a collapsed section
+if (past.length > 0) {
+  const pastSection = document.createElement('div');
+  pastSection.className = 'shows-past-section';
+  pastSection.innerHTML = `
+    <button class="shows-past-toggle" onclick="togglePastShows(this)" aria-expanded="false">
+      Past shows (${past.length})
+    </button>
+    <div class="shows-past-list" hidden>
+      <!-- past show items rendered here -->
+    </div>
+  `;
+  renderShowItems(past, pastSection.querySelector('.shows-past-list'));
+  container.appendChild(pastSection);
+}
+```
+
+`togglePastShows(btn)` toggles `aria-expanded` and removes/adds `hidden` on the list div.
+
+**Copy for the past shows toggle button:**
+```
+Past shows (3)
+```
+On expand, the button text does not need to change — the section expands visually. No "Hide past shows" toggle needed. A chevron icon rotating from ▶ to ▼ is sufficient.
+
+**Note on "today" boundary:** A show on today's date is considered upcoming (`s.date >= today`). A show from yesterday is considered past (`s.date < today`). This is correct — an artist entering tonight's show should see it in the upcoming list even if the current time is past the doors time.
+
+---
+
+### P0-2: Close Circle — "Payments setup required" gate state
+
 **Tool:** Support / Close Circle (#7)
-**Why P0:** Close Circle cannot process payments without Stripe. If an artist enables it and shares their page, fans see support packs they can't actually buy. This erodes trust.
+**Current score:** 5/10 → 6/10 after this fix
+**Effort:** ~2 hours
 
-**Fix:** When Close Circle is enabled but no Stripe Connect is active, show:
+**Why P0:** Close Circle cannot process payments without Stripe Connect. If an artist enables Close Circle and puts their ABLE page in their bio, fans who tap the support section see packs they cannot buy. The artist looks unprofessional. The product looks broken. The trust cost is immediate and severe.
+
+The fix is not Stripe (that is P2). The fix is a clear gate state that tells the artist exactly what they've done (set up support packs — correct) and what they still need to do (connect Stripe — required for payments).
+
+**Exact HTML for the "Payments setup required" gate state:**
+
+```html
+<!-- Show this block when Close Circle is enabled AND Stripe is not connected -->
+<div class="close-circle-stripe-gate" id="closeCircleStripeGate">
+  <div class="cc-gate-icon">💳</div>
+  <p class="cc-gate-heading">You've set up your support packs.</p>
+  <p class="cc-gate-body">
+    Now connect Stripe to start receiving payments.<br>
+    <span class="cc-gate-note">0% taken by ABLE. Stripe standard fee only.</span>
+  </p>
+  <a href="https://connect.stripe.com/oauth/authorize?[STRIPE_PARAMS]"
+     class="btn btn-accent cc-connect-btn"
+     target="_blank"
+     rel="noopener">
+    Connect Stripe →
+  </a>
+</div>
 ```
-You've set up your support packs.
-Now connect Stripe to start receiving payments.
-0% taken by ABLE. Stripe standard fee only.
 
-[Connect Stripe →]  (links to Stripe Connect onboarding)
+**Styling notes:**
+- `cc-gate-heading`: weight 600, `--color-text` (not muted — this is important information)
+- `cc-gate-body`: weight 400, `--color-text-2`, 14px
+- `cc-gate-note`: smaller, `--color-text-3` (the "0% taken" line is secondary context)
+- `cc-connect-btn`: accent fill button, full width on mobile
+
+**Logic — when to show this gate state:**
+
+```javascript
+function renderCloseCircleSection(profile) {
+  const isEnabled = profile.closeCircle?.enabled;
+  const isStripeConnected = profile.closeCircle?.stripeConnected; // false until Stripe is wired
+
+  if (isEnabled && !isStripeConnected) {
+    document.getElementById('closeCircleStripeGate').removeAttribute('hidden');
+    document.getElementById('closeCirclePacks').setAttribute('hidden', '');
+    return;
+  }
+
+  // Normal render...
+}
 ```
-The support section on `able-v7.html` should also reflect this — if Close Circle is enabled but Stripe is not connected, show "Coming soon" or hide the section from fans.
 
-**Effort:** ~2 hours. No new backend needed — just a state check and fallback UI.
+**What happens on `able-v7.html` when Close Circle is enabled but Stripe is not:**
+
+The support section on `able-v7.html` should NOT show the support packs if Stripe is not connected. Options:
+1. Hide the section entirely (simplest — no confusing UI for fans)
+2. Show "Support coming soon" (transparent but may raise questions)
+
+Recommended: hide the section entirely until `stripeConnected: true`. An artist who has enabled Close Circle but not connected Stripe does not yet have a live support product.
+
+**Implementation note:** `profile.closeCircle?.stripeConnected` does not exist in the current data model. Add it as a boolean field defaulting to `false`. When Stripe Connect is wired (P2), this field is set to `true` after the OAuth callback completes.
 
 ---
 
 ### P0-3: Accent colour picker in admin.html
+
 **Tool:** Profile identity (#11)
-**Why P0:** The accent colour is set in the wizard but cannot be changed in admin.html after onboarding. Artists change their brand colour. This is a basic CRUD operation that's completely missing.
+**Current score:** 7/10 → 8/10 after this fix
+**Effort:** ~2 hours
 
-**Fix:** Add accent colour picker to the Profile Identity card in admin.html. See `SPEC.md §11` for the exact HTML. Picker writes to `able_v3_profile.accent` and calls `syncProfile()`.
+**Why P0:** The accent colour is the most visible expression of an artist's brand on their ABLE page. It is set in the wizard but cannot be changed in admin.html after onboarding. An artist who launches a new EP with a different visual identity has no way to update their ABLE colour. This is a basic CRUD operation that is completely absent for a core profile attribute.
 
-**Effort:** ~2 hours. The CSS variable system is already there — just needs the input UI.
+**Exact HTML for the accent colour picker:**
+
+Add this to the Profile Identity card in `admin.html`, after the genre and feel selectors:
+
+```html
+<div class="identity-row" id="accentPickerRow">
+  <label class="identity-label">Accent colour</label>
+  <div class="accent-picker-wrap">
+    <!-- 8 preset swatches -->
+    <div class="accent-presets" role="group" aria-label="Preset accent colours">
+      <button class="acc-swatch" style="--c:#e05242" onclick="setAccent('#e05242')"
+              aria-label="Coral red" title="Coral red"></button>
+      <button class="acc-swatch" style="--c:#f4b942" onclick="setAccent('#f4b942')"
+              aria-label="Amber" title="Amber"></button>
+      <button class="acc-swatch" style="--c:#3b82f6" onclick="setAccent('#3b82f6')"
+              aria-label="Blue" title="Blue"></button>
+      <button class="acc-swatch" style="--c:#22c55e" onclick="setAccent('#22c55e')"
+              aria-label="Green" title="Green"></button>
+      <button class="acc-swatch" style="--c:#a855f7" onclick="setAccent('#a855f7')"
+              aria-label="Purple" title="Purple"></button>
+      <button class="acc-swatch" style="--c:#ef4444" onclick="setAccent('#ef4444')"
+              aria-label="Red" title="Red"></button>
+      <button class="acc-swatch" style="--c:#ec4899" onclick="setAccent('#ec4899')"
+              aria-label="Pink" title="Pink"></button>
+      <button class="acc-swatch" style="--c:#06b6d4" onclick="setAccent('#06b6d4')"
+              aria-label="Cyan" title="Cyan"></button>
+    </div>
+    <!-- Custom colour input -->
+    <label class="acc-custom-wrap" title="Custom colour">
+      <input type="color" id="accentInput" value="#e05242"
+             oninput="setAccent(this.value)"
+             aria-label="Custom accent colour">
+      <span class="acc-hex" id="accentHex">#e05242</span>
+    </label>
+  </div>
+</div>
+```
+
+**CSS for swatches:**
+
+```css
+.acc-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--c);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 150ms;
+}
+.acc-swatch.active,
+.acc-swatch:focus-visible {
+  border-color: var(--color-text);
+  outline: none;
+}
+.acc-custom-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+input[type="color"] {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+}
+.acc-hex {
+  font-size: 12px;
+  font-family: monospace;
+  color: var(--color-text-2);
+}
+```
+
+**JS for `setAccent()`:**
+
+```javascript
+function setAccent(hex) {
+  // Update the CSS variable on the document root
+  document.documentElement.style.setProperty('--artist-accent', hex);
+  document.documentElement.style.setProperty('--color-accent', hex);
+
+  // Update hex display
+  const hexEl = document.getElementById('accentHex');
+  if (hexEl) hexEl.textContent = hex;
+
+  // Sync color input
+  const colorInput = document.getElementById('accentInput');
+  if (colorInput) colorInput.value = hex;
+
+  // Mark active swatch
+  document.querySelectorAll('.acc-swatch').forEach(s => {
+    s.classList.toggle('active', s.style.getPropertyValue('--c') === hex);
+  });
+
+  // Save to profile
+  const profile = getProfile();
+  profile.accent = hex;
+  saveProfile(profile);
+  syncProfile();
+}
+```
+
+**Where to call `syncProfile()` matters:** The accent colour change must propagate to `able-v7.html` in real time via the shared localStorage key. Confirm `syncProfile()` writes to `able_v3_profile` and that `able-v7.html` reads `able_v3_profile.accent` on load.
+
+**Initialise the picker on admin load:**
+
+```javascript
+function initAccentPicker(profile) {
+  const hex = profile.accent || '#e05242';
+  document.documentElement.style.setProperty('--artist-accent', hex);
+  document.getElementById('accentInput').value = hex;
+  document.getElementById('accentHex').textContent = hex;
+  // Mark matching swatch as active
+  document.querySelectorAll('.acc-swatch').forEach(s => {
+    s.classList.toggle('active', s.style.getPropertyValue('--c') === hex);
+  });
+}
+```
+
+Call `initAccentPicker(profile)` in `showPage('identity')` or wherever the identity section initialises.
 
 ---
 
 ### P0-4: Star toggle wired in fan row
+
 **Tool:** Fan list (#2)
-**Why P0:** `able_starred_fans` exists as a localStorage key in the data spec but the star icon in the fan row is not confirmed as wired. If the key exists but the UI doesn't write to it, it's dead data.
+**Current score:** 8/10 → confirmed 8/10 (if wired) or 7/10 (if not)
+**Effort:** ~1 hour
 
-**Fix:** Confirm `fan row HTML includes <button class="star-btn" onclick="toggleStar(fan.email)">` and `toggleStar()` writes to/reads from `able_starred_fans`. If not wired, wire it.
+**Why P0:** `able_starred_fans` exists as a documented localStorage key in the data architecture. The spec mentions a star toggle in the fan row. If the UI element exists but is not writing to/reading from `able_starred_fans`, the feature is dead. If it is wired, no action needed. The P0 action is to confirm.
 
-**Effort:** ~1 hour. Confirm and wire.
+**Confirmation checklist:**
+- [ ] Open admin.html fan list
+- [ ] Confirm there is a star/bookmark icon in each fan row
+- [ ] Tap a star — does the fan's email appear in `localStorage.getItem('able_starred_fans')`?
+- [ ] Reload the page — does the star persist?
+- [ ] If yes to all: mark this P0 as complete
+- [ ] If the star UI exists but is not wired: apply the fix below
+
+**Fix (if star toggle is not wired):**
+
+```javascript
+function toggleStar(email) {
+  const starred = JSON.parse(localStorage.getItem('able_starred_fans') || '[]');
+  const idx = starred.indexOf(email);
+  if (idx === -1) {
+    starred.push(email);
+  } else {
+    starred.splice(idx, 1);
+  }
+  localStorage.setItem('able_starred_fans', JSON.stringify(starred));
+
+  // Update the star button state in the UI
+  const btn = document.querySelector(`[data-star-email="${email}"]`);
+  if (btn) {
+    const isStarred = idx === -1; // after toggle, true if we just added
+    btn.classList.toggle('starred', isStarred);
+    btn.setAttribute('aria-label', isStarred ? 'Unstar fan' : 'Star fan');
+  }
+}
+
+function isStarred(email) {
+  const starred = JSON.parse(localStorage.getItem('able_starred_fans') || '[]');
+  return starred.includes(email);
+}
+```
+
+**Fan row HTML (the star button):**
+
+```html
+<button class="fan-star-btn ${isStarred(fan.email) ? 'starred' : ''}"
+        data-star-email="${fan.email}"
+        onclick="toggleStar('${fan.email}')"
+        aria-label="${isStarred(fan.email) ? 'Unstar fan' : 'Star fan'}">
+  ★
+</button>
+```
 
 ---
 
 ## P1 — Ships in V1
 
 ### P1-1: Campaign HQ — state change toast
-**Tool:** Campaign HQ (#1)
-**Why P1:** On mobile, the state pill that confirms a state change is often off-screen after tapping a button. A toast message ("Live." / "Pre-release." / "Profile mode.") makes the action feel confirmed.
+**Effort:** 30 minutes
 
-**Fix:**
 ```javascript
 function setCampaignState(state) {
   // ... existing logic ...
-  const COPY = { profile: 'Profile mode.', pre: 'Pre-release.', live: 'Live.', gig: 'Gig mode on.' };
+  const COPY = {
+    profile: 'Profile mode.',
+    pre: 'Pre-release.',
+    live: 'Live.',
+    gig: 'Gig mode on.'
+  };
   showToast(COPY[state]);
 }
 ```
 
-**Effort:** 30 minutes.
-
 ---
 
 ### P1-2: Analytics — UTM source tracking
-**Tool:** Analytics (#8)
-**Why P1:** Without UTM tracking, analytics show source as "direct" for almost all visits. The "Where your fans came from" chart is meaningless without this data.
+**Effort:** ~3 hours. Pure client-side. No API required.
 
-**Fix:** When artist copies their page link from admin, append UTM parameters:
+When artist copies their page link from admin, append UTM parameters:
 - "Copy Instagram link" → `?utm_source=instagram&utm_medium=bio`
 - "Copy TikTok link" → `?utm_source=tiktok&utm_medium=bio`
-- `able-v7.html` reads UTM on load, stores in fan/view/click events
 
-**Effort:** ~3 hours. Pure client-side. No API required.
+`able-v7.html` reads UTM params on load, stores in fan/view/click events:
+
+```javascript
+function getUtmSource() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('utm_source') || 'direct';
+}
+```
 
 ---
 
 ### P1-3: Music manager — release status badges
-**Tool:** Music/releases manager (#5)
-**Why P1:** All releases look the same in admin regardless of whether they're upcoming, just out, or years old. Adding status badges (Upcoming / Live / Archive) makes the manager scannable.
+**Effort:** ~2 hours
 
-**Fix:** Computed from release date:
 ```javascript
 function getReleaseStatus(releaseDate) {
   if (!releaseDate) return 'draft';
   const d = new Date(releaseDate);
   const now = new Date();
-  const liveWindow = 14 * 24 * 60 * 60 * 1000;
+  const liveWindowMs = 14 * 24 * 60 * 60 * 1000; // 14 days in ms
   if (d > now) return 'upcoming';
-  if (now - d < liveWindow) return 'live';
+  if (now - d < liveWindowMs) return 'live';
   return 'archive';
 }
 ```
 
-**Effort:** ~2 hours.
+Render as a pill badge in the release list row:
+- `upcoming`: amber pill, copy "Upcoming"
+- `live`: accent (red) pill, copy "Live"
+- `archive`: muted pill, copy "Archive"
 
 ---
 
 ### P1-4: Section order — empty-section warning
-**Tool:** Section order + visibility (#9)
-**Why P1:** Artists frequently leave sections visible that have no content (empty music section, empty merch section). Fans see an empty section header. The section order panel should warn about this.
+**Effort:** ~2 hours
 
-**Fix:** In `renderSectionOrder()`, check if each section has content. If visible + empty, add an amber "Empty" badge next to the section name. Copy: "This section is visible but has no content."
+In `renderSectionOrder()`, check if each section has content:
 
-**Effort:** ~2 hours.
+```javascript
+function sectionHasContent(sectionKey, profile) {
+  switch (sectionKey) {
+    case 'music':    return (profile.releases || []).length > 0;
+    case 'events':   return (JSON.parse(localStorage.getItem('able_shows') || '[]')).length > 0;
+    case 'merch':    return (profile.merch || []).length > 0;
+    case 'snaps':    return (profile.snapCards || []).some(c => c.published);
+    case 'support':  return profile.closeCircle?.enabled;
+    default:         return true;
+  }
+}
+```
+
+If `isVisible(section) && !sectionHasContent(section, profile)`:
+```html
+<span class="section-empty-badge">Empty</span>
+```
+Copy: amber pill, 11px, "Empty". Tooltip on hover: "This section is visible but has no content — fans will see an empty section header."
 
 ---
 
 ### P1-5: Connections — URL validation + RA field
-**Tool:** Connections (#10)
-**Why P1:** No URL validation means artists can accidentally paste partial URLs or make typos that break platform pills. RA (Resident Advisor) is missing — a significant gap for the electronic/club artist segment.
+**Effort:** ~2 hours
 
-**Fix:**
-- Add debounced URL validation: if a field value doesn't start with `https://`, show inline amber hint
-- Add RA field: `<input placeholder="https://ra.co/dj/..." name="ra">`
+Add debounced validation on blur:
+```javascript
+function validatePlatformUrl(input) {
+  const val = input.value.trim();
+  if (val && !val.startsWith('https://')) {
+    input.setCustomValidity("That doesn't look like a valid URL — try starting with https://");
+    input.reportValidity();
+  } else {
+    input.setCustomValidity('');
+  }
+}
+```
 
-**Effort:** ~2 hours.
+Add RA field in the connections form:
+```html
+<div class="conn-field">
+  <label for="connRA">Resident Advisor</label>
+  <input type="url" id="connRA" name="ra"
+         placeholder="https://ra.co/dj/..."
+         onblur="validatePlatformUrl(this); savePlatformLinks();">
+</div>
+```
 
 ---
 
-### P1-6: Your World — moment editing + "next moment" on home
-**Tool:** Your World (#13)
-**Why P1:** Remove-only moments means artists lose work if they want to change a detail. The "next moment" display on the admin home page is a low-effort, high-impact addition to the greeting system.
+### P1-6: Your World — moment editing + "next moment" on admin home
+**Effort:** ~3 hours
 
-**Fix:**
-- Add edit-in-place: clicking a moment expands its row to show the add form, pre-filled
-- On admin home, below the greeting sub-line: "Next: [moment.title] — [formatted date]"
+**Moment editing:** When a moment row is tapped, expand it inline to show the add-form pre-filled. "Save changes" and "Delete" buttons at the bottom. Same form as the add form — no new UI patterns needed.
 
-**Effort:** ~3 hours.
+**"Next moment" on admin home:** Below the greeting sub-line, add:
+
+```javascript
+function buildNextMoment(profile) {
+  const moments = (profile.moments || [])
+    .filter(m => m.date >= new Date().toISOString().split('T')[0])
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  if (moments.length === 0) return '';
+  const next = moments[0];
+  const formatted = new Date(next.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+  return `Next: ${next.title} — ${formatted}`;
+}
+```
 
 ---
 
-### P1-7: Add ANTHROPIC_API_KEY to environment variable checklist
-**Tool:** Profile identity (#11)
-**Why P1:** AI bio and CTA suggestions (`aiSuggestBio`, `aiSuggestCta`) use `netlify/functions/ai-copy.js` which requires `ANTHROPIC_API_KEY`. This is not documented in the Netlify setup. Result: the AI copy buttons silently fail.
+### P1-7: Document ANTHROPIC_API_KEY in deployment checklist
+**Effort:** 15 minutes
 
-**Fix:** Add `ANTHROPIC_API_KEY` to the environment variables table in `docs/systems/artist-tools/SPEC.md` and to any deployment checklist. Register at console.anthropic.com.
-
-**Effort:** 15 minutes.
+Add `ANTHROPIC_API_KEY` to the environment variables table in `SPEC.md` (already exists there) and to any Netlify deployment checklist document. Register at console.anthropic.com. Set in Netlify UI → Site settings → Environment variables.
 
 ---
 
@@ -167,90 +485,63 @@ function getReleaseStatus(releaseDate) {
 
 ### P2-1: Ticketmaster shows import
 **Tool:** Shows manager (#4)
-**Why P2:** Auto-importing upcoming shows eliminates the most time-consuming manual entry task. But the Netlify function needs to be built first (see `docs/systems/integrations/PATH-TO-10.md P0-1`).
-
-**Fix:** After `ticketmaster-import.js` is built:
+After `ticketmaster-import.js` is built (see `docs/systems/integrations/PATH-TO-10.md P0-1`):
 - Add "Import shows →" button to shows manager header
 - Prompt: "Enter your artist name to find upcoming shows"
 - On success: preview with checkboxes, "Add all" button
 - Merge with existing shows (deduplicate by date + venue)
 
-**Effort:** ~3 hours (after ticketmaster function exists).
+**Effort:** ~3 hours (after ticketmaster function exists)
 
 ---
 
 ### P2-2: Snap card drag-to-reorder
-**Tool:** Snap card manager (#3)
-**Why P2:** Up/down arrows work but drag is more intuitive, especially on mobile.
-
-**Fix:** Use the HTML5 Drag and Drop API or a touch-compatible implementation:
-```javascript
-// On dragend, calculate new index from drop position, update array, re-render
-```
-Fallback: up/down arrows remain for accessibility.
-
-**Effort:** ~4 hours.
+Using HTML5 Drag and Drop API with touch fallback. Up/down arrows remain for accessibility.
+**Effort:** ~4 hours
 
 ---
 
 ### P2-3: Merch manager — reorder arrows + sold-out toggle
-**Tool:** Merch manager (#6)
-**Why P2:** Merch items have no reorder capability (inconsistent with snap cards, which do). Sold-out toggle is a basic merch management requirement.
-
-**Fix:** Mirror the snap card reorder pattern for merch items. Add `sold_out` boolean field to each merch item. Sold-out items display with a grey badge and are de-emphasised.
-
-**Effort:** ~3 hours.
+Mirror snap card reorder pattern. Add `sold_out` boolean. Sold-out items display with grey badge.
+**Effort:** ~3 hours
 
 ---
 
 ### P2-4: Broadcasts send function
-**Tool:** Broadcasts (#12)
-**Why P2:** The broadcast compose UI exists behind a Pro gate but cannot send. `netlify/functions/broadcast-send.js` using Resend API needs to be built.
-
-**Fix:** See `docs/systems/email/SPEC.md` for the full broadcast spec. Build:
-- `netlify/functions/broadcast-send.js` — loops through `able_fans`, sends via Resend
-- Add preview step before send
-- Set `RESEND_API_KEY` in Netlify environment variables
-
-**Effort:** ~6 hours.
+Build `netlify/functions/broadcast-send.js` using Resend API. Full spec in `docs/systems/email/SPEC.md`.
+Add preview step. Set `RESEND_API_KEY` in Netlify environment variables.
+**Effort:** ~6 hours
 
 ---
 
 ### P2-5: Analytics — time-range selector
-**Tool:** Analytics (#8)
-**Why P2:** All-time stats are less useful than "last 7 days" or "last 30 days" for spotting trends.
-
-**Fix:** Add a segmented control above the stats row: "7d / 30d / All time". Filter `able_views`, `able_clicks`, `able_fans` by timestamp before computing stats.
-
-**Effort:** ~3 hours.
+Segmented control: 7d / 30d / All time. Filter `able_views`, `able_clicks`, `able_fans` by timestamp.
+**Effort:** ~3 hours
 
 ---
 
 ### P2-6: Your World — state integration nudges
-**Tool:** Your World (#13)
-**Why P2:** Adding a release-type moment for a future date should offer "Switch to pre-release mode." Adding a gig-type moment for today should offer "Turn on gig mode." These contextual nudges are the "smart admin" moment.
-
-**Effort:** ~2 hours.
+Adding a release-type moment for a future date: offer "Switch to pre-release mode →"
+Adding a gig-type moment for today: offer "Turn on gig mode →"
+**Effort:** ~2 hours
 
 ---
 
 ## P3 — Phase 2+
 
 ### P3-1: Stripe Connect for Close Circle
-**Tool:** Support / Close Circle (#7)
-Enables actual payment processing. Requires full Stripe Connect integration. Complex — see `docs/apis/stripe.md`.
+Enables actual payment processing. Requires full Stripe Connect OAuth flow.
+See `docs/apis/stripe.md` and `docs/systems/monetisation/SPEC.md`.
+**Score impact: Close Circle 5/10 → 9/10**
 
 ### P3-2: PostHog analytics integration
-**Tool:** Analytics (#8)
 Persistent cross-device analytics. See `docs/apis/posthog.md`. Requires backend.
 
 ### P3-3: Spotify discography import in music manager
-**Tool:** Music/releases manager (#5)
-Pull full discography from Spotify import payload. Available in `/v1/artists/{id}/albums`.
+Pull full discography from Spotify import payload: `/v1/artists/{id}/albums`
 
 ### P3-4: Shopify/Big Cartel merch import
-**Tool:** Merch manager (#6)
-Live product cards with real prices and images. See `docs/reference/research/INTEGRATIONS_AND_AI_RESEARCH.md §4`.
+Live product cards with real prices and images.
 
 ---
 
@@ -258,7 +549,16 @@ Live product cards with real prices and images. See `docs/reference/research/INT
 
 | After | Expected admin toolset score |
 |---|---|
-| P0 complete (shows sort, Close Circle state, accent picker, star toggle) | 7.5/10 |
-| P1 complete (toast, UTM, release status, empty warnings, RA field, moments edit) | 8.5/10 |
-| P2 complete (events import, drag reorder, broadcasts send, analytics range) | 9/10 |
-| P3 complete (Stripe, PostHog, discography import) | 9.5/10 |
+| P0 complete (shows sort + archive, Close Circle gate, accent picker, star toggle confirmed) | 8/10 |
+| P1 complete (toast, UTM, release badges, empty warnings, RA field, moments edit, next moment) | 8.5/10 |
+| P2 complete (events import, broadcasts send, analytics range, drag reorder) | 9/10 |
+| P3 complete (Stripe Connect, PostHog, discography import) | 9.5/10 |
+
+**The highest-impact 8 hours of work in admin.html:**
+1. Shows date sort + archive (1 hour)
+2. Close Circle gate state (2 hours)
+3. Accent colour picker (2 hours)
+4. Star toggle confirmed/wired (1 hour)
+5. UTM source tracking (3 hours) — makes the analytics actually useful
+
+These 5 items move admin.html from 6.8/10 to 8/10. Everything after that is refinement.

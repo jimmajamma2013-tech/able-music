@@ -1,5 +1,6 @@
 # Artist Tools — Current State Analysis
-**Date: 2026-03-16 | File: admin.html | Authority: Primary build reference**
+**Last updated: 2026-03-16 | File: admin.html | Authority: Primary build reference**
+**Overall score: 6.8/10 → 8/10 after 4 P0 fixes → 9/10 after Stripe Connect**
 
 > Audit of every tool available to artists in admin.html. Score = current implementation quality.
 > Companion: `SPEC.md`, `PATH-TO-10.md`, `FINAL-REVIEW.md` in this directory.
@@ -9,6 +10,23 @@
 ## What this file is
 
 A scored, function-level audit of every tool in `admin.html`. Each tool is assessed against what a 10/10 version would look like at V1 launch quality.
+
+The three tiers of admin tool quality:
+
+**Fully working** (the core three that prove the product):
+- Campaign HQ — state system, auto-switch, gig countdown all functional
+- Fan list — export, filter pills, source badges, fan detail sheet all working
+- Snap card manager — full CRUD, publish toggle, reorder, oEmbed auto-fill
+
+**UI shells** (built but not functional — require backend work):
+- Close Circle / Support — UI and data model complete, but no Stripe wiring means payments don't work
+- Broadcasts — Pro gate and compose UI exist, but no send function means nothing can actually be sent
+
+**Minor bugs** (working but with specific gaps):
+- Shows manager — no date sorting, no past-show archiving
+- Profile identity — no accent colour picker post-wizard
+- Analytics — no UTM source tracking (source attribution effectively broken)
+- Your World — no moment editing, no "next moment" on home page
 
 ---
 
@@ -29,12 +47,12 @@ A scored, function-level audit of every tool in `admin.html`. Each tool is asses
 - Auto-switch hint copy: "Switches to Live automatically on [date]"
 
 **What's missing:**
-- No visual confirmation after releasing a state change beyond the pill update — a subtle toast or card flash would reinforce the action
-- The gig countdown bar depletion is specced but no animation easing on bar fill — bar jumps on first render
-- No "quick test" button to preview what a fan sees in each state without navigating to the live page
-- The timeline arc has no milestone markers (e.g., "7 days out", "today", "2 weeks in") — currently just a arc with a position dot
+- No visual confirmation after releasing a state change beyond the pill update — a subtle toast would reinforce the action on mobile where the pill is often off-screen
+- The gig countdown bar depletion has no animation easing on bar fill — bar jumps on first render
+- No "quick test" button to preview what a fan sees in each state
+- The timeline arc has no milestone markers (e.g., "7 days out", "today", "2 weeks in")
 
-**Path to 10:** Add state-change confirmation toast. Smooth countdown bar animation. Add milestone markers to timeline arc (low-effort improvement, high visual clarity).
+**Path to 10:** Add state-change confirmation toast (30 min). Smooth countdown bar animation. Add milestone markers to timeline arc.
 
 ---
 
@@ -53,13 +71,12 @@ A scored, function-level audit of every tool in `admin.html`. Each tool is asses
 - Streak signal nudge (5+ view days in last 7)
 
 **What's missing:**
-- Starring fans is in `able_starred_fans` localStorage key but no star toggle in the current fan row UI (the spec mentions it, the storage key exists, but the UI element is not confirmed as wired)
-- No "most engaged fans" or superfan scoring — that's Artist Pro, but not even behind a gate currently
-- No search/filter by email (for lists >50 fans this becomes important)
-- Fan support pack summary is specced (`renderFanSupportPacksSummary`) but Close Circle is not connected to Stripe — so it renders empty
-- No "fans who came from Instagram this week" smart summary
+- Starring fans: `able_starred_fans` localStorage key exists and is documented, but the star toggle in the fan row UI is not confirmed as wired. If the key exists but the UI doesn't write to it, the data is dead.
+- No search/filter by email — for lists exceeding 50 fans this becomes immediately important
+- No "most engaged fans" section — that's Artist Pro gated, but even the gated preview is missing
+- Fan support pack summary (`renderFanSupportPacksSummary`) renders empty — no Stripe data to display
 
-**Path to 10:** Wire star toggle in fan row UI. Add email search for large lists. "Top fans" section (even as a static list sorted by sign-up date) behind Pro gate.
+**Path to 10:** Confirm and wire star toggle. Add email search input (debounced, client-side filter). "Top fans" section behind Pro gate with specific upgrade copy.
 
 ---
 
@@ -76,10 +93,9 @@ A scored, function-level audit of every tool in `admin.html`. Each tool is asses
 
 **What's missing:**
 - No drag-and-drop reorder — up/down arrows work but are less intuitive than drag
-- No duplicate card function (useful for artists creating similar cards)
-- No "card preview" within admin — artist must open the live page to see how the card looks to a fan
-- Snap card count display ("3 of ∞ snap cards") not confirmed as rendered
-- AI copy suggestions are wired (`aiSuggestCta`) but it's not clear if they surface in the snap card editing flow specifically
+- No duplicate card function
+- No card preview within admin — artist must open the live page to see how the card looks
+- AI copy suggestions (`aiSuggestCta`) not confirmed as surfacing in snap card editing flow specifically
 
 **Path to 10:** Add card preview thumbnail in admin. Add drag-to-reorder (touch-friendly). Surface AI copy suggestions in card edit view.
 
@@ -94,16 +110,15 @@ A scored, function-level audit of every tool in `admin.html`. Each tool is asses
 - Save to `able_shows` localStorage
 - Featured toggle for "headline" show promotion
 
-**What's missing:**
-- No events import (Ticketmaster or Bandsintown) — every show must be entered manually (see `docs/systems/integrations/`)
-- No sorting by date — shows display in entry order, not chronological
-- No "past shows" auto-archiving — expired shows stay in the list until manually removed
-- No ticket URL validation (accepts any string, including non-URLs)
-- No "add to Google Calendar" / calendar export for fans — this is a fan-facing feature but requires the data to be clean
-- No support for multi-day festivals or recurring events
-- Featured show does not have a dedicated visual treatment in the admin list
+**What's missing (P0 bugs — fix before launch):**
+- **No date sorting** — shows display in entry order, not chronological. An artist who enters their 5 shows out of order (common) sees them scrambled. This will be immediately visible to every artist who adds more than 2 shows.
+- **No past-show archiving** — expired shows stay in the active list permanently until manually removed. An artist with 3 past shows and 2 upcoming sees a confusing mixed list.
+- No ticket URL validation (accepts any string)
+- No events import — every show is manual entry
+- No multi-day or recurring event support
+- Featured show has no distinct visual treatment in the admin list (only on fan-facing profile)
 
-**Path to 10:** Add date-sorted rendering. Add past show auto-archiving (shows older than today hidden by default, collapsible). Integrate Ticketmaster import (P0 in integrations). Ticket URL validation.
+**Path to 10:** Date sort (P0 — 1 hour). Past-show archiving (P0 — 1 hour). Ticket URL validation (P1 — 30 min). Ticketmaster import (P2).
 
 ---
 
@@ -116,17 +131,15 @@ A scored, function-level audit of every tool in `admin.html`. Each tool is asses
 - Credits within each release (`addCredit`, `removeCredit`, `updateCredit`)
 - oEmbed auto-fill: paste Spotify/YouTube/SoundCloud URL → title, artwork fill
 - Embed preview when URL is pasted (`showEmbedPreview`)
-- Save all to localStorage
 
 **What's missing:**
-- No Spotify import of full discography — the Spotify function returns top tracks but admin doesn't pull the full release history
-- No "latest release" concept — all releases are equal weight; the fan-facing profile picks the most recent by date but admin doesn't make this explicit
-- Credits system is manual entry only — no MusicBrainz lookup or peer-confirm flow (Phase 2)
-- No release status indicators (upcoming / just released / archive)
-- Track preview player (30-second Spotify preview URL is in the import payload but no player UI in admin)
-- Character limit on title/track name fields is not enforced
+- No release status indicators (upcoming / live / archive) — all releases look the same regardless of date
+- No "latest release" explicit control — profile picks by date but artist can't override
+- Credits system is manual entry only — no peer-confirm flow
+- Track preview player missing (Spotify preview_url is in the import payload but no UI)
+- Character limits on title/track name fields not enforced
 
-**Path to 10:** Add "set as latest release" explicit control. Add release status badges (upcoming / live / archive). Wire Spotify discography import from the existing function payload. Add 30s preview player for imported tracks.
+**Path to 10:** Release status badges computed from date (P1 — 2 hours). Explicit "set as featured release" control. 30s preview player for Spotify tracks (P2).
 
 ---
 
@@ -138,191 +151,200 @@ A scored, function-level audit of every tool in `admin.html`. Each tool is asses
 - Save to localStorage via `saveAllMerch()`
 
 **What's missing:**
-- No Shopify Storefront API integration — items must be entered manually (prices, images, buy links)
-- No image upload for merch items — only URL input, which requires an externally hosted image
-- No "sold out" toggle per item
-- No item reordering (unlike snap cards, which have up/down arrows)
+- No reorder arrows on merch items — inconsistent with snap cards, which have up/down arrows
+- No sold-out toggle per item
+- No image upload — URL only (requires externally hosted image)
+- No Shopify/Big Cartel import — every item is manual
 - No stock indicator field
-- Merch items display order in admin does not mirror fan-facing order confirmation
-- The Big Cartel API (well-documented, similar to Shopify) is not wired
 
-**Path to 10:** Add reorder arrows to merch items. Add sold-out toggle. Shopify/Big Cartel import is a P2 feature (spec in `docs/reference/research/INTEGRATIONS_AND_AI_RESEARCH.md §4`). Basic quality improvements are achievable without API work.
+**Path to 10:** Add reorder arrows (P2 — mirrors snap card pattern). Add sold-out toggle (P2). Shopify Storefront API import (P3 — after first paid tiers exist).
 
 ---
 
-### 7. Support (Close Circle) setup — 5/10
+### 7. Support (Close Circle) — 5/10
+
+**Status: UI shell. Payments do not work.**
+
+This is not a criticism of the UI quality — the interface, data model, and copy are all correct. The problem is that Close Circle cannot process payments without Stripe Connect, and Stripe Connect is not wired. An artist who enables Close Circle and shares their page will present fans with support packs they cannot purchase. This erodes trust immediately.
 
 **What's working:**
-- Close Circle toggle (enabled/disabled)
-- Support pack CRUD: add, remove, update (name, price, description)
-- Thank-you note / message to supporters field
+- Enable/disable toggle
+- Support pack CRUD (name, price, description)
+- Thank-you note field
 - `saveCloseCircle()` persists to localStorage
-- "0% taken by ABLE. Stripe standard fee only" copy confirmed present
+- "0% taken by ABLE. Stripe standard fee only." copy confirmed present
 
-**What's missing:**
-- No Stripe wiring — Close Circle cannot process actual payments; it is a UI shell
-- No Stripe Connect onboarding for artists (they need to connect their bank account)
-- Support pack prices are stored as strings — no currency/format validation
-- No preview of what the support section looks like to a fan from admin
-- `renderFanSupportPacksSummary()` exists but renders empty (no Stripe data)
-- No "test payment" flow for the artist to verify their setup
-- No notification to artist when they receive support (Stripe webhook not built)
+**What's missing (P0 — show this state before any artist enables Close Circle):**
+- **"Payments setup required" state** — when Close Circle is enabled but Stripe is not connected, this state must appear immediately and clearly so artists understand the section is not yet operational
+- No Stripe Connect onboarding flow
+- `renderFanSupportPacksSummary()` renders empty — replace with a placeholder
+- Price fields accept any string — no currency/format validation
+- No test payment flow
 
-**Score note:** 5/10 because the UI and data model are correct, but the product doesn't actually work without Stripe. This is a known P2 item in `docs/STATUS.md`.
+**Score note:** 5/10 because the gap between the UI promise and the actual capability is exactly the kind of disconnect that makes artists distrust a product. The fix is not Stripe (that is P2) — it is the honest gate state that says "you've set it up, now connect Stripe to make it work." That gate state should show before Stripe is wired.
 
-**Path to 10:** Stripe Connect setup flow (P2). Until then, add a clear "Payments setup required" state in the Close Circle section so artists understand it's not yet operational.
+**Path to 8/10:** Add "Payments setup required" gate state with the exact copy below (P0 — 2 hours). Replace empty `renderFanSupportPacksSummary()` with a placeholder.
+**Path to 10/10:** Wire Stripe Connect (P3).
+
+**Copy for the "payments setup required" gate state:**
+See PATH-TO-10.md P0-2 for the exact HTML. The copy is:
+```
+You've set up your support packs.
+Now connect Stripe to start receiving payments.
+0% taken by ABLE. Stripe standard fee only.
+[Connect Stripe →]
+```
 
 ---
 
-### 8. Analytics view — 6/10
+### 8. Analytics — 6/10
 
 **What's working:**
 - Stats counters: views, clicks, fans, click rate — with counter animation (G14)
 - Sparklines (7-day trend lines) — hidden until 3+ days of data
-- Day-1 zero state with "Day 1 ✦" label in amber (not "0 views" which feels bad)
-- Activity feed: `loadActivityFeed()` — recent events (fan sign-up, CTA click, page view)
-- Top clicks list (which CTAs are getting tapped most)
-- Streak signal nudge (5+ days of views)
-- Source breakdown on fan list (Instagram/TikTok/Direct)
+- Day-1 zero state with "Day 1 ✦" label in amber
+- Activity feed: recent events (fan sign-up, CTA click, page view)
+- Top clicks list
+- Source breakdown on fan list
 - Delta labels: "+X today" per stat
 
 **What's missing:**
-- No PostHog integration — analytics are localStorage-only, which means data is per-device and lost on clear/new device
-- No time-range selector — always shows "all time" with no way to filter to last 7 days, 30 days, etc.
-- No geographic breakdown (where fans are from)
-- No conversion funnel view (views → CTA clicks → fan sign-ups)
+- **No UTM source tracking** — without this, almost all traffic shows as "direct." The source breakdown chart is effectively meaningless. An artist who uses "Instagram link" vs "TikTok link" copy in their bio needs UTM parameters to attribute sign-ups correctly. This is the single most impactful analytics gap.
+- No time-range selector (always all-time)
+- No geographic breakdown
+- No conversion funnel view
 - No comparison period ("this week vs last week")
-- UTM source tracking is not wired — can't distinguish Instagram traffic from direct
-- Clicks tracking currently logs all CTA clicks but the click rate calculation is views/clicks — not segmented by CTA type
-- No export of analytics data (CSV of views/clicks/fans by day)
+- No CSV export of analytics data
 
-**Path to 10:** UTM tracking (P1 in integrations — 3-hour build). PostHog integration (`docs/apis/posthog.md`). Time-range selector on analytics page (P1). Conversion funnel card (P2).
+**Path to 10:** UTM tracking on the "Copy link" buttons in admin (P1 — 3 hours, no API required). Time-range selector (P2). PostHog integration for cross-device persistence (P3).
 
 ---
 
 ### 9. Section order + visibility — 8/10
 
 **What's working:**
-- All sections toggleable (visible/hidden): `toggleSectionVis()`
-- Section reorder: `moveSectionOrder()` — up/down arrows
-- Order persists to `able_v3_profile.sectionOrder`
-- Visibility persists to `able_v3_profile.hiddenSections`
-- `renderSectionOrder()` renders the current order correctly
-- Change propagates to `able-v7.html` via shared localStorage key
+- All sections toggleable
+- Section reorder with up/down arrows
+- Order and visibility persist to `able_v3_profile.sectionOrder` and `.hiddenSections`
+- Changes propagate to `able-v7.html` via shared localStorage
 
 **What's missing:**
-- No drag-to-reorder (up/down arrows work but less intuitive)
-- No preview of how the reorder looks without visiting the live page
+- No empty-section warnings — an artist can leave a visible section with no content, creating an empty section header for fans
+- No drag-to-reorder
 - No "reset to default order" option
-- Sections that have no content (e.g. empty merch section) don't have a visual indicator in the order list — easy to have a visible-but-empty section showing to fans
 
-**Path to 10:** Add "empty" badge to sections with no content in the order list. Add reset to default button.
+**Path to 10:** Add "Empty" badge to sections with no content in the order list (P1 — 2 hours). Reset to default button.
 
 ---
 
 ### 10. Connections (platform links) — 7/10
 
 **What's working:**
-- Platform link fields: Spotify, Instagram, TikTok, YouTube, SoundCloud, Bandcamp, etc.
+- Platform link fields for major platforms
 - `savePlatformLinks()` debounced save
-- `hydratePlatformFields()` reads from profile
 - Links appear as platform pills on `able-v7.html`
-- All mutations call `syncProfile()` (fixed in session 6)
+- All mutations call `syncProfile()`
+- Copy link button and QR code confirmed working
 
 **What's missing:**
-- No URL validation — any string accepted, including invalid URLs
-- No "paste and detect" — artist must know which field corresponds to which platform
-- No RA (Resident Advisor) field — specifically relevant for electronic/club artists
+- No URL validation — any string accepted, including typos and incomplete URLs
+- No RA (Resident Advisor) field — significant gap for electronic/DJ/club artists
 - No Twitch field
-- Platform pills on the live page appear from the connections here, but the Connections admin page doesn't show a preview of what pills will appear
-- Copy link button on live page and admin slug copy both confirmed working
+- No preview of which pills will appear on the live page
 
-**Path to 10:** Add URL validation per field (debounced, inline). Add RA and Twitch fields. Preview of active pills.
+**Path to 10:** URL validation (P1 — 2 hours). RA field (P1 — 30 min). Preview of active pills.
 
 ---
 
 ### 11. Profile identity (genre/feel/accent) — 7/10
 
 **What's working:**
-- Genre selector: `identityChangeGenre()`
-- Feel selector: `selectFeel()` — applies `data-feel` to profile
-- `updateIdentityPreview()` renders a live mini-preview using the current vibe settings
+- Genre selector
+- Feel selector — applies `data-feel` to profile
+- `updateIdentityPreview()` renders a live mini-preview
 - AI bio suggestions: `aiSuggestBio()` — calls `netlify/functions/ai-copy.js`
 - AI CTA suggestions: `aiSuggestCta()`
-- Nudge hints update based on completeness of profile: `updateNudgeHint()`
-- Accent colour from profile applied as `--artist-accent` CSS variable across admin
+- Nudge hints based on profile completeness
+- Accent colour from profile applied as CSS variable
 
-**What's missing:**
-- The AI copy functions (`ai-copy.js`) exist and are specced but the Netlify function requires `ANTHROPIC_API_KEY` — not set in any documented environment variable setup
-- No colour picker for accent — colour is set via Spotify import or wizard, but admin.html doesn't have an accent colour picker for post-wizard editing
-- The feel system has 7 vibes but the admin identity card doesn't surface the `data-feel` visual effect in its preview — artist can't see how the feel changes their profile appearance
-- No "reset to defaults" option for identity settings
+**What's missing (P0):**
+- **No accent colour picker** — colour is set in the wizard but cannot be changed in admin after onboarding. This is a basic editing operation that is completely absent. Artists change their brand colour. A new EP might use a completely different palette.
+- AI copy functions require `ANTHROPIC_API_KEY` in Netlify environment — not documented in any deployment checklist. Result: AI copy buttons silently fail.
+- `data-feel` effect not shown in admin identity preview — artist can't see how the feel changes their profile
 
-**Path to 10:** Add accent colour picker (inline, hex input with preview swatch). Add `ANTHROPIC_API_KEY` to Netlify environment variable setup checklist. Show `data-feel` effect in the admin preview.
+**Path to 10:** Accent colour picker (P0 — 2 hours, see PATH-TO-10.md P0-3 for exact HTML). Document `ANTHROPIC_API_KEY` in deployment checklist.
 
 ---
 
-### 12. Broadcasts (Pro tier) — 4/10
+### 12. Broadcasts (Artist Pro tier) — 4/10
+
+**Status: UI shell. Cannot send.**
+
+The broadcasts compose UI exists and is correctly gated behind Artist Pro. The gate shows a specific value proposition (correct). The compose form exists as a preview. But `netlify/functions/broadcast-send.js` does not exist, meaning no broadcast can actually be sent.
 
 **What's working:**
-- Broadcasts page exists in admin navigation
-- Pro tier gate is present — page shows locked state for non-Pro users
-- Broadcast compose UI is behind the gate (shown in preview)
+- Pro gate is present
+- Compose UI is behind gate (shown in preview)
+- The spec for what the send function should do exists in `docs/systems/email/SPEC.md`
 
 **What's missing:**
-- Resend API is specced (`docs/apis/resend.md`, `docs/systems/email/SPEC.md`) but not wired
-- No send infrastructure — broadcast compose exists but cannot actually send emails
-- `netlify/functions/fan-confirmation.js` handles sign-up confirmation emails but there is no broadcast-send Netlify function
-- No draft save for broadcasts in progress
-- No send confirmation or "preview email" step before sending
-- No delivery tracking (opens, clicks) — would require Resend webhook integration
-- The specced copy for broadcasts in `docs/systems/email/SPEC.md` is complete but none of it is wired to a send function
+- `netlify/functions/broadcast-send.js` — the core build that makes this tool real
+- `RESEND_API_KEY` not documented in deployment checklist
+- No draft save
+- No preview-before-send step
+- No delivery tracking
 
-**Score note:** 4/10 because the UI shell and gate are correct, but the feature genuinely doesn't work. This is honest — not a criticism, just the current state.
+**Score note:** 4/10 is honest. The UI looks like it works. It does not work. This is a P2 item — correctly deferred until there are paying artists who need it.
 
-**Path to 10:** Build `netlify/functions/broadcast-send.js` using Resend API. Wire the compose UI to this function. Add preview step. Set `RESEND_API_KEY` in Netlify environment variables. This is a P2 feature per `docs/STATUS.md`.
+**Path to 10:** Build `broadcast-send.js` using Resend (P2 — 6 hours). Wire compose UI. Add preview step. This is the biggest single gap in the Pro tier value proposition.
 
 ---
 
 ### 13. Your World (moments/calendar) — 6/10
 
 **What's working:**
-- Moments list: `ywRenderMomentList(profile)` renders all saved moments
-- Add moment: `ywSaveMoment()` — type, date, title, note fields
-- Remove moment: `removeMoment(id)`
-- Moments persist to `able_v3_profile.moments` array
-- Moment types appear to include: release, gig, anniversary, milestone, other
-- `ywInit(profile)` initialises the panel
+- Moments CRUD: add, remove (edit is missing — see below)
+- Moment types: release, gig, anniversary, milestone, other
+- Moments persist to `able_v3_profile.moments`
+- `ywRenderMomentList(profile)` renders chronologically
 
 **What's missing:**
-- No visual calendar view — moments are a list, not a calendar grid
-- No integration with gig mode — adding a gig-type moment doesn't auto-trigger gig mode toggle
-- No "next moment" display on the admin home page (admin home shows greeting and stats but not "your next show is in X days")
-- No fan-facing display of moments (the world map on `able-v7.html` shows a calendar view but it's unclear if admin moments feed into it directly)
-- No moment editing — remove only, no edit in place
-- No recurring moment type (e.g. "I release every Friday")
+- **No moment editing** — remove only. An artist who makes a typo in a moment title has to delete and re-add.
+- **No "next moment" on admin home** — the greeting system doesn't reference the moments list. The line "Next: Manchester Academy — 11 April" would be trivial to add and would make the admin home feel genuinely aware of the artist's situation.
+- No calendar grid view — list only
+- No integration with gig mode — a gig-type moment for today doesn't offer to activate gig mode
+- No fan-facing display of moments from the admin list
 
-**Path to 10:** Add "next moment" display on admin home. Wire moment types to profile state suggestions ("You have a release moment — should we switch to pre-release mode?"). Add edit-in-place.
+**Path to 10:** Add moment editing (P1 — 3 hours). "Next moment" on admin home (P1 — 2 hours). State integration nudges (P2).
 
 ---
 
 ## Summary: Admin Tool Scores
 
-| # | Tool | Score | Primary gap |
-|---|---|---|---|
-| 1 | Campaign HQ | 8/10 | Toast on state change, timeline markers |
-| 2 | Fan list + export | 8/10 | Star toggle UI, email search for large lists |
-| 3 | Snap card manager | 8/10 | Drag reorder, card preview in admin |
-| 4 | Shows manager | 6/10 | No events import, no date sorting |
-| 5 | Music/releases manager | 7/10 | No discography import, no release status |
-| 6 | Merch manager | 6/10 | No API import, no reorder, no sold-out toggle |
-| 7 | Support (Close Circle) | 5/10 | Stripe not wired — functionally incomplete |
-| 8 | Analytics | 6/10 | No UTM tracking, no time-range filter |
-| 9 | Section order + visibility | 8/10 | Empty-section badges, reset option |
-| 10 | Connections | 7/10 | URL validation, RA/Twitch fields |
-| 11 | Profile identity | 7/10 | Accent picker, ANTHROPIC_API_KEY gap |
-| 12 | Broadcasts | 4/10 | Send function not built |
-| 13 | Your World | 6/10 | Calendar view, moment editing, state integration |
+| # | Tool | Score | Category | Primary gap |
+|---|---|---|---|---|
+| 1 | Campaign HQ | 8/10 | Fully working | Toast on state change, timeline markers |
+| 2 | Fan list + export | 8/10 | Fully working | Star toggle confirmation, email search |
+| 3 | Snap card manager | 8/10 | Fully working | Drag reorder, card preview in admin |
+| 4 | Shows manager | 6/10 | Minor bugs | No date sorting, no past-show archive |
+| 5 | Music/releases | 7/10 | Minor bugs | No release status badges |
+| 6 | Merch manager | 6/10 | Minor bugs | No reorder, no sold-out toggle |
+| 7 | Close Circle | 5/10 | UI shell | Stripe not wired — payments non-functional |
+| 8 | Analytics | 6/10 | Minor bugs | No UTM tracking — source attribution broken |
+| 9 | Section order | 8/10 | Fully working | Empty-section badges, reset option |
+| 10 | Connections | 7/10 | Minor bugs | URL validation, RA/Twitch fields |
+| 11 | Profile identity | 7/10 | Minor bugs | No accent picker post-wizard |
+| 12 | Broadcasts | 4/10 | UI shell | Send function not built |
+| 13 | Your World | 6/10 | Minor bugs | No moment editing, no state integration |
 
-**Overall admin toolset score: 6.8/10**
-Strong core (Campaign HQ, fan list, snap cards) but significant gaps in three areas: events import, payments, and analytics.
+**Overall: 6.8/10**
+
+- 3 tools fully working (1, 2, 3)
+- 2 tools are UI shells with no backend (7, 12)
+- 8 tools working with specific gaps
+
+**Score trajectory:**
+- After 4 P0 fixes (shows sort + past archive, Close Circle gate, accent picker, star toggle): **8/10**
+- After P1 fixes (UTM, release badges, section empty warnings, moment edit, connections validation): **8.5/10**
+- After Stripe Connect wired (Close Circle fully functional): **9/10**
+- After Broadcasts send function built: **9.5/10**
