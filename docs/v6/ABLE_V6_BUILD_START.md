@@ -158,7 +158,7 @@ Render all sections in this order. Each section only renders if the profile has 
 4. **Support section** — support packs. Emoji, label, description, price, CTA.
 5. **Fan capture** — email sign-up. Fires after hero, bio, and pills (screenful 3 minimum). Double opt-in flow: optimistic UI → confirmation email in background.
 6. **Snap cards** — published cards only, in sort_order.
-7. **"Made with ABLE" footer** — Free tier only. `var(--color-text-3)`. Linked to `able.fm`.
+7. **"Made with ABLE" footer** — Free tier only. `var(--color-text-3)`. Linked to `ablemusic.co`.
 
 **Signal:** `// CHECKPOINT 4 COMPLETE — Main content flow`
 

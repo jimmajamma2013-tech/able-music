@@ -155,6 +155,7 @@ Some systems use non-standard names (noted below).
 | `email/` | Email system — fan confirmation, broadcasts, Resend integration | `SPEC.md` | Complete |
 | `error-states/` | Error state patterns across all pages | `SPEC.md` | In progress |
 | `explainers/` | Educational copy for confusing features | `SPEC.md` | Complete |
+| `filing-system/` | Filing system spec, audit, gap analysis, and review | `SPEC.md` | Complete |
 | `founder-roadmap/` | Founder roadmap and personal milestones | `SPEC.md` | Stub (empty) |
 | `freelancer-auth/` | Freelancer authentication and credit verification flow | `SPEC.md` | Complete |
 | `growth-loop/` | Viral loop, referral mechanics, "Made with ABLE" footer | `SPEC.md` | Complete |

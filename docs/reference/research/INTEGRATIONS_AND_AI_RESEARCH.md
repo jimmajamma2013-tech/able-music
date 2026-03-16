@@ -221,7 +221,7 @@ These are the non-negotiable integration targets. An artist releasing their firs
 
 | Platform | Notes | ABLE approach |
 |---|---|---|
-| **Presskit.to** | Direct competitor. Weak. | **ABLE builds better:** `able.fm/name/press` — auto-populated from existing profile data. Artist Pro. |
+| **Presskit.to** | Direct competitor. Weak. | **ABLE builds better:** `ablemusic.co/name/press` — auto-populated from existing profile data. Artist Pro. |
 | **Sonicbids** | Declining | Link paste. Legacy. |
 | **ReverbNation** | Aging but large installed base | Link paste. Some older artists still active here. |
 | **Music Gateway** | UK sync + EPK | Affiliate link in ABLE Recommends. |
@@ -283,7 +283,7 @@ All distribution platforms, Apple Music, Tidal, Bandcamp, all social except YouT
 | **Pre-save links** | Spotify API + ABLE fan capture = better than Hypeddit/Toneden |
 | **Email broadcasts** | ABLE owns the artist-fan relationship; externalising breaks the trust model |
 | **Analytics dashboard** | This is the moat — own it completely |
-| **Press pack** (`able.fm/name/press`) | All data already in ABLE; just a render layer |
+| **Press pack** (`ablemusic.co/name/press`) | All data already in ABLE; just a render layer |
 | **Fan CRM & superfan scoring** | The core product — never outsource |
 | **Story Mode / video generation** | Via Creatomate/Bannerbear API (see Ecosystem doc) |
 
@@ -501,7 +501,7 @@ If ABLE builds only these in Year 1, the platform is dramatically more compellin
 
 **Grow (everything else):**
 - Story Mode via Creatomate/Bannerbear
-- Press pack (`able.fm/name/press`)
+- Press pack (`ablemusic.co/name/press`)
 - ABLE Rooms + Stage Can tips
 - ElevenLabs voice cloning (Artist Pro, year 2)
 - LANDR mastering (Artist Pro, year 2, partnership)
@@ -565,7 +565,7 @@ Each key is generated from a Bandsintown for Artists account. A multi-artist pla
 
 ### MusicBrainz — For Credits System
 
-**Free, no authentication, completely open.** Hard rate limit: **1 request per second** enforced by IP blocking. Requires a descriptive `User-Agent` header: `ABLE/1.0 (able.fm) contact@able.fm`.
+**Free, no authentication, completely open.** Hard rate limit: **1 request per second** enforced by IP blocking. Requires a descriptive `User-Agent` header: `ABLE/1.0 (ablemusic.co) contact@ablemusic.co`.
 
 **Data quality caveat:** Major and mid-level releases are well-documented. UK emerging artists in the £8k–£25k/year bracket (ABLE's primary users) are often absent or sparse. Best used as an enrichment pass, not a primary data source.
 

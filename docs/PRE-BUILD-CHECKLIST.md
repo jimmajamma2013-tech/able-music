@@ -55,7 +55,7 @@ If Supabase is in scope for V1:
   - `ANTHROPIC_API_KEY` (AI copy — Phase 2)
 
 ### Domain
-- [ ] Domain confirmed (able.fm or ablemusic.co — which is live?)
+- [ ] Domain confirmed (ablemusic.co or ablemusic.co — which is live?)
 - [ ] DNS pointed to Netlify (or scheduled)
 - [ ] HTTPS auto-provisioned via Netlify
 

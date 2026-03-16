@@ -22,7 +22,7 @@ ABLE (Artist Before Label) is a premium mobile-first platform for independent mu
 | `able-v7.html` | **Artist public profile** — the fan-facing page | ACTIVE — edit this |
 | `admin.html` | **Artist dashboard** — where artists manage everything | ACTIVE — edit this |
 | `start.html` | **Onboarding wizard** — how new artists set up | ACTIVE — edit this |
-| `landing.html` | **Marketing landing page** — able.fm homepage | ACTIVE — edit this |
+| `landing.html` | **Marketing landing page** — ablemusic.co homepage | ACTIVE — edit this |
 | `index.html` | Redirect only | DO NOT EDIT |
 | `_archive/able-merged.html` | Legacy v1 reference only | DO NOT EDIT |
 | `_archive/able-v2.html` | Abandoned | IGNORE |
@@ -68,10 +68,12 @@ Entry: able-v3.html (from artist's social bio link)
 - Eventually: fan.html — a personal dashboard showing artists they follow, upcoming shows, new drops
 
 ### 3. Freelancer journey
-Entry: freelancer-start.html (separate onboarding) → freelancer.html (their profile) → admin.html variant
-- Profile has: credits (verified via peer confirm), rate card, portfolio (audio/video), availability status, booking CTA
-- Notably absent: top card campaign states, gig mode, fan sign-up — different use case entirely
-- Discovered via: credits on artist release cards
+Entry: freelancer-start.html (separate onboarding) → freelancer.html (their profile) → shared admin.html (freelancer layers activated)
+- One profile model with activated layers — no separate admin page, no profileType enum. Artist and freelancer layers can both be active simultaneously. Admin.html shows context-appropriate sections per which layers are active.
+- Freelancer layers enabled: credits hero, portfolio, rate card, booking enquiry sheet. Disabled: campaign states, gig mode, fan sign-up, snap cards, top card campaign.
+- Profile sections: identity header, credits (peer-confirmed), portfolio (audio/video), rate card with auto-expiry, booking enquiry (4 fields, no marketplace signals), auto-generated "Artists on ABLE" strip.
+- Discovered via: credits on artist release cards — confirmed credits become live links; unconfirmed credits are plain text. That asymmetry is the entire acquisition mechanic.
+- Per V8_BUILD_AUTHORITY.md §8.3 and §11.3 (supersedes any older separate-admin model)
 
 ---
 
@@ -195,12 +197,34 @@ When backend is added:
 
 ## Doc files (context for every decision)
 
+### V8 strategy docs — PRIMARY BUILD AUTHORITY (2026-03-15)
+| File | What's in it |
+|---|---|
+| `docs/pages/profile/DESIGN-SPEC.md` | **able-v7.html build spec** — 9.7/10 |
+| `docs/pages/admin/DESIGN-SPEC.md` | **admin.html build spec** — 9.7/10 |
+| `docs/pages/onboarding/DESIGN-SPEC.md` | **start.html build spec** — 9.9/10 |
+| `docs/pages/landing/DESIGN-SPEC.md` | **landing.html build spec** — 9.65/10 |
+| `docs/pages/fan/DESIGN-SPEC.md` | **fan.html build spec** — in progress |
+| `docs/systems/DESIGN_SYSTEM_SPEC.md` | Canonical design tokens, typography, shadows, grid |
+| `docs/systems/MICRO_INTERACTIONS_SPEC.md` | All 30+ interactions, rules, performance budget |
+| `docs/systems/CROSS_PAGE_JOURNEYS.md` | End-to-end user journeys, source tracking |
+| `docs/systems/copy/SPEC.md` | Master copy system — voice, banned phrases, all contexts |
+| `docs/systems/data-architecture/SPEC.md` | localStorage schema, Supabase migration |
+| `docs/systems/seo-og/SPEC.md` | Meta tags, OG cards, structured data |
+| `docs/systems/email/SPEC.md` | Fan confirmation, artist welcome, broadcasts |
+| `docs/systems/tier-gates/SPEC.md` | Gold lock pattern, upgrade flow, copy |
+| `docs/systems/analytics/SPEC.md` | Event schema, source attribution, aggregation |
+| `docs/systems/error-states/SPEC.md` | Network failure, corruption, recovery patterns |
+| `docs/systems/pwa/SPEC.md` | Manifest, service worker, installability |
+| `docs/systems/spotify-import/SPEC.md` | Prefetch, Netlify function, failure states |
+
+### V6 core docs — product truth (not superseded)
 | File | What's in it |
 |---|---|
 | `CONTEXT.md` | **Read first every session** — fast orientation, tokens, active files, rules |
 | `docs/STATUS.md` | **Current build state** — what's built, what's next, known issues |
-| `docs/v6/core/V6_BUILD_AUTHORITY.md` | **Primary authority** — all resolved decisions for v6 |
-| `docs/v6/00_AUTHORITY_ORDER.md` | Precedence order — read this first |
+| `docs/v6/core/V6_BUILD_AUTHORITY.md` | Resolved design decisions for v6 (still valid, not superseded) |
+| `docs/v6/00_AUTHORITY_ORDER.md` | Precedence order — V8 layer added at top |
 | `docs/v6/core/VISUAL_SYSTEM.md` | 7 genre vibes, fonts, accent suggestions |
 | `docs/v6/core/COPY_AND_DESIGN_PHILOSOPHY.md` | Copy register, voice, banned phrases |
 | `docs/reference/research/PRODUCT_HIERARCHY_AND_TRUST.md` | Priority order for all features (reference only) |

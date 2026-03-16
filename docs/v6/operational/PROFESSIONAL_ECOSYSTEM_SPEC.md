@@ -53,7 +53,7 @@ Every ABLE profile is one object. What renders is determined by which sections a
 - Professional-only: name + role + availability chip + "Work together" CTA. Clean. No campaign states, no fan capture, no countdown.
 - Both: artist hero leads (it is richer, more visual, more emotionally engaging). Professional info is a dedicated section with its own mini-hero: role + availability + "Work together" CTA — visible on scroll, before the music sections.
 
-**URL:** Always `able.fm/[handle]`. One URL. One identity. The profile is the person.
+**URL:** Always `ablemusic.co/[handle]`. One URL. One identity. The profile is the person.
 
 **In admin:** A single toggle — "I also offer professional services" — activates the professional layer. No separate account required.
 
@@ -141,7 +141,7 @@ Release exists on artist profile
 
 ### URL and identity
 
-`able.fm/[handle]` — same namespace as artist profiles. Handle is unique across both. A producer named Jake Barlow at `able.fm/jakebarlow` has one profile, which may show artist content, professional content, or both depending on their configuration.
+`ablemusic.co/[handle]` — same namespace as artist profiles. Handle is unique across both. A producer named Jake Barlow at `ablemusic.co/jakebarlow` has one profile, which may show artist content, professional content, or both depending on their configuration.
 
 ### Hero (professional-only or professional layer on combined profile)
 
@@ -477,7 +477,7 @@ Separate path (separate onboarding page: `professional-start.html`). Steps:
 1. **What do you do?** — role selection (multi-select from taxonomy)
 2. **Claim your credits** — search for releases on ABLE, "Did you work on this?" → checkbox → self-added (unconfirmed) credits queued. Artists notified to confirm.
 3. **Set your availability** — Available / Selective / Not taking projects
-4. **Profile live** — "Your profile is at able.fm/[handle]"
+4. **Profile live** — "Your profile is at ablemusic.co/[handle]"
 
 ### Landing page
 

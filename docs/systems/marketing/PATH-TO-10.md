@@ -106,7 +106,7 @@ A 10 in marketing is not perfection — it is systematic clarity. Every angle ha
 **Path to 10:**
 - OG tags: implement on all pages at launch. Non-negotiable.
 - Google Search Console: set up and submit sitemap on launch day. Monitor impressions vs. clicks for target keywords from week 1.
-- Artist profile SEO: each able.fm/[name] page must have correct meta tags. This is passive but compounds. At 500 artist profiles, 500 indexed pages with unique content.
+- Artist profile SEO: each ablemusic.co/[name] page must have correct meta tags. This is passive but compounds. At 500 artist profiles, 500 indexed pages with unique content.
 - Blog: commit to 10 posts by end of Year 1. Not 10 ideas — 10 published posts. Write them as an artist, not as a tech company. The post about "what to do on release day" should be something an artist would forward to another artist.
 - **Patient game:** SEO takes 6–12 months to show meaningful results. Plant the seeds now. Do not optimise for traffic before you have conversion data — get the conversion funnel right first, then drive traffic.
 

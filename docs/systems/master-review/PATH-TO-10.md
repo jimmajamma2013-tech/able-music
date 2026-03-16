@@ -90,7 +90,7 @@ The full protocol is 3–4 hours. There will be sessions where the full review i
 1. Run `find docs/ -name "*.md" | wc -l` — check total count vs last review
 2. Check CONTEXT.md scores against STATUS.md scores — find any conflict
 3. Check `docs/pages/profile/` for DESIGN-SPEC.md (the most critical single gap)
-4. Grep for `able.fm` — catch domain inconsistencies
+4. Grep for `ablemusic.co` — catch domain inconsistencies
 5. Read STATUS.md last session summary — anything built but not specced?
 
 Five checks, 30 minutes. Catches P0 issues even on constrained sessions. Not a replacement for the full review — a safety net between full reviews.

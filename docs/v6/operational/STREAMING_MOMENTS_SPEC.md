@@ -33,7 +33,7 @@ When an artist goes live, their ABLE profile reflects it instantly: the top card
 Every Live Moment has an ABLE URL. The artist shares that URL — not the raw platform URL.
 
 ```
-able.fm/[handle]#lm_[id]
+ablemusic.co/[handle]#lm_[id]
 ```
 
 Fans arrive at the artist's ABLE profile. The World Map calendar auto-selects that date. The moment panel opens. Depending on lifecycle state (scheduled / live / ended), the fan sees a countdown and RSVP, a join CTA with embedded stream, or a replay.
@@ -55,7 +55,7 @@ ABLE owns the landing context at every point. The actual video bytes come from Y
 | TikTok Live | No | Link-out only |
 | Any URL | No | Link-out only |
 
-**Embed logic:** ABLE auto-detects platform from `streamUrl`. For YouTube and Vimeo, it generates the `embedUrl` automatically. For Twitch, it requires the artist to confirm the channel slug and sets `parent=able.fm` at render time. For all others, the "Join" CTA opens the raw URL in a new tab.
+**Embed logic:** ABLE auto-detects platform from `streamUrl`. For YouTube and Vimeo, it generates the `embedUrl` automatically. For Twitch, it requires the artist to confirm the channel slug and sets `parent=ablemusic.co` at render time. For all others, the "Join" CTA opens the raw URL in a new tab.
 
 **Embed rendering:** When a stream is `live` and embed-compatible, the top card expands into an embed panel. The iframe is constrained to 16:9, capped at 100% width of the top card, with a scroll-stop container so it does not scroll out of view mid-stream.
 
@@ -303,7 +303,7 @@ Type badge uses the livestream blue `#4b8fd4`. The artist note renders in a slig
 3. On grant: service worker is registered (if not already). Moment data is stored in service worker scope. Notification fires at `T-30min` and `T=0`.
 4. Notification copy at T-30: "[Artist name] goes live in 30 minutes — [Moment title]"
 5. Notification copy at T=0: "[Artist name] is live now — Join: [ABLE URL]"
-6. Tapping notification → opens `able.fm/[handle]#lm_[id]`
+6. Tapping notification → opens `ablemusic.co/[handle]#lm_[id]`
 
 **Fallback (permission denied or not available):**
 - "Add to calendar" — generates a `.ics` file client-side
@@ -319,7 +319,7 @@ No email reminders in v1. That is deferred to when ABLE has email broadcast infr
 ### Share link
 
 ```
-able.fm/[handle]#lm_[id]
+ablemusic.co/[handle]#lm_[id]
 ```
 
 This is the canonical share URL. When opened:
@@ -344,7 +344,7 @@ Portrait format, generated client-side using Canvas API (same pipeline as Showca
 │                         │
 │  Thursday 8 May · 8pm   │  ← date/time
 │                         │
-│  able.fm/handle         │  ← ABLE URL, small
+│  ablemusic.co/handle         │  ← ABLE URL, small
 └─────────────────────────┘
 ```
 
@@ -352,7 +352,7 @@ Artist name appears below the type badge if cover image doesn't include it. ABLE
 
 ### OG metadata
 
-When `able.fm/[handle]#lm_[id]` is shared to social, the OG image is generated from:
+When `ablemusic.co/[handle]#lm_[id]` is shared to social, the OG image is generated from:
 - Cover image (if set) or artist artwork
 - Overlaid: artist name, moment type, date/time
 - `og:title`: "[Artist name] — [Moment title]"

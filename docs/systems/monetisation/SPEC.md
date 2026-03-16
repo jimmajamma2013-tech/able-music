@@ -307,12 +307,12 @@ These rules apply to every screen, email, and notification that touches money.
 
 When a fan lands on a profile and sees this:
 1. They click
-2. They land on able.fm (landing page or artist signup)
+2. They land on ablemusic.co (landing page or artist signup)
 3. Some percentage become artists themselves
 
 **Implementation rules:**
 - Free tier only. Any paid tier removes it. No exceptions.
-- Link goes to `able.fm?ref=[artistHandle]` — tracks which artist's profile drove the acquisition
+- Link goes to `ablemusic.co?ref=[artistHandle]` — tracks which artist's profile drove the acquisition
 - Not a banner. Not a logo. One line of text.
 - Never present it to the artist as advertising. It is the cost of the free tier — earned through traffic routing.
 - Never make it bigger, bolder, or more prominent than the current spec.

@@ -133,8 +133,8 @@ The Showcase does NOT have its own object model. It reads from the same `moments
 ### Share cards are Moment-derived
 
 Every Moment can generate:
-- A **share link**: `able.fm/[handle]?m=[momentId]` — deep links to the profile, auto-selects the moment in the World Map
-- A **share card** (portrait 9:16): cover image / artwork + artist name + moment type + date + `able.fm/[handle]`
+- A **share link**: `ablemusic.co/[handle]?m=[momentId]` — deep links to the profile, auto-selects the moment in the World Map
+- A **share card** (portrait 9:16): cover image / artwork + artist name + moment type + date + `ablemusic.co/[handle]`
 - An **OG image**: moment cover or artist artwork + moment title — used as link preview when the share link is pasted anywhere
 
 These are generated on demand from the Moment object. No manual duplication. One Moment → three shareable outputs.
@@ -289,7 +289,7 @@ Shows the profile as a fan would see it, in each access tier. Already specced in
 In the Moment list, the [Share card ↓] action opens a bottom sheet showing:
 - Portrait card preview (canvas-rendered)
 - Download button
-- Share link: `able.fm/[handle]?m=[id]` (copy button)
+- Share link: `ablemusic.co/[handle]?m=[id]` (copy button)
 
 ### start.html — onboarding
 
@@ -380,7 +380,7 @@ These three lines power the entire landing narrative. Every demo state proves on
 | Reminder intent storage in localStorage | `able-v6.html` |
 | .ics calendar fallback | `able-v6.html` |
 | Access gating (fan/supporter/private) in panel | `able-v6.html` |
-| Share link: `able.fm/[handle]?m=[id]` | All surfaces |
+| Share link: `ablemusic.co/[handle]?m=[id]` | All surfaces |
 | Share card: client-side canvas | `admin.html` |
 | Admin "Your World": all Moment types, full CRUD | `admin.html` |
 | Admin `isPromoted` toggle | `admin.html` |

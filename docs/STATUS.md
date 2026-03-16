@@ -1,5 +1,46 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-15 (session 6) | Update this file at the end of every session.**
+**Updated: 2026-03-16 (session 8) | Update this file at the end of every session.**
+
+---
+
+## Strategy docs — V8 pre-build (complete before any building)
+
+### Pages
+| Page | Score | Status | Key docs |
+|---|---|---|---|
+| `start.html` | 9.9/10 | ✅ Complete | `docs/pages/onboarding/DESIGN-SPEC.md` |
+| `admin.html` | 9.7/10 | ✅ Complete | `docs/pages/admin/DESIGN-SPEC.md` |
+| `landing.html` | 9.65/10 | ✅ Complete | `docs/pages/landing/DESIGN-SPEC.md` |
+| `able-v7.html` | 6.9→9.7/10 | ✅ Strategy complete | `docs/pages/profile/DESIGN-SPEC.md` + `PATH-TO-10.md` |
+| `fan.html` | 5.85→9.24/10 | ✅ Strategy complete | `docs/pages/fan/DESIGN-SPEC.md` + `PATH-TO-10.md` |
+| `freelancer.html` | 0/10 | ⏳ Phase 2 | Not started |
+
+### Systems
+| System | Score | Status |
+|---|---|---|
+| Design system | 9.5→10/10 | ✅ `docs/systems/DESIGN_SYSTEM_PATH_TO_10.md` — bugs found: admin.html L44+L1288 `#888` |
+| Micro-interactions | 9.5→10/10 | ✅ `docs/systems/MICRO_INTERACTIONS_PATH_TO_10.md` — focus ring + @view-transition specced |
+| Cross-page journeys | 9.0/10 | ✅ `docs/systems/CROSS_PAGE_JOURNEYS.md` |
+| Copy system | 7.5→9.5/10 | ✅ `docs/systems/copy/SPEC.md` — 8 "dashboard" violations + toast inconsistency found |
+| Data architecture | 6.8→9.3/10 | ✅ `docs/systems/data-architecture/SPEC.md` — live bug found |
+| SEO + OG cards | 5.7→9.0/10 | ✅ `docs/systems/seo-og/SPEC.md` — 2 critical bugs found |
+| Email system | 4.0→9.5/10 | ✅ `docs/systems/email/SPEC.md` |
+| Tier gate system | 3.7→9.0/10 | ✅ `docs/systems/tier-gates/SPEC.md` — full gate copy + upgrade sheet |
+| Spotify import | 5.2→9.0/10 | ✅ `docs/systems/spotify-import/SPEC.md` — function not built yet |
+| Platform admin | 0→7/10 | ✅ `docs/systems/platform-admin/` — SQL library + V2 spec + path to 10 |
+| CRM | 4→10/10 | ✅ `docs/systems/crm/` — build vs buy decision (custom confirmed), full spec, path to 10. P0.1 (`campaignState` at sign-up) is the single highest-ROI next action. |
+| World Map | 5.2→9.2/10 | ✅ `docs/systems/world-map/` — 4 files: ANALYSIS, SPEC, PATH-TO-10, FINAL-REVIEW. P0 bugs identified (multi-moment panel, empty state, nav button size, section heading, focus trap). Type vocabulary mismatch found. |
+| Reels/Clips feed | 0→7.5/10 | ✅ `docs/systems/reels-feed/` — 4 files: ANALYSIS, SPEC, PATH-TO-10, FINAL-REVIEW. V1 scope: YouTube Short + TikTok embeds, artist profile section, admin management, fan.html feed items. |
+| Integrations system | 4/10 current | ✅ `docs/systems/integrations/` — 4 files. P0: Ticketmaster events + Spotify deploy. P1: Linktree + UTM tracking. Key finding: monthly listeners NOT in Spotify API. |
+| Artist tools audit | 6.8/10 current | ✅ `docs/systems/artist-tools/` — 4 files. 13 tools scored. P0 gaps: shows date sort, Close Circle "payments required" state, accent colour picker in admin, star toggle confirmation. |
+| Docs file structure | 8/10 | ✅ `docs/FILE-STRUCTURE.md` — complete map of all docs, authority levels, reading-order guides. |
+| Analytics schema | in progress | 🔄 `docs/systems/analytics/` |
+| Error states | in progress | 🔄 `docs/systems/error-states/` |
+| PWA/installability | in progress | 🔄 `docs/systems/pwa/` |
+
+**Rule: No building until all strategy docs are complete.**
+
+---
 
 ---
 
@@ -122,6 +163,46 @@
 *(Add issues here as they are discovered)*
 
 ---
+
+## Last session summary (session 9)
+Strategy docs sprint — three system doc sets + one file structure map created (9 files total):
+
+### docs/systems/integrations/ (4 files)
+ANALYSIS.md: Scored 10 integrations. Key finding: Bandsintown API keys are per-artist — not platform-wide. Ticketmaster Discovery API is the correct primary events integration (free, single platform key, zero per-artist setup). Monthly listeners is NOT in any public Spotify API endpoint (confirmed in Part 7 of research doc) — do not reference this. Current overall integrations score: 4/10.
+SPEC.md: Full Netlify function code for ticketmaster-import.js and bandsintown-import.js (complete, ready to build). Full linktree-import.js function (parses __NEXT_DATA__ JSON, no API required). Last.fm listener proxy spec. Link platform detection function. Environment variables table.
+PATH-TO-10.md: P0: Ticketmaster events import (4h build, highest-value onboarding improvement). P0: Spotify deployment. P1: Linktree import, Last.fm proxy, UTM tracking. Score trajectory: 4/10 → 8/10 after P1.
+FINAL-REVIEW.md: Confirms Ticketmaster > Bandsintown as primary events path. Documents "what NOT to integrate" decisions (Facebook, Twitter/X, AI song generation). Corrects the monthly listeners assumption across docs.
+
+### docs/systems/artist-tools/ (4 files)
+ANALYSIS.md: Scored all 13 admin tools. Overall 6.8/10. Strong: Campaign HQ (8), fan list (8), snap cards (8). Weak: Close Circle (5 — Stripe not wired), broadcasts (4 — send function not built). Key gaps: shows list not date-sorted, no accent colour picker in admin, Close Circle shows no "payments required" state.
+SPEC.md: 10/10 spec for all 13 tools. Includes accent colour picker HTML. "Payments setup required" copy for Close Circle. Complete V1/V2 scope per tool.
+PATH-TO-10.md: P0 fixes (all under 2h each): shows date sort, Close Circle "payments required" state, accent picker, star toggle confirmation. P1: state change toast, UTM tracking, release status badges, empty section warnings, RA field in connections, moment editing.
+FINAL-REVIEW.md: "You're on tonight." confirmed as the single highest-impact copy moment. Post-gig greeting ("Last night at Barbican. 7 fans joined.") is already specced in DESIGN-SPEC.md §5.2 — just needs to be wired.
+
+### docs/FILE-STRUCTURE.md (1 file)
+Complete map of all docs: every directory, every file, authority level (primary / supporting / research / superseded), status, and when to read. Includes recommended reading order for 5 scenarios: new session, first build on a page, bug fix, copy writing, new feature. File structure scored 8/10 with path to 9/10.
+
+## Last session summary (session 8)
+Strategy docs sprint — two major doc sets created:
+- docs/systems/reels-feed/ANALYSIS.md — 7-dimension audit of the clips feature (0/10 baseline)
+- docs/systems/reels-feed/SPEC.md — full specification: data model, artist profile view,
+  admin management, fan.html feed integration, video source handling (YouTube/TikTok/direct),
+  iframe containment rules, copy system, V1 scope, Supabase schema (Phase 2)
+- docs/systems/reels-feed/PATH-TO-10.md — phased path: V1 6.5/10 → V2 8.5/10 → V3 10/10
+- docs/systems/reels-feed/FINAL-REVIEW.md — strategic review, risks, open design decisions,
+  spec quality score 7.5/10
+- docs/USER-STORIES.md — 48 user stories across 5 personas (Artist, Fan, Freelancer,
+  Platform Admin, Edge Cases) each with acceptance criteria, priority, build location,
+  and current status. Quick-reference status table at end.
+- STATUS.md updated with session 8 summary + reels-feed entry in systems table
+
+Key decisions captured in reels-feed spec:
+- Feature called "Clips" (not Reels) in all user-facing copy
+- able_clips localStorage key established (must be added to CONTEXT.md data table)
+- V1 scope: YouTube Short + TikTok embeds only, no upload, no auth-enforced gating
+- Fan.html clips appear as standard feed items (not a dedicated tab at V1 volume)
+- Full-screen player is modal overlay (not page navigation) — preserves scroll position
+- V1 localStorage cross-origin limitation documented honestly (same-browser demo only)
 
 ## Last session summary (session 6)
 Data integrity sweep + Phase 1 backend functions. 14 commits:

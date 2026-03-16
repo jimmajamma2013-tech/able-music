@@ -104,7 +104,7 @@ Verdict: the first 30 days require zero new infrastructure. Later tools enhance 
 If James posts consistently (3× per week), engages daily (20 minutes), and sends 12–15 DMs in the first 30 days:
 
 - 5–10 DM conversations with independent artists
-- 3–6 warm leads who have visited able.fm
+- 3–6 warm leads who have visited ablemusic.co
 - 1–3 ABLE sign-ups directly attributable to Instagram
 
 This is not a large number. It is the correct expectation. The first 30 days establish the rhythm, the voice, and the warm list. The compounding happens in months 2–4 as the warm list grows, the content refines toward what produces profile visits, and the first artist features begin distributing ABLE to new audiences.
@@ -146,7 +146,7 @@ Before executing, confirm:
 
 - [ ] Instagram account is set to Business or Creator mode
 - [ ] Bio copy is updated to: "Your music. Your fans. Your relationship. ↓"
-- [ ] Bio link is: `https://able.fm?utm_source=instagram&utm_medium=bio&utm_campaign=always-on`
+- [ ] Bio link is: `https://ablemusic.co?utm_source=instagram&utm_medium=bio&utm_campaign=always-on`
 - [ ] Metricool is connected to Instagram
 - [ ] Warm list document is created (Apple Notes, Notion, or similar — just a blank document)
 - [ ] The four key metrics are written in a tracking sheet (Week 0 baseline)

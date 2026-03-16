@@ -30,7 +30,7 @@ stage: 5 of 8 (Copy before design — every word locked)
 *Shown in the browser tab throughout the wizard*
 
 ```
-Set up your ABLE page — able.fm
+Set up your ABLE page — ablemusic.co
 ```
 
 ### Progress indicator format
@@ -1112,7 +1112,7 @@ Run this before any copy is marked final or entered into build.
 - [ ] "Your Linktree link still works while you're getting set up." is present on Screen 5 for Journey 2
 - [ ] Empty state in preview reads "Your page is taking shape." before name is entered, then "This is [Name]'s page." after
 - [ ] Back button reads "← Back" — nothing else
-- [ ] Browser tab title reads "Set up your ABLE page — able.fm" throughout
+- [ ] Browser tab title reads "Set up your ABLE page — ablemusic.co" throughout
 - [ ] Progress counter is "Step N of 7" — not "Step N of 8" (Screen 0 and Screen 8 are outside the count)
 - [ ] "Something else — I'll set it myself" is the label for the catch-all vibe card, not "Other"
 - [ ] No copy sounds like SaaS. Read every screen aloud and ask: does this sound like a form?

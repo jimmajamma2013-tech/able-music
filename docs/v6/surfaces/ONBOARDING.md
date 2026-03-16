@@ -1,6 +1,12 @@
 # ABLE Surface — Onboarding Wizard (`start.html`)
-**Status: ACTIVE**
-**Last updated: 2026-03-14**
+**Status: ⛔ SUPERSEDED — DO NOT USE FOR BUILD DECISIONS**
+**Last updated: 2026-03-14 | Superseded: 2026-03-15**
+
+> **This document is superseded by `docs/pages/onboarding/DESIGN-SPEC.md`.**
+> The V8 strategy process produced a 9.9/10 complete build spec. Use that.
+> This file is retained for historical reference only.
+
+---
 
 *How the identity and campaign engines translate into the first-run artist experience.*
 

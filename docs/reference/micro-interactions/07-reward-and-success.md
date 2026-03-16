@@ -142,7 +142,7 @@ async function copyLink(text, btn) {
 }
 ```
 
-**ABLE thoughts:** This is the most-used admin interaction for active artists. Every time they share their ABLE link in an Instagram story, a tweet, or a WhatsApp message, they copy it from admin.html. The copy feedback is therefore the most frequently seen "success" state in the entire product. It must be immediate and clear. The 2-second reset is correct — long enough to register, short enough that they can copy again if they need to. Show the artist's shortened ABLE URL (`able.fm/artistname`) not the full URL — seeing their identity in that format is a brand moment every time.
+**ABLE thoughts:** This is the most-used admin interaction for active artists. Every time they share their ABLE link in an Instagram story, a tweet, or a WhatsApp message, they copy it from admin.html. The copy feedback is therefore the most frequently seen "success" state in the entire product. It must be immediate and clear. The 2-second reset is correct — long enough to register, short enough that they can copy again if they need to. Show the artist's shortened ABLE URL (`ablemusic.co/artistname`) not the full URL — seeing their identity in that format is a brand moment every time.
 
 ---
 

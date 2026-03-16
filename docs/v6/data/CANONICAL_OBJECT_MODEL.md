@@ -1,6 +1,7 @@
 # ABLE — Canonical Object Model
-**Status: ACTIVE — single source of truth for all shared data structures.**
+**Status: ACTIVE — product truth, not superseded**
 **Last updated: 2026-03-14**
+**V8 note:** `docs/systems/data-architecture/SPEC.md` extends this with complete TypeScript interfaces, SQL table definitions, RLS policies, and the `flushToSupabase()` migration function. This doc defines the *shapes*. The data-architecture SPEC.md defines *how to store and migrate them*.
 
 *One definition per object. All engines read and write these shapes. No engine redefines them.*
 

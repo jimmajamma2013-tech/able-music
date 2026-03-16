@@ -166,7 +166,7 @@ Collab message goes via ABLE's internal messaging (no email addresses shared unt
 - This is one piece of content reaching two audiences — the most efficient growth moment on the platform
 
 ### G. The press pack link
-- Artist puts `able.fm/name/press` in their email signature and Linktree
+- Artist puts `ablemusic.co/name/press` in their email signature and Linktree
 - Industry people open it → they discover ABLE → some are artists or managers → they join
 - The press pack is a growth tool disguised as a professional asset
 
@@ -195,7 +195,7 @@ When Artist A recommends Artist B on their profile, Artist B should feel *good* 
 >
 > ABLE is where independent artists put their music, shows, and fan sign-ups in one place. If you're not on ABLE yet, claim your page and the recommendation will link directly to your profile.
 >
-> [Claim able.fm/yourname →]"
+> [Claim ablemusic.co/yourname →]"
 
 ### The tone rules
 - Never: "You've been added! Join now!" — too pushy
@@ -254,9 +254,9 @@ Unverified (self-added)  →  Peer-confirmed  →  Metadata-verified
 
                   ↓ Credits
                   Written by: James Cuthbert
-                  Produced by: Maya Beats ✓  →  able.fm/mayabeats
+                  Produced by: Maya Beats ✓  →  ablemusic.co/mayabeats
                   Mixed by: Studio Zero      →  studiozero.co.uk
-                  Photography: Lens Noir ✓   →  able.fm/lensnoir
+                  Photography: Lens Noir ✓   →  ablemusic.co/lensnoir
 ```
 
 Small, clean, collapsed. A fan who cares will look. Most won't. That's correct.

@@ -616,7 +616,7 @@ function applyDerivedTokens(root, accentHex, rMult) {
 
 **Reward & success (from `07-reward-and-success.md`):**
 - **Support pack celebration (#82)**: Purchased tier card gains full accent glow + checkmark. Confirmation: "You're supporting [Artist Name] at the [Tier] level." — specific, warm. Not "Payment successful."
-- **Copy link flash (#83)**: "Copied!" label for 2s, button bg flashes `rgba(accent, 0.15)`. Show artist's `able.fm/handle` — not full URL. Seeing their identity in that format is a brand moment.
+- **Copy link flash (#83)**: "Copied!" label for 2s, button bg flashes `rgba(accent, 0.15)`. Show artist's `ablemusic.co/handle` — not full URL. Seeing their identity in that format is a brand moment.
 - **Pre-save star burst (#84)**: 8 star particles radiate ~40px outward from button. More contained than confetti — the pre-save is a quiet, personal commitment.
 - **Fan count tick (#81)**: Admin — fan counter `scale(1.1)` → digit change → spring back to 1.0.
 
@@ -831,7 +831,7 @@ The slide-up admin panel contains:
 - CTA editor (primary + secondary)
 - Fan count (counts up animation from stats) — exact number ("127 fans"), never approximations
 - "View fan list" → separate bottom sheet
-- **Living QR Code**: a QR code that always points to the artist's current most important action — tickets when touring, stream when live, pre-save when building. Never needs reprinting. Artist prints it on: merch, setlist backdrops, venue posters, social graphics. QR code is just `able.fm/@handle` — the profile's smart state switching makes it contextually correct.
+- **Living QR Code**: a QR code that always points to the artist's current most important action — tickets when touring, stream when live, pre-save when building. Never needs reprinting. Artist prints it on: merch, setlist backdrops, venue posters, social graphics. QR code is just `ablemusic.co/@handle` — the profile's smart state switching makes it contextually correct.
 - **Revenue attribution**: show which CTA drove which action. "Stream Now → 3,400 Spotify opens this week." "Tickets → 89 opens." Not conversions (ABLE can't track purchases on external sites) but opens are a strong proxy. This is what artists can't get from Linktree.
 - **On desktop (>768px)**: admin is split-screen — left = edit forms (all sections), right = live mobile preview updating as they type. Slide-up pattern still applies on mobile. Desktop unlocks the full editor view.
 - **"View as fan"**: toggle between edit mode (dashed borders, edit icons) and fan view (exactly what fans see). One tap. No page reload.
@@ -1227,11 +1227,11 @@ const DEMO_PROFILE = {
     tips: [3, 5, 10, 20]
   },
   credits: [
-    { role: "Mixed by",     name: "Studio Zero",  url: "https://able.fm/studiozero",  verified: true },
+    { role: "Mixed by",     name: "Studio Zero",  url: "https://ablemusic.co/studiozero",  verified: true },
     { role: "Mastered by",  name: "Abbey Road",   url: null,                           verified: false }
   ],
   recommendations: [
-    { name: "Olive",  url: "https://able.fm/olive" },
+    { name: "Olive",  url: "https://ablemusic.co/olive" },
     { name: "Mimi",  url: null }
   ]
 }
@@ -1941,7 +1941,7 @@ Step 4: "Make it yours"
   → Vibe selector (7 options) — show as small cards with display font preview
   → "My page is ready →"
 
-Post-wizard: "Your page is at able.fm/[handle]"
+Post-wizard: "Your page is at ablemusic.co/[handle]"
   → Show the handle, confirm it, allow change
   → Magic link sent to confirm email → logged in
 ```
@@ -1967,7 +1967,7 @@ Step 4: Make it yours (same as Entry 1 Step 4)
 **Entry 3: Manual setup (artist not on Spotify / new artist)**
 ```
 Step 1: "What's your artist name?"
-  → Name field — as you type, shows "Your page will be at able.fm/[handle-preview]"
+  → Name field — as you type, shows "Your page will be at ablemusic.co/[handle-preview]"
   → Handle auto-generated from name (slugified), editable
 
 Step 2: "Tell me a bit about what you make"
@@ -2269,11 +2269,11 @@ The fan arrived from somewhere. That somewhere has a specific energy — a speci
 
 **How ABLE knows where the fan came from:**
 ```
-Link in artist's Instagram bio:  able.fm/@handle?src=ig
-Link in TikTok bio:              able.fm/@handle?src=tiktok
-Link in YouTube description:     able.fm/@handle?src=yt
-Link in Twitter/X bio:           able.fm/@handle?src=x
-Direct link:                     able.fm/@handle (no src param)
+Link in artist's Instagram bio:  ablemusic.co/@handle?src=ig
+Link in TikTok bio:              ablemusic.co/@handle?src=tiktok
+Link in YouTube description:     ablemusic.co/@handle?src=yt
+Link in Twitter/X bio:           ablemusic.co/@handle?src=x
+Direct link:                     ablemusic.co/@handle (no src param)
 ```
 
 Artists set these links up once in the admin panel. ABLE provides the correct UTM-appended URL for each platform.
@@ -2666,7 +2666,7 @@ Not all features are equal. Work top-down. A beautiful press pack is worthless i
 15. Rooms / Stage Can — deeper fan connection (future)
 
 **Tier 5 — Ecosystem (makes ABLE the centre of an artist's world):**
-16. Press pack (`able.fm/name/press`)
+16. Press pack (`ablemusic.co/name/press`)
 17. Story mode — repostable content
 18. Referral programme (Ablers)
 19. Industry mode — being found by labels/managers/bookers
@@ -2739,7 +2739,7 @@ Growth is earned, not bought. Every component of the loop compounds.
 ### IV.3 — Ecosystem & Partnerships
 
 **Ablers — Referral Programme:**
-- Every artist + approved Abler gets a unique referral code: `able.fm/ref/[code]`
+- Every artist + approved Abler gets a unique referral code: `ablemusic.co/ref/[code]`
 - When someone signs up via that link and becomes a paid subscriber → Abler earns recurring commission
 - Payout: Stripe Connect or PayPal, monthly, minimum £20 threshold
 - Abler dashboard: clicks, conversions, earnings, pending payouts
@@ -2760,7 +2760,7 @@ Natural Ablers: music YouTubers/TikTokers ("music biz tip" content), music produ
 - AI in Rooms (near-term): voice note transcription (OpenAI Whisper — $0.006/min), tone coach, room starter prompts based on upcoming shows/releases/engagement
 - AI co-host (12–18 months): Claude API with artist profile context, answers fan questions on pre-approved topics, clearly labelled as "ABLE assistant" — NEVER impersonates the artist. Design architecture to support this now.
 
-**Press Pack (`able.fm/name/press`) — Artist Pro:**
+**Press Pack (`ablemusic.co/name/press`) — Artist Pro:**
 - Public URL generated from existing profile data. No extra work for the artist.
 - Auto-populated: artist photo, bio, genre/vibe, latest release, top tracks (Spotify), upcoming shows, contact/booking CTA, social links, stats. Artist manually adds press quotes if they have them.
 - Design: Apple Memories-style scroll — full-bleed sections, each a "chapter", animated elements, music snippets play with controls
@@ -2854,7 +2854,7 @@ Their fans can now find you from their page.
 ABLE is where independent artists put their music, shows, and fan sign-ups in one place.
 If you're not on ABLE yet, claim your page and the recommendation will link directly to your profile.
 
-[Claim able.fm/yourname →]
+[Claim ablemusic.co/yourname →]
 ```
 Frame it as recognition, not a sign-up pitch. Never "You've been added! Join now!"
 
@@ -3397,7 +3397,7 @@ All emails must sound like they were written by a person in the music industry, 
 
 *Build prompt version: 5.4 — Updated 2026-03-13. This version adds: SoundBetter failure mode analysis (visibility-as-subscription, certification opacity, race-to-the-bottom, review hostage-taking, wrong problem solved), Working Not Working as quality-trail proof of concept, session musician demo-reel-first principle. Previous 5.3: Part IV discovery/ecosystem/integrations/AI, Part V micro-interactions library (100 entries). Previous 5.2: professional discovery system. Previous 5.1/5.0: see inline version notes.*
 
-*Version 5.3 additions: Part IV — Discovery, Growth, Ecosystem & Integrations: 5-tier product build hierarchy (work top-down rule), velocity-based leaderboards, globe heatmap spec, launch squad system, "Artists I'm Digging" cross-discovery graph, fan Amplifier badge, QR code spec, Campaign Mode UTM, organic growth flywheel, Ablers referral programme (3 tiers: 20%/25%/30%), Rooms + Stage Can (£1–50 tipping), AI co-host architecture, press pack spec (`able.fm/name/press`, Apple Memories-style), Story Mode via Creatomate/Bannerbear, Industry Mode, Community Fund (3% take, quarterly vote), Support a Cause snap card (Stripe Connect split), Music Map with Spotify "sounds like", data portability above-fold placement rule, collaboration discovery card (artist-only layer), exact recommendation notification copy, integration priority matrix, Linktree importer as #1 conversion tool, API reliability warnings (Instagram deprecated late 2024, Spotify May 2024 removals, PledgeMusic defunct), full AI tool assessment (ElevenLabs highest value, OpenAI Whisper, LANDR, LALAL.AI, ACE-Step licence warning, AudioCraft CC-BY-NC hard blocker, Suno/Udio RIAA litigation), agent architecture principle. Part V — Micro-Interactions Reference (100-entry library distilled): 4 canonical easing curves, GPU performance rules (opacity+transform in loops only, ::before glow trick), must-build priority matrix (20 interactions, 3 phases), key implementation patterns (staggered bloom 2-system architecture, skeleton shimmer unison rule, fan confirmation copy, campaign state crossfade, gig mode flash once-per-session, asymmetric sheet easing, iOS :active fix), ambient state rules (glow breathing cycle speeds, pre-release urgency interpolation formula). Also: AI context persistence (artist_context in Supabase from day 1), workflow-layer AI (predictive surfacing not generative), annual transparency report architecture, 10-pattern anti-pattern list.*
+*Version 5.3 additions: Part IV — Discovery, Growth, Ecosystem & Integrations: 5-tier product build hierarchy (work top-down rule), velocity-based leaderboards, globe heatmap spec, launch squad system, "Artists I'm Digging" cross-discovery graph, fan Amplifier badge, QR code spec, Campaign Mode UTM, organic growth flywheel, Ablers referral programme (3 tiers: 20%/25%/30%), Rooms + Stage Can (£1–50 tipping), AI co-host architecture, press pack spec (`ablemusic.co/name/press`, Apple Memories-style), Story Mode via Creatomate/Bannerbear, Industry Mode, Community Fund (3% take, quarterly vote), Support a Cause snap card (Stripe Connect split), Music Map with Spotify "sounds like", data portability above-fold placement rule, collaboration discovery card (artist-only layer), exact recommendation notification copy, integration priority matrix, Linktree importer as #1 conversion tool, API reliability warnings (Instagram deprecated late 2024, Spotify May 2024 removals, PledgeMusic defunct), full AI tool assessment (ElevenLabs highest value, OpenAI Whisper, LANDR, LALAL.AI, ACE-Step licence warning, AudioCraft CC-BY-NC hard blocker, Suno/Udio RIAA litigation), agent architecture principle. Part V — Micro-Interactions Reference (100-entry library distilled): 4 canonical easing curves, GPU performance rules (opacity+transform in loops only, ::before glow trick), must-build priority matrix (20 interactions, 3 phases), key implementation patterns (staggered bloom 2-system architecture, skeleton shimmer unison rule, fan confirmation copy, campaign state crossfade, gig mode flash once-per-session, asymmetric sheet easing, iOS :active fix), ambient state rules (glow breathing cycle speeds, pre-release urgency interpolation formula). Also: AI context persistence (artist_context in Supabase from day 1), workflow-layer AI (predictive surfacing not generative), annual transparency report architecture, 10-pattern anti-pattern list.*
 
 *Version 5.2 additions: Professional discovery system — complete rewrite of Section 2.5 with artist-first framing (Studio mode = additional face of artist, not separate freelancer product), 3 professional types (artist-who-freelances / freelancer-only / industry-card), credit verification 3-level system (unverified / peer-confirmed ✓ / metadata-verified ✓✓ via ISRC), "People in my world" section spec, discovery graph model (credits as directed edges, not search listings), what ABLE deliberately does NOT build (no ratings, no search, no commission, no marketplace positioning). Full spec in `docs/PROFESSIONAL_DISCOVERY.md`.*
 

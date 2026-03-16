@@ -75,14 +75,14 @@ A visualisation of where ABLE artists and their fans are in the world.
 ABLE cannot post to Instagram, TikTok, or Facebook on the artist's behalf without OAuth + their business account credentials. Most artists won't do this. But ABLE can make sharing *feel* native.
 
 ### What ABLE can do today
-- **Shareable cards** — auto-generated OG image per artist page (name + photo + accent colour + "able.fm/name")
+- **Shareable cards** — auto-generated OG image per artist page (name + photo + accent colour + "ablemusic.co/name")
 - **Pre-made caption library** — per section: new music, new show, merch drop, fan sign-up ask
 - **Story-ready assets** — 1080×1920 portrait card with artist photo + CTA text, downloadable as PNG
 - **Reel repost prompt** — "Your latest Spotify release is out. Here's a caption + link for your reel."
-- **Link in bio smart** — "Put able.fm/name in your IG bio" with one-tap copy
+- **Link in bio smart** — "Put ablemusic.co/name in your IG bio" with one-tap copy
 
 ### ABLE as IG Ad Landing Page
-- Artists running paid campaigns on Meta point to `able.fm/name`
+- Artists running paid campaigns on Meta point to `ablemusic.co/name`
 - ABLE page is already mobile-optimised, fast-loading, conversion-focused — better than Linktree for this
 - Feature: "Campaign mode" — when a paid traffic source is detected (UTM `utm_source=ig_ad`), the hero CTA is foregrounded even more, the fan sign-up floats higher
 - Future: ABLE-run ad campaigns where ABLE promotes vetted artists as a platform feature (like Spotify's "Off the Record" or Apple Music's "Up Next")
@@ -161,7 +161,7 @@ Out now on all platforms
 
 — — — — — — — — —
 Written by: J. Doe
-Produced by: Maya Beats  → (links to able.fm/mayabeats)
+Produced by: Maya Beats  → (links to ablemusic.co/mayabeats)
 Mixed by: Studio Zero    → (links to their site if no ABLE profile)
 ```
 

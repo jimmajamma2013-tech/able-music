@@ -62,7 +62,7 @@ Most assumptions in product design are invisible precisely because they're so th
 
 The reversal "ABLE goes to fans, not the other way" leads directly to the fan.html dashboard — a product where fans log in, see all their followed artists, and get one place for everything. But it also leads somewhere more interesting: what if ABLE had an outbound component? A fan referral mechanic where existing fans invite other fans? Discovery through relationship rather than algorithm?
 
-The reversal "ABLE lives inside every platform" raises the question of whether ABLE should be a widget, not a page. An embeddable sign-up form that lives on a Bandcamp page, Substack, or Shopify store. ABLE as infrastructure for any artist's digital presence, not just the ones who link their bio to able.fm.
+The reversal "ABLE lives inside every platform" raises the question of whether ABLE should be a widget, not a page. An embeddable sign-up form that lives on a Bandcamp page, Substack, or Shopify store. ABLE as infrastructure for any artist's digital presence, not just the ones who link their bio to ablemusic.co.
 
 **When to use it**
 

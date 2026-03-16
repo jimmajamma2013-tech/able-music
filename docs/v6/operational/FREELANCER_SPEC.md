@@ -27,7 +27,7 @@ They are not artists (though they may be both). They earn from their craft, not 
 Artist releases a track
 → Artist adds credit: "Produced by Maya Beats"
 → Maya Beats has an ABLE freelancer profile
-→ Credit becomes a live link: able.fm/mayabeats
+→ Credit becomes a live link: ablemusic.co/mayabeats
 → Fan of the track taps it → lands on Maya's profile
 → Another artist taps it → sees Maya's work, rate card, availability
 → Maya gets a booking enquiry
@@ -41,7 +41,7 @@ Without a freelancer profile on ABLE, the credit is still shown — but as plain
 
 ## Freelancer profile components
 
-### URL: `able.fm/@[handle]` or `able.fm/[handle]` (same URL space as artists — handle is unique across both types)
+### URL: `ablemusic.co/@[handle]` or `ablemusic.co/[handle]` (same URL space as artists — handle is unique across both types)
 
 ### Visual distinction from artist profiles
 - Same design system (themes, vibes, tokens)
@@ -145,7 +145,7 @@ Get in touch with Maya
 Your name           [                    ]
 Your email          [                    ]
 What you need       [                    ]
-Your ABLE page      able.fm/ [           ]   (optional)
+Your ABLE page      ablemusic.co/ [           ]   (optional)
 
 [ Send enquiry ]
 ```
@@ -197,9 +197,9 @@ Separate from artist onboarding. Shares design but has different steps.
 - CTA preference: enquiry form on ABLE (default) / link out to external booking (e.g., Calendly)
 
 **Done screen:**
-- "Your profile is live at able.fm/[handle]"
+- "Your profile is live at ablemusic.co/[handle]"
 - Share options: copy link, WhatsApp, Twitter, Instagram
-- "Add to your email signature" — copy a text snippet: "Maya Beats · Producer · able.fm/mayabeats"
+- "Add to your email signature" — copy a text snippet: "Maya Beats · Producer · ablemusic.co/mayabeats"
 
 ---
 

@@ -1,4 +1,6 @@
 # ABLE Visual System — Genre Presets
+**Status: ACTIVE — product truth, not superseded**
+**V8 note:** The canonical CSS token spec is in `docs/systems/DESIGN_SYSTEM_SPEC.md` — it formalises every token from this doc into precise CSS custom properties for both surfaces. Read this doc for *why* the vibes work. Read DESIGN_SYSTEM_SPEC.md for *how* to implement them.
 
 ## Philosophy
 

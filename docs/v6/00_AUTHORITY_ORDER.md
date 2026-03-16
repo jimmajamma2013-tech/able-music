@@ -1,6 +1,27 @@
-# ABLE V6 — Authority Order
+# ABLE — Authority Order
 **Status: ACTIVE — read this first.**
-**Last updated: 2026-03-14**
+**Last updated: 2026-03-15 | V8 strategy layer added**
+
+---
+
+## ⚡ V8 Strategy Layer — supersedes surfaces/* for ALL build decisions
+
+The V8 strategy process (2026-03-15) produced complete, scored build specs for every page and system. These are the primary build authority:
+
+| Page/System | Build authority doc | Score |
+|---|---|---|
+| `able-v7.html` | `docs/pages/profile/DESIGN-SPEC.md` | 9.7/10 |
+| `admin.html` | `docs/pages/admin/DESIGN-SPEC.md` | 9.7/10 |
+| `start.html` | `docs/pages/onboarding/DESIGN-SPEC.md` | 9.9/10 |
+| `landing.html` | `docs/pages/landing/DESIGN-SPEC.md` | 9.65/10 |
+| `fan.html` | `docs/pages/fan/DESIGN-SPEC.md` | in progress |
+| Design tokens | `docs/systems/DESIGN_SYSTEM_SPEC.md` | 9.5/10 |
+| Micro-interactions | `docs/systems/MICRO_INTERACTIONS_SPEC.md` | 9.5/10 |
+| Copy system | `docs/systems/copy/SPEC.md` | in progress |
+| Data architecture | `docs/systems/data-architecture/SPEC.md` | in progress |
+| All other systems | `docs/systems/[system]/SPEC.md` | in progress |
+
+**`docs/v6/surfaces/*` are DEPRECATED** — each has a superseded notice pointing to the correct V8 doc.
 
 ---
 

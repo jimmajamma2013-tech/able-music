@@ -50,7 +50,7 @@ The strategy document scores 10/10 as a specification. The execution scores 10/1
 
 - [ ] Profile photo: export `able-logo-instagram.svg` at 400×400px
 - [ ] Bio: copy from ACCOUNT-STRATEGY.md Part 4, Instagram section
-- [ ] Link: `able.fm`
+- [ ] Link: `ablemusic.co`
 - [ ] No Story Highlights yet — these will come after the first week of posting
 - [ ] Verify the profile looks correct on mobile (not just desktop)
 
@@ -61,7 +61,7 @@ The strategy document scores 10/10 as a specification. The execution scores 10/1
 
 - [ ] Profile photo: same file as Instagram (400×400px)
 - [ ] Bio: copy from ACCOUNT-STRATEGY.md Part 4, TikTok section
-- [ ] Link: `able.fm`
+- [ ] Link: `ablemusic.co`
 
 ---
 
@@ -71,7 +71,7 @@ The strategy document scores 10/10 as a specification. The execution scores 10/1
 - [ ] Profile photo: same file (400×400px)
 - [ ] Bio: copy from ACCOUNT-STRATEGY.md Part 4, X/Twitter section
 - [ ] Header/banner: create 1500×500px dark navy image with ABLE wordmark (see brand-identity SPEC.md)
-- [ ] Link: `able.fm`
+- [ ] Link: `ablemusic.co`
 - [ ] Location: London (if comfortable — music industry is UK-first)
 
 ---
@@ -91,7 +91,7 @@ For each dormant platform (YouTube, Facebook, Threads):
 
 - [ ] Profile photo set to standard ABLE mark
 - [ ] Bio filled with copy from ACCOUNT-STRATEGY.md Part 4
-- [ ] Link set to `able.fm`
+- [ ] Link set to `ablemusic.co`
 - [ ] One pinned post: "Find us at [primary platform] → [link]"
 
 ---
@@ -103,7 +103,7 @@ LinkedIn is actively used for B2B outreach:
 - [ ] Logo uploaded (400×400px)
 - [ ] Banner image created (1584×396px — see ACCOUNT-STRATEGY.md Part 4)
 - [ ] About section filled with copy from ACCOUNT-STRATEGY.md Part 4
-- [ ] Website: `able.fm`
+- [ ] Website: `ablemusic.co`
 - [ ] Industry: Entertainment / Music
 - [ ] Company size: 1–10 employees
 

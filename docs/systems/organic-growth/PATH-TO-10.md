@@ -146,7 +146,7 @@ The document knows its place in the system. It is the growth strategy layer, not
 ### 13. THE SWITCHER PATH (Does this serve someone switching from Linktree?)
 **Score: 10/10**
 
-The document is not for switchers — it is for the founder. But the acquisition strategy it describes is specifically designed to reach switchers: the SEO article "The best link-in-bio for musicians in 2026," the comparison page `able.fm/vs-beacons`, the "who actually owns your fan list" article. The document tells the founder how to reach switchers, which is its correct job.
+The document is not for switchers — it is for the founder. But the acquisition strategy it describes is specifically designed to reach switchers: the SEO article "The best link-in-bio for musicians in 2026," the comparison page `ablemusic.co/vs-beacons`, the "who actually owns your fan list" article. The document tells the founder how to reach switchers, which is its correct job.
 
 **Path to 10:** Delivered.
 

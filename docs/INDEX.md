@@ -159,6 +159,10 @@
 - [Fan Signup Conversion Research](research/2026-03-15-fan-signup-conversion.md) — Fan sign-up conversion optimisation
 - [Fear Maps](process/FEAR_MAPS.md) — Risk mapping for major decisions
 - [File Structure](FILE-STRUCTURE.md) — Complete docs navigation map
+- [Filing System — Analysis](systems/filing-system/FILING-SYSTEM-ANALYSIS.md) — Before/after audit of the docs filing system (scored 68→92/100)
+- [Filing System — Final Review](systems/filing-system/FINAL-REVIEW.md) — Scored review of filing system across 10 dimensions
+- [Filing System — Path to 10](systems/filing-system/PATH-TO-10.md) — Gap analysis and prioritised actions to reach 10/10
+- [Filing System — Spec](systems/filing-system/SPEC.md) — Canonical specification for the ABLE docs filing system
 - [Final 20-Angle Review — Admin](pages/admin/FINAL-20-ANGLE-REVIEW.md) — First review pass for admin page
 - [Final 20-Angle Review 2 — Admin](pages/admin/FINAL-20-ANGLE-REVIEW-2.md) — Final review pass for admin page
 - [Final 20-Angle Review — Freelancer](pages/freelancer/FINAL-20-ANGLE-REVIEW.md) — First review pass for freelancer page

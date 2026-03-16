@@ -151,11 +151,11 @@ These compound over time without paid acquisition:
 
 **Rooms** (Artist Pro): Async-first private space. Artist posts voice notes, text, photos — "dispatches." Fans react + reply. Tipping via "Stage Can" (named after the music venue tip jar — keep this name). Whisper API transcribes voice notes for reading-preference fans. The architecture needs: room_id, dispatch_id, reaction model.
 
-**Press Pack** (`able.fm/name/press`): Auto-generated from existing profile data. No new data model needed. Needs a clean URL route and render layer. Artist Pro only.
+**Press Pack** (`ablemusic.co/name/press`): Auto-generated from existing profile data. No new data model needed. Needs a clean URL route and render layer. Artist Pro only.
 
 **Story Mode**: Video assembled from profile data (photo + artwork + 30s track snippet + show date + fan count). Download as 1080×1920 MP4. Start with Bannerbear/Creatomate API, build native later.
 
-**Ablers referral programme**: `able.fm/ref/[code]` referral links, 20–30% commission for 6–12 months. Stripe Connect for payouts. Natural ablers: music YouTubers, production schools, indie blogs, venue social accounts.
+**Ablers referral programme**: `ablemusic.co/ref/[code]` referral links, 20–30% commission for 6–12 months. Stripe Connect for payouts. Natural ablers: music YouTubers, production schools, indie blogs, venue social accounts.
 
 ---
 
@@ -216,7 +216,7 @@ Design spec is not formally written for admin. Based on all docs, it must contai
 - Connection status badge + spinner on connection loading
 
 **Link copy button:**
-- Shows `able.fm/[name]` URL
+- Shows `ablemusic.co/[name]` URL
 - One-tap copy → accent flash for 300ms → "Copied"
 
 **QR code:**
@@ -423,7 +423,7 @@ The back gesture on Android (swipe from left edge) and back button must be handl
 - Tap Home tab icon → scroll-to-top if already on Home
 - Back gesture from Home tab → exit app (browser handles this — do not intercept)
 
-### Deep-linked sections (`able.fm/handle#music`, `#shows`)
+### Deep-linked sections (`ablemusic.co/handle#music`, `#shows`)
 - Direct deep link → renders the profile, scrolls to the section
 - Back gesture from a deep-linked section → closes deep link state, stays on profile (does not navigate to referring page)
 - History: do NOT push a new history entry for section scrolls — they are in-page navigation

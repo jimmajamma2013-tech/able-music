@@ -65,7 +65,7 @@ A complete Master Review takes 3–4 hours. It runs in 7 phases. Do not skip pha
 - Action: update the non-authoritative document immediately
 
 **Common contradiction categories to look for:**
-- Domain name: `able.fm` vs `ablemusic.co` — one must win, all docs must agree
+- Domain name: `ablemusic.co` vs `ablemusic.co` — one must win, all docs must agree
 - Fan cap numbers: free tier cap must be identical across all mentions (currently: 100 fans)
 - Tier pricing: £0 / £9 / £19 / £49 — must be identical across all docs
 - Page file names: `able-v7.html` is the artist profile — any reference to `able-v3.html`, `able-v6.html` as active is wrong

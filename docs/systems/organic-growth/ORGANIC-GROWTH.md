@@ -114,7 +114,7 @@ When an artist adds a release snap card and credits their collaborators — prod
 **How the credit loop works:**
 
 1. Artist publishes a release snap card with credits: "Produced by Maya Beats · Mixed by Studio Zero"
-2. "Maya Beats" links to `able.fm/mayabeats` if she has an ABLE profile, or to her Instagram if she doesn't
+2. "Maya Beats" links to `ablemusic.co/mayabeats` if she has an ABLE profile, or to her Instagram if she doesn't
 3. Every fan who reads the credits and clicks through is a referral from the artist's page to the freelancer's page
 4. Maya Beats's ABLE profile is a complete, professional page — rate card, portfolio, booking CTA, past credits
 5. Maya Beats's clients discover ABLE through their own credits
@@ -162,7 +162,7 @@ Prominent in the admin dashboard header. Tapping it opens a share sheet with:
 
 Pre-generated tweet/caption:
 
-> "This is where I put everything: my music, my shows, what I'm working on. No algorithm between us. [able.fm/name] — got your own? able.fm"
+> "This is where I put everything: my music, my shows, what I'm working on. No algorithm between us. [ablemusic.co/name] — got your own? ablemusic.co"
 
 Note: this is the artist's voice, not ABLE's marketing copy. ABLE never speaks for the artist. It hands them a sentence they can use.
 
@@ -170,7 +170,7 @@ Variants: Instagram caption (shorter), WhatsApp message (most direct), copy link
 
 **2. Invite a fellow artist button**
 
-Generates a unique referral URL: `able.fm/join?ref=[artist_slug]`
+Generates a unique referral URL: `ablemusic.co/join?ref=[artist_slug]`
 
 When the referred artist signs up:
 - Both get 1 month free on Artist tier
@@ -243,8 +243,8 @@ This is passive SEO. It compounds over time without ongoing effort.
 <meta name="description" content="[Artist Name]'s music, shows, and everything in between.">
 <meta property="og:title" content="[Artist Name]">
 <meta property="og:image" content="[Artist artwork URL]">
-<meta property="og:url" content="https://able.fm/[artist_slug]">
-<link rel="canonical" href="https://able.fm/[artist_slug]">
+<meta property="og:url" content="https://ablemusic.co/[artist_slug]">
+<link rel="canonical" href="https://ablemusic.co/[artist_slug]">
 
 <!-- Structured data -->
 <script type="application/ld+json">
@@ -252,7 +252,7 @@ This is passive SEO. It compounds over time without ongoing effort.
   "@context": "https://schema.org",
   "@type": "MusicGroup",
   "name": "[Artist Name]",
-  "url": "https://able.fm/[artist_slug]",
+  "url": "https://ablemusic.co/[artist_slug]",
   "genre": "[genre]",
   "event": [{ "@type": "MusicEvent", ... }]
 }
@@ -282,11 +282,11 @@ Five priority articles (spec'd in `docs/GROWTH_STRATEGY.md §SEO strategy`):
 4. "Why your profile should say something different on show nights"
 5. "Who actually owns your fan list?"
 
-All published at `able.fm/blog/`. No CMS required in V1 — static HTML pages using ABLE's design system.
+All published at `ablemusic.co/blog/`. No CMS required in V1 — static HTML pages using ABLE's design system.
 
 **The social bio link flywheel:**
 
-Every ABLE artist who links `able.fm/[name]` in their Instagram or TikTok bio is:
+Every ABLE artist who links `ablemusic.co/[name]` in their Instagram or TikTok bio is:
 - Driving direct fan traffic to ABLE
 - Creating an inbound link from a high-domain-authority social property
 - Increasing ABLE's domain authority with every new artist who does the same

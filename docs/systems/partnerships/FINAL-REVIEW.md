@@ -10,7 +10,7 @@
 
 **Answer: Yes, with one exception.**
 
-The spec provides: OAuth 2.0 PKCE flow, required scopes (`user-read-private`, `user-read-email`, client credentials for public artist data), the distinction between public artist data (no user OAuth) and personalised features (full auth code flow), the redirect URI pattern (`able.fm/spotify-callback`), 24-hour TTL caching in `able_spotify_cache`, fallback to cached data on API downtime, and the explicit instruction to never show an error to the fan.
+The spec provides: OAuth 2.0 PKCE flow, required scopes (`user-read-private`, `user-read-email`, client credentials for public artist data), the distinction between public artist data (no user OAuth) and personalised features (full auth code flow), the redirect URI pattern (`ablemusic.co/spotify-callback`), 24-hour TTL caching in `able_spotify_cache`, fallback to cached data on API downtime, and the explicit instruction to never show an error to the fan.
 
 The one exception: the spec notes that pre-save requires a Spotify for Artists partnership agreement but does not specify where to apply. This is a V2 concern, not a V1 blocker. For V1, the integration is fully buildable from the document.
 

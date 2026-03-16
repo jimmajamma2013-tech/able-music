@@ -1,614 +1,454 @@
 # Artist Profile — Final 20-Angle Review (Pass 2)
 **File: `able-v7.html` | Created: 2026-03-15**
-**Target: 9.7+/10 — Push every angle through the ceiling**
+**P2 changes applied. Pass 1: 8.4 → Pass 2: 9.0 | V1 ceiling: 9.7**
 
 ---
 
-## PASS 2 MANDATE
+## SCORE TABLE — PASS 2
 
-Pass 1 landed at 9.2/10. The remaining gaps are not structural — they are decisions about ceiling behaviour. This pass identifies the specific choices that close each sub-10 angle.
+| # | Angle | Baseline | Pass 1 | Pass 2 | When-built | Hard ceiling |
+|---|---|---|---|---|---|---|
+| 1 | First 3 Seconds | 7 | 8 | 8.5 | P2 ships | 9.5 — Spotify import |
+| 2 | Primary Job | 7 | 8 | 8.5 | P1 ships | 9 — CTA density above fold |
+| 3 | Hero CTA Zone | 7 | 8.5 | 8.5 | P1 ships | 9 — artist-written always beats defaults |
+| 4 | Page State System | 8 | 8.5 | 9 | P2 ships | 9.5 — signal-based live window |
+| 5 | Copy Voice | 6 | 8.5 | 9 | P2 ships | 10 — with artist customisation |
+| 6 | Fan Sign-up | 7 | 8 | 8.5 | P2 ships | 9.5 — confirmation email (Supabase) |
+| 7 | Music Section | 7 | 8 | 8.5 | P2 ships | 9 — 30s preview + credit links |
+| 8 | Empty State | 3 | 7.5 | 8 | P2 ships | 9.5 — Spotify auto-import |
+| 9 | Mobile Experience | 8 | 8.5 | 9 | P2 ships | 9.5 — iOS Safari audio |
+| 10 | Performance | 7 | 7.5 | 8.5 | P2 ships | 9 — file size audit |
+| 11 | Theme System | 8 | 8.5 | 9 | P2 ships | 9.5 — fan theme choice |
+| 12 | Identity System | 8 | 8.5 | 9 | P2 ships | 9.5 — FOUI fix |
+| 13 | Gig Mode | 6 | 8 | 8.5 | P2 ships | 9 — going-tonight counter |
+| 14 | Pre-release Mode | 7 | 8.5 | 9 | P2 ships | 9.5 — native pre-save |
+| 15 | Micro-interactions | 8 | 8.5 | 9 | P2 ships | 9.5 — vibe personality |
+| 16 | Edit Mode | 5 | 8.5 | 9 | P2 ships | 9.5 — drag-to-reorder |
+| 17 | Accessibility | 6 | 8.5 | 9 | P2 ships | 9.5 — full 28-combo audit |
+| 18 | Trust and Data Ownership | 6 | 8.5 | 9 | P2 ships | 10 — confirmation email |
+| 19 | Cross-page Coherence | 7 | 8.5 | 9 | Safari ships view-transition | 9.5 — browser coverage |
+| 20 | Big Picture | 7 | 8.5 | 9 | P2 ships | 9.7 |
+| | **Average** | **6.9** | **8.4** | **8.9** | | |
 
----
-
-## ANGLE 1 — First 3 Seconds: 9.0 → 9.5
-
-### The remaining gap: artist with no artwork has a gradient
-
-**Decision: make the gradient beautiful, not generic.**
-
-The default gradient when no artwork is set should not be a flat CSS gradient — it should be generated from the artist's accent colour and vibe personality:
-
-```javascript
-function buildHeroGradient(accent, vibe) {
-  const vibeGradients = {
-    electronic: `radial-gradient(ellipse at 30% 60%, ${accent}55 0%, transparent 60%),
-                 radial-gradient(ellipse at 80% 20%, ${accent}22 0%, transparent 50%),
-                 var(--color-bg)`,
-    rnb:        `radial-gradient(ellipse at 50% 80%, ${accent}44 0%, transparent 70%),
-                 var(--color-bg)`,
-    acoustic:   `linear-gradient(170deg, ${accent}18 0%, transparent 60%),
-                 var(--color-bg)`,
-    // etc per vibe
-  };
-  return vibeGradients[vibe] || `radial-gradient(ellipse at 40% 60%, ${accent}33 0%, transparent 65%), var(--color-bg)`;
-}
-```
-
-A gradient that's artistically designed per vibe is a better default than "no artwork". The gradient already contains the artist's world (their accent, their vibe's spatial mood) even without a photograph.
-
-**This closes the gap because:** the first 3 seconds now feel intentional regardless of whether artwork is set. The gradient is part of the identity system, not a fallback.
-
-**Score: 9.5/10**
+**V1 ceiling: 9.7/10** — the final 0.7 gap across individual angles resolves when Supabase backend, Spotify auto-import, and cross-browser view-transition coverage ship.
 
 ---
 
-## ANGLE 2 — Primary Job: 9.0 → 9.5
-
-### The remaining gap: above-fold action density
-
-**Decision: in profile mode, fan sign-up should be the clear primary job — not just one of many options.**
-
-The platform pills row (up to 6 links) sits between the hero CTAs and the fan sign-up. This creates a competition for attention.
-
-**Resolution:** Move the fan sign-up module to immediately below the hero CTAs in `profile` mode. The pills row moves below it. This mirrors the hierarchy decision already made for gig mode (ticket CTA first) and live mode (stream first) — in profile mode, relationship-building (fan sign-up) should be the primary job, not streaming.
-
-```javascript
-function applyProfileStateLayout(state) {
-  if (state === 'profile') {
-    // Fan capture first, then pills, then sections
-    document.getElementById('fan-capture-primary').style.order = '1';
-    document.getElementById('pills-row').style.order = '2';
-  } else {
-    // Pills first (streaming shortcuts), then fan capture lower
-    document.getElementById('pills-row').style.order = '1';
-    document.getElementById('fan-capture-primary').style.order = '3';
-  }
-}
-```
-
-**This closes the gap because:** in profile mode, the fan's primary action is now unambiguous. Platform pills remain visible but below the primary call.
-
-**Score: 9.5/10**
+## P2 CHANGES APPLIED — ANGLE-BY-ANGLE
 
 ---
 
-## ANGLE 3 — Hero CTA Zone: 9.0 → 9.5
+### Angle 1 — First 3 Seconds (8 → 8.5)
 
-### The remaining gap: the artist who never customises
+**P2 addition:**
+Per-vibe font loading means the artist's vibe font arrives without the ~200ms Google Fonts delay from loading all 7 fonts. On mobile connections this is perceptible — the hero name renders in the correct font faster.
 
-**Decision: the onboarding wizard must ask for the primary CTA.**
-
-Screen 6 of `start.html` (Fan Capture CTA) already sets the fan capture button text. Add a parallel screen that captures the primary hero CTA in the artist's own words:
-
-**Onboarding prompt (new field on Screen 5 or 6):**
-> "What do you want your first button to say? (e.g. 'Listen now', 'Stream my album', 'My music')"
-
-**With this prompt, the artist arrives on their profile with:**
-- Their vibe-appropriate font
-- Their accent colour
-- Their own CTA text in their own words
-
-The vibe defaults remain as the placeholder/fallback. But the artist is prompted to write their own. Most artists who are prompted will write something.
-
-**Score: 9.5/10**
-
----
-
-## ANGLE 4 — Page State System: 9.5 → 9.7
-
-### The remaining gap: 14-day live window is arbitrary
-
-**Decision: allow artist to extend the live window, and suggest based on activity.**
-
-```javascript
-function computeLiveWindow(profile, clicks) {
-  const defaultWindow = 14 * 86400000;
-  const manualWindow  = profile.liveWindowDays ? profile.liveWindowDays * 86400000 : defaultWindow;
-
-  // Activity signal: if clicks in last 7 days > baseline, suggest extending
-  const recentClicks = clicks.filter(c => Date.now() - c.ts < 7 * 86400000).length;
-  const suggestedExtend = recentClicks > 20; // arbitrary threshold, tuned post-launch
-
-  return { window: manualWindow, suggestExtend: suggestedExtend };
-}
-```
-
-In admin, a gentle nudge appears: "Your release is getting more attention than usual. Want to stay in live mode a bit longer?"
-
-This is not a required feature for V8 but it closes the artificial feeling of the state machine. The transition from `live` to `profile` mode should feel earned, not calendar-based.
-
-**Score: 9.7/10**
-
----
-
-## ANGLE 5 — Copy Voice: 9.0 → 9.5
-
-### The remaining gap: the artist's actual voice requires their participation
-
-**Decision: AI bio writer in onboarding, not just in admin.**
-
-The AI bio writer is specced for admin (V8_BUILD_AUTHORITY.md §4.2: "Sonnet, 10/day, Artist tier, trigger: artist enters 3 words about their sound"). Move the trigger to onboarding:
-
-**Screen 1 of `start.html` (Name):** After the artist enters their name, show a small prompt:
-> "Three words that describe your sound (optional)"
-
-If they fill it in → immediately generate a 2-sentence bio with Haiku → show as a suggestion → "Use this" / "Write my own" / "Skip".
-
-**Result:** The artist arrives on their profile with a bio in their voice that they either wrote or approved. The page copy is personalised from day 1.
-
-**Score: 9.5/10**
-
----
-
-## ANGLE 6 — Fan Sign-up: 9.5 → 9.7
-
-### The remaining gap: persistent "check your email" state
-
-**Decision: replace the toast-based confirmation prompt with a persistent inline state.**
-
-After fan submits email, instead of:
-```
-Toast: "You're in." (fades after 3 seconds)
-```
-
-Show:
+Explicit `width` and `height` attributes on the hero artwork `<img>` element prevent CLS during image load:
 ```html
-<div class="fan-capture__confirmed" style="text-align:center; padding: 24px;">
-  <p style="font-size:1.25rem; font-weight:700;">You're in.</p>
-  <p style="font-size:0.875rem; color:var(--color-text-2); margin-top:8px;">
-    Check your email to confirm. I'll keep you close.
-  </p>
+<img id="hero-artwork"
+     width="430"
+     height="430"
+     src=""
+     alt="[Artist Name] artwork"
+     loading="eager" />
+```
+
+The `430×430` dimensions (or aspect-ratio equivalent) reserve the layout space before the image loads. CLS drops from a potential 0.08 to effectively zero.
+
+**What still prevents 9.5:**
+Empty state ceiling. With great artwork, name set, and a strong state, the first 3 seconds are already 9+. The ceiling is held by the fraction of new artists who haven't finished their profile. Spotify auto-import closes this.
+
+---
+
+### Angle 2 — Primary Job (8 → 8.5)
+
+**P2 addition:**
+The post-gig state CTA stack is now fully specced and implemented:
+- Primary: `"Stay close"` — fan sign-up scroll
+- Secondary: `"Merch"` if merch exists; absent if not
+- No tertiary elements — the post-show page should be cleaner, not denser
+
+Post-gig is the highest emotional receptivity window in the fan journey. A simpler, quieter page with a single call to stay close is more powerful than a full-feature profile.
+
+**What still prevents 9:**
+Platform pills directly below the hero CTAs still create above-fold action density that dilutes the primary job in `gig` and `live` states. A future pass could suppress the Quick Actions row in high-urgency states and show it on scroll. That is a behavioural change that requires user testing before shipping.
+
+---
+
+### Angle 3 — Hero CTA Zone (8.5 → 8.5)
+
+No change in Pass 2. P1 completed the state × vibe matrix. The ceiling here is determined by artist-written CTA copy, which cannot be defaulted to 9.
+
+The max-2 rule remains enforced. The priority hierarchy (accent fill primary, ghost secondary) remains correct. No regression from P2 changes.
+
+---
+
+### Angle 4 — Page State System (8.5 → 9)
+
+**P2 addition:**
+Post-gig state fully implemented (tonight note replacement + CTA shift). Pre-release final 24h visual register confirmed shipped. State transition crossfade (`campaign-state-transition`) confirmed to respect `prefers-reduced-motion`.
+
+The state machine now covers 5 distinct states:
+- `profile` — default
+- `pre-release` — future release date set
+- `pre-release-final` — within 24h of release
+- `live` — within 14 days post-release
+- `gig` — manual 24h toggle active
+- `post-gig` — show-end to gig-expires window
+
+The `computeState()` function extension:
+
+```javascript
+function computeState(profile, shows, gigExpires, gigShowEnd) {
+  const now = Date.now();
+  if (gigExpires && now < gigExpires) {
+    if (gigShowEnd && now > gigShowEnd) return 'post-gig';
+    return 'gig';
+  }
+  if (profile.releaseDate) {
+    const rd = new Date(profile.releaseDate).getTime();
+    if (now < rd) {
+      return (rd - now < 86_400_000) ? 'pre-release-final' : 'pre-release';
+    }
+    if (now < rd + 14 * 86_400_000) return 'live';
+  }
+  return 'profile';
+}
+```
+
+**What still prevents 9.5:**
+Signal-based live window (extend/shorten the 14-day window based on streaming activity) requires Supabase.
+
+---
+
+### Angle 5 — Copy Voice (8.5 → 9)
+
+**P2 addition:**
+Copy voice at 9/10 represents the state where every default is correctly artist-first and the artist has been given the tools to personalise every field. What P2 adds is the edit-mode copy for the snap cards and fan capture sections — the artist can now change these from within the profile page itself (P2-1: edit mode zone coverage completion).
+
+The snap card editor prompt (owner mode): `"Write something. One sentence, a photo, a thought."` — this is an invitation, not a field label. It communicates the snap card philosophy in the prompt itself.
+
+**What still prevents 10:**
+A 10 in copy voice requires every artist to have written their own copy. Defaults can be at 9 but specificity is always artist-dependent. This is correct — it means the system is doing its job. The ceiling is an artist ceiling, not a platform ceiling.
+
+---
+
+### Angle 6 — Fan Sign-up (8 → 8.5)
+
+**P2 addition:**
+Fan sign-up edit zone (Zone 6 from P0-2) is now fully wired. The artist can edit the sign-up heading, subtext, and trust line from the profile page in edit mode. The full `profile.fanCapture` object is editable in context.
+
+Trust line is always-rendered and non-negotiable. The artist can customise the heading and subtext. The trust line (`"Your email goes to [Artist Name] directly. Not to any platform."`) is system-written and not removable — it is the artist's brand protection as much as the fan's.
+
+**What still prevents 9.5:**
+Confirmation email (Supabase). The UI chain is complete. The relationship chain is not.
+
+---
+
+### Angle 7 — Music Section (8 → 8.5)
+
+**P2 addition:**
+Music section now editable from the profile page itself (Zone 4, P2-1). Artist can paste a Spotify or SoundCloud URL and the metadata is auto-fetched, populating the release card. This is the manual version of what Spotify auto-import will do at onboarding.
+
+Skeleton shimmer → real content crossfade (D7 from MICRO_INTERACTIONS_SPEC.md gap analysis) is confirmed implemented: `opacity 0→1, 200ms var(--ease-decel)` on card load.
+
+**What still prevents 9:**
+30-second preview (in-page audio before committing to streaming to Spotify) and credit links (producer name → freelancer profile). Both are Phase 2 component decisions.
+
+---
+
+### Angle 8 — Empty State (7.5 → 8)
+
+**P2 addition:**
+Glass theme empty state now correctly falls back to Dark theme when no artwork is set (P2-2). This eliminates the `"blurring nothing"` failure mode where Glass theme with an empty profile looked broken.
+
+Owner-mode edit prompts are now wired to the bottom sheet editors via Zone-level taps in edit mode — the artist sees the prompt, taps it, and the correct bottom sheet opens. No navigation to admin required.
+
+**What still prevents 9.5:**
+Spotify auto-import. The hide-empty-sections approach is correct. It is a floor fix, not a ceiling fix. The ceiling is set by how quickly an artist can populate their page. Auto-import makes that ten seconds. Without it, it is a manual process.
+
+---
+
+### Angle 9 — Mobile Experience (8.5 → 9)
+
+**P2 addition:**
+All 6 edit zones are accessible via tap in edit mode on a 375px screen. Dashed rings are always-visible (not hover-only). Bottom sheets are full-width on mobile with safe-area padding.
+
+Tab order verification: with `#main-content` landmark and skip nav, the tab sequence on mobile keyboard (Bluetooth keyboard + iPhone) reaches the hero CTAs in 2 tab stops from the skip nav. Confirmed via specification — actual device testing required as part of the P2 QA pass.
+
+**What still prevents 9.5:**
+iOS Safari audio tap latency on Spotify embeds (~800ms). This is a WebKit restriction. The mitigation is to ensure the Stream button navigates to Spotify rather than triggering in-page audio — which is already the behaviour. The latency is in the external Spotify app launch, not in ABLE's code.
+
+---
+
+### Angle 10 — Performance (7.5 → 8.5)
+
+**P2 addition:**
+Per-vibe font loading (P2-3) ships in P2. Only DM Sans and Barlow Condensed are loaded eagerly. Vibe-specific fonts load on demand after `applyIdentity()`. Expected font load saving: ~160ms on 4G for non-Barlow vibes.
+
+Explicit `width` and `height` on artwork `<img>` (see Angle 1 spec). CLS budget: ≤ 0.10 (spec). With dimensions set, artwork-related CLS is effectively zero.
+
+**Performance budget confirmation:**
+
+| Metric | Target | Pass 2 status |
+|---|---|---|
+| LCP | ≤ 2.5s | On track with localStorage render + font preconnect |
+| INP | ≤ 200ms | Spring easing, CSS-driven, no JS blocking |
+| CLS | ≤ 0.10 | Artwork dimensions set; font loading async |
+| HTML (gzipped) | ≤ 340kB | Requires a gzip size audit — single file at 5,000+ lines |
+| Font load | Preconnect only | Per-vibe loading ships in P2 |
+
+**The gzip audit is required before shipping P2.** If the HTML file exceeds 340kB gzipped, the excess must be identified and removed (likely dead CSS or legacy code paths from v3/v5 eras).
+
+**What still prevents 9:**
+File size audit is blocking. Per-vibe font loading ships in P2. The remaining ~0.5 to 9 is the audit result.
+
+---
+
+### Angle 11 — Theme System (8.5 → 9)
+
+**P2 addition:**
+Glass theme empty state fallback confirmed (P2-2). Third-party embed wrapper explicit `backdrop-filter` for Glass theme confirmed.
+
+Light theme contrast fixes for sage + cyan confirmed at WCAG AA ratios. The accent picker in admin.html should enforce a minimum contrast ratio check when the artist sets a custom accent — this is a P2 admin item (not a profile item) but it protects the profile's accessibility.
+
+All 4 themes confirmed working across all 7 vibes for the implemented sections. Glass theme with good artwork is still the most distinctive visual experience in the product.
+
+**What still prevents 9.5:**
+Fan theme choice. The artist sets the theme as their brand identity. A fan preference override (fan can set their own dark/light mode per-artist) would require a per-artist fan preference key in localStorage and a toggle in the profile UI. This is Phase 2 personalisation.
+
+---
+
+### Angle 12 — Identity System (8.5 → 9)
+
+**P2 addition:**
+Per-vibe font loading is now part of `applyIdentity()`. The identity system is self-contained — it applies all visual tokens, loads the correct font, and sets all vibe motion personality tokens in one synchronous call from localStorage.
+
+The FOUI (flash of unstyled identity) mitigation: add a CSS `<noscript>` inline style block with the artist's accent colour set from a `data-accent` attribute on `<html>` — this value can be set by the server (or by a pre-render script) so the accent appears on first paint before JS executes. This is a P2 polish item.
+
+```html
+<!-- Set by server/pre-render, eliminates FOUI for accent -->
+<html lang="en" data-accent="#e06b7a">
+<style>
+  :root { --color-accent: attr(data-accent); }
+</style>
+```
+
+Note: `attr()` for custom properties is not universally supported — this requires a small inline script instead:
+```html
+<script>
+  const a = document.documentElement.dataset.accent;
+  if (a) document.documentElement.style.setProperty('--color-accent', a);
+</script>
+```
+
+This runs synchronously before any layout, eliminating the accent FOUI entirely.
+
+**What still prevents 9.5:**
+The feel quadrant filters on artwork (saturate/sepia/contrast) remain on by default. An artist whose photography already has strong colour grading may find these conflict. A toggle in the identity editor (owner mode) would address this.
+
+---
+
+### Angle 13 — Gig Mode (8 → 8.5)
+
+**P2 addition:**
+Full post-gig state now confirmed implemented with tonight note archiving. When gig mode expires, the tonight note is not deleted — it moves to a `gig_history` record in localStorage. This means the artist can see what they wrote on previous gig nights, and the admin can eventually display a gig history timeline.
+
+Show time display in the gig hero: `able_shows` already stores `doorsTime`. P2 surfaces this in the gig hero:
+
+```html
+<div class="gig-meta" aria-label="Tonight's show details">
+  <span class="gig-venue">[Venue Name], [City]</span>
+  <span class="gig-time">Doors [doorsTime]</span>
 </div>
 ```
 
-This state persists until the fan navigates away. The confetti still fires. But the "check your email" instruction is explicit and persistent — not lost in a toast.
-
-**Score: 9.7/10**
-
----
-
-## ANGLE 7 — Music Section: 9.0 → 9.5
-
-### The remaining gap: credits as plain text for unconfirmed entries
-
-**Decision: unconfirmed credits are still displayed (for attribution), but styled differently.**
-
-```html
-<!-- Confirmed credit with ABLE handle -->
-<span class="credit confirmed">
-  Produced by <a href="/mayabeats" class="credit-link">Maya Beats</a> ✓
-</span>
-
-<!-- Unconfirmed credit without ABLE handle -->
-<span class="credit unconfirmed">
-  Produced by Maya Beats
-</span>
-```
-
-The fan sees both. The difference is visible (confirmed has a link + checkmark). The artist is incentivised to get credits confirmed. This is the freelancer acquisition mechanic working at the surface level.
-
-**Score: 9.5/10**
+**What still prevents 9:**
+Going-tonight tap counter (social proof). Requires Supabase to persist count across visitor sessions. A localStorage-only implementation would show different counts per device, which is misleading. The feature must wait for the backend.
 
 ---
 
-## ANGLE 8 — Empty State: 9.0 → 9.5
+### Angle 14 — Pre-release Mode (8.5 → 9)
 
-### The remaining gap: snap cards are still empty after Spotify import
+**P2 addition:**
+Pre-release mode is now architecturally complete at V1. The five-point system:
+1. Countdown (days/hours/minutes — no seconds)
+2. Release note (artist-written, 2–3 sentences)
+3. Pre-save CTA as primary
+4. Final 24h register shift (larger digits, accent-coloured, ambient intensification at 0.28)
+5. Auto-switch to `live` state on release date (existing, confirmed)
 
-**Decision: pre-populate snap cards with AI-generated onboarding posts.**
+The H9 ambient intensification formula confirmed: `opacity: clamp(0.12, 0.12 + 0.16 * (1 - daysLeft/14), 0.28)` — background ambient layer increases linearly as the release approaches, peaking at 0.28 in the final hours.
 
-When Spotify import fires and the profile is built, generate 2 snap cards via Haiku:
-
-```javascript
-async function generateWelcomeSnapCards(profile) {
-  const [card1, card2] = await Promise.all([
-    haiku.complete(`Write a 15-word announcement post in the artist's voice for ${profile.name}, genre: ${profile.genre}. One sentence, first person, no hashtags, no exclamation marks.`),
-    haiku.complete(`Write a 15-word "back soon" post in the artist's voice for ${profile.name}. One sentence, first person.`)
-  ]);
-  return [
-    { title: null, text: card1, cta: null, ts: Date.now() },
-    { title: null, text: card2, cta: null, ts: Date.now() - 86400000 }
-  ];
-}
-```
-
-The artist sees these as drafts — marked with a small "Draft — edit or delete" chip. They feel the page is alive from day 1. The fan sees something in the snap cards row on first visit.
-
-**Score: 9.5/10**
+**What still prevents 9.5:**
+Native pre-save capture (Phase 2 — Spotify OAuth). The current pre-save flow opens Spotify externally. A native ABLE pre-save would capture both email and Spotify pre-save simultaneously — this is the highest-value fan capture moment in the product and it requires backend work.
 
 ---
 
-## ANGLE 9 — Mobile Experience: 9.0 → 9.5
+### Angle 15 — Micro-interactions (8.5 → 9)
 
-### The remaining gap: iOS Safari Spotify embed lag
+**P2 addition:**
+The Contrast theme animation-zero at theme level (P2-4) ships in P2. All duration tokens are set to 0ms/80ms for essential feedback only. This completes the Contrast theme interaction spec.
 
-**Decision: defer Spotify embeds until after the first user interaction.**
+The `@view-transition` shared element animations are now wired (P1-4). On Chrome 126+, the artist name flying from the wizard Done screen to the profile hero is confirmed implemented. This is Tier 4 (Progressive Enhancement) in the interaction hierarchy but it is the highest-impact single moment in the product.
 
-```javascript
-function deferEmbeds() {
-  const embedLinks = document.querySelectorAll('[data-embed-url]');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        const iframe = document.createElement('iframe');
-        iframe.src = el.dataset.embedUrl;
-        iframe.setAttribute('loading', 'lazy');
-        el.replaceWith(iframe);
-        observer.unobserve(el);
-      }
-    });
-  }, { rootMargin: '200px' });
-
-  embedLinks.forEach(el => observer.observe(el));
-}
-```
-
-Spotify iframes don't load until they're 200px from viewport. The first tap on a "Stream" button that opens the embed is near-instant because the embed is already loaded by the time they've scrolled to it.
-
-**Score: 9.5/10**
-
----
-
-## ANGLE 10 — Performance: 9.0 → 9.5
-
-### The remaining gap: all-vibe CSS loaded regardless of active vibe
-
-**Decision: lazy-load non-active vibe fonts only.**
-
-The CSS vibe classes are already in the document. The overhead is in Google Fonts loading all 7 vibe font families. Fix:
-
-```javascript
-// In <head>, after identity inline CSS:
-function loadVibeFonts(vibe) {
-  const fontMap = {
-    electronic: 'Barlow+Condensed:wght@700',
-    hiphop:     'Oswald:wght@700',
-    rnb:        'Cormorant+Garamond:ital,wght@1,600',
-    indie:      'Space+Grotesk:wght@700',
-    pop:        'Barlow+Condensed:wght@700',
-    rock:       'Oswald:wght@700',
-    acoustic:   'Lora:wght@700'
-  };
-  const font = fontMap[vibe] || fontMap.indie;
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = `https://fonts.googleapis.com/css2?family=${font}&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700&display=swap`;
-  document.head.appendChild(link);
-}
-```
-
-DM Sans loads always (body font). The vibe display font loads specifically. This removes 6 unnecessary font families from the load path.
-
-**Score: 9.5/10**
-
----
-
-## ANGLE 11 — Theme System: 9.0 → 9.5
-
-### The remaining gap: fan cannot choose their own theme
-
-**Decision (accepted limitation):** The page is the artist's world. The artist chose the theme. This is intentional. The fan's OS preference (`prefers-color-scheme`) is respected as a courtesy, but not overrides the artist's theme choice.
-
-However: add a subtle, deniable affordance. In the Made with ABLE footer, a theme toggle link:
-```html
-<button class="theme-toggle-subtle" aria-label="Toggle theme" onclick="toggleFanTheme()">
-  ◐ <!-- half-circle icon -->
-</button>
-```
-
-This allows a fan to flip between the artist's dark and light theme (or light and dark) without being a prominent feature. It's in the footer, tiny, for fans who care.
-
-**Score: 9.5/10**
-
----
-
-## ANGLE 12 — Identity System: 9.5 → 9.7
-
-### The remaining gap: image filter conflicts with artist photography
-
-**Decision: add a `noImageFilter` flag to the artist profile, surfaced in admin.**
-
-```javascript
-// In applyIdentity():
-if (!profile.noImageFilter) {
-  const filterMap = {
-    'intimate-raw':     'saturate(0.85)',
-    'intimate-refined': 'saturate(0.9) sepia(0.05)',
-    'bold-raw':         'contrast(1.05)',
-    'bold-refined':     'none'
-  };
-  const filter = filterMap[profile.feel] || 'none';
-  document.documentElement.style.setProperty('--image-filter', filter);
-}
-```
-
-```html
-<!-- In admin identity settings -->
-<label>
-  <input type="checkbox" id="noImageFilter" onchange="toggleImageFilter(this.checked)">
-  Don't apply image treatment to my photos
-</label>
-```
-
-This is a simple override that respects the artist's control over their visual identity.
-
-**Score: 9.7/10**
-
----
-
-## ANGLE 13 — Gig Mode: 9.5 → 9.7
-
-### The remaining gap: going-tonight counter requires Supabase
-
-**Decision: implement with Supabase in V8 Phase 1.**
-
-The going-tonight counter is a lightweight social proof signal. It requires:
-- A `gig_attendance` Supabase table (already specced)
-- A read count on page load
-- A write on fan tap (with deduplication via localStorage flag)
-
-No additional design work. Just the Supabase wiring.
-
-**Additional improvement:** the going-tonight tap animation. When a fan taps "I'm going", the counter increments with a spring animation and the button changes to "You're going" — can't be tapped again.
-
-**Score: 9.7/10**
-
----
-
-## ANGLE 14 — Pre-release Mode: 9.0 → 9.5
-
-### The remaining gap: pre-save still exits the page
-
-**Decision: build native pre-save capture for V8 Phase 2.**
-
-The native pre-save flow:
-1. Fan taps "Pre-save" on the profile
-2. Bottom sheet slides up: "Pre-save [Release Title]" with email field + Spotify auth button
-3. Fan enters email OR logs in with Spotify
-4. On Spotify auth: ABLE captures email from Spotify OAuth + sends pre-save via Spotify API
-5. Fan stays on the page throughout
-6. Confirmation: "You're in the pre-save list. I'll let you know the moment it's live."
-
-This is the highest-converting moment on the page for a pre-release artist. Every fan who pre-saves is a confirmed fan with an email address.
-
-Until this is built: add a visible "while you're here" prompt after the pre-save link opens:
-> A small modal/chip appears: "While the link opens — want me to remind you when it drops? [Yes, stay close →]" → fan sign-up
-
-**Score: 9.5/10**
-
----
-
-## ANGLE 15 — Micro-interactions: 9.0 → 9.5
-
-### The remaining gap: confetti incongruent for intimate vibes
-
-**Decision: confetti adapts to vibe.**
-
-```javascript
-function getConfettiStyle(vibe, feel) {
-  // Intimate vibes: fewer particles, slower, muted colours
-  if (feel === 'intimate-raw' || feel === 'intimate-refined') {
-    return {
-      count: 20,
-      speed: 0.5,
-      gravity: 0.8,
-      colors: [accent, accentLight, 'rgba(255,255,255,0.6)']
-    };
-  }
-  // Bold vibes: full confetti burst
-  return {
-    count: 60,
-    speed: 1.2,
-    gravity: 1.0,
-    colors: [accent, accentLight, '#ffffff', '#ffdd00']
-  };
-}
-```
-
-An acoustic artist's fan sign-up still feels celebratory — but with falling petals and slower timing instead of a full confetti burst.
-
-**Score: 9.5/10**
-
----
-
-## ANGLE 16 — Edit Mode: 8.0 → 9.0
-
-### The remaining gap: edit mode is a quick-fix layer, not a full system
-
-**Decision: the admin is the primary edit surface. The profile edit mode is a fast-access convenience layer — not a replacement.**
-
-**What makes profile-level edit mode score 9/10 at its ceiling:**
-- Every visible field is tappable and editable from the profile
-- Changes persist to admin.html (bidirectional sync via localStorage + Supabase)
-- The edit panel slides over the profile at 95% scale — feels like "entering" edit mode
-- "Go to admin for advanced settings" link is present and clear
-
-The profile edit mode handles: name, bio, CTAs, accent colour, snap card copy. Advanced settings (vibe, theme, shows management, release management) route to admin. This distinction is honest and communicated clearly.
-
-```html
-<!-- In edit panel footer -->
-<a href="admin.html#campaign-hq" class="ep-dash-link">
-  Advanced settings in your dashboard →
-</a>
-```
-
-**Score: 9.0/10**
-
-The honest ceiling for edit mode on the public profile page is 9/10 — the admin is where the real work happens. Trying to replicate the full admin inside the profile would break the conduit principle.
-
----
-
-## ANGLE 17 — Accessibility: 9.0 → 9.5
-
-### The remaining gap: WCAG 2.2 target size audit
-
-**Decision: audit and fix all interactive elements below 24×24px.**
-
-The WCAG 2.2 criterion 2.5.8 (Target Size Minimum) applies to inline links and small interactive elements. Apply a minimum size utility:
+**View-transition confirmed spec:**
 
 ```css
-/* Minimum touch target — applies transparent padding to small elements */
-.touch-target {
-  position: relative;
-  /* Minimum 24×24px by centering the hit area */
-}
-.touch-target::before {
-  content: '';
-  position: absolute;
-  inset: 50% 50%;
-  transform: translate(-50%, -50%);
-  min-width: 24px;
-  min-height: 24px;
+/* @view-transition progressive enhancement */
+@supports (view-transition-name: anything) {
+  .hero-artist-name { view-transition-name: artist-name; }
+  .able-footer-logo { view-transition-name: able-logo; }
 }
 ```
 
-Apply `.touch-target` to all section action links, credit links, and snap card CTAs that might be below the threshold.
+The `@supports` guard ensures zero impact on browsers that do not support view transitions.
 
-**Score: 9.5/10**
-
----
-
-## ANGLE 18 — Trust and Data Ownership: 9.5 → 9.7
-
-### The remaining gap: privacy policy link absent
-
-**Decision: add a single privacy link near the sign-up.**
-
-```html
-<p class="fan-capture__trust">
-  Your email goes to <span class="trust-artist-name"></span> directly.
-  Not to any platform. You can leave any time.
-  <a href="/privacy" class="fan-capture__privacy-link">Privacy</a>
-</p>
-```
-
-The privacy link is styled as plain text — same colour as the trust line, no underline by default. It does not compete with the sign-up action. But it is present and tappable for the fan who wants it.
-
-This closes the GDPR gap and scores the trust angle at 9.7/10.
-
-**Score: 9.7/10**
+**What still prevents 9.5:**
+Vibe-differentiated interaction personality. The motion timing tokens (`--ease-spring`, `--ease-decel`) are vibe-set in CSS but the spring character is too consistent across vibes in practice. A more aggressive spring for electronic/rock vibes and a slower organic easing for folk/R&B vibes would make the page feel genuinely different by genre. This is a tuning pass that requires subjective testing.
 
 ---
 
-## ANGLE 19 — Cross-page Coherence: 9.5 → 9.7
+### Angle 16 — Edit Mode (8.5 → 9)
 
-### The remaining gap: base colour discrepancy between start.html and able-v7.html
+**P2 addition:**
+Zone coverage completion (P2-1) ships all 6 zones with full editor panels. The snap card editor now supports photo upload using local blob URLs (Supabase storage will replace these permanently when the backend is live).
 
-**Decision: unify base colour.**
+Fan capture copy editor (Zone 6): heading, subtext, and trust line are all editable from the profile page. The trust line is editable by the artist (they can write their own version) but it is never removable — the platform's interest is also in the fan trusting the sign-up.
 
-Change `start.html` background from `#0d0e1a` to `#0a0b10`. This is a single CSS variable change in `start.html`.
+Admin redirect fallback confirmed: any editing action that requires admin functionality (analytics view, fan list, CSV export, campaign management) surfaces a `"Manage in dashboard →"` link in the bottom sheet footer. No dead ends.
 
-The visual difference between `#0d0e1a` and `#0a0b10` is barely perceptible in isolation. In a cross-document view transition, the background flash is visible. Unifying the base eliminates it.
-
-**Additional coherence improvement:** The Done screen in `start.html` should use the same card background (`#16161e`) as the profile page — currently it uses `#12152a` (the older spec value). A one-token update closes the gap.
-
-**Score: 9.7/10**
+**What still prevents 9.5:**
+Drag-to-reorder sections: the artist changing the order of Music, Events, Merch sections on their profile requires a touch-event drag system and section order persistence. This is a Phase 2 feature. It is the most common power-user edit request in profile-editing products.
 
 ---
 
-## ANGLE 20 — Big Picture: 9.5 → 9.8
+### Angle 17 — Accessibility (8.5 → 9)
 
-### The remaining gap: aggregate feel at the highest level
+**P2 addition:**
+Contrast theme animation-zero (P2-4) is the P2 accessibility contribution. Zero decorative animations at theme level, regardless of `prefers-reduced-motion` setting. State change feedback (80ms opacity/transform) remains.
 
-**What 9.8/10 feels like:**
-- The fan lands and immediately feels: this is an artist I want to know more about
-- The page has personality — not just design, but presence
-- Every section earns its place — nothing is there because it's a feature, everything is there because it helps the fan and the artist stay close
-- The exit moment (fan leaves or signs up) feels completed, not interrupted
-- When the artist looks at their page, they feel pride — not "it's good enough"
+Snap card horizontal scroll keyboard accessibility: arrow key navigation was the existing pattern but was not discoverable. P2 adds a `tabindex="0"` and `role="list"` to the snap cards container, with `aria-label="[Artist Name]'s posts"`. Individual snap cards get `role="listitem"` and are tabbable.
 
-**The three aggregate decisions that move big picture from 9.5 to 9.8:**
-
-**1. The page should feel like it has one author.**
-Currently, the snap cards, the music section, the events section, and the bio feel like separate modules with separate visual languages. They use the same tokens but the gestalt is modular. The ceiling is a page that feels written by one person — a cohesive statement, not a collection of sections. The section dividers (accent hairlines), consistent card radius per feel quadrant, and the artist's accent colour running through every section element all contribute to this. Audit every section for token consistency.
-
-**2. The gig mode tonight note is the page's most human moment.**
-When working, a fan arrives on gig night and reads 2–3 sentences from the artist about tonight. This is genuinely moving. It is unlike anything any other link-in-bio page offers. This moment deserves the page's best design treatment: the tonight note rendered in a specific type style (maybe italic, maybe the display font at a smaller size), with a small horizontal rule above it — signalling: this is from the artist, not from the platform.
-
-**3. The "Made with ABLE" footer: make it a statement of values, not just a credit.**
-Currently: "Made with ABLE" — functional.
-Better: "Made with ABLE — the relationship between artist and fan belongs to them."
-One sentence. The product philosophy, stated honestly at the bottom of the page. For the fan who scrolls to the bottom and reads it: they understand what they just signed up for. For the artist who sends it to someone: it's a statement of where they stand.
-
-**Score: 9.8/10**
+**What still prevents 9.5:**
+A full automated WCAG AA audit across all 28 vibe × theme combinations (7 × 4) plus any artist-chosen custom accents. This requires an accessibility testing pipeline, not manual review. Until that pipeline runs, there may be untested contrast failures in unusual accent × theme combinations.
 
 ---
 
-## PASS 2 FINAL SCORES
+### Angle 18 — Trust and Data Ownership (8.5 → 9)
 
-| # | Angle | Pass 1 | Pass 2 | Change |
-|---|---|---|---|---|
-| 1 | First 3 Seconds | 9.0 | 9.5 | +0.5 |
-| 2 | Primary Job | 9.0 | 9.5 | +0.5 |
-| 3 | Hero CTA Zone | 9.0 | 9.5 | +0.5 |
-| 4 | Page State System | 9.5 | 9.7 | +0.2 |
-| 5 | Copy Voice | 9.0 | 9.5 | +0.5 |
-| 6 | Fan Sign-up | 9.5 | 9.7 | +0.2 |
-| 7 | Music Section | 9.0 | 9.5 | +0.5 |
-| 8 | Empty State | 9.0 | 9.5 | +0.5 |
-| 9 | Mobile Experience | 9.0 | 9.5 | +0.5 |
-| 10 | Performance | 9.0 | 9.5 | +0.5 |
-| 11 | Theme System | 9.0 | 9.5 | +0.5 |
-| 12 | Identity System | 9.5 | 9.7 | +0.2 |
-| 13 | Gig Mode | 9.5 | 9.7 | +0.2 |
-| 14 | Pre-release Mode | 9.0 | 9.5 | +0.5 |
-| 15 | Micro-interactions | 9.0 | 9.5 | +0.5 |
-| 16 | Edit Mode | 8.0 | 9.0 | +1.0 |
-| 17 | Accessibility | 9.0 | 9.5 | +0.5 |
-| 18 | Trust and Data | 9.5 | 9.7 | +0.2 |
-| 19 | Cross-page | 9.5 | 9.7 | +0.2 |
-| 20 | Big Picture | 9.5 | 9.8 | +0.3 |
-| **Average** | **9.2** | **9.62** | **+0.42** |
+**P2 addition:**
+The trust line is now non-removable and always-rendered (confirmed in P2). The fan capture zone editor (Zone 6) allows the artist to customise the heading and subtext but the system-written trust line is immutable from the artist's side. This protects both the fan (clear ownership signal) and ABLE (cannot be accused of enabling deceptive sign-ups).
+
+The Close Circle section copy (`"£5 a month. You can leave whenever."`) is confirmed in the artist-voice register. No "exclusive content", no "premium access" language.
+
+**What still prevents 10:**
+Confirmation email arriving. When a fan confirms their email, the trust loop closes completely — the fan knows the artist received their contact. Until Supabase sends that email, the trust signal is asymmetric: the fan signed up but has no confirmation they were received.
 
 ---
 
-## FINAL STATEMENT — 9.62/10
+### Angle 19 — Cross-page Coherence (8.5 → 9)
 
-The artist profile page (`able-v7.html`) reaches **9.62/10** after Pass 2 improvements.
+**P2 addition:**
+`@view-transition` confirmed implemented with `@supports` guard. All three cross-page transitions are wired:
 
-The page is:
-- **Complete:** all four campaign states work, all 7 vibes work, all 4 themes work
-- **Human:** gig mode tonight note, artist-voiced fan sign-up, AI-assisted bio from day 1
-- **Honest:** trust line names the artist, GDPR-compliant, "you can leave any time"
-- **Distinctive:** the identity system creates real visual differentiation between artists
-- **Fast:** inline identity CSS, deferred embeds, per-vibe font loading
-- **Accessible:** skip nav, ARIA landmarks, reduced-motion, contrast-audited
+1. `hero-cta`: landing.html → start.html (hero CTA flies to wizard)
+2. `artist-name`: start.html Done → able-v7.html hero (artist name flies to profile)
+3. `able-logo`: admin.html → able-v7.html (ABLE logo flies from admin topbar to profile footer)
 
-**The remaining 0.38 points:** are in the irreducible artist-participation gap (the page is as good as the artist's own voice allows), the edit mode ceiling (9.0 is honest for a quick-access layer; the admin is the real editing surface), and the native pre-save flow (Phase 2). None of these are buildable to 10 in V8 scope.
+The `@supports (view-transition-name: anything)` guard ensures zero impact on browsers without support. Navigation is standard on Firefox and Safari.
 
-**What 10/10 would require:**
-- The artist has filled every field in their voice
-- The freelancer ecosystem is live (credits are live links to real profiles)
-- Native pre-save captures email and Spotify auth simultaneously
-- The fan.html dashboard shows real data from this profile
-- The page has been seen by thousands of real fans and iterated based on their behaviour
+**`@view-transition` progressive enhancement decision (confirmed):**
 
-10/10 is not a spec. It is a product that has lived in the world. 9.62 is the ceiling we can build to.
+Do not polyfill. The JavaScript polyfill for `startViewTransition` via `document.startViewTransition` API check adds ~2kB and complexity. The feature is Chrome 126+ only at time of writing. Safari is expected to ship support in 2026 H2. The right approach is progressive enhancement with no polyfill — the experience degrades to standard navigation, which is not a failure.
+
+**What still prevents 9.5:**
+Safari view-transition coverage. When Safari ships support (no code change required from ABLE), this angle reaches 9.5. The spec and implementation are already correct.
 
 ---
 
-## PASS 2 BUILD ITEMS (DELTA FROM PASS 1)
+### Angle 20 — Big Picture (8.5 → 9)
 
-Items not yet covered in PATH-TO-10.md:
+**P2 status:**
+With all P2 items shipped, the profile page is:
 
-1. **Vibe-specific default hero gradients** (Angle 1) — `buildHeroGradient()` per vibe
-2. **Fan sign-up → fan capture module layout reorder in profile mode** (Angle 2) — CSS order property
-3. **Onboarding: primary CTA prompt** (Angle 3) — add one field to `start.html` Screen 5
-4. **Live window: activity-based extend suggestion** (Angle 4) — admin nudge, not profile change
-5. **AI bio in onboarding** (Angle 5) — 3-word trigger → Haiku → suggestion in Screen 1
-6. **Persistent "check your email" state** (Angle 6) — replace toast with inline confirmation div
-7. **Credit visual treatment: confirmed vs unconfirmed** (Angle 7) — CSS + checkmark
-8. **AI-generated welcome snap cards on import** (Angle 8) — 2 draft snap cards via Haiku
-9. **Deferred embed loading** (Angle 9) — IntersectionObserver on iframe placeholders
-10. **Per-vibe font loading** (Angle 10) — dynamic Google Fonts URL in head
-11. **Fan theme toggle in footer** (Angle 11) — subtle half-circle icon
-12. **`noImageFilter` flag in admin** (Angle 12) — one checkbox
-13. **Going-tonight Supabase wiring + tap animation** (Angle 13) — spring counter increment
-14. **"While the link opens" post-pre-save prompt** (Angle 14) — small chip/modal
-15. **Vibe-appropriate confetti** (Angle 15) — petal mode for intimate vibes
-16. **Edit panel footer: "Advanced settings" link** (Angle 16) — one HTML element
-17. **WCAG 2.2 touch target audit** (Angle 17) — `.touch-target` utility class
-18. **Privacy link near fan sign-up** (Angle 18) — one HTML element
-19. **Unify base colour: `start.html` → `#0a0b10`** (Angle 19) — one CSS variable
-20. **"Made with ABLE" footer: philosophy line** (Angle 20) — copy change
+- Architecturally correct (state machine, identity system, CTA hierarchy)
+- Content-appropriate (shows only what exists; hides empty sections)
+- Voice-correct (artist-first defaults in every visible string)
+- Trust-forward (explicit ownership signal at sign-up moment)
+- Edit-complete (all 6 zones editable from the profile, no admin required for content)
+- Accessible (skip nav, ARIA landmarks, reduced-motion, Contrast theme animation-zero)
+- Performance-targeted (per-vibe fonts, CLS prevention, font preconnect)
+- Cross-page coherent (view transitions wired, shared tokens confirmed)
+
+The product at this state is genuinely competitive with — and in key dimensions superior to — every link-in-bio platform in the market. The campaign state machine, the identity system, and the conduit principle are collectively unique. No competitor has all three.
+
+**What still prevents 9.7 (the V1 ceiling):**
+The remaining 0.7 across individual angles breaks down as:
+- ~0.2 from confirmation email (Supabase — closes the fan activation chain)
+- ~0.2 from Spotify auto-import (eliminates the empty state problem at source)
+- ~0.2 from Safari view-transition coverage (browser timeline — no code required)
+- ~0.1 from file size audit and final performance pass
+
+These are outside the profile page's control. The profile page has done what it can within V1 constraints.
+
+---
+
+## PROGRESS TABLE — FULL TRAJECTORY
+
+| # | Angle | Baseline | Pass 1 (P0+P1) | Pass 2 (P2) | When fully built |
+|---|---|---|---|---|---|
+| 1 | First 3 Seconds | 7 | 8 | 8.5 | 9.5 |
+| 2 | Primary Job | 7 | 8 | 8.5 | 9 |
+| 3 | Hero CTA Zone | 7 | 8.5 | 8.5 | 9 |
+| 4 | Page State System | 8 | 8.5 | 9 | 9.5 |
+| 5 | Copy Voice | 6 | 8.5 | 9 | 10 |
+| 6 | Fan Sign-up | 7 | 8 | 8.5 | 9.5 |
+| 7 | Music Section | 7 | 8 | 8.5 | 9 |
+| 8 | Empty State | 3 | 7.5 | 8 | 9.5 |
+| 9 | Mobile Experience | 8 | 8.5 | 9 | 9.5 |
+| 10 | Performance | 7 | 7.5 | 8.5 | 9 |
+| 11 | Theme System | 8 | 8.5 | 9 | 9.5 |
+| 12 | Identity System | 8 | 8.5 | 9 | 9.5 |
+| 13 | Gig Mode | 6 | 8 | 8.5 | 9 |
+| 14 | Pre-release Mode | 7 | 8.5 | 9 | 9.5 |
+| 15 | Micro-interactions | 8 | 8.5 | 9 | 9.5 |
+| 16 | Edit Mode | 5 | 8.5 | 9 | 9.5 |
+| 17 | Accessibility | 6 | 8.5 | 9 | 9.5 |
+| 18 | Trust and Data Ownership | 6 | 8.5 | 9 | 10 |
+| 19 | Cross-page Coherence | 7 | 8.5 | 9 | 9.5 |
+| 20 | Big Picture | 7 | 8.5 | 9 | 9.7 |
+| | **Average** | **6.9** | **8.4** | **8.9** | **9.5** |
+
+**Note on "when fully built":** This column represents the ceiling achievable with Supabase backend live, Spotify auto-import shipped, and Safari view-transition support available. It is not a V1 target. It is the product's natural ceiling when infrastructure catches up with the design intent.
+
+---
+
+## WHAT REQUIRES BACKEND (CONFIRMED EXECUTION CEILING)
+
+The following improvements are blocked by Supabase/backend availability and cannot be shipped in V1:
+
+| Improvement | Blocked by | Expected angle impact |
+|---|---|---|
+| Confirmation email | Supabase + Resend | Angle 6: +1.5, Angle 18: +1 |
+| Fan.html dashboard | Supabase realtime | Angle 2, 6, 19: +0.5 each |
+| Going-tonight counter | Supabase (cross-session count) | Angle 13: +0.5 |
+| Spotify auto-import | Spotify API + edge function | Angle 8: +1.5 |
+| Native pre-save capture | Spotify OAuth + Supabase | Angle 14: +0.5 |
+| Signal-based live window | Supabase streaming data | Angle 4: +0.5 |
+| Credit links (freelancer profile) | freelancer.html exists | Angle 7: +0.5 |
+
+**None of these block the V1 ship.** The profile page is a complete, coherent product without them. They are improvements — significant ones — but they do not prevent a fan from discovering an artist, understanding them immediately, and signing up to stay close.
+
+---
+
+## FINAL CONFIRMED SCORE
+
+**Baseline: 6.9/10**
+**After P0 (critical fixes): ~7.6/10**
+**After P1 (quality lift): 8.4/10 (Pass 1)**
+**After P2 (ceiling polish): 8.9/10 (Pass 2)**
+**V1 ceiling: 9.7/10** (all P2 shipped, no backend required beyond localStorage)
+**Full-build ceiling: ~9.5/10 average** (with Supabase, Spotify import, Safari view-transitions)
+
+The 0.3 gap between 9.7 (individual angle average) and a theoretical 10 is entirely accounted for by items that require either the artist to have customised every field (copy voice) or the backend to be live (confirmation email, fan activation chain). These are honest ceilings. The platform has done what it can.

@@ -59,7 +59,7 @@ Single-developer + AI agents. Active file = ship immediately.
 | SEO + OG cards | `docs/systems/seo-og/SPEC.md` | 9.0/10 |
 | Email system | `docs/systems/email/SPEC.md` | 9.5/10 |
 | Tier gates | `docs/systems/tier-gates/SPEC.md` | 9.0/10 |
-| Spotify import | `docs/systems/spotify-import/SPEC.md` | 10/10 |
+| Spotify import | `docs/systems/spotify-import/SPEC.md` | 9.0/10 |
 | Explainers | `docs/systems/explainers/SPEC.md` | 9/10 (spec complete — build pending) |
 | Platform admin | `docs/systems/platform-admin/SPEC.md` | 7/10 |
 | World Map | `docs/systems/world-map/` | 9.2/10 |

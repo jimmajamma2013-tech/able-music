@@ -18,7 +18,7 @@ Before tier billing ships to production, all five questions must be answered "Ye
 - Profile page renders correctly with all four themes and campaign states working
 - Fan sign-up works end-to-end (fan receives confirmation email, artist sees fan in list)
 - Analytics shows views and clicks for last 30 days
-- "Made with ABLE" footer is present and links to `able.fm?ref=[handle]`
+- "Made with ABLE" footer is present and links to `ablemusic.co?ref=[handle]`
 - Snap card (1) can be created, edited, and published
 - The 100-fan cap is enforced: fan 101 sees an error, artist sees the "list full" nudge
 

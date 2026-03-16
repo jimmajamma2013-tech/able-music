@@ -266,7 +266,7 @@ Your email          [email input, inputmode=email        ]
 What you need       [textarea, 3 rows                   ]
 Budget range        [select: Under £200 / £200–500 /
                      £500–1000 / £1000+ / Not sure       ]
-Your ABLE page      able.fm/ [  optional  ]
+Your ABLE page      ablemusic.co/ [  optional  ]
 Project timeline    [select: ASAP / Within 1 month /
                      1–3 months / Just exploring         ]
 
@@ -431,9 +431,9 @@ In V1: specialisms appear on the profile but are not yet searchable via ABLE dir
 - Rate card optional: "Add rates now" or "I'll add rates later"
 
 **Done screen:**
-- "Your profile is live at able.fm/[handle]"
+- "Your profile is live at ablemusic.co/[handle]"
 - Share panel: copy link, WhatsApp share, Instagram story share card (auto-generated with handle)
-- "Add to your email signature": copy-text snippet — "[Name] · [Role] · able.fm/[handle]"
+- "Add to your email signature": copy-text snippet — "[Name] · [Role] · ablemusic.co/[handle]"
 - "Your profile is stronger with confirmed credits — we've sent confirmation requests to [N] artists"
 
 ---
@@ -494,7 +494,7 @@ Unlocks:
 - Portfolio item analytics: which items drive enquiries
 - Enquiry analytics: which credits drive enquiries, best time of day to respond, etc.
 - Featured placement: "Featured" flag on profile in credits display (artists see it more prominently)
-- Custom domain: `able.fm/studio` or custom domain with freelancer handle
+- Custom domain: `ablemusic.co/studio` or custom domain with freelancer handle
 - Discord booking notifications (DM from ABLE bot on new enquiry)
 - Priority support
 

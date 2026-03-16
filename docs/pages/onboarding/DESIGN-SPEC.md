@@ -651,7 +651,7 @@ const ABLE_SPOTLIGHT = {
   city: 'London',
   setupMins: 4,
   avatarUrl: 'https://...', // actual photo URL
-  pageUrl: 'https://able.fm/declan'
+  pageUrl: 'https://ablemusic.co/declan'
 };
 ```
 If `ABLE_SPOTLIGHT` is null, the spotlight card is not rendered (pre-first-page mode).

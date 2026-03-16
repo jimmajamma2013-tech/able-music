@@ -228,7 +228,7 @@ Contact: [email]
 ```
 
 **How it's created:**
-The artist creates it. "Add team member" in admin → type their name, role, contact email → an industry card is generated at `able.fm/professionals/[slug]`. The professional is notified and can claim the card (add their own photo, edit the copy) or leave it as-is.
+The artist creates it. "Add team member" in admin → type their name, role, contact email → an industry card is generated at `ablemusic.co/professionals/[slug]`. The professional is notified and can claim the card (add their own photo, edit the copy) or leave it as-is.
 
 **Who sees it:**
 - The artist's profile has a small "Team" section in the footer — visible to everyone but visually de-emphasised
@@ -241,8 +241,8 @@ The artist creates it. "Add team member" in admin → type their name, role, con
 
 Any person on ABLE with both an artist profile and a studio profile can toggle between them. The URL conveys the mode:
 
-- `able.fm/@dannyharle` → artist profile (default)
-- `able.fm/@dannyharle?mode=studio` → studio/freelancer profile
+- `ablemusic.co/@dannyharle` → artist profile (default)
+- `ablemusic.co/@dannyharle?mode=studio` → studio/freelancer profile
 
 Both are shareable. A booker sends `?mode=studio` to other bookers. A fan shares the artist URL.
 

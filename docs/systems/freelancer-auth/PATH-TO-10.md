@@ -22,7 +22,7 @@ Supabase Auth magic link flow extended to support `profileType: 'freelancer'` at
 - Supabase profile record created with `profile_type: 'freelancer'`
 - freelancer-start.html wizard (5 steps per SPEC.md §8)
 - Done screen with share options and "add to email signature" snippet
-- Profile live at `able.fm/[handle]`
+- Profile live at `ablemusic.co/[handle]`
 
 ---
 

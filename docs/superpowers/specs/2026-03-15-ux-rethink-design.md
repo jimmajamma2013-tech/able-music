@@ -351,7 +351,7 @@ Progress bar: 66%
 
 **Screen:** "Where do we send the link?"
 Single email input. Magic link only — no password.
-Shows artist's page URL: `able.fm/[slug]` (auto-generated from name, editable in settings).
+Shows artist's page URL: `ablemusic.co/[slug]` (auto-generated from name, editable in settings).
 Progress bar: 90%
 CTA: "Make it real →" (amber)
 
@@ -359,7 +359,7 @@ CTA: "Make it real →" (amber)
 
 Progress bar: 100%, green fill.
 Large celebration moment: "Your page is real."
-Page URL displayed as amber pill: `able.fm/novavega`
+Page URL displayed as amber pill: `ablemusic.co/novavega`
 Share buttons immediately: Copy · Instagram · TikTok (while dopamine is fresh)
 Primary CTA: "Go to your dashboard →"
 

@@ -105,7 +105,7 @@ These are strategic, not technical. They require relationship-building, not just
 - OAuth 2.0 Authorization Code Flow with PKCE (browser-safe)
 - Scope required: `user-read-private`, `user-read-email` (for account verification), `artist-read` (via client credentials for public artist data)
 - For public artist data: client credentials flow — no user OAuth needed for basic import
-- For personalised features (pre-save): standard auth code flow, redirect to `able.fm/spotify-callback`
+- For personalised features (pre-save): standard auth code flow, redirect to `ablemusic.co/spotify-callback`
 
 **Rate limits and caching:**
 - Spotify Web API rate limits are 30 req/s per app
@@ -285,7 +285,7 @@ These three schools have ~15,000 students enrolled collectively. Every student i
 - ABLE offers: 30% student discount on Artist tier (£9 → £6.30/mo) for current students verified via `.edu` email or student ID
 - Music school offers: inclusion in their "recommended tools" resource pack, one guest lecture slot per semester (James or a designated ABLE rep), and social media mention to their student community
 - No exclusivity on either side
-- Attribution via referral code: `able.fm/ref/bimm` / `able.fm/ref/icmp` / `able.fm/ref/acm`
+- Attribution via referral code: `ablemusic.co/ref/bimm` / `ablemusic.co/ref/icmp` / `ablemusic.co/ref/acm`
 
 **Who initiates contact:**
 James directly. This is a relationship sale. Target the head of the course (not marketing). At BIMM, the right contact is the Commercial Music or Artist Development course lead. LinkedIn or direct email.
@@ -429,12 +429,12 @@ Natural Ablers:
 
 ### 5.4 — Abler Dashboard Specification
 
-The Abler dashboard lives at `able.fm/abler` (accessible after sign-in for any artist) and at a dedicated section within the artist `admin.html` dashboard.
+The Abler dashboard lives at `ablemusic.co/abler` (accessible after sign-in for any artist) and at a dedicated section within the artist `admin.html` dashboard.
 
 **Dashboard sections:**
 
 **My referral link**
-- Unique link: `able.fm/ref/[code]` — permanent, cannot be changed
+- Unique link: `ablemusic.co/ref/[code]` — permanent, cannot be changed
 - Copy button with micro-animation
 - Short link also available: `ablr.fm/[code]` (future domain)
 
@@ -506,7 +506,7 @@ The Abler dashboard lives at `able.fm/abler` (accessible after sign-in for any a
 ### 5.7 — Top Abler Recognition
 
 **Community leaderboard:**
-- Public leaderboard at `able.fm/ablers` showing top 10 Ablers by conversions (not earnings — privacy)
+- Public leaderboard at `ablemusic.co/ablers` showing top 10 Ablers by conversions (not earnings — privacy)
 - Ablers opt in to public leaderboard (default: off)
 - Top Abler badge on their ABLE artist profile
 

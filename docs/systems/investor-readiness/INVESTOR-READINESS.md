@@ -645,9 +645,9 @@ Return to admin.html. Show the fan list growing in real time (or the existing li
 If narrating: "100 fans who chose to stay close. That's worth more than 10,000 Instagram followers who might see the post or might not. This is what ABLE is for."
 
 **End screen (if producing a polished version):**
-- `ablemusic.co` / `able.fm`
+- `ablemusic.co` / `ablemusic.co`
 - "Made for independent musicians."
-- Contact: james@able.fm
+- Contact: james@ablemusic.co
 
 ---
 
@@ -680,7 +680,7 @@ ABLE is a campaign platform for independent musicians — built on the insight t
 **Founder quote (pre-written — James to approve before use):**
 "Independent artists are the most creative people in music. They deserve better than a generic link-in-bio tool. ABLE is built specifically for them — not for 'creators', not for 'influencers', but for musicians who are releasing records and playing shows and building something real."
 
-**Press contact:** james@able.fm
+**Press contact:** james@ablemusic.co
 
 **High-res assets:**
 - ABLE logo (light and dark versions): [Google Drive link]
@@ -695,7 +695,7 @@ ABLE is a campaign platform for independent musicians — built on the insight t
 - Pricing: Free tier available; Artist tier £9/mo, Artist Pro £19/mo, Label £49/mo
 - Market: 175,000 PRS-registered UK musicians; 4–5M globally
 - USP: Profile states that change with the artist's release cycle; 0% revenue cut; artist-owned fan data
-- Press assets: able.fm/press (or Google Drive — link here)
+- Press assets: ablemusic.co/press (or Google Drive — link here)
 
 **Artist testimonials:**
 *(3 testimonials needed — fill in when available. Format:)*
@@ -729,7 +729,7 @@ One ask:
 
 James
 ---
-ABLE — ablemusic.co / able.fm
+ABLE — ablemusic.co / ablemusic.co
 ```
 
 **The rules for this email:**

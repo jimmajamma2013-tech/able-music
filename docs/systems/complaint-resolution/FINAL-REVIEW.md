@@ -15,7 +15,7 @@
 
 ## What needs to be built before this system is live
 
-1. The support@able.fm email account, configured and monitored
+1. The support@ablemusic.co email account, configured and monitored
 2. The in-app "Report an issue" button in admin.html (links to a Tally form or opens email)
 3. The Notion complaints log database
 4. The GDPR confirmation process — identity verification must be tested before a real request arrives, not during one

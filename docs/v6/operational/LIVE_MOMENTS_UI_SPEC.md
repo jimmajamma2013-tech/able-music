@@ -60,7 +60,7 @@ This function is the single source of truth for lifecycle state across all three
 
 Platform routing:
 - `youtube` or `vimeo` with a valid `embedUrl` → `canEmbed: true`
-- `twitch` with channel slug confirmed → `canEmbed: true`, `embedUrl` includes `parent=able.fm`
+- `twitch` with channel slug confirmed → `canEmbed: true`, `embedUrl` includes `parent=ablemusic.co`
 - All others → `canEmbed: false`, `linkUrl = moment.streamUrl`
 
 ---
@@ -249,7 +249,7 @@ Flow:
 - `DTSTART`: moment date/time in UTC, computed from `moment.date + moment.time + moment.timezone`
 - `DURATION`: PT2H (2 hours default)
 - `DESCRIPTION`: `moment.artistNote` + `\n\n` + ABLE moment URL
-- `URL`: `able.fm/[handle]#lm_[moment.id]`
+- `URL`: `ablemusic.co/[handle]#lm_[moment.id]`
 
 ### 2.9 World Map dot states for Live Moments
 
@@ -444,7 +444,7 @@ Canvas dimensions: 1080×1920 (9:16 portrait). Drawing order:
 4. Livestream type label — small caps — `top-centre or left-aligned`, `font: 'Barlow Condensed'`, muted.
 5. Moment title — `font: 'Barlow Condensed'`, large, white, centre-bottom area.
 6. Date/time string — below title — `font: 'DM Sans'`, smaller, muted white.
-7. `able.fm/[handle]` — bottom of card — small, `opacity: 0.7`.
+7. `ablemusic.co/[handle]` — bottom of card — small, `opacity: 0.7`.
 
 Triggered from: "Share card" button in the admin moment list item (`.yw-moment-item__share-btn`). Opens canvas preview in an overlay with a "Download" button.
 

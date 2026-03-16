@@ -15,7 +15,7 @@ Before any action, audit every platform. For each one, answer four questions:
 3. Is `@able`, `@ablefm`, `@ablemusic`, or `@ableartist` available?
 4. Do we actually need to be on this platform?
 
-Audit by logging into the account or checking `able.fm` credentials in 1Password, then visiting the platform's search to check handle availability.
+Audit by logging into the account or checking `ablemusic.co` credentials in 1Password, then visiting the platform's search to check handle availability.
 
 ### Audit table (complete before acting)
 
@@ -96,7 +96,7 @@ First, check what the account is:
 - **Parody or criticism**: Leave it alone unless it is actively damaging.
 
 **The consistent alternative rule:** If @able is unavailable on any platform, use `@ablefm` everywhere — not just on that platform, but as the universal handle. A consistent alternative is significantly better than inconsistent "official" names across platforms. @ablefm is:
-- Connected to the domain (able.fm)
+- Connected to the domain (ablemusic.co)
 - Short enough to be memorable
 - Available (verify before committing)
 - Distinct from generic @able which would require constant disambiguation
@@ -129,7 +129,7 @@ Every active or dormant ABLE account should have a fully completed profile. A ha
 ### Profile elements (all platforms)
 
 - **Profile photo:** The ABLE mark — white vertical bar with gold foot on near-black background (the `able-logo-instagram.svg` design, rendered at platform-specific sizes — see Part 6 for sizes)
-- **Link:** Always `able.fm` — not a Linktree, not a specific campaign URL, not a subreddit. Always `able.fm`.
+- **Link:** Always `ablemusic.co` — not a Linktree, not a specific campaign URL, not a subreddit. Always `ablemusic.co`.
 - **Pinned post / highlight:** One post that communicates what ABLE is, for anyone landing cold on the profile
 
 ### Bio copy per platform
@@ -143,7 +143,7 @@ Bios are one of the few pieces of copy that speak as ABLE's brand, not as an art
 ```
 Your music. Your fans. Your relationship.
 No algorithm in the way.
-able.fm ↓
+ablemusic.co ↓
 ```
 
 Notes: Line breaks are allowed in Instagram bios. The link prompt `↓` points to the link field below. 93 characters — well within limit.
@@ -153,17 +153,17 @@ Notes: Line breaks are allowed in Instagram bios. The link prompt `↓` points t
 **TikTok** (80 characters max)
 
 ```
-Your page. Your fans. No middleman. able.fm
+Your page. Your fans. No middleman. ablemusic.co
 ```
 
-Notes: 44 characters. The `able.fm` domain is the only call to action needed — TikTok bios are short enough that adding more dilutes it.
+Notes: 44 characters. The `ablemusic.co` domain is the only call to action needed — TikTok bios are short enough that adding more dilutes it.
 
 ---
 
 **X/Twitter** (160 characters max)
 
 ```
-A better home for independent artists. Your page, your fans, your data — without a platform taking the relationship. able.fm
+A better home for independent artists. Your page, your fans, your data — without a platform taking the relationship. ablemusic.co
 ```
 
 Notes: 124 characters. X/Twitter allows more context. The word "data" is used deliberately — music industry early-adopters on X respond to data ownership positioning.
@@ -179,7 +179,7 @@ Most artists release music and collect followers on platforms they don't own. A 
 
 The page shifts with what the artist is doing. A release drops on Friday. A show is tonight. The audience is waiting. ABLE turns the bio link into a campaign — not a list of static links.
 
-Built for independent artists who are actively releasing. Free to start. able.fm
+Built for independent artists who are actively releasing. Free to start. ablemusic.co
 ```
 
 Notes: The LinkedIn About section is for managers, label contacts, and industry professionals who find ABLE here. Tone is slightly more formal than Instagram but still honest and specific. No "transform" or "supercharge".
@@ -193,7 +193,7 @@ ABLE gives independent artists a direct relationship with their fans — without
 
 This channel is for working artists: how to use your ABLE page to convert attention to sign-ups, what the data is telling you, and how to make the most of every release. No marketing theory. No hype. Just how it works.
 
-able.fm — free to start.
+ablemusic.co — free to start.
 ```
 
 Notes: The first sentence is the meta description — it appears in YouTube search. Every subsequent sentence should be useful on its own.
@@ -295,7 +295,7 @@ For accounts that are kept for brand protection but are not in the active conten
 
    ```
    Find us on Instagram: @ablefm
-   Everything else is here: able.fm
+   Everything else is here: ablemusic.co
    ```
 
 3. **Do not delete old content** unless it actively damages the brand. Old content is a timestamp of ABLE's history. Some of it will look unpolished — that is honest, and early supporters who find it will appreciate the journey.

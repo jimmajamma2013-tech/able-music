@@ -38,7 +38,7 @@ These are the findings that most directly affect the product's ability to move i
 `docs/pages/profile/DESIGN-SPEC.md` is referenced in CONTEXT.md with a score of 9.7/10 but the file does not exist. The artist profile page (`able-v7.html`) is the core product. A developer building or improving it has no authoritative spec. This is the single highest-priority gap in the entire documentation system. It must be created before the next build sprint on the artist profile.
 
 **2. Domain name inconsistency across docs (P0)**
-`ablemusic.co` is the correct domain (confirmed by CONTEXT.md, STATUS.md, V8_BUILD_AUTHORITY.md, ABLE_STRATEGY.md). But `able.fm` appears in GROWTH_STRATEGY.md and EXECUTION_RISK.md. This would cause incorrect links in any content produced from those docs. One grep-and-replace, but it needs to be done.
+`ablemusic.co` is the correct domain (confirmed by CONTEXT.md, STATUS.md, V8_BUILD_AUTHORITY.md, ABLE_STRATEGY.md). But `ablemusic.co` appears in GROWTH_STRATEGY.md and EXECUTION_RISK.md. This would cause incorrect links in any content produced from those docs. One grep-and-replace, but it needs to be done.
 
 **3. Score conflicts between CONTEXT.md and STATUS.md (P1)**
 Two systems show different scores in two authority docs: Spotify import (CONTEXT.md: 10/10 vs STATUS.md: 9.0/10) and CRM (CONTEXT.md: 4/10 vs STATUS.md: 10/10). The actual score for each system lives in its own `FINAL-REVIEW.md` — those are the authoritative sources. CONTEXT.md is a convenience index that drifted out of sync. Fix: update CONTEXT.md to match the system-level docs.

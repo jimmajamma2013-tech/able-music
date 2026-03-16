@@ -1523,7 +1523,7 @@ Both paths use the same voice — the conditional just makes the import path fee
 
 **Verification:** Test in Chrome 126+. Confirm artist name element has `view-transition-name` on both pages. Confirm navigation is same-origin (it is — both files are at the same domain).
 
-**Same-origin requirement:** ✅ Both `start.html` and `able-v7.html` are served from the same origin (able.fm or localhost during development).
+**Same-origin requirement:** ✅ Both `start.html` and `able-v7.html` are served from the same origin (ablemusic.co or localhost during development).
 
 **Pass 7 score: 10** — the wizard and the live page are now a single coherent experience, bridged by the shared element transition. This is the ceiling for cross-page coherence in a no-framework HTML/CSS/JS build.
 

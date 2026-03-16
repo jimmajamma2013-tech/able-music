@@ -28,7 +28,7 @@ The starting point. No card required. The artist's profile is real and usable fr
 
 **Profile and page:**
 - Full artist profile page (able-v7.html) with all four themes and all seven vibes
-- Custom handle: `able.fm/[handle]` — claimed at signup, unique
+- Custom handle: `ablemusic.co/[handle]` — claimed at signup, unique
 - All four campaign states: profile / pre-release / live / gig — these are the core product
 - Bio, hero CTA, secondary CTA, location, genre tag
 - 3 Quick Action pills (link out to platforms, external URLs)
@@ -69,7 +69,7 @@ The starting point. No card required. The artist's profile is real and usable fr
 - Platform connections (Bandsintown, YouTube): yes, but manual refresh only
 
 **Branding:**
-- "Made with ABLE" quiet footer line — one line, `var(--color-text-3)`, links to `able.fm?ref=[handle]`
+- "Made with ABLE" quiet footer line — one line, `var(--color-text-3)`, links to `ablemusic.co?ref=[handle]`
 - Cannot be removed on Free tier
 
 **Support:**
@@ -89,7 +89,7 @@ For artists taking their relationship with their audience seriously. The tier wh
 - 5 Snap Cards (up from 1)
 - Snap card scheduling: publish at future date (basic, date only — not time)
 - Remove ABLE branding from page footer
-- Custom domain: `able.fm/[chosen-slug]` (vs auto-generated handle) — or bring your own custom domain (Phase 2)
+- Custom domain: `ablemusic.co/[chosen-slug]` (vs auto-generated handle) — or bring your own custom domain (Phase 2)
 
 **Fan capture:**
 - Fan sign-up: unlimited (no cap)
@@ -225,7 +225,7 @@ For managers, small labels, and collectives managing multiple artists. The econo
 
 **Multi-artist management:**
 - 10 artist sub-accounts, each with their own complete Artist Pro profile
-- Each artist has their own `able.fm/handle`
+- Each artist has their own `ablemusic.co/handle`
 - Label admin can switch between artist accounts from one login (no separate logins per artist)
 - Label can invite artists to manage their own profiles (artist logs in, edits their own page, label retains view access)
 

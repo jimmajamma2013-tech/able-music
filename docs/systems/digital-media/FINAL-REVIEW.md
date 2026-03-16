@@ -122,7 +122,7 @@ If James submits the Hypebot article in month 1, applies to Music Tectonics in m
 - 1 Tier 2 press pitch sent (result in months 3–5)
 - ABLE referenced once or twice in relevant Reddit threads by an established community member (James)
 
-This is not a vanity metric outcome. These are small numbers with specific value: the first 20 press-acquired artist sign-ups are higher-trust than cold-acquired ones, because they arrived after reading an argument and deciding it made sense. Their activation and retention will likely be stronger. The article also produces backlinks that improve able.fm's SEO for related searches — a compounding effect that does not show up in short-term sign-up numbers.
+This is not a vanity metric outcome. These are small numbers with specific value: the first 20 press-acquired artist sign-ups are higher-trust than cold-acquired ones, because they arrived after reading an argument and deciding it made sense. Their activation and retention will likely be stronger. The article also produces backlinks that improve ablemusic.co's SEO for related searches — a compounding effect that does not show up in short-term sign-up numbers.
 
 **What this strategy cannot do**
 
@@ -158,7 +158,7 @@ This is a complete, actionable digital media strategy. Every gap identified is a
 
 Before treating this strategy as fully operational:
 
-- [ ] Google Alerts set up for "ABLE music", "able.fm", "Artist Before Label"
+- [ ] Google Alerts set up for "ABLE music", "ablemusic.co", "Artist Before Label"
 - [ ] PostHog verified to capture UTM parameters on page_view (landing.html) and artist_signup (start.html) events
 - [ ] Named journalist contacts identified for Hypebot, Music Ally, DIY Magazine
 - [ ] Three finished pitch drafts written (thesis angle, founder angle, data angle)

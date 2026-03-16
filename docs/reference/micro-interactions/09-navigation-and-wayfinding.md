@@ -76,7 +76,7 @@ function openPanel(panel) {
 ## 98. Deep Link State — Section Highlighted on Direct Arrival
 **Verdict: [BUILD] — for when fans arrive at specific sections via URL hash**
 
-**What it is:** If a fan arrives at `able.fm/artist#merch` (via a direct shared link), the page loads, scrolls to the Merch section, and briefly highlights it — a 1-second warm glow around the section that fades out. The fan knows they've arrived at exactly where they were sent.
+**What it is:** If a fan arrives at `ablemusic.co/artist#merch` (via a direct shared link), the page loads, scrolls to the Merch section, and briefly highlights it — a 1-second warm glow around the section that fades out. The fan knows they've arrived at exactly where they were sent.
 
 **Trigger → Rule → Feedback:**
 - Trigger: URL hash contains a valid section ID (`#music`, `#events`, `#merch`, `#support`)

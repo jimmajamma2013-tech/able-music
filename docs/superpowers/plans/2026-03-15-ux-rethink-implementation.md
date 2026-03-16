@@ -2319,7 +2319,7 @@ Spec §3.4 — update the events/shows section in able-v7.html to use the new ca
   function initStep3() {
     const draft = JSON.parse(sessionStorage.getItem('able_wizard_draft') || '{}');
     const slug = nameToSlug(draft.name || '');
-    document.getElementById('s3Slug').textContent = `able.fm/${slug}`;
+    document.getElementById('s3Slug').textContent = `ablemusic.co/${slug}`;
   }
   ```
 
@@ -2366,7 +2366,7 @@ Spec §3.4 — update the events/shows section in able-v7.html to use the new ca
   <div class="step" id="stepDone" data-step="done" hidden>
     <div class="step-progress done"><div class="progress-fill" style="width:100%;background:var(--dash-green,#1e9650)"></div></div>
     <div class="done-headline">Your page is real.</div>
-    <div class="done-url-pill" id="doneUrlPill">able.fm/...</div>
+    <div class="done-url-pill" id="doneUrlPill">ablemusic.co/...</div>
 
     <div class="done-share-row">
       <button class="share-btn" id="doneCopyBtn">Copy link</button>
@@ -2383,7 +2383,7 @@ Spec §3.4 — update the events/shows section in able-v7.html to use the new ca
   ```js
   function initDoneScreen() {
     const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
-    const url = `able.fm/${profile.slug || 'you'}`;
+    const url = `ablemusic.co/${profile.slug || 'you'}`;
     const fullUrl = `https://${url}`;
 
     document.getElementById('doneUrlPill').textContent = url;

@@ -393,7 +393,7 @@ Copy:
 - Artist name in display font
 - `"Private listening session · Close circle"` — one line
 - Date + time
-- `able.fm/[handle]` at the bottom — *not* the join link
+- `ablemusic.co/[handle]` at the bottom — *not* the join link
 
 Why not the join link: the card circulates on social media. The fan who is curious taps the ABLE link, finds the Close Circle entry point naturally. Hard conversion links in share cards feel pushy.
 
@@ -402,7 +402,7 @@ Why not the join link: the card circulates on social media. The fan who is curio
 - Release artwork
 - `"Supporters get this first"`
 - `"Out to everyone [date]"`
-- `able.fm/[handle]`
+- `ablemusic.co/[handle]`
 
 ### Close circle dispatch
 

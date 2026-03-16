@@ -157,7 +157,7 @@ This is the highest-stakes copy on the platform. An artist who abandons the wiza
 - Screen 2: "What colour feels right?" → show swatches based on genre suggestion, with real-time preview of the page updating
 - Screen 3: "What's happening right now?" → Pre-release / Just released / Playing shows / Just being me — these become the campaign state presets
 - Screen 4: "Where can people find your music?" → paste a Spotify link, or add links manually
-- Screen 5: "Here's your page." → show the live preview, give them their URL (`able.fm/yourname`), put "Share this" as the primary CTA
+- Screen 5: "Here's your page." → show the live preview, give them their URL (`ablemusic.co/yourname`), put "Share this" as the primary CTA
 
 ### Artist profile (able-v3.html)
 First-person throughout. The page is the artist speaking, not a platform introducing them. The bio field should be labelled "In your words" in the editor. Every piece of text on the page should be something the artist would say themselves.
@@ -280,7 +280,7 @@ Given everything above, here are the 20 most important things to build or improv
 9. **"Artists I'm Digging"** — the recommendation section on the artist profile. Up to 5 artists, with optional one-line "why." Non-ABLE artists get a plain link; ABLE artists get a linked badge. This is the most powerful organic growth feature and it's a 2-day build.
 10. **Bio writer (Claude API)** — artist pastes their Spotify URL or answers three questions, Claude generates three bio options in different tones (warm, minimal, editorial). One-click to use. Massive perceived value, almost zero cost.
 11. **Caption pack on snap card publish** — when an artist publishes a snap card (new release, new show), ABLE instantly generates three caption options for Instagram, TikTok, and Twitter. Pre-filled with their ABLE link.
-12. **Referral code** — every artist gets a unique referral URL (able.fm/ref/[code]). Tracked in their dashboard. Basic affiliate setup without the Abler programme initially.
+12. **Referral code** — every artist gets a unique referral URL (ablemusic.co/ref/[code]). Tracked in their dashboard. Basic affiliate setup without the Abler programme initially.
 
 **Weeks 7-9: Deepen the fan relationship**
 13. **Fan list in dashboard** — every signed-up fan visible with: name/email, join date, source (which CTA they clicked), number of visits. Simple table. Exportable as CSV. This is the feature that justifies the Artist tier.
@@ -290,8 +290,8 @@ Given everything above, here are the 20 most important things to build or improv
 
 **Weeks 10-12: Polish and trust**
 17. **Artist vibe picker in onboarding** — make the 7-genre system visual and live-preview in start.html. The moment this works properly, onboarding completion rates will increase significantly.
-18. **About page with founder story** — able.fm/about. Real writing, real photo, real reason this was built. This is more important than most people think.
-19. **Public roadmap / changelog** — able.fm/changelog. A simple static page updated monthly. Shows momentum. Builds trust. Gives artists a reason to come back.
+18. **About page with founder story** — ablemusic.co/about. Real writing, real photo, real reason this was built. This is more important than most people think.
+19. **Public roadmap / changelog** — ablemusic.co/changelog. A simple static page updated monthly. Shows momentum. Builds trust. Gives artists a reason to come back.
 20. **Help Musicians UK partnership outreach** — this is a relationship, not a feature, but it belongs in the 90-day plan. A presence in their tools directory is worth more than any paid campaign.
 
 ---

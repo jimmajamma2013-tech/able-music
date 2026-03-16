@@ -27,7 +27,7 @@ The risk here is feature sprawl. ABLE should feel like a great Swiss Army knife 
 Artists, influencers, music fans, and music-adjacent creators who genuinely believe in ABLE become **Ablers** — a referral and affiliate layer that turns word-of-mouth into real income.
 
 ### How it works
-- Every artist (and approved Abler) gets a unique referral code: `able.fm/ref/[code]`
+- Every artist (and approved Abler) gets a unique referral code: `ablemusic.co/ref/[code]`
 - When someone signs up via that link and becomes a paid subscriber → the Abler earns a recurring commission (e.g. 20–30% of monthly fee for 12 months)
 - Dashboard: Ablers see clicks, conversions, earnings, pending payouts
 - Payout: Stripe Connect or PayPal, monthly, minimum £20 threshold
@@ -49,7 +49,7 @@ Artists, influencers, music fans, and music-adjacent creators who genuinely beli
 
 ### The social angle
 - Ablers get a pre-made "Why I use ABLE" short-form video template (their page rotating through sections, overlaid with captions)
-- Shareable card: "I'm on ABLE — join me at able.fm/ref/[code]"
+- Shareable card: "I'm on ABLE — join me at ablemusic.co/ref/[code]"
 - ABLE can co-post top-performing Abler content on the ABLE social accounts
 
 ### Influencer company partnerships
@@ -158,7 +158,7 @@ A press pack is a public, beautifully designed URL generated from the artist's p
 - Achievements / stats (monthly listeners, fan count, etc.)
 
 **The design:**
-- `able.fm/name/press` — a separate view of the same profile data
+- `ablemusic.co/name/press` — a separate view of the same profile data
 - Lazy scroll: full-bleed sections, each one a "chapter"
 - Much more editorial than the fan-facing profile — full-width photos, large type, white space
 - Animated: Apple Memories-style scroll — as you scroll, elements appear, music snippets play (with controls)
@@ -254,7 +254,7 @@ ABLE is for independent artists. But many of them want to be found by a label or
 | Pirate Studios | Rehearsal/recording studios | "Book a studio near you" (geo-aware) |
 
 ### A page of ABLE recommends
-A curated page (`able.fm/partners`) that lists ABLE-vetted industry tools, services, and platforms. Honest, selective, not a link farm.
+A curated page (`ablemusic.co/partners`) that lists ABLE-vetted industry tools, services, and platforms. Honest, selective, not a link farm.
 
 Categories:
 - Distribution (DistroKid, TuneCore, AWAL)
@@ -352,7 +352,7 @@ Not all of the above is for v1. Here's the priority filter:
 
 ### Build now (no external dependency, high value)
 - [ ] Referral codes + Abler dashboard (Stripe affiliate tracking)
-- [ ] Press pack URL (`able.fm/name/press`) — pulls existing profile data, new layout
+- [ ] Press pack URL (`ablemusic.co/name/press`) — pulls existing profile data, new layout
 - [ ] "Promote this release" section — curated links to SubmitHub, Groover, Playlist Push (affiliate)
 - [ ] Bio writer + caption generator (Claude API, 2 prompts)
 - [ ] "Support a cause" snap card type

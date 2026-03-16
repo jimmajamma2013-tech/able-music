@@ -990,7 +990,7 @@ Instagram Stories. "The first 50 are in. I'll be reaching out personally this we
 
 **Version 2 — For artists not yet on ABLE:**
 
-> "Hey [name] — I'm James, I build ABLE (able.fm), which is a different kind of link-in-bio for independent artists — it has pre-release and release modes that change the whole page based on where you are in your cycle.
+> "Hey [name] — I'm James, I build ABLE (ablemusic.co), which is a different kind of link-in-bio for independent artists — it has pre-release and release modes that change the whole page based on where you are in your cycle.
 >
 > I've been following your [track name] release — [genuine specific observation about their music or setup]. I think your setup would be interesting to show people as an example of what ABLE looks like in practice.
 >

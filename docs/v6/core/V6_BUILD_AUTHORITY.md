@@ -488,7 +488,7 @@ These ship with v6. In this order:
 14. **Panel exit** — `--ease-accel`, 250ms. Always faster than entry.
 15. **Tab bar hide/show on scroll** — down + >100px: `translateY(100%)`, `--ease-accel`, 200ms. Up: reveal, `--ease-decel`, 200ms.
 16. **Email paste flash** — input background `rgba(accent, 0.1)` fades 400ms on `paste` event.
-17. **Copy link flash** — "Copied!" 2s, bg `rgba(accent, 0.15)`. Show `able.fm/handle` not full URL.
+17. **Copy link flash** — "Copied!" 2s, bg `rgba(accent, 0.15)`. Show `ablemusic.co/handle` not full URL.
 
 ### 7.3 Phase 2 interactions (after Phase 1 is stable)
 
@@ -535,7 +535,7 @@ Supporting text (below input): "I'll only reach out when something's actually ha
 7. Store per fan: IP hash (SHA-256, never raw), confirmation timestamp, method: `'double_optin_email'`
 8. Analytics distinguish: "X fans total. Y confirmed for emails." Never hide the distinction.
 
-Sending domain: ABLE-controlled subdomain (e.g. `mail.able.fm`). Custom artist sending domains are Phase 2. v1: artist display name, ABLE infrastructure.
+Sending domain: ABLE-controlled subdomain (e.g. `mail.ablemusic.co`). Custom artist sending domains are Phase 2. v1: artist display name, ABLE infrastructure.
 
 ---
 
@@ -633,7 +633,7 @@ These stop the five missing operational docs from staying abstract.
 
 **"Made with ABLE" footer:** Free tier profiles show a subtle `var(--color-text-3)` footer line: "Made with ABLE". This is not a banner — it is one quiet line. Removed on Artist tier and above. This is the primary organic viral loop for ABLE discovery — a fan lands on a profile, sees it, becomes an artist themselves. Build it into the page structure from day one. Free tier = visible. Any paid tier = hidden. No exceptions.
 
-**QR code (Phase 1 — admin only):** Every artist gets a custom-coloured QR code in their admin panel. Colour matches their accent. One-tap download as PNG. Destination URL: `able.fm/[handle]?src=qr`. This maps to the `qr` source value in the frozen source taxonomy. QR codes at gigs are the highest-converting offline touchpoint (data: artists who use them see 3–5× higher sign-up rates at live shows). Build the QR generation into admin.html — not into the public profile. Use a library like `qrcode.js` (CDN) — no server round-trip needed for generation.
+**QR code (Phase 1 — admin only):** Every artist gets a custom-coloured QR code in their admin panel. Colour matches their accent. One-tap download as PNG. Destination URL: `ablemusic.co/[handle]?src=qr`. This maps to the `qr` source value in the frozen source taxonomy. QR codes at gigs are the highest-converting offline touchpoint (data: artists who use them see 3–5× higher sign-up rates at live shows). Build the QR generation into admin.html — not into the public profile. Use a library like `qrcode.js` (CDN) — no server round-trip needed for generation.
 
 **Trust and safety:** First 5 externally-visible credits per new professional-facing profile enter confirmation workflow before being treated as trusted. Clear reportable flow for abuse/impersonation/bad links before public rollout. No public rating system in v1.
 
@@ -700,7 +700,7 @@ The outcome is materially different from what `able-v5.html` was specced to be. 
 These are explicitly out of scope for the initial v6 build. Architecture must not block them.
 
 - Rooms / Stage Can (fan community, tipping) — Phase 2
-- Press pack (`able.fm/name/press`) — Phase 2
+- Press pack (`ablemusic.co/name/press`) — Phase 2
 - Story Mode (video assembly) — Phase 2
 - Ablers referral programme — Phase 2 (needs subscriber base first)
 - Studio/freelancer mode — Phase 2 (separate onboarding path)

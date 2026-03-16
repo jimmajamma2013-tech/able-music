@@ -44,7 +44,7 @@ Before any monetisation feature ships, it must pass all five of these. A single 
 
 ### Question 3: Does the "Made with ABLE" loop create measurable organic acquisition?
 
-**Test:** Open a Free tier artist profile in Playwright. Check: is the footer line present? Does it link to `able.fm?ref=[handle]`? Is the click event tracked in analytics?
+**Test:** Open a Free tier artist profile in Playwright. Check: is the footer line present? Does it link to `ablemusic.co?ref=[handle]`? Is the click event tracked in analytics?
 
 **Pass criteria:**
 - Footer line visible on Free profiles, invisible on paid profiles

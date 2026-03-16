@@ -41,7 +41,7 @@ The difference: small businesses want conversions. Artists want *connection*. Th
 - Basic analytics (views, clicks, 7-day)
 - 1 snap card
 - 1 CTA zone
-- able.fm/name URL
+- ablemusic.co/name URL
 - 100 fan sign-ups
 
 ### Artist — £9/mo
@@ -296,7 +296,7 @@ Musicians have depth that most platforms flatten into metrics. ABLE surfaces the
 | Algorithm dependency (Instagram, TikTok) | Owned email list |
 | Can't contact fans directly | Email broadcasts from dashboard |
 | Booking enquiries scattered across DMs | "Book me" CTA with enquiry form |
-| No single source of truth | One URL — able.fm/name |
+| No single source of truth | One URL — ablemusic.co/name |
 | Merch hard to manage | Shopify/Printful connect |
 | Analytics only per-platform | Cross-platform attribution |
 | Tour dates hard to surface | Bandsintown sync, auto-events section |

@@ -60,7 +60,7 @@ The dormant account maintenance protocol is practical and honest. The quarterly 
 This is not obvious. Many brands end up with @ablemusic on Instagram, @ablefm on Twitter, @able_music on TikTok, and @ableapp on YouTube because they grab whatever is available. The result is a brand that cannot be found and cannot be mentioned consistently. ABLE must decide one handle and use it everywhere — even if that handle is not the first preference.
 
 The choice of @ablefm as the preferred alternative to @able is correct:
-- It references the domain (able.fm)
+- It references the domain (ablemusic.co)
 - It is short (6 characters)
 - It has no underscore
 - It is not ambiguous (not @ableapp or @abletools — both imply something generic)

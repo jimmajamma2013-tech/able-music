@@ -100,7 +100,7 @@ Every ABLE artist page has one feature that Linktree cannot replicate: it looks 
 When artists share their ABLE page on social media (which they do, because it's a link-in-bio — that's the point), other artists see it. Some percentage of those artists investigate. This is passive word-of-mouth driven by the product quality.
 
 **How to amplify this:**
-- The ABLE page URL (`able.fm/artistname`) should appear in the artist's page footer — a subtle "Built with ABLE" credit that is tasteful, not promotional
+- The ABLE page URL (`ablemusic.co/artistname`) should appear in the artist's page footer — a subtle "Built with ABLE" credit that is tasteful, not promotional
 - The footer link goes to `landing.html?utm_source=profile-footer&utm_medium=product`
 - On the Artist Pro tier, artists can remove the footer (white-label option)
 - This creates a natural incentive gradient: free tier provides acquisition, paid tier provides removal
@@ -228,11 +228,11 @@ The Discord serves the community, not ABLE's acquisition goals. If the community
 
 The three most important pages on `landing.html` or as standalone pages:
 
-1. `able.fm/vs-linktree` — The honest comparison. Linktree is a redirect tool; ABLE is a campaign platform. Show the fee calculator, show the fan capture comparison, show what "release day" looks like on each.
+1. `ablemusic.co/vs-linktree` — The honest comparison. Linktree is a redirect tool; ABLE is a campaign platform. Show the fee calculator, show the fan capture comparison, show what "release day" looks like on each.
 
-2. `able.fm/vs-beacons` — The fee argument. Beacons takes 9% on the free tier. At £1,500 merch month: they take £135. ABLE takes £0. Show this as a calculator artists can use.
+2. `ablemusic.co/vs-beacons` — The fee argument. Beacons takes 9% on the free tier. At £1,500 merch month: they take £135. ABLE takes £0. Show this as a calculator artists can use.
 
-3. `able.fm/vs-feature-fm` — The consolidation argument. Feature.fm charges £39/mo for fan email + pre-save. ABLE's Artist tier at £9/mo does the same and more. Show the feature parity.
+3. `ablemusic.co/vs-feature-fm` — The consolidation argument. Feature.fm charges £39/mo for fan email + pre-save. ABLE's Artist tier at £9/mo does the same and more. Show the feature parity.
 
 These pages are evergreen conversion pages. They catch comparison-shopping traffic (high intent) and they establish ABLE's value proposition in concrete, specific terms.
 
@@ -336,7 +336,7 @@ Budget to test: £2,000 across 3–4 newsletter placements.
 
 **Channel 4: Google Search — for comparison keywords only**
 
-Why: artists actively searching "linktree for musicians alternative" or "music link in bio" are in-market, high-intent buyers. The comparison pages (able.fm/vs-linktree, able.fm/vs-beacons) are the landing pages.
+Why: artists actively searching "linktree for musicians alternative" or "music link in bio" are in-market, high-intent buyers. The comparison pages (ablemusic.co/vs-linktree, ablemusic.co/vs-beacons) are the landing pages.
 
 Keyword targets: "linktree alternative for musicians," "best link in bio for music artists," "music pre-save tool," "fan email capture for artists"
 
@@ -496,7 +496,7 @@ Specific, prioritised growth actions for each stage. The mistake is doing Year 3
 4. Founding Artists programme close (100 artists filled)
 5. Product Hunt launch (when NPS is above 40 and you have 10+ strong reviews)
 6. Press coverage: Music Ally (primary), Hypebot (secondary)
-7. First comparison page live (able.fm/vs-linktree)
+7. First comparison page live (ablemusic.co/vs-linktree)
 8. Annual plan launch (20% discount — reduces monthly churn exposure)
 
 **Key decisions at this stage:**

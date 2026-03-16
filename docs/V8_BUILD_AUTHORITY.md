@@ -96,7 +96,7 @@ This is the graph that makes ABLE a system, not a collection of pages.
                                 │ fan signs up on artist profile
                                 ▼
 ┌───────────────────────────────────────────────────────────────────┐
-│ FAN DASHBOARD (fan.html / able.fm/me)                             │
+│ FAN DASHBOARD (fan.html / ablemusic.co/me)                             │
 │                                                                   │
 │  Today strip ← artist.moments[] where date = today ± 48h          │
 │  Following strip ← followed artist cards                          │
@@ -413,7 +413,7 @@ Home · Credits · Work · Rates · Contact
 3. Add a portfolio sample (SoundCloud or YouTube URL, skip option)
 4. Set availability + booking preference
 
-**Done screen:** "Your profile is live at able.fm/[handle]" + share options + email signature snippet
+**Done screen:** "Your profile is live at ablemusic.co/[handle]" + share options + email signature snippet
 
 ---
 
@@ -502,7 +502,7 @@ Subject: `A bit closer, if you want`
 - Pre-save links (Spotify API + ABLE fan capture = better than Hypeddit/Toneden)
 - Email broadcasts (ABLE owns the relationship — externalising breaks the trust model)
 - Analytics dashboard (this is the moat — own it completely)
-- Press pack at `able.fm/handle/press` (data already in ABLE — just a render layer, Phase 2)
+- Press pack at `ablemusic.co/handle/press` (data already in ABLE — just a render layer, Phase 2)
 - Fan CRM + superfan scoring (core product, never outsource)
 
 ### 10.4 Link paste only (no API worth building)
@@ -529,7 +529,7 @@ All localStorage keys map 1:1 to Supabase table rows. No renaming.
 
 ### 11.4 Directory — post-v8
 
-`able.fm/artists` directory is explicitly post-v8 scope. Rationale: the directory requires an artist base large enough that browsing feels rewarding. Launching it before that threshold creates a ghost town experience — the worst possible first impression of a discovery feature. Build when there are 500+ active artists on ABLE.
+`ablemusic.co/artists` directory is explicitly post-v8 scope. Rationale: the directory requires an artist base large enough that browsing feels rewarding. Launching it before that threshold creates a ghost town experience — the worst possible first impression of a discovery feature. Build when there are 500+ active artists on ABLE.
 
 ### 11.5 Showcase mode — partially v8
 
@@ -592,7 +592,7 @@ Ordered by impact on user story score × build complexity. High-impact, lower-co
 
 14. **Superfan scoring**: Internal algorithm, artist-visible only, never shown to fan. Powers "You have 12 superfans in Manchester" in analytics.
 
-15. **Directory** (`able.fm/artists`): Only after 500+ active artists. Vibe tiles, velocity-based rising sort, editorial spotlight (named contributor, dated, weekly rotation).
+15. **Directory** (`ablemusic.co/artists`): Only after 500+ active artists. Vibe tiles, velocity-based rising sort, editorial spotlight (named contributor, dated, weekly rotation).
 
 ---
 
@@ -647,11 +647,11 @@ Explicitly deferred. Architecture must not block them.
 
 | Not building in v8 | Reason |
 |---|---|
-| Discovery directory (`able.fm/artists`) | Needs user base first. Ghost town = worst impression. |
+| Discovery directory (`ablemusic.co/artists`) | Needs user base first. Ghost town = worst impression. |
 | Full Showcase mode | Campaign state machine covers 80% of the need. Full UI post-v8. |
 | Story Mode (video assembly) | Phase 3+ |
 | Rooms / Stage Can (fan community) | Not a community platform — this is off-brand scope |
-| Press pack (`able.fm/handle/press`) | Phase 2 — render layer on existing data |
+| Press pack (`ablemusic.co/handle/press`) | Phase 2 — render layer on existing data |
 | Ablers referral programme | Needs subscriber base first |
 | Custom artist domains | Phase 2 |
 | Email custom sending domains | Phase 2 |

@@ -38,7 +38,7 @@ Artists are a tight-knit community. One mishandled complaint does not stay priva
 
 | Channel | Address | Target first response | Target resolution |
 |---|---|---|---|
-| Email | support@able.fm | 24 hours | 48 hours |
+| Email | support@ablemusic.co | 24 hours | 48 hours |
 | Discord | #help channel | 4 hours (working hours) | 24 hours |
 | In-app | "Report an issue" in admin.html | 24 hours | 48 hours |
 | Instagram DM | @ablemusic | 8 hours | 48 hours |
@@ -552,7 +552,7 @@ admin.html must always have a visible path to support. Not hidden in settings â€
 
 ### Status page (Phase 2)
 
-When ABLE has enough users that platform incidents affect a material number of artists at once, set up a status page at able.fm/status. This alone eliminates the "is it just me?" category of support requests. Use a self-hosted Upptime instance (free, GitHub-based) or a paid service like Statuspage.
+When ABLE has enough users that platform incidents affect a material number of artists at once, set up a status page at ablemusic.co/status. This alone eliminates the "is it just me?" category of support requests. Use a self-hosted Upptime instance (free, GitHub-based) or a paid service like Statuspage.
 
 ---
 

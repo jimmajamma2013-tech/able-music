@@ -1,0 +1,301 @@
+# ABLE Copy System — Master Spec
+**Created: 2026-03-15 | Authority: DEFINITIVE**
+
+> This is the single authoritative voice guide for all copy on the ABLE platform. If a per-page COPY.md conflicts with this document, this document wins. If a developer writes copy not covered here, they must check it against the governing principle in section 2.1.
+>
+> This spec is written to be usable by a contractor who has never read any other ABLE document. It contains everything they need.
+
+---
+
+## 2.1 The governing principle
+
+The artist-fan relationship belongs to them, not to ABLE. ABLE's copy serves as a door — it opens, it's clear, then it gets out of the way. Every word asks: **does this serve the artist or ABLE's ego?**
+
+ABLE is not a marketing platform. It is not a SaaS product. It is a place for artists to be themselves and for fans to stay close. The copy must always feel like it was written by someone who has been in the room — not a startup trying to sound cool.
+
+**The test for any piece of copy:**
+1. Would an artist with real credibility be embarrassed if this appeared on their page?
+2. Does this sound like a form, a startup, or a hustle? If yes, rewrite it.
+3. Read it aloud. If you would not say this to a friend in the music industry, it is wrong.
+
+---
+
+## 2.2 Voice register table
+
+This is the single most important reference. Every context has a register. Do not confuse them.
+
+| Context | Who is speaking | Register | Example |
+|---|---|---|---|
+| Artist profile — body | The artist | Direct, first-person, their own voice | "I've been working on this for two years. It's done." |
+| Artist profile — defaults | ABLE writing in the artist's voice | Understated, warm, short | "Stay close." |
+| Artist profile — fan CTAs | The fan speaking | First-person, low-pressure | "I'm in." / "Count me in." |
+| Admin greeting | ABLE to the artist | Warm, one beat, professional | "Good to see you, James." |
+| Admin sub-greeting | ABLE, contextual, specific | Observational, direct | "3 days until Somewhere Else drops." |
+| Admin nudge | ABLE, honest peer | Specific, no hyperbole | "3 fans this week — that's new. Send them something." |
+| Admin empty state | ABLE | Honest, specific, no placeholder feel | "Playing anywhere soon? Your fans want to know →" |
+| Admin confirmation toast | ABLE | Brief, matter-of-fact | "Saved." |
+| Fan dashboard | ABLE writing about artists | Anticipatory, specific, present tense | "Something new from Nadia today." |
+| Fan dashboard empty | ABLE | Honest, not apologetic | "You're here because of an artist. Find them — or find someone new." |
+| Landing page — headline | ABLE, confident | Direct statement, no hype | "100 real fans beat 10,000 strangers." |
+| Landing page — body | ABLE | Inside knowledge, industry fluency | "What does it know about your release dropping in 3 days?" |
+| Landing page — CTA | ABLE | First-person, specific about value | "Your page is free →" |
+| Onboarding | ABLE | Patient, direct, human | "What do you go by?" |
+| Error states | ABLE | Calm, specific, gives a path forward | "Couldn't reach Spotify right now. Enter your name below and we'll carry on." |
+| Confirmation emails | ABLE writing on behalf of artist | Artist-voiced, not platform-voiced | "[Artist Name] asked me to check this is actually you." |
+| Tier gate copy | ABLE | Specific about what the artist gains, no pressure | "Write to your fans directly. Not a broadcast. Not a newsletter. Just you and the people who signed up. From £19/month." |
+
+---
+
+## 2.3 Banned phrases — master list
+
+These phrases are banned from all user-facing copy on ABLE. No exceptions. If a banned phrase is found in built code, it must be replaced before shipping.
+
+### Category 1: Growth/marketing language
+- "Turn fans into superfans"
+- "Grow your audience" → say "reach people who care" or just describe the action
+- "Monetise your fanbase" / "Monetize" → say "let people support you directly"
+- "Engage your followers" / "Engage with your fans" → say "stay close to the people who show up"
+- "Going viral" / "Viral" → never
+- "Boost your profile" / "Supercharge" / "Level up" / "Skyrocket"
+- "Leverage" / "Unlock" / "Power up"
+- "Audience growth" / "Audience building"
+
+### Category 2: Platform/corporate language
+- "Content creator" → say "artist"
+- "Content" (when referring to music, updates, or art) → say "music", "update", "message from the artist"
+- "Followers" → say "people who follow them" or "your fans"
+- "Superfan" — internal vocabulary only, never user-facing
+- "CRM" / "Fan CRM" → say "your list" or "the people who signed up"
+- "Dashboard" in page titles or UI labels → the page title is never "Dashboard"; the home screen is just "Home" or unlabelled
+- "Mailing list" → say "your fans" or "the people who signed up"
+- "Newsletter" → say "keep them in the loop" or "write to them"
+- "Feed" (for the fan page) → say "Following" or "The artists you're following"
+- "Subscribers" → say "fans" or "people on your list"
+- "Community" (when it means "audience") → say "your fans" or "the people who show up"
+- "Journey" / "Experience" / "Ecosystem"
+- "Profile" (when talking to fans — they should never know they're on a "profile")
+
+### Category 3: SaaS micro-copy
+- "Welcome aboard!" / "You're all set!" / "You're good to go!"
+- "Get started!" / "Get started" as a CTA
+- "Almost there!" — banned even without the exclamation mark
+- "Let's go!" / "Let's get started!"
+- "Sign up" as a CTA label → say "I'm in" / "Stay close" / "Count me in"
+- "Submit" as a button label → say what the action actually does
+- "Next" as a button label in onboarding → say what happens next ("Continue →" is the minimum; specific is better)
+- Generic "Learn more" → say what they'll learn
+- "Find out more" → same
+- "Explore" as a primary CTA
+
+### Category 4: Punctuation and register
+- Exclamation marks on admin/dashboard copy — zero exceptions
+- Exclamation marks in any ABLE-written copy (artist can use them in their own content)
+- "Trending" → never on ABLE
+- "Recommended for you" → say "Because you follow [Artist]" or "Similar sound"
+- "People like you" / "Users like you" → never
+- Any price shown with pence (£4.99 → show as £5)
+- Emoji in admin/dashboard copy unless the artist set them in their own content
+- "Fans" used as a vanity metric ("Your fan count is growing") → say "people" or show the number
+
+### Category 5: Artist-profile specific bans
+- "Subscribe to updates" → "Stay close."
+- "Get notified" → anything in the artist's voice
+- "Join the list" → it's their list, not the platform's
+- "Follow" (as a CTA on the artist's page) → never; the artist has followers, they are not followed on ABLE
+- "You're all set!" as a post-sign-up confirmation → "You're in."
+- "Welcome!" as a post-sign-up response → "You're in. I'll keep you close."
+- "Exclusive content" → say what it actually is ("new music before it's out", "first shot at tickets")
+- "Join the community" → "Join the circle" or nothing
+- "Become a supporter" → "Come closer"
+- "Premium access" / "Exclusive benefits" / "Exclusive access"
+- "Unlock" preceding anything
+- Section headers in third person ("Music", "Events") — default is first person ("My music", "Shows")
+
+---
+
+## 2.4 Artist default copy
+
+These are the strings that appear on a brand-new artist's page before they have customised anything. They must feel like the artist chose them, not like ABLE filled in a placeholder.
+
+**The golden rule for defaults:** every default must be plausibly the artist's own voice. If a fan read it, they should believe the artist typed it.
+
+### Hero section
+| Element | Default | Notes |
+|---|---|---|
+| Artist name | Empty — show nothing | Never "Artist Name" or any placeholder |
+| Tagline / bio | Empty — show nothing | Empty is correct. No placeholder text to fans. |
+| Hero CTA (primary) | "My music" | Or "Listen", "Stream", "Hear this" — all acceptable |
+| Hero CTA (secondary) | "Stay close" | Scrolls to fan sign-up |
+
+### Fan sign-up module
+| Element | Default | Notes |
+|---|---|---|
+| Heading | "Stay close." | Period is intentional. Display font, large. |
+| Subtext | "Just your email. I'll reach out when something's actually happening." | Artist-voiced |
+| Input placeholder | "Your email" | Not "Email address", not "you@email.com" |
+| Submit button | "I'm in" | First-person fan voice |
+| Trust line | "Just [Artist Name]. No spam." | Dynamic — uses artist name |
+| Post-submit toast | "You're in." | Period. No exclamation. |
+| Post-submit module text | "You're in. I'll keep you close." | Artist-voiced confirmation |
+
+### Snap cards
+Default: no snap cards. The snap cards row is hidden if empty. Never show a placeholder snap card with ABLE-written text.
+
+### Section headers (when sections exist)
+| Section | Default |
+|---|---|
+| Music | "My music" |
+| Events | "Shows" |
+| Merch | "Stuff" |
+| Recommendations | "Artists I believe in" |
+
+### Made with ABLE footer
+```
+Made with ABLE
+```
+Style: small, quiet, never competing. This is the only place ABLE's name appears on an artist's page. It is never "Powered by ABLE" or "Built on ABLE".
+
+---
+
+## 2.5 Page-by-page copy rules
+
+### able-v7.html — Artist public profile
+
+1. This page speaks in the **artist's voice**. ABLE is invisible.
+2. All defaults must feel artist-written, not ABLE-generated.
+3. Fan CTAs are **fan first-person** ("I'm in", not "Sign up").
+4. Empty sections are hidden — never show "nothing here yet" to fans.
+5. Owner-mode copy is the exception — the artist sees edit prompts, fans never do.
+6. The word "profile" never appears to fans. The word "dashboard" never appears anywhere.
+7. Auto-save toast: "Saved." — period, lowercase 's' after initial.
+8. Share confirmation toast: "Copied." — period.
+9. The `og:description` default is: `"Music, shows, and more — direct from [Artist Name]."` — never "Artist profile powered by ABLE".
+
+### admin.html — Artist dashboard
+
+1. ABLE speaks to the artist like a **smart manager, not a SaaS product**.
+2. Greeting: "Good to see you, [First Name]." — warm, one beat, done. No sub-line on day 1 except "Your page is live."
+3. Never use "Dashboard" in any visible copy. The page title is "ABLE" or "[Name] — ABLE". Never "Dashboard — ABLE".
+4. Stat labels are single words: "Visits", "Clicks", "Fans", "Click rate" — not "Link clicks" or "Fans joined".
+5. Tier gate copy always says what the artist gets, then the price. Never just "Upgrade".
+6. Destructive action copy (delete, reset): calm and specific. "This removes your page and all fan data. This cannot be undone." — no dramatic styling.
+7. Export copy: "Export as CSV →" — always available, always visible.
+8. Toast copy: "Saved." for most saves. More specific where warranted (e.g., "Show added.").
+
+### start.html — Onboarding wizard
+
+1. Questions, not labels. "What do you go by?" not "Artist Name:".
+2. CTAs are specific to the action. "Continue →" minimum. "Build my page →" on the final step.
+3. No "Next", "Submit", "OK", "Done" as button labels.
+4. Error states are never red unless it is genuinely an error. Import failures are amber.
+5. Trust lines are specific: "No card. No catch. Your page is free." — not "Risk-free".
+6. The done screen headline is exactly: "Your page is live." — period, this phrase, no variants.
+7. "Almost there" is banned even without an exclamation mark.
+
+### landing.html — Marketing landing page
+
+1. Speaks to a sceptical, intelligent, independent artist.
+2. Never uses industry growth-speak.
+3. Primary CTA: "Your page is free →" — first-person, specific.
+4. Social proof: real numbers only. No inflated stats. No "Most popular" tier badge.
+5. FAQ answers are short and direct. "Yes. Free forever." not "Absolutely, our free tier is..."
+6. The FAQ section title is: "Questions." — single word, period.
+7. Footer authenticity line: written in first person from the founder, not corporate voice.
+
+### fan.html — Fan dashboard (Phase 2)
+
+1. ABLE is invisible. The artists are visible.
+2. "Following" not "Feed". "Me" not "Profile". "Updates from your artists" not "Notifications".
+3. Empty states acknowledge reality without spin: "Nothing new today." is correct. "You're all caught up!" is not.
+4. Dates and times are specific: "Tonight, 11pm" not "Upcoming event".
+5. Artist voice > platform voice. Dispatch copy appears verbatim from the artist.
+6. No follower counts, no trending, no engagement signals.
+
+---
+
+## 2.6 Tone calibration examples
+
+Ten before/after rewrites. These are the definitive test for whether new copy fits ABLE's voice. If a contractor is unsure about a line, they should check it against these examples.
+
+### 1. Fan sign-up heading
+**Before:** "Subscribe to get updates from this artist"
+**After:** "Stay close."
+**Why:** "Stay close" is the artist speaking to someone they value. "Subscribe to get updates" is a platform managing a transaction.
+
+### 2. Post-sign-up confirmation
+**Before:** "You're subscribed! We'll send you updates."
+**After:** "You're in. I'll keep you close."
+**Why:** First person, artist-voiced. The artist is speaking directly. "Subscribed" is a platform category. "You're in" is human.
+
+### 3. Admin greeting
+**Before:** "Welcome back, James! You're on a roll — 3 new fans this week."
+**After:** "Good to see you, James. 3 fans this week — that's new."
+**Why:** "Welcome back" is SaaS filler. "You're on a roll" is the voice of a cheerleader. The after version is warm but not sycophantic.
+
+### 4. Tier gate copy
+**Before:** "Upgrade to Pro to unlock full analytics and email broadcasts."
+**After:** "Write to your fans directly. Not a broadcast. Not a newsletter. Just you and the people who signed up. From £19/month."
+**Why:** "Upgrade to unlock" is the model where the platform withholds things until you pay. The after version describes what the artist actually gets and why it matters. "Unlock" is banned.
+
+### 5. Empty fan list
+**Before:** "No fans yet. Share your page to start building your audience."
+**After:** "When fans sign up on your page, they'll appear here. Your list. Your relationship. No algorithm in the way."
+**Why:** "Start building your audience" is growth-speak. The after version is honest about what the list is and why it matters — without making the artist feel like a failure for not having fans yet.
+
+### 6. Error state — email invalid
+**Before:** "Error: Please enter a valid email address."
+**After:** "Check your email address."
+**Why:** "Error:" is cold. "Please enter a valid" is form language. The after version is calm, specific, and doesn't apologise.
+
+### 7. Empty events section — admin
+**Before:** "No shows added yet. Click the + button to add a show."
+**After:** "Playing anywhere soon? Your fans want to know →"
+**Why:** The before is documentation. The after is a reason to act. It connects the empty state to why the feature exists.
+
+### 8. Onboarding done screen
+**Before:** "You're all set! Your profile is live. Start sharing your page to get your first fans."
+**After:** "Your page is live."
+**Why:** "You're all set!" is banned. "Start sharing your page to get your first fans" is growth-speak. "Your page is live." says the only thing that matters. Full stop. Done.
+
+### 9. Close Circle invitation
+**Before:** "Become a supporter and get exclusive content, early access, and premium benefits."
+**After:** "Stay closer. A small group of people get things a bit earlier — new music before it's out, first shot at tickets, occasional messages that don't go everywhere. £5 a month. You can leave whenever."
+**Why:** "Exclusive content" and "premium benefits" are subscription product language. The after version describes specifically what happens, honestly, without pressure or corporate vocabulary.
+
+### 10. Toast — profile saved
+**Before:** "Profile saved successfully!"
+**After:** "Saved."
+**Why:** "Successfully" is redundant — if it saved, it saved. The exclamation mark is banned in admin. The period is intentional. The word is enough.
+
+---
+
+## 2.7 Additional rules for contractor use
+
+### Length hierarchy
+- **Toast:** 1–4 words. No exceptions.
+- **Nudge:** 1 sentence + a link. No more.
+- **Section empty state:** 1–2 sentences. Not a paragraph.
+- **Tier gate:** 2–3 sentences + price + CTA. Not a feature list.
+- **Hero copy (profile):** 1 line for the name. 1 line for location/genre. 1–2 sentences for bio. No more on the hero.
+- **Onboarding steps:** 1 question + 1 sub-line. Nothing else.
+
+### Punctuation rules
+- Periods on short standalone statements: "Saved." / "Your page is live." / "You're in."
+- Em dash (—) for asides and lists within sentences: "Your list. Your relationship. No algorithm in the way."
+- Arrow (→) on CTAs that navigate or go deeper: "Export as CSV →" / "See what's included →"
+- No colons on button labels
+- No exclamation marks in any ABLE-written copy
+- Ellipsis (...) only on actively loading states ("Checking...")
+- Commas are specific — if you can replace a comma with a period, use the period
+
+### Writing for mobile
+- Mobile users scan, not read. The first two words of every label carry the full load.
+- Test every line at 320px. If it wraps awkwardly, rewrite it, do not shrink the font.
+- Short labels win: "Visits" not "Page visits this week". The context makes the short label clear.
+
+### What to do if you're unsure
+1. Read it aloud as if you are talking to a musician who is serious about their work
+2. Check it against the banned phrases list in section 2.3
+3. Check it against the register table in section 2.2
+4. Check it against the calibration examples in section 2.6
+5. If still unsure: write it shorter. Shorter is almost always better on ABLE.

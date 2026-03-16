@@ -265,7 +265,7 @@ ABLE's SEO is a long game. Organic search compounds over 12–24 months. Start t
 - H1: the headline ("100 real fans beat 10,000 strangers")
 - OG tags: full set — title, description, image (the hero screenshot of an artist's ABLE page)
 
-**Artist profiles (`able.fm/[name]`):**
+**Artist profiles (`ablemusic.co/[name]`):**
 - Each artist profile is a separately indexable page
 - Meta title: "[Artist Name] — Listen, follow, stay close"
 - Meta description: generated from artist's bio + genre + location

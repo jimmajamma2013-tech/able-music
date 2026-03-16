@@ -447,6 +447,365 @@ If the answer to any is "no": add the programmatic interface before calling it d
 
 ---
 
+## STAGE 8 — BUILD PHILOSOPHY ADDENDUM
+**What the mechanical checklist (8.0–8.7) does not cover.**
+
+The sections above define *what* to verify. These sections define *how to think* during the build. They are not optional. They are the difference between shipping a correct page and shipping a great one.
+
+---
+
+### 8a — Pre-build setup (every session before first line of code)
+
+Before writing a single line of code, complete the following in order:
+
+1. **Read `docs/BUILD-READY-INDEX.md`** — this file (when it exists) contains the build order, known pre-existing bugs, and any deferred decisions from the strategy phase. Read it completely. If it doesn't exist yet, create it before proceeding.
+2. **Read `docs/PRE-BUILD-CHECKLIST.md`** — confirm the environment is correct: Playwright installed, Chromium available, target file is the right one, no uncommitted changes on top of a previous build session.
+3. **Confirm branch:** `git status` — you should be on `build/[page-name]` branched from main. If not, create it: `git checkout -b build/[page-name]`.
+4. **Confirm Playwright works:** Run `npx playwright install chromium` (idempotent — safe to run again). Take a test screenshot of the current file to confirm the environment is live before touching any code.
+5. **Parse-check the current file before editing:** `node -e "require('fs').readFileSync('able-v7.html','utf8')"` — confirms the file is readable. Optionally extract the `<script>` block and run `node -e "new Function(src)"` to confirm the existing JS is already parse-safe before any changes.
+6. **Write the orientation sentence:** *"This page is for [user], who fears [fear], and the P0 thing that must work is [P0]."* This must be possible to write without re-reading docs. If it isn't, re-read docs. Do not proceed until this sentence is written.
+
+**Time budget: 15 minutes.** Do not skip this setup. A broken environment wastes more time than the setup saves.
+
+---
+
+### 8b — The build loop (repeat for every section)
+
+Every section of every page follows this loop. Not some sections. Every section.
+
+**1. Read the spec completely.**
+Open `DESIGN-SPEC.md` and read the section for this component from top to bottom before writing any code. Do not skim. If the spec says "16px gap between items at mobile", that is what gets built. No improvisation at this stage.
+
+**2. Write the code.**
+Implement exactly to spec. Resist the temptation to improve during this step — that comes in step 6. The goal here is faithful translation, not interpretation.
+
+**3. Parse-check every JS block touched.**
+For any JavaScript modified: `node -e "new Function(jsBlock)"`. A parse error caught here takes 10 seconds to fix. A parse error caught in production breaks every artist's profile. Run this every time without exception.
+
+**4. Playwright verify.**
+Take screenshots at 375px and 1280px. Rename the document title before taking the screenshot so the tab is identifiable later:
+```js
+document.title = 'ABLE v7 — [section name] — mobile 375'
+```
+Use the Playwright MCP tools: `mcp__playwright__browser_navigate`, `mcp__playwright__browser_resize`, `mcp__playwright__browser_take_screenshot`.
+
+**5. Compare to spec.**
+Place the screenshot mentally against the relevant DESIGN-SPEC section. Check every element:
+- Spacing correct?
+- Colour tokens correct (no loose hex)?
+- Typography matches spec (size, weight, line-height)?
+- Animation timing correct?
+- Copy matches COPY.md exactly?
+
+If anything differs from spec: fix it before proceeding to step 6. The spec is the authority. Do not rationalise differences.
+
+**6. Rethink.**
+Now that you can see it built and verified — is the spec still right? This is the deliberate pause. Ask honestly:
+- Does this feel like ABLE, or does it feel like something else?
+- Is there anything that looks technically correct but feels off?
+- Would an independent musician landing on this page feel respected, or processed?
+- Is there a better solution that the spec didn't anticipate because specs are written before building?
+
+If the answer to any of these is "this could be better", note it. Do not implement yet — go to Stage 8c. If the spec is correct and the build is faithful: proceed to step 7.
+
+**7. Commit.**
+`git commit -m "feat([page]): [section] — exact description of what was built"`
+
+One section = one commit. Do not batch sections into a single commit. The commit history is the build log.
+
+---
+
+### 8c — The enhancement loop (continuous during build)
+
+This is not an extra step added at the end. It runs continuously throughout the build, triggered by intuition and by scheduled scans.
+
+**Scheduled scans — at least once per page:**
+
+At the midpoint of building any page, open all strategy docs simultaneously and read them looking for anything not yet implemented:
+- `DESIGN-SPEC.md` — any section marked "spec complete" that hasn't been built yet?
+- `PATH-TO-10.md` — any improvements listed there not yet in the build?
+- `FINAL-20-ANGLE-REVIEW-2.md` — any "what would make this an 11" notes that could be implemented now?
+- `docs/systems/MICRO_INTERACTIONS_SPEC.md` — any interactions that apply to this section that weren't in the original spec?
+- `docs/systems/DESIGN_SYSTEM_SPEC.md` — any tokens or patterns defined at the system level that the section spec missed?
+
+**Intuition triggers — any time:**
+
+Stop and enter the enhancement loop when:
+- Playwright shows something that looks wrong even if technically correct
+- Copy feels off when read aloud in the context of a real user's flow
+- An interaction feels mechanical rather than alive — it works but it doesn't feel like anything
+- A section doesn't feel like ABLE — feels like it could be Beacons, or Linktree, or a generic SaaS form
+
+**Enhancement protocol:**
+
+When you find an enhancement worth implementing:
+
+1. **Write it in `ENHANCEMENT-LOG.md`** (create in `docs/pages/[page-name]/` if it doesn't exist). Entry format:
+   ```
+   ## [Date] — [Section] — [Enhancement title]
+   **What:** [one sentence description]
+   **Why:** [why this is better than the spec]
+   **Impact:** minor tweak / significant change / cross-page change
+   **Status:** discovered / in-progress / implemented / deferred
+   ```
+
+2. **If it's a minor tweak** (copy refinement, spacing adjustment, colour token swap): implement immediately. Update DESIGN-SPEC.md to mark the change. Commit as `fix([page]): [description]`.
+
+3. **If it's a significant change** (new interaction, layout rethink, new section): stop. Write a 2-paragraph mini-spec in ENHANCEMENT-LOG.md. Answer: (a) what exactly is the enhancement, and (b) why is this genuinely better, not just different? If the answer to (b) is clear: implement it. If it's not clear, defer and continue.
+
+4. **If it's a cross-page change** (affects design system, multiple pages, or shared components): document it in the relevant system spec (`docs/systems/`) and log a note in STATUS.md. Do not implement cross-page changes during a single-page build session — they get their own session.
+
+**Doc sync after every enhancement:**
+- Mark the section in DESIGN-SPEC.md as "implemented (enhanced)" with a note of what changed
+- If the enhancement modifies a cross-page system: update the relevant system spec
+- Update STATUS.md with what was added and why
+- If an animation or interaction was enhanced: re-run `docs/systems/MICRO_INTERACTIONS_SPEC.md` check to confirm no contradictions
+
+**Score re-check after enhancement:**
+After implementing a significant enhancement, re-score the relevant 20 angles. Did the score move? Show the updated scorecard. The enhancement is not done until the score impact is confirmed.
+
+---
+
+### 8d — Playwright verification protocol
+
+Playwright verification is not a step that happens once at the end. It runs after every significant section during the build. It is as much part of the build process as writing the code.
+
+**What to verify — the minimum set per section:**
+
+| Check | How | Pass criteria |
+|---|---|---|
+| Mobile layout (375px) | `browser_resize({width:375})` → screenshot | No horizontal scroll. No clipped elements. All text readable. |
+| Desktop layout (1280px) | `browser_resize({width:1280})` → screenshot | Layout matches spec. No excess whitespace. |
+| Tap targets | `browser_evaluate({script: 'Array.from(document.querySelectorAll("button,a,[role=button]")).map(el=>{const r=el.getBoundingClientRect();return{tag:el.tagName,w:r.width,h:r.height,text:el.textContent.trim().slice(0,20)}})'})` | Every interactive element: min 44px in both dimensions. |
+| Console errors | `browser_console_messages()` | Zero errors. Zero undefined references. |
+| Theme: Dark | Apply dark theme via JS, screenshot | All surfaces use correct tokens. No hardcoded colours visible. |
+| Theme: Light | Apply light theme, screenshot | Readable on cream background. No dark-only assumptions. |
+| Theme: Glass | Apply glass theme (requires background image), screenshot | Backdrop-filter renders. No broken surfaces. |
+| Theme: Contrast | Apply contrast theme, screenshot | Maximum legibility. Accent still visible. |
+| Animation | Trigger the animation, screenshot (or use `browser_evaluate` to check computed styles) | Animation fires. Duration and easing match spec. |
+| Reduced motion | `browser_evaluate({script: "document.documentElement.setAttribute('data-reduced-motion','true')"})` + screenshot | No movement. Static state is correct. |
+
+**After every screenshot, rename the tab:**
+```js
+document.title = 'ABLE — [page] — [section] — [viewport] — [theme]'
+// Example: 'ABLE — v7 — hero — 375px — dark'
+```
+This creates a consistent audit trail in the Playwright browser history.
+
+**Failure protocol — no exceptions:**
+If Playwright reveals something wrong:
+1. Note exactly what is wrong, at which viewport, on which theme.
+2. Fix the CSS or JS.
+3. Re-run the exact same Playwright check.
+4. Do not proceed to the next section until the current section passes all checks.
+
+There is no "I'll fix it later." Defects compound. A layout bug at the hero section will cascade into everything built on top of it.
+
+---
+
+### 8e — The rethink trigger
+
+This is the stage most agents skip. It is the most important one.
+
+A build agent that only follows specs produces technically correct work. The rethink is what produces work that feels like it was made by someone who cares.
+
+**Stop and rethink when any of these are true:**
+
+- **"Technically correct but feels wrong."** Playwright shows something that passes every check but doesn't look right. Trust this feeling. It is data. Something is off. Find it.
+
+- **"Copy sounds like copy."** Read the section's text aloud, as if you are Declan (26, Manchester, 2.4k Instagram followers, slight sceptic). Does it sound like something he'd read and think "yes, this is for me"? Or does it sound like something a marketing team wrote about him? If the latter: rewrite before shipping.
+
+- **"The interaction is mechanical."** The button press works, the animation fires, the state updates — but there's no delight. No surprise. No moment where a user thinks "oh, that's nice." This is the hardest thing to spec but the easiest to feel. If an interaction feels like form-filling rather than music, it needs more.
+
+- **"This could be any app."** A competitor could ship this exact section unchanged. If that is true, it is not ABLE. ABLE has opinions. Every section should have at least one moment that would not exist on Linktree or Beacons — something that says: we understand what music actually is.
+
+**What happens when a rethink triggers:**
+1. Stop. Do not commit what you have.
+2. Open FINAL-20-ANGLE-REVIEW-2.md and re-read angle 20 (North star) and angle 14 (Emotional resonance).
+3. Read the copy from COPY.md for this section aloud.
+4. Look at the Playwright screenshot one more time.
+5. Write down in one sentence what feels wrong.
+6. Fix it. Then go back to 8b step 5 and verify the fix is actually an improvement, not just a change.
+
+The rethink is not a delay. It is the build. The spec is the floor, not the ceiling.
+
+---
+
+### 8f — Coherence maintenance
+
+After every completed page — before merging, before calling it done — run the full coherence check. This takes 30–45 minutes and is not optional.
+
+**1. Cross-page coherence.**
+Open the current page and the previous completed page side-by-side in Playwright. Do they feel like the same product? Check:
+- Typography: same fonts, same scale relationships, same hierarchy pattern?
+- Motion: same easing variables, same duration range, same spring physics?
+- Voice: does the copy on this page sound like the same person who wrote the other pages?
+- Colour: accent colour is different per artist (by design), but admin amber, system red, system green — are they consistent?
+
+**2. Copy audit.**
+Read every piece of user-facing text in the page against the banned phrases list in `docs/systems/copy/SPEC.md`. Any violation must be fixed before merge. Common regressions to check:
+- "Get started" / "Sign up" appearing in CTAs
+- Exclamation marks in dashboard or admin copy
+- "Grow" / "unlock" / "superfans" / "content creator" appearing anywhere
+- Generic placeholder copy that wasn't replaced with ABLE voice
+
+**3. Token audit.**
+Grep for hardcoded hex values anywhere outside `:root` or `@media (prefers-color-scheme)` blocks:
+```bash
+grep -n "#[0-9a-fA-F]\{3,6\}" [file].html | grep -v "^[0-9]*:.*:root\|^[0-9]*:.*--\|^[0-9]*:.*<!--"
+```
+Every hit that is not a CSS custom property definition or a comment is a regression. Fix it.
+
+**4. Data audit.**
+Scan every `localStorage.getItem()` and `localStorage.setItem()` call:
+- Is the key name in the canonical list from CONTEXT.md? If not: it must be added to the canonical list before shipping.
+- Does every `getItem` have a fallback? `localStorage.getItem('key') || defaultValue` — never a bare read.
+- Does every `JSON.parse` have a `try/catch`? Malformed localStorage data from a previous session will break a real user's page without error handling.
+
+**5. Theme audit.**
+Switch through all four themes in Playwright and take a screenshot of every section on each theme:
+- Dark: everything readable, no overflow, accent visible
+- Light: cream background renders, text is dark enough, no dark-only assumptions
+- Glass: backdrop-filter renders (Chrome + Safari), no broken backgrounds
+- Contrast: pure black base, maximum legibility, accent still visible against black
+
+If any theme breaks any section: fix before merge. Theme support is not progressive enhancement — it is a core feature.
+
+**6. Doc update.**
+At the end of the coherence check, update:
+- `docs/STATUS.md` — mark sections as built, add any new known issues discovered
+- `DESIGN-SPEC.md` — mark every built section as "implemented" with the commit SHA
+- `ENHANCEMENT-LOG.md` — mark any implemented enhancements as complete
+- The date at the top of STATUS.md
+
+This is not optional housekeeping. It is how the next session starts with orientation rather than confusion.
+
+---
+
+## STAGE 9 — POST-PAGE FINAL REVIEW
+
+After an entire page is built and the coherence check (8f) is complete, run the final review before any PR or merge.
+
+This takes approximately 60–90 minutes. It is not a formality. It is a fresh-eyes pass that treats the live built page as the primary document, not the spec.
+
+---
+
+### 9.1 — Fresh 20-angle analysis on the live page
+
+Open the page in Playwright. Take screenshots at 375px, 390px, 768px, and 1280px. Then run the full 20-angle analysis from scratch — not from the spec. Do not look at the spec scores. Score what you actually see.
+
+| Angle | What to look for in the screenshots | Known ceiling |
+|---|---|---|
+| 1. First impression | What does a non-artist see in 3 seconds? | — |
+| 2. Primary job | Does the page deliver its one job from Stage 1? | — |
+| 3. Headline / entry copy | Read the first line aloud. Does it land? | — |
+| 4. CTA design and weight | Is the primary action visible without scrolling at 375px? | — |
+| 5. Copy voice | Read 10 random pieces of copy. ABLE voice or generic? | — |
+| 6. Primary differentiator | Does this page make the ABLE vs Linktree argument without needing words? | — |
+| 7. Mobile experience | 375px screenshot: any clipping, overflow, small tap targets? | — |
+| 8. Performance | Check Lighthouse. LCP, CLS, Performance score. | — |
+| 9. Social proof | Does any section earn belief? Or is it assertion? | Requires real users to hit 10 |
+| 10. Trust signals | What makes an artist trust this page? Does it exist? | — |
+| 11. Visual hierarchy | Can a scanner understand it without reading? | — |
+| 12. End-to-end pathway | Does the flow through and beyond this page work? | — |
+| 13. Conversion clarity | Is the outcome of taking action obvious? | — |
+| 14. Emotional resonance | Does it make an independent musician feel understood? | — |
+| 15. The 13-year-old test | Show screenshot to a hypothetical non-technical user. Confusing? | — |
+| 16. Single memory | If they leave after this page, what sticks? | — |
+| 17. Secondary user | Is any secondary user type served if they land here? | — |
+| 18. Discoverability | Check OG tags in source. Are they populated dynamically? | — |
+| 19. AI red team | What would break this page's effectiveness? Still valid? | — |
+| 20. North star | Does this feel like ABLE, or like a tool? | — |
+
+Show the full scorecard. Do not hide any angle. Compare scores to the spec target from FINAL-20-ANGLE-REVIEW-2.md.
+
+**If any built score is below spec target:** it is a regression. Find the cause and fix it before the final review is complete.
+
+**If any built score exceeds spec target:** note it. Update FINAL-20-ANGLE-REVIEW-2.md. This is valuable data for the next page.
+
+---
+
+### 9.2 — Copy calibration test
+
+Run the copy through the calibration test from `docs/systems/copy/SPEC.md`. For every piece of user-facing text:
+
+1. **The first-person test:** Read it as if you are the artist. Does it sound like you, or does it sound like someone describing you to an investor?
+2. **The aloud test:** Read it out loud. Does it sound natural? Or does it sound like it was written?
+3. **The banned phrase scan:** Does any line contain a banned phrase, a synonym of a banned phrase, or the spirit of a banned phrase even if the exact words are absent?
+4. **The specific claim test:** Every trust line and empty state — is it a specific claim or a platitude? Platitudes must be replaced with specific claims before shipping.
+
+Copy that fails any of these tests must be rewritten. Copy fixes are not minor — they are the difference between ABLE feeling like a product and feeling like a person.
+
+---
+
+### 9.3 — Playwright smoke test
+
+Run the 15-minute manual checklist:
+
+1. Full user flow from entry to completion (simulate the target user journey end-to-end)
+2. All CTAs fire correctly (Playwright click + verify state change)
+3. All four themes render correctly at 375px
+4. localStorage is written and read correctly (check after each flow step)
+5. No console errors at any point in the flow
+6. Fan sign-up (if applicable): data written to `able_fans`, confirmation state renders
+7. Profile state transitions (if applicable): cycle through all four states, verify each renders
+8. Links: all external links open in new tab with `rel="noopener noreferrer"`
+9. Keyboard nav: tab through all interactive elements, confirm logical order
+10. Reduced motion: force `prefers-reduced-motion: reduce`, confirm no movement
+
+If any check fails: it is a P0. Fix before shipping.
+
+---
+
+### 9.4 — AI agent compatibility check
+
+Run the check from Stage 8.7 against the final build. Specifically:
+
+- Can every interactive element be addressed by a CSS selector or data attribute?
+- Is every localStorage schema documented in CONTEXT.md?
+- Does the page work when loaded with a pre-seeded localStorage profile?
+- Are there any actions that require mouse hover to reveal (invisible to agents)?
+
+Any "no" answer is a defect. Add the programmatic interface before calling the page done.
+
+---
+
+### 9.5 — Post-build session summary
+
+Write a summary and add it to STATUS.md under "Last session summary". The summary must include:
+
+- What was built (bullet list of sections, in order)
+- Final scores achieved (vs spec targets)
+- Any enhancements added beyond spec (and why)
+- Any known gaps or honest ceilings (with reasoning)
+- Any deferred items (moved to roadmap or next session)
+- The final commit SHA
+
+Format:
+```
+## Last session summary (session [N]) — [page name]
+Built: [list]
+Final scores: [scorecard table or summary]
+Enhancements: [list or "none"]
+Known gaps: [list or "none — all spec targets met"]
+Deferred: [list or "none"]
+Final SHA: [sha]
+```
+
+---
+
+### 9.6 — Final commit
+
+```bash
+git commit -m "feat([page]): complete build — [X.X/10] — [one-sentence description of what was built]"
+```
+
+The commit message must include the final score. This makes the build history searchable and honest.
+
+Do not open a PR until all of 9.1–9.5 are complete and passing.
+
+---
+
 ## THE FILING STRUCTURE (one page, all docs)
 
 For each page, create this folder structure:

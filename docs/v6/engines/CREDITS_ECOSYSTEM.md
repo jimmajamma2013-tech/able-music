@@ -36,7 +36,7 @@ Credits are displayed in a collapsed accordion on the artist profile. They are n
 ## Freelancer profile (Phase 2)
 
 A freelancer (producer, mixer, videographer, session musician) who is on ABLE gets:
-- A profile page (`able.fm/handle`) with: credits (verified), role/speciality, rate card, portfolio audio/video, availability status, booking CTA
+- A profile page (`ablemusic.co/handle`) with: credits (verified), role/speciality, rate card, portfolio audio/video, availability status, booking CTA
 - Discovery via artist release cards — "Mixed by [name] →" links to their profile
 - No algorithm — discovery is entirely via credits on artist pages
 
@@ -49,7 +49,7 @@ A freelancer (producer, mixer, videographer, session musician) who is on ABLE ge
 ## Professional discovery (Phase 2)
 
 Artists can find collaborators via the credits they see on other artists' profiles. The discovery directory (`operational/PROFESSIONAL_DISCOVERY.md`) defines:
-- How credits surface in the `able.fm/directory` view
+- How credits surface in the `ablemusic.co/directory` view
 - Filter by role, location, genre
 - Verification badge system (peer-confirmed credits)
 

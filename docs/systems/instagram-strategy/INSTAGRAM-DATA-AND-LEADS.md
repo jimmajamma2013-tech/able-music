@@ -33,7 +33,7 @@ Available on any Business or Creator account. Accessible directly from the app. 
 |---|---|---|
 | Reach per post | How many unique accounts saw each piece of content | Double down on content types with 3× average reach |
 | Profile visits from each post | Which posts drive curiosity about you specifically | High profile visits = content that earns trust, not just impressions |
-| Link-in-bio clicks | Direct traffic signal to able.fm | The single most important conversion metric on Instagram |
+| Link-in-bio clicks | Direct traffic signal to ablemusic.co | The single most important conversion metric on Instagram |
 | Story tap-forward rate | Are people skipping your story? | High tap-forward = something in that story is wrong — too long, wrong content |
 | Story tap-back rate | Are people rewatching a specific moment? | High tap-back = something landed — find it, replicate it |
 | Follower demographics (age, location, top cities) | Are you reaching UK artists aged 22–38? | If not, the content is reaching the wrong people — adjust |
@@ -102,7 +102,7 @@ This measures how much a post creates curiosity about you personally. Content ab
 
 **3. Story-to-link rate** (link sticker taps ÷ story views)
 
-Stories with a link sticker to able.fm. The percentage who actually tap. Target: 5%+. Below 2% = the story doesn't create enough urgency or relevance to click. Review what you're saying in the story itself.
+Stories with a link sticker to ablemusic.co. The percentage who actually tap. Target: 5%+. Below 2% = the story doesn't create enough urgency or relevance to click. Review what you're saying in the story itself.
 
 **4. Engaged-follower-to-DM conversion** (DMs received following a post ÷ post engagement)
 
@@ -185,7 +185,7 @@ Every post that performs above average (measured by profile visit rate, not just
 
 1. Screenshot or save the post
 2. Add one interactive element: a poll ("Is this you?" / "Not me"), a slider ("How many times has this happened?"), or a question sticker ("What did you do instead?")
-3. Add a link sticker to able.fm
+3. Add a link sticker to ablemusic.co
 4. Post to Stories
 
 The poll or question element is not decoration. It is a data collection mechanism. Every artist who votes in the poll or responds to the question has self-identified as engaged. They are warm leads. Check responses daily and reply to every one personally.
@@ -230,7 +230,7 @@ The content strategy above does not convert followers to sign-ups on its own. Co
 Cold (never heard of James / ABLE)
   → Warm (follows; has engaged at least once)
   → Hot (commented on a post; visited profile; mentioned artists specifically)
-  → Lead (clicked bio link; visited able.fm)
+  → Lead (clicked bio link; visited ablemusic.co)
   → Converted (created ABLE profile)
 ```
 
@@ -283,14 +283,14 @@ The DM is not a pitch. It is the start of a real conversation. If James would no
 
 Bad: "Hey! I saw your comment on my post. I built ABLE for artists like you! It's a free link-in-bio with fan email capture. Check it out!"
 
-Good: "Saw you commented on that post about the Spotify link — the bit about not knowing who actually saved the single landed for me. That's the exact thing I built ABLE around. If it's useful: able.fm. No strings, genuinely curious what you think."
+Good: "Saw you commented on that post about the Spotify link — the bit about not knowing who actually saved the single landed for me. That's the exact thing I built ABLE around. If it's useful: ablemusic.co. No strings, genuinely curious what you think."
 
 The difference: the good version references something specific, explains the personal connection between their situation and what ABLE does, and offers without requiring. It does not use an exclamation mark. It sounds like a person, not a marketing account.
 
 **The follow-up (only if they respond positively):**
 
 If they engage with the DM and want to know more:
-- Send them to `able.fm` directly (not a landing page — the actual product)
+- Send them to `ablemusic.co` directly (not a landing page — the actual product)
 - Offer to talk through what ABLE does if they have questions ("happy to jump on a voice note or reply here if anything's unclear")
 - Do not send a second DM if they do not respond to the first one
 
@@ -301,7 +301,7 @@ The highest-converting sequence for turning warm Instagram followers into ABLE s
 1. Artist sees a post about the problem (Type A content — "you've been thinking this")
 2. They save it or comment. They are now warm.
 3. They see a Reel of an ABLE page in a campaign state they recognise ("that's what I need before my next release")
-4. They visit James's profile. Bio says: "Your music. Your fans. Your relationship. ↓" and links to able.fm
+4. They visit James's profile. Bio says: "Your music. Your fans. Your relationship. ↓" and links to ablemusic.co
 5. They tap the link. They land on landing.html with `?utm_source=instagram_bio`
 6. They see the demo — a real ABLE page in the states they just watched in the Reel
 7. They start the wizard. They paste their Spotify link. Their page is live in 4 minutes.
@@ -310,13 +310,13 @@ The critical dependency: the landing page and onboarding wizard must be genuinel
 
 ### 3.6 UTM tracking (so you know what is working)
 
-Every link to able.fm from Instagram must carry a UTM parameter. Without this, you cannot attribute sign-ups to specific content types or campaigns.
+Every link to ablemusic.co from Instagram must carry a UTM parameter. Without this, you cannot attribute sign-ups to specific content types or campaigns.
 
-Bio link: `https://able.fm?utm_source=instagram&utm_medium=bio&utm_campaign=always-on`
+Bio link: `https://ablemusic.co?utm_source=instagram&utm_medium=bio&utm_campaign=always-on`
 
-Story link sticker: `https://able.fm?utm_source=instagram&utm_medium=story&utm_campaign=story_name`
+Story link sticker: `https://ablemusic.co?utm_source=instagram&utm_medium=story&utm_campaign=story_name`
 
-Post in caption (if linking): `https://able.fm?utm_source=instagram&utm_medium=post&utm_campaign=post_slug`
+Post in caption (if linking): `https://ablemusic.co?utm_source=instagram&utm_medium=post&utm_campaign=post_slug`
 
 These feed into PostHog, which records:
 ```javascript
@@ -382,7 +382,7 @@ This is not a strategy summary. It is a sequence. Do these in order.
 
 **Week 1:**
 - Confirm Instagram account is set to Business or Creator (required for Insights)
-- Set bio copy to: "Your music. Your fans. Your relationship. ↓" + able.fm link with UTM
+- Set bio copy to: "Your music. Your fans. Your relationship. ↓" + ablemusic.co link with UTM
 - Set up Metricool free tier — connect Instagram and TikTok
 - Download Instagram data archive (Settings → Account → Download data) — open the JSON files, identify your 20 highest-engagement posts from the last 90 days
 - Review those 20 posts: what topics appear? What format? This is your early content signal
@@ -403,7 +403,7 @@ This is not a strategy summary. It is a sequence. Do these in order.
 - Review all four key metrics. Write them down.
 - Post one Type A observation. Different topic to Week 2.
 - DM 3 more warm list members
-- Story: link sticker to able.fm, reference the problem from the Type A post this week
+- Story: link sticker to ablemusic.co, reference the problem from the Type A post this week
 - Identify if there is one artist who has engaged enthusiastically — reach out about featuring them (Month 2 onwards)
 
 **Ongoing (monthly ritual):**

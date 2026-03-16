@@ -32,9 +32,9 @@ Showcase Mode is not a separate page. It is not an export. It is a different len
 
 | Destination | URL |
 |---|---|
-| Fan-facing profile | `able.fm/[handle]` |
-| Showcase (public) | `able.fm/[handle]/showcase` |
-| Showcase (private, token-gated) | `able.fm/[handle]/showcase?t=[token]` |
+| Fan-facing profile | `ablemusic.co/[handle]` |
+| Showcase (public) | `ablemusic.co/[handle]/showcase` |
+| Showcase (private, token-gated) | `ablemusic.co/[handle]/showcase?t=[token]` |
 
 The token is a short random string (8–12 chars) generated at creation time and stored in the profile. Token-gated showcases are not indexed by search engines. Public showcases can be.
 
@@ -120,13 +120,13 @@ Designed for: journalists, music bloggers, radio producers, PR, label marketing 
 
 Two link types. Both are generated from the admin Showcase section.
 
-**Public showcase link** (`able.fm/[handle]/showcase`):
+**Public showcase link** (`ablemusic.co/[handle]/showcase`):
 - Visible to anyone.
 - Can be indexed by search engines.
 - Shareable in bio, email signatures, social profiles, press releases.
 - Always reflects the currently active context.
 
-**Private showcase link** (`able.fm/[handle]/showcase?t=[token]`):
+**Private showcase link** (`ablemusic.co/[handle]/showcase?t=[token]`):
 - Only those with the link can view it.
 - Not indexed.
 - Intended for specific outreach: "Here's my current booking showcase — for your eyes only."
@@ -157,12 +157,12 @@ The artist generates a portrait-format share card from admin. This is a canvas e
 - Artwork/photo from the Showcase Object — fills the upper ~60% of the card
 - Artist name in display font (Barlow Condensed)
 - One short context line: "New EP out now" / "Available for bookings" / "Press enquiries open"
-- `able.fm/[handle]/showcase` printed small at the bottom
+- `ablemusic.co/[handle]/showcase` printed small at the bottom
 - No ABLE logo — the artist's branding takes precedence on this card
 
 The card renders as a downloadable file. In v1, this is a client-side canvas export (PNG). The artist downloads it directly from the admin panel.
 
-When shared via Instagram Story with a link sticker, the destination is `able.fm/[handle]/showcase`. Traffic arriving from story shares lands in Showcase Mode — not the fan profile — matching the intent of the share.
+When shared via Instagram Story with a link sticker, the destination is `ablemusic.co/[handle]/showcase`. Traffic arriving from story shares lands in Showcase Mode — not the fan profile — matching the intent of the share.
 
 ---
 
@@ -275,7 +275,7 @@ The landing page never uses the words "EPK" or "press pack." It uses "showcase" 
 
 **Credits:** credits attached to the featured release are pulled automatically into the Release showcase credits section. In the Booking showcase, the artist manually curates collaborators relevant to live shows.
 
-**Campaign HQ / state machine:** when a visitor arrives at `/showcase`, the state machine is bypassed. The Showcase Object is shown regardless of the artist's current campaign state (pre-release, live, gig mode, etc.). The artist's campaign logic runs only on the fan profile (`able.fm/[handle]`).
+**Campaign HQ / state machine:** when a visitor arrives at `/showcase`, the state machine is bypassed. The Showcase Object is shown regardless of the artist's current campaign state (pre-release, live, gig mode, etc.). The artist's campaign logic runs only on the fan profile (`ablemusic.co/[handle]`).
 
 **"People in my world":** the collaborator connections section is surfaced in the Press showcase — it signals that the artist has verified industry relationships. This is read-only in the showcase; it reflects the live connections data.
 

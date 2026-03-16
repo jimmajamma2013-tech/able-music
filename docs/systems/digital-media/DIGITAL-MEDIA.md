@@ -166,7 +166,7 @@ Adapt this for each publication — the framing must change; the core informatio
 > Happy to demo the product any time — it is genuinely different to look at.
 >
 > James
-> able.fm
+> ablemusic.co
 
 ---
 
@@ -347,7 +347,7 @@ The flywheel:
 
 1. **James writes a guest post on Hypebot/Music Think Tank** (Month 1)
    - 30,000 music professionals see it
-   - 50–100 visit able.fm
+   - 50–100 visit ablemusic.co
    - 10–20 sign up as artists
 
 2. **James follows up with Hypebot** (Month 2)
@@ -380,9 +380,9 @@ The flywheel:
 Every piece of coverage has three effects:
 1. Direct sign-ups from the audience who read/heard it
 2. Social proof for the next pitch ("as featured in...")
-3. SEO benefit — backlinks from authoritative music sites improve able.fm's search ranking for "link in bio for musicians" and related terms
+3. SEO benefit — backlinks from authoritative music sites improve ablemusic.co's search ranking for "link in bio for musicians" and related terms
 
-The SEO effect is underestimated. A Hypebot article linking to able.fm is worth more to ABLE's organic search ranking than £500 of Google Ads. Earned media is also distribution infrastructure.
+The SEO effect is underestimated. A Hypebot article linking to ablemusic.co is worth more to ABLE's organic search ranking than £500 of Google Ads. Earned media is also distribution infrastructure.
 
 ---
 
@@ -390,14 +390,14 @@ The SEO effect is underestimated. A Hypebot article linking to able.fm is worth 
 
 ### 7.1 What to track
 
-Every piece of digital media coverage should have a UTM parameter on the link to able.fm so the traffic is attributable. Without this, you cannot learn which media channels are actually producing sign-ups versus producing vanity metrics.
+Every piece of digital media coverage should have a UTM parameter on the link to ablemusic.co so the traffic is attributable. Without this, you cannot learn which media channels are actually producing sign-ups versus producing vanity metrics.
 
 | Metric | How to track | Decision it drives |
 |---|---|---|
 | Referral traffic by source | PostHog + UTM parameters on every external link | Which publications and podcasts produce actual sign-ups, not just traffic |
 | Artist sign-ups attributed to media source | PostHog acquisition report filtered by UTM source | Which coverage converts, not just attracts |
-| Backlinks by domain | Ahrefs free tier (monthly check) | Which publications link to able.fm — correlates with SEO ranking improvement |
-| Brand mentions | Google Alerts: "ABLE music" + "able.fm" + "Artist Before Label" — set up on day 1 | Know immediately when ABLE is mentioned anywhere online |
+| Backlinks by domain | Ahrefs free tier (monthly check) | Which publications link to ablemusic.co — correlates with SEO ranking improvement |
+| Brand mentions | Google Alerts: "ABLE music" + "ablemusic.co" + "Artist Before Label" — set up on day 1 | Know immediately when ABLE is mentioned anywhere online |
 | Podcast episode performance | Ask host for their download numbers after 30 days | Whether the episode audience converted — compare UTM sign-ups to episode downloads |
 | NPS by acquisition source | Ask in onboarding: "how did you hear about ABLE?" then track NPS per cohort | Whether media-acquired artists have better retention than other sources |
 
@@ -411,7 +411,7 @@ utm_medium = [channel-type]        e.g. press, podcast, youtube, newsletter, com
 utm_campaign = [piece-identifier]  e.g. guest-post-march26, podcast-ep102, yt-review-q2
 
 Example:
-able.fm?utm_source=hypebot&utm_medium=press&utm_campaign=guest-post-march26
+ablemusic.co?utm_source=hypebot&utm_medium=press&utm_campaign=guest-post-march26
 ```
 
 Every external mention of ABLE — in an article, a podcast show notes, a YouTube description, a newsletter — should have a unique UTM link. This is how you learn what is working.
@@ -470,5 +470,5 @@ Honesty about scope prevents wasted effort.
 | Cherie Hu / Water & Music | waterandmusic.com — pitch via site contact |
 | Trapital | trapital.com — editorial contact |
 | Digital Music News tips | tips@digitalmusicnews.com |
-| Google Alerts setup | google.com/alerts — set up: "ABLE music", "able.fm", "Artist Before Label" |
+| Google Alerts setup | google.com/alerts — set up: "ABLE music", "ablemusic.co", "Artist Before Label" |
 | Ahrefs free backlink checker | ahrefs.com/backlink-checker |

@@ -101,7 +101,7 @@ V1 is not a demo. V1 is not a beta. V1 is a real product with real limits — an
 1. **Snap cards CRUD in admin** — artists can create/edit/delete snap cards without code
 2. **Supabase auth + read path** — live profiles from database, not localStorage
 3. **Email broadcasts** — Artist Pro tier, Resend delivery, double opt-in list
-4. **Custom domains** — `artist.com` → `able.fm/artist` (CNAME)
+4. **Custom domains** — `artist.com` → `ablemusic.co/artist` (CNAME)
 5. **Fan dashboard (fan.html)** — fans see artists they follow, upcoming shows, new drops
 6. **Close Circle payments** — Stripe subscription for supporter tier
 7. **Showcase / Campaign Mode** — shareable campaign objects, press mode
@@ -122,7 +122,7 @@ V1 is not a demo. V1 is not a beta. V1 is a real product with real limits — an
 ### Later
 19. **Fan feed** — in-app feed of artist activity for fans
 20. **Professional / freelancer profile layer** — credits, rate card, portfolio, booking
-21. **Press pack** — `able.fm/name/press` with downloadable assets
+21. **Press pack** — `ablemusic.co/name/press` with downloadable assets
 22. **Story Mode** — video assembly from moments
 23. **Rooms / Stage Can** — fan community, tipping
 24. **Ablers referral programme** — needs subscriber base first

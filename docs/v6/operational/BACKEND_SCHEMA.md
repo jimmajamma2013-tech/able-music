@@ -31,7 +31,7 @@ This document specifies the Supabase v1 backend schema and API surface. Do not r
 ```sql
 CREATE TABLE profiles (
   id           TEXT PRIMARY KEY,           -- UUID, matches able_artist_id in localStorage
-  handle       TEXT UNIQUE NOT NULL,       -- able.fm/[handle]
+  handle       TEXT UNIQUE NOT NULL,       -- ablemusic.co/[handle]
   profile_type TEXT NOT NULL DEFAULT 'artist', -- 'artist' | 'freelancer'
   email        TEXT UNIQUE NOT NULL,       -- magic link auth
   name         TEXT NOT NULL,
@@ -288,7 +288,7 @@ CREATE TABLE magic_links (
 
 ## API routes
 
-All routes are Supabase Edge Functions (or Netlify Functions). Base: `able.fm/api/`
+All routes are Supabase Edge Functions (or Netlify Functions). Base: `ablemusic.co/api/`
 
 ### Auth
 ```

@@ -37,8 +37,8 @@ Shows section elevated. Full tour dates visible. Ticket CTAs prominent. Share ca
   releaseId:     'release-uuid',  // links to specific release
   activeFrom:    ISO date,
   activeTo:      ISO date,
-  publicUrl:     'able.fm/luna?campaign=echo-chamber',
-  shareCardUrl:  'able.fm/luna/card/echo-chamber.png',
+  publicUrl:     'ablemusic.co/luna?campaign=echo-chamber',
+  shareCardUrl:  'ablemusic.co/luna/card/echo-chamber.png',
   style: {
     accentOverride: null,  // null = use profile identity
     featureImage:   'https://…',

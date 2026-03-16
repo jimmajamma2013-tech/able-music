@@ -24,7 +24,7 @@ What fans do NOT want:
 
 ## Page structure
 
-### URL: `able.fm/me` (authenticated fan) or `able.fm/fan` (unauthenticated → sign-up prompt)
+### URL: `ablemusic.co/me` (authenticated fan) or `ablemusic.co/fan` (unauthenticated → sign-up prompt)
 
 ### Authentication
 - Magic link email (same system as artist auth)

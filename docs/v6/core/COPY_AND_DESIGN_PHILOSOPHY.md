@@ -1,5 +1,6 @@
 # ABLE — Copy & Design Philosophy
-**Created: 2026-03-13**
+**Created: 2026-03-13 | Status: ACTIVE — product truth, not superseded**
+**V8 note:** The master copy system spec is in `docs/systems/copy/SPEC.md` — it extends this doc with complete page-by-page rules, all banned phrases, and worked before/after examples. This doc is the *why*. The copy SPEC.md is the *what* for every specific context.
 
 ---
 
