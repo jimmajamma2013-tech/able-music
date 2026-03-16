@@ -4806,6 +4806,16 @@
       color: #fff;
       cursor: pointer;
     }
+
+    /* === TOAST (error / network status) ======================== */
+    .able-toast { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-family: 'DM Sans', sans-serif; }
+    .able-toast--amber { background: rgba(244,185,66,0.12); border-bottom: 1px solid rgba(244,185,66,0.3); color: #f4b942; }
+    .able-toast--green  { background: rgba(52,199,89,0.12); border-bottom: 1px solid rgba(52,199,89,0.3); color: #34c759; }
+    .able-toast--red    { background: rgba(255,69,58,0.12); border-bottom: 1px solid rgba(255,69,58,0.3); color: #ff453a; }
+    .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+    .toast-message { flex: 1; }
+    .toast-action { color: currentColor; text-decoration: underline; margin-left: 4px; }
+    .toast-close { background: none; border: none; color: currentColor; cursor: pointer; opacity: 0.6; padding: 0; margin-left: 4px; }
   </style>
 </head>
 <body>
@@ -4882,7 +4892,8 @@
         <img class="hero__artwork" id="hero-artwork"
              alt="" role="presentation" loading="eager" fetchpriority="high"
              width="430" height="430"
-             crossorigin="anonymous">
+             crossorigin="anonymous"
+             onerror="(function(el){const p=safeLS('able_v3_profile',{});el.src=generateInitialsAvatarSVG(p.name,p.accent);el.onerror=null;})(this)">
 
         <!-- Ambient colour glow — extracted from artwork bottom pixels -->
         <div class="hero__ambient-glow" id="heroAmbientGlow" aria-hidden="true"></div>
@@ -5388,10 +5399,45 @@
     }
 
     function safeLS(key, fallback) {
-      try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback } catch { return fallback }
+      try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback } catch (e) { console.warn('[ABLE] localStorage parse error for "' + key + '"', e); return fallback }
     }
+    // Spec aliases
+    const safeGet = safeLS
     function setLS(key, val) {
-      try { localStorage.setItem(key, JSON.stringify(val)) } catch (_) {}
+      try {
+        localStorage.setItem(key, JSON.stringify(val))
+        return true
+      } catch (e) {
+        if (e.name === 'QuotaExceededError') {
+          showToast('Your device is running low on storage. Time to sync your data.', 'amber')
+        } else {
+          console.error('[ABLE] localStorage write error for "' + key + '"', e)
+        }
+        return false
+      }
+    }
+    const safeSet = setLS
+
+    function showToast(message, tone = 'amber', options = {}) {
+      const existing = document.getElementById('ableToast')
+      if (existing) existing.remove()
+      const toast = document.createElement('div')
+      toast.id = 'ableToast'
+      toast.className = 'able-toast able-toast--' + tone
+      toast.setAttribute('role', 'status')
+      toast.setAttribute('aria-live', 'polite')
+      toast.innerHTML = '<span class="toast-dot"></span><span class="toast-message">' + message + '</span>' +
+        (options.action ? '<a class="toast-action" href="' + options.action.href + '">' + options.action.label + '</a>' : '') +
+        '<button class="toast-close" onclick="document.getElementById(\'ableToast\').remove()" aria-label="Dismiss">✕</button>'
+      document.body.appendChild(toast)
+      if (tone === 'green') setTimeout(() => toast?.remove(), 5000)
+    }
+
+    function generateInitialsAvatarSVG(name, accentColor) {
+      accentColor = accentColor || '#e05242'
+      const initial = ((name || 'A').charAt(0)).toUpperCase()
+      const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="' + accentColor + '"/><text x="100" y="100" font-family="DM Sans, sans-serif" font-size="88" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="central">' + initial + '</text></svg>'
+      return 'data:image/svg+xml;base64,' + btoa(svg)
     }
 
     const SAFE_URL_RE = /^(https?:|mailto:|tel:)/i
@@ -7586,8 +7632,7 @@
 
       // Send confirmation email (fire-and-forget)
       try {
-        var profile = {}
-        try { profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}') } catch(_) {}
+        var profile = safeLS('able_v3_profile', {})
         fetch('/.netlify/functions/fan-confirmation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -7838,7 +7883,14 @@
           const email = emailInput ? emailInput.value.trim() : ''
 
           // Validate
-          if (!EMAIL_RX.test(email)) {
+          const _validationMsg = !email.trim()
+            ? "Drop your email here and I'll keep you close."
+            : !EMAIL_RX.test(email)
+              ? "That doesn't look right — try a different email?"
+              : safeLS('able_fans', []).some(f => f.email.toLowerCase() === email.toLowerCase())
+                ? "You're already on the list."
+                : null
+          if (_validationMsg) {
             if (emailInput) {
               emailInput.classList.add('error')
               emailInput.setAttribute('aria-invalid', 'true')
@@ -7848,10 +7900,12 @@
                 emailInput.style.animation = ''
               }, { once: true })
             }
-            // E11 — error text appears 400ms after shake (not simultaneously)
+            // E11 — error text appears 400ms after shake
             if (errorEl) {
+              const isDuplicate = _validationMsg === "You're already on the list."
               setTimeout(() => {
-                errorEl.textContent = "Check your email address."
+                errorEl.textContent = _validationMsg
+                errorEl.style.color = isDuplicate ? '#34c759' : ''
                 errorEl.hidden = false
               }, 400)
             }
@@ -7902,7 +7956,7 @@
               confirmed: false,
               double_opted_in: false
             })
-            localStorage.setItem('able_fans', JSON.stringify(fans))
+            setLS('able_fans', fans)
             sessionStorage.setItem('able_this_fan_email', email)
           } catch (_) {}
 
@@ -7990,7 +8044,14 @@
           e.preventDefault()
           const emailInput = document.getElementById('fan-email-2')
           const email = emailInput ? emailInput.value.trim() : ''
-          if (!EMAIL_RX.test(email)) {
+          const _form2Msg = !email.trim()
+            ? "Drop your email here and I'll keep you close."
+            : !EMAIL_RX.test(email)
+              ? "That doesn't look right — try a different email?"
+              : safeLS('able_fans', []).some(f => f.email.toLowerCase() === email.toLowerCase())
+                ? "You're already on the list."
+                : null
+          if (_form2Msg) {
             if (emailInput) {
               emailInput.classList.add('error')
               emailInput.style.animation = 'shake 0.4s ease-out'
@@ -8019,7 +8080,7 @@
               confirmed: false,
               double_opted_in: false
             })
-            localStorage.setItem('able_fans', JSON.stringify(fans))
+            setLS('able_fans', fans)
             sessionStorage.setItem('able_this_fan_email', email)
           } catch (_) {}
           writeFanFollow() // seed fan.html following + feed

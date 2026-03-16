@@ -1806,6 +1806,25 @@ body::before {
   gap: 8px;
 }
 .locked-feature .btn-locked { flex: 1; }
+
+/* ── TOAST ── */
+.able-toast { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-family: var(--font); }
+.able-toast--amber { background: rgba(244,185,66,0.12); border-bottom: 1px solid rgba(244,185,66,0.3); color: #f4b942; }
+.able-toast--green  { background: rgba(52,199,89,0.12); border-bottom: 1px solid rgba(52,199,89,0.3); color: #34c759; }
+.able-toast--red    { background: rgba(255,69,58,0.12); border-bottom: 1px solid rgba(255,69,58,0.3); color: #ff453a; }
+.toast-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.toast-message { flex: 1; }
+.toast-action { color: currentColor; text-decoration: underline; margin-left: 4px; }
+.toast-close { background: none; border: none; color: currentColor; cursor: pointer; opacity: 0.6; padding: 0; margin-left: 4px; font-family: inherit; }
+
+/* ── EMPTY / ERROR STATES ── */
+.state-empty { padding: 32px 16px; text-align: center; color: rgba(255,255,255,0.4); }
+.state-empty__icon { font-size: 32px; margin-bottom: 8px; opacity: 0.4; }
+.state-empty__text { font-size: 14px; line-height: 1.5; }
+.state-empty__action { margin-top: 12px; }
+.state-error { padding: 16px; border-left: 2px solid #f4b942; background: rgba(244,185,66,0.06); border-radius: 0 8px 8px 0; }
+.state-error__text { font-size: 13px; color: #f4b942; }
+.state-error__action { margin-top: 8px; font-size: 12px; opacity: 0.8; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
@@ -2930,10 +2949,10 @@ if (sb) {
       const uid = session.user.id;
       localStorage.setItem('able_artist_id', uid);
       // Sync whatever profile is in localStorage up to Supabase under the real user ID
-      const stored = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+      const stored = safeLS('able_v3_profile', {});
       if (stored.name) syncProfile(stored);
       // Sync any fans accumulated before auth
-      const fans = JSON.parse(localStorage.getItem('able_fans') || '[]');
+      const fans = safeLS('able_fans', []);
       if (fans.length) syncFans(fans);
     }
   });
@@ -2948,7 +2967,7 @@ function getArtistId() {
 async function syncProfile(data) {
   if (!sb) return;
   // able_shows is a separate localStorage key — include it in the upsert
-  const shows = JSON.parse(localStorage.getItem('able_shows') || '[]');
+  const shows = safeLS('able_shows', []);
   try {
     await sb.from('profiles').upsert({
       id:                 getArtistId(),
@@ -3040,7 +3059,7 @@ let _activeFanFilter = 'all';
 
 function renderFanList(filter) {
   if (filter !== undefined) _activeFanFilter = filter;
-  const allFans = JSON.parse(localStorage.getItem('able_fans') || '[]');
+  const allFans = safeLS('able_fans', []);
   const search = (document.getElementById('fansSearch')?.value || '').toLowerCase();
   const filtered = allFans.filter(f => {
     const src = normaliseSource(f.source);
@@ -3067,7 +3086,7 @@ function renderFanList(filter) {
   // List rows
   const listEl = document.getElementById('fansList');
   if (!listEl) return;
-  const starred = JSON.parse(localStorage.getItem('able_starred_fans') || '[]');
+  const starred = safeLS('able_starred_fans', []);
   const avatarColours = ['#e05242','#4e7cff','#9b59b6','#27ae60','#e67e22'];
 
   listEl.innerHTML = filtered.sort((a, b) => b.ts - a.ts).map(f => {
@@ -3107,10 +3126,10 @@ function renderFanList(filter) {
     btn.addEventListener('click', e => {
       e.stopPropagation();
       const email = btn.dataset.email;
-      const s = JSON.parse(localStorage.getItem('able_starred_fans') || '[]');
+      const s = safeLS('able_starred_fans', []);
       const idx = s.indexOf(email);
       if (idx >= 0) s.splice(idx, 1); else s.push(email);
-      localStorage.setItem('able_starred_fans', JSON.stringify(s));
+      setLS('able_starred_fans', s);
       btn.classList.toggle('starred');
     });
   });
@@ -3168,8 +3187,8 @@ function openFanDetailSheet(fan) {
 
   document.getElementById('removeFanBtn')?.addEventListener('click', () => {
     if (!confirm('Remove ' + fan.email + ' from your list?')) return;
-    const fans = JSON.parse(localStorage.getItem('able_fans') || '[]');
-    localStorage.setItem('able_fans', JSON.stringify(fans.filter(f => f.email !== fan.email)));
+    const fans = safeLS('able_fans', []);
+    setLS('able_fans', fans.filter(f => f.email !== fan.email));
     closeAdminSheet();
     renderFanList();
   });
@@ -3202,7 +3221,7 @@ function renderFanSupportPacksSummary() {
 }
 
 function exportFans() {
-  const real = JSON.parse(localStorage.getItem('able_fans') || '[]').filter(f => f.confirmed !== false);
+  const real = safeLS('able_fans', []).filter(f => f.confirmed !== false);
   if (!real.length) { alert('No fans yet — share your page link to see who shows up.'); return; }
   const all = real.map(f => ({ email:f.email, level:'listener', source:f.source||'Direct', ts:f.ts }));
   const csv = 'Email,Level,Source,Joined\n' + all.map(f =>
@@ -3309,7 +3328,7 @@ function initGigToggle() {
     btn.dataset.wired = '1';
     btn.addEventListener('click', () => {
       const isNowActive = btn.getAttribute('aria-checked') === 'true';
-      const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+      const profile = safeLS('able_v3_profile', {});
       if (isNowActive) {
         // Deactivate: clear expiry AND stateOverride
         localStorage.removeItem('able_gig_expires');
@@ -3378,10 +3397,10 @@ function openAddShowSheet() {
         errEl.textContent = 'Venue and date are required.';
         return;
       }
-      const shows = JSON.parse(localStorage.getItem('able_shows') || '[]');
+      const shows = safeLS('able_shows', []);
       shows.push({ venue, date, doorsTime, ticketUrl, featured: false });
       shows.sort((a, b) => a.date.localeCompare(b.date));
-      localStorage.setItem('able_shows', JSON.stringify(shows));
+      setLS('able_shows', shows);
       syncProfile(safeLS(V3_KEY, {}));
       closeAdminSheet();
       renderShowsList();
@@ -3393,7 +3412,7 @@ function openAddShowSheet() {
 function renderShowsList() {
   const el = document.getElementById('adminEventsList');
   if (!el) return;
-  const shows = JSON.parse(localStorage.getItem('able_shows') || '[]');
+  const shows = safeLS('able_shows', []);
   if (!shows.length) {
     el.innerHTML = '<div class="empty-state" style="padding:28px 16px;text-align:center;color:var(--dash-t3);font-size:13px;">No shows listed yet. Add one and ABLE will surface it to fans on your page automatically.</div>';
     return;
@@ -3414,19 +3433,59 @@ function renderShowsList() {
 }
 
 function removeShow(index) {
-  const shows = JSON.parse(localStorage.getItem('able_shows') || '[]');
+  const shows = safeLS('able_shows', []);
   shows.splice(index, 1);
-  localStorage.setItem('able_shows', JSON.stringify(shows));
+  setLS('able_shows', shows);
   syncProfile(safeLS(V3_KEY, {}));
   renderShowsList();
 }
 
 /* ── HELPERS ── */
 function safeLS(key, fallback) {
-  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; }
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch (e) { console.warn('[ABLE] localStorage parse error for "' + key + '"', e); return fallback; }
 }
+const safeGet = safeLS;
 function setLS(key, val) {
-  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+  try { localStorage.setItem(key, JSON.stringify(val)); return true; }
+  catch (e) {
+    if (e.name === 'QuotaExceededError') {
+      showToast('Your device is running low on storage. Time to sync your data.', 'amber');
+    } else {
+      console.error('[ABLE] localStorage write error for "' + key + '"', e);
+    }
+    return false;
+  }
+}
+const safeSet = setLS;
+
+function showToast(message, tone, options) {
+  tone = tone || 'amber'; options = options || {};
+  const existing = document.getElementById('ableToast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.id = 'ableToast';
+  toast.className = 'able-toast able-toast--' + tone;
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+  toast.innerHTML = '<span class="toast-dot"></span><span class="toast-message">' + message + '</span>' +
+    (options.action ? '<a class="toast-action" href="' + options.action.href + '">' + options.action.label + '</a>' : '') +
+    '<button class="toast-close" onclick="document.getElementById(\'ableToast\').remove()" aria-label="Dismiss">✕</button>';
+  document.body.appendChild(toast);
+  if (tone === 'green') setTimeout(function() { const t = document.getElementById('ableToast'); if (t) t.remove(); }, 5000);
+}
+
+// Network status
+window.addEventListener('offline', function() {
+  showToast("No connection — your changes will save when you're back online.", 'amber');
+});
+window.addEventListener('online', function() {
+  showToast('Back online.', 'green');
+});
+if (!navigator.onLine) {
+  document.addEventListener('DOMContentLoaded', function() {
+    showToast('No connection — working offline.', 'amber');
+  });
 }
 function relTime(ts) {
   const diff = Date.now() - ts;
@@ -3468,9 +3527,9 @@ function get7DayBuckets(events) {
 
 /* ── NUDGE CARD ── */
 function evaluateNudge() {
-  const dismissed = JSON.parse(localStorage.getItem('able_dismissed_nudges') || '[]');
-  const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
-  const fans = JSON.parse(localStorage.getItem('able_fans') || '[]');
+  const dismissed = safeLS('able_dismissed_nudges', []);
+  const profile = safeLS('able_v3_profile', {});
+  const fans = safeLS('able_fans', []);
 
   const nudges = [
     () => {
@@ -3499,7 +3558,7 @@ function evaluateNudge() {
       return null;
     },
     () => {
-      const shows = JSON.parse(localStorage.getItem('able_shows') || '[]');
+      const shows = safeLS('able_shows', []);
       if (shows.length === 0 && !dismissed.includes('add-show')) {
         return {
           id: 'add-show',
@@ -3538,9 +3597,9 @@ document.addEventListener('DOMContentLoaded', function() {
     dismissBtn.addEventListener('click', () => {
       const id = document.getElementById('nudgeCard').dataset.nudgeId;
       if (id) {
-        const dismissed = JSON.parse(localStorage.getItem('able_dismissed_nudges') || '[]');
+        const dismissed = safeLS('able_dismissed_nudges', []);
         if (!dismissed.includes(id)) dismissed.push(id);
-        localStorage.setItem('able_dismissed_nudges', JSON.stringify(dismissed));
+        setLS('able_dismissed_nudges', dismissed);
       }
       document.getElementById('nudgeCard').style.display = 'none';
     });
@@ -3557,8 +3616,8 @@ function normaliseSource(source) {
 }
 
 function renderFanBody() {
-  const fans = JSON.parse(localStorage.getItem('able_fans') || '[]');
-  const clicks = JSON.parse(localStorage.getItem('able_clicks') || '[]');
+  const fans = safeLS('able_fans', []);
+  const clicks = safeLS('able_clicks', []);
 
   const recent = [...fans].sort((a, b) => b.ts - a.ts).slice(0, 5);
   const fansList = document.getElementById('latestFansList');
@@ -3657,7 +3716,7 @@ function updateChqPill(state) {
 }
 
 function renderTimelineArc() {
-  const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+  const profile = safeLS('able_v3_profile', {});
   const rawMode = profile.stateOverride || computeAutoState(profile);
   const isPostRelease = !profile.stateOverride && profile.releaseDate &&
     Date.now() >= new Date(profile.releaseDate).getTime() + 14 * 86400000;
@@ -3706,7 +3765,7 @@ function computeAutoState(profile) {
 document.querySelectorAll('.arc-node').forEach(node => {
   node.addEventListener('click', () => {
     const mode = node.dataset.mode;
-    const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+    const profile = safeLS('able_v3_profile', {});
     // 'after' maps to 'profile' as stateOverride ('after' is display-only)
     profile.stateOverride = (mode === 'after') ? 'profile' : mode;
     localStorage.setItem('able_v3_profile', JSON.stringify(profile));

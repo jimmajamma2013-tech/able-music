@@ -1054,6 +1054,16 @@
      For demo: uses hardcoded DEMO data if localStorage is empty.
      ============================================================ */
 
+  // === HELPERS ==============================================
+  function safeGet(key, fallback) {
+    try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+    catch (e) { console.warn('[ABLE] localStorage parse error for "' + key + '"', e); return fallback; }
+  }
+  function safeSet(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); return true; }
+    catch (e) { console.error('[ABLE] localStorage write error for "' + key + '"', e); return false; }
+  }
+
   // === DEMO DATA ============================================
 
   const DEMO_FOLLOWED = [
@@ -1127,17 +1137,13 @@
   // === LOAD DATA ============================================
 
   function getFollowed() {
-    try {
-      const stored = JSON.parse(localStorage.getItem('able_fan_following') || '[]')
-      return stored.length ? stored : DEMO_FOLLOWED
-    } catch (_) { return DEMO_FOLLOWED }
+    const stored = safeGet('able_fan_following', [])
+    return stored.length ? stored : DEMO_FOLLOWED
   }
 
   function getFeed() {
-    try {
-      const stored = JSON.parse(localStorage.getItem('able_fan_feed') || '[]')
-      return stored.length ? stored : DEMO_FEED
-    } catch (_) { return DEMO_FEED }
+    const stored = safeGet('able_fan_feed', [])
+    return stored.length ? stored : DEMO_FEED
   }
 
   function getFollowedIds() {
