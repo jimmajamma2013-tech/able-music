@@ -5445,6 +5445,19 @@
     }
     // Spec aliases
     const safeGet = safeLS
+
+    // ── Profile key migration (data-arch P0.2) ───────────────────────────────
+    // Migrates able_profile (legacy wizard key) → able_v3_profile if not yet done.
+    // Needed when artist visits their page before ever opening admin.html.
+    ;(function migrateLegacyProfileKey() {
+      try {
+        const legacy = localStorage.getItem('able_profile')
+        if (!legacy) return
+        const canonical = localStorage.getItem('able_v3_profile')
+        if (canonical) return // already migrated
+        localStorage.setItem('able_v3_profile', legacy)
+      } catch (_) {}
+    })()
     function setLS(key, val) {
       try {
         localStorage.setItem(key, JSON.stringify(val))
