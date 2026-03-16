@@ -736,6 +736,68 @@ body::before {
 }
 .gig-strip.active ~ .gig-countdown-label { display: block; }
 
+/* ── TIER GATE (declarative gate wrapper — spec §2.1) ── */
+.tier-gate {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.tier-gate-content {
+  filter: blur(4px);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.55;
+}
+.tier-gate-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  background: rgba(9, 9, 15, 0.72);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border-radius: 12px;
+  border: 1px solid rgba(201, 168, 76, 0.22);
+  text-align: center;
+}
+.tier-gate-icon {
+  font-size: 18px;
+  color: var(--acc);
+  line-height: 1;
+}
+.tier-gate-headline {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--dash-text, #e8e4dd);
+  line-height: 1.45;
+  max-width: 260px;
+  margin: 0;
+}
+.tier-gate-cta {
+  margin-top: 4px;
+  padding: 8px 18px;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--acc);
+  background: rgba(201, 168, 76, 0.12);
+  border: 1px solid rgba(201, 168, 76, 0.30);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background 0.14s ease, border-color 0.14s ease;
+  min-height: 36px;
+  white-space: nowrap;
+}
+.tier-gate-cta:hover {
+  background: rgba(201, 168, 76, 0.20);
+  border-color: rgba(201, 168, 76, 0.48);
+}
+
 /* ── GOLD LOCK (Pro upgrade teaser) ── */
 .gold-lock {
   position:relative; border-radius:16px; overflow:hidden;
@@ -2921,7 +2983,7 @@ body::before {
       </div>
     </div>
     <!-- Pro: source heatmap locked -->
-    <div class="gold-lock">
+    <div class="gold-lock" data-tier="artist-pro" data-feature="advanced-analytics">
       <div class="dash-card gold-blur">
         <div class="dc-head"><div class="dc-title">Traffic sources &amp; heatmap</div></div>
         <div class="dc-body">
@@ -3013,7 +3075,7 @@ body::before {
       <div class="page-sub">Direct to inbox. No algorithm.</div>
     </div>
     <!-- Gold lock wrapper -->
-    <div class="gold-lock" style="max-width:860px;">
+    <div class="gold-lock" data-tier="artist-pro" data-feature="email-broadcasts" style="max-width:860px;">
       <div class="section-grid gold-blur">
         <div class="dash-card">
           <div class="dc-head"><div class="dc-title">Compose</div></div>
@@ -4738,6 +4800,11 @@ function renderSnapCardsList() {
 function addSnapCard() {
   const data = safeLS(V3_KEY, {})
   const cards = data.snapCards || []
+  // Free tier: max 1 snap card
+  if (cards.length >= 1 && !checkTierGate('snap-cards')) {
+    showToast('Add as many snap cards as you want. Artist plan unlocks unlimited.');
+    return;
+  }
   const newCard = {
     id: 'sc_' + Date.now(),
     eyebrow: '',
@@ -5707,6 +5774,96 @@ function applyGreeting(profile) {
   }
 }
 
+/* ── TIER GATE SYSTEM ── */
+const TIER_ORDER = { free: 0, artist: 1, 'artist-pro': 2, label: 3 };
+
+function getCurrentTier() {
+  return localStorage.getItem('able_tier') || 'free';
+}
+
+function tierAtLeast(required) {
+  return (TIER_ORDER[getCurrentTier()] || 0) >= (TIER_ORDER[required] || 0);
+}
+
+const GATE_COPY = {
+  'snap-cards':             { headline: 'Add as many snap cards as you want. Artist.',                              cta: 'See Artist plans',     tier: 'artist'     },
+  'campaign-modes':         { headline: 'Set a release date, run a live window, or go into gig mode. Artist.',     cta: 'See Artist plans',     tier: 'artist'     },
+  'connections':            { headline: "Link to the people you've made music with. Artist.",                      cta: 'See Artist plans',     tier: 'artist'     },
+  'fan-list':               { headline: "You've reached 100 fans. Your next 1,900 are one step away. Artist.",     cta: 'See Artist plans',     tier: 'artist'     },
+  'email-broadcasts':       { headline: 'Send a message directly to every fan on your list. Artist Pro.',          cta: 'See Artist Pro plans', tier: 'artist-pro' },
+  'fan-crm':                { headline: 'See your most engaged fans, filter by source, and act on it. Artist Pro.',cta: 'See Artist Pro plans', tier: 'artist-pro' },
+  'advanced-analytics':     { headline: 'See where your fans come from, what they tap, and when they show up. Artist Pro.', cta: 'See Artist Pro plans', tier: 'artist-pro' },
+  'support-packs':          { headline: 'Let fans support you directly — on your terms. Artist Pro.',              cta: 'See Artist Pro plans', tier: 'artist-pro' },
+  'broadcast-scheduling':   { headline: "Schedule a message to go out when the moment's right. Artist Pro.",      cta: 'See Artist Pro plans', tier: 'artist-pro' },
+  'export-fans':            { headline: 'Download your full fan list and take it anywhere. Artist Pro.',           cta: 'See Artist Pro plans', tier: 'artist-pro' },
+  'multiple-pages':         { headline: 'Manage up to 10 artist pages from one account. Label.',                   cta: 'See Label plans',      tier: 'label'      },
+  'team-access':            { headline: "Give your team access without sharing your login. Label.",                cta: 'See Label plans',      tier: 'label'      },
+  'aggregate-analytics':    { headline: 'See how all your artists are performing in one place. Label.',            cta: 'See Label plans',      tier: 'label'      },
+  'api-access':             { headline: 'Connect your own tools to your fan data. Label.',                        cta: 'See Label plans',      tier: 'label'      }
+};
+
+/**
+ * checkTierGate — returns true if current artist has access to the named feature.
+ * V1 note: reads from localStorage (can be spoofed). V2 will use Supabase RLS.
+ */
+function checkTierGate(featureName) {
+  const gateConfig = GATE_COPY[featureName];
+  if (!gateConfig) {
+    console.warn(`checkTierGate: unknown feature "${featureName}" — failing open`);
+    return true;
+  }
+  return tierAtLeast(gateConfig.tier);
+}
+
+/**
+ * applyGates — scans DOM for .tier-gate[data-tier] elements.
+ * If artist has access, removes blur + overlay. Called once on init.
+ * Also handles .gold-lock[data-tier] elements (existing gated sections).
+ */
+function applyGates() {
+  // New .tier-gate elements
+  document.querySelectorAll('.tier-gate[data-tier]').forEach(gate => {
+    const required = gate.dataset.tier;
+    if (!required || !tierAtLeast(required)) return;
+    gate.classList.remove('tier-gate');
+    const overlay = gate.querySelector('.tier-gate-overlay');
+    const content = gate.querySelector('.tier-gate-content');
+    if (overlay) overlay.remove();
+    if (content) {
+      content.removeAttribute('aria-hidden');
+      content.removeAttribute('tabindex');
+      content.style.filter = '';
+      content.style.opacity = '';
+      content.style.pointerEvents = '';
+    }
+  });
+
+  // Legacy .gold-lock elements (existing sections already have this markup)
+  document.querySelectorAll('.gold-lock[data-tier]').forEach(gate => {
+    const required = gate.dataset.tier;
+    if (!required || !tierAtLeast(required)) return;
+    gate.classList.remove('gold-lock');
+    const overlay = gate.querySelector('.gold-lock-overlay');
+    const blur = gate.querySelector('.gold-blur');
+    if (overlay) overlay.remove();
+    if (blur) {
+      blur.classList.remove('gold-blur');
+      blur.style.filter = '';
+      blur.style.pointerEvents = '';
+      blur.style.userSelect = '';
+      blur.querySelectorAll('[disabled]').forEach(el => el.removeAttribute('disabled'));
+    }
+  });
+}
+
+/** applyTierPill — updates the topbar and sidebar tier badge text */
+function applyTierPill() {
+  const tier = getCurrentTier();
+  const labels = { free: '✦ Free', artist: '✦ Artist', 'artist-pro': '✦ Artist Pro', label: '✦ Label' };
+  const label = labels[tier] || '✦ Free';
+  document.querySelectorAll('.tier-badge').forEach(el => { el.textContent = label; });
+}
+
 /* ── UPGRADE BAR ── */
 function updateUpgradeBar() {
   const el = document.getElementById('upgradeBarText');
@@ -5784,6 +5941,8 @@ window.addEventListener('DOMContentLoaded', () => {
   // Greeting system (§5.2)
   applyGreeting(v3data);
   updateUpgradeBar();
+  applyGates();
+  applyTierPill();
 
   // Page URL + Member Since
   const pageUrlEl = document.getElementById('homePageUrl');
