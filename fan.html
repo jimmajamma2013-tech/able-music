@@ -651,6 +651,43 @@
       text-underline-offset: 2px;
     }
 
+    /* Location capture — shown when fan_location not set */
+    .near-location-capture {
+      padding: var(--sp-6) var(--sp-5);
+    }
+    .near-location-capture__label {
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      margin-bottom: var(--sp-3);
+    }
+    .near-location-capture__row {
+      display: flex;
+      gap: var(--sp-2);
+    }
+    .near-location-capture__input {
+      flex: 1;
+      padding: 10px var(--sp-4);
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--r-sm);
+      color: var(--color-text);
+      font: inherit;
+      font-size: var(--text-sm);
+      outline: none;
+    }
+    .near-location-capture__input:focus {
+      border-color: var(--platform-accent);
+    }
+    .near-location-capture__btn {
+      padding: 10px var(--sp-5);
+      background: var(--platform-accent);
+      color: #fff;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      border-radius: var(--r-sm);
+      white-space: nowrap;
+    }
+
     .show-items { display: flex; flex-direction: column; gap: var(--sp-2); padding: 0 var(--sp-5) var(--sp-4); }
 
     .show-item {
@@ -1021,11 +1058,18 @@
 
     <!-- === NEAR ME VIEW ===================================== -->
     <div class="view" id="view-near" role="tabpanel" aria-labelledby="tab-near">
-      <div class="near-header">
+      <div class="near-header" id="near-header-set" style="display:none">
         <div class="near-location">
           <span class="near-location__dot" aria-hidden="true"></span>
-          <span>London, UK</span>
-          <button class="near-location__edit" aria-label="Change location">Change</button>
+          <span id="near-location-display"></span>
+          <button class="near-location__edit" aria-label="Change location" onclick="resetNearLocation()">Change</button>
+        </div>
+      </div>
+      <div class="near-location-capture" id="near-location-capture" style="display:none">
+        <p class="near-location-capture__label">Where are you based?</p>
+        <div class="near-location-capture__row">
+          <input class="near-location-capture__input" id="near-location-input" type="text" placeholder="City, e.g. Manchester" autocomplete="off" aria-label="Your city" onkeydown="if(event.key==='Enter')saveNearLocation()">
+          <button class="near-location-capture__btn" onclick="saveNearLocation()">Save</button>
         </div>
       </div>
       <div id="near-content"></div>
@@ -1497,7 +1541,39 @@
 
   // === NEAR ME ==============================================
 
+  function initNearHeader() {
+    const location = safeGet('fan_location', null)
+    const headerSet = document.getElementById('near-header-set')
+    const capture   = document.getElementById('near-location-capture')
+    if (location) {
+      document.getElementById('near-location-display').textContent = location
+      headerSet.style.display = ''
+      capture.style.display = 'none'
+    } else {
+      headerSet.style.display = 'none'
+      capture.style.display = ''
+    }
+  }
+
+  function saveNearLocation() {
+    const input = document.getElementById('near-location-input')
+    const val = (input.value || '').trim()
+    if (!val) { input.focus(); return }
+    safeSet('fan_location', val)
+    document.getElementById('near-content').removeAttribute('data-rendered')
+    initNearHeader()
+    renderNearMe()
+  }
+
+  function resetNearLocation() {
+    try { localStorage.removeItem('fan_location') } catch (_) {}
+    document.getElementById('near-content').innerHTML = ''
+    document.getElementById('near-content').removeAttribute('data-rendered')
+    initNearHeader()
+  }
+
   function renderNearMe() {
+    initNearHeader()
     const container = document.getElementById('near-content')
     const followedIds = getFollowedIds()
 

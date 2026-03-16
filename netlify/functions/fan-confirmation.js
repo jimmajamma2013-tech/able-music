@@ -15,8 +15,8 @@
  *
  * Env vars:
  *   RESEND_API_KEY
- *   ABLE_FROM_EMAIL  — verified Resend sender, e.g. noreply@able.fm
- *   ABLE_BASE_URL    — e.g. https://able.fm
+ *   ABLE_FROM_EMAIL  — verified Resend sender, e.g. noreply@ablemusic.co
+ *   ABLE_BASE_URL    — e.g. https://ablemusic.co
  */
 
 const CORS_HEADERS = {
@@ -35,8 +35,8 @@ exports.handler = async function (event) {
   }
 
   const apiKey   = process.env.RESEND_API_KEY;
-  const fromAddr = process.env.ABLE_FROM_EMAIL || 'noreply@able.fm';
-  const baseUrl  = process.env.ABLE_BASE_URL   || 'https://able.fm';
+  const fromAddr = process.env.ABLE_FROM_EMAIL || 'noreply@ablemusic.co';
+  const baseUrl  = process.env.ABLE_BASE_URL   || 'https://ablemusic.co';
 
   if (!apiKey) {
     // Resend not configured — log and return OK (non-fatal)
@@ -60,11 +60,14 @@ exports.handler = async function (event) {
     return json(400, { error: 'artistName required' });
   }
 
-  const accent  = accentHex || '#f4b942';
-  const name    = artistName;
-  const slug    = artistSlug || '';
-  const state   = campaignState || 'profile';
-  const profile = slug ? `${baseUrl}/${slug}` : baseUrl;
+  const accent      = accentHex || '#f4b942';
+  const name        = artistName;
+  const slug        = artistSlug || '';
+  const state       = campaignState || 'profile';
+  const profile     = slug ? `${baseUrl}/${slug}` : baseUrl;
+  const fanDashboard = slug
+    ? `${baseUrl}/fan.html?artist=${encodeURIComponent(slug)}&ref=email-confirm`
+    : `${baseUrl}/fan.html`;
 
   // ── Copy per campaign state ──────────────────────────────────────────────
   let subject, headingLine, bodyLine;
@@ -90,7 +93,7 @@ exports.handler = async function (event) {
     bodyLine    = `No noise. Just the things that matter — direct from them, when they happen.`;
   }
 
-  const html = buildEmail({ name, accent, profile, headingLine, bodyLine });
+  const html = buildEmail({ name, accent, profile, fanDashboard, headingLine, bodyLine });
 
   // ── Send via Resend ───────────────────────────────────────────────────────
   try {
@@ -128,7 +131,7 @@ exports.handler = async function (event) {
 
 // ── Email template ──────────────────────────────────────────────────────────
 
-function buildEmail({ name, accent, profile, headingLine, bodyLine }) {
+function buildEmail({ name, accent, profile, fanDashboard, headingLine, bodyLine }) {
   // Determine text color for accent bg (simple luminance check)
   const textOnAccent = getLuminance(accent) > 0.4 ? '#000000' : '#ffffff';
 
@@ -164,7 +167,7 @@ function buildEmail({ name, accent, profile, headingLine, bodyLine }) {
               <p style="margin:0 0 32px;font-size:15px;color:rgba(240,237,232,0.62);line-height:1.6;">${esc(bodyLine)}</p>
 
               <!-- CTA -->
-              <a href="${esc(profile)}" style="display:inline-block;padding:12px 24px;background:${esc(accent)};color:${esc(textOnAccent)};font-size:14px;font-weight:700;text-decoration:none;border-radius:10px;">See ${esc(name)}'s page →</a>
+              <a href="${esc(fanDashboard)}" style="display:inline-block;padding:12px 24px;background:${esc(accent)};color:${esc(textOnAccent)};font-size:14px;font-weight:700;text-decoration:none;border-radius:10px;">See ${esc(name)}'s page →</a>
 
             </td>
           </tr>

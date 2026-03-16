@@ -8346,16 +8346,23 @@
         else if (displayMode === 'tracklist') mediaHtml = ''
 
         // Credits — compact strip, quiet acknowledgment
+        // Asymmetry rule: handle = live ABLE profile link (full opacity); no handle = plain text (70% opacity)
         const credits = Array.isArray(rel.credits) ? rel.credits : []
         const CREDITS_DEFAULT = 3
         function buildCreditsHtml(list) {
           return list.map(c => {
-            const safeName = escHtml(c.name || '')
-            const safeRole = escHtml(c.role || '')
-            const safeUrl  = c.url && isSafeUrl(c.url) ? escHtml(c.url) : null
-            const nameEl   = safeUrl
-              ? `<a class="release-credits__name" href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeName}</a>`
-              : `<span class="release-credits__name">${safeName}</span>`
+            const safeName   = escHtml(c.name || '')
+            const safeRole   = escHtml(c.role || '')
+            const safeHandle = c.handle && /^[a-z0-9_-]{1,64}$/i.test(c.handle) ? escHtml(c.handle) : null
+            const safeUrl    = !safeHandle && c.url && isSafeUrl(c.url) ? escHtml(c.url) : null
+            let nameEl
+            if (safeHandle) {
+              nameEl = `<a class="release-credits__name" href="/${safeHandle}">${safeName}</a>`
+            } else if (safeUrl) {
+              nameEl = `<a class="release-credits__name" href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeName}</a>`
+            } else {
+              nameEl = `<span class="release-credits__name" style="opacity:0.7">${safeName}</span>`
+            }
             return `<div class="release-credits__row"><span class="release-credits__role">${safeRole}</span>${nameEl}</div>`
           }).join('')
         }

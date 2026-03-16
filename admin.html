@@ -2005,6 +2005,14 @@ body::before {
       <button style="background:none;border:none;padding:0;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;flex-shrink:0;" onclick="this.closest('#itsWorkingCard').style.display='none';sessionStorage.setItem('_itsWorkingDismissed','1');" aria-label="Dismiss">×</button>
     </div>
 
+    <!-- §9.1 moment: first fan — shown once when able_fans goes from 0→1 -->
+    <div id="firstFanCard" style="display:none;margin-bottom:20px;padding:18px 20px;border-radius:14px;background:rgba(var(--acc-rgb),.08);border:1px solid rgba(var(--acc-rgb),.25);">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);margin-bottom:8px;">Your first fan</div>
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px;" id="firstFanEmail"></div>
+      <div style="font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:14px;">That email is yours. No platform decides whether they hear from you.</div>
+      <button style="font-size:12px;font-weight:600;color:var(--acc);background:none;border:none;padding:0;cursor:pointer;font-family:var(--font);" onclick="dismissFirstFanCard()">Got it →</button>
+    </div>
+
     <div class="stats-row">
       <div class="stat-card">
         <svg class="sparkline" viewBox="0 0 60 24" preserveAspectRatio="none"
@@ -3613,6 +3621,25 @@ function normaliseSource(source) {
   return 'direct';
 }
 
+function checkFirstFanMoment() {
+  const fans = safeLS(FANS_KEY, []);
+  const card  = document.getElementById('firstFanCard');
+  if (!card) return;
+  // Show only when there is exactly 1 fan (or at least 1) and it hasn't been acknowledged
+  if (fans.length >= 1 && !localStorage.getItem('able_first_fan_seen')) {
+    const firstFan = [...fans].sort((a,b) => a.ts - b.ts)[0];
+    const emailEl = document.getElementById('firstFanEmail');
+    if (emailEl && firstFan?.email) emailEl.textContent = firstFan.email;
+    card.style.display = 'block';
+  }
+}
+
+function dismissFirstFanCard() {
+  localStorage.setItem('able_first_fan_seen', '1');
+  const card = document.getElementById('firstFanCard');
+  if (card) card.style.display = 'none';
+}
+
 function renderFanBody() {
   const fans = safeLS('able_fans', []);
   const clicks = safeLS('able_clicks', []);
@@ -3948,10 +3975,11 @@ function renderAdminMusic() {
         <div class="field-label" style="margin-top:14px;margin-bottom:6px;">Credits <span style="font-weight:400;color:var(--t3);">(producer, mixer, feat. artist…)</span></div>
         <div id="credits-${rel.id}">
           ${(rel.credits||[]).map((c,ci)=>`
-            <div class="admin-track-row" data-ci="${ci}">
-              <input class="field-input" value="${escHtml(c.name||'')}" oninput="updateCredit('${rel.id}',${ci},'name',this.value)" placeholder="Name" style="flex:1;">
-              <input class="field-input" value="${escHtml(c.role||'')}" oninput="updateCredit('${rel.id}',${ci},'role',this.value)" placeholder="Role (e.g. Mixed by)" style="flex:1;">
+            <div class="admin-track-row" data-ci="${ci}" style="flex-wrap:wrap;gap:4px;">
+              <input class="field-input" value="${escHtml(c.name||'')}" oninput="updateCredit('${rel.id}',${ci},'name',this.value)" placeholder="Name" style="flex:1;min-width:80px;">
+              <input class="field-input" value="${escHtml(c.role||'')}" oninput="updateCredit('${rel.id}',${ci},'role',this.value)" placeholder="Role (e.g. Mixed by)" style="flex:1;min-width:80px;">
               <button class="snap-btn del" onclick="removeCredit('${rel.id}',${ci})" title="Remove">×</button>
+              <input class="field-input" value="${escHtml(c.handle||'')}" oninput="updateCredit('${rel.id}',${ci},'handle',this.value)" placeholder="ABLE handle (optional — links to their profile)" style="flex:1 1 100%;font-size:11px;color:var(--t2);">
             </div>`).join('')}
         </div>
         <button class="dc-action" style="margin-top:6px;" onclick="addCredit('${rel.id}')">+ Add credit</button>
@@ -4173,7 +4201,7 @@ function addCredit(rid) {
   const data = safeLS(V3_KEY, {});
   const releases = (data.releases||[]).map(r => {
     if (r.id !== rid) return r;
-    const credits = [...(r.credits||[]), { name: '', role: '' }];
+    const credits = [...(r.credits||[]), { name: '', role: '', handle: '' }];
     return { ...r, credits };
   });
   setLS(V3_KEY, { ...data, releases });
@@ -5349,6 +5377,7 @@ window.addEventListener('DOMContentLoaded', () => {
   loadRealStats();
   loadActivityFeed();
   renderFanBody();
+  checkFirstFanMoment();
   evaluateNudge();
   updateFanPageStats();
   renderAdminMusic();
