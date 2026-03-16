@@ -501,9 +501,13 @@ body::before {
 /* ── CAMPAIGN HQ ── */
 .campaign-hq {
   border-radius:14px; background:var(--dash-card); border:1px solid var(--dash-border);
-  overflow:hidden; margin-bottom:36px;
-  box-shadow:0 3px 12px rgba(0,0,0,.10);
+  overflow:hidden; margin-bottom:20px;
+  box-shadow:0 1px 3px rgba(0,0,0,.06), 0 0 0 1px var(--dash-border);
   border-top:2px solid rgba(var(--acc-rgb),.4);
+  transition:border-left-color 300ms ease;
+}
+.campaign-hq.chq-active {
+  border-left:3px solid var(--dash-amber);
 }
 .chq-head {
   display:flex; align-items:center; justify-content:space-between;
@@ -932,24 +936,51 @@ body::before {
   opacity:1;
 }
 
-/* ── FIRST-RUN CHECKLIST ── */
+/* ── FIRST-RUN CHECKLIST — compact strip (44px collapsed, expands on tap) ── */
 .first-run-card {
   background:var(--dash-card); border:1px solid var(--dash-border);
-  border-radius:14px; padding:14px 16px; margin-bottom:36px;
-  box-shadow:0 1px 4px rgba(0,0,0,.05);
+  border-radius:10px; margin-bottom:20px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+  overflow:hidden;
 }
-.frc-head {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:10px;
+/* Collapsed strip — always visible */
+.frc-strip {
+  display:flex; align-items:center; gap:10px;
+  padding:0 14px; height:44px; cursor:pointer;
+  user-select:none;
 }
-.frc-title { font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--dash-t3); }
+.frc-strip-bar {
+  flex:1; height:4px; border-radius:100px;
+  background:rgba(0,0,0,.06); overflow:hidden; position:relative;
+}
+.frc-strip-fill {
+  position:absolute; top:0; left:0; height:100%;
+  background:var(--acc); border-radius:100px;
+  transition:width .4s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.frc-strip-label { font-size:11px; color:var(--dash-t3); white-space:nowrap; }
+.frc-strip-chevron {
+  font-size:10px; color:var(--dash-t3); flex-shrink:0;
+  transition:transform .2s ease;
+}
+.first-run-card.frc-open .frc-strip-chevron { transform:rotate(180deg); }
+/* Expandable body */
+.frc-body {
+  max-height:0; overflow:hidden;
+  transition:max-height .3s cubic-bezier(0.25,0.46,0.45,0.94);
+  border-top:0px solid var(--dash-border);
+}
+.first-run-card.frc-open .frc-body {
+  max-height:240px;
+  border-top-width:1px;
+}
 .frc-dismiss {
   font-size:11px; color:var(--dash-t3); background:none; border:none;
-  cursor:pointer; font-family:var(--font); padding:2px 6px;
-  border-radius:6px; transition:color .15s;
+  cursor:pointer; font-family:var(--font); padding:6px 14px 10px; display:block;
+  transition:color .15s;
 }
 .frc-dismiss:hover { color:var(--dash-t2); }
-.frc-steps { display:flex; flex-direction:column; gap:1px; }
+.frc-steps { display:flex; flex-direction:column; gap:1px; padding:6px 8px 0; }
 .frc-step {
   display:flex; align-items:center; gap:10px;
   padding:8px 6px; border-radius:8px;
@@ -973,8 +1004,6 @@ body::before {
 .frc-step-title { font-size:13px; font-weight:500; color:var(--dash-text); }
 .frc-step-sub { display:none; }
 .frc-step.done .frc-step-title { text-decoration:line-through; color:var(--dash-t3); }
-.frc-progress { margin-top:10px; height:2px; border-radius:100px; background:rgba(0,0,0,.06); overflow:hidden; }
-.frc-progress-fill { height:100%; background:var(--acc); border-radius:100px; transition:width .4s var(--ease); }
 
 /* ── RESPONSIVE ── */
 @media (max-width:960px) {
@@ -2161,43 +2190,46 @@ body::before {
       </div>
     </div>
 
-    <!-- FIRST-RUN CHECKLIST — hidden once all done or dismissed -->
+    <!-- FIRST-RUN CHECKLIST — compact strip, expands on tap, auto-dismissed after 7 days or completion -->
     <div class="first-run-card" id="firstRunCard">
-      <div class="frc-head">
-        <div class="frc-title">Start here — four things that matter</div>
-        <button class="frc-dismiss" onclick="dismissFirstRun()" title="Dismiss">Got it, hide this</button>
+      <!-- Collapsed strip: progress bar + label + chevron -->
+      <div class="frc-strip" onclick="toggleFrcOpen()" aria-expanded="false" id="frcStripToggle">
+        <div class="frc-strip-bar">
+          <div class="frc-strip-fill" id="frcProgress" style="width:0%"></div>
+        </div>
+        <div class="frc-strip-label" id="frcStripLabel">0 of 4 done</div>
+        <div class="frc-strip-chevron" id="frcChevron">▼</div>
       </div>
-      <div class="frc-steps">
-        <button class="frc-step" id="frc1" onclick="showPage('profile')">
-          <div class="frc-check" id="frc1check">✓</div>
-          <div class="frc-step-body">
-            <div class="frc-step-title">Add your photo or artwork</div>
-            <div class="frc-step-sub">Goes at the top of your page — this is the first thing fans see</div>
-          </div>
-        </button>
-        <button class="frc-step" id="frc2" onclick="navigator.clipboard?.writeText('https://'+document.getElementById('profileLinkFrc')?.textContent||'').then(()=>{markFrcDone(2)})">
-          <div class="frc-check" id="frc2check">✓</div>
-          <div class="frc-step-body">
-            <div class="frc-step-title">Copy your page link</div>
-            <div class="frc-step-sub">Your link: <span id="profileLinkFrc" style="color:var(--acc);font-size:11px;">ablemusic.co/you</span> — tap to copy</div>
-          </div>
-        </button>
-        <button class="frc-step" id="frc3" onclick="markFrcDone(3)">
-          <div class="frc-check" id="frc3check">✓</div>
-          <div class="frc-step-body">
-            <div class="frc-step-title">Put the link in your Instagram and TikTok bio</div>
-            <div class="frc-step-sub">This is where your first fans will come from</div>
-          </div>
-        </button>
-        <button class="frc-step" id="frc4" onclick="showPage('music')">
-          <div class="frc-check" id="frc4check">✓</div>
-          <div class="frc-step-body">
-            <div class="frc-step-title">Add your latest release</div>
-            <div class="frc-step-sub">Paste a Spotify, YouTube, or SoundCloud link — artwork fills in automatically</div>
-          </div>
-        </button>
+      <!-- Expandable body -->
+      <div class="frc-body" id="frcBody">
+        <div class="frc-steps">
+          <button class="frc-step" id="frc1" onclick="showPage('profile')">
+            <div class="frc-check" id="frc1check">✓</div>
+            <div class="frc-step-body">
+              <div class="frc-step-title">Add your photo or artwork</div>
+            </div>
+          </button>
+          <button class="frc-step" id="frc2" onclick="navigator.clipboard?.writeText('https://'+document.getElementById('profileLinkFrc')?.textContent||'').then(()=>{markFrcDone(2)})">
+            <div class="frc-check" id="frc2check">✓</div>
+            <div class="frc-step-body">
+              <div class="frc-step-title">Copy your link · <span id="profileLinkFrc" style="color:var(--acc);font-size:12px;">ablemusic.co/you</span></div>
+            </div>
+          </button>
+          <button class="frc-step" id="frc3" onclick="markFrcDone(3)">
+            <div class="frc-check" id="frc3check">✓</div>
+            <div class="frc-step-body">
+              <div class="frc-step-title">Put it in your Instagram and TikTok bio</div>
+            </div>
+          </button>
+          <button class="frc-step" id="frc4" onclick="showPage('music')">
+            <div class="frc-check" id="frc4check">✓</div>
+            <div class="frc-step-body">
+              <div class="frc-step-title">Add your latest release</div>
+            </div>
+          </button>
+        </div>
+        <button class="frc-dismiss" onclick="dismissFirstRun()">Hide this →</button>
       </div>
-      <div class="frc-progress"><div class="frc-progress-fill" id="frcProgress" style="width:0%"></div></div>
     </div>
 
     <!-- §9.1 moment 4 — "it's working" gentle inline prompt (appears when first click data arrives) -->
@@ -2218,45 +2250,7 @@ body::before {
       <button style="font-size:12px;font-weight:600;color:var(--acc);background:none;border:none;padding:0;cursor:pointer;font-family:var(--font);" onclick="dismissFirstFanCard()">Got it →</button>
     </div>
 
-    <div class="stats-row">
-      <div class="stat-card">
-        <svg class="sparkline" viewBox="0 0 60 24" preserveAspectRatio="none"
-             aria-hidden="true" id="spark-views">
-          <polyline class="spark-line" points="" fill="none" stroke="var(--dash-amber)"
-                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <div class="stat-label">Visits</div>
-        <div class="stat-value skel" id="statViews"> </div>
-        <div class="stat-delta skel" id="statViewsDelta"> </div>
-      </div>
-      <div class="stat-card">
-        <svg class="sparkline" viewBox="0 0 60 24" preserveAspectRatio="none"
-             aria-hidden="true" id="spark-clicks">
-          <polyline class="spark-line" points="" fill="none" stroke="#999"
-                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <div class="stat-label">Link clicks</div>
-        <div class="stat-value skel" id="statClicks"> </div>
-        <div class="stat-delta skel" id="statClickRate"> </div>
-      </div>
-      <div class="stat-card">
-        <svg class="sparkline" viewBox="0 0 60 24" preserveAspectRatio="none"
-             aria-hidden="true" id="spark-fans">
-          <polyline class="spark-line" points="" fill="none" stroke="var(--dash-green)"
-                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <div class="stat-label">Fans joined</div>
-        <div class="stat-value skel" id="statFans"> </div>
-        <div class="stat-delta skel" id="statFansDelta"> </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Click-through rate</div>
-        <div class="stat-value" id="statCtr">—</div>
-        <div class="stat-delta" id="statCtrDelta"> </div>
-      </div>
-    </div>
-
-    <!-- Campaign HQ -->
+    <!-- Campaign HQ — primary section, above stats per hierarchy doctrine -->
     <div class="campaign-hq" id="campaignHQ">
       <div class="chq-head">
         <div class="chq-title">
@@ -2339,7 +2333,46 @@ body::before {
       </div>
     </div>
 
-    <!-- Upgrade nudge — shown for free tier, positioned after Campaign HQ -->
+    <!-- Stats row — secondary, below Campaign HQ -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <svg class="sparkline" viewBox="0 0 60 24" preserveAspectRatio="none"
+             aria-hidden="true" id="spark-views">
+          <polyline class="spark-line" points="" fill="none" stroke="var(--dash-amber)"
+                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="stat-label">Visits</div>
+        <div class="stat-value skel" id="statViews"> </div>
+        <div class="stat-delta skel" id="statViewsDelta"> </div>
+      </div>
+      <div class="stat-card">
+        <svg class="sparkline" viewBox="0 0 60 24" preserveAspectRatio="none"
+             aria-hidden="true" id="spark-clicks">
+          <polyline class="spark-line" points="" fill="none" stroke="#999"
+                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="stat-label" id="statClicksLabel">Link taps</div>
+        <div class="stat-value skel" id="statClicks"> </div>
+        <div class="stat-delta skel" id="statClickRate"> </div>
+      </div>
+      <div class="stat-card">
+        <svg class="sparkline" viewBox="0 0 60 24" preserveAspectRatio="none"
+             aria-hidden="true" id="spark-fans">
+          <polyline class="spark-line" points="" fill="none" stroke="var(--dash-green)"
+                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="stat-label">Fans</div>
+        <div class="stat-value skel" id="statFans"> </div>
+        <div class="stat-delta skel" id="statFansDelta"> </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Click rate</div>
+        <div class="stat-value" id="statCtr">—</div>
+        <div class="stat-delta" id="statCtrDelta"> </div>
+      </div>
+    </div>
+
+    <!-- Upgrade nudge — shown for free tier -->
     <div class="upgrade-bar" id="upgradeBar">
       <div class="upgrade-bar-text" id="upgradeBarText"><strong>Free plan.</strong> Broadcasts, full analytics, and deeper fan insight when you're ready.</div>
       <button class="upgrade-bar-btn" onclick="showPage('settings')">See what's included →</button>
@@ -4247,6 +4280,9 @@ function updateChqPill(state) {
   const [cls, lbl] = MAP[state] || MAP['profile'];
   pill.className = 'chq-state-pill ' + cls;
   pill.textContent = lbl;
+  // Accent left-border when in an active campaign state (not plain profile)
+  const hq = document.getElementById('campaignHQ');
+  if (hq) hq.classList.toggle('chq-active', state !== 'profile');
 }
 
 function renderTimelineArc() {
@@ -5496,13 +5532,38 @@ function loadRealStats() {
   }
   if (!_statsAnimated) sessionStorage.setItem('_statsAnimated', '1');
 
+  // Trend vs previous week
+  const prevWeek = 7 * 86400000;
+  const viewsPrev  = views.filter(v  => now - v.ts  >= week && now - v.ts  < 2*week).length;
+  const fansPrev   = fans.filter(f   => now - f.ts  >= week && now - f.ts  < 2*week).length;
+  const trendStr = (curr, prev, suffix) => {
+    const arrow = curr > prev ? '↑' : curr < prev ? '↓' : null;
+    if (!curr && !prev) return 'No data yet';
+    if (!arrow) return curr + (suffix || '') + ' this week';
+    return arrow + ' ' + curr + (suffix || '') + ' this week';
+  };
+  const trendCls = (curr, prev) => curr >= prev ? 'up' : 'dn';
+
+  // State-specific label for the "clicks" stat
+  const effState = computeEffectiveState(safeLS('able_v3_profile', {}));
+  const clickLabelMap = {
+    'pre-release': 'Pre-saves',
+    'live':        'Stream taps',
+    'gig':         'Ticket taps',
+    'profile':     'Link taps',
+  };
+  const clickLabelEl = document.getElementById('statClicksLabel');
+  if (clickLabelEl) clickLabelEl.textContent = clickLabelMap[effState] || 'Link taps';
+
   // Home stats
   animateCount('statViews',  viewsTotal  || '—');
-  set('statViewsDelta', viewsWeek   ? '↑ ' + viewsWeek + ' this week' : 'No data yet');
+  set('statViewsDelta', trendStr(viewsWeek, viewsPrev));
+  cls('statViewsDelta', viewsWeek || viewsPrev ? trendCls(viewsWeek, viewsPrev) : '');
   animateCount('statClicks', clicksTotal || '—');
   set('statClickRate',  ctr !== '—' ? ctr + ' click rate' : 'No clicks yet');
   animateCount('statFans',   fansTotal   || '—');
-  set('statFansDelta',  fansWeek    ? '↑ ' + fansWeek + ' this week' : 'No fans yet');
+  set('statFansDelta',  trendStr(fansWeek, fansPrev));
+  cls('statFansDelta', fansWeek || fansPrev ? trendCls(fansWeek, fansPrev) : '');
   set('statCtr',        ctr);
   if (clicksTotal && viewsTotal) {
     const rate = (clicksTotal/viewsTotal)*100;
@@ -7013,16 +7074,30 @@ function markFrcDone(n) {
   updateFrcProgress();
 }
 
+function toggleFrcOpen() {
+  const card = document.getElementById('firstRunCard');
+  const toggle = document.getElementById('frcStripToggle');
+  if (!card) return;
+  const isOpen = card.classList.toggle('frc-open');
+  if (toggle) toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+}
+
 function updateFrcProgress() {
   const done = document.querySelectorAll('.frc-step.done').length;
   const total = document.querySelectorAll('.frc-step').length;
   const bar = document.getElementById('frcProgress');
+  const lbl = document.getElementById('frcStripLabel');
   if (bar) bar.style.width = (done / total * 100) + '%';
+  if (lbl) lbl.textContent = done + ' of ' + total + ' done';
   if (done >= total) {
+    // Brief accent flash on the strip, then auto-dismiss
+    const fill = document.getElementById('frcProgress');
+    if (fill) { fill.style.background = 'var(--dash-green)'; }
     setTimeout(() => {
+      localStorage.setItem('able_frc_dismissed', '1');
       const frc = document.getElementById('firstRunCard');
       if (frc) { frc.style.opacity = '0'; frc.style.transition = 'opacity .4s'; setTimeout(() => frc.hidden = true, 400); }
-    }, 1200);
+    }, 1400);
   }
 }
 
