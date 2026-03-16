@@ -208,6 +208,7 @@ When backend is added:
 | `docs/pages/landing/DESIGN-SPEC.md` | **landing.html build spec** — 9.65/10 |
 | `docs/pages/fan/DESIGN-SPEC.md` | **fan.html build spec** — in progress |
 | `docs/systems/DESIGN_SYSTEM_SPEC.md` | Canonical design tokens, typography, shadows, grid |
+| `docs/systems/brand-identity/DOCTRINE.md` | **Typography doctrine** — why each typeface decision exists; accent doctrine; brand unity principle |
 | `docs/systems/MICRO_INTERACTIONS_SPEC.md` | All 30+ interactions, rules, performance budget |
 | `docs/systems/CROSS_PAGE_JOURNEYS.md` | End-to-end user journeys, source tracking |
 | `docs/systems/copy/SPEC.md` | Master copy system — voice, banned phrases, all contexts |

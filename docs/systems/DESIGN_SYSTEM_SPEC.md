@@ -160,15 +160,18 @@ Display font: 'Barlow Condensed' — shared with Surface 1
 Body font: 'Plus Jakarta Sans' — different from Surface 1 (intentional)
 ```
 
-| Element | Font | Size | Weight |
-|---|---|---|---|
-| Greeting / page title | Plus Jakarta Sans | 22px | 700 |
-| Section header | Plus Jakarta Sans | 13px | 600 |
-| Stat value | Barlow Condensed | 28px | 700 |
-| Stat label | Plus Jakarta Sans | 10px | 700 |
-| Nav item | Plus Jakarta Sans | 13px | 500 |
-| Field input | Plus Jakarta Sans | 13px (16px mobile) | 400 |
-| Button | Plus Jakarta Sans | 12px | 700 |
+> **Typography doctrine:** See `docs/systems/brand-identity/DOCTRINE.md` for the reasoning behind each typeface decision.
+
+| Element | Font | Size | Weight | Notes |
+|---|---|---|---|---|
+| **Page title** | Barlow Condensed | **32px** | **700** | **letter-spacing: -0.01em** — editorial authority |
+| Home greeting | Plus Jakarta Sans | 22px | 700 | Conversational, not editorial — intentional exception |
+| Section header | Plus Jakarta Sans | 13px | 600 | |
+| Stat value | Barlow Condensed | 28px | 700 | |
+| Stat label | Plus Jakarta Sans | 10px | 700 | |
+| Nav item | Plus Jakarta Sans | 13px | 500 | |
+| Field input | Plus Jakarta Sans | 13px (16px mobile) | 400 | |
+| Button | Plus Jakarta Sans | 12px | 700 | |
 
 ---
 
