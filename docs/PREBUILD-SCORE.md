@@ -100,6 +100,32 @@ These are aspects that require running code and real users to evaluate. They are
 
 ---
 
+## Technical spec completeness (added 2026-03-16)
+
+Audit of all PATH-TO-10.md and DESIGN-SPEC.md files for implementation-readiness — every item that said "implement X" without saying exactly how.
+
+| Spec | Was | Now | What was missing |
+|---|---|---|---|
+| `legal-compliance/PATH-TO-10.md` | 9.5/10 | 10/10 | Already had exact GDPR HTML, privacy URL, and cookie disclosure — confirmed complete |
+| `analytics/PATH-TO-10.md` | 7/10 | 10/10 | P0.5: exact `detectSource()` JS with 2-pass logic + all referrer checks added. P0.6: exact `rotateEvents()` and `checkLocalStorageHealth()` functions added with call sites |
+| `seo-og/PATH-TO-10.md` | 10/10 | 10/10 | Already had exact OG URI check, fallback spec, exact meta tag — confirmed complete |
+| `data-architecture/PATH-TO-10.md` | 10/10 | 10/10 | Migration function present and correct (no double-prefix), 10-step flush checklist present — confirmed complete |
+| `email/PATH-TO-10.md` | 10/10 | 10/10 | fan-confirmation.js complete with all 4 page-state bodies, all 3 DNS records present — confirmed complete |
+| `oembed-proxy/PATH-TO-10.md` | 10/10 | 10/10 | Full corrected Netlify function with `new URL().hostname` + `ALLOWED_HOSTS` Set — confirmed complete |
+| `tier-gates/PATH-TO-10.md` | 10/10 | 10/10 | `checkTierGate()`, gold lock CSS, `applyGates()`, all 7 upgrade trigger copy strings — confirmed complete |
+| `killer-features/SPEC.md` | 10/10 | 10/10 | `checkAutoGig()` with `isToday()` + `parseDoorsTime()`, `applyCampaignScroll()`, `showCampaignChip()`, `showDay1ShareCard()` — all confirmed complete |
+| `monetisation/PATH-TO-10.md` | 10/10 | 10/10 | Fan cap progress bar HTML/CSS/JS, all 3 threshold copy strings — confirmed complete |
+| `growth-loop/PATH-TO-10.md` | 10/10 | 10/10 | `initFooterLink()`, `initReferralLanding()`, "I make music too →" fork with exact HTML — confirmed complete |
+| `pages/profile/DESIGN-SPEC.md` | 8/10 | 10/10 | Added exact GDPR consent form HTML with `.signup-consent` class, `.consent-artist-name` JS, `consentVersion`/`consentSource` fan record fields, and CSS |
+| `pages/admin/DESIGN-SPEC.md` | 8.5/10 | 10/10 | `buildGreeting()` already specced as `buildGreetingSub()` + `applyGreeting()`. Added missing fan list sort: exact `renderFanList()` with starred-float + newest-first sort, tombstone filter, and empty state copy |
+| `pages/onboarding/DESIGN-SPEC.md` | 9.9/10 | 9.9/10 | Done screen iframe specced; adaptive wizard specced — confirmed complete at existing score |
+
+**All P0 specs: implementation-ready.**
+
+A developer can open any PATH-TO-10.md and copy-paste the exact functions into the target file. No ambiguity remains.
+
+---
+
 ## Verdict
 
 Pre-build: **9.4/10**. The spec layer is complete, accurate, and actionable.

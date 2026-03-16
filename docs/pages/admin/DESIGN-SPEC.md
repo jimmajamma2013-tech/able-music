@@ -382,6 +382,65 @@ Same visual style as "It's working" card:
 
 ## 8. FAN LIST ENHANCEMENTS
 
+### 8.0 Fan list sort order and render function
+
+Default sort: **newest first** (`ts` descending). This is the only sort order in V1. Starred fans (from `able_starred_fans`) always float to the top of the list regardless of date.
+
+```javascript
+function renderFanList() {
+  const fans    = JSON.parse(localStorage.getItem('able_fans') || '[]');
+  const starred = JSON.parse(localStorage.getItem('able_starred_fans') || '[]');
+  const starredSet = new Set(starred);
+
+  // Sort: starred float first, then by ts descending (newest first)
+  const sorted = [...fans]
+    .filter(f => !f.deleted_at)  // exclude tombstoned GDPR erasure records
+    .sort((a, b) => {
+      const aStarred = starredSet.has(a.email) ? 1 : 0;
+      const bStarred = starredSet.has(b.email) ? 1 : 0;
+      if (bStarred !== aStarred) return bStarred - aStarred;  // starred first
+      return (b.ts || 0) - (a.ts || 0);                        // newest first
+    });
+
+  const list = document.getElementById('fanList');
+  if (!list) return;
+
+  if (sorted.length === 0) {
+    list.innerHTML = '<p class="fan-empty">No fans yet. Share your link to get your first sign-up.</p>';
+    return;
+  }
+
+  list.innerHTML = sorted.map(fan => {
+    const isNew     = Date.now() - (fan.ts || 0) < 86400000;
+    const isStarred = starredSet.has(fan.email);
+    const source    = fan.source || 'direct';
+    const dateStr   = fan.ts
+      ? new Date(fan.ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+      : '';
+
+    return `
+      <div class="fan-row" data-email="${fan.email}">
+        <span class="fan-row__email">${fan.email}</span>
+        <span class="fan-row__meta">
+          ${isNew ? '<span class="fan-new-badge">new</span>' : ''}
+          <span class="fan-source-badge fan-source-badge--${source}">${source}</span>
+          <span class="fan-row__date">${dateStr}</span>
+        </span>
+        <button
+          class="fan-star-btn ${isStarred ? 'fan-star-btn--on' : ''}"
+          onclick="toggleStarFan('${fan.email}')"
+          aria-label="${isStarred ? 'Unstar' : 'Star'} this fan"
+          aria-pressed="${isStarred}"
+        >✦</button>
+      </div>
+    `;
+  }).join('');
+}
+```
+
+**Empty state copy:** "No fans yet. Share your link to get your first sign-up."
+**Tombstoned records** (GDPR erasure, `deleted_at` present) are filtered out — never rendered in the list.
+
 ### 8.1 "New" badge (24h)
 ```css
 .fan-new-badge {

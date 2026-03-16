@@ -196,28 +196,120 @@ posthog.capture('wizard_complete', {
 
 **Why now:** Artists will sometimes paste their link without `?src=ig`. Instagram in-app browser traffic will be attributed as `direct`.
 
-**Tasks:**
-- Implement `detectSource()` with two-pass logic: `?src=` param first, `document.referrer` fallback
-- Handle Instagram redirect URL (`l.instagram.com`) in referrer check
-- Handle TikTok shortened URL (`vm.tiktok.com`)
-- Add `twitter` / `x.com` to referrer checks
-- Cache result as `_pageSource` — run once per page load, not per event
+**Exact implementation — paste this near the top of `able-v7.html`'s `<script>` block, before any event writes:**
+
+```javascript
+// ─── Source detection — run once, cache as _pageSource ──────────────────────
+// Pass 1: explicit ?src= param wins
+// Pass 2: document.referrer fallback
+// Pass 3: default 'direct'
+function detectSource() {
+  const params = new URLSearchParams(window.location.search);
+  const src    = params.get('src') || params.get('utm_source');
+  if (src) return src.toLowerCase();
+
+  const ref = (document.referrer || '').toLowerCase();
+  if (!ref) return 'direct';
+
+  if (ref.includes('instagram.com') || ref.includes('l.instagram.com')) return 'ig';
+  if (ref.includes('tiktok.com') || ref.includes('vm.tiktok.com'))      return 'tiktok';
+  if (ref.includes('twitter.com') || ref.includes('x.com') || ref.includes('t.co')) return 'twitter';
+  if (ref.includes('facebook.com') || ref.includes('fb.me'))             return 'fb';
+  if (ref.includes('youtube.com') || ref.includes('youtu.be'))           return 'youtube';
+  if (ref.includes('spotify.com'))                                        return 'spotify';
+  if (ref.includes('ablemusic.co'))                                       return 'footer';
+  if (ref) return 'other';
+  return 'direct';
+}
+
+// Cache result — call detectSource() exactly once per page load
+const _pageSource = detectSource();
+```
 
 **Acceptance criteria:**
 - Visit via Instagram with `?src=ig` → source = `ig`
 - Visit via Instagram without `?src=ig` → source = `ig` (referrer fallback)
 - Visit with no referrer and no param → source = `direct`
 - Visit from unknown blog → source = `other`
+- `_pageSource` is set once at load; all subsequent event writes use the cached value
 
 ---
 
 ### P0.6 — Define and implement retention/rotation policy
 
-**Tasks:**
-- Implement `rotateEvents(key, events, maxDays)` — prune and re-write in one atomic operation
-- Set retention: `able_views` 90 days, `able_clicks` 180 days, `able_fans` never auto-deleted
-- Call `rotateEvents` inside `recordView()` and `recordClick()` — passive rotation on every write
-- Implement `checkLocalStorageHealth()` — estimate bytes used, flag if > 4MB
+**Exact implementation — add both functions to `able-v7.html`:**
+
+```javascript
+// ─── Event rotation — prune stale events and rewrite in one atomic op ───────
+// key:     localStorage key (e.g. 'able_views')
+// events:  the current events array (already parsed from localStorage)
+// maxDays: max age of events to keep
+// Returns: the pruned array (already written back to localStorage)
+function rotateEvents(key, events, maxDays) {
+  const cutoff = Date.now() - (maxDays * 24 * 60 * 60 * 1000);
+  const pruned = events.filter(e => e.ts && e.ts > cutoff);
+  if (pruned.length !== events.length) {
+    try {
+      localStorage.setItem(key, JSON.stringify(pruned));
+    } catch (e) {
+      console.warn('[ABLE] rotateEvents write failed:', e.message);
+    }
+  }
+  return pruned;
+}
+
+// ─── localStorage health check ───────────────────────────────────────────────
+// Estimates bytes used across all able_ keys.
+// Returns: { bytesUsed, mbUsed, overLimit }
+// Call on admin.html page load — wire result to nudge if overLimit.
+function checkLocalStorageHealth() {
+  let total = 0;
+  const ABLE_KEYS = ['able_views', 'able_clicks', 'able_fans', 'able_v3_profile',
+                     'able_shows', 'able_dismissed_nudges', 'able_starred_fans'];
+  ABLE_KEYS.forEach(k => {
+    const val = localStorage.getItem(k);
+    if (val) total += val.length * 2; // UTF-16 chars × 2 bytes
+  });
+  const mb = total / (1024 * 1024);
+  return { bytesUsed: total, mbUsed: Math.round(mb * 100) / 100, overLimit: mb > 4 };
+}
+```
+
+**Where to call rotateEvents:**
+```javascript
+// Inside recordView() — passive rotation on every write
+function recordView(source) {
+  let views = JSON.parse(localStorage.getItem('able_views') || '[]');
+  views = rotateEvents('able_views', views, 90);  // 90-day retention
+  views.push({ ts: Date.now(), source, sessionId: _sessionId, isArtist: _isArtistVisit });
+  localStorage.setItem('able_views', JSON.stringify(views));
+}
+
+// Inside recordClick() — passive rotation on every write
+function recordClick(label, type, url) {
+  let clicks = JSON.parse(localStorage.getItem('able_clicks') || '[]');
+  clicks = rotateEvents('able_clicks', clicks, 180);  // 180-day retention
+  clicks.push({ ts: Date.now(), label, type, url: url || null, source: _pageSource, sessionId: _sessionId });
+  localStorage.setItem('able_clicks', JSON.stringify(clicks));
+}
+// Note: able_fans is NEVER auto-rotated — fan records are permanent.
+```
+
+**Admin nudge when over 4MB (admin.html):**
+```javascript
+// Call on admin DOMContentLoaded
+const health = checkLocalStorageHealth();
+if (health.overLimit) {
+  showNudge('Your page data is taking up a lot of browser space. Syncing to ABLE\'s server will free it up.');
+}
+```
+
+**Retention policy summary:**
+| Key | Retention |
+|---|---|
+| `able_views` | 90 days |
+| `able_clicks` | 180 days |
+| `able_fans` | Never auto-deleted |
 
 ---
 
