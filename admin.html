@@ -4231,6 +4231,27 @@ function evaluateNudge() {
         };
       }
       return null;
+    },
+    () => {
+      // P0.2 artist-success: day-0 bio nudge (highest priority on first visit)
+      const visits = JSON.parse(localStorage.getItem('admin_visit_dates') || '[]');
+      if (visits.length <= 1 && !dismissed.includes('bio-nudge')) {
+        const profile = safeLS('able_v3_profile', {});
+        const name = profile.name || 'artist';
+        const handle = (name.toLowerCase().replace(/[^a-z0-9]+/g, '-')) || 'you';
+        return {
+          id: 'bio-nudge',
+          text: 'Put your ABLE link in your Instagram bio. That\'s the whole strategy.',
+          action: 'Copy link →',
+          href: '#',
+          onClick: () => {
+            navigator.clipboard.writeText(`https://ablemusic.co/${profile.handle || handle}`)
+              .then(() => showToast('Link copied'))
+              .catch(() => showToast('Copy failed'));
+          }
+        };
+      }
+      return null;
     }
   ];
 
@@ -4244,12 +4265,17 @@ function evaluateNudge() {
   document.getElementById('nudgeCard').style.display = 'none';
 }
 
-function showNudge({ id, text, action, href }) {
+function showNudge({ id, text, action, href, onClick }) {
   const card = document.getElementById('nudgeCard');
   document.getElementById('nudgeText').textContent = text;
   const actionEl = document.getElementById('nudgeAction');
   actionEl.textContent = action;
   actionEl.href = href;
+  if (onClick) {
+    actionEl.onclick = (e) => { e.preventDefault(); onClick(); };
+  } else {
+    actionEl.onclick = null;
+  }
   card.style.display = 'flex';
   card.dataset.nudgeId = id;
 }
@@ -6501,6 +6527,20 @@ function updateUpgradeBar() {
 }
 
 /* ── LOAD STATE FROM LOCALSTORAGE ── */
+// P0.1 artist-success: admin visit date tracking (drives nudge cadence)
+function recordAdminVisit() {
+  const today = new Date().toISOString().split('T')[0];
+  try {
+    const visits = JSON.parse(localStorage.getItem('admin_visit_dates') || '[]');
+    if (visits[visits.length - 1] !== today) {
+      visits.push(today);
+      if (visits.length > 60) visits.splice(0, visits.length - 60);
+      localStorage.setItem('admin_visit_dates', JSON.stringify(visits));
+    }
+  } catch(_) {}
+}
+recordAdminVisit();
+
 window.addEventListener('DOMContentLoaded', () => {
   // Hydrate from v3 profile key (wizard or admin saves)
   const v3data = safeLS(V3_KEY, {});
