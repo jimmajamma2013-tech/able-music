@@ -8006,7 +8006,9 @@
               consentVersion: '2026-03-16',
               consentSource: 'profile-signup-' + (signupSource || 'direct'),
               confirmed: false,
-              double_opted_in: false
+              double_opted_in: false,
+              level: 'listener',
+              isStarred: false
             })
             setLS('able_fans', fans)
             sessionStorage.setItem('able_this_fan_email', email)

@@ -1144,6 +1144,15 @@ body::before {
     .fan-star.starred {
       color: var(--dash-amber);
     }
+    .level-chips { display:flex; gap:6px; flex-wrap:wrap; }
+    .level-chip {
+      padding:5px 12px; border-radius:100px; font-size:11px; font-weight:600;
+      font-family:var(--font); cursor:pointer;
+      background:var(--dash-field); border:1px solid var(--dash-border); color:var(--dash-t2);
+      transition:all .15s;
+    }
+    .level-chip:hover { border-color:var(--acc); color:var(--dash-text); }
+    .level-chip.active { background:var(--acc); border-color:var(--acc); color:#0a0b0f; }
     .fans-export-row {
       padding: 12px 16px 4px;
       text-align: right;
@@ -3194,14 +3203,14 @@ function renderFanList(filter) {
   // List rows
   const listEl = document.getElementById('fansList');
   if (!listEl) return;
-  const starred = safeLS('able_starred_fans', []);
+  const legacyStarred = safeLS('able_starred_fans', []);
   const avatarColours = ['#e05242','#4e7cff','#9b59b6','#27ae60','#e67e22'];
 
   listEl.innerHTML = filtered.sort((a, b) => b.ts - a.ts).map(f => {
     const initial = (f.email || '?')[0].toUpperCase();
     const src = normaliseSource(f.source);
     const colour = avatarColours[initial.charCodeAt(0) % avatarColours.length];
-    const isStarred = starred.includes(f.email);
+    const isStarred = !!(f.isStarred || legacyStarred.includes(f.email));
     const isUnconfirmed = f.confirmed === false;
     const avatarHtml = isUnconfirmed
       ? `<div class="fan-avatar fan-avatar--unconfirmed" title="Awaiting confirmation">○</div>`
@@ -3229,16 +3238,18 @@ function renderFanList(filter) {
     });
   });
 
-  // Wire star toggles
+  // Wire star toggles — writes isStarred to fan record (P0.2 CRM)
   listEl.querySelectorAll('.fan-star').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
       const email = btn.dataset.email;
-      const s = safeLS('able_starred_fans', []);
-      const idx = s.indexOf(email);
-      if (idx >= 0) s.splice(idx, 1); else s.push(email);
-      setLS('able_starred_fans', s);
-      btn.classList.toggle('starred');
+      const fans = safeLS('able_fans', []);
+      const fan = fans.find(f => f.email === email);
+      if (fan) {
+        fan.isStarred = !fan.isStarred;
+        setLS('able_fans', fans);
+        btn.classList.toggle('starred', !!fan.isStarred);
+      }
     });
   });
 
@@ -3275,13 +3286,26 @@ function renderSourceBreakdown(fans) {
 
 function openFanDetailSheet(fan) {
   const src = normaliseSource(fan.source);
+  const curLevel = fan.level || 'listener';
+  const levels = ['listener','fan','supporter','core'];
+  const levelLabels = { listener:'Listener', fan:'Fan', supporter:'Supporter', core:'Core' };
+  const levelChips = levels.map(l =>
+    `<button class="level-chip ${l === curLevel ? 'active' : ''}" data-level="${l}" data-email="${escHtml(fan.email)}">${levelLabels[l]}</button>`
+  ).join('');
+  const campaignCtx = fan.campaignState ? `<div style="display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--acc);background:rgba(var(--acc-rgb,.244,185,66),.1);border-radius:4px;padding:2px 7px;margin-top:6px;">${fan.campaignState}</div>` : '';
+
   const body = `
     <div class="fan-detail-header" style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
       <div class="fan-avatar" style="background:#4e7cff;width:44px;height:44px;font-size:18px;">${escHtml((fan.email||'?')[0].toUpperCase())}</div>
       <div>
         <div style="font-size:14px;font-weight:600;color:var(--dash-text);">${escHtml(fan.email)}</div>
         <div style="font-size:11px;color:var(--dash-t3);margin-top:2px;">Joined ${new Date(fan.ts).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})} · via ${src.toUpperCase()}</div>
+        ${campaignCtx}
       </div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <div class="field-label" style="margin-bottom:8px;">Level</div>
+      <div class="level-chips" id="fanLevelChips">${levelChips}</div>
     </div>
     <div style="display:flex;flex-direction:column;gap:8px;">
       <div style="position:relative;">
@@ -3299,6 +3323,18 @@ function openFanDetailSheet(fan) {
     setLS('able_fans', fans.filter(f => f.email !== fan.email));
     closeAdminSheet();
     renderFanList();
+  });
+
+  // Level chip wiring
+  document.getElementById('fanLevelChips')?.querySelectorAll('.level-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const level = chip.dataset.level;
+      const email = chip.dataset.email;
+      const fans = safeLS('able_fans', []);
+      const f = fans.find(f => f.email === email);
+      if (f) { f.level = level; setLS('able_fans', fans); showToast('Saved'); }
+      document.querySelectorAll('#fanLevelChips .level-chip').forEach(c => c.classList.toggle('active', c.dataset.level === level));
+    });
   });
 }
 
@@ -5384,6 +5420,31 @@ function removeMoment(id) {
     }
     localStorage.removeItem('able_profile');
   } catch(e) { /* silent — never break on migration */ }
+})();
+
+/* ── CRM: STARRED FANS MIGRATION ── */
+// Migrates able_starred_fans string array → isStarred:true on fan records
+// One-time migration, then clears the old key
+(function migrateStarredFans() {
+  try {
+    const oldKey = 'able_starred_fans';
+    const starred = safeLS(oldKey, null);
+    if (!starred || !Array.isArray(starred) || !starred.length) return;
+    const fans = safeLS('able_fans', []);
+    let changed = false;
+    fans.forEach(f => {
+      if (starred.includes(f.email) && !f.isStarred) {
+        f.isStarred = true; changed = true;
+      }
+    });
+    if (changed) localStorage.setItem('able_fans', JSON.stringify(fans));
+    // Keep old key as read-only fallback for 1 session, then remove
+    if (sessionStorage.getItem('_starredMigrated')) {
+      localStorage.removeItem(oldKey);
+    } else {
+      sessionStorage.setItem('_starredMigrated', '1');
+    }
+  } catch (_) {}
 })();
 
 /* ── GREETING SYSTEM (§5.2) ── */
