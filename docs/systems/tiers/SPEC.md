@@ -476,4 +476,33 @@ The pause option appears only in the cancellation flow — not as a persistent o
 
 ---
 
-*Authority: this file is the canonical tier spec. For monetisation commission details, see `docs/systems/monetisation/SPEC.md`. For gold lock visual implementation, see `docs/systems/DESIGN_SYSTEM_SPEC.md`. For upgrade trigger timing in admin.html, see `docs/pages/admin/DESIGN-SPEC.md`.*
+---
+
+## 8. Pricing psychology — research notes (2026-03-16)
+
+These notes inform decisions about how tiers are presented, not what they cost. See `docs/systems/pricing/ANALYSIS.md` for the full pricing strategy document.
+
+### The £9 psychological anchor
+
+£9/month is below the £10 psychological threshold. Research across subscription SaaS consistently shows that £10 is where "cheap experiment" becomes "real commitment" in the user's mind. Do not price Artist at £10. The difference is not £1/month — it is how the artist categorises the decision.
+
+### "2 months free" always beats "save 17%"
+
+The annual billing framing should always be "£90/year — 2 months free" not "save 17%." Concrete savings (two free months) convert better than percentage savings (abstract arithmetic). This is confirmed across creator economy subscription products.
+
+### Three-tier anchoring on the pricing page
+
+Display order: Artist (£9) → Artist Pro (£19) → Label (£49). Showing Artist Pro first makes Artist feel like the sensible middle choice, not the downgrade from Pro. The "most artists start here" label should sit on Artist.
+
+### The freemium conversion window
+
+Industry benchmarks for intent-driven SaaS products: 5–15% of free users convert to paid within 90 days. ABLE targets the upper end of this range because:
+1. The 100-fan limit is a real, earned gate (not artificial feature restriction)
+2. The upgrade trigger moments are precisely timed to peak motivation
+3. The product is music-native and purpose-specific — low churn of newly acquired paying artists
+
+### Pause option conversion data (projected)
+
+SaaS businesses that offer a pause option instead of just cancellation typically retain 20–40% of would-be cancellations. Artists who pause and return have similar LTV to artists who never paused. Implement the pause-first cancellation flow before launch — not as a feature for later.
+
+*Authority: this file is the canonical tier spec. For monetisation commission details, see `docs/systems/monetisation/SPEC.md`. For gold lock visual implementation, see `docs/systems/DESIGN_SYSTEM_SPEC.md`. For upgrade trigger timing in admin.html, see `docs/pages/admin/DESIGN-SPEC.md`. For full pricing strategy analysis, see `docs/systems/pricing/ANALYSIS.md`.*

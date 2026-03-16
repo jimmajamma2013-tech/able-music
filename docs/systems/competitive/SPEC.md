@@ -507,6 +507,58 @@ Winamp ships a campaign-aware profile state system after achieving meaningful ar
 
 ---
 
+## Emerging platform moves — research update (2026-03-16)
+
+### Spotify's 2025 artist tool expansion
+
+Spotify paid out $11 billion in 2025 — the largest single-year payout in recorded music history. More artists earn over $100k/year from Spotify alone than were stocked in record stores during the CD era.
+
+**Key new features shipped by Spotify in 2025:**
+- **Countdown Pages** — artists can set a future release date; fans see a countdown on the Spotify artist page and can pre-save directly
+- **Clips for Wrapped** — short-form artist video tied into annual Wrapped data
+- **SongDNA** — interactive credit and sample mapping powered by WhoSampled
+- **Super listener identification** — Wrapped surfaces which fans are in the top percentile of engagement
+- **Song Credits expansion** — all contributors now visible on track pages
+
+**What this changes for ABLE's positioning:**
+
+Spotify's Countdown Pages are the closest Spotify has come to a pre-release campaign tool. The difference: the fan who pre-saves via Spotify's Countdown Page becomes a Spotify follower — not an email address. The artist gets aggregate pre-save counts, not individual fan identities. ABLE's pre-release state delivers something Spotify structurally cannot: the email address belongs to the artist.
+
+The "super listener identification" feature is significant context. Spotify acknowledges that some fans are more valuable than others — but the artist cannot contact those fans directly. ABLE's fan list and Close Circle features let the artist act on this insight, not just observe it.
+
+**Counter-positioning sharpened:** "Spotify identifies who your super-listeners are. ABLE tells you who signed up for your next release — and gives you their email address."
+
+### TikTok for Artists: global 2025
+
+TikTok for Artists is now globally available. It provides daily analytics dashboards showing song and post performance on TikTok specifically. This is the same "walled garden analytics" pattern as Spotify for Artists — useful data, no fan ownership.
+
+**Acquisition angle:** Artists who are growing fast on TikTok and not capturing their audience off-platform are leaving the most valuable data in TikTok's hands. These artists are warm ABLE prospects — they have the traffic, they are missing the capture.
+
+### Linktree: domain spam-flagging is an active threat to their users
+
+Linktree's shared domain (linktr.ee) has been associated with phishing scams. Multiple social platforms — including Instagram — have reportedly flagged linktr.ee links as potential spam. Artists report their Instagram Stories links being suppressed.
+
+This is a concrete, urgent switching trigger:
+- Artists whose links are being flagged are actively looking for an alternative with their own subdomain
+- ABLE's `ablemusic.co/[handle]` URL is not on a shared domain
+- Copy opportunity (principle-led, non-comparative): "Your bio link is your first impression. It should be yours, not a shared address."
+
+### Bandsintown: 700k artists, Amazon merch partnership
+
+Bandsintown has 700,000 registered artists and 100 million users (2024–2025). Launched a marketplace and Amazon Music partnership allowing fans to shop merch via artist profiles. Now provides live music charts (24 global and US city-specific).
+
+Spotify replaced Songkick with Bandsintown for concert listings — Bandsintown has become infrastructure for live music data. This does not threaten ABLE's core proposition. ABLE's shows section provides bio-link display; Bandsintown provides discovery network. Complementary layers.
+
+**ABLE's ongoing counter:** Bandsintown does not own the fan relationship. A "tracked" fan on Bandsintown is Bandsintown's data. ABLE captures the email address.
+
+### Insidr Music: new direct streaming entrant
+
+Insidr Music is entering the market with a direct-to-fan streaming subscription model for unsigned artists — positioning like Patreon or Substack for music, with higher per-stream payouts. This is a monetisation competitor for the inner ring of superfan relationships, not a bio-link competitor.
+
+**ABLE's positioning:** ABLE captures fans from cold traffic. Insidr converts committed fans into paying subscribers. Sequential, not competitive. The ABLE fan list is what makes an Insidr pitch possible.
+
+---
+
 ## What ABLE must never say about competitors
 
 **Never name competitors in marketing copy.**

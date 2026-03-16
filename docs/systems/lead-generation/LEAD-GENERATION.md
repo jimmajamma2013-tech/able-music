@@ -305,7 +305,17 @@ Online communities where independent artists discuss their craft, tools, and car
 | r/indieheads | Reddit | 650k | Low | Fan community; fan→artist loop only |
 | Independent Music Promotion | Facebook | ~50k | Medium | Good for direct artist targeting |
 | Music Business Worldwide Community | Facebook | ~30k | Low-Medium | More industry than artist-facing |
-| Various Discord servers | Discord | Variable | Medium | Music production communities; find via r/WATMM |
+| r/WATMM Discord (official) | Discord | Variable | High | The official Discord of the 430k r/WeAreTheMusicMakers subreddit — mix of producers and artists |
+| Splice Discord | Discord | Variable | Medium | Producer-focused; good for producer-artist crossover leads |
+| Genre-specific Discords (UK indie, UK rap, bedroom pop) | Discord | Variable | Medium | Search Disboard.org for "UK indie" or "UK rap" Discord servers |
+
+**Finding genre-specific Discords:** Use Disboard.org and Discord.me to search for music community Discord servers by genre and region. Filter by "verified" or "active" status. Do not join and immediately post about ABLE — apply the 30-day engagement rule in every server.
+
+**BBC Introducing as a lead source:**
+BBC Introducing-featured artists are validated by BBC editorial as "developing and real." They are searchable via the BBC Music website and BBC Sounds. Filtering BBC Introducing by region gives a list of UK-based independent artists at exactly the career stage ABLE serves. This is an underused research channel — the artists are already publicly validated as fitting the ICP.
+
+**Bandcamp Friday as a lead source:**
+On Bandcamp Friday days (8 per year in 2026), the "new arrivals" section of Bandcamp fills with UK independent artists releasing and promoting. Spending 2 hours browsing and building the target research spreadsheet on a Bandcamp Friday produces a higher-quality lead list than cold Instagram hashtag search. Reason: artists who publish on Bandcamp Friday are self-selecting as "I have fans who buy directly from me" — the highest qualification signal available without a conversation.
 
 **The 30-day build rule:**
 

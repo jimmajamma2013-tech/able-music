@@ -30,6 +30,81 @@ This document fills those gaps. The two docs together form the complete growth s
 
 ---
 
+## New acquisition channels — research update (2026-03-16)
+
+The following channels were identified via live research and are not yet in the 90-day plan. Each has been validated as containing ABLE's ICP.
+
+### Spotify for Artists: the 2025 feature context
+
+Spotify's 2025–2026 artist tool expansion is worth understanding precisely because it validates ABLE's market but does not directly threaten it. Key updates from their blog and MBW coverage:
+
+**What Spotify shipped in 2025:**
+- Music videos (100+ markets), Lossless audio for Premium
+- Expanded Song Credits visibility, SongDNA (interactive credit mapping via WhoSampled)
+- Upcoming Releases hub and Countdown Pages (pre-release features on-platform)
+- The Drop (weekly editorial destination), Showcase and Marquee campaign tools
+- Clips for Wrapped reach
+- "Super listener identification" in Wrapped — artists can now identify their most engaged fans
+- Monthly active listener metrics (separate from total listener count)
+
+**What this means for ABLE:** Spotify is building the in-app fan relationship layer. They are not building the owned fan list. The artist who uses Spotify Countdown Pages still sends fans back to Spotify. The email address never lands with the artist. ABLE's "Spotify knows how many people streamed your track; ABLE knows who signed up for the next one" counter is getting sharper as Spotify improves its in-app tools — because the contrast becomes more visible.
+
+**The 2025 Loud and Clear data (Spotify's own):** Over 1,500 artists earned $1M+ from Spotify in 2025. 80 artists earned $10M+. Spotify paid out $11B in 2025 — the largest single-year music payout by any retailer. These are artists who are earning at scale and still don't own their fan's email addresses.
+
+### Bandsintown: 700k artists, 100M users
+
+Bandsintown has 700,000 registered artists and 100 million users (confirmed 2024–2025). They launched a marketplace connecting artists with distribution, data, and merch tools. They partner with Amazon Music for merch sales on artist profile pages.
+
+**Acquisition angle for ABLE:** Artists registered on Bandsintown are exactly ABLE's ICP — they gig, they have fans, they have made themselves findable. The Bandsintown artist community (emails from Bandsintown, artist-facing content) is a channel to monitor for potential partnership or sponsorship. More immediately: every artist with a Bandsintown presence who has no separate bio link tool is a warm lead.
+
+### Bandzoogle: $16.4M in direct musician revenues (2023)
+
+Bandzoogle facilitated $16.4M in musician revenues in 2023 via direct sales. More than half came from merchandise. These are artists who have set up a direct-to-fan commerce presence — exactly the mindset ABLE needs.
+
+**Acquisition angle:** Bandzoogle artists who want a better mobile-first presence (Bandzoogle's pages are website-oriented, not bio-link optimised) are a natural fit for ABLE's Artist tier. The audience is small but high-intent.
+
+### BeatStars: $400M+ paid to creators, 9M+ tracks
+
+BeatStars has paid over $400M to creators and has 11 million+ beats in its marketplace. Their growth strategy includes AI tools (acquired Lemonaide AI), distribution services, and publishing administration. 1.5 million tracks downloaded monthly.
+
+**Acquisition angle:** BeatStars artists are primarily producers, not performing artists. But BeatStars' momentum shows the scale of the independent music creator economy. Producer relationships via BeatStars partnerships could be a channel into ABLE's target artists.
+
+### TikTok for Artists: global launch 2025
+
+TikTok for Artists is now available globally after beta testing. It offers daily analytics dashboards showing how songs and posts perform on the platform. This is the new competitive context for any bio-link tool — TikTok is building analytics infrastructure for artists inside its own walled garden.
+
+**Implication:** Artists whose primary channel is TikTok will be tempted to use TikTok's own analytics. ABLE's answer: TikTok's analytics show TikTok performance. ABLE shows fan ownership. The fan who left TikTok to sign up to an email list is worth 100× more than the fan who watched a TikTok video and scrolled on.
+
+### Insidr Music: new direct-to-fan streaming entrant
+
+Insidr Music is entering the market as a direct-to-fan streaming platform with a subscription model for unsigned artists. They position like Patreon or Substack for music, with significantly higher per-stream payouts than traditional streaming. This is not a bio-link competitor — it is a monetisation competitor for the "inner ring" of superfan relationships.
+
+**ABLE's positioning against Insidr:** ABLE captures fans from cold traffic (social bio link, QR code at shows, press links). Insidr converts committed fans into paying subscribers. These are sequential, not competitive. An ABLE artist could use ABLE to capture fans and then direct their most committed fans to Insidr for paid content. The fan email list (ABLE) is what makes the Insidr pitch possible.
+
+### UK-specific acquisition channels not yet in the plan
+
+**BBC Introducing:**
+BBC Introducing is the BBC's platform for unsigned and independent artists. Being featured on BBC Introducing is a significant career moment for UK independent artists and signals the exact profile ABLE is targeting. BBC Introducing artists can be found via the BBC website, local BBC radio station playlists, and the BBC Sounds app. A systematic list of recent BBC Introducing-featured artists is a high-quality lead source — these artists have been validated as "real and developing" by an editorial process that is well-respected in the UK scene.
+
+**AIM (Association of Independent Music):**
+AIM is the UK trade association for independent music. Their events (AIM Awards, AIM Seminars) and their social channels reach exactly the kind of independent artists, managers, and distributors who would adopt ABLE. Attending AIM events as a founder — not as a sponsor, but as a builder with a genuine product — is worth 50 cold DMs.
+
+**Bandcamp Friday UK artists:**
+Bandcamp has 8 Bandcamp Fridays per year in 2026 (waiving revenue fees). Active UK artists who participate in Bandcamp Friday are signalling: they have fans who buy directly, they care about the direct relationship, and they are not label-dependent. These artists are reachable via Bandcamp searches on Bandcamp Friday days and the week following (when they are most active on social).
+
+**Music producer Discord servers — specific targets:**
+Music production Discords are where UK independent artists and producers overlap. The following are reported (via producer community forums and social references) to have active independent artist/producer communities:
+- **r/WeAreTheMusicMakers Discord** — the official Discord of the 430k-member subreddit; mix of producers and independent artists
+- **Splice Discord** — Splice's official server; producer-focused but with artist community layers
+- Genre-specific Discords: UK rap, UK indie, bedroom pop communities (search "UK indie Discord" or "UK rap Discord" on Discord server listing sites like Disboard)
+
+**The 30-day-before-mentioning-ABLE rule applies in all Discord communities.** See the lead generation doc for the full community engagement strategy.
+
+**Latin Music superfan context (for Colombia expansion):**
+Luminate research indicates Latin music superfans in the US spend over 30% more on music-related activities than other superfans. This suggests strong willingness-to-pay for artist-direct tools in the Latin market. Combined with the Medellín independent scene, this validates the Colombia beachhead strategy with data. Add this to the investor conversation for the international expansion slide.
+
+---
+
 ## Part 1: The Growth Philosophy
 
 ### The growth pyramid
