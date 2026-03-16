@@ -1,300 +1,352 @@
 # ABLE Growth Loop — Path to 10
-**Created: 2026-03-16**
+**Updated: 2026-03-16**
 
-> Ordered implementation plan for taking the growth loop from 3.0/10 to 9.0/10. P0 requires no backend. P1 requires no backend. P2 is Supabase-blocked. True 10 requires real traffic data.
+> P0 and P1 require no backend. The `?ref=` fix is a one-afternoon implementation of already-written spec code. The "I make music too →" fork is now fully specced. 9/10 is achievable before first artist signs up.
 
 ---
 
-## P0 — Foundation (no backend required, implementable today)
+## Current score: 7/10 (spec complete, code not shipped)
 
-### P0.1 — `?ref=` injection on footer link
+The spec is written. The copy is decided. The JavaScript functions exist as documentation. The gap between 7/10 and 9/10 is: putting that code into the live files.
+
+---
+
+## P0 — The attribution fix (implement today, no backend required)
+
+**Score impact: 7/10 → 9/10**
+
+### P0.1 — `?ref=` injection on the footer link
+
 **File:** `able-v7.html`
-**Gap it closes:** Dimension 2 (Referral tracking) goes from 0 → 6
-**Effort:** ~20 lines of JS
+**The fix:** One function call on DOMContentLoaded.
 
-Add `initFooterLink()` to able-v7.html. Read artist slug from URL path or `localStorage.getItem('able_v3_profile').slug`. Set `#able-footer-cta` href to `https://ablemusic.co/?ref=[slug]`.
+The exact function is already written in SPEC.md §3. Copy it into able-v7.html. The function reads the artist slug from the URL path or `localStorage.getItem('able_v3_profile').slug`, then sets the footer link href:
+
+```javascript
+function initFooterLink() {
+  const footerLink = document.getElementById('able-footer-cta');
+  if (!footerLink) return;
+
+  footerLink.addEventListener('click', () => {
+    recordClick('Made with ABLE', 'footer', footerLink.href);
+  });
+
+  let slug = null;
+
+  // Priority 1: URL path slug
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  if (pathParts.length > 0) slug = pathParts[pathParts.length - 1];
+
+  // Priority 2: localStorage profile slug
+  if (!slug) {
+    try {
+      const profile = JSON.parse(localStorage.getItem('able_v3_profile') || 'null');
+      if (profile && profile.slug) slug = profile.slug;
+    } catch (e) { /* fallback to plain URL */ }
+  }
+
+  const base = 'https://ablemusic.co/';
+  footerLink.href = slug ? `${base}?ref=${encodeURIComponent(slug)}` : base;
+}
+
+document.addEventListener('DOMContentLoaded', initFooterLink);
+```
 
 Acceptance criteria:
-- Footer link contains `?ref=` when viewed at any artist profile URL
-- Falls back to plain `https://ablemusic.co/` when slug is unavailable
-- No JS error if `able_v3_profile` is absent or corrupt
+- Footer link contains `?ref=[slug]` at any artist profile URL
+- Falls back to plain `https://ablemusic.co/` if no slug is available
+- No JS error if `able_v3_profile` is absent, null, or corrupt
+- Footer click is tracked in `able_clicks` as `type: 'footer'`
 
 ---
 
-### P0.2 — Footer click tracked in analytics
-**File:** `able-v7.html`
-**Gap it closes:** Dimension 8 (Analytics) goes from 0 → 4
-**Effort:** 3 lines (inside `initFooterLink()` click listener)
+### P0.2 — Landing page referral detection and personalisation
 
-Call `recordClick('Made with ABLE', 'footer', footerLink.href)` on tap. This requires adding `'footer'` to the `ClickType` type in `docs/systems/analytics/SPEC.md`.
-
-Acceptance criteria:
-- Tapping the footer appears in `able_clicks` as `type: 'footer'`
-- Click is visible in admin analytics breakdown (once admin renders click type breakdown)
-
----
-
-### P0.3 — landing.html `?ref=` detection and sessionStorage
 **File:** `landing.html`
-**Gap it closes:** Dimension 3 (Destination quality) goes from 2 → 5, Dimension 5 (Fan-to-artist conversion) goes from 1 → 4
-**Effort:** ~30 lines of JS
 
-Add `initReferralLanding()` to landing.html. Read `?ref=` param. Store to `sessionStorage('able_referral', ref)`. Call `personaliseHero(ref)`.
+The exact function is already written in SPEC.md §4. Add to landing.html:
+
+```javascript
+function initReferralLanding() {
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  if (!ref) return;
+
+  sessionStorage.setItem('able_referral', ref);
+  personaliseHero(ref);
+}
+
+function personaliseHero(slug) {
+  const displayName = slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
+  const headline = document.getElementById('landing-headline');
+  const subline  = document.getElementById('landing-subline');
+  const heroCta  = document.getElementById('landing-hero-cta');
+
+  if (headline) headline.textContent = `${displayName} is on ABLE.`;
+  if (subline)  subline.textContent  = 'Create your own free page. It takes about 8 minutes.';
+  if (heroCta)  heroCta.textContent  = 'Create your free page →';
+
+  // Phase 2: replace with real artist name from Supabase
+  // fetchArtistName(slug).then(name => { if (name && headline) headline.textContent = `${name} is on ABLE.`; });
+}
+
+document.addEventListener('DOMContentLoaded', initReferralLanding);
+```
+
+Also add the IDs to landing.html's hero elements:
+- `id="landing-headline"` on the hero headline element
+- `id="landing-subline"` on the hero sub-headline element
+- `id="landing-hero-cta"` on the hero CTA link
 
 Acceptance criteria:
 - `landing.html?ref=nadia` shows "Nadia is on ABLE."
-- `landing.html?ref=the-1975` shows "The 1975 Is On ABLE." (slug → display name conversion)
-- `landing.html` without `?ref=` shows standard hero — zero regression
+- `landing.html?ref=the-1975` shows "The 1975 Is On ABLE." (acceptable Phase 1 approximation)
+- `landing.html` with no `?ref=` shows the standard hero — zero regression
 - `sessionStorage.getItem('able_referral')` is set after the landing page loads with a valid `?ref=`
 
 ---
 
-### P0.4 — start.html referral capture
-**File:** `start.html`
-**Gap it closes:** Dimension 5 (Fan-to-artist conversion) goes from 4 → 7
-**Effort:** ~10 lines (in the existing `saveProfile()` function)
+### P0.3 — "I make music too →" fork on referred landing
 
-On wizard completion, call `captureReferral()` and merge `referredBy` into the profile object before writing to `localStorage`. Clear `sessionStorage('able_referral')` after capture.
+**File:** `landing.html`
+**This is now fully specced in ANALYSIS.md**
 
-Acceptance criteria:
-- Completing the wizard after visiting `landing.html?ref=nadia` results in `able_v3_profile.referredBy = 'nadia'`
-- Completing the wizard without a referral results in no `referredBy` field (not `null`, not empty string — simply absent)
-- `sessionStorage` is cleared of the referral after capture
+Below the main hero CTA, when `?ref=` is present, add a secondary text link:
 
----
+```html
+<!-- Only rendered when ?ref= is present — added by personaliseHero() -->
+<div class="landing-fork" id="landing-fork" style="display:none">
+  <p class="landing-fork-prompt">Already here as a fan?</p>
+  <a href="#" class="landing-fork-link" id="landing-fork-cta">I make music too →</a>
+</div>
+```
 
-### P0.5 — Footer tap target fix
-**File:** `able-v7.html` (CSS)
-**Gap it closes:** Dimension 1 (Footer visibility) goes from 5 → 7
-**Effort:** ~5 CSS lines
+In `personaliseHero()`, after personalising the hero:
 
-Ensure `.able-footer-link` has `min-height: 44px` and `line-height: 44px` with compensating negative margins. Verify across all 4 themes.
-
-Acceptance criteria:
-- Tap target is >= 44px on mobile at 375px viewport width
-- Link is readable on Dark, Light, Glass, and Contrast themes
-- No horizontal overflow at 320px (minimum supported width)
-
----
-
-### P0.6 — Add `'footer'` to canonical source values
-**Files:** `docs/systems/CROSS_PAGE_JOURNEYS.md`, `docs/systems/analytics/SPEC.md`
-**Gap it closes:** Dimension 8 (Analytics) goes from 4 → 6
-**Effort:** Doc edits only (no code)
-
-Add `footer: 'footer'` to `SOURCE_VALUES` in CROSS_PAGE_JOURNEYS.md. Add `'footer'` to `AnalyticsSource` type in analytics/SPEC.md. Add referrer-based detection for ablemusic.co in `detectSource()`.
-
-Acceptance criteria:
-- `'footer'` appears in canonical source values list
-- `detectSource()` returns `'footer'` when `document.referrer` includes `ablemusic.co/`
-
----
-
-**P0 score impact: 3.0 → 6.2/10**
-
----
-
-## P1 — Visibility and attribution (no backend required)
-
-### P1.1 — Admin nudge: referred signups count
-**File:** `admin.html`
-**Gap it closes:** Dimension 4 (Artist incentive) goes from 4 → 7
-**Effort:** ~20 lines (read `referredBy` from all profiles in localStorage, count matches)
-
-In the Fans section of admin.html, query all localStorage artist profiles for `referredBy === currentArtistSlug`. Count them. Show nudge: "1 artist has created a page after visiting yours." (see SPEC.md §7 for full copy).
-
-Note: This approach works only while ABLE is localStorage-first. When Supabase lands, this query moves server-side. The admin nudge UI is the same either way.
-
-Acceptance criteria:
-- Nudge appears when `referredSignups >= 1`
-- Nudge is absent (not shown, not zero-stated) when `referredSignups === 0`
-- Copy is singular/plural correct (1 artist / N artists)
-- Nudge dismisses correctly if artist dismisses it (stores in `able_dismissed_nudges`)
-
----
-
-### P1.2 — `'footer'` in admin source breakdown
-**File:** `admin.html`
-**Gap it closes:** Dimension 8 (Analytics) goes from 6 → 8
-**Effort:** Admin source breakdown bars already exist — ensure `'footer'` is a labelled source
-
-The admin analytics source breakdown already renders bars for each source value. Ensure:
-- `'footer'` source appears with label "ABLE footer" (not raw `footer` string)
-- Source badge in fan list can show "ABLE footer" for fans who signed up after a footer tap
-
-Acceptable label map addition:
 ```javascript
-const SOURCE_LABELS = {
-  ig:            'Instagram',
-  tt:            'TikTok',
-  sp:            'Spotify',
-  qr:            'QR code',
-  story:         'Story',
-  direct:        'Direct',
-  email:         'Email',
-  'fan-dashboard': 'Fan dashboard',
-  twitter:       'Twitter',
-  footer:        'ABLE footer',  // NEW
-  other:         'Other',
+// Show the fork and set its URL
+const fork = document.getElementById('landing-fork');
+const forkCta = document.getElementById('landing-fork-cta');
+
+if (fork) fork.style.display = 'block';
+if (forkCta) forkCta.href = `start.html?ref=${encodeURIComponent(slug)}&source=artist-page`;
+```
+
+CSS (consistent with ABLE's muted-attribution aesthetic):
+
+```css
+.landing-fork {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.landing-fork-prompt {
+  font-size: 13px;
+  color: var(--color-text-3);
+  opacity: 0.6;
+  margin: 0 0 8px;
+}
+
+.landing-fork-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-2);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  transition: color 0.15s ease;
+}
+
+.landing-fork-link:hover {
+  color: var(--color-text);
+}
+```
+
+The fork is invisible on the standard landing page. It only appears when `personaliseHero()` runs, which only runs when `?ref=` is present.
+
+Acceptance criteria:
+- Fork is invisible at `landing.html` (no ref) — standard hero only
+- Fork is visible at `landing.html?ref=nadia` — below primary CTA, with separator
+- Fork link points to `start.html?ref=nadia&source=artist-page`
+- Fork link text is exactly: "I make music too →"
+- Prompt text is exactly: "Already here as a fan?"
+- No horizontal overflow at 375px
+
+---
+
+### P0.4 — start.html referral capture
+
+**File:** `start.html`
+
+Already specced in SPEC.md §5. Add to the existing `saveProfile()` function:
+
+```javascript
+function captureReferral() {
+  return sessionStorage.getItem('able_referral') || null;
+}
+
+// In saveProfile(profileData):
+const referral = captureReferral();
+
+// Read source from URL params
+const urlParams = new URLSearchParams(window.location.search);
+const source = urlParams.get('source') || null;
+
+const profile = {
+  ...profileData,
+  ...(referral ? { referredBy: referral } : {}),
+  ...(source   ? { signupSource: source } : {}),
+  createdAt: Date.now(),
+};
+
+localStorage.setItem('able_v3_profile', JSON.stringify(profile));
+
+if (referral) sessionStorage.removeItem('able_referral');
+```
+
+When `source=artist-page` is present, also show a one-line contextual note on the wizard opening screen:
+
+```javascript
+// At start.html DOMContentLoaded
+function initWizardContext() {
+  const params = new URLSearchParams(window.location.search);
+  const ref    = params.get('ref');
+  const source = params.get('source');
+
+  if (source === 'artist-page' && ref) {
+    const displayName = ref
+      .split('-')
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+
+    const contextEl = document.getElementById('wizard-context-note');
+    if (contextEl) {
+      contextEl.textContent = `You found us through ${displayName}.`;
+      contextEl.style.display = 'block';
+    }
+  }
+}
+```
+
+Add `id="wizard-context-note"` as a hidden paragraph near the top of the wizard first step. Style as `font-size: 13px; color: var(--color-text-3); opacity: 0.7;`. Shown only when `source=artist-page`.
+
+Acceptance criteria:
+- Completing the wizard after `landing.html?ref=nadia` → `able_v3_profile.referredBy = 'nadia'`
+- Completing via `start.html?ref=nadia&source=artist-page` → `able_v3_profile.referredBy = 'nadia'`, `signupSource: 'artist-page'`
+- Completing without a referral → no `referredBy` field (absent, not null)
+- `sessionStorage` cleared after capture
+- Wizard context note "You found us through Nadia." appears only on the artist-page path
+
+---
+
+### P0.5 — Add canonical source values
+
+**Files:** `docs/systems/CROSS_PAGE_JOURNEYS.md`, `docs/systems/analytics/SPEC.md`
+
+Two new source values to add:
+- `'footer'` — visitor arrived at landing.html via a "Made with ABLE ✦" footer tap
+- `'artist-page'` — new artist completed wizard via the "I make music too →" fork
+
+In `SOURCE_VALUES`:
+```javascript
+const SOURCE_VALUES = {
+  // ... existing ...
+  footer:        'footer',       // Arrived at landing.html from artist profile footer
+  'artist-page': 'artist-page',  // Completed wizard via "I make music too →" fork
 };
 ```
 
-Acceptance criteria:
-- "ABLE footer" label appears in source breakdown if any footer-sourced views exist
-- Source badge "ABLE footer" appears in fan list for fans who signed up from a footer tap
-
----
-
-### P1.3 — Personalised landing uses artist name (Phase 1 approximation)
-**File:** `landing.html`
-**Gap it closes:** Dimension 3 (Destination quality) goes from 5 → 7
-**Effort:** Already in P0.3 — this is the quality gate confirming it looks right
-
-After P0.3 ships, manually verify these cases in the browser:
-- `?ref=nadia` → "Nadia is on ABLE." — single-word slug, reads correctly
-- `?ref=nadia-rose` → "Nadia Rose is on ABLE." — two-word slug, reads correctly
-- `?ref=the-1975` → "The 1975 Is On ABLE." — mixed alphanumeric, acceptable (capitalisation of "1975" is fine)
-- `?ref=dj-shadow` → "Dj Shadow Is On ABLE." — note: "Dj" capitalises oddly. Phase 2 (Supabase artist name lookup) fixes this. Acceptable in Phase 1.
-- `?ref=` (empty) → falls back to standard landing. No crash.
-- `?ref=<script>alert(1)</script>` → `encodeURIComponent` on write, `textContent` on read (not `innerHTML`) — XSS safe.
-
-Acceptance criteria:
-- All above cases render without JS errors
-- XSS: setting `headline.textContent` (not `innerHTML`) prevents injection
-
----
-
-**P1 score impact: 6.2 → 8.0/10**
-
----
-
-## P2 — Discovery and depth (Supabase required)
-
-### P2.1 — Personalised landing uses real artist name from Supabase
-**File:** `landing.html`
-**Requires:** Supabase `profiles` table with `slug` and `name` columns
-**Gap it closes:** Dimension 3 (Destination quality) goes from 7 → 9
-
-Replace the slug-capitalisation approximation with a live `fetchArtistName(slug)` call:
-
+In `SOURCE_LABELS` (admin display):
 ```javascript
-async function fetchArtistName(slug) {
-  try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('name')
-      .eq('slug', slug)
-      .single();
-    if (error || !data) return null;
-    return data.name;
-  } catch (e) {
-    return null; // network failure — fall back to slug-derived name
-  }
-}
-
-// In personaliseHero(), after Phase 1 approximation:
-fetchArtistName(slug).then(name => {
-  if (name && headline) headline.textContent = `${name} is on ABLE.`;
-});
+const SOURCE_LABELS = {
+  // ... existing ...
+  footer:        'ABLE footer',
+  'artist-page': 'Artist page fork',
+};
 ```
 
-Acceptance criteria:
-- Artist with slug `dj-shadow` and name "DJ Shadow" shows "DJ Shadow is on ABLE."
-- Network failure falls back to slug-capitalisation without error
-- Supabase query uses anon key — no auth required for public artist name lookup
+In `detectSource()` — add after existing `?src=` check:
+```javascript
+if (referrer.includes('ablemusic.co/')) return 'footer';
+```
 
 ---
 
-### P2.2 — Referred signups in admin via Supabase
+**P0 score impact: 7/10 → 9/10**
+
+These five items are the entire gap between the spec and the live system. None require a backend. All are implementable in one focused afternoon.
+
+---
+
+## P1 — Artist visibility (no backend required)
+
+### P1.1 — Admin nudge: referred signups count
+
 **File:** `admin.html`
-**Requires:** Supabase `profiles` table with `referred_by` column
-**Gap it closes:** Dimension 4 (Artist incentive) goes from 7 → 8.5
+**Copy:** "1 artist has created a page after visiting yours." (singular) / "3 artists have created their pages after visiting yours." (plural)
 
-Replace the localStorage scan (P1.1) with a Supabase query:
+In the Fans section of admin.html, after loading fan data, scan localStorage for any profiles with `referredBy === currentArtistSlug`. Show the nudge if count >= 1. Dismissable via `able_dismissed_nudges`.
 
-```javascript
-const { count } = await supabase
-  .from('profiles')
-  .select('*', { count: 'exact', head: true })
-  .eq('referred_by', currentArtistSlug);
-```
+Note: this works reliably only in single-device scenarios (same browser). It becomes cross-device accurate when Supabase is live. Mark in the UI: "On same device — full count available when synced."
 
-Show the count in the admin nudge and, once >= 1, promote to a stat card in the "Your impact" section.
+### P1.2 — `'footer'` label in admin analytics
+
+**File:** `admin.html`
+
+Ensure the source breakdown bar chart renders `'footer'` with label "ABLE footer" and `'artist-page'` with label "Artist page fork".
 
 ---
 
-### P2.3 — Artist directory from referred landing
-**File:** New page: `directory.html` (or section of landing.html)
-**Requires:** Supabase `profiles` with `genre_vibe` column
-**Gap it closes:** Dimension 6 (Discovery value) goes from 0 → 7
-
-A referred visitor who lands on `landing.html?ref=nadia` (Nadia is tagged `Electronic / Club`) sees a strip at the bottom of the landing page:
-
-```
-Other artists on ABLE
-[3 artist cards — same genre_vibe as referrer]
-```
-
-Each card: artist name + accent colour chip + "View page →" link.
-
-This is passive discovery — no algorithm, no ranking, no engagement scoring. Just "other artists who are similar."
-
-Acceptance criteria:
-- Strip only shows when `?ref=` is present and the referring artist has a `genre_vibe` set
-- Falls back gracefully if Supabase query fails (strip simply absent)
-- Maximum 3 artist cards — does not overwhelm the primary CTA
+**P1 score impact: maintains 9/10, increases confidence**
 
 ---
 
-### P2.4 — Platform-level growth loop analytics
-**Requires:** Supabase `profiles` table + internal admin view (not artist-facing)
-**Gap it closes:** Dimension 8 (Analytics) goes from 8 → 9.5
+## P2 — Supabase-dependent improvements (after backend is live)
 
-Internal Supabase view:
+These items cannot be built without a backend. They are not blocking 9/10.
 
-```sql
-create view growth_loop_stats as
-select
-  p.slug           as referring_artist,
-  p.name           as referring_artist_name,
-  count(r.id)      as referred_signups,
-  count(r.id) * 1.0 / nullif(p.footer_clicks, 0) as footer_conversion_rate
-from profiles p
-left join profiles r on r.referred_by = p.slug
-group by p.slug, p.name, p.footer_clicks
-order by referred_signups desc;
-```
-
-`p.footer_clicks` is a counter column on `profiles` incremented (via Supabase function or Netlify function) each time a footer link is tapped on that artist's page.
-
-This is an internal analytics surface — not exposed to artists directly in V1. Used to:
-1. Identify the top 10 referring artists (to evaluate incentive programme in Phase 3)
-2. Measure footer conversion rate (taps → signups)
-3. A/B test landing page copy changes against measured conversion
+| Item | Gap it closes | Effort |
+|---|---|---|
+| Real artist name on personalised landing | "Dj Shadow" → "DJ Shadow" | 20 lines + Supabase query |
+| Referred signup count across devices | Admin nudge becomes accurate for all devices | Supabase query swap |
+| "Artists like this" discovery strip | Referred landing shows 3 similar artists | New Supabase query |
+| Platform growth loop analytics (top referring artists) | Measure which artists generate most signups | SQL view in SPEC.md §6 |
+| PostHog attribution tracking | Footer conversion rate measured, A/B test possible | PostHog integration |
 
 ---
 
-**P2 score impact: 8.0 → 9.0/10**
+## Score summary
 
----
-
-## Summary
-
-| Phase | Actions | Score impact | Backend required |
+| Phase | Key actions | Score | Backend required |
 |---|---|---|---|
-| P0 | `?ref=` injection, click tracking, sessionStorage carry, tap target, source value | 3.0 → 6.2 | No |
-| P1 | Admin nudge, source breakdown label, landing QA | 6.2 → 8.0 | No |
-| P2 | Supabase name lookup, Supabase referral count, artist directory, platform analytics | 8.0 → 9.0 | Yes |
-| True 10 | Real traffic data, A/B tested copy, conversion rate measured | 9.0 → 9.0+ | Yes + time |
+| Today (spec) | Nothing implemented yet | 7/10 | No |
+| P0 shipped | ?ref= fix + landing personalisation + "I make music too →" fork | 9/10 | No |
+| P1 shipped | Admin nudge + source labels | 9/10 (more visible) | No |
+| P2 shipped | Real names + cross-device counts + discovery strip | 9.5/10 | Yes |
+| 10/10 | Real data, A/B tested copy, PostHog attribution confirmed | 10/10 | Yes + time |
 
 ---
 
-## What prevents a 10
+## What prevents a true 10
 
-A 10 requires things that cannot be specced — only observed:
-1. **Real referral data**: does the `?ref=` system produce measurable uplift in signups?
-2. **Conversion rate measurement**: what percentage of footer taps become new artist profiles?
-3. **Copy validation**: does "Nadia is on ABLE." outperform the generic landing headline? A/B test required.
-4. **Artist directory quality**: does the "artists like this" strip produce genuine discovery, or just noise?
+A true 10 requires things that can only be observed, not specced:
+1. Does the `?ref=` personalisation ("Nadia is on ABLE.") convert better than the generic headline? Requires traffic + A/B test.
+2. What percentage of footer taps become new artist profiles? Set a target (2% is a reasonable benchmark) before measuring — so the measurement is meaningful.
+3. Does the "I make music too →" fork produce a different-quality artist than cold signups? Requires cohort analysis after 50+ referred signups.
 
-None of these require more spec. They require shipped code and real users.
+None of these need more spec. They need shipped code and real users.
+
+---
+
+## The single action that unlocks everything
+
+**Implement `initFooterLink()` in able-v7.html.** Today.
+
+20 lines of JavaScript. Already written. Already in SPEC.md §3.
+
+Without this, every other item in this document is theoretical. With it, the attribution chain closes and the entire growth loop becomes measurable.

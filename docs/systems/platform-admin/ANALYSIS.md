@@ -1,88 +1,191 @@
-# ABLE Platform Admin — Current State Analysis
-**Created: 2026-03-16 | Status: ACTIVE**
+# ABLE Platform Admin — Current State Analysis (Updated)
+**Updated: 2026-03-16 | Status: ACTIVE**
+
+> The SQL query library is written and ready. Nothing has been run yet. The admin panel does not exist as a proper interface. This document audits what James can actually do today, what he needs before the first artist signs up, and what he needs before the first 50 artists.
 
 ---
 
-## What this document is
+## What James can actually do today
 
-This is an honest assessment of James's ability to manage the ABLE platform right now. Not `admin.html` — that is the artist's dashboard for their own page. This is the founder-level ability to see and control the entire platform: every artist, every fan, billing, moderation, compliance.
+**Today's answer: everything requires direct Supabase dashboard navigation.**
 
----
+To do any administrative task right now, James opens `https://app.supabase.com`, finds the ABLE project, and either:
+- Browses the Table Editor (row-by-row, no aggregate views)
+- Types raw SQL into the SQL Editor (from memory or from SPEC.md)
 
-## What exists today
+The 12 SQL queries in SPEC.md are ready. None of them have been saved as named queries in the Supabase SQL editor. None have been tested against the real database. The queries are documentation. They are not operational tooling yet.
 
-Nothing. Zero.
+**Specific capability assessment today:**
 
-James currently has no purpose-built tool to manage the ABLE platform. The only way to do anything administrative today is to log into the Supabase dashboard at `https://app.supabase.com` and interact with tables directly. That means:
+| Task | Can James do it today? | How? |
+|---|---|---|
+| See all artists and their tiers | Yes | Table Editor → profiles table → filter profile_type = 'artist' |
+| Find a specific artist by email | Yes | Table Editor → search, or raw SQL |
+| Delete a fan (GDPR) | Technically yes | Must manually find records across fans, fan_actions, support_purchases — no query saved to guide this |
+| Suspend an artist | Yes | Table Editor → find row → edit tier column |
+| Override tier | Yes | Table Editor → find row → edit tier column |
+| See platform stats (total artists, fans) | No | Would require running COUNT queries manually |
+| See signups by day | No | Would require a GROUP BY query from memory |
+| See which artists have the most fans | No | Would require a JOIN query from memory |
 
-- To view all artists: browse the `profiles` table in the Supabase table editor
-- To suspend an artist: find their row and manually edit the `tier` column
-- To delete an artist: manually cascade-delete across 10+ tables or run raw SQL
-- To find a fan for a GDPR request: search the `fans` table by email
-- To view platform growth: count rows in Supabase and do maths manually
-- To check billing: open Stripe separately, cross-reference against Supabase by email
-- To check for errors: log into Netlify and read function logs
-
-This is workable at zero artists. It breaks down fast. At 50 artists it becomes painful. At 200 it becomes a liability — legally, operationally, and practically.
-
----
-
-## Dimension scores (today)
-
-### 1. Artist management — 0/10
-No way to view all artists in a single view. No search by name, email, or handle. No suspend/unsuspend action. No delete action (would require manually cascading across profiles, fans, clicks, views, releases, events, merch_items, support_packs, snap_cards, broadcasts). No tier override without direct SQL. No last-active visibility.
-
-### 2. Fan management — 0/10
-No cross-platform fan view. Each artist's fans are scoped to that artist in the Supabase table editor. Finding a specific fan by email requires knowing which artist they signed up under, or running a raw SQL query. GDPR deletion requires identifying all records across fans, fan_actions, support_purchases — no tooling exists to do this.
-
-### 3. Platform analytics — 0/10
-No total artist count. No tier distribution. No daily/weekly/monthly signups. No churn data. No fan count across all artists. No view/click totals. All of this data exists in Supabase — there is simply no surface to view it.
-
-### 4. Billing management — 0/10
-Stripe is a separate system. Supabase stores `stripe_customer_id` and `stripe_subscription_id` on the profiles table, but there is no view that shows subscription status, failed payments, or revenue. Knowing who is paying, at what tier, and whether their payment is current requires cross-referencing Stripe and Supabase manually by email.
-
-### 5. Content moderation — 0/10
-No flagging mechanism. No moderation queue. No way to see recently added snap cards, artist bios, or profile artwork across the platform. If an artist uploads something inappropriate, there is no system to catch it. Discovery would require a user report or manual periodic table scans.
-
-### 6. Feature flags — 0/10
-No feature flag system exists. There is no `feature_flags` table, no environment-level config, and no per-artist beta access mechanism. Rolling out a new feature to a subset of artists means either modifying code or manually updating tier values.
-
-### 7. Impersonation / "view as artist" — 0/10
-No way to log in as a specific artist to debug their experience. Diagnosing artist-reported issues requires asking the artist to describe what they see, or building a separate test account.
-
-### 8. Support ticket management — 0/10
-No support system. No ticket queue. No contact form that routes to a tracked inbox. An artist who emails support gets a reply from an email client — nothing logged, nothing tracked, no history.
-
-### 9. Operational visibility — 0/10
-No error monitoring. Netlify function logs exist but require logging into Netlify to read, are not searchable, and expire. No alerting on failed payments, failed fan-capture emails, or failed Spotify imports. No uptime monitoring.
-
-### 10. Legal compliance tooling — 0/10
-GDPR data export and deletion are specified in `BACKEND_SCHEMA.md` as API endpoints (`GET /api/fan/export`, `DELETE /api/fan/:fanId`), but they are not built. A GDPR deletion request today requires manually running SQL across multiple tables. A data portability request (SAR) cannot be fulfilled without writing custom queries.
+The honest summary: basic lookups work. Anything that requires a query (stats, GDPR across tables, joined data) is error-prone without the query library saved and ready.
 
 ---
 
-## Baseline score: 0/10
+## What the SQL library gives James (when activated)
 
-This is not a criticism — it is the expected state at day zero of a pre-launch product. Every platform starts here. The important thing is to understand exactly what this means operationally, what breaks first, and when to build what.
+Once the 12 queries are saved in the Supabase SQL editor as named queries, James gains:
+
+**Immediate operational capability:**
+- Platform summary in one query: total artists by tier, total fans, total views, total clicks
+- Artist list with fan count: sorted by fans, tier, or signup date
+- Artist lookup by email, handle, or partial name
+- Full artist data dump for support: all stats in one query, one artist
+- GDPR fan deletion: find all records first, delete with confirmed query, verify deletion
+- Tier override: update with timestamp, confirm result
+- Artist suspension: set tier to 'suspended', confirm
+- Fan count per artist: sorted descending
+
+**What it does not give:**
+- Any UI. Still requires Supabase dashboard login.
+- Any Stripe visibility. Revenue requires opening Stripe separately.
+- Any alerting. Platform errors, failed payments, and unusual patterns are invisible.
+- Content moderation. No flagging mechanism, no moderation queue.
+- Operational visibility. Netlify logs require Netlify login; they do not surface in Supabase.
 
 ---
 
-## The real operational risk at zero
+## What James needs before the first artist signs up
 
-The risk is not "James can't see a pretty dashboard." The risk is:
+Three things. That is all. They take 35 minutes total.
 
-1. **A GDPR deletion request arrives.** An artist or fan asks James to delete all their data. Under GDPR, James has 30 days to comply. Without tooling, this requires finding and deleting records across 10+ tables manually. Miss something and it is a compliance failure.
+### Action 1: Save the 12 SQL queries in Supabase (20 minutes)
 
-2. **An artist uses ABLE to post something harmful.** There is no moderation system. Discovery depends on external reports. Time to action depends on James being available.
+Go to the Supabase SQL Editor. For each of the 12 queries in SPEC.md, paste the query and save it with a consistent naming convention:
 
-3. **A subscription payment fails and James doesn't know.** The artist's tier doesn't downgrade automatically. They continue using Pro features on a lapsed payment.
+```
+admin: platform summary
+admin: all artists (newest first)
+admin: all artists (by tier)
+admin: find artist by email
+admin: find artist by handle
+admin: fan count per artist
+admin: gdpr — find fan records
+admin: gdpr — delete fan
+admin: suspend artist
+admin: override tier
+admin: top artists by fans
+admin: full artist data (support)
+```
 
-4. **An artist reports a bug.** James cannot reproduce it because he cannot see their data without navigating raw Supabase tables.
+After saving, run each one with a test value to confirm it executes without error. Fix any schema mismatches — the queries assume `profile_type`, `double_opted_in`, `status` columns exist. If they do not, add them before first artist sign-up.
 
-5. **James needs to check how the platform is growing.** There is no number to look at.
+This is the "35 minutes of P0" plan — see PATH-TO-10.md for exact sequence.
 
-The SQL query library described in `SPEC.md` resolves items 1, 3, 4, and 5 at minimal cost. Content moderation and alerting require more build — but they are P2, not P0.
+### Action 2: Add `status` column to profiles table (5 minutes)
+
+```sql
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'active';
+CREATE INDEX IF NOT EXISTS idx_profiles_status ON profiles(status);
+-- Valid values: 'active' | 'suspended' | 'deleted'
+```
+
+The existing SPEC.md queries use `tier = 'suspended'` as a workaround. The `status` column is cleaner — `tier` should describe what a user has paid for, not whether they are suspended. Adding this column now avoids a schema migration later.
+
+### Action 3: Create `admin_actions` table (5 minutes)
+
+```sql
+CREATE TABLE IF NOT EXISTS admin_actions (
+  id           TEXT PRIMARY KEY,
+  target_type  TEXT NOT NULL,
+  target_id    TEXT NOT NULL,
+  action       TEXT NOT NULL,
+  value        TEXT,
+  reason       TEXT,
+  performed_at INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_admin_actions_target ON admin_actions(target_type, target_id);
+CREATE INDEX IF NOT EXISTS idx_admin_actions_performed_at ON admin_actions(performed_at);
+```
+
+Every suspension, deletion, and tier override should be logged here with a reason. This is the audit trail. If a GDPR request comes in, the audit trail proves the action was taken.
+
+**After these three actions: James can manage the platform competently for the first 50 artists.**
 
 ---
 
-*This analysis should be re-scored after each build phase. Target: 7/10 after V1 SQL library, 8/10 after P1 HTML admin, 10/10 after P2 full build.*
+## What James needs before the first 50 artists
+
+### A tested GDPR deletion path
+
+Before any real artist signs up, the GDPR deletion query must have been run against a real database record (a test fan) and confirmed to work. Not read. Executed.
+
+The exact test:
+1. Create a test fan record in the fans table (insert directly via Table Editor or SQL)
+2. Run `admin: gdpr — find fan records` with the test email — confirm all records show
+3. Run `admin: gdpr — delete fan` with the test email
+4. Run `admin: gdpr — find fan records` again — confirm 0 results
+5. Check fan_actions table — confirm cascade deletion worked
+6. Check support_purchases — confirm anonymisation query works if test purchase exists
+
+This takes 15 minutes and means James can respond to a GDPR request with confidence, not with scramble.
+
+### A working tier override (tested)
+
+Same principle. Run a test:
+1. Find a test profile
+2. Run the tier override query: set to 'pro'
+3. Confirm the profile shows 'pro' in the profiles table
+4. Reset to 'free'
+5. Confirm
+
+If this test fails (schema mismatch, wrong column name), fix it before first artist signs up — not after.
+
+### Stripe webhook handler (separate from SQL library)
+
+The most dangerous silent failure at launch is a paid subscription's card expiring without ABLE knowing. The Stripe webhook handler that listens for `customer.subscription.deleted` and `invoice.payment_failed` events and updates the artist's tier accordingly must be live before the first paid subscription. This is separate from the admin SQL library — it is backend infrastructure, not admin tooling.
+
+---
+
+## What James needs before the first 50 artists
+
+Beyond the basics above, the P1 threshold is:
+
+### Usage dashboard
+
+At 20–30 artists, the platform summary query runs daily becomes a meaningful check. At 50 artists, running SQL queries individually for basic questions feels slow. This is the trigger for building `platform-admin.html` — when SQL queries feel repetitive for the volume of tasks needed.
+
+### Churn alerts
+
+When the first paid subscriptions exist, a weekly check for `status = 'past_due'` subscriptions is essential. The n8n weekly digest (specced in PATH-TO-10.md) handles this automatically. Before n8n is live, a Monday Supabase query: find any profiles where `tier != 'free'` but the Stripe subscription status is not 'active'.
+
+### Broadcast capability
+
+At 30+ artists, the ability to send a message to all artists ("we deployed a new feature", "maintenance window tonight") is needed. This is either a Buttondown/Mailchimp-style email blast to all artist email addresses (extractable from Supabase with one query) or a Netlify function that emails all artists programmatically. Either way, the artist email list query is:
+
+```sql
+SELECT name, email FROM profiles
+WHERE profile_type = 'artist' AND status = 'active'
+ORDER BY created_at ASC;
+```
+
+This is operational from day one.
+
+---
+
+## Score: current vs target
+
+| Dimension | Today (nothing run) | After 35-min P0 | After P1 HTML admin |
+|---|---|---|---|
+| Artist management | 1/10 | 6/10 | 9/10 |
+| Fan management | 1/10 | 6/10 | 8/10 |
+| Platform analytics | 0/10 | 5/10 | 7/10 |
+| GDPR compliance | 0/10 | 7/10 | 9/10 |
+| Billing visibility | 0/10 | 1/10 | 3/10 |
+| Operational visibility | 0/10 | 2/10 | 4/10 |
+| **Overall** | **0/10** | **6/10** | **8/10** |
+
+The jump from 0 to 6 is entirely in the hands of James running SQL queries for 35 minutes. No code to write. No files to create. Just open Supabase, paste queries, save them, test them.
+
+The jump from 6 to 8 requires building `platform-admin.html` — a one-day build triggered at 10 paying artists.

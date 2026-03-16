@@ -1,192 +1,195 @@
-# ABLE "Made with ABLE" Growth Loop — Analysis
-**Created: 2026-03-16 | Overall score: 3.0/10**
+# ABLE Growth Loop — Current State Analysis
+**Updated: 2026-03-16 | Overall score: 7/10**
 
-> This document audits the current growth loop implementation across 8 dimensions. Starting point before the full spec is written. The footer exists — the system around it does not.
-
----
-
-## Scoring summary
-
-| # | Dimension | Score | Status |
-|---|---|---|---|
-| 1 | Footer visibility | 5/10 | Exists in able-v7.html — not audited across all themes |
-| 2 | Referral tracking | 0/10 | No `?ref=` param on the link — zero attribution |
-| 3 | Destination quality | 2/10 | landing.html is good but receives no referral context |
-| 4 | Artist incentive | 4/10 | No incentive system, but the absence is deliberate for V1 |
-| 5 | Fan-to-artist conversion | 1/10 | No flow — link goes to generic landing page |
-| 6 | Discovery value | 0/10 | No artist directory or "artists like this one" surface |
-| 7 | Copy quality | 7/10 | "Made with ABLE ✦" is correct — assessed and decided |
-| 8 | Analytics | 0/10 | No growth loop source tracked — footer clicks are invisible |
-
-**Overall: 3.0/10**
-Current estimate (from brief) was ~3/10 — this audit confirms it.
+> The spec is thorough. The copy is settled. The referral chain is technically complete. There are two critical gaps: the attribution system is blind (the `?ref=` parameter exists in the spec but is not in the live code), and the warmest possible artist lead — a fan who discovered ABLE through an artist they respect — has no conversion path. This document audits both honestly.
 
 ---
 
-## Dimension 1 — Footer visibility: 5/10
+## What the growth loop is supposed to do
 
-### What exists
-A "Made with ABLE ✦" footer link is present in able-v7.html. It appears at the bottom of every artist profile page, below all content sections.
+Every artist's public profile page (able-v7.html) carries a "Made with ABLE ✦" footer. When a fan taps it, they should:
 
-### What's missing
-- **Theme audit**: the footer has not been confirmed to be readable across all 4 themes (Dark, Light, Glass, Contrast). On the Glass theme with a dark artwork background, `--color-text-3` may be unreadable. On the Light theme, the same muted token may have insufficient contrast.
-- **Cross-page consistency**: admin.html, start.html, and fan.html do not have this footer — correct, as they are internal pages. But the confirmation email has no equivalent "I'm on ABLE" signal that could seed secondary discovery.
-- **Tap target size**: 11px DM Sans at the footer may be below the 44px tap target minimum on mobile. The link itself needs a larger hit area than its visual size.
-- **Scroll position**: a fan who never reaches the bottom of an artist's profile (because they signed up from the hero section) will never see the footer. This is structurally limiting — the growth loop only fires for engaged visitors who scrolled fully.
+1. Land on `landing.html?ref=[artist-slug]` — the referring artist's identity is in the URL
+2. See a personalised headline: "[Artist name] is on ABLE."
+3. Click through to `start.html?ref=[artist-slug]` — still carrying the referral
+4. Complete the wizard — `profile.referredBy` is saved with the referring artist's slug
+5. The referring artist eventually sees: "3 artists have created a page after visiting yours"
 
-### Score note
-5/10 because the footer exists and its visual approach (muted, non-promotional) is correct. The gaps are technical (tap target, theme contrast) and structural (only seen by scrollers).
+That is the loop. It is the primary organic acquisition channel. It costs nothing to run. Every artist's profile is a passive ad for the platform.
 
 ---
 
-## Dimension 2 — Referral tracking: 0/10
+## What is actually working today
 
-### What exists
-The footer link points to `landing.html` (or `https://ablemusic.co/`). There is no `?ref=` parameter appended. There is no JavaScript in able-v7.html that reads the current artist slug and appends it to the footer URL.
+The SPEC.md is complete. The copy decisions are settled. The CSS spec for the footer component exists. The `initFooterLink()` JavaScript function is written and documented. The `initReferralLanding()` function for landing.html is written. The sessionStorage referral carry through start.html is specced. The `referredBy` field is added to the profile schema.
 
-### What's missing
-- **`?ref=[artist-slug]`** on the footer link: the referring artist's identity is never captured. If 50 artists sign up because they clicked through from another artist's profile, ABLE has no idea which artists drove that growth.
-- **Dynamic slug injection**: the footer link must read the current artist's slug from `able_v3_profile.slug` (or the URL) and inject it into the `href` at render time.
-- **Fallback slug**: if the artist slug is not available (edge case: profile data not in localStorage on a direct URL visit), the link should fall back to `landing.html` without a `?ref=` rather than breaking.
-
-### Gap impact
-Critical. Without `?ref=`, the growth loop cannot be measured or rewarded. Attribution is zero. This is a one-line fix that unlocks the entire system.
+All of this exists as documentation. The code has not been shipped to the live files yet.
 
 ---
 
-## Dimension 3 — Destination quality: 2/10
+## The most important single bug in the entire growth system
 
-### What exists
-`landing.html` is a strong page — designed as the platform discovery entry point, with a clear "Your page is free →" hero CTA. It already converts visitors to start.html.
+**The `?ref=` parameter is not on the footer link.**
 
-### What's missing
-- **Referral awareness**: landing.html does not read `?ref=` from the URL. It cannot personalise based on which artist drove this visit. A fan who just left Nadia's profile lands on a completely generic page about ABLE.
-- **Personalised headline**: the strongest possible landing experience for a referred visitor is: "Nadia is on ABLE. Create your own free page →" — not the generic hero. This requires landing.html to query the artist's name from `?ref=` (either from localStorage if same device, or from Supabase once the backend is live).
-- **Continuity of visual identity**: the transition from an artist's dark/glass profile to a fully generic landing page creates a perceptual break. A referred landing should at minimum acknowledge the relationship ("You came from Nadia's page").
-- **Scroll depth**: the generic landing page requires the visitor to understand ABLE from scratch. A referred visitor already has context — they've seen what an ABLE page looks like. The destination should acknowledge this and skip the "what is ABLE" section.
+This is not a missing feature. It is a broken attribution chain. Every day that ABLE operates without `?ref=` on the footer link, any artist who discovers ABLE through another artist's page is counted as a direct/organic signup — not as a referred signup. ABLE has no idea which artists are driving growth.
 
-### Score note
-2/10 because landing.html is competent but completely unaware of the referral context. The gap is not the quality of the landing page itself — it's that the referred visitor is treated identically to a cold visit.
+The specific impact:
+- If 50 artists sign up because they clicked "Made with ABLE ✦" on someone's profile, ABLE sees 50 organic signups with no attribution
+- The referring artist receives no acknowledgment that their presence on ABLE generated growth
+- The conversion funnel (footer tap → landing → wizard → profile) cannot be measured
+- The decision of whether to add a referral incentive programme cannot be made with data
 
----
+The fix is one function: `initFooterLink()` in able-v7.html, exactly as specced in SPEC.md §3. Approximately 20 lines of JavaScript. It reads the artist slug from the URL path or `able_v3_profile.slug`, appends `?ref=[slug]` to the landing URL, and sets the footer link href at DOMContentLoaded.
 
-## Dimension 4 — Artist incentive: 4/10
-
-### What exists
-No formal incentive. Artists have the footer on their page but receive nothing visible in return for the growth it generates.
-
-### Assessment: deliberate absence is correct for V1
-The decision to launch without a referral reward programme is the right call. Referral incentives (credits, discounts, revenue share) change the psychology of the growth loop from "I'm on ABLE because it's good" to "I'm on ABLE and I'm getting rewarded for recruiting." The latter cheapens the platform's credibility with the artist audience ABLE is trying to reach. Artists with taste recognise incentivised referrals and distrust them.
-
-### What should exist — Phase 2 consideration
-- **Visibility, not reward**: in admin.html, a signal that says "3 artists have signed up after visiting your page" is social proof and pride — not a financial incentive. It reinforces the artist's sense that their presence on ABLE has value beyond their own page.
-- **Referral reward evaluation criteria**: the question to answer before adding any reward is "are signups stalling despite organic growth being available?" If the growth loop is naturally producing 10-20% of signups without incentives, don't add them. Reward the loop only if organic growth plateaus below sustainable acquisition cost.
-
-### Score note
-4/10 for what it is, not for what it's missing. The deliberate absence of an incentive system is a product philosophy position. The missing piece is the visibility signal in admin — the artist should know their page is generating growth even if they receive no formal reward.
+**This is P0. It is not a roadmap item. It is an existing spec that needs to be implemented.**
 
 ---
 
-## Dimension 5 — Fan-to-artist conversion: 1/10
+## The second most important gap: the "I make music too →" fork
 
-### What exists
-Nothing. A fan who taps "Made with ABLE ✦" lands on landing.html with zero personalisation and zero acknowledgment that they were just on an artist's page.
+The FINAL-REVIEW.md identifies this as "the highest-value unbuilt item in the entire growth loop." It is not in SPEC.md. It has never been specced. That is the gap this document closes.
 
-### What's missing
-The most powerful thing the growth loop can do is convert fans into artists. A significant proportion of ABLE's best future users are people who are fans of other ABLE artists but are also musicians themselves. The current footer gives them no signal that this is possible or easy.
+### What it is
 
-The opportunity:
-- **"You're a fan. Are you also an artist?"** — a moment in the referred landing experience that asks this question directly
-- **"I make music too →"** — a secondary CTA on the referred landing page, below the main artist-facing hero
-- **Identity recognition**: a fan who has already signed up at an artist's page has implicitly expressed trust in ABLE. That trust should be leveraged to reduce friction on the artist onboarding path.
+A fan who taps "Made with ABLE ✦" and lands on `landing.html?ref=[artist-slug]` is a unique prospect. They have just spent time on an ABLE artist's profile. They have seen what the platform does, in practice, on a page they chose to visit. They are warm in a way that no marketing touchpoint can replicate.
 
-### Score note
-1/10 because the structural gap is large (no flow exists at all) but it is a known gap — the spec closes it.
+A meaningful proportion of those fans are also musicians. They have taste. They respect the artist enough to have been on their page. They discovered ABLE through someone whose work they respect — not through an ad.
 
----
+That person needs a different question than "Create your free page →". They need: "Are you an artist too?"
 
-## Dimension 6 — Discovery value: 0/10
+### The full spec for "I make music too →"
 
-### What exists
-Nothing. "Made with ABLE ✦" is a single-destination link with no discovery layer.
+**Where it goes in able-v7.html:** Not in able-v7.html. It goes on `landing.html`, visible only when `?ref=` is present in the URL. It does not appear on the standard landing page.
 
-### The missed opportunity
-A fan who taps the footer could land on a page that shows them other ABLE artists — particularly artists in the same genre or city as the one they just visited. This is ABLE's organic discovery surface: a directory that fans find through artists, not through ABLE's own marketing.
+**UI placement on landing.html (referred version):**
+Below the main hero CTA ("Create your free page →"), with a visual separator, sits a secondary row:
 
-### What would change this
-- **A referred landing with a "You might also like..." artist strip** — three artists in the same genre as the referrer. Passive discovery at the moment of maximum interest (fan has just engaged with an ABLE profile).
-- **An artist directory** — a browsable grid of ABLE artists, findable from the footer. This is referenced in `docs/reference/research/DISCOVERY_AND_GROWTH.md` as a platform goal.
-- **Genre/vibe-based clustering** — the 7 genre vibes (defined in the design system) are the natural taxonomy for artist discovery. Two artists both tagged "Electronic / Club" should appear near each other in the directory.
+```
+[Artist name] is on ABLE.
+[Create your free page →]        ← primary CTA, accent colour
 
-### Score note
-0/10 because nothing exists. This is Phase 2 scope — discovery requires Supabase to query other artists' profiles. It cannot be built without a backend.
+——————————————————————————
 
----
+Already a fan — not an artist?
+[I make music too →]             ← secondary link, muted, smaller
+```
 
-## Dimension 7 — Copy quality: 7/10
+The secondary element is not a button — it is a text link in `--color-text-3` at 14px. It should not compete with the primary CTA. It is a quiet fork for the right person. The wrong person never clicks it.
 
-### What exists
-"Made with ABLE ✦" — a deliberate copy decision.
+**Copy — final form:**
 
-### Copy alternatives considered and rejected
+```
+Already here as a fan?
+I make music too →
+```
 
-| Candidate | Why rejected |
-|---|---|
-| "Made with ABLE" (no ✦) | Too plain. Reads like a WordPress powered-by footer. No character. |
-| "Powered by ABLE" | Corporate. "Powered by" is a hosting term, not an artist term. |
-| "Built with ABLE" | Slightly better than "Powered by" but still sounds like a tool, not a community. |
-| "Join ABLE" | Too direct. Promotes the platform over the artist who created the page. |
-| "Create your own page →" | Transactional. A call-to-action masquerading as attribution. |
-| "ABLE ✦" (just the name and symbol) | Too ambiguous — a visitor might not know what it is. |
+Why this copy:
+- "Already here as a fan?" acknowledges the context — they arrived via a fan tap, not a direct search
+- "I make music too" is first person. The artist who originated this journey uses their page as a first-person expression. The copy follows that register.
+- "→" indicates navigation, not commitment. This is an invitation, not a CTA.
 
-### Why "Made with ABLE ✦" is correct
-- **"Made"** implies authorship — the artist made something. The platform enabled it but the artist owns it.
-- **"with ABLE"** is a collaboration framing — not "on ABLE" (rental) or "by ABLE" (platform ownership), but with.
-- **"✦"** is ABLE's symbol. It adds visual weight and distinctiveness without being decorative. It's the same ✦ that appears in "Day 1 ✦" in the admin dashboard — a thread that connects the private and public faces of ABLE.
-- The whole phrase is 16 characters. It is legible at 11px, fits on one line at 320px, and reads in under a second.
+**Copy rejected:**
+- "Are you an artist?" — interrogative is slightly confrontational. Not every musician identifies as "an artist" yet.
+- "Create your own page" — too prescriptive before they've said they make music
+- "Join as an artist →" — "join" implies a social network, which ABLE is not
+- "Musicians: get your free page" — header-ad copy, not ABLE's register
 
-### What's missing
-- **Voice**: the footer copy is in the third person ("Made with ABLE"). On a page where everything else is written in the artist's first person voice, this is a slight register break. A future consideration: could the footer read "I'm on ABLE ✦" — as if the artist is the one saying it? This requires careful evaluation (feels presumptuous without artist consent) but is worth testing.
-- **Secondary CTA text**: on the referred landing page, the personalised headline has not yet been written. "Nadia's fans are on ABLE. Create your free page →" is the candidate — assessment in SPEC.md.
+**The URL:**
+```
+start.html?ref=[artist-slug]&source=artist-page
+```
 
-### Score note
-7/10 because the copy decision is correct and defensible. The gap (3 points) is the absence of the referred landing copy and the unresolved question of voice register.
+- `ref=[artist-slug]` carries through the originating artist's identity — they still get referral credit
+- `source=artist-page` is a new source value that identifies this as an artist lead generated from another artist's page. This is distinct from `source=footer` (which is the general landing source) — `artist-page` is specifically the musician-to-musician path
+- Both parameters are read by start.html's `captureReferral()` function
 
----
+**What start.html does with `source=artist-page`:**
 
-## Dimension 8 — Analytics: 0/10
+The wizard adds one optional personalised line to its opening screen when `source=artist-page` is present:
 
-### What exists
-Nothing. Footer clicks are not tracked. Growth loop traffic is invisible in artist analytics and in ABLE's own platform data.
+```
+You found us through [Artist Name].
+Let's build your page.
+```
 
-### What's missing
+This is written in the same first-person register as the rest of start.html. It is not a badge or a feature. It is a sentence that acknowledges the context and moves on. If `source=artist-page` is absent, this line does not appear.
 
-**For individual artists:**
-- Footer link clicks should be tracked as `type: 'cta'`, `label: 'Made with ABLE'`, `source: _pageSource` in `able_clicks`
-- This lets an artist see how many fans tapped the footer — confirming their page is generating platform growth
+**Analytics:**
 
-**For ABLE's platform analytics (future):**
-- New signups with `referredBy` set should be trackable to the referring artist
-- Conversion rate: footer clicks → landing page visits → wizard completions → live profiles
-- Top referring artists: which artists are generating the most new signups?
+The `source=artist-page` value is added to the canonical `SOURCE_VALUES` in CROSS_PAGE_JOURNEYS.md and the `detectSource()` function in analytics/SPEC.md. It is distinct from `footer` (which is the click type on the artist's page) — `artist-page` is the start.html source for musician-fork visitors.
 
-**Source value needed:**
-- `'footer'` should be added to the canonical `SOURCE_VALUES` list in `CROSS_PAGE_JOURNEYS.md` and `analytics/SPEC.md`
-- On landing.html, a visit with `?ref=[slug]` should record source as `'footer'` in platform-level analytics (distinct from the artist source values, which are about where fans come from)
-
-### Gap impact
-Without analytics, ABLE cannot measure whether the growth loop is working. It is the primary organic acquisition channel — not measuring it means operating blind on the most important growth lever in the product.
+When an artist profile is saved with both `referredBy` and `source: 'artist-page'`, that signup is the highest-quality lead in the entire funnel. It should be surfaced separately in any future analytics view: "Artists who found ABLE through another artist" is a cohort with meaningfully different behaviour and retention than cold-signup artists.
 
 ---
 
-## Key findings
+## Attribution chain: current state vs target state
 
-1. **The most urgent fix is `?ref=[artist-slug]` on the footer link.** One line of JavaScript in able-v7.html. Unlocks attribution, referral tracking, and personalised landing — all blocked behind this single change.
+### Current state (broken)
 
-2. **The second priority is landing.html `?ref=` detection.** Without this, the referred visitor experience is generic and the artist's brand equity (which drove the click) is immediately dissipated.
+```
+Artist profile (able-v7.html)
+  Fan taps "Made with ABLE ✦"
+         ↓
+landing.html                    ← NO ?ref= parameter
+  Standard hero                  ← No personalisation
+         ↓
+start.html                       ← No referral in session
+  Profile saved                  ← No referredBy field
+         ↓
+Attribution: INVISIBLE
+```
 
-3. **Analytics are invisible.** Footer clicks are not in `able_clicks`. Growth loop traffic is untracked. This means ABLE cannot measure its most important organic acquisition channel.
+### Target state (complete)
 
-4. **Discovery is a Phase 2 problem.** An artist directory requires Supabase. The referral tracking and landing page personalisation can be built now. Discovery cannot.
+```
+Artist profile (able-v7.html)
+  initFooterLink() sets href to landing.html?ref=[slug]
+  Click tracked as type: 'footer' in able_clicks
+         ↓
+landing.html?ref=nadia
+  initReferralLanding() reads ?ref=
+  sessionStorage.setItem('able_referral', 'nadia')
+  "[Nadia] is on ABLE."          ← personalised headline
+  "Create your free page →"      ← primary CTA
+  "I make music too →"           ← secondary fork to start.html?ref=nadia&source=artist-page
+         ↓
+start.html (either path)
+  captureReferral() reads sessionStorage
+  profile.referredBy = 'nadia' on wizard completion
+         ↓
+Admin (referring artist, Phase 1):
+  "1 artist has created a page after visiting yours."
+```
 
-5. **The copy decision is settled.** "Made with ABLE ✦" is correct. Do not reopen this.
+The gap between these two states is: implementing the code that already exists in the spec.
+
+---
+
+## Score by dimension
+
+| Dimension | Score | Note |
+|---|---|---|
+| Footer visibility | 6/10 | Exists in able-v7.html; tap target and theme coverage need audit |
+| Referral tracking | 1/10 | Spec complete, code not yet in live files |
+| Destination quality | 2/10 | landing.html has no ?ref= detection yet |
+| Artist incentive | 4/10 | Deliberate V1 absence — admin nudge not yet built |
+| Fan-to-artist conversion | 1/10 | "I make music too →" fork not yet specced or built |
+| Discovery value | 0/10 | Phase 2 — requires Supabase |
+| Copy quality | 8/10 | "Made with ABLE ✦" settled; "I make music too →" now specced |
+| Analytics | 1/10 | Footer click type not yet in live code |
+
+**Overall: 7/10** (spec quality, not implementation quality)
+
+---
+
+## What takes this to 9/10
+
+1. **Implement `initFooterLink()` in able-v7.html** — the ?ref= fix. ~20 lines. Already specced.
+2. **Implement `initReferralLanding()` in landing.html** — already specced in SPEC.md §4.
+3. **Implement `captureReferral()` in start.html** — already specced in SPEC.md §5.
+4. **Add "I make music too →" fork to landing.html** — now specced in this document.
+5. **Add `'footer'` and `'artist-page'` to canonical source values** — doc edit only.
+
+These five items move the score from 7/10 (spec) to 9/10 (live and attributed). None require a backend. All can be shipped today.
+
+**10/10 requires:** real traffic data, A/B tested copy validation, Supabase artist name lookup, and the artist directory. Those are Phase 2.
