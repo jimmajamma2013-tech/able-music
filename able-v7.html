@@ -10097,8 +10097,8 @@
 
   <!-- Floating Edit / Fan view pill (shown only in edit mode) -->
   <div class="edit-pill" id="editPill" hidden>
-    <button class="pill-tab active" id="pillEditTab" aria-pressed="true">✎ Edit</button>
-    <button class="pill-tab" id="pillFanTab" aria-pressed="false">👁 Fan view</button>
+    <button class="pill-tab active" id="pillEditTab" aria-pressed="true">Edit</button>
+    <button class="pill-tab" id="pillFanTab" aria-pressed="false">Fan view</button>
   </div>
 
   <!-- Bottom sheet backdrop -->
@@ -10215,14 +10215,12 @@
       }
 
       function openZoneSheet(zone) {
-        var profile = {};
-        try { profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}'); } catch(_) {}
+        var profile = safeLS('able_v3_profile', {});
 
         function save(updates) {
-          var p = {};
-          try { p = JSON.parse(localStorage.getItem('able_v3_profile') || '{}'); } catch(_) {}
+          var p = safeLS('able_v3_profile', {});
           Object.assign(p, updates);
-          localStorage.setItem('able_v3_profile', JSON.stringify(p));
+          setLS('able_v3_profile', p);
         }
 
         function esc(str) {
@@ -10268,7 +10266,7 @@
               if (l1 && l1.value.trim()) updates.ctaSecondary = { label: l1.value, url: u1 ? u1.value : '' };
               else updates.ctaSecondary = null;
               save(updates);
-              if (typeof renderHero === 'function') renderHero(JSON.parse(localStorage.getItem('able_v3_profile') || '{}')); // re-render
+              if (typeof renderHero === 'function') renderHero(safeLS('able_v3_profile', {})); // re-render
             }
           );
         } else if (zone === 'link-pills') {
@@ -10287,15 +10285,27 @@
                 if (inp.value.trim()) newPlatforms.push({ label: inp.dataset.name, url: inp.value.trim() });
               });
               save({ platforms: newPlatforms });
-              if (typeof renderHero === 'function') renderHero(JSON.parse(localStorage.getItem('able_v3_profile') || '{}'));
+              if (typeof renderHero === 'function') renderHero(safeLS('able_v3_profile', {}));
             }
           );
-        } else if (zone === 'music' || zone === 'snap-cards') {
-          var zoneLabel = zone === 'music' ? 'Releases' : 'Updates';
-          var zoneHash  = zone === 'music' ? '#releases' : '#snap-cards';
-          openSheet('\uD83C\uDFB5', zoneLabel,
-            '<div style="padding:8px 0;"><p style="font-size:14px;color:var(--color-fg-muted);margin:0 0 16px;">Manage your ' + zoneLabel.toLowerCase() + ' in your ABLE page.</p>' +
-            '<a href="/admin.html' + zoneHash + '" style="display:block;text-align:center;padding:12px 20px;background:var(--color-accent);color:#000;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none">Manage this \u2192</a></div>',
+        } else if (zone === 'snap-cards') {
+          openSheet('\u2726', 'Add an update',
+            '<div class="bs-field"><label>Title</label><input id="bsf-snap-title" placeholder="New track dropping soon"></div>' +
+            '<div class="bs-field"><label>Body</label><textarea id="bsf-snap-body" placeholder="A bit more detail\u2026" rows="3" style="width:100%;resize:vertical;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px;color:inherit;font-family:inherit;font-size:14px;"></textarea></div>',
+            function() {
+              var t = document.getElementById('bsf-snap-title');
+              var b = document.getElementById('bsf-snap-body');
+              if (!t || !t.value.trim()) return;
+              var snaps = safeLS('able_snap_cards', []);
+              snaps.unshift({ id: Date.now().toString(36), title: t.value.trim(), body: b ? b.value.trim() : '', ts: Date.now() });
+              setLS('able_snap_cards', snaps);
+              if (typeof renderHero === 'function') renderHero(safeLS('able_v3_profile', {}));
+            }
+          );
+        } else if (zone === 'music') {
+          openSheet('\uD83C\uDFB5', 'Releases',
+            '<div style="padding:8px 0;"><p style="font-size:14px;color:var(--color-text-2);margin:0 0 16px;">Add and manage your releases from your dashboard.</p>' +
+            '<a href="/admin.html#releases" style="display:block;text-align:center;padding:12px 20px;background:var(--color-accent);color:#000;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none">Manage releases \u2192</a></div>',
             null
           );
         } else if (zone === 'events') {
@@ -10308,11 +10318,10 @@
               var v = document.getElementById('bsf-ev-venue'); var d = document.getElementById('bsf-ev-date');
               var t = document.getElementById('bsf-ev-time'); var u = document.getElementById('bsf-ev-url');
               if (!v || !v.value.trim() || !d || !d.value) return;
-              var shows = [];
-              try { shows = JSON.parse(localStorage.getItem('able_shows') || '[]'); } catch(_) {}
+              var shows = safeLS('able_shows', []);
               shows.push({ id: Date.now().toString(36), venue: v.value.trim(), date: d.value, doorsTime: t ? t.value : '', ticketUrl: u ? u.value : '', featured: false });
-              localStorage.setItem('able_shows', JSON.stringify(shows));
-              if (typeof renderHero === 'function') renderHero(JSON.parse(localStorage.getItem('able_v3_profile') || '{}'));
+              setLS('able_shows', shows);
+              if (typeof renderHero === 'function') renderHero(safeLS('able_v3_profile', {}));
             }
           );
         } else {
