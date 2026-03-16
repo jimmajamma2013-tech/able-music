@@ -142,11 +142,19 @@ Decel easing:   cubic-bezier(0.25, 0.46, 0.45, 0.94)
 | Key | Contents |
 |---|---|
 | `able_v3_profile` | Artist profile (name, bio, accent, theme, state, release, CTAs) |
-| `able_fans` | Fan sign-ups [{email, ts, source}] |
-| `able_clicks` | CTA tap events [{label, type, ts, source}] |
-| `able_views` | Page view events [{ts, source}] |
+| `able_fans` | Fan sign-ups [{email, ts, source, optIn, consentVersion}] |
+| `able_clicks` | CTA tap events [{label, type, ts, source, sessionId}] |
+| `able_views` | Page view events [{ts, source, sessionId, isArtist}] |
 | `able_gig_expires` | Unix timestamp when gig mode expires |
+| `able_shows` | Shows list [{id, venue, date, city, doorsTime, ticketUrl, featured}] |
+| `able_dismissed_nudges` | Dismissed nudge IDs (string array) |
+| `able_starred_fans` | Starred fan email strings (deprecated — migrate to Fan.isStarred) |
+| `able_tier` | Current artist tier: `"free"` / `"artist"` / `"artist-pro"` / `"label"` |
+| `able_profile` | Legacy wizard key — migrate to `able_v3_profile` on first admin load |
 | `able_clips` | Clips array [{id, type, videoUrl, embedUrl, thumbnailUrl, caption, published, access, ts, sortOrder}] — see `docs/systems/reels-feed/SPEC.md` |
+| `admin_visit_dates` | ISO date strings of admin.html load dates (for nudge timing) |
+| `fan_following` | Fan-followed artist slugs [{artistSlug, followedAt}] — fan.html only |
+| `fan_location` | Fan location {city, country, lat, lng, setAt} — fan.html only |
 
 These keys map 1:1 to Supabase tables when backend lands. Never rename.
 
@@ -175,6 +183,9 @@ Auto-switch: `now < releaseDate → pre-release` → `now < releaseDate+14d → 
 ---
 
 ## Copy rules (read before touching any text)
+
+**Canonical source values (SOURCE_VALUES — never add without updating analytics/SPEC.md):**
+`ig` · `tt` · `sp` · `qr` · `story` · `direct` · `email` · `fan-dashboard` · `twitter` · `footer` · `other`
 
 Never write:
 - "Turn fans into superfans" / "Grow your audience" / "Monetise your fanbase"

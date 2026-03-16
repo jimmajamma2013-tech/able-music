@@ -269,6 +269,61 @@ Ten before/after rewrites. These are the definitive test for whether new copy fi
 
 ---
 
+## 2.6b Campaign state copy — exact strings for every surface
+
+Each of the 4 campaign states has specific copy across every surface it appears on. These are locked strings — do not paraphrase or abbreviate.
+
+### State: `profile` (default)
+
+| Surface | Copy |
+|---|---|
+| Page hero label | _(none — artist name and bio only)_ |
+| Admin Campaign HQ state pill | "Live" _(the page is live; this is the default)_ |
+| Admin Campaign HQ description | "Your page is live. Put the link in your bio." |
+| Fan sign-up heading (default) | "Stay close." |
+| Fan sign-up sub | "Just your email. I'll reach out when something's actually happening." |
+
+### State: `pre-release`
+
+| Surface | Copy |
+|---|---|
+| Page hero label | "[Release title] — [N] days" (e.g. "Echoes — 3 days") |
+| Page hero CTA primary | "Pre-save [Release title]" |
+| Page countdown label | "Until [Release title]" |
+| Admin Campaign HQ state pill | "Pre-release" |
+| Admin Campaign HQ description | "[Release title] drops on [Date]. Pre-release mode is on." |
+| Fan sign-up heading | "You signed up right before something." |
+| Fan sign-up sub | "[Release title] comes out in [N] days. You'll hear it first." |
+| Fan confirmation email subject | "[Release title] — [N] days" |
+
+### State: `live`
+
+| Surface | Copy |
+|---|---|
+| Page hero label | "[Release title] — out now" |
+| Page hero CTA primary | "Stream [Release title]" |
+| Admin Campaign HQ state pill | "Live" _(release window active)_ |
+| Admin Campaign HQ description | "[Release title] is out. You have [N] days in live mode." |
+| Fan sign-up heading | "Stay close." |
+| Fan sign-up sub | "[Release title] is out. You can stream it from here." |
+| Fan confirmation email subject | "[Release title] is out" |
+
+### State: `gig`
+
+| Surface | Copy |
+|---|---|
+| Page hero label | "On tonight" |
+| Page hero CTA primary | "Get tickets" |
+| Page venue/time line | "[Venue], [City]. Doors [Time]." |
+| Admin Campaign HQ state pill | "Gig mode" |
+| Admin Campaign HQ description | "Your page is in gig mode. It auto-resets in [N] hours." |
+| Admin gig mode countdown | "Resets in [Nh Nm]" |
+| Fan sign-up heading | "I'm playing tonight." |
+| Fan sign-up sub | "Sign up and I'll keep you close after the show." |
+| Fan confirmation email subject | "Tonight at [Venue]" |
+
+---
+
 ## 2.7 Additional rules for contractor use
 
 ### Length hierarchy

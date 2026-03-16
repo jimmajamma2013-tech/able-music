@@ -20,6 +20,10 @@
 | `able_shows` | `Show[]` | admin.html | able-v7.html, admin.html | Mutable array; edit in place |
 | `able_dismissed_nudges` | `string[]` | admin.html | admin.html | UI state only; do not sync to Supabase |
 | `able_starred_fans` | `string[]` | admin.html | admin.html | Deprecated pattern — migrate to `Fan.isStarred` |
+| `able_tier` | `string` | admin.html (Stripe callback) | admin.html, able-v7.html | One of: `"free"` / `"artist"` / `"artist-pro"` / `"label"`. Default: `"free"`. |
+| `admin_visit_dates` | `string[]` | admin.html | admin.html | ISO date strings of admin loads; used for nudge timing (artist success system). Keep last 60 days. |
+| `fan_following` | `FanFollowing[]` | fan.html | fan.html | Fan-followed artist slugs. fan.html only — not synced to artist data. |
+| `fan_location` | `FanLocation` | fan.html | fan.html | Fan's opt-in city/country for "shows near you". fan.html only. |
 
 ---
 
@@ -788,6 +792,8 @@ able_profile       → AbleProfileLegacy (legacy, migrate on read)
 able_shows         → Show[]            (mutable array)
 able_dismissed_nudges → string[]       (UI state only)
 able_starred_fans  → string[]          (deprecated — migrate to Fan.isStarred)
+able_tier          → string            ("free" | "artist" | "artist-pro" | "label")
+admin_visit_dates  → string[]          (ISO dates, last 60 days, nudge timing)
 
 fan_following      → FanFollowing[]    (fan.html only)
 fan_location       → FanLocation       (fan.html only)

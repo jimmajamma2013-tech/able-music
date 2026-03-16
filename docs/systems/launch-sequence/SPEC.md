@@ -241,3 +241,70 @@ Either there isn't enough traffic to the artist pages yet, or the footer design 
 
 **If an artist's page breaks publicly:**
 Fix it within 4 hours. Communicate with the artist directly. Do not let a broken page sit. An artist's bio link is the entry point for their audience — a broken page is a broken relationship, and that artist will leave and tell others.
+
+---
+
+## Founding artist email (Phase 1 personal outreach — exact copy)
+
+This is the message James sends to each of the 10 founding artists. It is a personal message, not a broadcast. Send it individually. Every "you" in this copy refers to one specific person.
+
+---
+
+Subject: `something I've been building`
+
+Hey [Name] —
+
+It's James. I've been building something for the last few months and I think you might actually want to use it.
+
+It's called ABLE. Here's the short version: it's a page that lives in your bio link and understands where you are in your cycle. Pre-release, drop day, gig night — the page adapts. Fans who land on it can sign up with their email, and those emails go directly to you. Not to a platform. Not to an algorithm. Yours.
+
+I built it because I kept watching artists send people to Linktree and get nothing back. No contact details. No relationship. Just a tap and a bounce.
+
+Your page is free to set up. It takes about 8 minutes. I'd love to set it up with you — call, voice note, whatever works. And I want your honest reaction: is this something you'd actually put in your bio?
+
+[Link to start.html]
+
+James
+
+---
+
+**Send conditions:**
+- Personal message, not a template blast
+- Only send to artists whose music James has genuinely listened to
+- Do not send to more than 10 people at once (maintaining personal quality over quantity)
+- Wait for at least a short response before sending the follow-up onboarding message
+
+---
+
+## Press intro (Phase 3 — music press cold outreach)
+
+For use when approaching music industry press (Music Ally, DIY Magazine, Pitchfork UK, The Guardian Music, etc.) at Phase 3 launch. Adapt per publication.
+
+---
+
+Subject: `Independent artist tool — worth a look?`
+
+Hi [Name] —
+
+I'm James, founder of ABLE. I've built a free link-in-bio specifically for independent musicians — one that understands the artist's release cycle and owns the fan relationship for them, not for the platform.
+
+The point of difference: when a fan signs up on an artist's ABLE page, the email address belongs to the artist. When the artist's account gets restricted on Instagram, the list survives. When the algorithm stops working, the list still works. That's the whole thesis.
+
+We're [N] artists in, [N] fan sign-ups, and the first [N] paid upgrades have happened. The product is working. A few artists using it:
+
+- [Artist name] — [brief description of their use case, with their permission]
+- [Artist name] — [brief description]
+
+I'm not looking for coverage yet — I'm reaching out because [publication name] covers independent artist tools seriously and I'd like to know if this is worth a longer conversation once we're a bit further along.
+
+Happy to share access to a founder account if it's useful.
+
+James
+
+---
+
+**Press outreach rules:**
+- Never name-drop ABLE's competitors directly
+- Only send when Phase 2 criteria are met (50 artists, 500 fans, 1 upgrade)
+- Personalise the intro for each publication — generic pitches are ignored
+- Do not use "disrupting" / "revolutionising" / "changing the game" in any press copy

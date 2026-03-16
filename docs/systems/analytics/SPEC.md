@@ -21,6 +21,7 @@ type AnalyticsSource =
   | 'email'         // Confirmation email link click
   | 'fan-dashboard' // Via fan.html
   | 'twitter'       // Twitter/X referrer (detected from document.referrer)
+  | 'footer'        // Via "Made with ABLE ✦" on an artist profile — growth loop
   | 'other';        // Known referrer outside the canonical list
 
 // CTA / click type classification
@@ -31,7 +32,8 @@ type ClickType =
   | 'presave'   // Pre-save CTA specifically
   | 'support'   // Support / tip / merch CTA
   | 'share'     // Share action
-  | 'event';    // Ticket / show link
+  | 'event'     // Ticket / show link
+  | 'footer';   // "Made with ABLE ✦" tap — growth loop event
 
 interface ViewEvent {
   ts: number;         // Unix millisecond timestamp — Date.now()
@@ -77,7 +79,7 @@ Centralised in a single function. Every page that writes analytics events must c
 
 ```javascript
 // Canonical SOURCE_VALUES — from CROSS_PAGE_JOURNEYS.md
-const SOURCE_VALUES = ['ig', 'tt', 'sp', 'qr', 'story', 'direct', 'email', 'fan-dashboard', 'twitter', 'other'];
+const SOURCE_VALUES = ['ig', 'tt', 'sp', 'qr', 'story', 'direct', 'email', 'fan-dashboard', 'twitter', 'footer', 'other'];
 
 /**
  * detectSource()
@@ -102,6 +104,8 @@ function detectSource() {
   if (referrer.includes('tiktok.com') || referrer.includes('vm.tiktok.com'))      return 'tt';
   if (referrer.includes('spotify.com'))                                            return 'sp';
   if (referrer.includes('t.co') || referrer.includes('twitter.com') || referrer.includes('x.com')) return 'twitter';
+  // Visitor arrived via "Made with ABLE ✦" on another artist's profile page
+  if (referrer.includes('ablemusic.co/'))                                          return 'footer';
 
   // 3. Known but unlisted referrer
   return 'other';

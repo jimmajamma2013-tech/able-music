@@ -49,6 +49,8 @@ ABLE (Artist Before Label) is a premium mobile-first platform for independent mu
 | `able_shows` | Shows list `[{ venue, date, doorsTime, ticketUrl, featured }]` | admin.html, able-v7.html |
 | `able_dismissed_nudges` | Dismissed nudge IDs `['presave-cta', 'add-show', ...]` | admin.html |
 | `able_starred_fans` | Starred fan email strings `['fan@example.com', ...]` | admin.html |
+| `able_tier` | Current tier: `"free"` / `"artist"` / `"artist-pro"` / `"label"` | admin.html, able-v7.html |
+| `admin_visit_dates` | ISO date strings of admin loads (last 60) — nudge timing | admin.html |
 
 **All localStorage keys will map 1:1 to Supabase table rows when backend is added. Do not rename keys.**
 
