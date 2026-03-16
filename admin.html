@@ -3284,6 +3284,22 @@ function renderSourceBreakdown(fans) {
   }).join('');
 }
 
+function buildCampaignContextLine(fan) {
+  if (!fan.campaignState || fan.campaignState === 'profile') {
+    return '<div style="font-size:11px;color:var(--dash-t3);margin-top:4px;">Signed up while your page was in default mode.</div>';
+  }
+  if (fan.campaignState === 'pre-release') {
+    return `<div style="font-size:11px;color:var(--dash-t3);margin-top:4px;">Signed up during <strong style="color:var(--dash-t2);">pre-release</strong>${fan.releaseTitle ? ' — ' + escHtml(fan.releaseTitle) : ''}</div>`;
+  }
+  if (fan.campaignState === 'live') {
+    return `<div style="font-size:11px;color:var(--dash-t3);margin-top:4px;">Signed up on <strong style="color:var(--dash-t2);">release day</strong>${fan.releaseTitle ? ' — ' + escHtml(fan.releaseTitle) : ''}</div>`;
+  }
+  if (fan.campaignState === 'gig') {
+    return `<div style="font-size:11px;color:var(--dash-t3);margin-top:4px;">Signed up on a <strong style="color:var(--dash-t2);">gig night</strong></div>`;
+  }
+  return '';
+}
+
 function openFanDetailSheet(fan) {
   const src = normaliseSource(fan.source);
   const curLevel = fan.level || 'listener';
@@ -3292,7 +3308,7 @@ function openFanDetailSheet(fan) {
   const levelChips = levels.map(l =>
     `<button class="level-chip ${l === curLevel ? 'active' : ''}" data-level="${l}" data-email="${escHtml(fan.email)}">${levelLabels[l]}</button>`
   ).join('');
-  const campaignCtx = fan.campaignState ? `<div style="display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--acc);background:rgba(var(--acc-rgb,.244,185,66),.1);border-radius:4px;padding:2px 7px;margin-top:6px;">${fan.campaignState}</div>` : '';
+  const campaignCtx = buildCampaignContextLine(fan);
 
   const body = `
     <div class="fan-detail-header" style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
@@ -3306,6 +3322,11 @@ function openFanDetailSheet(fan) {
     <div style="margin-bottom:16px;">
       <div class="field-label" style="margin-bottom:8px;">Level</div>
       <div class="level-chips" id="fanLevelChips">${levelChips}</div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <div class="field-label" style="margin-bottom:6px;">Note <span style="font-weight:400;opacity:.5;">(only you see this)</span></div>
+      <textarea class="field-input" id="fanNoteInput" rows="3" maxlength="280" placeholder="Something only you'd know about this person." style="resize:none;font-size:13px;">${escHtml(fan.note || '')}</textarea>
+      <div style="font-size:10px;color:var(--dash-t3);text-align:right;margin-top:2px;" id="fanNoteCount">${(fan.note||'').length}/280</div>
     </div>
     <div style="display:flex;flex-direction:column;gap:8px;">
       <div style="position:relative;">
@@ -3336,6 +3357,24 @@ function openFanDetailSheet(fan) {
       document.querySelectorAll('#fanLevelChips .level-chip').forEach(c => c.classList.toggle('active', c.dataset.level === level));
     });
   });
+
+  // Note field wiring — auto-save on blur
+  const noteEl = document.getElementById('fanNoteInput');
+  const noteCount = document.getElementById('fanNoteCount');
+  if (noteEl) {
+    noteEl.addEventListener('input', () => {
+      if (noteCount) noteCount.textContent = noteEl.value.length + '/280';
+    });
+    noteEl.addEventListener('blur', () => {
+      const fans = safeLS('able_fans', []);
+      const f = fans.find(f => f.email === fan.email);
+      if (f && f.note !== noteEl.value) {
+        f.note = noteEl.value.trim();
+        setLS('able_fans', fans);
+        showToast('Saved');
+      }
+    });
+  }
 }
 
 function renderFanSupportPacksSummary() {
