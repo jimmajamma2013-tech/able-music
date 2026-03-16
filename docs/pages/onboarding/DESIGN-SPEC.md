@@ -2981,5 +2981,74 @@ Measure every interactive element using Playwright's `getBoundingClientRect()`. 
 
 ---
 
+## §20 Completion-State and Post-Onboarding Activation Doctrine
+
+*Doctrine level: authoritative. Supersedes any earlier completion-screen notes in this document.*
+
+### 20.1 What the done screen is
+
+The done screen is not a confirmation receipt. It is not a checklist. It is not an invitation to do more setup. It is a moment of arrival — the first time the artist feels their page is real. Every design decision on this screen serves that single feeling.
+
+### 20.2 Evaluated assertions
+
+**Assertion: "Completion screens should use confetti or celebration animations."**
+Rejected. ABLE's artists have an aversion to what is superficial. A confetti burst signals "you did a thing"; ABLE's done screen says "you exist now." The building-overlay sequence, the spring-scale headline entrance, and the accent pulse ring are the celebration. They are deliberate and earned. Confetti is never added to this screen.
+
+**Assertion: "Show a checklist of next steps to drive post-onboarding activation."**
+Rejected. Next-step lists feel like onboarding is still in progress. The done screen delivers one clear fact (your page is live, here is the URL) and one clear action (put this in your bio). A checklist would dilute both. The admin dashboard handles progressive activation nudges — the done screen does not.
+
+**Assertion: "The primary CTA should direct users to complete their profile."**
+Rejected. Their profile is complete — that is the whole point of the done screen. Sending artists back into an editing loop signals that the setup wasn't enough. The primary CTA is "See your live page" — forward, not backward.
+
+**Assertion: "Show an upgrade prompt on the done screen to capture intent at peak excitement."**
+Rejected. Inserting a commercial message at the moment of arrival is a breach of trust. Artists will encounter tier gates naturally as they use the product. The done screen is clean. No pricing, no upgrade copy.
+
+**Assertion: "Send the user straight to the admin dashboard after onboarding."**
+Rejected — but nuanced. The done screen offers the dashboard as a secondary CTA, not the primary one. The sequence is: feel the page is real → see the page → then manage it. Forcing straight to admin skips the payoff moment.
+
+**Assertion: "The headline should use generic copy like 'You're all set!' or 'Setup complete!'"**
+Rejected. "You're all set" signals a process has ended. ABLE signals that something has begun. The headline is personalised: "[Name]'s page is real." This is the first time the product speaks the artist's name back to them in this register.
+
+**Assertion: "Post-onboarding activation should wait until the artist's second session."**
+Rejected — with precision. Day-1 activation is the share link going into Instagram bio within 24 hours of onboarding. The done screen's share row and copy-link button exist for exactly this. ABLE cannot wait for a second session; most artists won't return unless they've already seen the page work.
+
+### 20.3 Final doctrine
+
+**Rule 1 — The artist's name goes in the headline.**
+Done-screen headline: "[Name]'s page is real." — not "Your page is real." The personalisation signals that ABLE knows who they are. Implemented in `initDone()` via `document.getElementById('doneTitle').innerHTML`.
+
+**Rule 2 — The URL is the centrepiece.**
+The slug display with inline edit is the most important element on the screen. It must be visible above the fold on mobile. Its size, weight, and the pencil-edit affordance all signal: "This is yours and you control it."
+
+**Rule 3 — One primary action.**
+"See your live page" is the primary CTA. It is accent-filled, full-width on mobile, and appears immediately after the slug. Everything else — dashboard link, share row — is secondary. Two primary CTAs are prohibited.
+
+**Rule 4 — Day-1 activation is the share link, not the admin dashboard.**
+The done screen's job is to get the artist's link into their Instagram bio within 24 hours. The share row (Instagram Story button, Copy Link) and the copy-link pill are the activation triggers. The social-share card (canvas element) is the highest-leverage tool on this screen — it removes the friction of the artist designing their own announcement post.
+
+**Rule 5 — No upgrade prompts on the done screen.**
+Free tier limit line appears at the bottom in muted colour, informational only. No "Upgrade to unlock…" language. No gold-lock pattern on this screen. Artists who just onboarded should not encounter a paywall on their first arrival.
+
+**Rule 6 — No confetti.**
+The spring-scale headline entrance, the accent pulse ring, the staggered content arrivals, and the building-overlay sequence are the celebration. None of these are negotiable. Confetti is permanently excluded from this screen.
+
+**Rule 7 — The building overlay is labour illusion, not real work.**
+The 3-step building sequence ("Adding your name…", "Setting your colour…", "Your page is live.") takes 2.6 seconds and gives the impression of meaningful construction. Research benchmark (Harvard HBS, 2011): 15% higher satisfaction scores even when the result is instant. This sequence must not be removed to speed up the experience.
+
+**Rule 8 — Post-onboarding activation sequence (what happens after the done screen):**
+
+| Time | Event |
+|---|---|
+| T+0 | Done screen: artist sees page is live, URL centrepiece |
+| T+0–24hr | Artist copies link, puts it in Instagram/TikTok bio (done screen CTA) |
+| T+1hr | Admin welcome email arrives with link to dashboard + day-1 tips |
+| T+24hr | If no fan sign-ups: first admin nudge card — "Put your link in your bio" |
+| T+7d | If < 3 sign-ups: nudge card — "Share your page on social" |
+| T+14d | If active: first tier gate encounter (100-fan cap on free tier) |
+
+The done screen is responsible for T+0 to T+24hr. Everything after T+24hr is admin nudges and email.
+
+---
+
 *End of specification.*
 *A developer reading this document has everything needed to build `start.html` in its entirety.*

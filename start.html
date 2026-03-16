@@ -1315,7 +1315,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <!-- DONE -->
     <div class="step" id="stepDone">
       <div class="step-eyebrow">You're live</div>
-      <h1 class="step-title">Your page<br>is real.</h1>
+      <h1 class="step-title" id="doneTitle">Your page<br>is real.</h1>
 
       <div class="v2-done-pill" id="v2DonePill">
         <span id="v2DoneUrl">ablemusic.co/artist</span>
@@ -1597,9 +1597,13 @@ function doSpotifyImport() {
       if (d.listeners) metaParts.push((d.listeners / 1000).toFixed(0) + 'k Last.fm listeners');
       if (previewMeta) previewMeta.textContent = metaParts.join('  ·  ');
 
-      if (preview) preview.style.display = 'block';
-      if (whyEl)   whyEl.style.display   = 'flex';
-      if (statusEl) statusEl.style.display = 'none';
+      // "Found you" beat — 600ms before revealing the card
+      if (statusTx) statusTx.textContent = 'Found you.';
+      setTimeout(function() {
+        if (preview)  preview.style.display  = 'block';
+        if (whyEl)    whyEl.style.display    = 'flex';
+        if (statusEl) statusEl.style.display = 'none';
+      }, 600);
 
       // Save to draft
       var importedShows = (d.shows || []).map(function(s) {
@@ -1634,8 +1638,10 @@ function doSpotifyImport() {
       }
 
       // Advance to step 1 after brief confirmation moment
-      if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Looks right — let\'s go →'; }
-      btnEl.onclick = function() { goToStep('step1'); };
+      setTimeout(function() {
+        if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Looks right — let\'s go →'; }
+        if (btnEl) btnEl.onclick = function() { goToStep('step1'); };
+      }, 650);
     })
     .catch(function(err) {
       if (btnEl)    { btnEl.disabled = false; btnEl.textContent = 'Find me on Spotify →'; btnEl.onclick = doSpotifyImport; }
@@ -1848,6 +1854,10 @@ function initDone() {
   const pillEl = document.getElementById('v2DonePill');
   if (urlEl)  urlEl.textContent  = url;
   if (pillEl) pillEl.dataset.url = url;
+  const titleEl = document.getElementById('doneTitle');
+  if (titleEl && profile.name) {
+    titleEl.innerHTML = profile.name.trim() + '\u2019s page<br>is real.';
+  }
   // Point "See your page" to the real live profile (with handle for correct preview)
   const viewBtn = document.getElementById('doneViewPageBtn');
   if (viewBtn) {
