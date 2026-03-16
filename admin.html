@@ -3560,7 +3560,7 @@ function renderFanBody() {
   const fans = JSON.parse(localStorage.getItem('able_fans') || '[]');
   const clicks = JSON.parse(localStorage.getItem('able_clicks') || '[]');
 
-  const recent = [...fans].filter(f => f.confirmed !== false).sort((a, b) => b.ts - a.ts).slice(0, 5);
+  const recent = [...fans].sort((a, b) => b.ts - a.ts).slice(0, 5);
   const fansList = document.getElementById('latestFansList');
   if (fansList) {
     const colours = ['#e05242','#4e7cff','#9b59b6','#27ae60','#e67e22'];
@@ -3569,9 +3569,10 @@ function renderFanBody() {
       const src = normaliseSource(f.source);
       const colour = colours[initial.charCodeAt(0) % colours.length];
       const timeAgo = relTime(f.ts);
+      const pending = f.confirmed === false ? '<span style="font-size:10px;opacity:0.5;margin-left:4px;">pending</span>' : '';
       return `<div class="fan-row">
         <div class="fan-avatar" style="background:${colour}">${initial}</div>
-        <span class="fan-email">${escHtml(f.email || '')}</span>
+        <span class="fan-email">${escHtml(f.email || '')}${pending}</span>
         <span class="source-badge ${src}">${src.toUpperCase()}</span>
         <span class="fan-time">${timeAgo}</span>
       </div>`;
@@ -3579,8 +3580,7 @@ function renderFanBody() {
   }
 
   const viewAll = document.getElementById('viewAllFansLink');
-  const confirmedCount = fans.filter(f => f.confirmed !== false).length;
-  if (viewAll) viewAll.textContent = `View all ${confirmedCount} fans →`;
+  if (viewAll) viewAll.textContent = `View all ${fans.length} fans →`;
 
   const midnight = new Date(); midnight.setHours(0,0,0,0);
   const todayClicks = clicks.filter(c => c.ts >= midnight.getTime());
