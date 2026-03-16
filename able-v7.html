@@ -5037,7 +5037,7 @@
           <p class="fan-capture__error" id="fan-error" role="alert" aria-live="polite" hidden></p>
         </form>
         <p class="fan-capture__trust" id="fan-trust">Your email goes to <span id="fan-artist-name">the artist</span> — not to ABLE. Unsubscribe any time.</p>
-        <p class="fan-capture__gdpr"><a href="/privacy.html" target="_blank" rel="noopener">Privacy policy</a></p>
+        <p class="fan-capture__gdpr" id="fan-consent">By signing up, <span id="consent-artist">the artist</span> can contact you about their music. They own your contact details — ABLE stores them on their behalf. <a href="/privacy.html" target="_blank" rel="noopener">Privacy policy</a>.</p>
         <div class="fan-capture__echo" id="fan-echo" hidden>
           <p class="fan-capture__echo-text" id="fan-echo-text"></p>
           <p class="fan-capture__echo-confirm">You're on the list.</p>
@@ -5243,7 +5243,7 @@
           </div>
         </form>
         <p class="fan-capture__trust" id="fan-trust-2">Your email goes to the artist — not to ABLE. Unsubscribe any time.</p>
-        <p class="fan-capture__gdpr"><a href="/privacy.html" target="_blank" rel="noopener">Privacy policy</a></p>
+        <p class="fan-capture__gdpr" id="fan-consent-2">By signing up, <span id="consent-artist-2">the artist</span> can contact you about their music. They own your contact details — ABLE stores them on their behalf. <a href="/privacy.html" target="_blank" rel="noopener">Privacy policy</a>.</p>
       </section>
 
       <!-- ======================================================
@@ -7787,6 +7787,11 @@
       const trustEl2 = document.getElementById('fan-trust-2')
       if (trustEl2) trustEl2.textContent = trustText
 
+      const consentArtistEl = document.getElementById('consent-artist')
+      if (consentArtistEl) consentArtistEl.textContent = artistName
+      const consentArtistEl2 = document.getElementById('consent-artist-2')
+      if (consentArtistEl2) consentArtistEl2.textContent = artistName
+
       // Task 5.5 — apply artist-customised sub-copy when set
       const subEl = document.getElementById('fan-capture-sub')
       if (subEl && profile.fanCaptureSub) subEl.textContent = profile.fanCaptureSub
@@ -7884,6 +7889,9 @@
               consent: true,
               consentMethod: 'email_field',
               jurisdiction: 'GDPR',
+              optIn: true,
+              consentVersion: '2026-03-16',
+              consentSource: 'profile-signup-' + (signupSource || 'direct'),
               confirmed: false,
               double_opted_in: false
             })
@@ -7986,6 +7994,7 @@
             return
           }
           const signup2Source = getUtmSource()
+          const campaignState2 = computeState(safeLS('able_v3_profile', {}))
           try {
             const fans = safeLS('able_fans', [])
             fans.push({
@@ -7993,9 +8002,13 @@
               email,
               ts: Date.now(),
               source: signup2Source,
+              campaignState: campaignState2,
               consent: true,
               consentMethod: 'email_field',
               jurisdiction: 'GDPR',
+              optIn: true,
+              consentVersion: '2026-03-16',
+              consentSource: 'profile-signup-' + (signup2Source || 'direct'),
               confirmed: false,
               double_opted_in: false
             })
