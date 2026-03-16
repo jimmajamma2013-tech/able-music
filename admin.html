@@ -36,12 +36,12 @@
   --sidebar: 220px;
   --topbar:  56px;
 
-  /* Dashboard light-theme tokens */
-  --dash-bg:     #ddd8d0;
-  --dash-card:   #ffffff;
-  --dash-border: #d4cfc8;
+  /* Dashboard light-theme tokens — layered depth per doctrine */
+  --dash-bg:     #e4dfd7;   /* floor — warmer, steps away from card */
+  --dash-card:   #f8f5f0;   /* surface — cards sit above floor */
+  --dash-border: #cdc8c0;   /* border — more contrast against card */
   --dash-shell:  #1a1a2e;
-  --dash-field:  #f5f2ee;
+  --dash-field:  #e4dfd7;   /* recessed — matches floor so inputs feel inset */
   --dash-amber:  #f4b942;
   --dash-green:  #1e9650;
   --dash-red:    #c04030;
@@ -4210,6 +4210,8 @@ function initCampaignHQ() {
     if (strip) strip.classList.add('active');
     if (hint) hint.textContent = 'Active — expires in 24 hrs. Your tickets CTA is front and centre.';
     updateChqPill('gig');
+    const descEl = document.getElementById('chqModeDesc');
+    if (descEl) descEl.textContent = 'Fans see your show and a ticket link.';
     tickGigCountdown(gigExp);
   }
 }
@@ -4312,10 +4314,10 @@ function renderTimelineArc() {
 
   // Per-mode description
   const MODE_DESCS = {
-    profile:       'Your regular page — latest release, upcoming shows, fan sign-up.',
-    'pre-release': 'Building up to your release. Fans can pre-save and stay notified.',
-    live:          'Drop day. Your new release is front and centre with a stream CTA.',
-    after:         "Post-release. Stream link stays up while you plan what\u2019s next.",
+    profile:       'Fans see your latest release and your links.',
+    'pre-release': 'Fans see a countdown and a pre-save button.',
+    live:          'Fans see your release and a stream button.',
+    after:         'Fans see your stream link and your profile.',
   };
   const descEl = document.getElementById('chqModeDesc');
   if (descEl) descEl.textContent = MODE_DESCS[displayMode] || '';
