@@ -147,6 +147,11 @@
 - [x] Copy compliance: pre-release nudge — removed "unlocks" (banned word)
 - [x] Copy compliance: export empty state — removed "get started" (banned phrase)
 - [x] "0% taken by ABLE. Stripe standard fee only" in support setup flow confirmed (§10)
+- [x] **V8** First-fan moment: `checkFirstFanMoment()` surfaces first fan's email with copy "That email is yours — no platform decides whether they hear from you." (`able_first_fan_seen` flag prevents repeat)
+- [x] **V8** Credits handle field: release credits now have name/role/handle — handle confirmed = live `/{handle}` link, unconfirmed = 70% opacity plain text
+- [x] **V8** `migrateWizardKey()` IIFE: reads `able_profile`, merges into `able_v3_profile`, removes legacy key
+- [x] **V8** Greeting system §5.2: `countFansAfterTimestamp()`, `buildGreetingSub()`, `applyGreeting()` — full 8-branch context-aware system (gig active / pre-release countdown / live window / post-gig "Last night at {venue}. {N} fans joined." / default). First-ever visit path: "Good to meet you." + 2.5s fade to contextual sub.
+- [x] **V8** Upgrade bar fan count: `updateUpgradeBar()` shows "47 of 100 fans." when fans > 0, "Nearly there." when ≥80 — replaces generic "Free plan." text
 
 ### start.html (Onboarding Wizard)
 - [x] Pre-step 0: Spotify/music link import
@@ -194,7 +199,14 @@
 ---
 
 ## Known issues
-*(Add issues here as they are discovered)*
+
+- **Deployment gap**: `ablemusic.netlify.app` deploys from `main`. All V8 work is on `v2-simplified`. Merge to main requires James's explicit sign-off (CLAUDE.md rule). Cannot test V8 on deployed build until merged.
+- **og-default.jpg**: `injectSEO()` falls back to `https://ablemusic.netlify.app/og-default.jpg` — this file must exist at that URL or social share cards will be blank. Not yet verified as deployed. Create/deploy before first artist.
+- **RESEND_API_KEY**: Not set in Netlify env. fan-confirmation.js will silently skip sending. Manual task — James only at resend.com/domains + netlify.com.
+- **No service worker**: PWA is installable (manifest.json + icons exist) but not offline-capable. fan.html home screen promise is half-kept.
+- **noindex missing**: admin.html and fan.html should have `<meta name="robots" content="noindex">` to prevent them from appearing in search.
+- **Campaign mode per-mode explanations**: Campaign HQ tooltip exists but individual mode descriptions below arc nodes not yet added.
+- **"Preview your page →" link**: Not present in admin top bar — artists can't easily see their live profile while working in admin.
 
 ---
 

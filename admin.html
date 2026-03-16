@@ -2102,6 +2102,7 @@ body::before {
               <span class="arc-label">After</span>
             </button>
           </div>
+          <div id="chqModeDesc" style="margin-top:10px;font-size:11px;color:var(--dash-t3);line-height:1.5;min-height:1.2em;transition:opacity 0.2s;"></div>
         </div>
 
         <div class="chq-divider"></div>
@@ -3764,6 +3765,16 @@ function renderTimelineArc() {
   const badge = document.getElementById('arcModeBadge');
   const modeLabels = { profile: 'Profile', 'pre-release': 'Pre-release', live: 'Live', after: 'After' };
   if (badge) badge.textContent = modeLabels[displayMode] || 'Profile';
+
+  // Per-mode description
+  const MODE_DESCS = {
+    profile:       'Your regular page — latest release, upcoming shows, fan sign-up.',
+    'pre-release': 'Building up to your release. Fans can pre-save and stay notified.',
+    live:          'Drop day. Your new release is front and centre with a stream CTA.',
+    after:         "Post-release. Stream link stays up while you plan what\u2019s next.",
+  };
+  const descEl = document.getElementById('chqModeDesc');
+  if (descEl) descEl.textContent = MODE_DESCS[displayMode] || '';
 
   const countdown = document.getElementById('arcCountdown');
   if (countdown && profile.releaseDate) {
