@@ -66,6 +66,7 @@ Single-developer + AI agents. Active file = ship immediately.
 | Killer features | `docs/systems/killer-features/` | active — P0/P1 build queue |
 | Transcendence | `docs/systems/transcendence/` | active — 11/10 philosophy + audit |
 | CRM | `docs/systems/crm/SPEC.md` | 4/10 current → path to 10 in `PATH-TO-10.md` |
+| Notifications | `docs/systems/notifications/NOTIFICATIONS.md` | 10/10 spec — pre-build |
 | Analytics | `docs/systems/analytics/SPEC.md` | in progress |
 | Error states | `docs/systems/error-states/SPEC.md` | in progress |
 | PWA | `docs/systems/pwa/SPEC.md` | in progress |
