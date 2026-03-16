@@ -820,6 +820,23 @@
     .col-able { font-size:14px; color:var(--text); line-height:1.5; display:flex; align-items:flex-start; gap:8px; }
     .col-able::before { content:'✓'; color:var(--accent); font-weight:700; flex-shrink:0; margin-top:1px; }
     .switcher-cta { display:inline-flex; align-items:center; justify-content:center; height:48px; padding:0 24px; border:1.5px solid rgba(255,255,255,0.25); border-radius:10px; font-family:var(--font-body); font-size:15px; font-weight:600; color:var(--text); cursor:pointer; background:transparent; text-decoration:none; transition:all 200ms var(--ease-decel); margin-top:28px; width:100%; }
+
+    /* ── FEATURE COMPARISON TABLE ─────────────────────────────── */
+    .feat-table { width:100%; border-collapse:collapse; border:1px solid var(--border); border-radius:12px; overflow:hidden; font-size:13px; }
+    .feat-table thead th { padding:10px 14px; background:rgba(255,255,255,0.04); font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-3); text-align:center; border-bottom:1px solid var(--border); }
+    .feat-table thead th:first-child { text-align:left; color:var(--text-3); }
+    .feat-table thead th.th-able { color:var(--accent); }
+    .feat-table tbody tr { border-bottom:1px solid var(--border); }
+    .feat-table tbody tr:last-child { border-bottom:none; }
+    .feat-table tbody td { padding:11px 14px; color:var(--text-2); text-align:center; vertical-align:middle; }
+    .feat-table tbody td:first-child { text-align:left; color:var(--text); font-weight:500; }
+    .feat-table .ft-yes { color:var(--accent); font-weight:700; }
+    .feat-table .ft-no  { color:var(--text-3); }
+    .feat-table .ft-partial { color:var(--text-3); font-style:italic; }
+    @media (max-width:600px) {
+      .feat-table thead th, .feat-table tbody td { padding:9px 8px; font-size:12px; }
+      .feat-table thead th:first-child, .feat-table tbody td:first-child { font-size:11px; }
+    }
     .switcher-cta:hover { border-color:rgba(255,255,255,0.45); background:rgba(255,255,255,0.05); }
 
     /* ── STEPS ────────────────────────────────────────────────── */
@@ -1581,6 +1598,78 @@
       </div>
       <div style="margin-top:36px;padding:18px 24px;background:rgba(var(--accent-rgb),0.05);border:1px solid rgba(var(--accent-rgb),0.15);border-radius:12px;text-align:center;max-width:580px;margin-left:auto;margin-right:auto;">
         <p style="font-size:13px;color:var(--text-2);line-height:1.65;">0% ABLE cut on everything you earn. Stripe's standard rate only (1.4% + 20p for UK cards). <span style="color:var(--text-3);">Beacons charges 9% on their free plan.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURE COMPARISON TABLE -->
+  <section class="section" style="border-top:1px solid var(--border);">
+    <div class="section__inner" style="max-width:840px;">
+      <div class="section__eyebrow fade-up" style="text-align:center;">How it compares</div>
+      <h2 class="section__title fade-up" style="text-align:center;max-width:100%;margin-bottom:36px;">The features that matter.</h2>
+      <div class="fade-up" style="overflow-x:auto;">
+        <table class="feat-table">
+          <thead>
+            <tr>
+              <th style="min-width:160px;"></th>
+              <th class="th-able">ABLE Free</th>
+              <th class="th-able">ABLE Artist</th>
+              <th>Linktree</th>
+              <th>Beacons</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Fan email capture</td>
+              <td class="ft-yes">Yes (100)</td>
+              <td class="ft-yes">Yes (2,000)</td>
+              <td class="ft-no">No</td>
+              <td class="ft-partial">Partial</td>
+            </tr>
+            <tr>
+              <td>Artist owns fan emails</td>
+              <td class="ft-yes">Yes</td>
+              <td class="ft-yes">Yes</td>
+              <td class="ft-no">No</td>
+              <td class="ft-no">No</td>
+            </tr>
+            <tr>
+              <td>Pre-release countdown</td>
+              <td class="ft-no">—</td>
+              <td class="ft-yes">Yes</td>
+              <td class="ft-no">No</td>
+              <td class="ft-no">No</td>
+            </tr>
+            <tr>
+              <td>Gig mode</td>
+              <td class="ft-no">—</td>
+              <td class="ft-yes">Yes</td>
+              <td class="ft-no">No</td>
+              <td class="ft-no">No</td>
+            </tr>
+            <tr>
+              <td>Release window</td>
+              <td class="ft-no">—</td>
+              <td class="ft-yes">Yes</td>
+              <td class="ft-no">No</td>
+              <td class="ft-no">No</td>
+            </tr>
+            <tr>
+              <td>Platform revenue cut</td>
+              <td class="ft-yes">0%</td>
+              <td class="ft-yes">0%</td>
+              <td class="ft-yes">0%</td>
+              <td class="ft-partial">5–30%</td>
+            </tr>
+            <tr>
+              <td>Music-first design</td>
+              <td class="ft-yes">Yes</td>
+              <td class="ft-yes">Yes</td>
+              <td class="ft-no">No</td>
+              <td class="ft-no">No</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
