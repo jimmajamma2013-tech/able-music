@@ -8259,28 +8259,30 @@
     // --- Listen section ----------------------------------------
 
     // Build an embed URL from a stream URL (Spotify, SoundCloud, YouTube, Mixcloud)
+    // Chrome suppression: all platforms use minimal mode — no platform brand colours,
+    // no related content, no social signals.
     function buildEmbedUrl(streamUrl) {
       if (!streamUrl) return null
       const u = streamUrl
 
-      // Spotify: https://open.spotify.com/track|album|playlist/ID → embed URL
-      // Only convert if URL has a valid resource type + 22-char base62 ID
+      // Spotify — theme=0 suppresses Spotify green chrome, gives dark/neutral look
       const spMatch = u.match(/open\.spotify\.com\/(track|album|playlist|artist|show|episode)\/([A-Za-z0-9]{10,30})/)
       if (spMatch) {
-        return `https://open.spotify.com/embed/${spMatch[1]}/${spMatch[2]}`
+        return `https://open.spotify.com/embed/${spMatch[1]}/${spMatch[2]}?utm_source=generator&theme=0`
       }
-      if (u.includes('open.spotify.com')) return null // placeholder — no embed
+      if (u.includes('open.spotify.com')) return null
 
-      // YouTube: watch?v=ID → embed/ID
+      // YouTube — modestbranding=1 removes logo, rel=0 suppresses related videos,
+      // color=white uses white progress bar (not YouTube red)
       const ytMatch = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]+)/)
-      if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`
+      if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?modestbranding=1&rel=0&color=white`
 
-      // SoundCloud: pass as soundcloud widget
+      // SoundCloud — suppress user, comments, reposts, teaser, related
       if (u.includes('soundcloud.com')) {
-        return `https://w.soundcloud.com/player/?url=${encodeURIComponent(u)}&auto_play=false&show_artwork=true&visual=true&show_comments=false`
+        return `https://w.soundcloud.com/player/?url=${encodeURIComponent(u)}&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=true`
       }
 
-      // Mixcloud: /user/show/ → widget
+      // Mixcloud — hide cover image (ABLE shows its own artwork context)
       if (u.includes('mixcloud.com')) {
         return `https://www.mixcloud.com/widget/iframe/?hide_cover=1&light=0&feed=${encodeURIComponent(u)}`
       }
@@ -8331,13 +8333,18 @@
       }
 
       list.innerHTML = ''
+      // Embed budget: max 1 embed (iframe) per page regardless of per-release displayMode.
+      // The featured/first release earns the embed; everything else is tracklist.
+      let _embedBudget = 0
       releases.forEach((rel, i) => {
         const card = document.createElement('article')
 
         const type = rel.type || 'Single'
         const year = rel.year || (rel.releaseDate ? new Date(rel.releaseDate).getFullYear() : '')
         const tracks = rel.tracks || []
-        const displayMode = rel.displayMode || 'both'  // 'embed' | 'tracklist' | 'both'
+        const _rawDisplayMode = rel.displayMode || 'both'  // 'embed' | 'tracklist' | 'both'
+        // Enforce embed budget: if budget exhausted, force tracklist regardless of preference
+        const displayMode = (_rawDisplayMode !== 'tracklist' && _embedBudget >= 1) ? 'tracklist' : _rawDisplayMode
         // Admin saves platformUrl; renderer historically used streamUrl — accept both
         const streamUrl = rel.streamUrl || rel.platformUrl || ''
         const embedUrl = rel.embedUrl || buildEmbedUrl(streamUrl)
@@ -8492,6 +8499,10 @@
         // Apply displayMode: 'embed' hides tracklist; 'tracklist' hides embed media
         if (displayMode === 'embed') tracksHtml = ''
         else if (displayMode === 'tracklist') mediaHtml = ''
+
+        // Track embed budget: if an embed was rendered (mediaHtml contains an iframe
+        // or a YouTube thumbnail/lightbox), count it against the page budget.
+        if (mediaHtml && displayMode !== 'tracklist' && (embedUrl || isYouTube)) _embedBudget++
 
         // Credits — compact strip, quiet acknowledgment
         // Asymmetry rule: handle = live ABLE profile link (full opacity); no handle = plain text (70% opacity)

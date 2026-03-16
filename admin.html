@@ -2269,6 +2269,15 @@ body::before {
         <span class="chq-state-pill profile" id="chqStatePill">Profile</span>
       </div>
       <div class="chq-body">
+        <!-- Top card preview — what fans see right now -->
+        <div id="chqTopCardPreview" style="display:none;margin-bottom:14px;padding:12px;background:var(--dash-card,rgba(255,255,255,0.04));border-radius:10px;border:1px solid var(--border,rgba(255,255,255,0.08));">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--dash-t3,#555);margin-bottom:8px;">What fans see right now</div>
+          <div id="chqTopCardContent" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <!-- populated by initCampaignHQ -->
+          </div>
+          <button onclick="showPage('music')" style="margin-top:8px;background:none;border:none;padding:0;font-size:11px;color:var(--acc);cursor:pointer;font-family:inherit;">Change what's featured →</button>
+        </div>
+
         <div class="chq-release-row">
           <input class="chq-release-title" id="chqReleaseTitle" type="text" placeholder="Release title — e.g. 'Dissolve' (Single)">
         </div>
@@ -4146,6 +4155,7 @@ function initCampaignHQ() {
   });
   updateChqPill(computeEffectiveState(data));
   renderTimelineArc();
+  renderTopCardPreview(data);
 
   // Check gig mode
   const gigExp = safeLS(GIG_KEY, 0);
@@ -4158,6 +4168,47 @@ function initCampaignHQ() {
     updateChqPill('gig');
     tickGigCountdown(gigExp);
   }
+}
+
+function renderTopCardPreview(data) {
+  const preview = document.getElementById('chqTopCardPreview');
+  const content = document.getElementById('chqTopCardContent');
+  if (!preview || !content) return;
+
+  const releases = data.releases || [];
+  const featured = releases[0]; // first release is featured
+  const state = computeEffectiveState(data);
+
+  if (!featured && state !== 'gig') {
+    preview.style.display = 'none';
+    return;
+  }
+
+  preview.style.display = '';
+  const stateLabel = { profile: 'Profile', 'pre-release': 'Pre-release', live: 'Out now', gig: 'Gig tonight' }[state] || 'Profile';
+  const stateBadgeColor = { live: '#34c759', 'pre-release': '#f4b942', gig: '#ff453a', profile: 'var(--dash-t3)' }[state] || 'var(--dash-t3)';
+
+  if (state === 'gig') {
+    content.innerHTML = `
+      <div style="width:40px;height:40px;border-radius:8px;background:rgba(255,69,58,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎤</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:600;color:var(--dash-t1,#fff);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">I'm on tonight.</div>
+        <div style="font-size:11px;color:var(--dash-t3,#555);">Tickets front and centre</div>
+      </div>
+      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;background:rgba(255,69,58,0.15);color:#ff453a;">Gig tonight</span>`;
+    return;
+  }
+
+  const art = featured.artworkUrl ? `<img src="${escHtml(featured.artworkUrl)}" style="width:40px;height:40px;border-radius:6px;object-fit:cover;flex-shrink:0;" alt="" loading="lazy">` :
+    `<div style="width:40px;height:40px;border-radius:6px;background:rgba(255,255,255,0.06);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;">🎵</div>`;
+
+  content.innerHTML = `
+    ${art}
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:13px;font-weight:600;color:var(--dash-t1,#fff);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(featured.title || 'Untitled')}</div>
+      <div style="font-size:11px;color:var(--dash-t3,#555);">${escHtml(featured.type || 'Single')}${featured.year ? ' · ' + escHtml(featured.year) : ''}</div>
+    </div>
+    <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;background:rgba(255,255,255,0.06);color:${stateBadgeColor};white-space:nowrap;">${escHtml(stateLabel)}</span>`;
 }
 
 function computeEffectiveState(data) {
@@ -4435,13 +4486,13 @@ function renderAdminMusic() {
           <div class="field-row" style="margin:0">
             <div class="field-label">Show as</div>
             <select class="field-input" onchange="updateReleaseField('${rel.id}','displayMode',this.value)">
-              ${[['tracklist','Tracklist'],['embed','Embed'],['both','Both']].map(([v,l])=>`<option value="${v}"${rel.displayMode===v?' selected':''}>${l}</option>`).join('')}
+              ${[['both','Player + links'],['embed','Player only'],['tracklist','Links only']].map(([v,l])=>`<option value="${v}"${rel.displayMode===v?' selected':''}>${l}</option>`).join('')}
             </select>
           </div>
         </div>
         <div class="field-row">
           <div class="field-label" style="display:flex;align-items:center;gap:8px;">
-            Stream link
+            Where fans can listen
             <span class="autofill-badge" style="display:none;font-size:10px;font-weight:600;padding:2px 8px;border-radius:var(--r-pill,999px);background:rgba(255,255,255,0.06);color:var(--t2);">Auto-fill…</span>
           </div>
           <input class="field-input" type="url" value="${escHtml(rel.platformUrl||'')}"
