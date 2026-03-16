@@ -52,7 +52,7 @@
   /* Source badge colours (canonical) */
   --source-ig:      #e1306c;
   --source-sp:      #1ed760;
-  --source-tt:      #888888;
+  --source-tt:      #767676;
   --source-direct:  #999999;
 }
 
@@ -62,6 +62,16 @@ html { font-size:16px; }
 /* ── FOCUS VISIBILITY (WCAG 2.2 AA) ── */
 *:focus:not(:focus-visible) { outline: none; }
 *:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+
+/* ── REDUCED MOTION (WCAG 2.2 AA) ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration:        0.01ms !important;
+    animation-iteration-count: 1      !important;
+    transition-duration:       0.01ms !important;
+    scroll-behavior:           auto   !important;
+  }
+}
 body {
   background:var(--dash-bg); color:var(--text);
   font-family:var(--font); min-height:100vh;
@@ -1065,7 +1075,7 @@ body::before {
   .stats-row { grid-template-columns:1fr 1fr; gap:8px; margin-bottom:24px; }
 }
 @media (max-width:420px) {
-  .stats-row { grid-template-columns:1fr 1fr; gap:8px; }
+  .stats-row { grid-template-columns:1fr; gap:8px; }
   .stat-card { padding:14px 12px; }
   .stat-value { font-size:24px; }
   .mode-cards { grid-template-columns:1fr; }
@@ -1539,7 +1549,7 @@ body::before {
       font-weight: 700;
       letter-spacing: .06em;
       text-transform: uppercase;
-      color: var(--dash-t3, #888);
+      color: var(--dash-t3);
     }
     .admin-sheet-field-group {
       display: flex;
@@ -3636,7 +3646,7 @@ function renderSourceBreakdown(fans) {
   const counts = { ig: 0, tt: 0, sp: 0, direct: 0 };
   fans.forEach(f => counts[normaliseSource(f.source)]++);
   const total = fans.length || 1;
-  const colours = { ig: '#e1306c', tt: '#888', sp: '#1ed760', direct: '#999' };
+  const colours = { ig: '#e1306c', tt: '#767676', sp: '#1ed760', direct: '#999' };
   const labels = { ig: 'Instagram', tt: 'TikTok', sp: 'Spotify', direct: 'Direct' };
   el.innerHTML = Object.entries(counts).map(([src, count]) => {
     const pct = Math.round(count / total * 100);
@@ -6072,7 +6082,7 @@ function updateFanPageStats() {
 var WM_TYPE_COLOR_ADM = {
   release: '#3b82f6', show: '#e8715a', on_sale: '#f4b942',
   merch_drop: '#2db8b0', early_access: '#d4a84b',
-  livestream: '#4b8fd4', private_access: '#888888', announcement: '#aaaaaa',
+  livestream: '#4b8fd4', private_access: '#767676', announcement: '#aaaaaa',
 }
 
 function ywRenderMomentList(profile) {
@@ -6110,7 +6120,7 @@ function ywRenderMomentList(profile) {
   list.innerHTML = upcoming.slice(0, 12).map(function(m) {
     var d = new Date(m.date + 'T00:00:00')
     var dateStr = d.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' })
-    var color = WM_TYPE_COLOR_ADM[m.type] || '#888'
+    var color = WM_TYPE_COLOR_ADM[m.type] || '#767676'
     var isFeatured = m.id === featuredId
     var title = m.title || '(untitled)'
     var accessTag = m.isAuto
