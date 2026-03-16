@@ -3465,6 +3465,284 @@
       margin-bottom: 2px;
     }
 
+    /* === CLIPS SECTION ========================================= */
+    .clips-section {
+      padding: var(--sp-6) 0 var(--sp-4);
+    }
+
+    .clips-section .section-header {
+      padding: 0 var(--sp-5) var(--sp-4);
+    }
+
+    .clips-track {
+      display: flex;
+      gap: var(--sp-3);
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      overscroll-behavior-x: contain;
+      padding: 0 var(--sp-5) var(--sp-3);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .clips-track::-webkit-scrollbar { display: none; }
+
+    .clip-card {
+      flex: 0 0 calc(30vw);
+      max-width: 110px;
+      min-width: 80px;
+      aspect-ratio: 9 / 16;
+      scroll-snap-align: start;
+      position: relative;
+      border-radius: var(--r-sm);
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--color-card);
+      touch-action: manipulation;
+    }
+
+    @media (min-width: 430px) {
+      .clip-card { max-width: 130px; }
+    }
+
+    .clip-card__thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .clip-card__thumb-placeholder {
+      width: 100%;
+      height: 100%;
+      background: var(--color-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-3);
+      font-size: 24px;
+    }
+
+    .clip-card__play {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.25);
+      transition: background var(--dur-fast) var(--ease-standard);
+    }
+
+    .clip-card:hover .clip-card__play,
+    .clip-card:focus-visible .clip-card__play {
+      background: rgba(0,0,0,0.4);
+    }
+
+    .clip-card__play-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      flex-shrink: 0;
+    }
+
+    .clip-card__play-icon svg { margin-left: 2px; }
+
+    .clip-card__access {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      background: rgba(0,0,0,0.7);
+      color: rgba(255,255,255,0.85);
+      backdrop-filter: blur(4px);
+      pointer-events: none;
+    }
+
+    .clip-card__caption {
+      font-size: 11px;
+      color: var(--color-text-2);
+      margin-top: var(--sp-1);
+      line-height: 1.4;
+      max-width: calc(30vw);
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    /* Owner: add-clip placeholder card */
+    .clip-card--add {
+      border: 1.5px dashed rgba(var(--color-accent-rgb), 0.4);
+      background: rgba(var(--color-accent-rgb), 0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sp-2);
+      color: var(--color-accent);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .clips-owner-empty {
+      padding: var(--sp-5) var(--sp-5) var(--sp-3);
+      text-align: center;
+    }
+
+    .clips-owner-empty p {
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      margin-bottom: var(--sp-4);
+    }
+
+    .clips-add-btn {
+      padding: var(--sp-2) var(--sp-5);
+      font-size: var(--text-sm);
+    }
+
+    /* === CLIP FULL-SCREEN PLAYER ================================ */
+    .clip-player-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 900;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: translateY(100vh);
+      transition: transform 280ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .clip-player-modal:not([hidden]) {
+      transform: translateY(0);
+    }
+
+    /* When modal is shown, remove hidden attr and use transform */
+    .clip-player-modal[hidden] {
+      display: flex !important; /* override hidden — we use transform for animation */
+      pointer-events: none;
+    }
+
+    .clip-player-modal:not([hidden]) {
+      pointer-events: all;
+    }
+
+    .clip-close-btn {
+      position: absolute;
+      top: max(var(--sp-5), env(safe-area-inset-top, 0px));
+      right: var(--sp-4);
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+
+    .clip-video-wrap {
+      width: min(100vw, calc(100vh * 9 / 16));
+      aspect-ratio: 9 / 16;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .clip-video-wrap iframe,
+    .clip-video-wrap video {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .clip-player-footer {
+      position: absolute;
+      bottom: max(var(--sp-5), env(safe-area-inset-bottom, 0px));
+      left: 0;
+      right: 0;
+      padding: 0 var(--sp-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+
+    .clip-sound-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+
+    .clip-sound-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      flex-shrink: 0;
+    }
+
+    .clip-sound-hint {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      transition: opacity 0.5s;
+    }
+
+    .clip-sound-hint.hidden { opacity: 0; }
+
+    .clip-caption-overlay {
+      font-size: 14px;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 300ms;
+      margin: 0;
+    }
+
+    .clip-caption-overlay.visible { opacity: 1; }
+
+    .clip-nav-indicator {
+      position: absolute;
+      bottom: max(var(--sp-5), env(safe-area-inset-bottom, 0px));
+      right: var(--sp-4);
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .clip-player-modal { transition-duration: 0ms; }
+    }
+
     /* Fan near-full owner banner */
     .fan-limit-banner {
       display: none;
@@ -5270,6 +5548,21 @@
       </section>
 
       <!-- ======================================================
+           CLIPS SECTION (horizontal scroll — Videos for fans)
+           ====================================================== -->
+      <section class="clips-section" id="clips-section" aria-labelledby="clips-heading" hidden>
+        <header class="section-header">
+          <h2 class="section-title" id="clips-heading">Clips</h2>
+        </header>
+        <div class="clips-track" id="clips-track" role="list"></div>
+        <!-- Owner empty state (shown when artist has no clips) -->
+        <div class="clips-owner-empty" id="clips-owner-empty" hidden>
+          <p>Got a clip? Studio footage, a live moment, anything. Drop it here.</p>
+          <button class="clips-add-btn btn-primary pressable" id="clips-add-btn-empty">Add a clip</button>
+        </div>
+      </section>
+
+      <!-- ======================================================
            MERCH SECTION
            ====================================================== -->
       <section class="content-section content-section--secondary" id="merch-section" aria-labelledby="merch-heading" hidden>
@@ -5357,6 +5650,25 @@
       </footer>
 
     </main>
+
+    <!-- ========================================================
+         CLIP PLAYER MODAL (full-screen, appended to body)
+         ======================================================== -->
+    <div id="clipPlayerModal" class="clip-player-modal" role="dialog" aria-modal="true"
+         aria-label="Clip player" hidden>
+      <button class="clip-close-btn pressable" id="clipCloseBtn" aria-label="Close clip">✕</button>
+      <div class="clip-video-wrap" id="clipVideoWrap">
+        <!-- iframe or video inserted by JS -->
+      </div>
+      <div class="clip-player-footer">
+        <div class="clip-sound-row">
+          <button class="clip-sound-btn pressable" id="clipSoundBtn" aria-label="Toggle sound">🔇</button>
+          <span class="clip-sound-hint" id="clipSoundHint">Tap to turn sound on</span>
+        </div>
+        <p class="clip-caption-overlay" id="clipCaptionOverlay" aria-live="polite"></p>
+      </div>
+      <div class="clip-nav-indicator" id="clipNavIndicator" aria-hidden="true"></div>
+    </div>
 
     <!-- Tab bar (fixed) -->
     <nav id="tab-bar" role="tablist" aria-label="Profile sections">
@@ -6008,7 +6320,7 @@
 
     const DEFAULT_SECTION_ORDER = [
       'listen-section', 'shows-section', 'world-map-section',
-      'snap-cards-section', 'merch-section', 'support-section', 'recs-section'
+      'snap-cards-section', 'clips-section', 'merch-section', 'support-section', 'recs-section'
     ]
 
     function computeSectionOrder(profile) {
@@ -8840,6 +9152,321 @@
       section.hidden = false
     }
 
+    // --- Clips -------------------------------------------------
+
+    var _clipPlayerOpen = false
+    var _clipList = []
+    var _clipIdx = 0
+    var _clipSoundOn = false
+    var _clipPlayerEl = null
+    var _clipTouchStartY = 0
+    var _clipTouchStartX = 0
+    var _clipReturnFocusEl = null
+
+    function detectClipType(url) {
+      if (!url) return 'video_url'
+      if (url.includes('youtube.com/shorts') || (url.includes('youtu.be') && !url.includes('watch'))) return 'youtube_short'
+      if (url.includes('tiktok.com')) return 'tiktok'
+      return 'video_url'
+    }
+
+    function resolveClipEmbed(clip) {
+      const url = clip.videoUrl || ''
+      if (clip.embedUrl) return clip.embedUrl
+      const type = clip.type || detectClipType(url)
+      if (type === 'youtube_short') {
+        // Extract video ID
+        let vid = ''
+        const ytShort = url.match(/youtube\.com\/shorts\/([^?&/]+)/)
+        const ytBe = url.match(/youtu\.be\/([^?&/]+)/)
+        if (ytShort) vid = ytShort[1]
+        else if (ytBe) vid = ytBe[1]
+        return vid ? `https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&playsinline=1&rel=0` : null
+      }
+      if (type === 'tiktok') {
+        // TikTok oEmbed needs server proxy — use videoUrl as-is for now
+        return null
+      }
+      // video_url — assume direct video file
+      return null
+    }
+
+    function renderClips(profile) {
+      const section = document.getElementById('clips-section')
+      const track = document.getElementById('clips-track')
+      const ownerEmpty = document.getElementById('clips-owner-empty')
+      if (!section || !track) return
+
+      const clips = safeLS('able_clips', [])
+      const isOwner = getIsOwner(profile)
+      const published = clips.filter(c => c.published)
+
+      track.innerHTML = ''
+
+      if (isOwner) {
+        // Add-clip card always first in owner mode
+        const addCard = document.createElement('div')
+        addCard.className = 'clip-card clip-card--add pressable'
+        addCard.setAttribute('role', 'button')
+        addCard.setAttribute('tabindex', '0')
+        addCard.setAttribute('aria-label', 'Add a clip')
+        addCard.innerHTML = '<span style="font-size:22px;font-weight:300">+</span><span>Add a clip</span>'
+        addCard.addEventListener('click', function() {
+          if (typeof openAdminSheet === 'function') openAdminSheet('clip-add')
+        })
+        addCard.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); addCard.click() }
+        })
+        track.appendChild(addCard)
+
+        if (ownerEmpty) ownerEmpty.hidden = true
+      }
+
+      if (!published.length && !isOwner) {
+        section.hidden = true
+        return
+      }
+
+      if (!published.length && isOwner) {
+        if (ownerEmpty) ownerEmpty.hidden = false
+        section.hidden = false
+        return
+      }
+
+      if (ownerEmpty) ownerEmpty.hidden = true
+
+      // Build clip index for player navigation
+      _clipList = published
+
+      published.forEach(function(clip, idx) {
+        const wrap = document.createElement('div')
+        wrap.className = 'clip-card-wrap'
+        wrap.setAttribute('role', 'listitem')
+
+        const card = document.createElement('div')
+        card.className = 'clip-card pressable'
+        card.setAttribute('role', 'button')
+        card.setAttribute('tabindex', '0')
+        card.setAttribute('aria-label', (clip.caption ? clip.caption.slice(0, 60) : 'Clip ' + (idx + 1)) + ' — tap to play')
+
+        // Thumbnail
+        if (clip.thumbnailUrl) {
+          const img = document.createElement('img')
+          img.className = 'clip-card__thumb'
+          img.src = clip.thumbnailUrl
+          img.alt = ''
+          img.loading = 'lazy'
+          card.appendChild(img)
+        } else {
+          const ph = document.createElement('div')
+          ph.className = 'clip-card__thumb-placeholder'
+          ph.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'
+          card.appendChild(ph)
+        }
+
+        // Play overlay
+        const playOverlay = document.createElement('div')
+        playOverlay.className = 'clip-card__play'
+        playOverlay.innerHTML = '<div class="clip-card__play-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>'
+        card.appendChild(playOverlay)
+
+        // Access badge
+        if (clip.access && clip.access !== 'public') {
+          const badge = document.createElement('span')
+          badge.className = 'clip-card__access'
+          badge.textContent = clip.access === 'supporter' ? 'Close Circle' : 'Fans'
+          card.appendChild(badge)
+        }
+
+        card.addEventListener('click', function() { openClipPlayer(idx) })
+        card.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openClipPlayer(idx) }
+        })
+
+        wrap.appendChild(card)
+
+        // Caption below card
+        if (clip.caption) {
+          const cap = document.createElement('p')
+          cap.className = 'clip-card__caption'
+          cap.textContent = clip.caption
+          wrap.appendChild(cap)
+        }
+
+        track.appendChild(wrap)
+      })
+
+      section.hidden = false
+    }
+
+    function openClipPlayer(idx) {
+      if (!_clipPlayerEl) _clipPlayerEl = document.getElementById('clipPlayerModal')
+      if (!_clipPlayerEl) return
+
+      _clipReturnFocusEl = document.activeElement
+      _clipIdx = idx
+      _clipSoundOn = false
+      _loadClipIntoPlayer(_clipList[_clipIdx])
+
+      // Trap body scroll
+      document.body.style.overflow = 'hidden'
+      document.getElementById('scroll-container')?.setAttribute('aria-hidden', 'true')
+      document.getElementById('tab-bar')?.setAttribute('aria-hidden', 'true')
+
+      _clipPlayerEl.removeAttribute('hidden')
+      _clipPlayerOpen = true
+
+      // Focus close button
+      setTimeout(function() {
+        const closeBtn = document.getElementById('clipCloseBtn')
+        if (closeBtn) closeBtn.focus()
+      }, 300)
+
+      // Sound hint auto-hide after 3s
+      const hint = document.getElementById('clipSoundHint')
+      if (hint) {
+        hint.classList.remove('hidden')
+        setTimeout(function() { hint.classList.add('hidden') }, 3000)
+      }
+    }
+
+    function _loadClipIntoPlayer(clip) {
+      if (!clip) return
+      const wrap = document.getElementById('clipVideoWrap')
+      const captionEl = document.getElementById('clipCaptionOverlay')
+      const navEl = document.getElementById('clipNavIndicator')
+      const soundBtn = document.getElementById('clipSoundBtn')
+      if (!wrap) return
+
+      // Clear previous
+      wrap.innerHTML = ''
+      _clipSoundOn = false
+      if (soundBtn) soundBtn.textContent = '🔇'
+      if (captionEl) { captionEl.textContent = ''; captionEl.classList.remove('visible') }
+
+      const embedUrl = resolveClipEmbed(clip)
+      if (embedUrl) {
+        const iframe = document.createElement('iframe')
+        iframe.src = embedUrl
+        iframe.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture'
+        iframe.allowFullscreen = true
+        iframe.setAttribute('playsinline', '')
+        wrap.appendChild(iframe)
+      } else if (clip.videoUrl && (clip.videoUrl.endsWith('.mp4') || clip.videoUrl.endsWith('.webm') || clip.videoUrl.endsWith('.mov'))) {
+        const video = document.createElement('video')
+        video.src = clip.videoUrl
+        video.autoplay = true
+        video.muted = true
+        video.playsInline = true
+        video.loop = false
+        video.setAttribute('playsinline', '')
+        wrap.appendChild(video)
+        video.play().catch(function() {})
+      } else {
+        // Unsupported — show placeholder
+        wrap.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:14px;">Can\'t play this clip</div>'
+      }
+
+      // Caption — fade in after 300ms
+      if (clip.caption && captionEl) {
+        captionEl.textContent = clip.caption
+        setTimeout(function() { captionEl.classList.add('visible') }, 300)
+      }
+
+      // Nav indicator
+      if (navEl && _clipList.length > 1) {
+        navEl.textContent = (_clipIdx + 1) + ' of ' + _clipList.length
+      } else if (navEl) {
+        navEl.textContent = ''
+      }
+    }
+
+    function closeClipPlayer() {
+      if (!_clipPlayerEl) return
+      _clipPlayerEl.setAttribute('hidden', '')
+      _clipPlayerOpen = false
+
+      // Clear iframe/video to stop audio
+      const wrap = document.getElementById('clipVideoWrap')
+      if (wrap) wrap.innerHTML = ''
+
+      // Restore
+      document.body.style.overflow = ''
+      document.getElementById('scroll-container')?.removeAttribute('aria-hidden')
+      document.getElementById('tab-bar')?.removeAttribute('aria-hidden')
+
+      if (_clipReturnFocusEl && _clipReturnFocusEl.focus) {
+        _clipReturnFocusEl.focus()
+      }
+    }
+
+    function toggleClipSound() {
+      const wrap = document.getElementById('clipVideoWrap')
+      const btn = document.getElementById('clipSoundBtn')
+      const hint = document.getElementById('clipSoundHint')
+      if (!wrap) return
+      const video = wrap.querySelector('video')
+      const iframe = wrap.querySelector('iframe')
+      _clipSoundOn = !_clipSoundOn
+      if (btn) btn.textContent = _clipSoundOn ? '🔊' : '🔇'
+      if (hint) hint.classList.add('hidden')
+      if (video) video.muted = !_clipSoundOn
+      if (iframe) {
+        // PostMessage for YouTube
+        try {
+          iframe.contentWindow.postMessage(JSON.stringify({
+            event: 'command',
+            func: _clipSoundOn ? 'unMute' : 'mute',
+            args: []
+          }), '*')
+        } catch (_) {}
+      }
+    }
+
+    function _initClipPlayerEvents() {
+      const modal = document.getElementById('clipPlayerModal')
+      const closeBtn = document.getElementById('clipCloseBtn')
+      const soundBtn = document.getElementById('clipSoundBtn')
+      if (!modal) return
+
+      if (closeBtn) closeBtn.addEventListener('click', closeClipPlayer)
+      if (soundBtn) soundBtn.addEventListener('click', toggleClipSound)
+
+      // Keyboard: Escape = close, ArrowLeft/Right = navigate
+      document.addEventListener('keydown', function(e) {
+        if (!_clipPlayerOpen) return
+        if (e.key === 'Escape') { e.preventDefault(); closeClipPlayer() }
+        if (e.key === 'ArrowLeft' && _clipIdx > 0) { _clipIdx--; _loadClipIntoPlayer(_clipList[_clipIdx]) }
+        if (e.key === 'ArrowRight' && _clipIdx < _clipList.length - 1) { _clipIdx++; _loadClipIntoPlayer(_clipList[_clipIdx]) }
+      })
+
+      // Touch: swipe down to dismiss, swipe left/right to navigate
+      modal.addEventListener('touchstart', function(e) {
+        _clipTouchStartY = e.touches[0].clientY
+        _clipTouchStartX = e.touches[0].clientX
+      }, { passive: true })
+
+      modal.addEventListener('touchend', function(e) {
+        if (!_clipPlayerOpen) return
+        const dy = e.changedTouches[0].clientY - _clipTouchStartY
+        const dx = e.changedTouches[0].clientX - _clipTouchStartX
+        if (Math.abs(dy) > Math.abs(dx) && dy > 80) {
+          closeClipPlayer()
+        } else if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 60) {
+          if (dx < 0 && _clipIdx < _clipList.length - 1) {
+            _clipIdx++; _loadClipIntoPlayer(_clipList[_clipIdx])
+          } else if (dx > 0 && _clipIdx > 0) {
+            _clipIdx--; _loadClipIntoPlayer(_clipList[_clipIdx])
+          }
+        }
+      }, { passive: true })
+    }
+
+    // Expose to admin sheet (inline onclick on empty state btn)
+    window.openClipPlayer = openClipPlayer
+    window.closeClipPlayer = closeClipPlayer
+    window.toggleClipSound = toggleClipSound
+
     // --- Snap cards --------------------------------------------
 
     function renderSnapCards(profile) {
@@ -9788,6 +10415,7 @@
       renderVideosSection(profile.videos || [])
       renderShowsSection(profile)
       renderSnapCards(profile)
+      renderClips(profile)
       renderMerchSection(profile)
       renderSupportSection(profile)
       renderCreditsSection(profile)
@@ -9818,6 +10446,7 @@
       initDeepLinkHighlight()
       patchFanFormConfetti()
       respectReducedMotion()
+      _initClipPlayerEvents()
 
       // Track page view
       trackView()
@@ -10244,6 +10873,7 @@
           renderListenSection(fresh)
           renderShowsSection(fresh)
           renderSnapCards(fresh)
+          renderClips(fresh)
           renderMerchSection(fresh)
           renderSupportSection(fresh)
           renderCreditsSection(fresh)

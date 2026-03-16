@@ -393,6 +393,51 @@ body::before {
 }
 .recs-pool-item__move:hover { color:var(--dash-text); }
 
+/* ── CLIPS ADMIN ── */
+.clips-admin-list { display:flex; flex-direction:column; gap:8px; }
+.clip-admin-item {
+  display:flex; align-items:center; gap:12px;
+  background:rgba(255,255,255,.04); border-radius:10px;
+  padding:10px 12px; transition:background .15s;
+}
+.clip-admin-thumb {
+  width:36px; height:64px; border-radius:5px; object-fit:cover;
+  flex-shrink:0; background:rgba(255,255,255,.08); display:flex;
+  align-items:center; justify-content:center; color:rgba(255,255,255,.3);
+  font-size:18px;
+}
+.clip-admin-thumb img { width:100%; height:100%; object-fit:cover; border-radius:5px; }
+.clip-admin-body { flex:1; min-width:0; }
+.clip-admin-caption {
+  font-size:13px; color:var(--dash-text); white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis; max-width:200px;
+}
+.clip-admin-meta { font-size:11px; color:var(--t2); margin-top:2px; }
+.clip-admin-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.clip-admin-toggle {
+  position:relative; width:40px; height:22px; cursor:pointer;
+  background:rgba(255,255,255,.12); border-radius:11px;
+  border:none; transition:background .2s; flex-shrink:0;
+}
+.clip-admin-toggle.on { background:var(--acc); }
+.clip-admin-toggle::after {
+  content:''; position:absolute; top:3px; left:3px;
+  width:16px; height:16px; border-radius:50%; background:#fff;
+  transition:transform .2s;
+}
+.clip-admin-toggle.on::after { transform:translateX(18px); }
+.clip-admin-edit { background:none; border:none; color:var(--t2); cursor:pointer; padding:6px; font-size:14px; }
+.clip-admin-edit:hover { color:var(--dash-text); }
+/* Inline expand editor for clips */
+.clip-edit-panel {
+  background:rgba(255,255,255,.03); border-radius:8px;
+  padding:12px; border:1px solid rgba(255,255,255,.06); margin-top:4px;
+}
+.clip-add-form {
+  background:rgba(255,255,255,.03); border-radius:10px;
+  padding:14px; border:1px solid rgba(255,255,255,.06); margin-top:12px;
+}
+
 /* ── SNAP CARDS EDITOR ── */
 .snap-list { display:flex; flex-direction:column; gap:8px; }
 .snap-item {
@@ -2138,6 +2183,10 @@ body::before {
       <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><rect x="1" y="4" width="6" height="11" rx="1.5"/><rect x="9" y="1" width="6" height="14" rx="1.5"/></svg>
       Updates
     </button>
+    <button class="sb-item" onclick="showPage('clips')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="15" height="15"><polygon points="5,3 13,8 5,13" stroke-linejoin="round"/></svg>
+      Clips
+    </button>
     <button class="sb-item" onclick="showPage('connect')">
       <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><circle cx="4" cy="8" r="2.5"/><circle cx="12" cy="4" r="2.5"/><circle cx="12" cy="12" r="2.5"/><line x1="6.2" y1="7" x2="9.8" y2="5" stroke="currentColor" stroke-width="1.5"/><line x1="6.2" y1="9" x2="9.8" y2="11" stroke="currentColor" stroke-width="1.5"/></svg>
       Connections
@@ -2853,6 +2902,28 @@ body::before {
         <button class="snap-add-btn" style="margin-top:8px;" onclick="addSnapCard()">
           <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M6 1v10M1 6h10"/></svg>
           Add update
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CLIPS PAGE ── -->
+  <div class="page" id="page-clips">
+    <div class="page-header">
+      <div class="page-title">Clips</div>
+      <div class="page-sub">Short videos for the people already following you. Studio moments, live footage, anything real.</div>
+    </div>
+    <div class="dash-card" style="max-width:600px;">
+      <div class="dc-head">
+        <div class="dc-title">Your clips</div>
+        <button class="dc-action" onclick="openClipAddSheet()">+ Add a clip</button>
+      </div>
+      <div class="dc-body">
+        <div class="clips-admin-list" id="clipsAdminList"></div>
+        <p id="clipsAdminEmpty" style="text-align:center;padding:20px 0;color:rgba(255,255,255,.3);font-size:13px;margin:0;">No clips yet. Add one to share a video moment with your fans.</p>
+        <button class="snap-add-btn" style="margin-top:8px;" onclick="openClipAddSheet()">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M6 1v10M1 6h10"/></svg>
+          Add a clip
         </button>
       </div>
     </div>
@@ -3755,6 +3826,7 @@ function showPage(id) {
   if (id === 'merch')     renderAdminMerch();
   if (id === 'support')   renderAdminSupport();
   if (id === 'snaps')     renderSnapCardsList();
+  if (id === 'clips')     renderClipsAdminList();
   if (id === 'connect')   renderRecsList();
   if (id === 'analytics') { loadRealStats(); loadActivityFeed(); }
   if (id === 'fans') {
@@ -5115,6 +5187,224 @@ function moveSnapCard(id, dir) {
   setLS(V3_KEY, data)
   syncProfile(data)
   renderSnapCardsList()
+}
+
+/* ── CLIPS ADMIN ── */
+
+const CLIPS_KEY = 'able_clips'
+
+function renderClipsAdminList() {
+  const list  = document.getElementById('clipsAdminList')
+  const empty = document.getElementById('clipsAdminEmpty')
+  if (!list) return
+  const clips = safeLS(CLIPS_KEY, [])
+  if (empty) empty.style.display = clips.length ? 'none' : 'block'
+
+  if (!clips.length) { list.innerHTML = ''; return }
+
+  list.innerHTML = clips.map(function(clip) {
+    const isPublished = !!clip.published
+    const accessLabel = clip.access === 'supporter' ? 'Close Circle' : clip.access === 'fan' ? 'Fans only' : 'Everyone'
+    const thumbHtml = clip.thumbnailUrl
+      ? `<div class="clip-admin-thumb"><img src="${escHtml(clip.thumbnailUrl)}" alt=""></div>`
+      : `<div class="clip-admin-thumb" aria-hidden="true">▶</div>`
+    return `
+    <div class="snap-card-wrap" data-clipid="${escHtml(clip.id)}">
+      <div class="clip-admin-item">
+        ${thumbHtml}
+        <div class="clip-admin-body">
+          <div class="clip-admin-caption">${escHtml(clip.caption || 'No caption')}</div>
+          <div class="clip-admin-meta">${accessLabel} · ${isPublished ? 'Live' : 'Hidden'}</div>
+        </div>
+        <div class="clip-admin-actions">
+          <button class="clip-admin-toggle${isPublished ? ' on' : ''}"
+                  onclick="toggleClipPublished('${escHtml(clip.id)}')"
+                  title="${isPublished ? 'Live — click to hide' : 'Hidden — click to publish'}"
+                  aria-label="Toggle clip visibility"></button>
+          <button class="clip-admin-edit" onclick="openClipEditForm('${escHtml(clip.id)}')" aria-label="Edit clip">✎</button>
+          <button class="snap-btn del" onclick="deleteClip('${escHtml(clip.id)}')" aria-label="Delete clip">×</button>
+        </div>
+      </div>
+      <div class="clip-edit-panel" id="clip-edit-${escHtml(clip.id)}" hidden>
+        <div class="field-row" style="margin:0;">
+          <div class="field-label">Video URL</div>
+          <input class="field-input" type="url" id="ce-url-${escHtml(clip.id)}" value="${escHtml(clip.videoUrl||'')}" placeholder="YouTube Short or video URL">
+        </div>
+        <div class="field-row" style="margin:0;">
+          <div class="field-label">Caption <span style="font-weight:400;color:var(--t3);">(optional, 280 chars)</span></div>
+          <textarea class="field-input" id="ce-cap-${escHtml(clip.id)}" rows="2" maxlength="280" style="resize:none;" placeholder="What's this moment about…">${escHtml(clip.caption||'')}</textarea>
+        </div>
+        <div class="field-row" style="margin:0;">
+          <div class="field-label">Who can see this?</div>
+          <select class="field-input" id="ce-access-${escHtml(clip.id)}">
+            <option value="public"${clip.access==='public'||!clip.access?' selected':''}>Everyone</option>
+            <option value="fan"${clip.access==='fan'?' selected':''}>Fans only</option>
+            <option value="supporter"${clip.access==='supporter'?' selected':''}>Supporters first</option>
+          </select>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;">
+          <button class="snap-btn" onclick="openClipEditForm('${escHtml(clip.id)}')">Close</button>
+          <button class="ci-btn ci-btn-connect" onclick="saveClipEdit('${escHtml(clip.id)}')">Save</button>
+        </div>
+      </div>
+    </div>`
+  }).join('')
+}
+
+function openClipAddSheet() {
+  // Toggle inline add form
+  const existing = document.getElementById('clipAddForm')
+  if (existing) { existing.remove(); return }
+
+  const list = document.getElementById('clipsAdminList')
+  if (!list) return
+
+  const form = document.createElement('div')
+  form.className = 'clip-add-form'
+  form.id = 'clipAddForm'
+  form.innerHTML = `
+    <div style="font-size:13px;font-weight:600;color:var(--dash-text);margin-bottom:10px;">Add a clip</div>
+    <div class="field-row" style="margin:0;">
+      <div class="field-label">Paste a video link</div>
+      <input class="field-input" type="url" id="clipAddUrl" placeholder="YouTube Short, TikTok, or video URL"
+             oninput="onClipUrlInput(this.value)">
+    </div>
+    <div id="clipAddThumbPreview" style="display:none;margin:8px 0;">
+      <img id="clipAddThumbImg" src="" alt="" style="width:40px;height:72px;object-fit:cover;border-radius:5px;">
+    </div>
+    <div class="field-row" style="margin:0;">
+      <div class="field-label">Caption <span style="font-weight:400;color:var(--t3);">(optional)</span></div>
+      <textarea class="field-input" id="clipAddCaption" rows="2" maxlength="280" style="resize:none;" placeholder="A moment from the studio…"></textarea>
+    </div>
+    <div class="field-row" style="margin:0;">
+      <div class="field-label">Who can see this?</div>
+      <select class="field-input" id="clipAddAccess">
+        <option value="public">Everyone</option>
+        <option value="fan">Fans only</option>
+        <option value="supporter">Supporters first</option>
+      </select>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px;">
+      <button class="snap-btn" onclick="openClipAddSheet()">Cancel</button>
+      <button class="ci-btn ci-btn-connect" onclick="saveNewClip()">Add clip</button>
+    </div>
+  `
+
+  const listParent = list.parentNode
+  listParent.insertBefore(form, list)
+  setTimeout(function() { const f = document.getElementById('clipAddUrl'); if (f) f.focus() }, 50)
+}
+
+var _clipOembedTimer = null
+function onClipUrlInput(url) {
+  clearTimeout(_clipOembedTimer)
+  if (!url || !url.startsWith('http')) return
+  _clipOembedTimer = setTimeout(function() { fetchClipThumbnail(url) }, 600)
+}
+
+function fetchClipThumbnail(url) {
+  const proxyUrl = '/.netlify/functions/oembed-proxy?url=' + encodeURIComponent(url)
+  fetch(proxyUrl)
+    .then(function(r) { return r.ok ? r.json() : null })
+    .then(function(data) {
+      if (!data || !data.thumbnail_url) return
+      const preview = document.getElementById('clipAddThumbPreview')
+      const img = document.getElementById('clipAddThumbImg')
+      if (preview && img) {
+        img.src = data.thumbnail_url
+        img.dataset.thumb = data.thumbnail_url
+        preview.style.display = ''
+      }
+      // Pre-fill caption from title if blank
+      const capEl = document.getElementById('clipAddCaption')
+      if (capEl && !capEl.value && data.title) capEl.value = data.title.slice(0, 280)
+    })
+    .catch(function() {})
+}
+
+function saveNewClip() {
+  const url = (document.getElementById('clipAddUrl')?.value || '').trim()
+  if (!url) { showToast('Add a video URL first.', 'amber'); return }
+
+  const thumbEl = document.getElementById('clipAddThumbImg')
+  const thumb = thumbEl?.dataset?.thumb || null
+  const caption = (document.getElementById('clipAddCaption')?.value || '').trim().slice(0, 280)
+  const access = document.getElementById('clipAddAccess')?.value || 'public'
+  const profile = safeLS(V3_KEY, {})
+
+  const clip = {
+    id: 'clip_' + Date.now(),
+    artistHandle: profile.slug || '',
+    type: detectAdminClipType(url),
+    videoUrl: url,
+    embedUrl: null,
+    thumbnailUrl: thumb,
+    caption: caption || null,
+    published: false,
+    access: access,
+    supporterUnlocksAt: null,
+    ts: Date.now(),
+    sortOrder: safeLS(CLIPS_KEY, []).length,
+    duration: null,
+  }
+
+  const clips = safeLS(CLIPS_KEY, [])
+  clips.push(clip)
+  setLS(CLIPS_KEY, clips)
+  openClipAddSheet() // close form
+  renderClipsAdminList()
+  showToast('Clip added. Toggle it live when ready.')
+}
+
+function detectAdminClipType(url) {
+  if (url.includes('youtube.com/shorts') || (url.includes('youtu.be') && !url.includes('watch'))) return 'youtube_short'
+  if (url.includes('tiktok.com')) return 'tiktok'
+  return 'video_url'
+}
+
+function openClipEditForm(id) {
+  const panel = document.getElementById('clip-edit-' + id)
+  if (!panel) return
+  const opening = panel.hidden
+  panel.hidden = !opening
+  if (opening) {
+    const urlEl = document.getElementById('ce-url-' + id)
+    if (urlEl) urlEl.focus()
+  }
+}
+
+function saveClipEdit(id) {
+  const clips = safeLS(CLIPS_KEY, [])
+  const updated = clips.map(function(c) {
+    if (c.id !== id) return c
+    return Object.assign({}, c, {
+      videoUrl: (document.getElementById('ce-url-' + id)?.value || '').trim() || c.videoUrl,
+      caption:  (document.getElementById('ce-cap-' + id)?.value || '').trim().slice(0, 280) || null,
+      access:   document.getElementById('ce-access-' + id)?.value || 'public',
+    })
+  })
+  setLS(CLIPS_KEY, updated)
+  openClipEditForm(id)
+  renderClipsAdminList()
+  showToast('Saved')
+}
+
+function toggleClipPublished(id) {
+  const clips = safeLS(CLIPS_KEY, [])
+  const updated = clips.map(function(c) {
+    return c.id === id ? Object.assign({}, c, { published: !c.published }) : c
+  })
+  setLS(CLIPS_KEY, updated)
+  renderClipsAdminList()
+  const clip = updated.find(function(c) { return c.id === id })
+  showToast(clip && clip.published ? 'Clip is now live.' : 'Clip hidden.')
+}
+
+function deleteClip(id) {
+  if (!confirm('Remove this clip?')) return
+  const clips = safeLS(CLIPS_KEY, []).filter(function(c) { return c.id !== id })
+  setLS(CLIPS_KEY, clips)
+  renderClipsAdminList()
 }
 
 /* ── RECOMMENDATIONS (who you rate) ── */
