@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-16 (session 11 — V8 build sprint) | Update this file at the end of every session.**
+**Updated: 2026-03-16 (session 12 — brand elevation + P0 sweep) | Update this file at the end of every session.**
 
 ---
 
@@ -200,13 +200,37 @@
 
 ## Known issues
 
-- **Deployment gap**: `ablemusic.netlify.app` deploys from `main`. All V8 work is on `v2-simplified`. Merge to main requires James's explicit sign-off (CLAUDE.md rule). Cannot test V8 on deployed build until merged.
+- **Deployment gap**: `ablemusic.netlify.app` deploys from `main`. All V8 work is on `v2-simplified`. Merge to main requires James's explicit sign-off (CLAUDE.md rule). Draft deploys available via `netlify deploy` (session 12 draft: `69b8581493b06a12c83eb87a--ablemusic.netlify.app`).
+- **Supabase views table missing**: `injectSEO()` / view tracking calls `/rest/v1/views` which 404s — Supabase table not created yet. Falls back to localStorage silently. Create `views` table when wiring Supabase backend.
 - **og-default.jpg**: `injectSEO()` falls back to `https://ablemusic.netlify.app/og-default.jpg` — this file must exist at that URL or social share cards will be blank. Not yet verified as deployed. Create/deploy before first artist.
 - **RESEND_API_KEY**: Not set in Netlify env. fan-confirmation.js will silently skip sending. Manual task — James only at resend.com/domains + netlify.com.
 - **No service worker**: PWA is installable (manifest.json + icons exist) but not offline-capable. fan.html home screen promise is half-kept.
 - ~~**noindex missing**~~: ✅ Both admin.html and fan.html already have `<meta name="robots" content="noindex,nofollow">`.
 - ~~**Campaign mode per-mode explanations**~~: ✅ `MODE_DESCS` object + `#chqModeDesc` wired — mode description updates on every arc state change.
 - ~~**"Preview your page →" link**~~: ✅ `topbarViewBtn` wired — `href` updated with artist handle in `renderProfile()`.
+
+---
+
+## Last session summary (session 12 — brand elevation + P0 sweep)
+Brand improvements and P0 fixes. Draft deployed to Netlify. Playwright smoke tests passed.
+
+Key changes this session:
+- **Brand: admin page title elevation**: `.page-title` 26px → 32px, letter-spacing 0.01em → -0.01em — Barlow Condensed editorial authority across all section headings
+- **Brand: landing OG meta tags**: Title, description, image path updated to match SPEC.md canonical copy ("The page that belongs to you")
+- **docs/systems/brand-identity/DOCTRINE.md**: New — typography doctrine, three-typeface system rationale, accent doctrine, brand unity principle
+- **docs/systems/DESIGN_SYSTEM_SPEC.md**: Surface 2 table corrected (page titles are Barlow Condensed 32px, not Plus Jakarta Sans 22px); home greeting documented as intentional exception
+- **Accent colour picker**: Added to admin identity card — 8 preset swatches + native colour input; `setAccent()` function saves to profile.accent + identity.accent, updates preview, shows toast
+- **PWA manifest links**: Added to admin.html and start.html (`<link rel="manifest">` + iOS meta tags). All 4 active pages now PWA-ready.
+- **PATH-TO-10 files updated**: crm (4→7/10), artist-tools (6.8→8.2/10), pwa (2→5/10) — all P0 items marked complete
+- **Launch hardening plan verified**: All 5 tasks already complete in prior sessions
+- **Draft deploy**: `netlify deploy` to `69b8581493b06a12c83eb87a--ablemusic.netlify.app`; all 5 pages + manifest.json return 200; smoke test passed
+
+**Open after session 12:**
+- Error states P0.1 — safeGet/safeSet in start.html (able-v7 + admin have it; start needs audit)
+- Error states P0.3 — offline toast in admin.html + start.html
+- Legal compliance P0.1 — GDPR consent on fan sign-up (full audit vs spec)
+- Analytics P0.3-P0.6 — PostHog events, source detection, retention (PostHog init is admin-only by design)
+- og-default.jpg — needs Figma creation + Netlify upload (James's task)
 
 ---
 
