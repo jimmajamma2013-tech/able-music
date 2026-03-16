@@ -1,74 +1,63 @@
 # fan.html — Path to 10
-**Date: 2026-03-15**
-**Baseline score: 5.85/10**
-**Target: 9.4/10 (V1 ceiling — final 0.6 requires Supabase realtime)**
+**Last updated: 2026-03-16**
+**Stage 6A of the 8-stage strategy process**
+**Baseline score: 5.9/10**
+**Target: 10/10**
+**V1 ceiling (localStorage only): 9.4/10**
 
 ---
 
 ## The governing problem
 
-The page scores 5.85 not because of what it contains, but because of what happens before a fan gets to see it. A fan signs up through an artist's page. They receive a confirmation email. They tap the link. They land on fan.html — and the page has no idea who they are, why they are there, or which artist brought them.
+The page scores 5.9 not because of what it contains, but because of what happens before a fan gets to see it.
 
-That moment of arrival — cold, blank, generic — is the page's most damaging failure. Fix it and the score jumps from 5.85 to approximately 8.0 before touching anything else.
+A fan signs up through an artist's page. They receive a confirmation email. They tap the link. They land on fan.html — and the page has no idea who they are, why they are there, or which artist brought them.
+
+That moment of arrival — cold, blank, generic — is the page's most damaging failure. Fix it and the score jumps from 5.9 to approximately 8.0 before touching anything else.
 
 Everything in P0 addresses arrival. P1 addresses completeness. P2 addresses permanence.
 
 ---
 
-## P0 — Critical gaps (5.85 → 7.5)
+## What the three fan personas need (distilled)
 
-### P0.1 — Post-sign-up arrival flow (Angle 13: 2/10)
+**Priya (The Loyalist):** History honoured. Pre-release countdown for her followed artist. Close Circle as a natural next step. Show alerts before they sell out.
 
-**The problem:** Fan clicks the confirmation email link. They land on fan.html. Nothing acknowledges the artist they just signed up through. The page shows generic demo data or a blank state. The relationship's most fragile moment — the first 10 seconds after sign-up — is completely wasted.
+**Tom (The New Convert):** Cold-start suggestions the moment he lands. Near me show if his artist is playing his city. Pre-release countdown if his artist has one. Nothing new today is honest, not a failure.
+
+**Amara (The Superfan):** Close Circle that works. Dispatch reading experience as a letter. "You heard this N days early" on release items. Supporter status that persists.
+
+---
+
+## P0 — Critical gaps (5.9 → 7.5)
+
+### P0.1 — Post-sign-up arrival flow
+
+**The problem:** Fan clicks the confirmation email link. They land on fan.html. Nothing acknowledges the artist they just signed up through.
 
 **The fix: URL parameter arrival scheme**
 
-The confirmation email link (or the in-page post-sign-up CTA) must carry the artist slug:
-
-```
-fan.html?artist=nadia&ref=signup
-```
-
-On load, fan.html reads these parameters:
-
 ```javascript
 const params = new URLSearchParams(window.location.search);
-const artistSlug = params.get('artist');   // 'nadia'
-const ref = params.get('ref');             // 'signup'
+const artistSlug = params.get('artist');
+const ref = params.get('ref');
 
 if (artistSlug) {
-  // 1. Add artist to fan's following list in localStorage
   const following = JSON.parse(localStorage.getItem('fan_following') || '[]');
   if (!following.includes(artistSlug)) {
     following.push(artistSlug);
     localStorage.setItem('fan_following', JSON.stringify(following));
   }
 
-  // 2. If first visit (ref=signup or ref=email-confirm), set first-visit flag
   if (ref === 'signup' || ref === 'email-confirm') {
     localStorage.setItem('fan_first_visit_artist', artistSlug);
     localStorage.setItem('fan_first_visit_ts', Date.now().toString());
   }
 
-  // 3. Clean URL — replace state so back button still works
+  // Clean URL
   window.history.replaceState({}, '', 'fan.html');
 }
 ```
-
-**What happens next on first arrival:**
-
-The Following tab renders the artist slug's content at the top. If Nadia has items in her data, Today strip shows them first. If not, the cold-start suggestion row appears below an honest message:
-
-```
-You followed Nadia. Here's what she's shared.
-```
-
-If Nadia has nothing new today:
-```
-Nothing new from Nadia today — but she's here when she is.
-```
-
-No blank state ever.
 
 **Canonical URL scheme:**
 
@@ -82,9 +71,9 @@ No blank state ever.
 
 ---
 
-### P0.2 — Empty state redesign (Angle 10: 5/10 and Angle 11: 3/10)
+### P0.2 — Empty state system
 
-Three distinct scenarios. Three distinct responses.
+Three distinct scenarios. Three distinct responses. Never the same response.
 
 **Scenario A: First visit, just arrived from sign-up (`fan_first_visit_artist` set)**
 
@@ -96,19 +85,33 @@ They're here when they have something to share.
 While you're here —
 ```
 
-Followed immediately by the cold-start row (P0.4 below).
+Followed immediately by the cold-start row.
+
+**Why this works:** Names the artist who brought them (the relationship is named). Sets honest expectation (the artist posts when they have something real). Signals worth returning to. Opens the door to discovery without demanding it.
 
 **Scenario B: Fan has followed artists but nothing new today**
 
+If last item was yesterday:
+```
+Nothing new today. [Artist name] shared something yesterday.
+```
+
+If last item was 2–6 days ago:
 ```
 Nothing new from your artists today.
 ```
 
-If last item was yesterday: `[Artist name] posted something yesterday.`
-If last item was 7+ days ago: `It's been a quiet week. Your artists will be back.`
-If only one artist followed: `Nothing new from [Artist name] today.`
+If last item was 7+ days ago:
+```
+It's been a quiet week. Your artists will be back.
+```
 
-**Scenario C: Returning fan, no artists followed (new device or cleared localStorage)**
+If only one artist followed:
+```
+Nothing new from [Artist name] today.
+```
+
+**Scenario C: Returning fan — no artists followed**
 
 ```
 Your following list is empty.
@@ -118,38 +121,26 @@ Find artists from their pages, or look through Discover.
 → Discover artists
 ```
 
-**Rules for all empty states:**
-- No emoji (violates ABLE's register)
-- No exclamation marks
-- No "all caught up" (generic SaaS copy)
-- Direct CTA to Discover when the list is genuinely empty
-- Never apologise for the empty state — acknowledge it honestly
-- First-visit state and returning-fan state are treated differently
+**Rules:** No emoji. No exclamation marks. No "all caught up." Direct CTA to Discover only when the list is genuinely empty. Never apologise for the empty state — acknowledge it honestly.
 
 ---
 
-### P0.3 — Artist-to-fan sign-up handoff (Angle 12: 4/10)
+### P0.3 — Artist-to-fan sign-up handoff from able-v7.html
 
-**The problem:** The link from able-v7.html's sign-up success state does not carry the artist context. A fan signs up for Nadia, taps "Your ABLE page →", lands on fan.html with no awareness of who they just signed up through.
-
-**The fix:** When the sign-up success UI renders on able-v7.html, the link to fan.html must be constructed from the artist profile in localStorage:
+**The fix:** When sign-up success UI renders on able-v7.html, the link to fan.html must carry the artist context:
 
 ```javascript
-// On able-v7.html sign-up success:
 const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
 const slug = profile.slug || profile.name?.toLowerCase().replace(/\s+/g, '-') || 'artist';
 const fanDashUrl = `fan.html?artist=${encodeURIComponent(slug)}&ref=signup`;
 // Render: <a href="${fanDashUrl}">Your ABLE page →</a>
 ```
 
-**Confirmation email footer (when wired to Supabase):**
-
+**Confirmation email footer (when Supabase is live):**
 ```
 See everything from [Artist Name] — and find artists you might love.
 [Your ABLE page →] → fan.html?artist={slug}&ref=email-confirm
 ```
-
-`ref=email-confirm` is distinct from `ref=signup` so arrival analytics can separate the two paths. Both register the same way on fan.html — they set `fan_first_visit_artist` — but the source difference is visible in admin analytics.
 
 ---
 
@@ -162,20 +153,20 @@ Because you follow [Artist name] —
 ```
 
 Followed by 2–3 artist cards with honest reason strings:
-- "Same sound" (shared genre)
-- "Produced by [Producer name]" (credit connection)
+- "Produced [Artist name]'s last record" (most specific — use first)
+- "Co-wrote with [Artist name]"
+- "Same sound" (shared genre — use as fallback)
 - "Also from [City]" (location match)
-- "New to ABLE" (recently joined)
+- "New to ABLE" (last resort)
 
-Never: "You might like", "Recommended for you", "People like you also follow."
+**Never:** "You might like", "Recommended for you", "People like you also follow."
 
-This is the cold-start mechanism V8_BUILD_AUTHORITY §6.1 requires. A fan following 3+ artists has dramatically higher 30-day retention. This row is the mechanism to get them there. It requires no backend — it works with DEMO_CONNECTED data in v1.
+**Why this matters:** The 3-artist threshold — fans who follow 3+ artists have dramatically higher 30-day and 90-day retention. This row is the mechanism to get them there. It requires no backend — works with demo `CONNECTED_DATA` in v1.
 
 ---
 
-### P0.5 — Page title and vocabulary audit (Angle 3: 5/10)
+### P0.5 — Page title and vocabulary audit
 
-**Page title:**
 ```html
 <!-- Current (wrong) -->
 <title>ABLE — Your feed</title>
@@ -184,101 +175,108 @@ This is the cold-start mechanism V8_BUILD_AUTHORITY §6.1 requires. A fan follow
 <title>ABLE</title>
 ```
 
-**Bottom tab bar label:**
+Bottom tab bar:
 ```
 Feed → Following
 ```
 
-The word "feed" appears 3 times in the current build. All three instances must be changed. "Following" is correct. "Feed" belongs to Instagram.
+"Feed" appears 3 times in the current build. All three instances changed. "Following" is correct. "Feed" belongs to Instagram.
 
 **Personalised greeting (v1 — localStorage only):**
+When `fan_name` is set:
+- 05:00–11:59: `Good morning, [Name].`
+- 12:00–17:59: `Good afternoon, [Name].`
+- 18:00–04:59: `Good evening, [Name].`
 
-When `fan_name` is set (from sign-up form capture):
-- 05:00–11:59 → `Good morning, [Name].`
-- 12:00–17:59 → `Good afternoon, [Name].`
-- 18:00–04:59 → `Good evening, [Name].`
+When `fan_name` not set: No greeting. Do not render "Hello" or "Welcome back."
 
-When `fan_name` is not set: No greeting copy. The ABLE wordmark is sufficient. Do not render "Hello" or "Welcome back" — they add nothing and feel generic.
-
-**Sub-greeting line (conditional — only show when true):**
-
+**Sub-greeting (conditional):**
 ```javascript
 const todayCount = getTodayItemCount();
 const showTonight = getShowTonightCount();
+const preReleaseCount = getPreReleaseCount();
 
-if (todayCount > 1) {
+if (showTonight > 0) {
+  subGreeting = `${getShowTonightArtistName()} is playing near you tonight.`;
+} else if (todayCount > 1) {
   subGreeting = `${todayCount} new things from your artists today.`;
 } else if (todayCount === 1) {
   subGreeting = `Something new from ${getFirstTodayArtistName()} today.`;
-} else if (showTonight > 0) {
-  subGreeting = `${getShowTonightArtistName()} is playing near you tonight.`;
+} else if (preReleaseCount > 0) {
+  subGreeting = `${getNextReleaseArtistName()} drops in ${getDaysUntilRelease()} days.`;
 } else {
-  subGreeting = null; // render nothing
+  subGreeting = null;
 }
 ```
 
-Never manufacture context. If there is nothing to say, say nothing.
+Never manufacture context. If nothing is genuinely true, say nothing.
 
 ---
 
-### P0.6 — Feed item quality fixes (Angle 4: 7/10)
+### P0.6 — Feed item quality fixes
 
 **Newest first — always:**
 ```javascript
-items.sort((a, b) => b.age - a.age); // descending — most recent at top
+items.sort((a, b) => normaliseAge(b) - normaliseAge(a));
 ```
 
 **Caught-up state rewrite:**
 ```
 — you're up to date —
 ```
-Sub-line: only show `Refreshed just now` when a real Supabase fetch completed. Remove it entirely in v1.
 
-**Type badge copy changes:**
-| Type | Current | Correct |
-|---|---|---|
-| release | Release | New music |
-| event | Show | Show |
-| merch | Merch | Merch |
-| snap | Update | From the artist |
+Sub-line: only show `Refreshed just now` when a real Supabase fetch completed. Remove in v1.
 
-**Artist name in feed items:** Raise from `var(--color-text-3)` to `var(--color-text-2)`, weight 500. The artist name is the most important piece of information in a feed item. It cannot be the dimmest text on the row.
+**Type badge copy:**
+```
+Release → New music
+Show → Show (unchanged)
+Merch → Merch (unchanged)
+Snap → From the artist
+```
+
+**Artist name in feed items:** Raise from `var(--color-text-3)` to `var(--color-text-2)`, weight 500. The artist name is the most important piece of information in a feed item.
+
+**Data normalisation:**
+```javascript
+function normaliseAge(item) {
+  if (typeof item.age === 'number') return item.age;
+  if (typeof item.age === 'string') return new Date(item.age).getTime();
+  if (item.published_at) return new Date(item.published_at).getTime();
+  return 0;
+}
+```
 
 ---
 
 ## P1 — Completeness (7.5 → 8.8)
 
-### P1.1 — Discover tab (Angle 5: 6/10 and Angle 17: 7/10)
+### P1.1 — Discover tab
 
-**Default filter change:** Connected becomes the default (not Emerging). Connected is the most ABLE-specific filter — artists discovered through human relationships (production credits), not algorithms. Landing here first differentiates ABLE from every other music platform.
+**Default filter:** Connected (not "Emerging"). Connected is the most ABLE-specific filter — artists discovered through human relationships (production credits), not algorithms. Landing here first differentiates ABLE from every other music platform.
 
-**Filter pill copy changes:**
-| Current | Correct |
-|---|---|
-| Emerging | New to ABLE |
-| Connected | Connected |
-| By vibe | By sound |
-| Just dropped | Just dropped |
+**Filter pill copy:**
+```
+Emerging → New to ABLE
+By vibe → By sound
+```
 
-"Emerging" implies velocity ranking. "New to ABLE" is honest.
-"By vibe" is acceptable but "By sound" is more specific to music.
+**Remove follower counts.** Replace with location and genre.
 
-**Remove follower counts from all artist cards.** Follower counts introduce a popularity hierarchy, discourage following smaller artists, and imply the kind of algorithmic ranking ABLE is built to avoid. Replace with: location and genre only.
-
-**Creatives section:** Rename from `Creatives` to `The people behind the music`. Add sub-label: "Producers, mixers, and collaborators who worked on music from artists you follow." Show only on the Connected filter — it has no logical home on the other filters.
+**Creatives section:** Rename from "Creatives" to "The people behind the music." Sub-label: "Producers, mixers, and collaborators who worked on music from artists you follow." Show on Connected filter only.
 
 **Connected filter section header:**
-Current: `Connected to artists you follow`
-Correct: `Artists connected to yours`
+```
+Artists connected to yours
+```
 
 ---
 
-### P1.2 — Near me tab (Angle 6: 6/10)
+### P1.2 — Near me tab
 
 **Location input on first Near me visit:**
 
-When `fan_location` is not set and the fan first taps Near me:
-
+When `fan_location` not set and fan first taps Near me:
 ```
 Where are you based?
 
@@ -287,63 +285,51 @@ We'll tell you when your artists are playing near you.
 [Enter your city]
 ```
 
-One input. No account required. Saves to `fan_location` in localStorage on blur or Enter.
+One input. No account required. Saves to `fan_location` in localStorage.
 
 **Correct date-relative grouping:**
 ```javascript
-const now = new Date();
-
 function groupShow(show) {
-  const showDate = new Date(show.date); // ISO date string from able_shows
-  const tonightEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+  const now = new Date();
+  const showDate = new Date(show.date);
+  const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
   const thisWeekEnd = new Date(now.getTime() + 7 * 86400000);
 
-  if (showDate <= tonightEnd) return 'tonight';
+  if (showDate <= todayEnd) return 'tonight';
   if (showDate <= thisWeekEnd) return 'this-week';
   return 'coming-up';
 }
 ```
 
-This replaces the broken `parseInt(s.day) <= 20` logic entirely. Show group labels:
-```
-TONIGHT     ← new — for shows within today
-THIS WEEK
-COMING UP
-```
+Show group labels: TONIGHT / THIS WEEK / COMING UP
 
-**Show items for followed artists:** Show both the artist's accent-colour left strip AND a ticket button when `ticketUrl` is present. The current build shows only a "Following" badge but a fan already following the artist may still want tickets.
+**Show items for followed artists:** Both accent-colour left strip AND ticket button when `ticketUrl` present.
 
-**Show items for non-followed artists:** Add a one-tap "Follow" button inline. A fan seeing a show from an artist they don't know yet is the best cold-start moment in the entire product.
+**Show items for non-followed artists:** One-tap "Follow" button inline. Best cold-start moment in the product.
 
-**Followed artists prioritised at top** of each group.
-
-**"Tonight note" from gig mode:** When an artist has set a gig mode note, display it as artist voice beneath the venue line:
+**Tonight note from gig mode:**
 ```
 [Artist name]
 [Venue] · [City]
-"The room holds 800. It's been a long time coming." ← artist's own words
+"[Artist's own words, in quotes]"
 [Tonight →]
 ```
 
-**Location edit label:** Change "Change" to "Change city".
-
 ---
 
-### P1.3 — Pre-release strip (feeds Angle 2 and Angle 20)
+### P1.3 — Pre-release strip
 
-When a followed artist has `stateOverride = 'pre-release'` or a future `releaseDate`, fan.html shows a countdown strip at the top of the Following view, above the Today section:
+When a followed artist has `stateOverride = 'pre-release'` or a future `releaseDate`:
 
 ```
 COUNTING DOWN
-[Artist name] — [Release title] — [N days / N hours]
+[Artist name] — [Release title] · [N days] / [N hours]
 → Pre-save
 ```
 
-Strip uses the artist's accent colour as the left border, consistent with feed item design language.
+Strip uses the artist's accent colour as left border. Maximum 3 strips. If more: "And [N] more upcoming releases →"
 
-Maximum 3 strips. If more: "And [N] more upcoming releases →" collapses the rest.
-
-**v1 localStorage check:**
+**V1 localStorage check:**
 ```javascript
 const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
 const releaseDate = profile.releaseDate ? new Date(profile.releaseDate) : null;
@@ -352,9 +338,9 @@ const isPreRelease = releaseDate && releaseDate > new Date();
 
 ---
 
-### P1.4 — Source tracking from fan.html (cross-page)
+### P1.4 — Source tracking from fan.html
 
-All taps from fan.html to artist profiles must tag the source:
+All taps from fan.html to artist profiles tag the source:
 
 ```javascript
 function openArtistProfile(slug) {
@@ -362,42 +348,41 @@ function openArtistProfile(slug) {
 }
 ```
 
-`src=fan-dashboard` maps to the canonical `fan_dash` value in `SOURCE_VALUES` (CROSS_PAGE_JOURNEYS.md). This makes fan.html clickthrough visible in artist analytics on admin.html.
+`src=fan-dashboard` maps to the canonical `fan_dash` value in `SOURCE_VALUES`. This makes fan.html clickthrough visible in artist analytics on admin.html.
 
 ---
 
-### P1.5 — Notification bell (Angle 12: 4/10)
+### P1.5 — Notification bell
 
-The notification pip is currently hardcoded visible and does nothing on tap. Fix both:
-
-**Pip visibility — only show when there are genuine unread items:**
+**Pip visibility:**
 ```javascript
 const unreadCount = getUnreadItemCount(); // items added since fan_last_seen_ts
 pip.style.display = unreadCount > 0 ? 'block' : 'none';
+pip.setAttribute('aria-label', `${unreadCount} unread updates from your artists`);
 ```
 
-**Bell tap:** Opens a bottom sheet using the shared bottom sheet pattern from DESIGN_SYSTEM_SPEC.md §9. Title: `Updates from your artists`. Empty state: `Nothing new right now.`
+**Bell tap:** Opens bottom sheet. Title: `Updates from your artists`. Empty state: `Nothing new right now.`
 
-**New localStorage key:** `fan_last_seen_ts` — unix timestamp of the last time the fan opened the Following tab. Used to calculate unread count.
+**`fan_last_seen_ts`:** Unix timestamp of the last time the fan opened the Following tab.
 
 ---
 
-### P1.6 — Accessibility fixes (Angle 15: 7/10)
+### P1.6 — Accessibility fixes
 
-**`color-text-3` contrast:** Current `rgba(224,230,240,.38)` = ~3.2:1 on `#0d0e1a`. WCAG AA requires 4.5:1. Fix: `rgba(224,230,240,.55)` = ~4.6:1. This is a global Surface 1 token change — applies to fan.html and able-v7.html.
+**`color-text-3` contrast:** `rgba(240,237,232,.55)` = ≈ 4.6:1 on `#0d0e1a`. WCAG AA compliant.
 
-**Filter pills:** Add `aria-pressed` to active state:
+**Filter pills `aria-pressed`:**
 ```javascript
 pill.setAttribute('aria-pressed', String(p === pill));
 ```
 
-**Feed item accessible names:** Include time-ago:
+**Feed item accessible names include time-ago:**
 ```javascript
 el.setAttribute('aria-label',
-  `${artist.name} — ${item.title}, ${typeBadgeLabel}, ${formatAge(item.age)}`);
+  `${artist.name} — ${item.title}, ${typeBadgeLabel}, ${formatAge(normaliseAge(item))}`);
 ```
 
-**Notification pip:** Add `aria-live="polite"` with count:
+**Notification pip:**
 ```html
 <span class="notif-pip" aria-live="polite" aria-label="3 unread updates from your artists"></span>
 ```
@@ -406,7 +391,7 @@ el.setAttribute('aria-label',
 
 ## P2 — Permanence (8.8 → 9.4)
 
-### P2.1 — Offline / no-connection graceful state
+### P2.1 — Offline graceful state
 
 When Supabase data fails to load:
 ```
@@ -414,13 +399,14 @@ Couldn't reach the server.
 Showing what we have cached.
 ```
 
-Fan sees their cached localStorage data. No blank screen. No error modal. Small inline notice at the top of the Following tab only. Service worker caches fan.html, fonts, and last known data.
+Fan sees cached localStorage data. No blank screen. No error modal. Small inline notice at top of Following tab only.
+
+Service worker caches fan.html, fonts, and last known localStorage state. Cache-first strategy.
 
 ---
 
-### P2.2 — PWA manifest and add-to-home-screen
+### P2.2 — PWA manifest
 
-**PWA manifest spec:**
 ```json
 {
   "name": "ABLE",
@@ -437,9 +423,16 @@ Fan sees their cached localStorage data. No blank screen. No error modal. Small 
 }
 ```
 
-**Add-to-home-screen prompt:** Triggered after 3rd visit. One quiet prompt, once. Dismissed = never show again.
+Add-to-home-screen prompt after 3rd visit. Once only. Copy:
+```
+Add ABLE to your home screen?
 
-**Visit tracking:**
+One tap to see what's new from your artists.
+
+[Add]     [Not now]
+```
+
+Visit tracking:
 ```javascript
 const visitCount = parseInt(localStorage.getItem('fan_visit_count') || '0') + 1;
 localStorage.setItem('fan_visit_count', visitCount.toString());
@@ -451,9 +444,7 @@ if (visitCount === 3 && !localStorage.getItem('fan_pwa_dismissed')) {
 
 ---
 
-### P2.3 — Supabase realtime updates
-
-When Supabase is live, fan.html subscribes to real-time changes on `moments` and `shows` for followed artists:
+### P2.3 — Supabase realtime subscriptions
 
 ```javascript
 supabase
@@ -470,9 +461,9 @@ supabase
   .subscribe();
 ```
 
-Supabase realtime unlocks the final 0.6 points to reach a theoretical 10:
+Supabase realtime unlocks the final ~0.6 points to approach 10:
 - True cross-device following persistence
-- Live "an artist just dropped something" without page reload
+- Live feed update without page reload
 - Push notifications via Web Push API
 - Close Circle dispatch delivery
 
@@ -480,7 +471,7 @@ Supabase realtime unlocks the final 0.6 points to reach a theoretical 10:
 
 ### P2.4 — Push notification opt-in
 
-After a fan has 2+ followed artists and has visited 3+ times:
+After 2+ followed artists and 3+ visits:
 
 ```
 Get notified when [Artist name] drops something.
@@ -490,7 +481,14 @@ We'll only message you when something real happens.
 [Turn on]     [Not now]
 ```
 
-Uses Web Push API. Permission deferred until moment of genuine value — never on first visit. `fan_push_opted_in` prevents repeat asking.
+Permission deferred until moment of genuine value — never on first visit. `fan_push_opted_in` prevents repeat asking.
+
+**Notification types that qualify as "something real":**
+1. New release from followed artist
+2. Show tonight from followed artist in fan's city
+3. Close Circle dispatch from followed artist (for supporters)
+
+No other notification type should ever be sent. This is a product contract created by the opt-in copy.
 
 ---
 
@@ -501,16 +499,41 @@ Progressive enhancement (Chrome 126+):
 ```css
 /* able-v7.html */
 .fan-dashboard-link {
-  view-transition-name: fan-nav;
+  view-transition-name: fan-nav-wordmark;
 }
 
 /* fan.html */
-.shell-header {
-  view-transition-name: fan-nav;
+.fan-header .wordmark {
+  view-transition-name: fan-nav-wordmark;
 }
 ```
 
-The ABLE wordmark slides from the artist profile header into the fan dashboard header. Fallback: standard navigation. No degradation for unsupported browsers.
+ABLE wordmark slides between pages. Fallback: standard navigation. No degradation for unsupported browsers.
+
+---
+
+### P2.6 — Slug → UUID resolution
+
+**The problem:** fan.html localStorage stores artist slugs (`fan_following = ['nadia', 'tendai']`). Supabase `fan_follows` uses UUIDs.
+
+**The solution:** On sign-up handoff, resolve the UUID at the point of artist profile sign-up and store both:
+
+```javascript
+// On able-v7.html sign-up success, before generating fan.html link:
+const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+const slug = profile.slug;
+const uuid = profile.uuid;  // stored when Supabase auth is live
+
+// Store both in fan.html localStorage:
+const following = JSON.parse(localStorage.getItem('fan_following_full') || '[]');
+if (!following.find(a => a.slug === slug)) {
+  following.push({ slug, uuid });
+  localStorage.setItem('fan_following_full', JSON.stringify(following));
+}
+```
+
+Phase 1 (v1): `fan_following` stores slugs only — works for localStorage-only mode.
+Phase 2 (Supabase): `fan_following_full` stores `{slug, uuid}` objects — used for Supabase queries.
 
 ---
 
@@ -518,24 +541,51 @@ The ABLE wordmark slides from the artist profile header into the fan dashboard h
 
 | Phase | Score | Key changes |
 |---|---|---|
-| Baseline | 5.85/10 | Current state |
-| P0 complete | 7.5/10 | Arrival URL scheme + empty states + page title + sign-up handoff |
-| P1 complete | 8.8/10 | Discover improvements + Near me fixes + pre-release strip + source tracking |
-| P2 complete | 9.4/10 | PWA + offline + Supabase realtime |
-| Supabase live | ~10/10 | Real data + push notifications + Close Circle |
+| Baseline | 5.9/10 | Current state |
+| P0 complete | 7.5/10 | Arrival URL scheme, empty state rewrites, page title, cold-start |
+| P1 complete | 8.8/10 | Discover defaults, Near me location, pre-release strip, source tracking |
+| P2 complete | 9.4/10 | PWA, offline, view transitions, Supabase query specs |
+| Supabase live | ~9.8/10 | Real data, realtime feed, Close Circle functional, push notifications |
+| Auth live | ~10/10 | First-name greeting, cross-device following, CC dispatches reading as letters |
 
 ---
 
 ## New localStorage keys introduced by this spec
 
-| Key | Type | Set by | Used by | Notes |
-|---|---|---|---|---|
-| `fan_following` | `string[]` | fan.html on URL param arrival | fan.html | Confirm canonical name — already in SPEC.md |
-| `fan_location` | `string` | fan.html Near me input | fan.html Near me | Confirm canonical name — already in SPEC.md |
-| `fan_first_visit_artist` | `string` | fan.html on `?ref=signup` or `?ref=email-confirm` | first-visit orientation | New |
-| `fan_first_visit_ts` | `number` | fan.html on arrival params | analytics | New |
-| `fan_name` | `string` | sign-up form (Phase 2 with auth) | fan.html greeting | New — Phase 2 |
-| `fan_last_seen_ts` | `number` | fan.html when Following tab is opened | notification pip unread count | New |
-| `fan_visit_count` | `number` | fan.html on every load | PWA prompt logic | New |
-| `fan_pwa_dismissed` | `boolean` | fan.html PWA prompt dismiss | PWA prompt | New |
-| `fan_push_opted_in` | `boolean` | push notification opt-in | notification prompt | New — Phase 2 |
+| Key | Type | Set by | Used by |
+|---|---|---|---|
+| `fan_following` | `string[]` | fan.html URL param arrival | fan.html |
+| `fan_following_full` | `{slug, uuid}[]` | fan.html Phase 2 | Supabase queries |
+| `fan_location` | `string` | fan.html Near me input | fan.html Near me |
+| `fan_first_visit_artist` | `string` | fan.html on `?ref=signup` | first-visit orientation |
+| `fan_first_visit_ts` | `number` | fan.html on arrival | analytics |
+| `fan_name` | `string` | sign-up form (Phase 2) | fan.html greeting |
+| `fan_last_seen_ts` | `number` | fan.html Following tab open | notification pip unread count |
+| `fan_visit_count` | `number` | fan.html every load | PWA prompt logic |
+| `fan_pwa_dismissed` | `boolean` | PWA prompt dismiss | PWA prompt |
+| `fan_push_opted_in` | `boolean` | push opt-in prompt | notification prompt |
+| `cc_invited_[slug]` | `boolean` | CC invitation dismiss | CC invitation shown once per artist |
+
+---
+
+## What requires Supabase (cannot be done in v1)
+
+| Feature | Why |
+|---|---|
+| Real feed items | `moments` table |
+| Cross-device following | `fan_follows` table |
+| Close Circle payments | Stripe Connect requires server-side |
+| Dispatch delivery | `dispatches` table + email sending |
+| Real-time feed update | Supabase realtime subscriptions |
+| Push notification delivery | Web Push requires server-side key management |
+| First-name greeting | Auth required |
+| Per-artist notification prefs | `fan_notification_preferences` table |
+| Functional data export | Server-side query of all fan data |
+
+---
+
+## What can be done before Supabase (V1, localStorage only)
+
+All P0 items: arrival URL scheme, empty state rewrites, page title, cold-start, type badges, caught-up copy.
+All P1 items: Discover defaults, Near me location + date fix, pre-release strip, source tracking, notification pip, accessibility.
+All P2 items: PWA manifest, service worker (basic), view transition, push notification prompt (UI only — no actual push delivery until Supabase), CC invitation copy stub, data export (JSON from localStorage).

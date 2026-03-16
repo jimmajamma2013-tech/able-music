@@ -1,146 +1,265 @@
-# fan.html — Copy Reference
-**Date: 2026-03-15**
-**Voice principle: fan.html sounds like it was written by artists and people who love music. Not by a platform.**
+# fan.html — Complete Copy Reference
+**Last updated: 2026-03-16**
+**Stage 5 of the 8-stage strategy process**
+
+Every word for fan.html. Not aspirational direction — the actual copy, string by string.
 
 ---
 
-## Voice rules specific to fan-facing copy
+## Voice principle
 
-The artist-facing copy on admin.html speaks to someone managing their presence. The fan-facing copy on fan.html speaks to someone staying close to music they love.
+fan.html sounds like it was written by artists and people who love music. Not by a platform.
+
+The fan is not being managed. They are staying close to something they care about. Every line must reflect this.
+
+---
+
+## Voice rules
 
 **Never write:**
 - "Your feed" → say "The artists you're following"
-- "Posted" → say "dropped", "released", "just shared"
-- "Content" → say "music", "update", "show", "message from the artist"
+- "Posted" → say "dropped", "released", "just shared", "playing tonight"
+- "Content" → say "music", "show", "update from the artist", "message"
 - "Followers" → say "people who follow them"
 - "Trending" → never
 - "Going viral" → never
 - "Recommended for you" → say "Because you follow [Artist]" or "Similar sound"
 - "Engage" → never
 - "Notifications" in a sterile sense → say "Updates from your artists"
-- Any exclamation marks
+- Exclamation marks
+- "Subscribe", "upgrade", "premium", "tier", "plan"
+- "All caught up!" → say "— you're up to date —"
+- "Welcome back!" → say nothing, or "Good to see you, [Name]."
+- "We think you'll love" → never
 
 **Always write:**
-- Specific and honest. "Nothing new today." not "All caught up! Come back later."
-- Direct. "Tendai is playing in Manchester on the 22nd." not "A show has been added in your area."
+- Specific and honest. "Nothing new today." not "All quiet on the western front."
+- Direct. "Tendai is playing Manchester on the 22nd." not "A show has been added in your area."
 - In the tone of the artist, not the platform. Show copy comes from the artist. Dispatch copy is the artist.
 - Dates and times are specific. "Tonight, 11pm" not "Upcoming event."
-- Empty states acknowledge reality, they don't spin it.
+- Empty states acknowledge reality — they don't spin it.
 
 ---
 
 ## Page title
 
-**Current (wrong):** `ABLE — Your feed`
+```
+ABLE
+```
 
-**Correct:** `ABLE` or `ABLE — Following` or just `Your artists`
-
-Use: `ABLE` as the page title. No subtitle needed.
+Not "ABLE — Your feed." Not "ABLE — Home." Not "ABLE — Fan Dashboard." Just: `ABLE`.
 
 ---
 
-## Header copy (Phase 2 — when auth exists)
+## Document title for browser tabs
 
-With first name:
-> Good morning, [Name].
+```html
+<title>ABLE</title>
+```
 
-Without first name (v1):
-> No greeting copy needed. The ABLE wordmark is sufficient.
+---
 
-Sub-greeting (under wordmark, if implemented):
-> [N] of your artists have something new today.
-> [Artist name] is playing near you this week.
+## Header copy
 
-Rules for sub-greeting:
-- Only show if there is something genuinely new (not a default state)
-- If two things are happening, show the most time-sensitive one
-- Never show both simultaneously (choose one)
-- Never manufacture urgency ("Don't miss this")
+### Phase 2 (when auth exists — first-name known)
+
+Time-based greeting:
+- 05:00–11:59: `Good morning, [Name].`
+- 12:00–17:59: `Good afternoon, [Name].`
+- 18:00–04:59: `Good evening, [Name].`
+
+### V1 (no auth — no greeting)
+
+No greeting copy needed. The ABLE wordmark is sufficient. Do not render "Hello," "Welcome," or "Hi" — they add nothing and feel generic.
+
+### Conditional sub-greeting (show only when TRUE)
+
+```javascript
+// Priority order — show the highest-priority one, never both
+if (showTonight > 0) {
+  subGreeting = `${getShowTonightArtistName()} is playing near you tonight.`;
+} else if (todayCount > 1) {
+  subGreeting = `${todayCount} new things from your artists today.`;
+} else if (todayCount === 1) {
+  subGreeting = `Something new from ${getFirstTodayArtistName()} today.`;
+} else if (preReleaseCount > 0) {
+  subGreeting = `${getNextReleaseArtistName()} drops in ${getDaysUntilRelease()} days.`;
+} else {
+  subGreeting = null; // render nothing — do not manufacture context
+}
+```
+
+**Rule:** Never show a sub-greeting when there is nothing genuinely new. Silence is better than fabricated urgency.
 
 ---
 
 ## Content tabs
 
-| Current | Correct |
-|---|---|
-| Following | Following |
-| Discover | Discover |
-| Near me | Near me |
+```
+Following    Discover    Near me
+```
 
-These are correct. Keep them. "Following" over "Feed" or "Home". "Near me" over "Shows" or "Local".
+"Following" not "Feed" or "Home." "Near me" not "Shows" or "Local." These are correct. Keep them.
+
+---
+
+## Bottom tab bar labels
+
+```
+Following    Artists    Me
+```
+
+Tab 1: "Following" — not "Feed"
+Tab 2: "Artists" — the fan's followed artist list
+Tab 3: "Me" — settings and preferences
 
 ---
 
 ## Following view — section labels
 
-**Today strip:**
 ```
-TODAY
+COUNTING DOWN               ← pre-release strip header (only when true)
+TODAY                       ← 24-hour window
+THIS WEEK                   ← 2–7 days
 ```
-(uppercase, letter-spacing, small — this is a label not a heading. Current implementation correct.)
 
-**This week strip:**
+These are uppercase label caps, letter-spacing: 0.06em, small font size (11px), `color-text-3`.
+
+---
+
+## Pre-release countdown strip
+
 ```
-THIS WEEK
+COUNTING DOWN
+[Artist name] — [Release title] · [N days] / [N hours]
+→ Pre-save
 ```
-(Same treatment. Current implementation correct.)
 
-**Nothing new today (inline empty state):**
+Strip uses the artist's accent colour as left border, same visual language as feed items.
 
-Current (wrong): `Nothing new today.`
+If more than 3 pre-release strips: `And [N] more upcoming releases →` — collapses the rest.
 
-Correct, in context:
-> Nothing new from your artists today.
-> Last drop was [N days ago].
+---
 
-If N = 1:
-> Nothing new today. [Artist name] posted something yesterday.
+## Feed item type badges
 
-If N = 7+:
-> It's been a quiet week. Your artists will be back.
+| Type | Badge copy |
+|---|---|
+| release | New music |
+| event | Show |
+| merch | Merch |
+| snap card | From the artist |
 
-If they only follow one artist:
-> Nothing new from [Artist name] today.
+"From the artist" for snap cards. Not "Update." "Update" is generic SaaS. "From the artist" tells you exactly what it is.
+
+---
+
+## Feed item subtitles
+
+These come from artist data, formatted as:
+- **Release:** `New single` / `New EP · [N] tracks` / `New album · [N] tracks`
+- **Show:** `[Venue] · [City] · [Time]`
+- **Merch:** `[Item name]`
+- **Snap:** First line of the artist's message, truncated at 80 chars. No reformatting — these are the artist's words.
+
+---
+
+## The "Tonight" badge
+
+When a show item is within today (same calendar day):
+
+Badge label: `Tonight`
+Colour: warm amber `#f4b942` (same amber as admin.html accent — urgency without alarm)
+Animation: subtle pulse, `prefers-reduced-motion` respected — disables the pulse, keeps the amber
 
 ---
 
 ## Caught-up state
 
-**Current (wrong):**
-> You're all caught up
-> Updated moments ago
-
-"You're all caught up" is SaaS speak. "Updated moments ago" is meaningless.
-
-**Correct:**
 ```
 — you're up to date —
 ```
-In the same treatment as the current line design (decorative rule on each side). But the copy is shorter and less congratulatory.
 
-Sub-line: omit entirely, or use: `Refreshed just now` only when a Supabase fetch actually completed.
+Decorative rule on each side. Lowercase. No celebration. No congratulation.
+
+Sub-line: Omit entirely in v1. When Supabase is live, add: `Refreshed just now` — only when a real fetch has completed.
+
+**Never:** "You're all caught up!" — this is SaaS. It belongs on an email client.
 
 ---
 
-## Empty state — no artists followed yet
+## EMPTY STATES — The most important copy on fan.html
 
-**Current (wrong):**
+This is where fan dashboards fail. When there is nothing to show, most platforms show either a blank screen or a generic cheerful message. Both are wrong.
+
+The empty state is the moment of maximum vulnerability for the fan relationship. They just signed up. They gave their email. They came here expecting something. What they find is silence.
+
+The copy must make them feel: **"I'm glad I signed up. Something good is coming."**
+
+Not: "Come back later." Not: "Nothing here yet!" Not a blank screen.
+
+---
+
+### Scenario A: First visit — just arrived from artist sign-up
+
+Context: `fan_first_visit_artist` is set. The fan just signed up through an artist's page. This is their first time on fan.html. The artist has nothing new today.
+
 ```
-🎵
-No one in your feed yet
-Follow artists from their ABLE page and you'll see their releases, shows, and drops right here.
+You followed [Artist name].
+
+They're here when they have something to share.
+
+While you're here —
 ```
 
-**Correct (first visit):**
+Followed immediately by the cold-start discovery row (see Cold-start section below).
+
+**Why this works:** "You followed [Artist name]" confirms who brought them here — the relationship is named. "They're here when they have something to share" — this sets an honest expectation without implying the artist will be absent. It is patient, not apologetic. "While you're here —" opens the door to discovery without insisting on it.
+
+---
+
+### Scenario A2: First visit — artist has something in the feed
+
+Context: First visit, but the artist does have recent items.
+
 ```
-You're here because of an artist.
-
-Find them — or find someone new.
-
-→ Discover artists
+You followed [Artist name]. Here's what they've shared.
 ```
 
-**Correct (returning, no follows):**
+Then: feed items from the artist. Then: cold-start discovery row below.
+
+---
+
+### Scenario B: Returning fan — nothing new today but has followed artists
+
+Context: Fan has followed artists. They have visited before. Nothing new today.
+
+**If last item was yesterday:**
+```
+Nothing new today. [Artist name] shared something yesterday.
+```
+
+**If last item was 2–6 days ago:**
+```
+Nothing new from your artists today.
+```
+
+**If last item was 7+ days ago:**
+```
+It's been a quiet week. Your artists will be back.
+```
+
+**If fan follows only one artist:**
+```
+Nothing new from [Artist name] today.
+```
+
+**Rule:** Never show "Nothing new today." in isolation without context when context is available. If you know when something last happened, say it. Vagueness feels like the platform not caring. Specificity feels like the platform paying attention.
+
+---
+
+### Scenario C: Returning fan — no artists followed (empty list, cleared localStorage or new device)
+
 ```
 Your following list is empty.
 
@@ -149,68 +268,60 @@ Find artists from their pages, or look through Discover.
 → Discover artists
 ```
 
-Rules:
-- No emoji in empty states for fan.html (feels childish at ABLE's register)
-- Direct CTA to Discover
-- Does not over-explain
-- "Your following list is empty" is honest, not apologetic
+No emoji. No apology. No cheerfulness. Direct CTA to Discover.
 
 ---
 
-## Cold-start suggestion row (first visit, 1 artist followed)
+### What never appears in any empty state:
 
-Label:
-> Because you follow [Artist name] —
+- Emoji (too playful for ABLE's register in this context)
+- "All caught up!"
+- "Come back soon!"
+- "Nothing here yet — but great things are coming!"
+- "You're all set!"
+- Any manufactured urgency
+- Any guilt about not following more artists
 
-Artist card reason strings (pick the most accurate):
-- "Same sound" (shared genre)
-- "Produced by [Producer name]" (credit connection)
-- "Also from [City]" (location connection)
-- "Often played together" (when we have show co-billing data)
-- "New to ABLE" (when artist recently joined)
+---
 
-Never:
+## Cold-start suggestion row
+
+Shown on first visit when fan follows exactly one artist. Shown inline in the Following view below the feed.
+
+**Label:**
+```
+Because you follow [Artist name] —
+```
+
+**Artist card reason strings (pick the most accurate — use the first that applies):**
+1. `Produced [Artist name]'s last record` (credit connection — most specific)
+2. `Co-wrote with [Artist name]` (writing credit)
+3. `Also from [City]` (location match)
+4. `Same sound` (shared genre — use only if no more specific reason)
+5. `New to ABLE` (recently joined — use only as last resort)
+
+**Never:**
 - "You might like"
 - "Recommended for you"
 - "People like you also follow"
+- "Trending in [Genre]"
 - Any engagement-based signal
-
----
-
-## Feed item type badges
-
-| Type | Current | Correct |
-|---|---|---|
-| release | Release | New music |
-| event | Show | Show |
-| merch | Merch | Merch |
-| snap | Update | From the artist |
-
-"From the artist" for snap cards is honest and specific. "Update" is generic SaaS.
-
----
-
-## Feed item subtitles (the `item.sub` field)
-
-These come from artist data but should be formatted as:
-- Release: `New [single/EP/album] · [N tracks]` — "New single" not "Single release"
-- Show: `[Venue] · [City] · [Time]` — specific, not "Event"
-- Merch: `[Item name] · [Price if available]`
-- Snap card: The first line of the artist's message, truncated if long. No reformatting.
+- Follower counts
 
 ---
 
 ## Near me view
 
-**Location line:**
-Current: `London, UK` with a dot and "Change" link — acceptable.
-Correct: `[City], [Country]` — same, but with: `Set your city →` if no location is stored, not "London, UK" hardcoded.
+### Location display (location stored)
 
-**"Change" link:**
-Current (wrong label): `Change`
-Correct: `Change city`
+```
+[City], [Country] · Change city
+```
 
-**No location set (first visit to Near me tab):**
+"Change city" not "Change." "Change city" tells you what you're changing.
+
+### Location prompt (no location stored — first visit to Near me)
+
 ```
 Where are you based?
 
@@ -219,212 +330,364 @@ We'll tell you when your artists are playing near you.
 [Enter your city]
 ```
 
-Small, inline, no drama. One input. Saves to localStorage immediately.
+One input. No account required. Saves to `fan_location` in localStorage. No GPS request. No drama.
 
-**Shows section labels:**
-```
-TONIGHT
-THIS WEEK
-COMING UP
-```
-TONIGHT added for shows within 24 hours — more urgent, more useful.
+### "Set your city" inline (location bar when not set, fan hasn't seen the prompt yet)
 
-**Show item with gig mode Tonight note:**
-When artist has set a "Tonight note" in gig mode:
+```
+Set your city →
+```
+
+Tapping opens the inline input. No redirect.
+
+### Show section labels
+
+```
+TONIGHT        ← shows within today (calendar day)
+THIS WEEK      ← shows within 7 days, beyond today
+COMING UP      ← shows beyond 7 days
+```
+
+### Show item with gig mode "Tonight note"
+
+When an artist has set a Tonight note in gig mode:
 ```
 [Artist name]
-[Venue] · [City]
+[Venue] · [City] · Tonight, [Time]
 "[Artist's own words — e.g. 'The room is small. It's going to be good.']"
-[Tonight button linking to tickets]
+[Tonight →]
 ```
 
-**No shows from followed artists in city:**
+The Tonight note is shown in quotes. These are the artist's words — not ABLE's formatting of them. They render exactly as written.
+
+### No shows from followed artists in this city
+
 ```
 None of your artists are playing in [City] soon.
 
 But there are [N] shows nearby from artists you might like. →
 ```
 
-**No shows at all in city:**
+### No shows at all in this city
+
 ```
 No shows near [City] right now.
 
 We check Ticketmaster — shows get added as artists announce them.
 ```
 
-**Following badge on show items:**
-Current: `Following` pill badge — acceptable.
-Better: remove the following badge and instead show the artist's accent-colour left strip on the show item (matching the card design language). Visual recognition, not text label.
+### Ticket button
 
-**Ticket button:**
-Current: `Tickets`
-Correct: `Tickets →` or just `Tickets` — current is fine.
+```
+Tickets
+```
+
+No arrow needed. "Tickets" is clear and sufficient.
 
 ---
 
 ## Discover view
 
-**Filter pill labels:**
-| Current | Correct |
-|---|---|
-| Emerging | New to ABLE |
-| Connected | Connected |
-| By vibe | By sound |
-| Just dropped | Just dropped |
+### Filter pill labels
 
-"Emerging" implies velocity ranking — change to "New to ABLE" for honesty.
-"By vibe" is acceptable but "By sound" is more specific to music.
-"Just dropped" is good — keep it.
+```
+Connected    New to ABLE    By sound    Just dropped
+```
 
-**Section labels:**
-| Section | Current | Correct |
-|---|---|---|
-| Emerging filter | `Emerging artists` | `New to ABLE` |
-| Connected filter | `Connected to artists you follow` | `Artists connected to yours` |
-| By genre filter | Just the genre name | `[Genre] ·` with small note about what "connected" means here |
-| Just dropped | `New this week` | `New this week` (keep) |
+Default: Connected (most ABLE-specific, most differentiated)
 
-**Connected artist card reason strings:**
-- `[Role] on [Artist name]` — e.g. "Producer on Nova Reign"
+**Not:** "Emerging" (implies velocity ranking), "By vibe" (less specific than "By sound"), "Trending" (never)
+
+### Connected filter section label
+
+```
+Artists connected to yours
+```
+
+Not: "Connected to artists you follow" (wordy) or "Recommended artists" (algorithmic)
+
+### Artist card reason strings (Connected filter)
+
+- `Producer on [Artist name]` — e.g. "Producer on Nova Reign"
 - `Mixed [Artist name]'s last record`
 - `Co-wrote with [Artist name]`
+- `Also from [City]`
 
-These are from the credits network. Specific, honest, no algorithmic implication.
+These come from the credits network. Specific, honest, no algorithmic implication.
 
-**Emerging artist card reason strings:**
-- `New to ABLE this month`
-- `From [City]` (when city matches fan's location)
+### New to ABLE filter section label
+
+```
+New to ABLE
+```
+
+No further label needed. The filter name is the label.
+
+Artist card reason strings for New to ABLE:
+- `New this month`
+- `Based in [City]` (when city matches fan's location)
 - `Similar sound to [Artist name they follow]`
-- No follower counts. No "trending". No engagement signals.
 
-**Creatives section label:**
-Current: `Creatives`
-Correct: `The people behind the music`
+### By sound filter section label
 
-This is the credits-discovery feature. The label should explain what it is.
+```
+[Genre] — artists who sound like yours
+```
 
-Sub-label for context:
-> Producers, mixers, and collaborators who worked on music from artists you follow.
+### Just dropped filter section label
+
+```
+New this week
+```
+
+Keep — this is correct.
+
+### Creatives section label
+
+```
+The people behind the music
+```
+
+Sub-label:
+```
+Producers, mixers, and collaborators who worked on music from artists you follow.
+```
+
+This section only appears on the Connected filter. It is the credits-discovery feature. The label explains what it is.
 
 ---
 
-## Notification panel (Phase 2 copy)
+## Notification panel (Phase 2)
 
-Notification panel title:
-> Updates from your artists
+### Panel title
 
-Empty state:
-> Nothing new right now.
+```
+Updates from your artists
+```
 
-Notification types and copy:
+Not "Notifications." Not "Activity." "Updates from your artists" — specific about the source.
+
+### Empty state
+
+```
+Nothing new right now.
+```
+
+### Notification types and copy
 
 **New release:**
-> [Artist name] just dropped [Release title].
-> [Relative time]
+```
+[Artist name] just dropped [Release title].
+[Relative time — e.g. "2 hours ago"]
+```
 
 **Show tonight:**
-> [Artist name] is playing tonight at [Venue], [City]. Doors [time].
+```
+[Artist name] is playing tonight at [Venue], [City]. Doors [time].
+```
 
-**Pre-release countdown:**
-> [Release title] by [Artist name] drops in [N] days.
+**Show this week:**
+```
+[Artist name] is playing in [City] on [Day]. [Venue].
+```
+
+**Pre-release countdown (first appearance when < 7 days):**
+```
+[Release title] by [Artist name] drops in [N] days.
+```
 
 **Close Circle dispatch:**
-> [Artist name] sent something to their close circle.
-> [First 20 words of dispatch...]
+```
+[Artist name] sent something to their close circle.
+[First 20 words of dispatch]...
+```
 
 **Post-show:**
-> Hope last night was good. [Artist name]'s next date is [date].
+```
+Hope last night was good. [Artist name]'s next date is [date].
+```
+
+**Rule:** Maximum 1 push notification per day. Only send notifications for: show tonight, new release. Never for: platform updates, marketing, generic "check in" prompts.
 
 ---
 
-## Close Circle section (Phase 2 copy)
+## Close Circle section (Phase 2)
 
-**Section header:**
+### Section header
+
 ```
 Close circle
 ```
-(lowercase — this is personal, not a section title)
 
-**Per-artist supporter block:**
+Lowercase. This is personal, not a section title. Lowercase signals intimacy. An uppercase "Close Circle" section header feels institutional.
 
-Supporting state:
-> You've been part of [Artist name]'s close circle since [Month Year].
+### Per-artist supporter block
 
-Latest dispatch:
-> [Date] — [First sentence of dispatch]
+**Supporting state label:**
+```
+Supporting since [Month Year]
+```
 
-Early access indicator on release item:
-> You heard this [N] days before it was public.
+Example: "Supporting since December 2025"
 
-**Invitation (non-supporter, after 14+ days of following):**
-> Some fans go a bit further.
-> They hear new music before it's out, get first access to shows, and occasionally get a message that doesn't go everywhere.
-> It's £5 a month, directly to [Artist name].
->
-> Keep things as they are, or come closer.
+**Latest dispatch label:**
+```
+[Month Day] — [First sentence of dispatch]
+```
 
-Two options: `Keep as is` (secondary, muted) and `Come closer` (primary, artist accent colour).
+When tapped: opens full dispatch as readable text in a bottom sheet. No social metadata. No like button. No comment section. It is a letter.
 
-Never: "Join now", "Subscribe", "Become a supporter", "Upgrade".
+**Early access indicator on release item:**
+```
+You heard this [N] days before it was public.
+```
+
+Example: "You heard this 3 days before it was public."
+
+Small, muted (`color-text-2`). Not a badge or a trophy. A quiet statement of fact.
+
+**Supporter when artist is quiet:**
+```
+Nothing new from [Artist name] in a while. Your close circle membership is still active — they'll be back.
+```
+
+This is load-bearing copy. It holds the relationship during creative silence without guilt, pressure, or apology. The fan's decision to stay is valid. The artist's silence is not betrayal. The copy holds both truths simultaneously.
+
+### Close Circle invitation (non-supporter, after 14+ days of following)
+
+```
+Some fans go a bit further.
+
+They hear new music before it's out, get first access to shows, and occasionally get a message that doesn't go everywhere.
+
+It's £5 a month, directly to [Artist name].
+
+Keep things as they are, or come closer.
+```
+
+Two options:
+- `Keep as is` — secondary, muted, smaller
+- `Come closer` — primary, artist's accent colour, standard weight
+
+**Never:**
+- "Join now"
+- "Subscribe"
+- "Become a supporter"
+- "Upgrade"
+- "Don't miss out"
+- Any urgency framing
+
+**Why this works:** "Some fans go a bit further" — it acknowledges that not everyone wants this, which is honest. "They hear new music before it's out" — specific value, not a feature list. "It's £5 a month, directly to [Artist name]" — the price is transparent and the destination is named. "Keep things as they are, or come closer" — this is a choice, not a pitch. The fan is not being pressured. They are being offered a door.
 
 ---
 
-## Fan settings / Me tab (Phase 2 copy)
+## Fan settings / Me tab (Phase 2)
 
-Page title:
-> You
+### Me tab title
 
-Not "Profile" or "Settings" or "Account". "You" is the right register for ABLE.
+```
+You
+```
 
-Sections:
+Not "Profile." Not "Settings." Not "Account." "You" — this is the right register for ABLE. The page is about the fan, in the fan's voice.
 
-**Following:**
-> The [N] artists you follow
+### Following section
 
-**Notifications:**
-> Updates from your artists
-> [Toggle per artist]
+```
+The [N] artists you follow
+```
 
-**Your data:**
-> Your list is yours.
-> Everything you've signed up for on ABLE belongs to the artist you signed up through, not to us.
-> You can export your data or delete your account at any time.
+Not "[N] artists" or "Following ([N])."
 
-**Export:**
-> Download your following list
+### Notifications section
 
-**Delete account:**
-> Stop using ABLE
+```
+Updates from your artists
+```
 
-(Not "Delete account" as primary — "Stop using ABLE" removes the permanence framing that creates friction without adding safety.)
+Toggle label per artist: `Updates from [Artist name]`
 
----
+### Your data section
 
-## Bottom tab bar labels
+```
+Your list is yours.
 
-| Tab | Current | Correct |
-|---|---|---|
-| Feed | Feed | Following |
-| Artists | Artists | Artists |
-| Me | Me | Me |
+Everything you've signed up for on ABLE belongs to the artist you signed up through, not to us. You can export your data or delete your account at any time.
+```
 
-"Following" not "Feed". The others are fine.
+### Export button
+
+```
+Download your following list
+```
+
+### Account deletion
+
+```
+Stop using ABLE
+```
+
+Not "Delete account." "Stop using ABLE" removes the dramatic permanence framing without creating false hope that it's reversible. If a confirmation dialog is needed: "Are you sure? Your following list and preferences will be removed."
 
 ---
 
 ## Error states
 
 **Failed to load feed:**
-> Couldn't reach the server.
-> Showing what we have cached.
+```
+Couldn't reach the server.
+Showing what we have cached.
+```
 
-Not "Error loading data" — be human.
+Not "Error loading data." Not an error modal. A small inline notice at the top of Following, muted, honest.
 
 **Failed to load shows:**
-> Can't load shows right now. Try again.
+```
+Can't load shows right now. Try again.
+```
 
-**Artist unavailable:**
-> This artist's page isn't available right now.
+**Artist profile unavailable:**
+```
+This artist's page isn't available right now.
+```
+
+**No internet:**
+```
+You're offline.
+Showing your last update.
+```
+
+---
+
+## PWA add-to-home-screen prompt (Phase 2, P2.2)
+
+Triggered after 3rd visit, shown once:
+
+```
+Add ABLE to your home screen?
+
+One tap to see what's new from your artists.
+
+[Add]     [Not now]
+```
+
+"Not now" not "No." "Not now" implies the fan might want it later. "No" is a rejection. The difference matters for how the fan feels about the ask.
+
+---
+
+## Push notification opt-in (Phase 2, P2.4)
+
+Triggered after 2+ followed artists and 3+ visits:
+
+```
+Get notified when [Artist name] drops something.
+
+We'll only message you when something real happens.
+
+[Turn on]     [Not now]
+```
+
+"We'll only message you when something real happens" — this is a promise. It sets expectations correctly. A fan who opts in because of this promise and then receives a generic promotional message will feel betrayed. The copy creates an obligation on the product.
 
 ---
 
@@ -436,3 +699,5 @@ Not "Error loading data" — be human.
 4. Specific > general. "Tendai is playing Manchester on the 22nd." > "A show is coming up in your area."
 5. Artist voice > platform voice. When a dispatch appears, it is the artist's words. ABLE does not rephrase them.
 6. No "feed". No "content". No "engagement". No "followers".
+7. The empty state is not a failure state. It is an honest state. Treat it as such.
+8. The first line a new fan reads is the most important line on the entire page. Write it accordingly.

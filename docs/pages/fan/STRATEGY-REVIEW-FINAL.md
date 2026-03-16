@@ -1,60 +1,67 @@
 # fan.html — Strategy Review Final
-**Date: 2026-03-15**
-**Score baseline: 5.85/10 | Score after P0+P1: 8.8/10 | Score after P2: 9.4/10**
+**Last updated: 2026-03-16**
+**Stage 7A of the 8-stage strategy process**
+**Score baseline: 5.9/10 | After P0+P1: 8.8/10 | After P2: 9.24/10 | Target: 10/10**
 
 ---
 
-fan.html has the right structure but fails at the moment of arrival. A fan who just signed up through an artist's page and clicks through to fan.html sees a generic dashboard. That moment — the first arrival — is the fan relationship's most fragile point. Fix that and the page jumps from 5.8 to 8.0 without touching the existing tabs.
+## The governing insight
 
----
+fan.html has the right structure but fails at the moment of arrival.
 
-## The arrival problem as governing insight
-
-Every other issue on this page — the empty states, the cold-start gap, the missing orientation — is a downstream consequence of a single design omission: the link from an artist's profile to fan.html carries no context.
-
-A fan signs up through Nadia's page. They tap "Your ABLE page →". They land on fan.html. The page has no idea it was Nadia who sent them. So it shows either demo data or a blank state with a generic message about following artists. The fan, who came here because of Nadia and in the context of Nadia, is given nothing.
-
-This is not a subtle UX problem. It is the first experience a new fan has of the product beyond the artist's own page. If it fails — if the fan lands on something that feels generic and unrelated to why they signed up — the page loses them before it has earned a second visit.
-
-The fix is architectural, not cosmetic. The `?artist=slug&ref=signup` URL parameter scheme is a 20-line change that makes every subsequent visit coherent. With it: fan arrives, fan sees Nadia's content, fan gets 2–3 connected artist suggestions, fan leaves following 3 artists. Without it: fan arrives, fan sees nothing meaningful, fan doesn't come back.
+A fan who just signed up through an artist's page clicks through to fan.html. The page has no idea which artist sent them. It shows either generic demo data or a blank state. That moment — the fan's first experience of their own dashboard — is the most fragile point in the fan relationship. Fix it and the page jumps from 5.9 to 8.0 before touching anything else.
 
 This is the governing insight. Everything else is secondary.
+
+**The fix is architectural, not cosmetic.** The `?artist=slug&ref=signup` URL parameter scheme is a 20-line change that makes every subsequent visit coherent. Without it: fan arrives, fan sees nothing meaningful, fan doesn't come back.
+
+---
+
+## What competitive research confirmed
+
+The 2025/2026 competitive landscape confirms ABLE's strategic position but adds nuance:
+
+**Spotify Music Pro (launching 2025/2026 at $5.99/month):** Superfan tier with early ticket access, hi-res audio, remix tools. Critical flaw: fan stays inside Spotify's walled garden. Artist does not own the fan's email. Labels are slowing the launch. For independent artists, this is a distribution-platform product, not a relationship product. ABLE's differentiation holds.
+
+**Bandcamp fan pages:** The closest product to what ABLE's fan.html should feel like — purchase-history based, non-algorithmic, personal. The fan feels ownership. fan.html should aspire to this register: personal, not broadcast.
+
+**Patreon for musicians:** Fails because it requires regular content posting. Musicians who release every 18 months have nothing to post. The content treadmill punishes the natural creative cycle. ABLE's Close Circle avoids this by rewarding moments (releases, shows, dispatches) not volume.
+
+**Community (SMS):** 98% open rate because people check texts. The channel insight is correct: direct, non-algorithmic communication creates a different felt relationship than social media. fan.html serves this same need — but with context (the full artist world) that SMS cannot provide.
+
+**Amazon Music Fan Groups (2025):** Community-first model — forums, shared listening, social features. Wrong direction for intimate artist-fan connection. Fan-to-fan relationships are not what ABLE serves. Artist-to-fan relationship is the product.
+
+**Conclusion:** No competitor has built the experience fan.html is designed to be. The gap is not a gap in features — it is a gap in philosophy. Most platforms treat fans as audience members. fan.html treats fans as people who have a real relationship with a specific artist.
 
 ---
 
 ## fan.html's unique role
 
-fan.html is not a social feed. It is not a recommendation engine. It is not Instagram or TikTok.
+fan.html is not a social feed. It is not a recommendation engine. It is not a store.
 
-It is a place where fans go because they care about specific artists they chose to follow. Every item they see is from someone they actively wanted to hear from. Nothing is ranked. Nothing is promoted. Nothing is served by a machine.
+It is a place where fans go because they care about specific artists they chose to follow. Every item they see is from someone they actively wanted to hear from. Nothing is ranked. Nothing is promoted. Nothing is generated by a machine.
 
-This distinction has direct design consequences:
+**The Following tab is the product.** Not Discover. Not Near me. The fan's list of chosen artists, and what is happening with those artists right now. Discover is a tool for expanding the list. Near me is a tool for acting on it. But Following is why the page exists.
 
-**The Following tab is the product.** Not Discover. Not Near me. The fan's list of artists, and what is happening with those artists right now — that is the primary job. Discover is a tool for expanding the list. Near me is a tool for acting on it. But the Following tab is why the page exists.
+**The Today strip is the core promise.** "If something happened today with an artist you follow, you will see it here." That promise must be unbreakable. It must never show things the fan didn't ask for. It must be newest first, always.
 
-**The Today strip is the core promise.** "If something happened today with an artist you follow, you will see it here." That is the entire value proposition. It must never be empty without explanation. It must never show things the fan didn't ask for. It must be newest first, always.
-
-**Discovery is honest, not algorithmic.** The Connected filter — artists discovered through production credits and human relationships — is the most ABLE-specific feature on the entire page. It is not a recommendation algorithm. It is a map of real music industry relationships. It should be the default Discover filter precisely because it is nothing like what any other platform offers.
+**Discovery is honest, not algorithmic.** The Connected filter — artists discovered through production credits and human relationships — is the most ABLE-specific feature on the entire page. It is not a recommendation algorithm. It is a map of real music industry relationships. This should be the default Discover filter precisely because it is nothing like what any other platform offers.
 
 ---
 
-## The "Today strip" as the core promise
+## The three fan personas — what each needs
 
-The Today strip is the simplest, most important element on fan.html. It answers one question: "Did any artist I follow release something new in the last 24 hours?"
+**Priya (The Loyalist, 26, Sheffield):** Never treat her like a new user. The first-visit orientation acknowledges her history by naming the artist who brought her here. The pre-release countdown knows she wants to hear about Maya's next record before it drops. The Close Circle invitation, when it appears, should feel like a natural next step in a relationship she's been building for two years — not a cold sales pitch.
 
-Current state: Today strip works structurally but fails in two ways.
+**Tom (The New Convert, 22, Edinburgh):** The highest churn risk. He follows one artist. If fan.html shows him nothing when Tendai has nothing new, he leaves. The cold-start suggestion row, the pre-release countdown if Tendai has one, the Near me show if Tendai is playing Edinburgh — these are the three things that convert Tom from a one-visit fan to a retained one. The 3-artist threshold (3 followed artists = dramatically higher 30-day retention) requires the cold-start mechanism to work.
 
-**First:** When it is empty, it says "Nothing new today." with no context. This is fine for a returning fan who has been checking daily. It is disorienting for a fan who has not opened the page in a week. The fix is copy that acknowledges the last time something happened: "Nothing new today. [Artist name] posted something yesterday." or "It's been a quiet week. Your artists will be back."
-
-**Second:** The ordering within Today is not reliably newest-first. A sort by `b.age - a.age` before the Today/This week split resolves this. It is a one-line change.
-
-Neither of these is difficult. Together they make the Today strip feel like a reliable morning check rather than an uncertain lookup.
+**Amara (The Superfan, 31, London):** She needs Close Circle to work properly. The dispatch reading experience — full text, no social metadata, no like button — is not a nice-to-have. It is the primary experience for the fan who pays £5/month. Without it, fan.html treats ABLE's most valuable user identically to someone who signed up yesterday.
 
 ---
 
-## Copy philosophy violations currently present
+## Copy violations that must be fixed first
 
-The current build has six vocabulary violations that undermine the premium positioning:
+These are the highest-priority changes before anything else. They take less than 20 minutes and change the page's ideological signal.
 
 | Violation | Location | Fix |
 |---|---|---|
@@ -66,11 +73,31 @@ The current build has six vocabulary violations that undermine the premium posit
 | "We'll show you shows..." | Near me empty state | "No shows near [City] right now." |
 | "Update" | Snap card type badge | "From the artist" |
 
-These are not cosmetic corrections. "Feed" is a word that carries the entire ideology of algorithmic social media. It belongs to TikTok and Instagram. Using it on ABLE sends a signal — however unintended — that this page works the same way. It does not. The word must go.
+"Feed" is not a vocabulary problem — it is an ideology problem. The word carries the entire mental model of algorithmic social media. It belongs to TikTok and Instagram. Using it on ABLE sends a signal — however unintended — that this page works the same way. It does not.
 
-"You're all caught up" is generic SaaS. It belongs on a task management app or an email client. fan.html is a place where fans stay close to music they love. The copy must reflect that register.
+---
 
-All seven violations are fixable in under 20 minutes. They should be the first changes made when implementation begins.
+## The empty state as product philosophy
+
+The most important moment on fan.html is not the richest-data view. It is the empty state.
+
+A fan signs up. They click through to fan.html. They expect to find something. What they find depends on whether the artist has published anything recently. If they haven't — and most independent artists haven't published anything in weeks — the fan sees nothing.
+
+What they see at that moment determines whether they come back.
+
+**The wrong answer:** A blank screen. A generic message. "All caught up!" A cheerful emoji.
+
+**The right answer:** An honest acknowledgement that the page is waiting with them.
+
+> You followed [Artist name]. They're here when they have something to share. While you're here —
+
+This copy does four things simultaneously:
+1. Confirms which artist brought them (the relationship is named)
+2. Sets an honest expectation (the artist posts when they have something real, not on a schedule)
+3. Signals that this will be worth returning to (something good is coming)
+4. Opens the door to discovery without demanding it ("While you're here —")
+
+This is the most important copy on the entire page. It is also currently absent.
 
 ---
 
@@ -78,61 +105,52 @@ All seven violations are fixable in under 20 minutes. They should be the first c
 
 | Phase | Score | What changes |
 |---|---|---|
-| Baseline | 5.85/10 | Current state |
-| P0 complete | 7.5/10 | Arrival URL scheme, empty state rewrites, page title fix, cold-start suggestions |
-| P1 complete | 8.8/10 | Discover defaults + Near me location + pre-release strip + source tracking + notification pip |
-| P2 complete | 9.4/10 | PWA + offline graceful state + Supabase realtime |
-| Supabase live | ~10/10 | Real data, push notifications, Close Circle with Stripe |
-
-The gap between P2 complete (9.4) and a theoretical 10 is Supabase realtime. Not design. Not copy. Not structure. The page becomes a 10 when a fan's feed updates in real time because an artist just dropped something, without the fan having to reload the page.
-
----
-
-## Build priority
-
-**P0 first. No exceptions.**
-
-The arrival flow and empty state fixes are prerequisite to everything else. A page that fails on first arrival cannot retain fans. Cold-start suggestions, personalised greetings, and correct page title cost almost nothing to implement. They are the first commits.
-
-**P1 second — completeness, not polish.**
-
-Discover tab defaults, Near me location input, pre-release strip, source tracking. These are features that make the page complete for v1. They are not enhancements — they are the page working as specified.
-
-**P2 third — permanence.**
-
-PWA manifest, offline handling, Supabase realtime. These make the page reliable across visits and devices. They are the bridge between the localStorage prototype and the production product.
-
-**Close Circle is the Phase 2 anchor.**
-
-Without Close Circle, fan.html is an information page. With Close Circle, it becomes a place fans invest in. The £5/month direct payment (artist keeps everything) is a trust signal unlike anything a platform has offered music fans. The invitation copy is already written in COPY.md. The section needs to exist — even as a stub with the correct copy and no payment flow — before Phase 2 ships. A stub that says "Some fans go a bit further..." is better than no Close Circle at all.
+| Baseline | 5.9/10 | Current state |
+| P0 complete | 7.5/10 | Arrival URL scheme, empty state rewrites, page title fix, cold-start suggestions, feed sort |
+| P1 complete | 8.8/10 | Discover defaults, Near me location + date fix, pre-release strip, notification pip, accessibility |
+| P2 complete | 9.24/10 | PWA, offline graceful state, view transitions, Supabase query specs, Close Circle stub |
+| Supabase live | ~9.8/10 | Real data, realtime feed, Close Circle functional with Stripe, push notifications |
+| V1 ceiling | 10/10 | Real-time feed update + Close Circle dispatches + first-name auth greeting |
 
 ---
 
-## What the current build has right (preserve these)
+## Build priority (no exceptions)
+
+**P0 first.** The arrival flow and empty state fixes are prerequisite to everything. A page that fails on first arrival cannot retain fans. These are all achievable in the current single-file HTML, require no backend, and cost almost nothing to implement.
+
+**P1 second.** Completeness, not polish. Discover tab defaults, Near me location, pre-release strip, source tracking, notification pip. These are the page working as specified.
+
+**P2 third.** Permanence. PWA manifest, offline handling, Supabase query specs, Close Circle invitation copy. These make the page reliable across visits and devices.
+
+**Close Circle is the Phase 2 anchor.** Without Close Circle, fan.html is an information page. With Close Circle, it becomes a place fans invest in. The invitation copy is written. The design is specced. Even a copy-only stub — "Some fans go a bit further..." — is better than nothing. A stub that introduces the concept and proves the copy is more valuable than absence.
+
+---
+
+## What the current build has right (preserve)
 
 **The structure.** Following / Discover / Near me is the correct three-part architecture. This should not change.
 
-**The design language.** Dark theme matching artist profiles, individual accent colours per artist, DM Sans, spring easing, card radii. The page already feels like it belongs in the same world as the artist profiles fans came from.
+**The design language.** Dark theme matching artist profiles. Artist accent colours per card. DM Sans. Spring easing. Card radii. The page already feels like it belongs in the same world as the artist profiles fans came from.
 
-**The Following view architecture.** Today / This week is honest, temporal, non-algorithmic. It does not rank by engagement. It shows items in the order they happened. This is the right call and it must not change.
+**The Following view architecture.** Today / This week is honest, temporal, non-algorithmic. It does not rank by engagement. It shows items in the order they happened. This must not change.
 
 **The Connected filter.** Discovery through production credits is ABLE-specific and non-algorithmic. It is the most interesting feature in the Discover tab. It should be the default.
 
-**Mobile performance.** Single HTML file, localStorage-first render, lazy tab loading, proper iOS handling. The technical foundations are solid.
+**Mobile performance.** Single HTML file. localStorage-first render. Lazy tab loading. Proper iOS handling. The technical foundations are solid.
 
 ---
 
 ## What fan.html must never become
 
-These are not aspirational constraints — they are existential ones. Each represents a path that other platforms have taken and that directly undermines ABLE's reason to exist.
+These are existential constraints, not aspirational ones:
 
 **No global trending.** What's trending is the algorithm. ABLE is the antidote.
 
-**No fan-to-fan features.** This is not a community platform. No comments, no fan profiles, no fan follows. The relationship is artist-fan. Not fan-fan.
+**No fan-to-fan features.** Not a community platform. No comments, no fan profiles, no fan follows. The relationship is artist-fan.
 
 **No gamification.** No streaks, no badges, no superfan rankings visible to the fan. The relationship with an artist is not a game.
 
-**No advertising.** The moment an ad appears in the Following view, the trust model collapses. The fan gave their email for an unmediated relationship with an artist. That is the contract.
+**No advertising.** The moment an ad appears in the Following view, the trust model collapses. The fan gave their email for an unmediated relationship. That is the contract.
 
 **No "For You" tab.** The algorithmic foot in the door. ABLE's Discover logic is based on taste and human relationships — not engagement metrics. A "For You" tab implies the platform knows better. It does not.
 
@@ -140,7 +158,7 @@ These are not aspirational constraints — they are existential ones. Each repre
 
 ## Conclusion
 
-fan.html is in a good place architecturally. The structure, design language, and core logic are right. The gaps are executional, not strategic. The P0 changes — arrival URL scheme, empty state rewrites, page title fix — are all achievable in the current single-file HTML, require no backend, and push the product from 5.85/10 to 7.5/10.
+fan.html is in a good place architecturally. The gaps are executional, not strategic. P0 changes are achievable in the current single-file HTML, require no backend, and push the product from 5.9 to 7.5.
 
 The most important single truth about this page: it exists to serve the relationship between artist and fan. Every feature decision should be judged by whether it makes that relationship more direct, more honest, and more resilient. Not whether it increases time-on-page. Not whether it drives shares. Whether artist and fan stay closer because of it.
 

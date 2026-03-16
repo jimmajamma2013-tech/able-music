@@ -1,180 +1,243 @@
-# fan.html — User Journeys
-**Date: 2026-03-15**
+# fan.html — User Journey Maps
+**Last updated: 2026-03-16**
+**Stage 4 of the 8-stage strategy process**
 
-Four journeys that represent real fan behaviour. Not personas, not demographics — specific situations with specific emotional contexts.
-
----
-
-## Journey 1 — The New Fan (First 48 hours)
-
-**Situation:** Layla is 23, lives in Manchester. She saw an artist called Tendai post a clip on Instagram. She tapped the link in bio. She landed on Tendai's ABLE profile. She heard 30 seconds of a song and it was exactly what she needed. She signed up with her email.
-
-**What she knows:** She signed up to hear from Tendai. She doesn't know what ABLE is.
-
-**What she doesn't know:** That ABLE has a fan dashboard. That other artists she might like are on here. That there's a page at ablemusic.co/me waiting for her.
+Three fan personas. Real situations. Real emotional contexts. These are not demographics — they are people with specific histories, fears, and desires.
 
 ---
 
-**The journey:**
+## Who the fan is (overview)
 
-She receives the confirmation email. The subject line is: "Confirm you want to hear from Tendai." She clicks confirm. The confirmation page thanks her and mentions she can visit her own page at ablemusic.co/me.
+Before the personas: who is this person? They are:
 
-She taps the link. She lands on fan.html.
+- A genuine music fan who cares about a specific artist
+- Likely 18-35, mobile-first (they will primarily use this on iPhone)
+- They gave their email — they are opted in. They trust the artist.
+- They are not a music professional. They are not an aspiring artist. They are someone who hears music and feels something.
 
-**First 10 seconds:** She sees the ABLE wordmark. She sees "Following" as the active tab. She sees one item in Today: "Tendai — Soft Hours · New single." The feed item is in Tendai's rose accent colour. She already knows this is what she signed up for.
-
-**The cold-start moment:** Below the Today strip, there is an in-context suggestion row: "Because you follow Tendai..." with 2–3 artist cards. The cards show artists connected to Tendai through credits or shared genre. They have their own accent colours. There's a one-tap follow option.
-
-She follows one of them: Sol Rave.
-
-**Near me:** She taps "Near me." She's asked for her city — a simple input, no account required, just saves to localStorage. She types Manchester. Tendai's next Manchester show appears. She didn't know they were playing. She taps "Tickets."
-
-**What she leaves with:** She followed 2 artists. She knows about a show. The page feels like it was designed by someone who cares about music, not a platform trying to grow its user base.
-
-**Emotional state at end:** Pleasantly surprised. This was more than she expected from a link-in-bio.
+They came to fan.html because an artist they care about — or are starting to care about — sent them here. The page exists because of that relationship. Everything on it exists in service of that relationship.
 
 ---
 
-**What fan.html needs to do this journey justice:**
-- Cold-start connected-artist suggestions shown inline in Following on first visit
-- Near me location prompt on first visit to that tab
-- Real data (Tendai's actual release in the feed, not demo)
-- Page title that doesn't say "feed"
+## Fan 1: "The Loyalist" — Priya, 26, Sheffield
+
+### Background
+
+Priya discovered Maya through a friend's Instagram two years ago. She bought the EP from Bandcamp. She's been to 2 of Maya's shows — the second one was at a tiny venue in Leeds, maybe 80 people, and she still talks about it. She signed up to ABLE at the last gig when a flyer had a QR code. She scanned it during the set.
+
+She is not a passive listener. She is a loyalist. She has history with this artist.
+
+### What Priya wants
+
+- To know about the next show before it sells out — she missed one last year and still regrets it
+- To feel like she has a direct line to Maya — not to talk to her, but to feel known
+- To support without it feeling transactional — she doesn't want to "subscribe to a tier". She wants to stay close
+- To discover artists connected to Maya (same world, same sound, same integrity)
+
+### What Priya fears
+
+- Missing something important because the algorithm buried it
+- Being treated like a customer rather than a fan
+- The relationship feeling institutional — like she joined a fan club with a membership card rather than being part of something real
+- Supporting an artist financially and having it feel awkward or performative
+
+### Priya's journey on fan.html
+
+**Day of signing up:**
+She scans the QR code mid-set. She's buzzed. She types her email on her phone in the dark. The confirmation arrives during encore.
+
+Next morning. She opens the link in the confirmation email. She lands on fan.html. The page loads dark, immediate — same world as Maya's profile.
+
+She sees: "You followed Maya." One clean line. Below it, a feed item: "Maya — 'Soft Hours' · New single · 3 days ago." In Maya's rose-gold accent. She's already listened to this a hundred times. It doesn't matter. It feels right that it's here.
+
+Below the feed: "Because you follow Maya —" and two artist cards. One is produced by the same person who produced Maya's last record. The card says "Produced on Maya's last EP." She follows one of them.
+
+She taps Near me. She types Sheffield. One show appears: Maya is playing Manchester in three weeks, 12 miles away. She did not know this. She buys a ticket from the card.
+
+She closes the app feeling: this is exactly what she needed from a sign-up.
+
+**Three months later — a Tuesday morning:**
+Priya opens fan.html reflexively, the way she opens iMessage. There are 2 items in Today. Nova Reign released something — she followed them because of the artist connection. There's a pre-release countdown: Maya's new record, 4 days away.
+
+She taps the Nova Reign item. One track. She listens from the card. Taps back.
+
+She notes the countdown. She'll come back on Friday.
+
+She closes the app. Thirty seconds. Everything she needed.
+
+**Six months later — Close Circle:**
+Priya has been seeing the Close Circle invitation on Maya's profile for a while. She's been following for months. She's bought merch. The invitation on fan.html reads: "Some fans go a bit further. They hear new music before it's out, get first access to shows, and occasionally get a message that doesn't go everywhere. It's £5 a month, directly to Maya."
+
+She taps "Come closer." No hesitation. The £5 isn't expensive. She's already been giving Maya £12 for the EP and £20 for a t-shirt. This is just... staying close.
+
+A week later there's a dispatch in her fan.html Close Circle section. Maya, writing from what reads like a voice note transcribed into text. Honest, a bit uncertain about the second record, grateful. The kind of thing you'd send a friend. Priya reads it twice.
+
+She tells someone about it. Not the content — that felt private. Just: "Maya sent something to her close circle this week. I feel like I know her."
+
+**Emotional truth for Priya:**
+She doesn't want to be managed. She doesn't want perks. She wants to be part of something real. fan.html works for Priya when it disappears — when the platform stops being visible and the artist fills the space.
 
 ---
 
-## Journey 2 — The Established Fan (A regular Tuesday morning)
+## Fan 2: "The New Convert" — Tom, 22, Edinburgh
 
-**Situation:** Marcus follows 6 artists on ABLE. He has the page saved in his browser. He opens it every few days, usually in the morning. He doesn't use Instagram much anymore — he's tired of the algorithm.
+### Background
 
-**Emotional context:** He wants to be informed, not entertained. He's not here to scroll. He wants to know: is there anything new from the people I actually chose to follow?
+Tom heard a track on a playlist called "Late Night Study" and the artist caught him off guard. He went back to the start of the track. He listened again. He searched the name: Tendai. He found the link in Tendai's Instagram bio. He landed on the ABLE profile. He didn't know what ABLE was. He signed up because the profile said "Stay close."
 
----
+He's been listening for six weeks. He owns nothing. He's been to no shows. He doesn't know the backstory. He's not yet a loyalist — he's a convert-in-progress.
 
-**The journey:**
+### What Tom wants
 
-He opens fan.html. It renders immediately from cached data. Then new items load in the background.
+- To discover more music from this artist — there's a gap between "I heard a great track" and "I understand who this artist is"
+- To understand if this artist is worth following more deeply — he's test-driving the relationship
+- To find out about Tendai's world without having to do research — he wants the context to come to him
+- Low commitment. He's not ready to pay or invest yet. He wants to see if he stays interested.
 
-**Today strip:** Two items. Nova Reign released something new. Luna Waves is playing in London on Thursday.
+### What Tom fears
 
-He taps the Nova Reign item. It opens Nova Reign's ABLE profile. He listens to the track. He taps back.
+- Being made to feel committed before he's ready — no "upgrade" prompts, no "join the community" asks
+- Being sold to — he signed up to hear music, not to be marketed at
+- The page feeling like a project he has to maintain
+- Not finding anything interesting and leaving
 
-He taps the Luna Waves show item. It opens the venue's ticket page. He buys a ticket.
+### The cold-start problem for Tom
 
-Total time on fan.html: under 2 minutes.
+Tom represents the highest-risk fan on the platform. He follows one artist. That artist releases music every 8 months. There's nothing new today. There may not be anything new for weeks.
 
-**This week strip:** Three more items. He scrolls through. One is interesting — an artist he follows (Drift) put out a snap card: a studio update. He reads it. It's a paragraph, honest, the kind of thing that would get buried in an Instagram story.
+If fan.html shows him nothing — a blank feed, a generic message — he leaves. He doesn't come back.
 
-**Caught up state:** He reaches the end of the feed. A simple line appears: "You're up to date. Last updated just now."
+The cold-start strategy exists specifically for Tom. ABLE needs to:
+1. Surface the connection between Tendai and other artists in Tom's first 60 seconds on fan.html
+2. Show him a show — if Tendai is playing Edinburgh, that single fact is more powerful than any number of features
+3. Give him enough to make a second visit worth it
 
-He closes the app.
+### Tom's journey on fan.html
 
-**What he leaves with:** He learned about a show he wants to attend. He heard new music before anyone who doesn't follow the artist. He read something real from an artist. None of this required him to scroll past content he didn't ask for.
+**First visit — same day he signed up:**
+He lands via the confirmation email. He's on his phone on the bus home.
 
-**Emotional state at end:** This is what the internet used to feel like. Direct. Not noisy.
+The page shows: "You followed Tendai." Below it, nothing new from Tendai today. But rather than a blank white box, he sees: "Because you follow Tendai —" and two artist cards. One says "Same sound — atmospheric electronic." One says "Produced by the same person as Tendai's debut."
 
----
+He follows the second one. He listens to one track from their profile while still on the bus.
 
-**What fan.html needs to do this journey justice:**
-- Snap card items properly surfaced in feed with "From the artist" framing, not generic "Update" badge
-- Show items that are ticketable link to ticketing URL with clear affordance
-- Caught-up state that is specific about when it was last updated (not "Updated moments ago")
-- Feed ordering: newest first, always
+Near me: He taps it. He types Edinburgh. No shows from Tendai near him yet. But the second artist he just followed has a show in Edinburgh in 6 weeks. He notes it.
 
----
+He closes the app. He came in not knowing what to expect. He leaves with 2 followed artists and a show on his mental radar.
 
-## Journey 3 — The Gig Night Fan
+**Four weeks later:**
+Tom opens fan.html on a Friday morning. There's one item in Today: a pre-release strip. Tendai drops their new EP in 2 days. He didn't know.
 
-**Situation:** Priya is at home at 4pm on a Friday. She gets a push notification (or visits fan.html): "Nova Reign is playing tonight at Fabric. Doors 11pm." She's been a fan for months. She wasn't planning anything tonight. This changes things.
+He taps Pre-save. He comes back on Sunday. He listens.
 
-**Emotional context:** The post-concert-depression feeling in reverse — the pre-show excitement. This is peak receptivity. She is in the mood to spend money and commit to an experience.
+He's now a different Tom. He heard the new release before it was everywhere. He has a relationship to this record that other people don't have. He was there on release day.
 
----
+**Two months later:**
+Tom is now following 4 artists. He opens fan.html every Friday. It has become a habit — not compelled, just comfortable. He opens it the way you scan headlines: low friction, occasionally rewarding, never punishing.
 
-**The journey:**
+He hasn't joined Close Circle. He may. He's watching.
 
-She opens fan.html. The Following tab has a feed item at the very top — it's tagged "Tonight" not just "Show". Nova Reign's item is slightly elevated visually: the card has a subtle amber warm border or glow to indicate urgency without manufactured hype.
-
-The item reads: "Nova Reign · Fabric, London · Tonight, 11pm"
-
-Below it, if Nova Reign had activated gig mode's "Tonight note" feature: "The room holds 800. It's been a long time coming. This one matters." — The artist's own words, not platform copy.
-
-She taps. She lands on Nova Reign's ABLE profile in gig mode. The ticket CTA is primary. She buys a ticket.
-
-**After the show (post-show state):** The next morning she opens fan.html. The Nova Reign item in her feed has changed. It no longer says "Tonight" — gig mode has expired. But there's a new item: Nova Reign's next date. The artist has shifted to post-show state: "Hope last night was good. Here's when I'm next doing this."
-
-**Near me tab:** Independently of the specific show, the Near me section shows any upcoming shows from her followed artists. She finds another one — an artist she hasn't seen live — playing near her in two weeks.
-
-**What she leaves with:** She went from "staying in on a Friday" to "going to a show tonight." The fan dashboard made that happen, not an algorithm — it was information from an artist she already chose to follow, arriving at the right moment.
-
-**Emotional state at end:** This is why she gave her email. This is why she comes back.
+**Emotional truth for Tom:**
+Tom needs to be surprised, not managed. fan.html works for Tom when it finds him things he didn't know he wanted. The cold-start row, the Near me show, the pre-release countdown — these are not features to Tom. They are moments. Each one is either the reason he stays or the reason he drifts.
 
 ---
 
-**What fan.html needs to do this journey justice:**
-- "Tonight" tag on feed items for shows within 24 hours — different visual treatment from regular "Show" badge
-- Gig mode "Tonight note" surfaced in the feed item (not just on the artist profile)
-- Near me shows sorted by date ascending, with "Tonight" grouping at the top
-- Post-show item from artist that replaces the gig-mode item naturally
+## Fan 3: "The Superfan" — Amara, 31, London
+
+### Background
+
+Amara has been following an artist called Margot Veil for 3 years. She was there in the first year, when the shows were 40 people and the SoundCloud had 300 plays. She has bought every physical release. She has told dozens of people about this artist. Some of them are now fans too.
+
+She is a true fan in the Kevin Kelly sense — she would drive 200 miles. She already has.
+
+She joined Close Circle three months ago. Not for the perks. Because she wanted Margot to know that she's still there.
+
+### What Amara wants
+
+- Early access — to hear music before it goes public, not as a transaction but as trust being extended
+- Direct communication — not marketed at, communicated with. A dispatch that feels like a letter, not a newsletter.
+- To feel she's part of an inner circle — not because she paid, but because she showed up when it mattered
+- To contribute financially in a way that feels like participation, not charity
+- Occasionally, to find out that another artist in Margot's world is worth following — the credits network, the features, the producers
+
+### What Amara fears
+
+- The relationship feeling like a subscription service — content treadmill, payment obligation, cancellation guilt
+- Margot going quiet and her losing the connection she has
+- Being treated the same as someone who signed up last week
+- The platform making the relationship feel commercial
+
+### Amara's journey on fan.html
+
+**A regular Sunday morning:**
+She makes coffee. She opens fan.html.
+
+The Close Circle section for Margot Veil sits below her regular feed. Two items:
+
+**1. A dispatch.** Margot sent something to the close circle 4 days ago. Amara hasn't opened it yet. The preview shows the first sentence: "I've been sitting with the second record for eight months and I keep thinking it's not ready —"
+
+She taps it. It opens as a full-width text view — clean, minimal, no social metadata. Just words. It's 4 paragraphs. Honest, uncertain, beautiful. No like button. No comment section. She reads it the way you read a letter.
+
+**2. A release item** — but with a small, quiet label: "You heard this 4 days before it was public." Margot released a single yesterday. Amara already knows it. She pre-listened as a Close Circle supporter before the public drop. The label isn't triumphant — it's just true. A quiet fact.
+
+She checks the Near me section. Margot has a show in London in 5 weeks. She's already going. She bought the ticket the day it was announced (early access — she had it 24 hours before the public).
+
+She taps Discover. Connected filter. A producer she doesn't know is connected to Margot through credits on the last EP. She listens to one of their own projects. It's interesting. She follows them.
+
+Total time: 4 minutes. She closes the app.
+
+**When Margot goes quiet:**
+It's been 6 weeks with no dispatch. No new release. Amara opens fan.html.
+
+Today is empty. "Nothing new from Margot Veil in a while. Your close circle membership is still active — she'll be back."
+
+That single line matters. It doesn't apologise. It doesn't guilt. It acknowledges reality and holds the relationship steady. Amara doesn't cancel. She stays. Because the copy — and the product behind it — understands that creative silence is not the same as broken commitment.
+
+**Emotional truth for Amara:**
+Amara needs the platform to understand what a relationship is. She doesn't want features. She wants the product to treat her the way Margot treats her: like someone who has been there, who knows what it means to be part of this before it was obvious. fan.html works for Amara when it makes her feel historical — like someone who has a relationship to this artist that has duration and weight.
 
 ---
 
-## Journey 4 — The Close Circle Supporter
+## Cross-persona observations
 
-**Situation:** James has been following an artist called Margot Veil for 8 months. He's seen them live twice. He's bought merch. He's been a Close Circle supporter for 3 months — £5/month directly to Margot.
+**What all three fans share:**
+1. They signed up because of a specific artist, not because of ABLE
+2. They want the artist's world, not the platform's product
+3. They gave their email — that is the highest form of digital trust
+4. They will leave if the relationship feels managed, marketed-to, or algorithmic
+5. They will stay if they feel close
 
-**Emotional context:** He is not a customer. He is someone who shows up. The £5 is not a subscription — it's a relationship maintenance payment. He doesn't want perks or content. He wants proximity to someone making real art.
+**What is different about each:**
+- Priya needs the history of the relationship honoured — she was there before most people
+- Tom needs the relationship to find its feet — he's still deciding if this is worth more attention
+- Amara needs the intimacy of Close Circle to feel real — not a subscription, a human connection
 
----
-
-**The journey:**
-
-He opens fan.html. The Following tab has two sections: the regular feed, and below it, a Close Circle section for each artist he supports.
-
-The Margot Veil Close Circle section shows:
-- His membership duration: "Supporting since December"
-- The latest dispatch: a 3-paragraph message from Margot, sent 2 days ago — something she wouldn't post publicly. An update on the next record. Honest, uncertain, personal.
-- A small "listening session" item: Margot did a private stream last week, replay available for supporters
-
-He opens the dispatch. He reads it. There is no like button. There is no comment section. He reads it the way you read a letter.
-
-**In the regular feed:** A release item from Margot — but his feed item has a small supporter indicator: "You heard this 3 days ago." The record dropped publicly today. He already knows it. That's exactly what the Close Circle is for.
-
-**What he leaves with:** A sense of actual relationship. He knows things other fans don't. He gets them a few days earlier. He read something that felt like it was written for him, not broadcast at him.
-
-**Emotional state at end:** Loyal. Not in a gamified, points-collecting way. In the way that makes someone tell their friends about an artist.
+**What fan.html must do for each:**
+- For Priya: never treat her like a new user. The page should feel like it knows she's been around.
+- For Tom: never let him land on nothing. Cold-start is the make-or-break moment.
+- For Amara: make Close Circle feel like correspondence, not content.
 
 ---
 
-**What fan.html needs to do this journey justice:**
-- Close Circle section per supported artist in Following view
-- Dispatch items rendered as readable text within the app (not just a link to an email)
-- "You heard this N days early" indicator on release items for supporters
-- Membership duration displayed ("Supporting since [month]")
-- No like/comment on dispatches — this is a letter, not a post
-- Replay access to supporter livestreams (Phase 2+)
+## The questions fan.html must answer for each persona
+
+| Fan | Question | How fan.html answers |
+|---|---|---|
+| Priya | "Did Maya drop anything I should hear?" | Today strip, newest first, in Maya's accent colour |
+| Priya | "Am I going to miss the next show?" | Near me section, proactive tonight/this-week grouping |
+| Tom | "Is there anything worth coming back for?" | Cold-start suggestions, pre-release countdown, cold honest empty states |
+| Tom | "Who else sounds like this?" | Connected filter in Discover, "produced by" reason strings |
+| Amara | "What did Margot send to the close circle?" | Close Circle dispatch section, full-text reading experience |
+| Amara | "Did I get early access to this release?" | "You heard this N days early" quiet label on release items |
 
 ---
 
-## Cross-journey observations
+## What fan.html fails at today (honest assessment)
 
-**What all 4 journeys share:**
-1. The fan knows exactly why they are here — they followed artists they chose
-2. The information is timely and specific — no generic recommendations
-3. The action (tap to artist profile, tap to ticket) is one step
-4. The fan leaves feeling like something real happened, not like they "consumed content"
+**For Priya:** The first arrival from sign-up carries no context about the artist she just followed. She lands on a page that doesn't know Maya brought her here. The cold-start moment is wasted.
 
-**What none of the journeys include:**
-- Scrolling endlessly
-- Being shown content from artists they didn't choose
-- Being asked to share or refer friends (patronising)
-- Being shown their follower count or "fan rank"
-- Having their data sold or their behaviour used to show them ads
+**For Tom:** The empty state when there's nothing new from his one followed artist is a blank wall. There is no cold-start suggestion row. There is no "Because you follow Tendai —" discovery path. He has the highest probability of leaving and not returning.
 
-**The gap between current fan.html and these journeys:**
-- Journey 1 requires cold-start implementation and real data
-- Journey 2 requires real data and better empty/caught-up states
-- Journey 3 requires "Tonight" gig mode surfacing in feed and post-show state handling
-- Journey 4 requires Close Circle section entirely — it doesn't exist yet
+**For Amara:** Close Circle doesn't exist on fan.html. There is no dispatch section, no "you heard this early" label, no Close Circle copy. The most important fan on the platform — the one paying £5/month directly to the artist — has no dedicated experience.
 
-All four journeys are achievable. None require features beyond what V8_BUILD_AUTHORITY.md specifies. They are the design target.
+All three gaps are addressable. All three are in the roadmap. The design is ready. The copy is written. It needs to be built.
