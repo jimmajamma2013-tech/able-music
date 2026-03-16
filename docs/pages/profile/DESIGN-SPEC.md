@@ -813,13 +813,29 @@ Each show card (`.show-item`) is a 3-column flex layout:
 
 ### 6.12 Recommendations
 
-`.recs-section` — editorial minimal list.
+> **Canonical doctrine:** `docs/systems/freelancer-auth/ARTIST-PROFILE-RECOMMENDATIONS-DOCTRINE.md` and `docs/systems/freelancer-auth/ORDERING-AND-VISIBILITY-DOCTRINE.md` are the authoritative specs. The notes below summarise only the display layer.
 
-Each item (`.rec-item`):
-- Avatar (48×48, `border-radius: var(--r-sm)`) + name + genre + arrow
+`.recs-section` — editorial minimal list, max `visibleCount` items (default 4) from the artist's pool.
+
+**Two card types:**
+
+**Artist card (`.rec-item--artist`):**
+- Avatar (48×48, `border-radius: var(--r-sm)`) + name + optional genre label + arrow
 - Hover: `background: rgba(--color-accent-rgb, 0.05)`, name turns accent, arrow translates 3px
 
-**Section header:** "Artists I believe in" (artist-overridable). This must feel like a personal curation, not an algorithm.
+**Professional card (`.rec-item--professional`):**
+- No avatar — role chip instead (`font-size:9px`, `letter-spacing:.12em`, accent tint pill)
+- Name + ✓ mark if `confirmedCredit: true` (10px, accent at 55% opacity) + context note + arrow
+
+**No-profile state (`.rec-item--no-profile`):** 70% opacity, no link, no arrow. Applies when `handle` is null.
+
+**Section heading:** Campaign-state aware, artist-overridable. Defaults per state:
+- `profile` / `after`: "Worth knowing"
+- `pre-release`: "Behind this one"
+- `live`: "Who made this"
+- `gig`: "Tonight's crew"
+
+This must feel like a personal curation, not an algorithm.
 
 ---
 

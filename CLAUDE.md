@@ -219,6 +219,9 @@ When backend is added:
 | `docs/systems/error-states/SPEC.md` | Network failure, corruption, recovery patterns |
 | `docs/systems/pwa/SPEC.md` | Manifest, service worker, installability |
 | `docs/systems/spotify-import/SPEC.md` | Prefetch, Netlify function, failure states |
+| `docs/systems/freelancer-auth/PRODUCT-DOCTRINE.md` | Professionals layer architecture — V1/V1.5/Phase2, copy, build order |
+| `docs/systems/freelancer-auth/ARTIST-PROFILE-RECOMMENDATIONS-DOCTRINE.md` | Recommendations system — pool model, two card types, campaign headings, data model |
+| `docs/systems/freelancer-auth/ORDERING-AND-VISIBILITY-DOCTRINE.md` | Ordering doctrine — three-tier model (pinned→contextual→flexible), visibility control |
 
 ### V6 core docs — product truth (not superseded)
 | File | What's in it |
