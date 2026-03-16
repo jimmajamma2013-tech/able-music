@@ -3861,6 +3861,38 @@
                   color var(--dur-fast) var(--ease-standard);
     }
 
+    /* Professional-type rec items — role chip replaces avatar */
+    .rec-item--professional .rec-item__avatar,
+    .rec-item--professional .rec-item__avatar-placeholder { display: none; }
+
+    .rec-item__role-chip {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 100px;
+      background: rgba(var(--color-accent-rgb, 224,82,66), 0.12);
+      color: var(--color-accent);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .rec-item__confirm-mark {
+      font-size: 10px;
+      color: var(--color-accent);
+      opacity: 0.55;
+      margin-left: 3px;
+    }
+
+    /* No-profile state — plain text, no link, reduced opacity */
+    .rec-item--no-profile {
+      opacity: 0.7;
+      pointer-events: none;
+      cursor: default;
+    }
+    .rec-item--no-profile .rec-item__arrow { display: none; }
+
     /* === FOOTER ================================================ */
     .profile-footer {
       padding: var(--sp-6) var(--sp-5) var(--sp-5);
@@ -8941,20 +8973,66 @@
 
     // --- Recommendations ---------------------------------------
 
+    // Migrate old recommendations array format to pool model
+    function migrateRecommendations(raw) {
+      if (!raw) return { pool: [], visibleCount: 4, headings: {} }
+      if (Array.isArray(raw)) {
+        // Old format: [{name, note, url, avatarUrl, ableHandle}]
+        return {
+          pool: raw.map((r, i) => ({
+            id: 'migrated_' + i,
+            type: 'artist',
+            name: r.name || '',
+            handle: r.ableHandle || null,
+            genre: r.note || '',
+            artworkUrl: r.avatarUrl || null,
+            context: '',
+            confirmedCredit: false,
+            pinnedFor: [],
+            addedAt: Date.now(),
+          })),
+          visibleCount: 4,
+          headings: {},
+        }
+      }
+      // Already pool format
+      return raw
+    }
+
+    const REC_HEADINGS = {
+      'profile':     'Worth knowing',
+      'pre-release': 'Behind this one',
+      'live':        'Who made this',
+      'gig':         'Tonight\u2019s crew',
+      'after':       'Worth knowing',
+    }
+
     function renderRecommendations(profile) {
       const section = document.getElementById('recs-section')
-      const list = document.getElementById('recs-list')
+      const list    = document.getElementById('recs-list')
+      const heading = document.getElementById('recs-heading')
       if (!section || !list) return
 
-      const recs = (profile.recommendations || []).slice(0, 5)
-      if (!recs.length) {
+      const recsData    = migrateRecommendations(profile.recommendations)
+      const pool        = recsData.pool || []
+      const visibleCount = recsData.visibleCount || 4
+      const state       = computeState(profile)
+      const customHeading = (recsData.headings || {})[state]
+
+      // Set section heading
+      if (heading) heading.textContent = customHeading || REC_HEADINGS[state] || 'Worth knowing'
+
+      // Sort: pinned-for-current-state first (in pool order), then unpinned (in pool order)
+      const pinned   = pool.filter(r => Array.isArray(r.pinnedFor) && r.pinnedFor.includes(state))
+      const unpinned = pool.filter(r => !Array.isArray(r.pinnedFor) || !r.pinnedFor.includes(state))
+      const sorted   = [...pinned, ...unpinned].slice(0, visibleCount)
+
+      if (!sorted.length) {
         if (getIsOwner(profile)) {
           list.innerHTML = `<div class="section-empty">
-            <div class="section-empty__circle" aria-hidden="true">🎵</div>
             <p class="section-empty__eyebrow">Only you can see this</p>
-            <p class="section-empty__headline">Recommend other artists.</p>
-            <p class="section-empty__sub">Artists you rate. Fans who love you will find them here.</p>
-            <a class="section-empty__action pressable" href="admin.html">Add recommendations →</a>
+            <p class="section-empty__headline">Your world. Add the people around your music.</p>
+            <a class="section-empty__action pressable" href="admin.html">Manage in admin \u2192</a>
           </div>`
           section.hidden = false
         }
@@ -8962,26 +9040,58 @@
       }
 
       list.innerHTML = ''
-      recs.forEach(rec => {
-        const el = document.createElement('li')
-        const href = rec.url || (rec.ableHandle ? `https://ablemusic.co/${rec.ableHandle}` : null)
+      sorted.forEach(rec => {
+        const isProfessional = rec.type === 'professional'
+        const hasProfile = !!(rec.handle)
+        const href = hasProfile ? `able-v7.html?artist=${encodeURIComponent(rec.handle)}` : null
+        const safeHref = href && isSafeUrl ? (isSafeUrl(href) ? escHtml(href) : '') : escHtml(href || '')
 
-        const safeHref = href && isSafeUrl(href) ? escHtml(href) : ''
+        const el = document.createElement('li')
+
+        // Artist-type: artwork or placeholder initial
+        const artistVisual = isProfessional ? '' : (
+          rec.artworkUrl
+            ? `<img class="rec-item__avatar" src="${escHtml(rec.artworkUrl)}" alt="" loading="lazy" width="48" height="48">`
+            : `<div class="rec-item__avatar-placeholder" aria-hidden="true">${escHtml((rec.name || '?').charAt(0).toUpperCase())}</div>`
+        )
+
+        // Professional-type: role chip
+        const roleChip = isProfessional && rec.role
+          ? `<span class="rec-item__role-chip">${escHtml(rec.role)}</span>`
+          : ''
+
+        // Confirmed credit mark
+        const confirmMark = rec.confirmedCredit
+          ? `<span class="rec-item__confirm-mark" aria-label="Confirmed credit">\u2713</span>`
+          : ''
+
+        // Sub-line: genre (artist) or context (professional)
+        const subText = isProfessional
+          ? (rec.context ? `<p class="rec-item__note">${escHtml(rec.context)}</p>` : '')
+          : (rec.genre   ? `<p class="rec-item__note">${escHtml(rec.genre)}</p>` : '')
+
+        const itemClass = [
+          'rec-item pressable',
+          isProfessional ? 'rec-item--professional' : 'rec-item--artist',
+          !hasProfile    ? 'rec-item--no-profile'   : '',
+        ].filter(Boolean).join(' ')
+
+        const tag = safeHref ? 'a' : 'span'
+        const linkAttrs = safeHref
+          ? `href="${safeHref}" target="_blank" rel="noopener noreferrer"`
+          : ''
+
         el.innerHTML = `
-          <a class="rec-item pressable"
-             ${safeHref ? `href="${safeHref}" target="_blank" rel="noopener noreferrer"` : ''}
-             aria-label="${escHtml(rec.name)}${rec.note ? ` — ${escHtml(rec.note)}` : ''}">
-            ${rec.avatarUrl
-              ? `<img class="rec-item__avatar" src="${escHtml(rec.avatarUrl)}"
-                      alt="${escHtml(rec.name)}" loading="lazy" width="44" height="44">`
-              : `<div class="rec-item__avatar-placeholder" aria-hidden="true">🎵</div>`
-            }
+          <${tag} class="${itemClass}" ${linkAttrs}
+             aria-label="${escHtml(rec.name)}${rec.role ? ', ' + escHtml(rec.role) : ''}">
+            ${artistVisual}
+            ${roleChip}
             <div class="rec-item__info">
-              <p class="rec-item__name">${escHtml(rec.name)}</p>
-              ${rec.note ? `<p class="rec-item__note">${escHtml(rec.note)}</p>` : ''}
+              <p class="rec-item__name">${escHtml(rec.name)}${confirmMark}</p>
+              ${subText}
             </div>
-            ${safeHref ? `<span class="rec-item__arrow" aria-hidden="true">↗</span>` : ''}
-          </a>
+            ${safeHref ? `<span class="rec-item__arrow" aria-hidden="true">\u2197</span>` : ''}
+          </${tag}>
         `
         list.appendChild(el)
       })

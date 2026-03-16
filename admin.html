@@ -350,6 +350,44 @@ body::before {
 .ci-btn-connect:hover { background:rgba(var(--acc-rgb),.22); }
 .ci-btn-connected { background:rgba(120,200,138,.1); color:#7ec88a; border:1px solid rgba(120,200,138,.25); cursor:default; }
 
+/* ── YOUR WORLD — recommendations management ── */
+.recs-count-btn {
+  padding:5px 12px; border-radius:8px; font-size:12px; font-weight:600;
+  font-family:var(--font); cursor:pointer; transition:all .14s;
+  border:1px solid var(--dash-border); background:var(--dash-card); color:var(--dash-t2);
+}
+.recs-count-btn.active { background:rgba(var(--acc-rgb),.12); color:var(--acc); border-color:rgba(var(--acc-rgb),.3); }
+.recs-type-btn {
+  padding:5px 14px; border-radius:8px; font-size:12px; font-weight:600;
+  font-family:var(--font); cursor:pointer; transition:all .14s;
+  border:1px solid var(--dash-border); background:var(--dash-card); color:var(--dash-t2);
+}
+.recs-type-btn.active { background:rgba(var(--acc-rgb),.12); color:var(--acc); border-color:rgba(var(--acc-rgb),.3); }
+.recs-pool-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px; border-radius:10px;
+  background:var(--dash-card); border:1px solid var(--dash-border);
+}
+.recs-pool-item__type {
+  font-size:8px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  padding:2px 7px; border-radius:100px;
+  background:rgba(var(--acc-rgb),.1); color:var(--acc); flex-shrink:0;
+}
+.recs-pool-item__name { font-size:13px; font-weight:600; color:var(--dash-text); flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.recs-pool-item__handle { font-size:10px; color:var(--dash-t3); }
+.recs-pool-item__remove {
+  background:none; border:none; cursor:pointer; font-size:14px;
+  color:var(--dash-t3); padding:2px 6px; border-radius:6px;
+  transition:color .14s; font-family:var(--font); flex-shrink:0;
+}
+.recs-pool-item__remove:hover { color:#ef4444; }
+.recs-pool-item__move {
+  background:none; border:none; cursor:pointer; font-size:14px;
+  color:var(--dash-t3); padding:2px 4px; border-radius:6px;
+  transition:color .14s; flex-shrink:0;
+}
+.recs-pool-item__move:hover { color:var(--dash-text); }
+
 /* ── SNAP CARDS EDITOR ── */
 .snap-list { display:flex; flex-direction:column; gap:8px; }
 .snap-item {
@@ -2481,6 +2519,56 @@ body::before {
             <button class="ci-btn ci-btn-connect" onclick="downloadQR()" style="width:100%;">Download PNG</button>
           </div>
         </div>
+
+        <!-- ── YOUR WORLD — recommendations management ── -->
+        <div class="dash-card" id="yourWorldCard" style="margin-top:16px;">
+          <div class="dc-head">
+            <div class="dc-title">Your world</div>
+            <div style="font-size:11px;color:var(--dash-t3);font-weight:400;">Artists you rate. People you work with.</div>
+          </div>
+          <div style="padding:16px 18px;">
+
+            <!-- Visible count + section heading controls -->
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+              <div>
+                <div class="field-label" style="margin-bottom:6px;">Show at once</div>
+                <div style="display:flex;gap:6px;" id="recsVisibleCountBtns">
+                  <button class="recs-count-btn" data-count="3" onclick="setRecsVisibleCount(3)">3</button>
+                  <button class="recs-count-btn" data-count="4" onclick="setRecsVisibleCount(4)">4</button>
+                  <button class="recs-count-btn" data-count="5" onclick="setRecsVisibleCount(5)">5</button>
+                  <button class="recs-count-btn" data-count="6" onclick="setRecsVisibleCount(6)">6</button>
+                </div>
+              </div>
+              <div style="flex:1;min-width:160px;">
+                <div class="field-label" style="margin-bottom:6px;">Section heading <span style="font-weight:400;opacity:.6;">(optional)</span></div>
+                <input class="field-input" id="recsHeadingInput" type="text" placeholder="Worth knowing" maxlength="40"
+                  oninput="saveRecsHeading(this.value)" style="font-size:12px;">
+              </div>
+            </div>
+
+            <!-- Pool list -->
+            <div id="recsPoolList" style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px;"></div>
+
+            <!-- Add item -->
+            <div style="border:1px dashed var(--dash-border);border-radius:10px;padding:14px 16px;">
+              <div class="field-label" style="margin-bottom:10px;">Add someone</div>
+              <div style="display:flex;gap:8px;margin-bottom:10px;">
+                <button class="recs-type-btn active" data-type="artist" onclick="setRecsAddType('artist')">Artist</button>
+                <button class="recs-type-btn" data-type="professional" onclick="setRecsAddType('professional')">Professional</button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <input class="field-input" id="recsAddName" type="text" placeholder="Name" maxlength="60" style="font-size:13px;">
+                <input class="field-input" id="recsAddHandle" type="text" placeholder="ABLE handle (optional — links to their profile)" maxlength="60" style="font-size:13px;">
+                <input class="field-input" id="recsAddRole" type="text" placeholder="Role (e.g. Production, Mixing)" maxlength="40" style="font-size:13px;display:none;">
+                <input class="field-input" id="recsAddGenre" type="text" placeholder="Genre / description (optional)" maxlength="40" style="font-size:13px;">
+                <input class="field-input" id="recsAddContext" type="text" placeholder="One line about them (optional)" maxlength="60" style="font-size:13px;">
+                <button class="ci-btn ci-btn-connect" onclick="addRecsItem()" style="align-self:flex-start;padding:8px 16px;">Add \u2192</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -5483,6 +5571,10 @@ window.addEventListener('DOMContentLoaded', () => {
   // Wire profile page Save button
   wireProfileSave();
 
+  // Your World recommendations panel
+  renderRecsAdmin();
+  setRecsAddType('artist');
+
   // Your World moments panel
   ywInit(v3data);
 
@@ -5743,6 +5835,156 @@ function aiSuggestCta() {
     'aiCtaSuggestions', 'aiCtaBtn',
     'var el=document.getElementById("adminCtaPrimaryLabel");if(el){el.value=this.suggestion;el.dispatchEvent(new Event("input"));}saveProfilePage();'
   );
+}
+
+/* ── YOUR WORLD — recommendations management ── */
+
+let _recsAddType = 'artist';
+
+function migrateRecsData(raw) {
+  if (!raw) return { pool: [], visibleCount: 4, headings: {} };
+  if (Array.isArray(raw)) {
+    return {
+      pool: raw.map((r, i) => ({
+        id: 'migrated_' + i,
+        type: 'artist',
+        name: r.name || '',
+        handle: r.ableHandle || null,
+        genre: r.note || '',
+        artworkUrl: r.avatarUrl || null,
+        context: '',
+        confirmedCredit: false,
+        pinnedFor: [],
+        addedAt: Date.now(),
+      })),
+      visibleCount: 4,
+      headings: {},
+    };
+  }
+  return raw;
+}
+
+function getRecsData() {
+  const profile = safeLS(V3_KEY, {});
+  return migrateRecsData(profile.recommendations);
+}
+
+function saveRecsData(recsData) {
+  const profile = safeLS(V3_KEY, {});
+  profile.recommendations = recsData;
+  setLS(V3_KEY, profile);
+}
+
+function setRecsAddType(type) {
+  _recsAddType = type;
+  document.querySelectorAll('.recs-type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
+  const roleInput  = document.getElementById('recsAddRole');
+  const genreInput = document.getElementById('recsAddGenre');
+  if (roleInput)  roleInput.style.display  = type === 'professional' ? '' : 'none';
+  if (genreInput) genreInput.placeholder   = type === 'professional' ? 'Genre focus (optional)' : 'Genre / description (optional)';
+}
+
+function setRecsVisibleCount(n) {
+  const recsData = getRecsData();
+  recsData.visibleCount = n;
+  saveRecsData(recsData);
+  document.querySelectorAll('.recs-count-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.count) === n));
+}
+
+function saveRecsHeading(val) {
+  const recsData = getRecsData();
+  if (!recsData.headings) recsData.headings = {};
+  recsData.headings['profile'] = val || null;
+  saveRecsData(recsData);
+}
+
+function addRecsItem() {
+  const name    = (document.getElementById('recsAddName')?.value || '').trim();
+  if (!name) return;
+  const handle  = (document.getElementById('recsAddHandle')?.value || '').trim().replace(/^@/, '') || null;
+  const role    = (document.getElementById('recsAddRole')?.value  || '').trim() || null;
+  const genre   = (document.getElementById('recsAddGenre')?.value || '').trim() || null;
+  const context = (document.getElementById('recsAddContext')?.value || '').trim() || '';
+
+  const recsData = getRecsData();
+  recsData.pool.push({
+    id: 'rec_' + Date.now(),
+    type: _recsAddType,
+    name, handle,
+    role:  _recsAddType === 'professional' ? (role || '') : null,
+    genre: genre || '',
+    artworkUrl: null,
+    context,
+    confirmedCredit: false,
+    pinnedFor: [],
+    addedAt: Date.now(),
+  });
+  saveRecsData(recsData);
+
+  ['recsAddName','recsAddHandle','recsAddRole','recsAddGenre','recsAddContext'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  renderRecsAdmin();
+}
+
+function removeRecsItem(id) {
+  const recsData = getRecsData();
+  recsData.pool = recsData.pool.filter(r => r.id !== id);
+  saveRecsData(recsData);
+  renderRecsAdmin();
+}
+
+function moveRecsItem(id, dir) {
+  const recsData = getRecsData();
+  const idx = recsData.pool.findIndex(r => r.id === id);
+  if (idx === -1) return;
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= recsData.pool.length) return;
+  const tmp = recsData.pool[idx];
+  recsData.pool[idx] = recsData.pool[newIdx];
+  recsData.pool[newIdx] = tmp;
+  saveRecsData(recsData);
+  renderRecsAdmin();
+}
+
+function renderRecsAdmin() {
+  const recsData = getRecsData();
+  const pool = recsData.pool || [];
+  const list = document.getElementById('recsPoolList');
+  if (!list) return;
+
+  // Update count buttons
+  document.querySelectorAll('.recs-count-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.count) === (recsData.visibleCount || 4));
+  });
+
+  // Update heading input
+  const headingInput = document.getElementById('recsHeadingInput');
+  if (headingInput && !headingInput.value) {
+    headingInput.value = (recsData.headings || {})['profile'] || '';
+    headingInput.placeholder = 'Worth knowing';
+  }
+
+  if (!pool.length) {
+    list.innerHTML = '<p style="font-size:12px;color:var(--dash-t3);padding:4px 0;">Nothing added yet. Use the form below.</p>';
+    return;
+  }
+
+  list.innerHTML = pool.map((r, i) => `
+    <div class="recs-pool-item">
+      <span class="recs-pool-item__type">${r.type === 'professional' ? r.role || 'Pro' : 'Artist'}</span>
+      <div style="flex:1;min-width:0;">
+        <div class="recs-pool-item__name">${escHtml(r.name)}</div>
+        ${r.handle ? `<div class="recs-pool-item__handle">ablemusic.co/${escHtml(r.handle)}</div>` : '<div class="recs-pool-item__handle" style="opacity:.5;">No ABLE profile yet</div>'}
+      </div>
+      <div style="display:flex;gap:2px;align-items:center;">
+        ${i > 0 ? `<button class="recs-pool-item__move" onclick="moveRecsItem('${escHtml(r.id)}', -1)" title="Move up">\u2191</button>` : ''}
+        ${i < pool.length - 1 ? `<button class="recs-pool-item__move" onclick="moveRecsItem('${escHtml(r.id)}', 1)" title="Move down">\u2193</button>` : ''}
+        <button class="recs-pool-item__remove" onclick="removeRecsItem('${escHtml(r.id)}')" title="Remove">\u00d7</button>
+      </div>
+    </div>
+  `).join('');
 }
 
 function saveProfilePage() {
