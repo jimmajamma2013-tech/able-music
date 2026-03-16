@@ -1,129 +1,321 @@
 # ABLE — PWA / Installability: Path to 10
-**Created: 2026-03-16 | Current: 2/10 | Spec-complete target: 8.5/10**
+**Created: 2026-03-16 | Updated: 2026-03-16 | Current: 2/10 | Spec-complete target: 8.5/10**
+
+> This is a copy-paste implementation guide. Every code block is ready to use. The spec is done — this PATH-TO-10 is the literal checklist to get from 0 to deployed.
 
 ---
 
-## P0 — Manifest + iOS meta tags
-
+## P0 — Manifest + iOS meta tags (2 → 5/10)
 **Effort: 30 minutes**
-**Impact: 2 → 5/10**
 
 These are static file additions. No JavaScript. No service worker. Just files and `<head>` tags.
 
-### P0.1 — Create manifest.json
+---
 
-Create `/manifest.json` per SPEC.md File 1. No decisions to make — the spec is complete.
+### P0.1 — Create `site.webmanifest`
 
-Required supporting work:
+**File location:** `/manifest.json` (project root — served at `https://ablemusic.co/manifest.json`)
+
+**Complete JSON — copy-paste ready:**
+
+```json
+{
+  "name": "ABLE",
+  "short_name": "ABLE",
+  "description": "Your artists. All in one place.",
+  "start_url": "/fan.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0e1a",
+  "theme_color": "#0d0e1a",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["music", "entertainment"],
+  "screenshots": [
+    {
+      "src": "/screenshots/fan-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
+}
+```
+
+**Notes:**
+- `theme_color: "#0d0e1a"` — Midnight Navy matches ABLE's dark background
+- `display: "standalone"` — no browser chrome when launched from home screen
+- `purpose: "any maskable"` — required for Android adaptive icon safe-zone support
+- `screenshots` is optional but improves the install prompt on Chrome Android — add when fan-home screenshot is available
+
+**Icons required:**
 - Create `/icons/` directory
-- Export ABLE logo as `icon-192.png` (192×192 PNG, maskable — content in 80% safe zone circle)
-- Export ABLE logo as `icon-512.png` (512×512 PNG, maskable)
-- Use the existing `able-logo-instagram.svg` as source, adapt to square format
-
-**Test (P0.1):**
-- Open fan.html in Chrome
-- Open DevTools → Application → Manifest
-- Confirm manifest parses with no errors
-- Confirm all icon paths resolve (200 OK)
+- Export `able-logo-instagram.svg` as `icon-192.png` (192×192, square, content in 80% safe zone circle)
+- Export `able-logo-instagram.svg` as `icon-512.png` (512×512, same rules)
+- The icon must work on dark AND light backgrounds (the maskable safe zone is painted in the OS's adaptive colour)
 
 ---
 
-### P0.2 — Add iOS meta tags to fan.html
+### P0.2 — `<link rel="manifest">` tag
 
-Add the block from SPEC.md File 2 to fan.html `<head>`.
+**Add to `<head>` of each file listed:**
 
-Also add to able-v7.html for consistency (fans may arrive directly at the artist page and add to home screen from there).
+```html
+<link rel="manifest" href="/manifest.json">
+```
 
-Add `env(safe-area-inset-top)` padding to fan.html body for `black-translucent` status bar.
-
-**Test (P0.2):**
-- On a real iPhone or iOS Simulator: open fan.html in Safari
-- Tap Share → "Add to Home Screen"
-- Confirm: app name shows "ABLE", icon shows ABLE logo (not a screenshot)
-- Confirm: opens in standalone mode (no browser chrome)
-- Confirm: status bar is translucent over page content
+Files to add this to: `fan.html`, `able-v7.html`, `landing.html`
 
 ---
 
-## P1 — Service worker + add to home screen prompt
+### P0.3 — iOS meta tags for Add to Home Screen
 
+**Add to `<head>` of `fan.html` (required) and `able-v7.html` (recommended):**
+
+```html
+<!-- PWA: iOS standalone mode -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ABLE">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+<!-- Theme colour (also for Android Chrome toolbar) -->
+<meta name="theme-color" content="#0d0e1a">
+```
+
+**`black-translucent` status bar:** The page content extends behind the iOS status bar. Add this CSS to `fan.html` to prevent content hiding behind the clock:
+
+```css
+@supports (padding-top: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+```
+
+**Why `black-translucent`:** fan.html has a `#0d0e1a` background. The translucent status bar lets the dark page bleed through, making the install look intentional rather than bolted on.
+
+---
+
+**Test P0:**
+- Open fan.html in Chrome DevTools → Application → Manifest → confirm parses with no errors, all icon paths resolve
+- On real iPhone or iOS Simulator: Safari → Share → "Add to Home Screen" → confirm name shows "ABLE", icon shows ABLE logo (not a screenshot), opens in standalone mode
+
+**Score after P0: 5/10**
+
+---
+
+## P1 — Service worker + add to home screen prompt (5 → 8.5/10)
 **Effort: 3–4 hours**
-**Impact: 5 → 8/10**
 
-### P1.1 — Create and register sw.js
+---
 
-Create `/sw.js` per SPEC.md File 3.
+### P1.1 — Service worker registration (3 lines)
 
-Register in fan.html and able-v7.html per SPEC.md registration snippet.
+**Add to the bottom of `fan.html` and `able-v7.html`, before `</body>`:**
 
-**Deployment note:** Service workers require HTTPS. On local development (`file://` or `http://localhost`), they work on `localhost` only. Netlify deploy (even a preview URL) uses HTTPS — service worker will function correctly in any Netlify preview.
+```html
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('[ABLE] SW registered:', reg.scope))
+        .catch(err => console.warn('[ABLE] SW registration failed:', err));
+    });
+  }
+</script>
+```
 
-**Test (P1.1):**
-- Open fan.html in Chrome (must be served over HTTP, not file://)
+That is the complete registration. Three functional lines.
+
+**Deployment note:** Service workers require HTTPS. They work on `localhost` for development. Any Netlify preview URL uses HTTPS — the service worker will function correctly in preview deploys.
+
+---
+
+### P1.2 — Create `sw.js` (minimal service worker for offline support)
+
+**File location:** `/sw.js` (project root — service workers are scoped to their directory)
+
+**Complete `sw.js` — copy-paste ready:**
+
+```javascript
+/**
+ * ABLE Service Worker
+ *
+ * Strategies:
+ *   Static assets (icons, manifest): cache-first
+ *   HTML pages (fan.html, able-v7.html): network-first, cache fallback
+ *   API calls (Netlify functions, Supabase): network-only (pass through)
+ *
+ * To deploy updates: bump CACHE_VERSION. Activate handler deletes old caches.
+ */
+
+const CACHE_VERSION   = 'able-v1';
+const STATIC_CACHE    = `${CACHE_VERSION}-static`;
+const PAGE_CACHE      = `${CACHE_VERSION}-pages`;
+
+// Pre-cache on install — these are fetched and stored before SW activates
+const PRECACHE_ASSETS = [
+  '/fan.html',
+  '/able-v7.html',
+  '/manifest.json',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+];
+
+// ---- Install: pre-cache shell ----
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(STATIC_CACHE)
+      .then(cache => cache.addAll(PRECACHE_ASSETS))
+      .then(() => self.skipWaiting()) // activate immediately, don't wait for tab close
+  );
+});
+
+// ---- Activate: delete old cache versions ----
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(
+        keys
+          .filter(key => key !== STATIC_CACHE && key !== PAGE_CACHE)
+          .map(key => caches.delete(key))
+      ))
+      .then(() => self.clients.claim()) // take control of all open tabs immediately
+  );
+});
+
+// ---- Fetch: routing strategy ----
+self.addEventListener('fetch', event => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // Only intercept same-origin requests — pass through all external calls
+  // (Supabase, Google Fonts, Netlify functions, PostHog) unmodified
+  if (url.origin !== self.location.origin) return;
+
+  // Network-only for Netlify function API calls
+  if (url.pathname.startsWith('/.netlify/')) return;
+
+  // HTML pages: network-first (always try to get latest content first)
+  if (request.headers.get('Accept')?.includes('text/html')) {
+    event.respondWith(networkFirstWithFallback(request));
+    return;
+  }
+
+  // Everything else (icons, manifest, images): cache-first
+  event.respondWith(cacheFirst(request));
+});
+
+// Network-first: try network, update cache, fall back to cache or offline page
+async function networkFirstWithFallback(request) {
+  try {
+    const networkResponse = await fetch(request);
+    const cache = await caches.open(PAGE_CACHE);
+    cache.put(request, networkResponse.clone()); // update cache in background
+    return networkResponse;
+  } catch (err) {
+    const cachedResponse = await caches.match(request);
+    if (cachedResponse) return cachedResponse;
+
+    // Last resort: fan.html as offline fallback for any HTML request
+    // fan.html detects navigator.onLine and shows the offline banner
+    const fallback = await caches.match('/fan.html');
+    if (fallback) return fallback;
+
+    return new Response('<h1 style="font-family:sans-serif;padding:2rem">No connection</h1>', {
+      headers: { 'Content-Type': 'text/html' }
+    });
+  }
+}
+
+// Cache-first: serve from cache if available, else fetch and cache
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+
+  try {
+    const networkResponse = await fetch(request);
+    const cache = await caches.open(STATIC_CACHE);
+    cache.put(request, networkResponse.clone());
+    return networkResponse;
+  } catch (err) {
+    return new Response('', { status: 408, statusText: 'Request Timeout' });
+  }
+}
+```
+
+**To deploy updates:** Change `CACHE_VERSION` from `'able-v1'` to `'able-v2'`. The activate handler automatically deletes old caches. Users receive fresh content on their next visit.
+
+---
+
+### P1.3 — Add to Home Screen prompt (fan.html only)
+
+The install prompt belongs on `fan.html` only. Fans are the install audience. Artists access admin by bookmark — they don't need a prompt.
+
+See SPEC.md File 4 for the complete JavaScript (the `beforeinstallprompt` capture, `maybeShowInstallHint()`, `triggerInstall()`, `dismissInstallHint()`, iOS-specific hint variant) and the full CSS block.
+
+**The trigger condition:** Show after 3 visits, never show again if dismissed or already installed.
+
+---
+
+### P1.4 — Offline indicator in fan.html
+
+See SPEC.md File 4 (offline indicator section) for the complete `initOfflineIndicator()` function and `.offline-banner` CSS.
+
+Call `initOfflineIndicator()` from `fan.html` DOMContentLoaded.
+
+---
+
+**Test P1:**
+- Open fan.html in Chrome (served over HTTP, not `file://`)
 - DevTools → Application → Service Workers → confirm registered
-- Load the page, then toggle Network to "Offline"
-- Reload page — expect: fan.html serves from cache, not browser offline screen
-- Update `CACHE_VERSION` to `'able-v2'` → reload → confirm old caches cleared
+- Load page, toggle Network to "Offline", reload → page serves from cache (no browser error screen)
+- Update `CACHE_VERSION` to `'able-v2'`, reload → old caches cleared, new content served
 
 **Test matrix:**
 - [ ] SW registers without errors on fan.html
 - [ ] SW registers without errors on able-v7.html
 - [ ] Offline reload: fan.html serves from cache
 - [ ] Offline reload: able-v7.html serves from cache
-- [ ] After CACHE_VERSION bump: old caches deleted, new content served
+- [ ] CACHE_VERSION bump: old caches deleted, new content served
+- [ ] After install accepted: "ABLE added to your home screen." toast shown
+- [ ] After dismiss: hint never shown again
+
+**Score after P1: 8.5/10**
 
 ---
 
-### P1.2 — Add to home screen prompt (fan.html)
-
-Implement the JavaScript from SPEC.md File 4 in fan.html.
-
-Add the iOS-specific hint variant.
-
-**Do not implement for admin.html or able-v7.html.** The prompt is for fans building a habit. Artists access admin via bookmark or typing the URL — they don't need a prompt.
-
-**Test (P1.2):**
-- Simulate 3 visits: set `localStorage.setItem('able_fan_visits', '2')` in console, reload
-- On Chrome Android / devtools mobile: `beforeinstallprompt` should fire, hint should slide up after 2s
-- Tap "Add": browser install prompt appears
-- On "accepted": "ABLE added to your home screen." toast, hint removed
-- Tap ✕: hint dismissed, never reappears
-- On iOS Safari: share sheet hint shown (different copy/UI) after 3 visits
-
----
-
-## P2 — Background sync + push notifications
-
-**Effort: 6–8 hours**
-**Impact: 8 → 9/10**
-**Dependency: Supabase backend (not yet built)**
+## P2 — Background sync + push notifications (8.5 → 9/10)
+**Effort: 6–8 hours | Dependency: Supabase backend (not yet built)**
 
 ### P2.1 — Background sync for new releases
 
-When a followed artist publishes a new release, fan.html should update without the fan opening the app.
-
-Implementation requires:
-1. Supabase realtime subscription in sw.js (or periodic background sync)
-2. `BackgroundSync` API in sw.js for queued writes
-3. Badge API: `navigator.setAppBadge(count)` when there are new releases
-
-This is entirely dependent on the Supabase backend. Do not implement until Supabase is live.
-
----
+Requires Supabase realtime subscription in sw.js or periodic background sync. Do not implement until Supabase is live.
 
 ### P2.2 — Push notification opt-in
 
-After fan installs the app, offer push notification opt-in for: new releases from followed artists, show announcements, limited-time offers.
+After fan installs the app, offer push notification opt-in for new releases from followed artists.
 
 **Copy:**
-- Opt-in prompt: "Get notified when the artists you follow drop something." (no exclamation mark)
-- Permission request copy: follows browser-native — cannot customise
+- Opt-in prompt: "Get notified when the artists you follow drop something."
 - Notification title: "[Artist Name] just dropped [Release Title]"
 - Notification body: "Tap to stream."
 
-**iOS note:** Web Push on iOS requires iOS 16.4+ and the site installed as a PWA. This is the primary reason P0 (manifest + iOS meta tags) must come first.
-
-**Estimate:** 4 hours implementation + 2 hours testing across iOS/Android.
+**iOS note:** Web Push on iOS requires iOS 16.4+ and the site installed as a PWA. This is why P0 (manifest + iOS meta tags) must come first.
 
 ---
 
@@ -131,22 +323,23 @@ After fan installs the app, offer push notification opt-in for: new releases fro
 
 **10/10 requires:**
 
-1. **Lighthouse PWA audit at 100.** Open Chrome DevTools → Lighthouse → PWA. Currently: 0. After P0+P1: target 80+. 100 requires every PWA check to pass including HTTPS, valid manifest, service worker, maskable icons, and installability.
+1. **Lighthouse PWA audit at 100.** DevTools → Lighthouse → PWA. After P0+P1: target 80+. To reach 100: every check must pass including HTTPS, valid manifest, service worker, maskable icons, installability. One audit pass typically surfaces the remaining gaps.
 
-2. **Tested on real iOS Safari.** Devtools cannot simulate the full iOS PWA experience. Must test on a physical iPhone:
+2. **Tested on real iOS Safari.** Must test on a physical iPhone:
    - Add to Home Screen flow
-   - Standalone launch
-   - Status bar rendering
-   - iOS-specific install hint
+   - Standalone launch (no browser chrome)
+   - Status bar rendering with `black-translucent`
+   - iOS-specific install hint (share sheet instruction)
    - Service worker functioning under iOS WebKit
 
 3. **Tested on real Android Chrome.** Install flow, icon, standalone mode, `beforeinstallprompt` timing.
 
-4. **Push notification delivery.** End-to-end test: artist publishes release → fan receives push notification on locked screen within 60 seconds. This requires Supabase backend + P2.2 implementation.
+4. **Push notification delivery.** End-to-end: artist publishes release → fan receives push on locked screen within 60 seconds. Requires Supabase + P2.2.
 
-With P0+P1 complete: **8.5/10** (spec-complete).
-With Lighthouse 100 + real device testing: **9.5/10**.
-With push notifications working end-to-end: **10/10**.
+With manifest + service worker implemented: **7/10**
+With offline support + install prompt: **8.5/10**
+With 60fps on iOS confirmed + Lighthouse 100: **9/10**
+With push notifications working end-to-end: **10/10**
 
 ---
 
@@ -155,8 +348,8 @@ With push notifications working end-to-end: **10/10**.
 | Phase | Tasks | Effort | Score gain |
 |---|---|---|---|
 | P0 | manifest.json + iOS meta tags + icons | 30 min | 2 → 5 |
-| P1 | sw.js + install prompt (fan.html) | 3–4 hrs | 5 → 8.5 |
-| P2 | Background sync + push opt-in | 6–8 hrs + Supabase | 8.5 → 9.5 |
-| QA | Lighthouse 100 + real device testing | 2–3 hrs | 9.5 → 10 |
+| P1 | sw.js + service worker registration + install prompt | 3–4 hrs | 5 → 8.5 |
+| P2 | Background sync + push opt-in | 6–8 hrs + Supabase | 8.5 → 9 |
+| QA | Lighthouse 100 + real iOS + Android testing | 2–3 hrs | 9 → 10 |
 
-**P0 should happen immediately** — it's 30 minutes and unblocks P1. P1 can follow in a focused session. P2 waits for Supabase.
+**P0 should happen immediately** — it is 30 minutes, requires no JavaScript, and unblocks P1.
