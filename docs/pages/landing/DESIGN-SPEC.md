@@ -20,8 +20,8 @@
 --text:         #e8eaf2;    /* primary text */
 --text-2:       rgba(232,234,242,0.62);   /* secondary text */
 --text-3:       rgba(232,234,242,0.38);   /* muted / trust lines */
---accent:       #e05242;    /* primary accent — CTAs, highlights */
---accent-rgb:   224,82,66;
+--accent:       #c9a84c;    /* primary accent — landing gold (DOCTRINE.md §88) */
+--accent-rgb:   201,168,76;
 --border:       rgba(255,255,255,0.08);
 --border-mid:   rgba(255,255,255,0.14);
 
@@ -50,7 +50,7 @@
 <!-- Open Graph -->
 <meta property="og:title" content="ABLE — Your artist page, built for real fans">
 <meta property="og:description" content="Build your fan list. Own your relationship. Free forever.">
-<meta property="og:image" content="https://ablemusic.co/og-image.jpg">
+<meta property="og:image" content="https://ablemusic.co/assets/og/og-landing.png">
 <meta property="og:url" content="https://ablemusic.co">
 <meta property="og:type" content="website">
 
@@ -58,13 +58,13 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ABLE — Your artist page, built for real fans">
 <meta name="twitter:description" content="Your page shifts with your moment. Free forever.">
-<meta name="twitter:image" content="https://ablemusic.co/og-image.jpg">
+<meta name="twitter:image" content="https://ablemusic.co/assets/og/og-landing.png">
 
 <!-- Canonical -->
 <link rel="canonical" href="https://ablemusic.co">
 ```
 
-**OG image spec:** 1200×630px. Dark background `#09090f`. ABLE wordmark centred top-third. Demo phone (Profile state, Luna's page) right side. Tagline left: `Your page. Built for real fans.` in Barlow Condensed white. Export as `og-image.jpg`.
+**OG image:** Generated via Playwright at 1200×630px. Saved to `assets/og/og-landing.png`. Re-generate after major visual changes to the hero.
 
 ---
 
@@ -142,7 +142,7 @@ gap: 48px
 - Size: 11px
 - Letter-spacing: 0.2em
 - Text-transform: uppercase
-- Colour: `var(--accent)` `#e05242`
+- Colour: `var(--accent)` `#c9a84c`
 - Margin-bottom: 16px
 
 **Headline:**
@@ -164,7 +164,7 @@ gap: 48px
 
 **Primary CTA:**
 - Text: `Your page is free →`
-- Background: `var(--accent)` `#e05242`
+- Background: `var(--accent)` `#c9a84c`
 - Colour: white
 - Font: DM Sans 600, 17px
 - Height: 52px
@@ -172,7 +172,7 @@ gap: 48px
 - Border-radius: 12px
 - Border: none
 - Cursor: pointer
-- Hover: `filter: brightness(1.08)` + `transform: translate(-1px, -2px)` + `box-shadow: 0 8px 28px rgba(224,82,66,0.38)`
+- Hover: `filter: brightness(1.08)` + `transform: translate(-1px, -2px)` + `box-shadow: 0 8px 28px rgba(201,168,76,0.38)`
 - Hover transition: `all 200ms var(--ease-spring)`
 - Active: `transform: translate(0, 0)` + shadow reduces
 - Mobile: `width: calc(100% - 0px)` full-width
@@ -615,8 +615,8 @@ Icon area:
 ```css
 .step-icon {
   width: 48px; height: 48px;
-  background: rgba(224,82,66,0.12);
-  border: 1px solid rgba(224,82,66,0.25);
+  background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.25);
   border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 20px;
@@ -673,8 +673,8 @@ margin: 56px auto 0
   gap: 0;
 }
 .tier-card.featured {  /* Free tier */
-  border-color: rgba(224,82,66,0.35);
-  background: rgba(224,82,66,0.06);
+  border-color: rgba(201,168,76,0.35);
+  background: rgba(201,168,76,0.06);
 }
 ```
 
