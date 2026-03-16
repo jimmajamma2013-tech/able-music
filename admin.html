@@ -2126,7 +2126,7 @@ body::before {
 
     <!-- Upgrade nudge — shown for free tier, positioned after Campaign HQ -->
     <div class="upgrade-bar" id="upgradeBar">
-      <div class="upgrade-bar-text"><strong>Free plan.</strong> Broadcasts, full analytics, and deeper fan insight when you're ready.</div>
+      <div class="upgrade-bar-text" id="upgradeBarText"><strong>Free plan.</strong> Broadcasts, full analytics, and deeper fan insight when you're ready.</div>
       <button class="upgrade-bar-btn" onclick="showPage('settings')">See what's included →</button>
       <button class="upgrade-bar-dismiss" onclick="dismissUpgradeBar()" aria-label="Dismiss">×</button>
     </div>
@@ -5264,6 +5264,83 @@ function removeMoment(id) {
   } catch(e) { /* silent — never break on migration */ }
 })();
 
+/* ── GREETING SYSTEM (§5.2) ── */
+function countFansAfterTimestamp(ts) {
+  return safeLS(FANS_KEY, []).filter(f => (f.ts || 0) > ts).length;
+}
+
+function buildGreetingSub(profile) {
+  const now = Date.now();
+  const releaseDate = profile.releaseDate ? new Date(profile.releaseDate).getTime() : null;
+  const gigExpires = parseInt(localStorage.getItem('able_gig_expires') || '0');
+  const LIVE_WINDOW = 14 * 24 * 60 * 60 * 1000;
+
+  if (gigExpires > now) return "You're on tonight.";
+
+  if (releaseDate && releaseDate > now) {
+    const daysLeft = Math.ceil((releaseDate - now) / 86400000);
+    const title = profile.release?.title || 'your release';
+    if (daysLeft === 1) return 'Tomorrow. Your page is set.';
+    if (daysLeft <= 3) return `${daysLeft} days. Your page is set.`;
+    return `${daysLeft} days until ${title}.`;
+  }
+
+  if (releaseDate && now < releaseDate + LIVE_WINDOW) {
+    const daysLeft = Math.ceil((releaseDate + LIVE_WINDOW - now) / 86400000);
+    const title = profile.release?.title || 'your release';
+    if (daysLeft <= 3) return `${daysLeft} days left in your live window.`;
+    return `${title} is out. This is your window.`;
+  }
+
+  // Post-gig (within 24h of expiry)
+  const gigEnded = parseInt(localStorage.getItem('able_gig_expires') || '0');
+  if (gigEnded > 0 && gigEnded < now && (now - gigEnded) < 86400000) {
+    const shows = safeLS('able_shows', []);
+    const lastShow = shows[shows.length - 1];
+    const newFans = countFansAfterTimestamp(gigEnded - 86400000);
+    if (lastShow?.venue) return `Last night at ${lastShow.venue}. ${newFans} fan${newFans !== 1 ? 's' : ''} joined.`;
+  }
+
+  return 'Your page, your list, your relationship.';
+}
+
+function applyGreeting(profile) {
+  const firstName = (profile.name || '').split(' ')[0] || null;
+  const greetEl = document.getElementById('homeGreeting');
+  const subEl   = document.getElementById('homeSub');
+  if (!greetEl || !subEl) return;
+
+  const firstEver = !localStorage.getItem('admin_ever_visited');
+  if (firstEver) {
+    localStorage.setItem('admin_ever_visited', '1');
+    greetEl.textContent = firstName ? `Good to meet you, ${firstName}.` : 'Good to meet you.';
+    subEl.textContent   = 'Your page is live.';
+    setTimeout(() => {
+      subEl.style.transition = 'opacity 0.4s';
+      subEl.style.opacity = '0';
+      setTimeout(() => {
+        subEl.textContent = buildGreetingSub(profile);
+        subEl.style.opacity = '1';
+      }, 400);
+    }, 2500);
+  } else {
+    greetEl.textContent = firstName ? `Good to see you, ${firstName}.` : 'Good to see you.';
+    subEl.textContent   = buildGreetingSub(profile);
+  }
+}
+
+/* ── UPGRADE BAR ── */
+function updateUpgradeBar() {
+  const el = document.getElementById('upgradeBarText');
+  if (!el) return;
+  const count = safeLS(FANS_KEY, []).length;
+  const cap   = 100;
+  if (count > 0) {
+    const near = count >= 80;
+    el.innerHTML = `<strong>Free plan.</strong> ${count} of ${cap} fans.${near ? ' Nearly there.' : ''}`;
+  }
+}
+
 /* ── LOAD STATE FROM LOCALSTORAGE ── */
 window.addEventListener('DOMContentLoaded', () => {
   // Hydrate from v3 profile key (wizard or admin saves)
@@ -5324,18 +5401,9 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('adminCtaSecLabel')     && ctaS.label) document.getElementById('adminCtaSecLabel').value     = ctaS.label;
   if (document.getElementById('adminCtaSecUrl')       && ctaS.url)   document.getElementById('adminCtaSecUrl').value       = ctaS.url;
 
-  // Greet by name
-  const greeting = document.getElementById('homeGreeting');
-  if (greeting && name !== 'Your Artist Name') greeting.textContent = `Good to see you, ${name.split(' ')[0]}.`;
-
-  // Dynamic home subtitle — show fan count when there are fans
-  const subEl = document.getElementById('homeSub');
-  if (subEl) {
-    const fanCount = safeLS(FANS_KEY, []).length;
-    if (fanCount > 0) {
-      subEl.textContent = `${fanCount} ${fanCount === 1 ? 'person' : 'people'} on your list.`;
-    }
-  }
+  // Greeting system (§5.2)
+  applyGreeting(v3data);
+  updateUpgradeBar();
 
   // Page URL + Member Since
   const pageUrlEl = document.getElementById('homePageUrl');
@@ -5718,8 +5786,7 @@ function saveProfilePage() {
     document.getElementById('sbName').textContent = updated.name;
     const resolvedHandle = updated.handle || updated.name.toLowerCase().replace(/[^a-z0-9]+/g,'-');
     document.getElementById('sbUrl').textContent = `ablemusic.co/${resolvedHandle}`;
-    const greeting = document.getElementById('homeGreeting');
-    if (greeting) greeting.textContent = `Good to see you, ${updated.name.split(' ')[0]}.`;
+    applyGreeting(updated);
   }
   if (updated.accent) {
     document.documentElement.style.setProperty('--acc', updated.accent);
