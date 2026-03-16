@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0d0e1a">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ABLE">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <title>ABLE — Your feed</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -93,6 +100,8 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      /* iOS standalone: push content below notch */
+      padding-top: env(safe-area-inset-top, 0px);
     }
 
     /* Status bar */
@@ -810,9 +819,102 @@
       .feed-item, .artist-card, .show-item { animation: none; }
       .tab-bar { backdrop-filter: none; background: var(--color-bg); }
     }
+
+    /* === OFFLINE INDICATOR ==================================== */
+    .offline-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 9999;
+      padding: 8px 16px;
+      background: #2a1f00;
+      color: #f4b942;
+      font-size: 13px;
+      text-align: center;
+      transform: translateY(-100%);
+      transition: transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .offline-bar.visible { transform: translateY(0); }
+
+    /* === INSTALL HINT ========================================= */
+    .install-hint {
+      position: fixed;
+      bottom: 80px; left: 16px; right: 16px;
+      z-index: 9000;
+      background: #12152a;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      transform: translateY(120%);
+      opacity: 0;
+      transition: transform 350ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                  opacity 200ms ease;
+    }
+    .install-hint.visible { transform: translateY(0); opacity: 1; }
+    .install-hint__icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      background: #0d0e1a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 15px; color: #fff; letter-spacing: -0.5px;
+    }
+    .install-hint__text { flex: 1; }
+    .install-hint__title { font-size: 14px; font-weight: 600; color: #f0ede8; }
+    .install-hint__sub { font-size: 12px; color: rgba(240,237,232,0.55); margin-top: 2px; }
+    .install-hint__btn {
+      flex-shrink: 0;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: #8b7cf4;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .install-hint__dismiss {
+      position: absolute; top: 8px; right: 10px;
+      font-size: 18px; line-height: 1;
+      color: rgba(240,237,232,0.35);
+      cursor: pointer;
+      padding: 4px;
+    }
   </style>
+        <!-- PostHog Analytics -->
+    <script>
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId setPersonPropertiesForFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        posthog.init("phc_dyzmnJIRrL8CKVverRnJgngpEOvPgQdMM1AmZbfNdJH", {
+            api_host: "https://eu.i.posthog.com",
+            person_profiles: "identified_only"
+        });
+    </script>
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vwbqr4zdzn");
+    </script>
 </head>
 <body>
+
+<!-- Offline indicator -->
+<div class="offline-bar" id="offline-bar" role="status" aria-live="polite">No connection — showing saved content</div>
+
+<!-- Install hint -->
+<div class="install-hint" id="install-hint" role="complementary" aria-label="Add ABLE to your home screen">
+  <span class="install-hint__dismiss" id="install-hint-dismiss" aria-label="Dismiss">×</span>
+  <div class="install-hint__icon">ABLE</div>
+  <div class="install-hint__text">
+    <div class="install-hint__title">Add to home screen</div>
+    <div class="install-hint__sub" id="install-hint-sub">Your artists. One tap away.</div>
+  </div>
+  <button class="install-hint__btn" id="install-hint-btn">Add</button>
+</div>
 
 <div class="shell">
 
@@ -1529,6 +1631,83 @@
   } else {
     init()
   }
+</script>
+
+<script>
+  // === SERVICE WORKER REGISTRATION =============================
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
+
+  // === OFFLINE INDICATOR =======================================
+  const offlineBar = document.getElementById('offline-bar');
+  function updateOnlineStatus() {
+    offlineBar.classList.toggle('visible', !navigator.onLine);
+  }
+  window.addEventListener('online',  updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+  updateOnlineStatus();
+
+  // === INSTALL HINT ============================================
+  (function () {
+    const HINT_KEY     = 'able_pwa_hint_dismissed';
+    const VISITS_KEY   = 'able_pwa_visits';
+    const VISITS_THRESHOLD = 3;
+
+    if (localStorage.getItem(HINT_KEY)) return;
+
+    const visits = parseInt(localStorage.getItem(VISITS_KEY) || '0', 10) + 1;
+    localStorage.setItem(VISITS_KEY, visits);
+    if (visits < VISITS_THRESHOLD) return;
+
+    const hint    = document.getElementById('install-hint');
+    const sub     = document.getElementById('install-hint-sub');
+    const btn     = document.getElementById('install-hint-btn');
+    const dismiss = document.getElementById('install-hint-dismiss');
+
+    const isIOS         = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isStandalone  = window.matchMedia('(display-mode: standalone)').matches
+                          || window.navigator.standalone === true;
+
+    if (isStandalone) return; // already installed
+
+    function showHint() {
+      requestAnimationFrame(() => hint.classList.add('visible'));
+    }
+    function hideHint() {
+      hint.classList.remove('visible');
+      localStorage.setItem(HINT_KEY, '1');
+    }
+
+    dismiss.addEventListener('click', hideHint);
+
+    if (isIOS) {
+      // iOS can't auto-prompt — show share instructions
+      sub.textContent = 'Tap Share → Add to Home Screen';
+      btn.textContent = 'Got it';
+      btn.addEventListener('click', hideHint);
+      setTimeout(showHint, 1500);
+      return;
+    }
+
+    // Android / Chrome: wait for beforeinstallprompt
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      setTimeout(showHint, 1500);
+    });
+
+    btn.addEventListener('click', async () => {
+      if (!deferredPrompt) { hideHint(); return; }
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      hideHint();
+    });
+  })();
 </script>
 </body>
 </html>
