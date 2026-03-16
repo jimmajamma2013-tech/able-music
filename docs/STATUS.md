@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-16 (session 8) | Update this file at the end of every session.**
+**Updated: 2026-03-16 (session 10 — coherence review) | Update this file at the end of every session.**
 
 ---
 
@@ -11,9 +11,9 @@
 | `start.html` | 9.9/10 | ✅ Complete | `docs/pages/onboarding/DESIGN-SPEC.md` |
 | `admin.html` | 9.7/10 | ✅ Complete | `docs/pages/admin/DESIGN-SPEC.md` |
 | `landing.html` | 9.65/10 | ✅ Complete | `docs/pages/landing/DESIGN-SPEC.md` |
-| `able-v7.html` | 6.9→9.7/10 | ✅ Strategy complete | `docs/pages/profile/DESIGN-SPEC.md` + `PATH-TO-10.md` |
-| `fan.html` | 5.85→9.24/10 | ✅ Strategy complete | `docs/pages/fan/DESIGN-SPEC.md` + `PATH-TO-10.md` |
-| `freelancer.html` | 0/10 | ⏳ Phase 2 | Not started |
+| `able-v7.html` | 8.9/10 built / 9.7/10 ceiling | ✅ Strategy complete | `docs/pages/profile/DESIGN-SPEC.md` + `PATH-TO-10.md` |
+| `fan.html` | 9.21/10 spec / V1 ceiling 9.4 | ✅ Strategy complete | `docs/pages/fan/DESIGN-SPEC.md` + `PATH-TO-10.md` |
+| `freelancer.html` | 8.7/10 spec / 0/10 built | ⏳ Phase 2 | `docs/pages/freelancer/DESIGN-SPEC.md` complete — build not started |
 
 ### Systems
 | System | Score | Status |
@@ -34,9 +34,43 @@
 | Integrations system | 4/10 current | ✅ `docs/systems/integrations/` — 4 files. P0: Ticketmaster events + Spotify deploy. P1: Linktree + UTM tracking. Key finding: monthly listeners NOT in Spotify API. |
 | Artist tools audit | 6.8/10 current | ✅ `docs/systems/artist-tools/` — 4 files. 13 tools scored. P0 gaps: shows date sort, Close Circle "payments required" state, accent colour picker in admin, star toggle confirmation. |
 | Docs file structure | 8/10 | ✅ `docs/FILE-STRUCTURE.md` — complete map of all docs, authority levels, reading-order guides. |
-| Analytics schema | in progress | 🔄 `docs/systems/analytics/` |
-| Error states | in progress | 🔄 `docs/systems/error-states/` |
-| PWA/installability | in progress | 🔄 `docs/systems/pwa/` |
+| Analytics | 6.2→9.5/10 | ✅ `docs/systems/analytics/` — 5 files complete. P0: sessionId + anti-self-visit + PostHog init |
+| Error states | 3.5→9.0/10 | ✅ `docs/systems/error-states/` — 5 files complete. P0: safeGet()/safeSet() everywhere (45 min) |
+| PWA/installability | 0.6→8.5/10 | ✅ `docs/systems/pwa/` — 5 files complete. P0: manifest.json + iOS meta tags (30 min) |
+| Complaint resolution | 9.2/10 | ✅ `docs/systems/complaint-resolution/` |
+| Launch sequence | 7.5/10 | ✅ `docs/systems/launch-sequence/` — P0: deploy to ablemusic.co |
+| UI system | 7.1→8.6/10 | ✅ `docs/systems/ui/` — 4 files (no BEYOND-10) |
+| UX system | 6.9→9.0/10 | ✅ `docs/systems/ux/` — 4 files (no BEYOND-10) |
+| Freelancer auth | pre-launch gate | ✅ `docs/systems/freelancer-auth/` — quality gate checklist (5 questions) |
+| Tiers / billing | pre-launch gate | ✅ `docs/systems/tiers/` — quality gate checklist; Stripe not wired |
+| Monetisation | pre-launch gate | ✅ `docs/systems/monetisation/` — quality gate checklist; requires Phase 2 |
+| Growth loop | 7.0/10 | ✅ `docs/systems/growth-loop/` |
+| Lead generation | 7.5/10 | ✅ `docs/systems/lead-generation/` |
+| Legal compliance | 2.0→8.5/10 | ✅ `docs/systems/legal-compliance/` — P0 BLOCKER: GDPR consent on fan sign-up |
+| Founder roadmap | 9.0/10 | ✅ `docs/systems/founder-roadmap/` — 7 files incl. 300-WINS + 500-STEPS |
+| Master plan alignment | 4.2/10 | ✅ `docs/systems/master-plan-alignment/` — deploy + NHR prep are the critical gaps |
+| Brand identity | 5.0→8.5/10 | ✅ `docs/systems/brand-identity/` — 8 files incl. logo docs. P0: favicon + OG image template |
+| AI workflow | 6.5/10 | ✅ `docs/systems/ai-workflow/` — P0: Telegram notifications setup (20 min) |
+| Hardware/software | 9.5/10 | ✅ `docs/systems/hardware-software/` |
+| VA strategy | 9.0/10 | ✅ `docs/systems/va-strategy/` |
+| Accounting | quality gate | ✅ `docs/systems/accounting/` — pre-company; activate at incorporation |
+| Marketing | quality gate | ✅ `docs/systems/marketing/` — waitlist 500 target; success metrics documented |
+| Free stack | — | ✅ `docs/systems/free-stack/` — Resend 100/day cap risk flagged; UptimeRobot P0 |
+| Think out of the box | — | ✅ `docs/systems/think-out-of-the-box/` — monthly habit + ideas graveyard |
+| Pathway | 7.0/10 | ✅ `docs/systems/pathway/` — exit strategy + pre-shift checklist |
+| Social media | 9.1/10 | ✅ `docs/systems/social-media/` — strategy + account review. Account 2.0/10 current |
+| Organic growth | 10/10 | ✅ `docs/systems/organic-growth/` — projections model complete |
+| Competitive | 9.5/10 | ✅ `docs/systems/competitive/` — 11 competitors, quarterly watch list |
+| Partnerships | 9.0/10 | ✅ `docs/systems/partnerships/` |
+| Investor readiness | 10/10 spec | ✅ `docs/systems/investor-readiness/` — 2/10 execution (pre-launch) |
+| Investor strategy | 8.5/10 | ✅ `docs/systems/investor-strategy/` |
+| Tools and APIs | 9.5/10 | ✅ `docs/systems/tools-and-apis/` |
+| Digital media | 7.5/10 combined | ✅ `docs/systems/digital-media/` — strategy 9.5, presence 2.0 |
+| Build your own | 8.7/10 avg | ✅ `docs/systems/build-your-own/` — all tools unbuilt pre-launch |
+| Filing system | 9.2/10 | ✅ `docs/systems/filing-system/` |
+| Coding strategy | 7.0→10/10 | ✅ `docs/systems/coding-strategy/` — P0: --dash-t3 WCAG fix (2 min) |
+| QA testing | 9.0/10 spec | ✅ `docs/systems/qa-testing/` — no tests written yet |
+| Master review | 7.5/10 | ✅ `docs/systems/master-review/` — schedule recurring monthly review |
 
 **Rule: No building until all strategy docs are complete.**
 
@@ -163,6 +197,20 @@
 *(Add issues here as they are discovered)*
 
 ---
+
+## Last session summary (session 10 — coherence review)
+Product-wide coherence review. Read all FINAL-REVIEW.md files across docs/systems/ and docs/pages/. Updated CONTEXT.md, STATUS.md, and MASTER-SCORECARD.md to reflect current state.
+
+Key findings from review:
+- CONTEXT.md had stale `able-v3.html` label in design tokens section (should be `able-v7.html`) — fixed
+- CONTEXT.md had wrong spec path for profile page (`SPEC.md` → `DESIGN-SPEC.md`) — fixed
+- Analytics, error-states, and PWA were listed as "in progress" but all now have complete SPEC.md + FINAL-REVIEW.md — updated to complete
+- 36 systems existed in docs/systems/ but were not tracked in STATUS.md — all added
+- MASTER-SCORECARD.md was complete but missing: complaint-resolution (9.2), launch-sequence (7.5), ui (7.1/8.6), ux (6.9/9.0), freelancer-auth (quality gate) — added
+- No domain inconsistencies found (ablemusic.co used consistently in CONTEXT.md and STATUS.md)
+- docs/v6/PRODUCT_TRUTH.md exists — confirmed
+- docs/v6/operational/BACKEND_SCHEMA.md exists — confirmed
+- All 5 BEYOND-10.md files noted for systems that have them
 
 ## Last session summary (session 9)
 Strategy docs sprint — three system doc sets + one file structure map created (9 files total):

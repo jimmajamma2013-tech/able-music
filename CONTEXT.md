@@ -43,7 +43,7 @@ Single-developer + AI agents. Active file = ship immediately.
 
 | Page | Build spec | Score |
 |---|---|---|
-| `able-v7.html` (profile) | `docs/pages/profile/SPEC.md` | 9.7/10 |
+| `able-v7.html` (profile) | `docs/pages/profile/DESIGN-SPEC.md` | 9.7/10 |
 | `admin.html` | `docs/pages/admin/DESIGN-SPEC.md` | 9.7/10 |
 | `start.html` | `docs/pages/onboarding/DESIGN-SPEC.md` | 9.9/10 |
 | `landing.html` | `docs/pages/landing/DESIGN-SPEC.md` | 9.65/10 |
@@ -67,12 +67,26 @@ Single-developer + AI agents. Active file = ship immediately.
 | Transcendence | `docs/systems/transcendence/` | active — 11/10 philosophy + audit |
 | CRM | `docs/systems/crm/SPEC.md` | 4/10 current → path to 10 in `PATH-TO-10.md` |
 | Notifications | `docs/systems/notifications/NOTIFICATIONS.md` | 10/10 spec — pre-build |
-| Analytics | `docs/systems/analytics/SPEC.md` | in progress |
-| Error states | `docs/systems/error-states/SPEC.md` | in progress |
-| PWA | `docs/systems/pwa/SPEC.md` | in progress |
+| Analytics | `docs/systems/analytics/SPEC.md` | 6.2/10 current → 9.5/10 spec-complete |
+| Error states | `docs/systems/error-states/SPEC.md` | 3.5/10 current → 9.0/10 spec-complete |
+| PWA | `docs/systems/pwa/SPEC.md` | 0.6/10 current → 8.5/10 spec-complete |
 | Team operating system | `docs/systems/team/TEAM.md` | 9.2/10 |
 | AI agent infrastructure | `docs/systems/ai-agents/AI-AGENTS.md` | 9.4/10 |
+| AI workflow | `docs/systems/ai-workflow/AI-WORKFLOW.md` | 6.5/10 current |
 | Instagram data + leads | `docs/systems/instagram-strategy/INSTAGRAM-DATA-AND-LEADS.md` | 9.6/10 |
+| Complaint resolution | `docs/systems/complaint-resolution/COMPLAINT-RESOLUTION.md` | 9.2/10 |
+| Launch sequence | `docs/systems/launch-sequence/SPEC.md` | 7.5/10 |
+| UI system | `docs/systems/ui/SPEC.md` | 7.1/10 current → 8.6/10 after P1 |
+| UX system | `docs/systems/ux/SPEC.md` | 6.9/10 current → 9.0/10 after P1 |
+| Freelancer auth | `docs/systems/freelancer-auth/SPEC.md` | pre-launch quality gate |
+| Tiers | `docs/systems/tiers/SPEC.md` | pre-launch quality gate |
+| Monetisation | `docs/systems/monetisation/SPEC.md` | pre-launch quality gate |
+| Growth loop | `docs/systems/growth-loop/SPEC.md` | 7.0/10 |
+| Lead generation | `docs/systems/lead-generation/LEAD-GENERATION.md` | 7.5/10 |
+| Legal compliance | `docs/systems/legal-compliance/SPEC.md` | 2.0/10 GDPR → 8.5/10 spec-complete |
+| Founder roadmap | `docs/systems/founder-roadmap/PATH-TO-10.md` | 9.0/10 |
+| Master plan alignment | `docs/systems/master-plan-alignment/MASTER-PLAN-ALIGNMENT.md` | 4.2/10 |
+| Brand identity | `docs/systems/brand-identity/SPEC.md` | 5.0/10 current → 8.5/10 after P1 |
 
 ### V6 core docs — still authoritative for product truth (not superseded)
 1. `docs/v6/core/V6_BUILD_AUTHORITY.md` — resolved design decisions
@@ -96,7 +110,7 @@ Single-developer + AI agents. Active file = ship immediately.
 
 ## Design tokens (commit these to memory)
 
-### able-v3.html (artist profile)
+### able-v7.html (artist profile)
 ```css
 --color-bg:     #0d0e1a   /* Midnight Navy */
 --color-card:   #12152a
