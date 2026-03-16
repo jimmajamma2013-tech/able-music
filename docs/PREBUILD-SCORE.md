@@ -138,3 +138,27 @@ The 0.6-point gap is honest:
 When built and validated against the spec: projected **9.0–9.5/10** overall, depending on Playwright verification results and real-device testing outcomes.
 
 The highest-leverage pre-build action remaining: none. The spec is ready to build from.
+
+---
+
+## Micro-interactions completeness (added 2026-03-16)
+
+Full audit in `docs/systems/MICRO_INTERACTIONS_SPEC.md` §9 and §10.
+
+- Loading states specced: 9
+- Empty states specced: 8
+- Success states specced: 6
+- Error states specced: 6
+- Campaign state transitions specced: 5
+- Additional interaction gaps closed: 6
+- **Total gaps closed: 40**
+
+Pre-audit, 30+ interactions were confirmed in able-v7.html/admin.html. Post-audit, the spec covers 70+ distinct interactions across all pages.
+
+Key gaps that were absent before this audit:
+- Fan sign-up network-failure retry queue (ER-1) — fully specced with localStorage queueing and online-event flush
+- Broadcast send loading + failure states (LS-8, ER-5) — progress bar, red failure state, "Try again" button
+- Tier gate overlay entrance animation (AG-5) — blur-in, hover, tap, upgrade sheet trigger
+- All 5 campaign state transitions (CST-1 through CST-5) — artist view AND fan view for each, with exact timing and copy
+- First-run checklist step completion animations (AG-4) — per-step accent underline and spring checkmark
+- Duplicate fan sign-up admin behaviour (AG-1) — explicitly silenced, no duplicate entry, no notification
