@@ -2269,19 +2269,19 @@ body::before {
               <div class="frc-step-title">Add your photo or artwork</div>
             </div>
           </button>
-          <button class="frc-step" id="frc2" onclick="navigator.clipboard?.writeText('https://'+document.getElementById('profileLinkFrc')?.textContent||'').then(()=>{markFrcDone(2)})">
+          <button class="frc-step" id="frc2" onclick="frcCopyLink()">
             <div class="frc-check" id="frc2check">✓</div>
             <div class="frc-step-body">
               <div class="frc-step-title">Copy your link · <span id="profileLinkFrc" style="color:var(--acc);font-size:12px;">ablemusic.co/you</span></div>
             </div>
           </button>
-          <button class="frc-step" id="frc3" onclick="markFrcDone(3)">
+          <button class="frc-step" id="frc3" onclick="frcShareBio()">
             <div class="frc-check" id="frc3check">✓</div>
             <div class="frc-step-body">
               <div class="frc-step-title">Put it in your Instagram and TikTok bio</div>
             </div>
           </button>
-          <button class="frc-step" id="frc4" onclick="showPage('music')">
+          <button class="frc-step" id="frc4" onclick="frcOpenRelease()">
             <div class="frc-check" id="frc4check">✓</div>
             <div class="frc-step-body">
               <div class="frc-step-title">Add your latest release</div>
@@ -3757,7 +3757,7 @@ function openFanDetailSheet(fan) {
       const email = chip.dataset.email;
       const fans = safeLS('able_fans', []);
       const f = fans.find(f => f.email === email);
-      if (f) { f.level = level; setLS('able_fans', fans); showToast('Saved'); }
+      if (f) { f.level = level; setLS('able_fans', fans); showToast('Saved.'); }
       document.querySelectorAll('#fanLevelChips .level-chip').forEach(c => c.classList.toggle('active', c.dataset.level === level));
     });
   });
@@ -3775,7 +3775,7 @@ function openFanDetailSheet(fan) {
       if (f && f.note !== noteEl.value) {
         f.note = noteEl.value.trim();
         setLS('able_fans', fans);
-        showToast('Saved');
+        showToast('Saved.');
       }
     });
   }
@@ -4246,7 +4246,7 @@ function evaluateNudge() {
           href: '#',
           onClick: () => {
             navigator.clipboard.writeText(`https://ablemusic.co/${profile.handle || handle}`)
-              .then(() => showToast('Link copied'))
+              .then(() => showToast('Copied.'))
               .catch(() => showToast('Copy failed'));
           }
         };
@@ -4702,7 +4702,7 @@ function renderAdminMusic() {
       <div class="dc-body">
         <div class="field-row">
           <div class="field-label">Release title</div>
-          <input class="field-input" value="${escHtml(rel.title||'')}" oninput="updateReleaseField('${rel.id}','title',this.value)" placeholder="Album / EP / Single title">
+          <input class="field-input" value="${escHtml(rel.title||'')}" oninput="updateReleaseField('${rel.id}','title',this.value)" placeholder="What's it called?">
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
           <div class="field-row" style="margin:0">
@@ -5173,7 +5173,7 @@ function renderSnapCardsList() {
           </div>
           <div class="field-row" style="margin:0;">
             <div class="field-label">Body text <span style="font-weight:400;color:var(--t3);">(optional)</span></div>
-            <textarea class="field-input" id="sce-body-${card.id}" rows="2" style="resize:none;" placeholder="A bit more detail…">${escHtml(card.body||'')}</textarea>
+            <textarea class="field-input" id="sce-body-${card.id}" rows="2" style="resize:none;" placeholder="One thought. A sentence. Something happening.">${escHtml(card.body||'')}</textarea>
           </div>
           <div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;">
             <div class="field-row" style="margin:0;">
@@ -5281,7 +5281,7 @@ function saveSnapCard(id) {
   setLS(V3_KEY, data)
   syncProfile(data)
   renderSnapCardsList()
-  showToast('Saved')
+  showToast('Saved.')
 }
 
 function moveSnapCard(id, dir) {
@@ -5496,7 +5496,7 @@ function saveClipEdit(id) {
   setLS(CLIPS_KEY, updated)
   openClipEditForm(id)
   renderClipsAdminList()
-  showToast('Saved')
+  showToast('Saved.')
 }
 
 function toggleClipPublished(id) {
@@ -5685,7 +5685,7 @@ function saveMerchShopUrl() {
   const updated = { ...data, merch };
   setLS(V3_KEY, updated);
   syncProfile(updated);
-  showToast('Saved');
+  showToast('Saved.');
 }
 
 function addMerchItem() {
@@ -5862,7 +5862,7 @@ function saveSupportMeta() {
   const updated = { ...data, support };
   setLS(V3_KEY, updated);
   syncProfile(updated);
-  showToast('Saved');
+  showToast('Saved.');
 }
 
 function updateSupportField(id, field, value) {
@@ -5891,7 +5891,7 @@ function saveCloseCircle() {
   syncProfile(data);
   const notice = document.getElementById('ccStripeNotice');
   if (notice) notice.style.display = enabled ? 'block' : 'none';
-  showToast('Saved');
+  showToast('Saved.');
 }
 
 /* ── REAL STATS FROM LOCALSTORAGE ── */
@@ -7178,7 +7178,7 @@ function saveProfilePage() {
   }
 
   renderQR();
-  showToast('✓ Profile saved');
+  showToast('Profile saved.');
   const btn = document.querySelector('.profile-save-btn');
   if (btn) { btn.textContent = '✓ Saved'; setTimeout(() => btn.textContent = 'Save profile changes →', 1800); }
 }
@@ -7301,7 +7301,7 @@ function setAccent(hex) {
   });
 
   updateIdentityPreview(profile);
-  showToast('Accent saved');
+  showToast('Accent saved.');
 }
 
 function initIdentityCard() {
@@ -7522,6 +7522,46 @@ function dismissFirstRun() {
   localStorage.setItem('able_frc_dismissed', '1');
   const frc = document.getElementById('firstRunCard');
   if (frc) { frc.style.opacity = '0'; frc.style.transition = 'opacity .3s'; setTimeout(() => frc.hidden = true, 300); }
+}
+
+function frcCopyLink() {
+  const el = document.getElementById('profileLinkFrc');
+  const url = 'https://' + (el ? el.textContent : 'ablemusic.co/you');
+  navigator.clipboard?.writeText(url).then(() => {
+    markFrcDone(2);
+    showToast('Copied.');
+  }).catch(() => showToast('Could not copy — try manually.'));
+}
+
+function frcShareBio() {
+  const el = document.getElementById('profileLinkFrc');
+  const url = 'https://' + (el ? el.textContent : 'ablemusic.co/you');
+  if (navigator.share) {
+    navigator.share({ title: 'My ABLE page', url }).then(() => {
+      markFrcDone(3);
+    }).catch(() => {}); // user cancelled — that's fine
+  } else {
+    // Fallback: copy link + show toast
+    navigator.clipboard?.writeText(url).then(() => {
+      markFrcDone(3);
+      showToast('Link copied — paste it in your bio.');
+    }).catch(() => {
+      markFrcDone(3);
+      showToast('Add ablemusic.co/' + (el ? el.textContent.split('/')[1] : '') + ' to your bio.');
+    });
+  }
+}
+
+function frcOpenRelease() {
+  showPage('home');
+  setTimeout(() => {
+    const picker = document.getElementById('chqReleaseDate');
+    if (picker) {
+      picker.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      picker.focus();
+    }
+    markFrcDone(4);
+  }, 180);
 }
 </script>
 
