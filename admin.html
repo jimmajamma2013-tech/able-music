@@ -447,6 +447,15 @@ body::before {
   text-align:center;
 }
 .admin-release-card .dc-body { display:flex; flex-direction:column; gap:4px; }
+.rel-status-badge {
+  display:inline-flex; align-items:center;
+  padding:2px 8px; border-radius:100px;
+  font-size:10px; font-weight:700; letter-spacing:0.03em;
+  white-space:nowrap; flex-shrink:0;
+}
+.rel-status-current { background:rgba(52,199,89,.15); color:#34c759; }
+.rel-status-upcoming { background:rgba(244,185,66,.15); color:#f4b942; }
+.rel-status-prev     { background:rgba(255,255,255,.06); color:var(--t3,#767676); }
 .admin-track-row {
   display:flex; align-items:center; gap:6px; padding:5px 0;
   border-bottom:1px solid var(--dash-border);
@@ -4205,6 +4214,39 @@ function clearGigCountdown() {
   if (label) label.textContent = '';
 }
 
+/* ── RELEASE STATUS BADGE ── */
+function getReleaseStatusBadge(rel, profile) {
+  const now = Date.now();
+  const releaseMs = profile.releaseDate ? new Date(profile.releaseDate).getTime() : null;
+  const relYear = parseInt(rel.year, 10) || 0;
+  const curYear = new Date().getFullYear();
+
+  // If this release has a future year, always "Upcoming"
+  if (relYear > curYear) {
+    return '<span class="rel-status-badge rel-status-upcoming">Upcoming</span>';
+  }
+
+  // Use campaign window to determine "Current" vs "Previous"
+  // A release is "current" if:
+  //   - it's this year AND the active campaign is within 14-day live window
+  //   - OR the releaseDate is in the future (pre-release phase)
+  if (releaseMs) {
+    const liveEnd = releaseMs + 14 * 24 * 60 * 60 * 1000;
+    if (now < releaseMs) {
+      // Pre-release campaign active — mark this year's release as upcoming
+      if (relYear >= curYear) return '<span class="rel-status-badge rel-status-upcoming">Pre-release</span>';
+    } else if (now < liveEnd) {
+      // Within 14-day live window — mark as current
+      if (relYear >= curYear) return '<span class="rel-status-badge rel-status-current">Current</span>';
+    }
+  }
+
+  if (relYear === curYear) {
+    return '<span class="rel-status-badge rel-status-current">This year</span>';
+  }
+  return '<span class="rel-status-badge rel-status-prev">Previous</span>';
+}
+
 /* ── MUSIC MANAGEMENT ── */
 function renderAdminMusic() {
   const el = document.getElementById('adminMusicList');
@@ -4218,7 +4260,10 @@ function renderAdminMusic() {
   el.innerHTML = releases.map((rel, i) => `
     <div class="dash-card admin-release-card" style="max-width:560px;margin-bottom:12px;" data-rid="${rel.id}">
       <div class="dc-head">
-        <div class="dc-title">${escHtml(rel.title || 'Untitled')} <span style="font-weight:400;color:var(--t3);font-size:11px;">${escHtml(rel.type||'')} ${escHtml(rel.year||'')}</span></div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex:1;min-width:0;">
+          <div class="dc-title" style="margin:0;">${escHtml(rel.title || 'Untitled')} <span style="font-weight:400;color:var(--t3);font-size:11px;">${escHtml(rel.type||'')} ${escHtml(rel.year||'')}</span></div>
+          ${getReleaseStatusBadge(rel, data)}
+        </div>
         <button class="snap-btn del" onclick="removeRelease('${rel.id}')" title="Remove">×</button>
       </div>
       <div class="dc-body">
