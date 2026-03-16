@@ -6940,6 +6940,7 @@
       facebook:    `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`,
       mixcloud:    `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 7.85c-.1 0-.2.007-.298.014C16.6 5.67 14.34 4 11.66 4a6.14 6.14 0 00-5.944 4.57c-.114-.014-.228-.02-.344-.02a3.49 3.49 0 00-3.49 3.49A3.49 3.49 0 005.37 15.53h12.153a3.84 3.84 0 000-7.68z"/></svg>`,
       dice:        `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r="1.5" fill="white"/><circle cx="16" cy="8" r="1.5" fill="white"/><circle cx="8" cy="16" r="1.5" fill="white"/><circle cx="16" cy="16" r="1.5" fill="white"/><circle cx="12" cy="12" r="1.5" fill="white"/></svg>`,
+      'resident-advisor': `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-.5 14.5v-5H9l4-7v5h2.5L11.5 16.5z"/></svg>`,
       link:        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
     }
 
@@ -6957,6 +6958,7 @@
       if (u.includes('instagram'))  return PLATFORM_ICONS.instagram
       if (u.includes('twitter') || u.includes('x.com')) return PLATFORM_ICONS.twitter
       if (u.includes('facebook'))   return PLATFORM_ICONS.facebook
+      if (u.includes('ra.co') || u.includes('resident-advisor')) return PLATFORM_ICONS['resident-advisor']
       if (u.includes('dice.fm'))    return PLATFORM_ICONS.dice
       return PLATFORM_ICONS.link
     }
@@ -7128,6 +7130,7 @@
       twitter:    '#1DA1F2',
       facebook:   '#1877F2',
       dice:       '#FF4400',
+      'resident-advisor': '#FF4800',
     }
 
     function getPlatformBrandColor(type, url) {
@@ -7143,6 +7146,7 @@
       if (u.includes('instagram'))  return PLATFORM_BRAND_COLORS.instagram
       if (u.includes('twitter') || u.includes('x.com')) return PLATFORM_BRAND_COLORS.twitter
       if (u.includes('facebook'))   return PLATFORM_BRAND_COLORS.facebook
+      if (u.includes('ra.co') || u.includes('resident-advisor')) return PLATFORM_BRAND_COLORS['resident-advisor']
       return null
     }
 

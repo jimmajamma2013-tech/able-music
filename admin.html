@@ -2535,9 +2535,13 @@ body::before {
               <div class="field-label">Instagram</div>
               <input class="field-input" type="url" id="plInstagram" placeholder="instagram.com/…" oninput="savePlatformLinks()">
             </div>
-            <div class="field-row" style="margin-bottom:0;">
+            <div class="field-row">
               <div class="field-label">Bandcamp</div>
               <input class="field-input" type="url" id="plBandcamp" placeholder="yourname.bandcamp.com" oninput="savePlatformLinks()">
+            </div>
+            <div class="field-row" style="margin-bottom:0;">
+              <div class="field-label">Resident Advisor</div>
+              <input class="field-input" type="url" id="plRA" placeholder="ra.co/dj/…" oninput="savePlatformLinks()">
             </div>
           </div>
         </div>
@@ -2755,6 +2759,14 @@ body::before {
               <div class="ci-status" style="color:var(--t3);">No embed API — add your Instagram URL as a platform link instead</div>
             </div>
             <button class="ci-btn" style="background:rgba(255,255,255,.06);color:var(--t3);border:1px solid var(--border);cursor:default;">Limited</button>
+          </div>
+          <div class="connect-item">
+            <div class="ci-logo" style="background:#FF4800;color:#fff;font-size:10px;font-weight:700;">RA</div>
+            <div class="ci-body">
+              <div class="ci-name">Resident Advisor</div>
+              <div class="ci-status">Add your RA artist page in Profile → Platforms — shows as a pill on your page</div>
+            </div>
+            <button class="ci-btn ci-btn-connect" onclick="showPage('profile')">Add →</button>
           </div>
         </div>
       </div>
@@ -5919,7 +5931,8 @@ function savePlatformLinks() {
     { label: 'YouTube',     type: 'youtube',    url: document.getElementById('plYoutube')?.value.trim()   || '' },
     { label: 'TikTok',      type: 'tiktok',     url: document.getElementById('plTiktok')?.value.trim()    || '' },
     { label: 'Instagram',   type: 'instagram',  url: document.getElementById('plInstagram')?.value.trim() || '' },
-    { label: 'Bandcamp',    type: 'bandcamp',   url: document.getElementById('plBandcamp')?.value.trim()  || '' },
+    { label: 'Bandcamp',          type: 'bandcamp',         url: document.getElementById('plBandcamp')?.value.trim() || '' },
+    { label: 'Resident Advisor',  type: 'resident-advisor', url: document.getElementById('plRA')?.value.trim()       || '' },
   ];
   // Only save platforms that have a URL
   const platforms = raw.filter(p => p.url);
@@ -5941,6 +5954,7 @@ function hydratePlatformFields(data) {
   setV('plTiktok',    find('tiktok'));
   setV('plInstagram', find('instagram'));
   setV('plBandcamp',  find('bandcamp'));
+  setV('plRA',        find('resident-advisor'));
 }
 
 function wireProfileSave() {
