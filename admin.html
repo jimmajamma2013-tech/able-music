@@ -42,7 +42,7 @@
   --dash-red:    #c04030;
   --dash-text:   #1a1a2e;
   --dash-t2:     #555555;
-  --dash-t3:     #888888;
+  --dash-t3:     #767676;
 
   /* Source badge colours (canonical) */
   --source-ig:      #e1306c;
@@ -184,7 +184,7 @@ body::before {
 }
 .stat-label { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:#b0a89e; margin-bottom:6px; }
 .stat-value { font-size:32px; font-weight:700; font-family:var(--font-d); letter-spacing:.01em; color:#1a1a2e; }
-.stat-delta { font-size:11px; color:#888; margin-top:4px; }
+.stat-delta { font-size:11px; color:var(--dash-t3); margin-top:4px; }
 .stat-delta.up { color:var(--dash-green); }
 .stat-delta.dn { color:var(--dash-red); }
 
@@ -577,7 +577,7 @@ body::before {
 
 .arc-countdown {
   font-size: 11px;
-  color: #888;
+  color: var(--dash-t3);
   font-weight: 600;
 }
 
@@ -658,7 +658,7 @@ body::before {
 }
 
 .arc-node.active .arc-label { color: var(--dash-amber); }
-.arc-node.done .arc-label { color: #888; }
+.arc-node.done .arc-label { color: var(--dash-t3); }
 
 /* Gig mode toggle strip */
 .gig-strip {
@@ -2790,6 +2790,11 @@ body::before {
           <div class="field-label">Intro text <span style="font-weight:400;color:var(--t3);">(shown on the join sheet)</span></div>
           <input class="field-input" type="text" id="ccIntro" placeholder="Get closer to the music. Early access and more." oninput="saveCloseCircle()">
         </div>
+        <div id="ccStripeNotice" style="display:none;margin-top:14px;padding:12px 14px;border-radius:10px;background:rgba(244,185,66,0.08);border:1px solid rgba(244,185,66,0.25);">
+          <div style="font-size:12px;font-weight:600;color:var(--dash-text);margin-bottom:4px;">Connect Stripe to go live</div>
+          <div style="font-size:11px;color:var(--dash-t2);line-height:1.5;margin-bottom:10px;">You've set it up. Now connect Stripe to start accepting payments.<br>0% taken by ABLE. Stripe standard fee only.</div>
+          <button style="font-size:12px;font-weight:600;color:var(--dash-text);background:var(--acc);border:none;padding:6px 14px;border-radius:7px;cursor:not-allowed;opacity:0.7;font-family:var(--font);" title="Coming soon — Stripe connection is Phase 2">Connect Stripe → (coming soon)</button>
+        </div>
       </div>
     </div>
 
@@ -4349,12 +4354,14 @@ function renderAdminEvents() {
   const el = document.getElementById('adminEventsList');
   if (!el) return;
   const data = safeLS(V3_KEY, {});
-  const events = (data.events||[]).slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const now = new Date(); now.setHours(0,0,0,0);
+  const upcoming = (data.events||[]).filter(e=>new Date(e.date)>=now).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const past = (data.events||[]).filter(e=>new Date(e.date)<now).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const events = [...upcoming, ...past];
   if (!events.length) {
     el.innerHTML = `<div class="admin-empty">No shows listed yet. Add one and ABLE will surface it to fans on your page automatically.</div>`;
     return;
   }
-  const now = new Date(); now.setHours(0,0,0,0);
   el.innerHTML = events.map(ev => {
     const isPast = new Date(ev.date) < now;
     return `<div class="dash-card" style="max-width:560px;margin-bottom:10px;${isPast?'opacity:0.65':''}">
@@ -4824,6 +4831,8 @@ function renderAdminSupport() {
   if (ccCurrencyEl) ccCurrencyEl.value   = cc.currency || '£';
   if (ccAmountEl)   ccAmountEl.value     = cc.monthlyAmount || 5;
   if (ccIntroEl)    ccIntroEl.value      = cc.introText || '';
+  const ccNotice = document.getElementById('ccStripeNotice');
+  if (ccNotice) ccNotice.style.display = cc.enabled ? 'block' : 'none';
 
   if (!packs.length) {
     el.innerHTML = `<div class="admin-empty">No support packs yet. Add one and fans can contribute directly — 0% goes to ABLE, Stripe fee only.</div>`;
@@ -4957,6 +4966,8 @@ function saveCloseCircle() {
   data.closeCircle = { enabled, currency, monthlyAmount: amount, introText: intro };
   setLS(V3_KEY, data);
   syncProfile(data);
+  const notice = document.getElementById('ccStripeNotice');
+  if (notice) notice.style.display = enabled ? 'block' : 'none';
   showToast('Saved');
 }
 
