@@ -1947,7 +1947,7 @@ body::before {
     <div class="topbar-actions">
       <a class="topbar-edit-cta" href="/able-v7.html?edit=1" id="topbarEditCta">Edit page →</a>
       <span class="tier-badge" onclick="showPage('settings')" title="Upgrade plan">✦ Free</span>
-      <a class="tb-btn tb-btn-acc" href="able-v7.html" target="_blank" style="text-decoration:none;">View live page ↗</a>
+      <a class="tb-btn tb-btn-acc" href="able-v7.html" target="_blank" style="text-decoration:none;" id="topbarViewBtn">View live page ↗</a>
     </div>
   </div>
 
@@ -5377,6 +5377,8 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sbAv').textContent = name.charAt(0).toUpperCase();
   document.getElementById('sbName').textContent = name;
   document.getElementById('sbUrl').textContent = `ablemusic.co/${handle}`;
+  const tvb = document.getElementById('topbarViewBtn');
+  if (tvb) tvb.href = `able-v7.html?handle=${encodeURIComponent(handle)}`;
 
   // Settings page
   if (document.getElementById('settingsSlug')) document.getElementById('settingsSlug').value = handle;
