@@ -735,3 +735,354 @@ See `COPY.md` for complete copy specification. Key rules:
 □ Upgrade bottom sheet opens from all gate CTAs
 □ view-transition fires on "Edit page →" click (Chrome 126+)
 ```
+
+---
+
+## §18 Master Dashboard Doctrine
+
+*Authoritative. Supersedes any conflicting notes elsewhere in this document. Derived from the full doctrine series (2026-03-16).*
+
+---
+
+### 18.1 Final integrated doctrine
+
+**The dashboard is the backstage.** It is where the artist shapes what fans see, understands what's working, and decides what to do next. It is not a CMS. Not an analytics tool. Not a settings panel. It is the place where the artist's relationship with ABLE becomes operational.
+
+The dashboard has one job on every visit: the artist opens it, immediately understands their current moment, and knows what to do next. If either of those things requires more than 3 seconds, the design has failed.
+
+---
+
+### 18.2 Final product model
+
+The dashboard expresses six things, in this order:
+
+1. **Context** — who the artist is, what moment they're in (greeting + lifecycle sub-line)
+2. **Strategy** — what their page is doing for fans right now (Campaign HQ)
+3. **Signal** — whether it's working (stats row)
+4. **People** — who showed up (fan list)
+5. **Action** — what to do next (nudge card, checklist)
+6. **Content + Utility** — editing and management (below fold)
+
+This is the information architecture. Module ordering must follow this hierarchy exactly.
+
+---
+
+### 18.3 Final emotional and trust model
+
+**What the artist should feel on every visit:**
+- "My page is working."
+- "I know what it's doing."
+- "I see someone showed up."
+- "I know what to do next."
+
+**Trust mechanisms:**
+- Campaign HQ shows current mode + fan-facing consequence at a glance
+- Every state change produces visible confirmation (preview update or toast)
+- Fan list shows real emails and timestamps — not aggregate numbers
+- Stats include trend direction and time frame, never raw numbers alone
+- Zero states include a specific next action, never "no data yet"
+- Nudge copy is tied to actual data, never generic
+
+**Trust-breaking patterns (prohibited):**
+- Zero state with no explanation
+- State change with no visible confirmation
+- Generic nudge copy ("post more content!")
+- Stats without time frame ("47" with no context)
+- Upgrade prompts without specific value proposition
+
+---
+
+### 18.4 Final hierarchy model
+
+**Visual weighting by section:**
+
+| Tier | Section | Treatment |
+|---|---|---|
+| 0 | Greeting + sub-line | Lightest — text only, no card |
+| 1 | Campaign HQ | Heaviest — accent left-border when active, 20px+ padding |
+| 2 | Stats row | Medium — display-weight numbers, muted labels |
+| 2 | Fan list | Medium-high — personal, real names |
+| 3 | Nudge card / Checklist strip | Light — present but de-prioritised |
+| 4 | Content sections | Operational — below fold |
+| 5 | Utility | Tab-navigated, not on home page |
+
+**Top-half rule:** Greeting → Campaign HQ → Stats → Fan list. In that order. Nothing moves Campaign HQ below the fold. The checklist strip sits between greeting and Campaign HQ only for first-session (day-1) artists; after that, it sits below stats.
+
+**Vertical rhythm (spacing that reflects priority):**
+- 32px above Campaign HQ
+- 20px between Campaign HQ and stats
+- 24px between stats and fan list
+- 28px between fan list and nudge strip
+- Uniform 16px gap between items within a section
+
+---
+
+### 18.5 Final Campaign HQ model
+
+Campaign HQ is the brain of the dashboard. It is the only surface where the artist makes a decision that immediately changes what a fan sees. That asymmetry defines its visual authority.
+
+**What it must show at a glance:**
+1. Current state — which mode is active (accent left-border + active state indicator)
+2. Consequence — what fans see right now ("Fans see a countdown and a pre-save button.")
+3. Controls — the other three states as ghost buttons with one-line consequences each
+
+**Visual treatment:**
+- Full-width card
+- Accent left-border when any non-profile state is active
+- State buttons: minimum 56px height, spring animation on press
+- Mini phone preview on desktop only — updates immediately on state change
+- No mini-preview on mobile (no space; use topbar "See your page →" link instead)
+
+**What Campaign HQ is not:**
+- A mode picker (too passive)
+- A "campaign settings" form (administrative)
+- One module among equals (wrong weight)
+- A section the artist has to scroll to (wrong placement)
+
+---
+
+### 18.6 Final stats-row model
+
+Show 3–4 metrics. Each must pass: "if this number changed significantly, would the artist want to know?"
+
+**Metric set:**
+
+| Metric | Label | State-specific? |
+|---|---|---|
+| Fan sign-ups | "fans" | No |
+| Page views (7d) | "views this week" | No |
+| Primary CTA taps | See below | Yes |
+| Streak | "days active" | Only if > 1 |
+
+**State-specific CTA label:**
+- `pre-release` → "pre-saves"
+- `live` → "stream taps"
+- `gig` → "ticket taps today"
+- `profile` → "link taps"
+
+**Visual:**
+- Values: 28–32px, `var(--font-d)`, weight 700
+- Labels: 11px, `var(--t3)`, weight 400
+- Trend: ↑/↓ at 11px, green/red inline with value
+- 2×2 grid on mobile; 4-column strip on desktop
+- No sparklines in V1
+
+---
+
+### 18.7 Final checklist / setup-strip model
+
+The checklist is temporary infrastructure. It earns its place only when the artist is new.
+
+**Structure:**
+- Default: collapsed horizontal strip — `[=====  ] 3 of 4 done` — 44px height max
+- Expanded: 4 compact rows with icons, 180px max
+- Background: `var(--dash-card)`, muted border, no accent treatment
+
+**Lifecycle:**
+- Shown: `!localStorage.frc_done` AND `daysSinceOnboarding < 7`
+- Day-1 only: appears between greeting and Campaign HQ
+- Day 2+: appears below stats row
+- On all 4 complete: accent flash → auto-dismiss 2s → `frc_done = 1`
+- After 7 days regardless: silent dismiss
+- Never shown again after dismissal
+
+---
+
+### 18.8 Final light-theme model
+
+**Layering tokens (proposed corrections):**
+
+| Layer | Token | Current | Proposed |
+|---|---|---|---|
+| Floor | `--dash-bg` | `#e8e4dd` | `#ede8e1` |
+| Surface | `--dash-card` | `#ffffff` | `#f8f5f0` |
+| Recessed | `--dash-field` | `#f5f2ee` | `#ede8e1` (matches floor) |
+| Raised | `--dash-shell` | `#1a1a2e` | unchanged |
+| Accent | `--dash-amber` | `#f4b942` | unchanged |
+
+**Card shadow:** `box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px var(--dash-border);` — gives lift without visual complexity. No shadows larger than 4px.
+
+Inputs (`--dash-field` = `--dash-bg`) feel recessed into the floor rather than floating above cards.
+
+---
+
+### 18.9 Final copy doctrine
+
+**Copy register by area:**
+
+| Area | Register | Example |
+|---|---|---|
+| Greeting | Warm, one beat | "Good to see you, [Name]." |
+| Sub-line | Context-aware, factual | "You're in pre-release mode. 14 days to go." |
+| Campaign HQ | Operational | "Your page is showing your pre-save campaign." |
+| State consequence | Fan-facing, specific | "Fans see a countdown and a pre-save button." |
+| Stats labels | Muted, factual | "fans" / "views this week" |
+| Fan list heading | Personal | "47 people signed up to hear from you." |
+| Nudge cards | Specific, one action | "You haven't shared your link since you went live. Post it today." |
+| Upgrade prompts | Value-led, no pressure | "You're at 87 fans. Your next 13 need a place to sign up." |
+
+**Banned dashboard phrases:**
+
+`Analytics` · `Dashboard` (as visible label) · `Settings` (prefer specific section name) · `Configure` · `Activate` · `Manage your fans` · `View metrics` · `No data available` · `Page views` · `Click-through rate` · `Engagement` · `Conversion` · `Content` · `Creator` · `Profile` (in visible copy)
+
+---
+
+### 18.10 Final mobile model
+
+**Top-half on 375px viewport (in order, above fold):**
+1. Topbar (artist name + "See your page →")
+2. Greeting + sub-line
+3. Campaign HQ (full-width, state buttons stacked vertically, no mini-preview)
+4. Stats (2×2 grid, not 4×1 strip)
+5. Nudge card (max 1, compact)
+
+**Mobile-specific rules:**
+- Mini-preview: hidden on mobile
+- Stats: 2×2 grid
+- Checklist: 44px strip collapsed by default
+- Fan list: 5 rows visible, "See all" link
+- State buttons: full-width, stacked, 56px each
+- Section content: horizontally scrolling card rows
+- Bottom tab bar: persistent, 5 items max
+- All tap targets: 44px minimum
+
+---
+
+### 18.11 Final guidance model
+
+One suggested action at any given time. Never a list. The next-best action changes with the artist's state and data.
+
+**Next-best-action by state and condition:**
+
+| State | Condition | Action | Copy |
+|---|---|---|---|
+| pre-release | < 5 pre-saves | Share pre-save link | "Your campaign is live. Put the link in your bio today." |
+| pre-release | > 5 pre-saves | Maintain momentum | "You have {n} pre-saves. Post a reminder today." |
+| live | No stream taps in 24hr | Drive streams | "Your release is live. Share the stream link one more time." |
+| gig | Tickets visible | Drive ticket taps | "Tonight. Put your ticket link in your stories." |
+| profile | 0 fans | First fan capture | "No sign-ups yet. Is your fan capture CTA visible?" |
+| profile | > 10 fans, no email sent | Email fans [Pro] | "You have {n} fans. You haven't emailed them yet." |
+
+**Anti-patterns:**
+- Multiple nudge cards visible at once
+- Generic copy not tied to artist's actual data
+- Guidance that contradicts the current campaign state
+- Nagging after the artist has dismissed the nudge
+
+---
+
+### 18.12 Final AI model
+
+AI in the dashboard is infrastructure, not a feature. It should make existing surfaces smarter, not add new surfaces.
+
+**High value (V1.5+):**
+- Next-best-action selection (which nudge to show given state + data)
+- Smart greeting sub-line synthesis
+- Anomaly detection ("your fan sign-ups doubled this week")
+
+**Medium value (Phase 2):**
+- Bio first-draft on import failure (opt-in, editable)
+- CTA copy suggestions (artist chooses)
+
+**Low value / risky:**
+- Campaign state recommendations
+- Chat interface (wrong paradigm)
+- Auto-posting (artist control absolute)
+- Silent page changes (never)
+- Automated fan emails without explicit artist trigger
+
+**Rules:**
+- AI output that the artist can act on must be presented as a suggestion
+- AI should never change public-facing content without explicit artist confirmation
+- Pro/Artist Pro gate for AI features that require ongoing API calls
+- No "Powered by AI" label unless the AI contribution is meaningful and visible
+
+---
+
+### 18.13 Final V1 / V1.5 / Phase 2 scope
+
+**V1 (launch):**
+- Greeting + lifecycle sub-line (state-aware)
+- Campaign HQ: 4 states, mini-preview desktop, consequence copy, spring animation
+- Stats row: 4 metrics, state-specific CTA label, trend direction
+- Fan list: 5 rows + see all, new badge, starred, export
+- Checklist: collapsed strip, auto-dismiss on complete or 7 days
+- 3–4 contextual nudge cards (hardcoded logic)
+- Content sections: Releases, Shows, Snap Cards (edit existing)
+- Topbar: name, "See your page →", tab nav
+- Mobile: bottom tab bar, stacked state buttons, 2×2 stats
+- Light-theme token corrections
+
+**V1.5 (4–6 weeks post-launch):**
+- Data-driven nudge selection
+- Milestone system (fan count milestones)
+- Streak signal in stats
+- Better stats time-window labelling
+- Smart greeting sub-line
+- AI bio first-draft (opt-in)
+- Checklist lifecycle awareness refinement
+
+**Phase 2 (post-traction):**
+- Fan segmentation + filters
+- Email broadcast (Artist Pro)
+- Analytics deep-dive tab
+- AI next-best-action engine
+- Label tier dashboard
+- Campaign performance scoring
+
+---
+
+### 18.14 Done criteria (QA)
+
+The dashboard is done when every item below passes:
+
+**Hierarchy:**
+- [ ] Eye lands on Campaign HQ within 2 seconds of page load, no scanning required
+- [ ] Campaign HQ has more space above it than any section below it
+
+**Campaign HQ:**
+- [ ] State change produces visible mini-preview update within 200ms (desktop)
+- [ ] Each state button shows consequence copy on hover/focus
+- [ ] State buttons minimum 56px height
+- [ ] Accent left-border active on any non-profile state
+
+**Stats:**
+- [ ] 4 metrics visible, state-specific CTA label correct for all 4 modes
+- [ ] Trend indicator (↑/↓) present on fan count
+- [ ] Time frame label present on all metrics ("this week", "all time", "today")
+
+**Checklist:**
+- [ ] Shows only when `!frc_done`
+- [ ] Collapsed to 44px by default
+- [ ] Expands on tap to show 4 rows
+- [ ] Auto-dismisses on all-complete with accent flash
+- [ ] Never shown after `frc_done` is set
+
+**Rhythm:**
+- [ ] Campaign HQ margin-top > stats margin-top (32px vs 20px)
+
+**Light theme:**
+- [ ] `--dash-card` visibly lighter than `--dash-bg` without side-by-side comparison
+- [ ] Inputs feel recessed (same tone as `--dash-bg`)
+- [ ] Cards have subtle box-shadow lift
+
+**Guidance:**
+- [ ] At least one contextual nudge card renders with correct action for artist's state + data
+- [ ] No generic copy ("post more content") visible anywhere on home
+
+**Mobile:**
+- [ ] Campaign HQ is first card after greeting at 375px
+- [ ] State buttons stacked vertically, full-width, 56px
+- [ ] Stats display as 2×2 grid, not 4×1 strip
+- [ ] All tap targets ≥ 44px
+
+**Copy:**
+- [ ] Zero banned phrases visible on any string
+- [ ] Greeting uses artist's name
+- [ ] Sub-line reflects actual current state
+
+**Trust:**
+- [ ] Every state change produces preview update or toast
+- [ ] Fan list shows real timestamps, not relative dates only
+- [ ] Zero states include specific next-action copy
+
