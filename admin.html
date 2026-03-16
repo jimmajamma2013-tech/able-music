@@ -429,7 +429,8 @@ body::before {
 
 /* ── PAGE HEADER ── */
 .page-header { margin-bottom:24px; }
-.page-title { font-size:22px; font-weight:700; color:var(--dash-text); margin-bottom:4px; }
+.page-title { font-family:var(--font-d); font-size:26px; font-weight:700; letter-spacing:0.01em; color:var(--dash-text); margin-bottom:4px; }
+#homeGreeting { font-family:var(--font); font-size:22px; letter-spacing:0; }
 .page-sub { font-size:13px; color:var(--dash-t2); }
 
 /* ── THEME TOGGLE ── */
@@ -452,7 +453,7 @@ body::before {
   display:flex; align-items:center; justify-content:space-between;
   padding:16px 18px 12px; border-bottom:1px solid var(--dash-border);
 }
-.chq-title { font-size:13px; font-weight:600; color:var(--dash-text); }
+.chq-title { font-family:var(--font-d); font-size:15px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--dash-text); }
 .chq-state-pill {
   display:inline-flex; align-items:center; gap:6px;
   padding:4px 12px; border-radius:100px; font-size:11px; font-weight:700;
@@ -1320,9 +1321,10 @@ body::before {
       margin-bottom: 16px;
     }
     .yw-section-title {
-      font-size: 18px;
+      font-family: var(--font-d);
+      font-size: 20px;
       font-weight: 700;
-      letter-spacing: -0.01em;
+      letter-spacing: 0.01em;
     }
     .yw-add-btn {
       display: flex; align-items: center; gap: 6px;
