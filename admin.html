@@ -7,6 +7,11 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#0f1624">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ABLE">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 <title>ABLE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1656,6 +1661,30 @@ body::before {
   font-weight: 500;
 }
 .identity-row__change:hover { opacity: .75; }
+/* ── ACCENT PICKER ── */
+.accent-picker-row {
+  display: flex; align-items: center; gap: 8px;
+  flex: 1; justify-content: flex-end;
+}
+.acc-presets { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+.acc-swatch {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--c); border: 2px solid transparent;
+  cursor: pointer; transition: transform .15s var(--ease), border-color .15s;
+  flex-shrink: 0; padding: 0;
+}
+.acc-swatch:hover { transform: scale(1.2); }
+.acc-swatch.active { border-color: var(--dash-text, #1a1a2e); }
+.acc-custom { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+.acc-custom input[type="color"] {
+  width: 20px; height: 20px; border: 2px solid rgba(255,255,255,.15);
+  padding: 0; border-radius: 50%; cursor: pointer; background: none; overflow: hidden;
+}
+.acc-hex {
+  font-size: 11px; font-family: monospace; color: var(--dash-t2, #555);
+  min-width: 52px; user-select: all;
+}
+
 .identity-nudges {
   margin-top: 14px;
   display: flex;
@@ -2359,6 +2388,27 @@ body::before {
         <button class="feel-option" data-feel="intimate-refined" onclick="selectFeel(this)">Warm and cinematic</button>
         <button class="feel-option" data-feel="bold-raw"         onclick="selectFeel(this)">Underground and direct</button>
         <button class="feel-option" data-feel="bold-refined"     onclick="selectFeel(this)">Clean and confident</button>
+      </div>
+
+      <!-- Accent colour row -->
+      <div class="identity-row">
+        <span class="identity-row__label">Accent</span>
+        <div class="accent-picker-row" id="accentPickerRow">
+          <div class="acc-presets">
+            <button class="acc-swatch" aria-label="Coral"   style="--c:#e05242" onclick="setAccent('#e05242')"></button>
+            <button class="acc-swatch" aria-label="Amber"   style="--c:#f4b942" onclick="setAccent('#f4b942')"></button>
+            <button class="acc-swatch" aria-label="Violet"  style="--c:#9b7cf4" onclick="setAccent('#9b7cf4')"></button>
+            <button class="acc-swatch" aria-label="Blue"    style="--c:#4a9eff" onclick="setAccent('#4a9eff')"></button>
+            <button class="acc-swatch" aria-label="Green"   style="--c:#1db954" onclick="setAccent('#1db954')"></button>
+            <button class="acc-swatch" aria-label="Pink"    style="--c:#e06b7a" onclick="setAccent('#e06b7a')"></button>
+            <button class="acc-swatch" aria-label="Cyan"    style="--c:#06b6d4" onclick="setAccent('#06b6d4')"></button>
+            <button class="acc-swatch" aria-label="Warm"    style="--c:#e8e4dd" onclick="setAccent('#e8e4dd')"></button>
+          </div>
+          <label class="acc-custom" title="Custom colour">
+            <input type="color" id="accentColorInput" value="#e05242" oninput="setAccent(this.value)" aria-label="Custom accent colour">
+            <span class="acc-hex" id="accentHexLabel">#e05242</span>
+          </label>
+        </div>
       </div>
 
       <div class="identity-nudges" id="identityNudges">
@@ -6330,6 +6380,26 @@ const GENRE_LABELS = {
 
 let nudgeUsesLeft = null; // null = unlimited (Artist+); number = free tier remaining
 
+function setAccent(hex) {
+  const profile = safeLS(V3_KEY, {});
+  if (!profile.identity) profile.identity = {};
+  profile.identity.accent = hex;
+  profile.accent = hex; // canonical path — able-v7.html reads profile.accent
+  setLS(V3_KEY, profile);
+
+  const hexLabel = document.getElementById('accentHexLabel');
+  const colorInput = document.getElementById('accentColorInput');
+  if (hexLabel) hexLabel.textContent = hex;
+  if (colorInput) colorInput.value = hex;
+
+  document.querySelectorAll('.acc-swatch').forEach(s => {
+    s.classList.toggle('active', s.style.getPropertyValue('--c').trim().toLowerCase() === hex.toLowerCase());
+  });
+
+  updateIdentityPreview(profile);
+  showToast('Accent saved');
+}
+
 function initIdentityCard() {
   const profile = safeLS(V3_KEY, {});
   const id = profile.identity || {};
@@ -6341,6 +6411,15 @@ function initIdentityCard() {
   const feelEl  = document.getElementById('idFeelVal');
   if (genreEl) genreEl.textContent = GENRE_LABELS[genre] || genre;
   if (feelEl)  feelEl.textContent  = FEEL_LABELS[feel]   || feel;
+
+  // Populate accent picker with current value
+  const colorInput = document.getElementById('accentColorInput');
+  const hexLabel = document.getElementById('accentHexLabel');
+  if (colorInput) colorInput.value = accent;
+  if (hexLabel) hexLabel.textContent = accent;
+  document.querySelectorAll('.acc-swatch').forEach(s => {
+    s.classList.toggle('active', s.style.getPropertyValue('--c').trim().toLowerCase() === accent.toLowerCase());
+  });
 
   const tier = profile.tier || 'free';
   if (tier === 'free') {

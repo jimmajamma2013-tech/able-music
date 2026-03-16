@@ -7,6 +7,11 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="theme-color" content="#0f1624">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ABLE">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 <title>ABLE — Create your page</title>
 <meta name="description" content="Set up your ABLE artist page in minutes. Free.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1831,9 +1836,12 @@ function initDone() {
   const pillEl = document.getElementById('v2DonePill');
   if (urlEl)  urlEl.textContent  = url;
   if (pillEl) pillEl.dataset.url = url;
-  // Point "See your page" to the real live profile
+  // Point "See your page" to the real live profile (with handle for correct preview)
   const viewBtn = document.getElementById('doneViewPageBtn');
-  if (viewBtn) viewBtn.href = '/able-v7.html';
+  if (viewBtn) {
+    const handle = profile.handle || profile.slug || null;
+    viewBtn.href = handle ? `able-v7.html?artist=${encodeURIComponent(handle)}` : 'able-v7.html';
+  }
   launchConfetti();
   showDay1ShareCard(profile, url);
 
