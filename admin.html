@@ -1956,17 +1956,10 @@ body::before {
       </div>
     </div>
 
-    <!-- Upgrade nudge — shown for free tier -->
-    <div class="upgrade-bar" id="upgradeBar">
-      <div class="upgrade-bar-text"><strong>Free plan.</strong> Broadcasts, full analytics, and deeper fan insight when you're ready.</div>
-      <button class="upgrade-bar-btn" onclick="showPage('settings')">See what's included →</button>
-      <button class="upgrade-bar-dismiss" onclick="dismissUpgradeBar()" aria-label="Dismiss">×</button>
-    </div>
-
     <!-- FIRST-RUN CHECKLIST — hidden once all done or dismissed -->
     <div class="first-run-card" id="firstRunCard">
       <div class="frc-head">
-        <div class="frc-title">Get your page working — 4 quick things</div>
+        <div class="frc-title">Start here — four things that matter</div>
         <button class="frc-dismiss" onclick="dismissFirstRun()" title="Dismiss">Got it, hide this</button>
       </div>
       <div class="frc-steps">
@@ -2054,7 +2047,7 @@ body::before {
     <div class="campaign-hq" id="campaignHQ">
       <div class="chq-head">
         <div class="chq-title">
-          Page mode
+          Campaign
           <span class="info-tooltip">
             <span class="info-icon" tabindex="0">?</span>
             <span class="tooltip-bubble">Switch what your page is focused on right now — building up to a release, going live on drop day, pushing tickets for a show, or just your regular profile.</span>
@@ -2118,14 +2111,20 @@ body::before {
         <div class="gig-countdown-label" id="gigCountdownLabel"></div>
 
         <div style="margin-top:14px;">
-          <button class="tb-btn tb-btn-acc" style="width:100%;" onclick="saveCampaignHQ()">Apply to live page →</button>
+          <button class="tb-btn tb-btn-acc" style="width:100%;" onclick="saveCampaignHQ()">Update your page →</button>
         </div>
       </div>
     </div>
 
+    <!-- Upgrade nudge — shown for free tier, positioned after Campaign HQ -->
+    <div class="upgrade-bar" id="upgradeBar">
+      <div class="upgrade-bar-text"><strong>Free plan.</strong> Broadcasts, full analytics, and deeper fan insight when you're ready.</div>
+      <button class="upgrade-bar-btn" onclick="showPage('settings')">See what's included →</button>
+      <button class="upgrade-bar-dismiss" onclick="dismissUpgradeBar()" aria-label="Dismiss">×</button>
+    </div>
+
     <!-- §9.1 moment 2 — pre-release trial nudge: appears after a future release date is saved -->
     <div id="preReleaseNudge" style="display:none;margin-bottom:20px;padding:14px 18px;border-radius:14px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);align-items:center;gap:12px;">
-      <div style="font-size:18px;line-height:1;flex-shrink:0;">🚀</div>
       <div style="flex:1;">
         <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;">You're in launch mode.</div>
         <div style="font-size:11px;color:var(--t2);line-height:1.5;">Artist plan gives you the full pre-release toolkit — email your list on drop day, see who pre-saved, and control exactly when fans hear it.</div>
@@ -2135,7 +2134,6 @@ body::before {
 
     <!-- §9.1 moment 3 — gig mode trial nudge: appears when gig is first activated this session -->
     <div id="gigModeNudge" style="display:none;margin-bottom:20px;padding:14px 18px;border-radius:14px;background:rgba(139,30,30,.08);border:1px solid rgba(139,30,30,.3);align-items:center;gap:12px;">
-      <div style="font-size:18px;line-height:1;flex-shrink:0;">🎸</div>
       <div style="flex:1;">
         <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;">Tonight's the night.</div>
         <div style="font-size:11px;color:var(--t2);line-height:1.5;">Artist plan lets you email your list tonight — your fans hear about gigs before anyone else does.</div>
@@ -5305,7 +5303,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // Dynamic home subtitle — show fan count when there are fans
   const subEl = document.getElementById('homeSub');
   if (subEl) {
-    const fanCount = JSON.parse(localStorage.getItem(FANS_KEY) || '[]').length;
+    const fanCount = safeLS(FANS_KEY, []).length;
     if (fanCount > 0) {
       subEl.textContent = `${fanCount} ${fanCount === 1 ? 'person' : 'people'} on your list.`;
     }
