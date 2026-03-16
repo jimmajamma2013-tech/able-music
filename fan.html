@@ -494,6 +494,64 @@
       background: rgba(255,255,255,0.025);
     }
 
+    /* === PRE-RELEASE COUNTDOWN STRIP ========================== */
+    .prerelease-strips {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 16px 4px;
+    }
+    .prerelease-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--color-card);
+      border-radius: 10px;
+      border-left: 3px solid var(--strip-accent, #8b7cf4);
+      font-size: 13px;
+    }
+    .prerelease-strip__label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--strip-accent, #8b7cf4);
+      white-space: nowrap;
+    }
+    .prerelease-strip__info {
+      flex: 1;
+      min-width: 0;
+    }
+    .prerelease-strip__artist {
+      font-weight: 600;
+      color: var(--color-text-2);
+      margin: 0 0 1px;
+    }
+    .prerelease-strip__release {
+      color: var(--color-text-3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .prerelease-strip__countdown {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--strip-accent, #8b7cf4);
+      white-space: nowrap;
+    }
+    .prerelease-strip__presave {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--strip-accent, #8b7cf4);
+      text-decoration: none;
+      padding: 4px 10px;
+      border: 1.5px solid var(--strip-accent, #8b7cf4);
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .prerelease-strip__presave:hover { opacity: .75; }
+
     /* === ALL CAUGHT UP ======================================== */
     .caught-up {
       padding: var(--sp-10) var(--sp-5) var(--sp-6);
@@ -1156,6 +1214,7 @@
 
     <!-- === FOLLOWING VIEW ==================================== -->
     <div class="view active" id="view-following" role="tabpanel" aria-labelledby="tab-following">
+      <div id="prerelease-strips-container"></div>
       <div class="feed-section feed-section--today">
         <h2 class="feed-date-label">Today</h2>
         <div class="feed-items" id="feed-today"></div>
@@ -1362,9 +1421,99 @@
     return getFollowed().map(a => a.id)
   }
 
+  // === PRE-RELEASE COUNTDOWN STRIPS =========================
+  // V1: reads able_v3_profile from same browser (demo/artist preview only).
+  // V2: reads from Supabase followed-artists feed.
+
+  function renderPreReleaseStrips() {
+    const container = document.getElementById('prerelease-strips-container')
+    if (!container) return
+
+    // V1: check if followed list has any artist in pre-release state via same-browser profile
+    const strips = []
+
+    // Same-browser artist profile check
+    try {
+      const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}')
+      const releaseDate = profile.releaseDate ? new Date(profile.releaseDate) : null
+      const isPreRelease = releaseDate && releaseDate > new Date()
+      const isPreReleaseOverride = profile.stateOverride === 'pre-release'
+
+      if ((isPreRelease || isPreReleaseOverride) && profile.name) {
+        const daysLeft = releaseDate
+          ? Math.max(1, Math.ceil((releaseDate - Date.now()) / 86400000))
+          : null
+        strips.push({
+          artistName:  profile.name,
+          accent:      profile.accent || '#8b7cf4',
+          releaseTitle: profile.releaseTitle || profile.release?.title || '',
+          daysLeft,
+          presaveUrl:  profile.presaveUrl || profile.ctaUrl || null,
+        })
+      }
+    } catch (_) {}
+
+    // Also check followed artists data for release data (injected by fan_feed entries)
+    try {
+      const followed = getFollowed()
+      followed.forEach(a => {
+        if (a.releaseDate) {
+          const rd = new Date(a.releaseDate)
+          if (rd > new Date()) {
+            const alreadyAdded = strips.some(s => s.artistName === a.name)
+            if (!alreadyAdded) {
+              strips.push({
+                artistName:  a.name,
+                accent:      a.accent || '#8b7cf4',
+                releaseTitle: a.releaseTitle || '',
+                daysLeft:    Math.max(1, Math.ceil((rd - Date.now()) / 86400000)),
+                presaveUrl:  a.presaveUrl || null,
+              })
+            }
+          }
+        }
+      })
+    } catch (_) {}
+
+    if (!strips.length) {
+      container.innerHTML = ''
+      return
+    }
+
+    const shown = strips.slice(0, 3)
+    const overflow = strips.length - shown.length
+
+    const html = shown.map(s => {
+      const presaveBtn = s.presaveUrl
+        ? `<a class="prerelease-strip__presave" href="${s.presaveUrl}" target="_blank" rel="noopener">Pre-save</a>`
+        : ''
+      const countdownText = s.daysLeft
+        ? `${s.daysLeft} day${s.daysLeft === 1 ? '' : 's'}`
+        : 'Coming soon'
+      return `
+        <div class="prerelease-strip" style="--strip-accent:${s.accent}">
+          <div class="prerelease-strip__info">
+            <p class="prerelease-strip__artist">${escHtml(s.artistName)}</p>
+            <p class="prerelease-strip__release">${escHtml(s.releaseTitle || 'New release')}</p>
+          </div>
+          <span class="prerelease-strip__countdown">${escHtml(countdownText)}</span>
+          ${presaveBtn}
+        </div>
+      `
+    }).join('')
+
+    const overflowHtml = overflow > 0
+      ? `<p style="font-size:12px;color:var(--color-text-3);padding:4px 14px 0;text-align:right">And ${overflow} more upcoming release${overflow === 1 ? '' : 's'} →</p>`
+      : ''
+
+    container.innerHTML = `<div class="prerelease-strips">${html}</div>${overflowHtml}`
+  }
+
   // === RENDER FOLLOWING VIEW ================================
 
   function renderFollowing() {
+    renderPreReleaseStrips()
+
     const followed = getFollowed()
     const followedMap = {}
     followed.forEach(a => { followedMap[a.id] = a })
@@ -1449,7 +1598,9 @@
         </div>
       `
       el.addEventListener('click', () => {
-        if (item.url) window.open(item.url, '_blank', 'noopener')
+        const slug = artist.id || artist.slug || ''
+        const dest = item.url || (slug ? `able-v7.html?slug=${encodeURIComponent(slug)}&src=fan-dashboard` : null)
+        if (dest) window.open(dest, '_blank', 'noopener')
       })
       return el
     }
