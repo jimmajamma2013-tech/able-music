@@ -1173,17 +1173,59 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
     </div>
 
-    <!-- STEP 1 — IDENTITY -->
+    <!-- STEP 1 — MOMENT -->
     <div class="step" id="step1">
-      <!-- progress bar at 33% via JS -->
       <div class="step-eyebrow">Step 1 of 3</div>
+      <h1 class="step-title">What's<br>happening?</h1>
+
+      <div class="moment-grid" id="v2MomentGrid">
+        <button class="moment-card" data-mode="profile" type="button" onclick="v2SelectMoment('profile',this)">
+          <span class="moment-card__icon">✦</span>
+          <div>
+            <span class="moment-card__label">Just existing</span>
+            <span class="moment-card__desc">Your full profile — music, links, who you are.</span>
+          </div>
+        </button>
+        <button class="moment-card" data-mode="pre-release" type="button" onclick="v2SelectMoment('pre-release',this)">
+          <span class="moment-card__icon">⏳</span>
+          <div>
+            <span class="moment-card__label">Something's coming</span>
+            <span class="moment-card__desc">Countdown to your release. Fans can pre-save.</span>
+          </div>
+        </button>
+        <button class="moment-card" data-mode="live" type="button" onclick="v2SelectMoment('live',this)">
+          <span class="moment-card__icon">▶</span>
+          <div>
+            <span class="moment-card__label">Just dropped</span>
+            <span class="moment-card__desc">Stream links front and centre. Music plays on your page.</span>
+          </div>
+        </button>
+        <button class="moment-card" data-mode="gig" type="button" onclick="v2SelectMoment('gig',this)">
+          <span class="moment-card__icon">🎤</span>
+          <div>
+            <span class="moment-card__label">Playing tonight</span>
+            <span class="moment-card__desc">Tickets jump to the front. Fans know what to do.</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-back" onclick="goToStep('stepA')">← Back</button>
+        <button class="btn-next" id="v2MomentNext" onclick="tryStep1()" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 — IDENTITY -->
+    <div class="step" id="step2">
+      <!-- progress bar at 66% via JS -->
+      <div class="step-eyebrow">Step 2 of 3</div>
       <h1 class="step-title">Make it<br>yours.</h1>
 
       <div class="field">
         <label class="field-label" for="iName">Artist name</label>
         <input class="field-input" type="text" id="iName"
           placeholder="e.g. Nova, Jamie Reeves, MYLA…"
-          autocomplete="off" autofocus>
+          autocomplete="off">
         <p class="field-error-msg" id="iNameErr" role="alert">Enter your artist name to continue.</p>
       </div>
 
@@ -1223,50 +1265,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
 
       <div class="step-nav">
-        <button class="btn-back" onclick="goToStep('stepA')">← Back</button>
-        <button class="btn-next" onclick="tryStep1()">Next →</button>
-      </div>
-    </div>
-
-    <!-- STEP 2 — MOMENT -->
-    <div class="step" id="step2">
-      <div class="step-eyebrow">Step 2 of 3</div>
-      <h1 class="step-title">What's<br>happening?</h1>
-
-      <div class="moment-grid" id="v2MomentGrid">
-        <button class="moment-card" data-mode="profile" type="button" onclick="v2SelectMoment('profile',this)">
-          <span class="moment-card__icon">✦</span>
-          <div>
-            <span class="moment-card__label">Just existing</span>
-            <span class="moment-card__desc">Your full profile — music, links, who you are.</span>
-          </div>
-        </button>
-        <button class="moment-card" data-mode="pre-release" type="button" onclick="v2SelectMoment('pre-release',this)">
-          <span class="moment-card__icon">⏳</span>
-          <div>
-            <span class="moment-card__label">Something's coming</span>
-            <span class="moment-card__desc">Countdown to your release. Fans can pre-save.</span>
-          </div>
-        </button>
-        <button class="moment-card" data-mode="live" type="button" onclick="v2SelectMoment('live',this)">
-          <span class="moment-card__icon">▶</span>
-          <div>
-            <span class="moment-card__label">Just dropped</span>
-            <span class="moment-card__desc">Stream links front and centre. Music plays on your page.</span>
-          </div>
-        </button>
-        <button class="moment-card" data-mode="gig" type="button" onclick="v2SelectMoment('gig',this)">
-          <span class="moment-card__icon">🎤</span>
-          <div>
-            <span class="moment-card__label">Playing tonight</span>
-            <span class="moment-card__desc">Tickets jump to the front. Fans know what to do.</span>
-          </div>
-        </button>
-      </div>
-
-      <div class="step-nav">
         <button class="btn-back" onclick="goToStep('step1')">← Back</button>
-        <button class="btn-next" id="v2MomentNext" onclick="tryStep2()" disabled>Next →</button>
+        <button class="btn-next" onclick="tryStep2()">Next →</button>
       </div>
     </div>
 
@@ -1522,7 +1522,7 @@ function goToStep(id) {
   if (ind) ind.textContent = prog.msg;
 
   // Step-specific setup
-  if (id === 'step1') initStep1();
+  if (id === 'step2') initStep1(); // step2 is now identity — pre-fill from draft
   if (id === 'step3') initStep3();
   if (id === 'stepDone') initDone();
 
@@ -1710,18 +1710,9 @@ function updateMiniPreview() {
 }
 
 function tryStep1() {
-  const nameEl = document.getElementById('iName');
-  const errEl  = document.getElementById('iNameErr');
-  const name   = nameEl ? nameEl.value.trim() : '';
-  if (!name) {
-    if (nameEl) nameEl.classList.add('field-error');
-    if (errEl)  errEl.classList.add('show');
-    if (nameEl) nameEl.focus();
-    return;
-  }
-  if (nameEl) nameEl.classList.remove('field-error');
-  if (errEl)  errEl.classList.remove('show');
-  saveDraft({ name, vibe: _v2Vibe, accent: _v2Accent });
+  // Step 1 is now the moment picker — validate a mode is selected
+  if (!_v2Mode) return;
+  saveDraft({ stateOverride: _v2Mode });
   goToStep('step2');
 }
 
@@ -1764,8 +1755,19 @@ function v2SelectMoment(mode, btn) {
 }
 
 function tryStep2() {
-  if (!_v2Mode) return;
-  saveDraft({ stateOverride: _v2Mode });
+  // Step 2 is now the identity form — validate artist name
+  const nameEl = document.getElementById('iName');
+  const errEl  = document.getElementById('iNameErr');
+  const name   = nameEl ? nameEl.value.trim() : '';
+  if (!name) {
+    if (nameEl) nameEl.classList.add('field-error');
+    if (errEl)  errEl.classList.add('show');
+    if (nameEl) nameEl.focus();
+    return;
+  }
+  if (nameEl) nameEl.classList.remove('field-error');
+  if (errEl)  errEl.classList.remove('show');
+  saveDraft({ name, vibe: _v2Vibe, accent: _v2Accent });
   goToStep('step3');
 }
 
