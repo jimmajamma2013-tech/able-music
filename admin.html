@@ -4577,9 +4577,45 @@ function removeRelease(rid) {
 
 function updateReleaseField(rid, field, value) {
   const data = safeLS(V3_KEY, {});
-  const releases = (data.releases||[]).map(r => r.id===rid ? {...r, [field]: value} : r);
+  let update = { [field]: value };
+  if (field === 'platformUrl' && value) {
+    const pd = derivePlatformFromUrl(value);
+    if (pd) Object.assign(update, pd);
+  }
+  const releases = (data.releases||[]).map(r => r.id===rid ? {...r, ...update} : r);
   setLS(V3_KEY, { ...data, releases });
   if (field === 'platformUrl') showEmbedPreview(rid, value);
+}
+
+// === PLATFORM DERIVATION =====================================
+function derivePlatformFromUrl(url) {
+  try {
+    const u = url.startsWith('http') ? url : 'https://' + url;
+    const { hostname, pathname } = new URL(u);
+    const h = hostname.replace(/^www\./, '');
+    if (h === 'open.spotify.com') {
+      const m = pathname.match(/^\/(track|album|playlist|artist|show|episode)\/([A-Za-z0-9]+)/);
+      return { platform: 'spotify', platformId: m ? m[2] : null };
+    }
+    if (['youtube.com','youtu.be','m.youtube.com'].includes(h)) {
+      const m = u.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]+)/);
+      return { platform: 'youtube', platformId: m ? m[1] : null };
+    }
+    if (['soundcloud.com','m.soundcloud.com'].includes(h)) {
+      return { platform: 'soundcloud', platformId: pathname.replace(/^\//, '') };
+    }
+    if (['vimeo.com','player.vimeo.com'].includes(h)) {
+      const m = pathname.match(/\/(\d+)/);
+      return { platform: 'vimeo', platformId: m ? m[1] : null };
+    }
+    if (h === 'mixcloud.com') {
+      return { platform: 'mixcloud', platformId: pathname.replace(/^\//, '') };
+    }
+    if (h.endsWith('bandcamp.com')) {
+      return { platform: 'bandcamp', platformId: null };
+    }
+  } catch (_) {}
+  return null;
 }
 
 // === URL AUTO-FILL (oEmbed) ==================================
