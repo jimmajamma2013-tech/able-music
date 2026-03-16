@@ -1147,7 +1147,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
           Find me on Spotify →
         </button>
         <button class="btn-skip" onclick="goToStep('step1')">
-          Skip — I'll add my music manually →
+          I'm not on Spotify →
         </button>
       </div>
 
@@ -1256,8 +1256,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <!-- STEP 3 — EMAIL / SAVE -->
     <div class="step" id="step3">
       <div class="step-eyebrow">Step 3 of 3</div>
-      <h1 class="step-title">Where do we<br>send the link?</h1>
-      <p class="step-sub">Your page is ready. We'll email you the link so you can get back to it any time.</p>
+      <h1 class="step-title">Save your<br>page.</h1>
+      <p class="step-sub">Drop your email — we'll send you a link so you can always get back to it.</p>
 
       <div class="field">
         <label class="field-label" for="iEmail">Email</label>
@@ -1304,29 +1304,32 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
         <span id="v2DoneUrl">ablemusic.co/artist</span>
       </div>
 
-      <div class="done-share" style="margin-top:20px;">
-        <div class="done-share-lbl">Share it now</div>
-        <div class="done-share-row">
-          <button class="done-share-btn primary-share" id="v2CopyBtn" onclick="v2CopyLink()">
-            <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><rect x="1" y="4" width="9" height="9" rx="1.5"/><path d="M4 4V2.5A1.5 1.5 0 015.5 1h7A1.5 1.5 0 0114 2.5v7A1.5 1.5 0 0112.5 11H11" fill="currentColor"/></svg>
-            Copy link
-          </button>
-          <button class="done-share-btn" onclick="v2ShareInstagram()">
-            <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><path d="M7 1.5c1.47 0 1.64.006 2.22.032 1.4.064 2.054.728 2.118 2.118C11.364 4.23 11.37 4.4 11.37 5.87s-.006 1.64-.032 2.22c-.064 1.39-.716 2.054-2.118 2.118C8.64 10.234 8.47 10.24 7 10.24s-1.64-.006-2.22-.032c-1.4-.064-2.054-.726-2.118-2.118C2.636 7.51 2.63 7.34 2.63 5.87s.006-1.64.032-2.22c.064-1.39.718-2.054 2.118-2.118C5.36 1.506 5.53 1.5 7 1.5zM7 .5C5.504.5 5.32.506 4.732.534 2.888.618 1.868 1.636 1.784 3.482 1.756 4.07 1.75 4.254 1.75 5.75s.006 1.68.034 2.268c.084 1.844 1.1 2.864 2.948 2.948C5.32 10.994 5.504 11 7 11s1.68-.006 2.268-.034c1.844-.084 2.864-1.102 2.948-2.948.028-.588.034-.772.034-2.268s-.006-1.68-.034-2.268c-.084-1.844-1.1-2.862-2.948-2.948C8.68.506 8.496.5 7 .5zm0 2.662a2.588 2.588 0 100 5.176 2.588 2.588 0 000-5.176zm0 4.268a1.68 1.68 0 110-3.36 1.68 1.68 0 010 3.36zm2.692-5.01a.604.604 0 100 1.208.604.604 0 000-1.208z"/></svg>
-            Instagram
-          </button>
-          <button class="done-share-btn" onclick="v2ShareTikTok()">
-            <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><path d="M11.5 3.5A2.5 2.5 0 019 1H7v8a1.5 1.5 0 11-1.5-1.5c.17 0 .33.03.5.07V5.5A4 4 0 005.5 13a4 4 0 004-4V5.62A5.48 5.48 0 0012 6V4a3.5 3.5 0 01-.5-.5z"/></svg>
-            TikTok
-          </button>
+      <!-- Day 1 Share Card -->
+      <div class="share-card-wrap" id="shareCardWrap" style="margin-top:24px;">
+        <canvas id="shareCardCanvas" width="1080" height="1080" style="width:100%;max-width:280px;border-radius:16px;display:block;margin:0 auto;box-shadow:0 8px 32px rgba(0,0,0,0.5);"></canvas>
+        <div class="done-share" style="margin-top:16px;">
+          <div class="done-share-lbl">Share to announce you're live →</div>
+          <div class="done-share-row">
+            <button class="done-share-btn primary-share" id="v2ShareCardBtn" onclick="shareDay1Card()">
+              <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><path d="M7 1L4 4h2v5h2V4h2L7 1zM2 11v1h10v-1H2z"/></svg>
+              Share card
+            </button>
+            <button class="done-share-btn" id="v2CopyBtn" onclick="v2CopyLink()">
+              <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><rect x="1" y="4" width="9" height="9" rx="1.5"/><path d="M4 4V2.5A1.5 1.5 0 015.5 1h7A1.5 1.5 0 0114 2.5v7A1.5 1.5 0 0112.5 11H11" fill="currentColor"/></svg>
+              Copy link
+            </button>
+          </div>
         </div>
       </div>
 
       <button class="done-preview-toggle" onclick="setView('preview')">See your page →</button>
 
-      <div class="done-actions" style="margin-top:20px;">
-        <a href="/admin.html" class="done-open" style="display:inline-block;text-decoration:none;padding:13px 24px;border-radius:100px;font-size:14px;font-weight:600;background:var(--acc);color:#121a24;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(var(--acc-rgb),.3);transition:all .2s var(--spring);">
-          Go to your page →
+      <div class="done-actions" style="margin-top:20px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;">
+        <a id="doneViewPageBtn" href="/able-v7.html" class="done-open" style="display:inline-block;text-decoration:none;padding:13px 24px;border-radius:100px;font-size:14px;font-weight:600;background:var(--acc);color:#121a24;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(var(--acc-rgb),.3);transition:all .2s var(--spring);" target="_blank" rel="noopener">
+          See your page →
+        </a>
+        <a href="/admin.html" style="font-size:13px;color:var(--t2);text-decoration:underline;text-underline-offset:3px;padding:2px 0;">
+          Manage your page →
         </a>
       </div>
     </div>
@@ -1433,6 +1436,16 @@ const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null
    Draft lives in sessionStorage as 'able_wizard_draft'.
    localStorage written only on the Done screen.
    ═══════════════════════════════════════════════════════════ */
+
+/* ── SAFE STORAGE ── */
+function safeLS(key, fallback) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch (e) { console.warn('[ABLE] localStorage parse error for "' + key + '"', e); return fallback; }
+}
+function setLS(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); return true; }
+  catch (e) { console.error('[ABLE] localStorage write error for "' + key + '"', e); return false; }
+}
 
 /* ── HELPERS ── */
 function h2r(hex) {
@@ -1593,7 +1606,7 @@ function doSpotifyImport() {
       // Write shows to localStorage for admin to pick up
       if (importedShows.length) {
         var existing = [];
-        try { existing = JSON.parse(localStorage.getItem('able_shows') || '[]'); } catch(e) {}
+        try { existing = safeLS('able_shows', []); } catch(e) {}
         // Merge: avoid duplicates by date+venue combo
         var combined = existing.slice();
         importedShows.forEach(function(s) {
@@ -1812,18 +1825,163 @@ function tryStep3() {
    DONE
    ══════════════════════════════════════════════════════ */
 function initDone() {
-  const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+  const profile = safeLS('able_v3_profile', {});
   const url = 'ablemusic.co/' + (profile.slug || 'artist');
   const urlEl  = document.getElementById('v2DoneUrl');
   const pillEl = document.getElementById('v2DonePill');
   if (urlEl)  urlEl.textContent  = url;
   if (pillEl) pillEl.dataset.url = url;
+  // Point "See your page" to the real live profile
+  const viewBtn = document.getElementById('doneViewPageBtn');
+  if (viewBtn) viewBtn.href = '/able-v7.html';
   launchConfetti();
+  showDay1ShareCard(profile, url);
 
   // Seed artist ID if not set
   if (!localStorage.getItem('able_artist_id')) {
     const id = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36));
     localStorage.setItem('able_artist_id', id);
+  }
+}
+
+function showDay1ShareCard(profile, url) {
+  const canvas = document.getElementById('shareCardCanvas');
+  if (!canvas) return;
+  const ctx    = canvas.getContext('2d');
+  const W = 1080, H = 1080;
+  canvas.width = W; canvas.height = H;
+
+  const accent  = profile.accent || '#e05242';
+  const name    = (profile.name  || 'Artist').toUpperCase();
+  const genre   = profile.genres?.[0] || profile.genre || '';
+  const displayUrl = url || 'ablemusic.co/artist';
+
+  // Background — deep navy
+  ctx.fillStyle = '#0a0b10';
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle grain overlay via noise pattern
+  ctx.globalAlpha = 0.03;
+  for (let i = 0; i < W; i += 4) {
+    for (let j = 0; j < H; j += 4) {
+      const v = Math.random() > 0.5 ? 255 : 0;
+      ctx.fillStyle = `rgb(${v},${v},${v})`;
+      ctx.fillRect(i, j, 2, 2);
+    }
+  }
+  ctx.globalAlpha = 1;
+
+  // Accent glow orb (top right)
+  const grd = ctx.createRadialGradient(W * 0.85, H * 0.18, 0, W * 0.85, H * 0.18, W * 0.45);
+  grd.addColorStop(0, accent + '28');
+  grd.addColorStop(1, 'transparent');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, W, H);
+
+  // ABLE wordmark (top left)
+  ctx.fillStyle = 'rgba(255,255,255,0.35)';
+  ctx.font = '500 36px "DM Sans", sans-serif';
+  ctx.fillText('ABLE', 80, 90);
+
+  // Accent rule
+  ctx.fillStyle = accent;
+  ctx.fillRect(80, 108, 60, 3);
+
+  // Artist name — large Barlow Condensed style
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `700 ${name.length > 12 ? '140' : '180'}px "Barlow Condensed", "Arial Narrow", Arial, sans-serif`;
+  ctx.letterSpacing = '-2px';
+
+  // Word-wrap name if long
+  const maxWidth = W - 160;
+  const words = name.split(' ');
+  let lines = [];
+  let current = '';
+  words.forEach(word => {
+    const test = current ? current + ' ' + word : word;
+    if (ctx.measureText(test).width > maxWidth && current) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = test;
+    }
+  });
+  if (current) lines.push(current);
+
+  const lineH = name.length > 12 ? 148 : 185;
+  const totalH = lines.length * lineH;
+  const startY = (H - totalH) / 2 + lineH * 0.35;
+  lines.forEach((line, i) => {
+    ctx.fillText(line, 80, startY + i * lineH);
+  });
+
+  // Genre tag
+  if (genre) {
+    const tag = genre.toUpperCase();
+    ctx.font = '600 28px "DM Sans", sans-serif';
+    ctx.fillStyle = accent;
+    ctx.fillText(tag, 80, startY + lines.length * lineH + 44);
+  }
+
+  // URL pill at bottom
+  const pillY = H - 120;
+  const pillX = 80;
+  const pillW = Math.min(ctx.measureText(displayUrl).width + 80, W - 160);
+  const pillH = 72;
+  ctx.fillStyle = 'rgba(255,255,255,0.07)';
+  roundRect(ctx, pillX, pillY - pillH + 14, pillW, pillH, 36);
+  ctx.fill();
+
+  ctx.font = '500 30px "DM Sans", sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.7)';
+  ctx.fillText(displayUrl, pillX + 32, pillY + 2);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function shareDay1Card() {
+  const canvas = document.getElementById('shareCardCanvas');
+  if (!canvas) return;
+
+  canvas.toBlob(function(blob) {
+    if (!blob) return;
+    const file = new File([blob], 'my-able-page.png', { type: 'image/png' });
+
+    // Try Web Share API (mobile — can share directly to Instagram/TikTok)
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({
+        files: [file],
+        text: 'I\'m on ABLE — find me here: ' + v2GetUrl(),
+      }).catch(function() { downloadShareCard(canvas); });
+    } else {
+      // Fallback: download the image
+      downloadShareCard(canvas);
+    }
+  }, 'image/png');
+}
+
+function downloadShareCard(canvas) {
+  const a = document.createElement('a');
+  a.download = 'my-able-page.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+  const btn = document.getElementById('v2ShareCardBtn');
+  if (btn) {
+    const orig = btn.innerHTML;
+    btn.textContent = 'Downloaded!';
+    setTimeout(function() { btn.innerHTML = orig; }, 2500);
   }
 }
 
@@ -1864,7 +2022,7 @@ function launchConfetti() {
   const ctx = canvas.getContext('2d');
   canvas.width  = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
-  const profile = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+  const profile = safeLS('able_v3_profile', {});
   const colors  = [profile.accent || '#f4b942', '#ffffff', '#f4b942', '#e05242', '#9b7cf4', '#7ec88a'];
   const pts = Array.from({length:70}, function() {
     return {
