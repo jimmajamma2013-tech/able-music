@@ -18,10 +18,9 @@
   <!-- Preload demo hero artwork — JS may override src once profile loads -->
   <link rel="preload" href="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75" as="image" fetchpriority="high" crossorigin="anonymous">
 
-  <!-- Preload critical display font -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap">
-  <!-- Eager: DM Sans (body) + Barlow Condensed (display) — Latin subset only -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap">
+  <!-- Async font load — non-blocking, display=swap prevents FOIT -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap"></noscript>
 
   <!-- Meta -->
   <meta name="description" id="meta-description" content="Artist profile powered by ABLE">
