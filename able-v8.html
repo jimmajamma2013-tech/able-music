@@ -3253,7 +3253,7 @@
     .close-circle-hero__link {
       font: var(--font-sans);
       font-size: 0.8125rem; /* 13px */
-      color: var(--color-text-3);
+      color: var(--color-text-2);
       text-decoration: none;
       letter-spacing: 0.01em;
       transition: color var(--dur-fast) var(--ease-decel);
@@ -5364,7 +5364,7 @@
 
           <!-- Copy your ABLE link — subtle utility -->
           <button class="hero__copy-link pressable" id="hero-copy-link"
-                  aria-label="Copy your ABLE link" hidden>
+                  hidden>
             <span class="hero__copy-prefix">ablemusic.co/</span><span id="hero-handle-display"></span>
           </button>
         </div>
@@ -5444,7 +5444,7 @@
           <div class="pills-track" id="pills-track"></div>
         </div>
         <button class="pills-more pressable" id="pills-more"
-                aria-expanded="false" aria-label="Show more links" hidden>
+                aria-expanded="false" hidden>
           <span id="pills-more-label">+0 more</span>
         </button>
       </section>
@@ -7574,6 +7574,7 @@
         moreBtn.hidden = false
         moreLabel.textContent = `+${overflow.length} more`
         moreBtn.setAttribute('aria-expanded', 'false')
+        moreBtn.setAttribute('aria-label', `+${overflow.length} more links`)
 
         moreBtn.addEventListener('click', () => {
           const expanded = moreBtn.getAttribute('aria-expanded') === 'true'
@@ -7583,6 +7584,7 @@
             extra.forEach(p => p.remove())
             moreBtn.setAttribute('aria-expanded', 'false')
             moreLabel.textContent = `+${overflow.length} more`
+            moreBtn.setAttribute('aria-label', `+${overflow.length} more links`)
           } else {
             // Expand inline — C10: staggered scale-in entrance (60ms per pill)
             overflow.forEach((platform, i) => {
@@ -7594,6 +7596,7 @@
             })
             moreBtn.setAttribute('aria-expanded', 'true')
             moreLabel.textContent = 'Less'
+            moreBtn.setAttribute('aria-label', 'Show fewer links')
           }
         }, { once: false })
       } else {
@@ -7867,6 +7870,7 @@
         .toLowerCase().replace(/[^a-z0-9]+/g, '-')
 
       handleDisplay.textContent = handle
+      btn.setAttribute('aria-label', 'Copy your ABLE link: ablemusic.co/' + handle)
       btn.hidden = false
 
       let copyTimeout = null
