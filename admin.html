@@ -4748,10 +4748,12 @@ if (!navigator.onLine) {
 }
 function relTime(ts) {
   const diff = Date.now() - ts;
-  if (diff < 60000)  return 'just now';
-  if (diff < 3600000) return Math.floor(diff/60000) + 'm ago';
+  if (diff < 60000)    return 'just now';
+  if (diff < 3600000)  return Math.floor(diff/60000) + 'm ago';
   if (diff < 86400000) return Math.floor(diff/3600000) + 'h ago';
-  return Math.floor(diff/86400000) + 'd ago';
+  if (diff < 604800000) return Math.floor(diff/86400000) + ' days ago'; // C4 #4 — < 7 days
+  // > 7 days: show locale date (e.g. "12 Mar")
+  try { return new Date(ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); } catch(_) { return Math.floor(diff/86400000) + 'd ago'; }
 }
 function escHtml(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
