@@ -1927,6 +1927,17 @@
       width: auto;
     }
 
+    /* C17 #7 — fan sign-up checkmark pop-in animation */
+    @keyframes _check-pop {
+      0%   { transform: scale(0.4); opacity: 0; }
+      60%  { transform: scale(1.25); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .fan-submit-check { display: inline-block; }
+    .fan-submit-check:not([hidden]) {
+      animation: _check-pop 380ms var(--ease-spring, cubic-bezier(0.34,1.56,0.64,1)) both;
+    }
+
     .fan-capture__error {
       margin-top: var(--sp-2);
       font-size: var(--text-sm);
@@ -2043,6 +2054,31 @@
         transform: translateY(-3px);
       }
     }
+    /* C17 #2 — release card skeletons */
+    @keyframes _skel-shimmer {
+      0%   { background-position: -200px 0; }
+      100% { background-position: calc(200px + 100%) 0; }
+    }
+    .release-card--skeleton {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      pointer-events: none;
+    }
+    .release-card--skeleton__art,
+    .release-card--skeleton__title,
+    .release-card--skeleton__sub {
+      background: linear-gradient(90deg, rgba(255,255,255,.04) 25%, rgba(255,255,255,.1) 50%, rgba(255,255,255,.04) 75%);
+      background-size: 400px 100%;
+      animation: _skel-shimmer 1.4s ease-in-out infinite;
+      border-radius: 6px;
+    }
+    .release-card--skeleton__art { width: 60px; height: 60px; flex-shrink: 0; border-radius: 8px; }
+    .release-card--skeleton__body { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .release-card--skeleton__title { height: 14px; width: 60%; }
+    .release-card--skeleton__sub   { height: 11px; width: 35%; }
 
     /* Large artwork — full width, ~70% of card height */
     .release-card__artwork-wrap {
@@ -3544,6 +3580,7 @@
       display: flex;
       scroll-snap-align: start;
       flex-direction: column;
+      position: relative;
       transition: transform var(--dur-fast) var(--ease-spring),
                   box-shadow var(--dur-fast) var(--ease-standard);
     }
@@ -3564,6 +3601,20 @@
       background: var(--color-surface);
     }
 
+    /* C17 #8 — snap card video embed */
+    .snap-card__video-wrap {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+      overflow: hidden;
+    }
+    .snap-card__video {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
     /* No image: show a tinted accent block as visual anchor */
     .snap-card__image-placeholder {
       width: 100%;
@@ -3571,6 +3622,32 @@
       background: rgba(var(--color-accent-rgb), 0.08);
       border-bottom: 1px solid rgba(var(--color-accent-rgb), 0.15);
     }
+
+    /* C17 #1 — snap card drag handle */
+    .snap-card__drag-handle {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 6px;
+      cursor: grab;
+      opacity: 0;
+      transition: opacity .15s ease;
+      z-index: 2;
+    }
+    .snap-card__drag-handle span {
+      display: block;
+      width: 14px;
+      height: 2px;
+      background: rgba(232,233,240,.55);
+      border-radius: 1px;
+    }
+    .snap-card:hover .snap-card__drag-handle,
+    .snap-card:focus-within .snap-card__drag-handle { opacity: 1; }
+    .snap-card.dragging { opacity: .5; transform: scale(.97); }
+    .snap-card.drag-over { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 
     .snap-card__body {
       padding: var(--sp-4);
@@ -4037,6 +4114,25 @@
       font-weight: 700;
       letter-spacing: 0.04em;
       text-transform: uppercase;
+    }
+    /* C17 #6 — sold-out badge */
+    .merch-item__sold-out {
+      position: absolute;
+      top: var(--sp-2);
+      left: var(--sp-2);
+      padding: 2px var(--sp-2);
+      background: rgba(30,30,40,.75);
+      color: rgba(232,233,240,.6);
+      border-radius: var(--r-pill);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      backdrop-filter: blur(4px);
+    }
+    .merch-item--sold-out {
+      opacity: .55;
+      cursor: default;
+      pointer-events: none;
     }
 
     /* Price overlays the bottom of the product image */
@@ -5811,7 +5907,23 @@
         <header class="section-header">
           <h2 class="section-title" id="listen-heading">My music</h2>
         </header>
-        <div class="releases-list" id="releases-list" role="list"></div>
+        <!-- C17 #2 — skeleton cards shown while IntersectionObserver defers renderListenSection -->
+        <div class="releases-list" id="releases-list" role="list">
+          <div class="release-card release-card--skeleton" aria-hidden="true">
+            <div class="release-card--skeleton__art"></div>
+            <div class="release-card--skeleton__body">
+              <div class="release-card--skeleton__title"></div>
+              <div class="release-card--skeleton__sub"></div>
+            </div>
+          </div>
+          <div class="release-card release-card--skeleton" aria-hidden="true">
+            <div class="release-card--skeleton__art"></div>
+            <div class="release-card--skeleton__body">
+              <div class="release-card--skeleton__title"></div>
+              <div class="release-card--skeleton__sub"></div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- ======================================================
@@ -10552,14 +10664,35 @@
         }
 
         const hasImg = Boolean(card.imageUrl)
+        // C17 #8 — video embed: when card.type === 'video' and card.videoUrl, render iframe
+        const _hasVideo8 = card.type === 'video' && card.videoUrl
+        let _videoIframe8 = ''
+        if (_hasVideo8) {
+          let _vSrc8 = ''
+          try {
+            const _vu8 = new URL(card.videoUrl)
+            if (_vu8.hostname.includes('youtube.com') || _vu8.hostname.includes('youtu.be')) {
+              const _vid8 = _vu8.searchParams.get('v') || _vu8.pathname.split('/').pop()
+              if (_vid8) _vSrc8 = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(_vid8) + '?rel=0&modestbranding=1'
+            } else if (_vu8.hostname.includes('vimeo.com')) {
+              const _vimId8 = _vu8.pathname.replace(/\D/g, '')
+              if (_vimId8) _vSrc8 = 'https://player.vimeo.com/video/' + encodeURIComponent(_vimId8) + '?dnt=1'
+            }
+          } catch (_) {}
+          if (_vSrc8) {
+            _videoIframe8 = `<div class="snap-card__video-wrap"><iframe class="snap-card__video" src="${_vSrc8}" title="${escHtml(card.title || 'Video')}" loading="lazy" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`
+          }
+        }
         const safeCtaUrl = card.ctaUrl && isSafeUrl(card.ctaUrl) ? escHtml(card.ctaUrl) : ''
         el.innerHTML = `
-          ${hasImg
-            ? `<img class="snap-card__image" src="${escHtml(card.imageUrl)}"
-                         alt="${escHtml(card.alt || card.title || '')}"
-                         loading="lazy" width="220" height="220"
-                         onerror="this.style.cssText='aspect-ratio:1;background:var(--color-accent,.88);opacity:.18;border-radius:inherit;display:block';this.alt=''">`
-            : `<div class="snap-card__image-placeholder" aria-hidden="true"></div>`
+          ${_hasVideo8 && _videoIframe8
+            ? _videoIframe8
+            : hasImg
+              ? `<img class="snap-card__image" src="${escHtml(card.imageUrl)}"
+                           alt="${escHtml(card.alt || card.title || '')}"
+                           loading="lazy" width="220" height="220"
+                           onerror="this.style.cssText='aspect-ratio:1;background:var(--color-accent,.88);opacity:.18;border-radius:inherit;display:block';this.alt=''"> `
+              : `<div class="snap-card__image-placeholder" aria-hidden="true"></div>`
           }
           <div class="snap-card__body">
             ${card.title ? `<h3 class="snap-card__title">${escHtml(card.title)}</h3>` : ''}
@@ -10575,6 +10708,48 @@
         if (card.ctaLabel && safeCtaUrl) {
           const ctaEl = el.querySelector('.snap-card__cta')
           if (ctaEl) ctaEl.addEventListener('click', () => trackClick(card.ctaLabel, 'snap', 'snap-cards'))
+        }
+        // C17 #1 — drag-to-reorder: owner only, ≥2 cards
+        if (isOwner && cards.length >= 2) {
+          el.draggable = true
+          el.dataset.snapId = card.id || String(idx)
+          const _dh1 = document.createElement('div')
+          _dh1.className = 'snap-card__drag-handle'
+          _dh1.setAttribute('aria-hidden', 'true')
+          _dh1.innerHTML = '<span></span><span></span><span></span>'
+          el.insertBefore(_dh1, el.firstChild)
+          el.addEventListener('dragstart', function(e) {
+            e.dataTransfer.effectAllowed = 'move'
+            e.dataTransfer.setData('text/plain', el.dataset.snapId)
+            el.classList.add('dragging')
+          })
+          el.addEventListener('dragend', function() { el.classList.remove('dragging') })
+          el.addEventListener('dragover', function(e) {
+            e.preventDefault()
+            e.dataTransfer.dropEffect = 'move'
+            el.classList.add('drag-over')
+          })
+          el.addEventListener('dragleave', function() { el.classList.remove('drag-over') })
+          el.addEventListener('drop', function(e) {
+            e.preventDefault()
+            el.classList.remove('drag-over')
+            const _fromId = e.dataTransfer.getData('text/plain')
+            const _toId = el.dataset.snapId
+            if (_fromId === _toId) return
+            try {
+              const _pSnap = safeLS('able_v3_profile', {})
+              const _sArr = _pSnap.snapCards || []
+              const _fi = _sArr.findIndex(c => (c.id || '') === _fromId)
+              const _ti = _sArr.findIndex(c => (c.id || '') === _toId)
+              if (_fi === -1 || _ti === -1) return
+              const _moved = _sArr.splice(_fi, 1)[0]
+              _sArr.splice(_ti, 0, _moved)
+              _sArr.forEach((c, i) => { c.sortOrder = i })
+              _pSnap.snapCards = _sArr
+              setLS('able_v3_profile', _pSnap)
+              renderSnapCards(_pSnap)
+            } catch (_) {}
+          })
         }
         track.appendChild(el)
       })
@@ -10636,6 +10811,7 @@
                 : ''
             }
             ${item.badge ? `<span class="merch-item__badge">${escHtml(item.badge)}</span>` : ''}
+            ${item.soldOut ? `<span class="merch-item__sold-out" aria-label="Sold out">Sold out</span>` : ''}
             ${item.imageUrl && priceStr ? `<div class="merch-item__price-overlay" aria-hidden="true">${escHtml(priceStr)}</div>` : ''}
           </div>
           <div class="merch-item__info">
@@ -10643,8 +10819,11 @@
             ${(!item.imageUrl && priceStr) ? `<p class="merch-item__price">${escHtml(priceStr)}</p>` : ''}
           </div>
         `
-
-        if (item.url) {
+        // C17 #6 — sold-out: disable tap-to-buy, mark as inert
+        if (item.soldOut) {
+          el.classList.add('merch-item--sold-out')
+          el.setAttribute('aria-disabled', 'true')
+        } else if (item.url) {
           el.setAttribute('tabindex', '0')
           el.setAttribute('role', 'button')
           el.setAttribute('aria-label', `${item.title || 'Item'} — ${priceStr}. Open in shop.`)
