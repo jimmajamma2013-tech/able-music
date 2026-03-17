@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-16 (session 13 — ai-copy P0 + email consent + fan.html polish) | Update this file at the end of every session.**
+**Updated: 2026-03-17 (session 14 — clips V1, PostHog, tier gates, UTM, Ticketmaster, Linktree, dashboard hierarchy, landing doctrine, context/build process overhaul) | Update this file at the end of every session.**
 
 ---
 
@@ -123,6 +123,13 @@
 - [x] Support note copy — explicit "0% ABLE cut, Stripe fee only" (§10 compliance)
 - [x] Copy compliance: snap card lock overlay — removed "Unlock" (banned word)
 - [x] C7 gig badge glow pulse confirmed (badge-glow-pulse keyframe on .hero__state-chip--gig::after)
+- [x] **V8** Clips section — YouTube Short + TikTok embeds, V1 iframe containment, `able_clips` localStorage
+- [x] **V8** Auto-gig mode from shows list — activates at doors time, expires 4h after show start
+- [x] **V8** UTM source links (`?src=instagram`, `?src=tiktok`) rendered in owner bar
+- [x] **V8** PostHog: `page_viewed`, `cta_tapped`, `fan_signed_up` events
+- [x] **V8** SEO P0: og:image https:// guard, meta description id, canonical tag
+- [x] **V8** Fan limit banner copy — "almost full" at 95 fans (not "full")
+- [x] **V8** Embed chrome suppression + top card preview in owner view
 - [x] D15 platform pill first-load shimmer confirmed (session-flagged, .pill-shimmer-once)
 - [x] prefers-reduced-motion CSS throughout confirmed
 - [x] touch-action: manipulation on * confirmed
@@ -152,6 +159,22 @@
 - [x] **V8** `migrateWizardKey()` IIFE: reads `able_profile`, merges into `able_v3_profile`, removes legacy key
 - [x] **V8** Greeting system §5.2: `countFansAfterTimestamp()`, `buildGreetingSub()`, `applyGreeting()` — full 8-branch context-aware system (gig active / pre-release countdown / live window / post-gig "Last night at {venue}. {N} fans joined." / default). First-ever visit path: "Good to meet you." + 2.5s fade to contextual sub.
 - [x] **V8** Upgrade bar fan count: `updateUpgradeBar()` shows "47 of 100 fans." when fans > 0, "Nearly there." when ≥80 — replaces generic "Free plan." text
+- [x] **V8** Clips management panel — add/delete/reorder YouTube Short + TikTok embeds, stored in `able_clips`
+- [x] **V8** Dashboard hierarchy + Campaign HQ authority — visual weight, consequence copy, stats intelligence
+- [x] **V8** Campaign HQ consequence copy + light theme depth fixes
+- [x] **V8** Mobile layout: 2×2 stats grid, topbar overflow, ghost btn contrast — confirmed at 375px
+- [x] **V8** UTM copy links for Instagram and TikTok bios (`?src=instagram`, `?src=tiktok`)
+- [x] **V8** `derivePlatformFromUrl()` — stores `platform` + `platformId` on release paste (Spotify/Apple/SC)
+- [x] **V8** Artist-success P0.1+P0.2 — `admin_visit_dates` tracking + day-0 bio nudge card
+- [x] **V8** `checkTierGate()` infrastructure + gold lock CSS across all Pro/Label-gated features
+- [x] **V8** Ticketmaster import wired in world map — `ticketmaster-import.js` Netlify function
+- [x] **V8** World map focus trap + keyboard navigation (WCAG 2.2)
+- [x] **V8** Fan cap enforcement in admin + progress bar with ARIA live region
+- [x] **V8** Embed chrome suppression + performance budget enforcement + top card preview
+- [x] **V8** oEmbed POST support + Mixcloud autofill via oembed-proxy
+- [x] **V8** SEO/OG P0 gaps closed (og:image https:// guard, meta description id, canonical)
+- [x] **V8** UI/accessibility P0 bugs closed (focus ring glow pattern, contrast ratios, tap targets)
+- [x] **V8** PostHog P0 — init + 3 core events (page_viewed, cta_tapped, fan_signed_up) in able-v7.html
 
 ### start.html (Onboarding Wizard)
 - [x] Pre-step 0: Spotify/music link import
@@ -162,6 +185,10 @@
 - [x] Live preview phone (Reel slot, snap cards, music, merch)
 - [x] E10 progress bar spring easing (--spring, 0.55s)
 - [x] Copy compliance: wizard step 0 message — removed "Let's get started" → "A few details first"
+- [x] **V8** Step order swapped — objective selection before identity (vibe/feel)
+- [x] **V8** Personalised done screen — "Found you on Spotify" beat + artist's chosen state reflected in sub-line
+- [x] **V8** Linktree import — `?import=linktree` param + `linktree-import.js` Netlify function
+- [x] **V8** PostHog wizard events — step_completed, onboarding_complete
 
 ### landing.html
 - [x] Marketing landing page
@@ -174,20 +201,30 @@
 - [x] Google OAuth hero button removed — ABLE uses magic link only (§2.7); unused CSS cleaned up
 - [x] Copy compliance: free tier CTA — "Get started free" → "Your page is free →"
 - [x] Copy compliance: FAQ — removed "convert" (banned word)
+- [x] **V8** Competitive feature comparison table (P0.2)
+- [x] **V8** Doctrine compliance pass — missing sections added, legal blockers resolved
+- [x] **V8** Copy quality pass — banned phrases, marquee removed, FAQ rewritten
+- [x] **V8** `og-landing.png` — 1200×630 OG image generated via Playwright, deployed to `assets/og/`
 
 ---
 
 ## In progress / planned next
 
-### High priority
-- [x] Fan dashboard (fan.html) — Following feed (Today/This week), Discover (Emerging/Connected/By vibe/Just dropped), Near me — copy-compliant, demo data, spec-aligned
-- [x] A4/A11 sticky hero collapse + artist name compression — DONE
+### Open (genuine blockers)
+- [ ] **Fan confirmation email URL param** — `?artist=slug&ref=email-confirm` in fan-confirmation.js (2 lines — unlocks fan activation chain)
+- [ ] **GDPR front-end disclosure** — visible consent text before fan sign-up submit (Article 7)
+- [ ] **Near me location** — hardcoded to London in fan.html, needs real capture
+- [ ] **PWA icons on real devices** — verify home screen install on iPhone
+- [ ] **og-default.jpg** — needs creation in Figma + deploy (James's task)
+- [ ] **RESEND_API_KEY** — set in Netlify env vars at resend.com + netlify.com (James's task)
 
-### Medium priority
+### Phase 2 (post-launch)
 - [ ] Supabase auth (magic link — so artists own data, not just localStorage)
-- [ ] Press pack / EPK auto-generation
-- [ ] Freelancer profile (freelancer.html) — spec at `docs/v6/operational/FREELANCER_SPEC.md`
-- [ ] Netlify deploy + ablemusic.co DNS
+- [ ] freelancer.html — spec complete at `docs/pages/freelancer/DESIGN-SPEC.md`
+- [ ] fan.html real data (currently demo-only, needs Supabase `fan_follows` + `moments` tables)
+- [ ] Close Circle + Stripe wiring
+- [ ] Email broadcasts (Resend bulk send, Artist Pro tier)
+- [ ] Netlify deploy + ablemusic.co DNS (main branch merge — needs James sign-off)
 
 ### Future (Year 2+)
 - [ ] PostHog analytics integration
@@ -210,6 +247,23 @@
 - ~~**"Preview your page →" link**~~: ✅ `topbarViewBtn` wired — `href` updated with artist handle in `renderProfile()`.
 
 ---
+
+## Last session summary (session 14 — build process overhaul + context system)
+
+Complete overhaul of the AI agent build process. No HTML changes this session — infrastructure only.
+
+Key changes:
+- **CONTEXT.md complete rewrite** — 324 lines added. Correct authority chain (V8 primary), V8_BUILD_AUTHORITY.md properly elevated from "strategic reference" to top of chain. Added: P0 killer features, locked decisions, 11/10 verbatim copy strings, growth strategy, phase 2 do-not-build list, rendering law, AI system prompt prefix, never-build-ever list
+- **Stale P0 backlog cleared** — removed 6 already-done items (dash-t3 WCAG, first-fan moment, og:image fix, copy audit, campaign descriptions, credits handle). Added "already done" section to prevent re-fixing
+- **347 new files committed** — all previously untracked docs now in git: rules/javascript.md, docs/solutions/, docs/features/INDEX.md, docs/systems/ui/SPEC.md, docs/systems/ux/SPEC.md, docs/GPT-REVIEW/, MASTER.md, PROJECT_INDEX.md, START-BUILDING.md, AGENTS.md, KNOWLEDGE.md
+- **MASTER.md corrected** — active file table pointed at able-v6.html, fixed to able-v7.html
+- **CLAUDE.md rule 10 updated** — V8 strategy docs are primary authority, not V6_BUILD_AUTHORITY.md
+
+**Open after session 14:**
+- Fan confirmation email URL param (2-line fix, highest priority)
+- GDPR front-end disclosure text
+- og-default.jpg creation (Figma task — James)
+- RESEND_API_KEY in Netlify env (James)
 
 ## Last session summary (session 13 — ai-copy P0 + email consent + fan.html polish)
 P0 sweep continued. All code-implementable P0 items from PATH-TO-10 files now complete. Draft deployed.
