@@ -567,11 +567,18 @@ body::before {
 .ai-time { font-size:10px; color:var(--dash-t3); }
 
 /* ── MILESTONE CARD ── */
+@keyframes milestoneEnter {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
 .milestone-card {
   display:flex; align-items:center; gap:12px;
   padding:14px 16px; border-radius:12px; margin-bottom:16px;
   background:rgba(var(--acc-rgb),0.08); border:1px solid rgba(var(--acc-rgb),0.2);
   transition:opacity 0.4s;
+}
+.milestone-card:not([hidden]) {
+  animation: milestoneEnter 0.35s var(--ease) both;
 }
 .milestone-icon { font-size:18px; flex-shrink:0; color:var(--acc); }
 .milestone-text { flex:1; font-size:13px; font-weight:500; color:var(--dash-text); }
