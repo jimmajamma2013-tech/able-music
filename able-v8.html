@@ -8748,7 +8748,7 @@
             : null
           let _momentId = null
           if (campaignState === 'gig' || campaignState === 'gig-post') {
-            const _gigShows = JSON.parse(localStorage.getItem('able_shows') || '[]')
+            const _gigShows = safeLS('able_shows', [])
             const _featuredShow = _gigShows.find(function(s) { return s.featured; }) || _gigShows[0] || null
             _momentId = _featuredShow ? (_featuredShow.id || _featuredShow.venue || null) : null
           }
@@ -8919,7 +8919,7 @@
             : null
           let _momentId2 = null
           if (campaignState2 === 'gig' || campaignState2 === 'gig-post') {
-            const _gigShows2 = JSON.parse(localStorage.getItem('able_shows') || '[]')
+            const _gigShows2 = safeLS('able_shows', [])
             const _featuredShow2 = _gigShows2.find(function(s) { return s.featured; }) || _gigShows2[0] || null
             _momentId2 = _featuredShow2 ? (_featuredShow2.id || _featuredShow2.venue || null) : null
           }
