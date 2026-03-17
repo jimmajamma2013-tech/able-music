@@ -148,6 +148,9 @@
 [hidden] { display: none !important; }
 /* ── SCREEN-READER ONLY ── */
 .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+/* ── SKIP LINK (I6 #1–3) ── */
+.skip-link { position:absolute; top:-100%; left:8px; z-index:9999; background:var(--dash-card); color:var(--dash-text); padding:8px 16px; border-radius:var(--r-sm); font-size:13px; font-weight:600; border:2px solid var(--acc); text-decoration:none; transition:top 0.15s; }
+.skip-link:focus-visible { top:8px; box-shadow:none; }
 *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
 html { font-size:16px; }
 /* ── FOCUS VISIBILITY (WCAG 2.2 AA) ── */
@@ -166,6 +169,19 @@ html { font-size:16px; }
     scroll-behavior:           auto   !important;
   }
 }
+
+/* ── HIGH CONTRAST (C10 #23–26) ── */
+@media (prefers-contrast: more) {
+  :root {
+    --dash-t2: #404040;   /* raised from #555 — improves small-text contrast */
+    --dash-t3: #444444;   /* raised from #595 — raised for body-size labels */
+  }
+  *:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--dash-bg), 0 0 0 4px #0d0e1a, 0 0 0 6px rgba(13,14,26,0.35);
+  }
+}
+
 body {
   background:var(--dash-bg); color:var(--text);
   font-family:var(--font); min-height:100vh;
@@ -2390,6 +2406,7 @@ body::before {
     </script>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to main content</a>
 
 <!-- ── SIDEBAR ── -->
 <aside class="sidebar">
@@ -2484,7 +2501,7 @@ body::before {
 </aside>
 
 <!-- ── MAIN ── -->
-<main class="main">
+<main class="main" id="main">
 
   <!-- TOP BAR -->
   <div class="topbar">
