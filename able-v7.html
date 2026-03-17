@@ -1089,14 +1089,16 @@
     /* Gig pulsing dot — implemented via ::before pseudo-element in Checkpoint 5 */
 
     /* Artist name — poster-grade type treatment */
-    /* Cross-document view transition — Chrome 126+ progressive enhancement */
-    @view-transition { navigation: auto; }
+    /* Cross-document view transitions — Chrome 126+ progressive enhancement */
+    @supports (view-transition-name: none) {
+      @view-transition { navigation: auto; }
+      .hero__name { view-transition-name: artist-name; }
+    }
 
     .hero__name {
       position: relative; /* required for H4 gloss ::after */
       overflow: hidden;   /* clip gloss sweep to text bounds */
       font-family: var(--font-d);
-      view-transition-name: artist-name;
       font-size: var(--text-hero);
       font-weight: var(--font-d-weight);
       font-style: var(--font-d-style);
@@ -4302,7 +4304,9 @@
       text-decoration: none;
       letter-spacing: 0.04em;
       transition: color var(--dur-fast) var(--ease-standard);
-      view-transition-name: able-logo;
+    }
+    @supports (view-transition-name: none) {
+      .footer-able-link { view-transition-name: able-logo; }
     }
 
     .footer-able-link:hover { color: var(--color-text-2); }

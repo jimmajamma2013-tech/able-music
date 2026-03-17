@@ -137,8 +137,10 @@ body::before {
   color:var(--text); margin-bottom:12px;
 }
 /* P1-4: Cross-document view transition — artist name morphs into hero on profile */
-@view-transition { navigation: auto; }
-#stepDone .step-title { view-transition-name: artist-name; }
+@supports (view-transition-name: none) {
+  @view-transition { navigation: auto; }
+  #stepDone .step-title { view-transition-name: artist-name; }
+}
 .step-sub {
   font-size:15px; line-height:1.65;
   color:var(--t2); margin-bottom:36px;

@@ -113,11 +113,13 @@ body::before {
 .sb-logo-type {
   font-family:var(--font-d); font-size:22px; font-weight:700;
   letter-spacing:.08em; color:#fff;
-  view-transition-name: able-logo;
 }
 
-/* Cross-document view transition — Chrome 126+ progressive enhancement */
-@view-transition { navigation: auto; }
+/* Cross-document view transitions — Chrome 126+ progressive enhancement */
+@supports (view-transition-name: none) {
+  .sb-logo-type { view-transition-name: able-logo; }
+  @view-transition { navigation: auto; }
+}
 
 .sb-artist {
   display:flex; align-items:center; gap:10px;
