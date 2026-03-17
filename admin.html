@@ -2848,7 +2848,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
           <div class="gig-dot"></div>
           <div class="gig-info">
             <div class="gig-label">Gig tonight</div>
-            <div class="gig-hint" id="gigHint">Flip this on show day — puts tickets front and centre. Auto-expires in 24 hrs.</div>
+            <div class="gig-hint" id="gigHint">Switch this on show day — puts tickets front and centre. Auto-expires in 24 hrs.</div><!-- C19 #37 -->
           </div>
           <button class="gig-toggle" id="gigToggle" type="button"
                   role="switch" aria-checked="false"
@@ -4838,6 +4838,7 @@ function initGigToggle() {
         btn.classList.remove('active');
         if (note) note.hidden = true;
         if (typeof renderTimelineArc === 'function') renderTimelineArc();
+        adminTrackClick('gig-mode-off', 'admin', 'campaign') // C19 #13
       } else {
         // Activate: 24h expiry + stateOverride = 'gig'
         const exp = Date.now() + 24 * 3600 * 1000;
@@ -4848,6 +4849,7 @@ function initGigToggle() {
         btn.classList.add('active');
         if (note) note.hidden = false;
         if (typeof renderTimelineArc === 'function') renderTimelineArc();
+        adminTrackClick('gig-mode-on', 'admin', 'campaign') // C19 #13
       }
     });
   }
@@ -5031,6 +5033,19 @@ function removeShow(idOrIndex) {
 }
 
 /* ── HELPERS ── */
+// C19 #13/#14 — admin analytics tracking (PostHog + able_clicks log)
+function adminTrackClick(label, type, zone) {
+  try {
+    const clicks = safeLS('able_clicks', [])
+    clicks.push({ id: (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2)), label, type, zone, ts: Date.now(), admin: true })
+    if (clicks.length > 500) clicks.splice(0, clicks.length - 400) // cap
+    setLS('able_clicks', clicks)
+  } catch(_) {}
+  try {
+    if (typeof posthog !== 'undefined') posthog.capture('admin_action', { label, type, zone })
+  } catch(_) {}
+}
+
 function safeLS(key, fallback) {
   try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
   catch (e) { console.warn('[ABLE] localStorage parse error for "' + key + '"', e); return fallback; }
@@ -5336,7 +5351,7 @@ function renderFanBody() {
         <span class="source-badge ${src}">${src.toUpperCase()}</span>
         <span class="fan-time">${timeAgo}</span>
       </div>`;
-    }).join('') : '<div style="color:var(--dash-t2);font-size:12px;padding:4px 0;">When fans sign up on your page, they\'ll appear here.</div>';
+    }).join('') : '<div style="color:var(--dash-t2);font-size:12px;padding:4px 0;">When fans sign up on your page, they\'ll appear here. Your list. Your relationship. No algorithm in the way.</div>';/* C19 #32 */
   }
 
   const viewAll = document.getElementById('viewAllFansLink');
@@ -5627,6 +5642,7 @@ function saveCampaignHQ() {
   };
   const effectiveState = computeEffectiveState(updated);
   showToast(STATE_TOAST[effectiveState] || 'Saved.');
+  adminTrackClick('state-override-' + effectiveState, 'admin', 'campaign') // C19 #14
 
   // Visual save feedback
   const btn = document.querySelector('[onclick="saveCampaignHQ()"]');
@@ -5685,6 +5701,7 @@ function setGigActive(on, source) {
     const src = source === 'auto' ? 'Auto-activated from your shows.' : 'Active — expires in 24 hrs. Your tickets CTA is front and centre.';
     if (hint) hint.textContent = src;
     if (source !== 'auto') showToast('Gig mode on. Lasts 24 hours.'); // C11 #7
+    adminTrackClick('gig-mode-on', 'admin', 'campaign') // C19 #13
     updateChqPill('gig');
     tickGigCountdown(exp);
     // C11 #10 — 30-min expiry warning (check every 60s, fire once per session)
@@ -5701,10 +5718,11 @@ function setGigActive(on, source) {
     if (window._gigExpiryWatcher) { clearInterval(window._gigExpiryWatcher); window._gigExpiryWatcher = null; }
     setLS(GIG_KEY, 0);
     localStorage.removeItem('able_gig_source');
-    if (hint) hint.textContent = 'Flip this on show day — puts tickets front and centre. Auto-expires in 24 hrs.';
+    if (hint) hint.textContent = 'Switch this on show day — puts tickets front and centre. Auto-expires in 24 hrs.'; // C19 #37
     const data = safeLS(V3_KEY, {});
     updateChqPill(computeEffectiveState(data));
     clearGigCountdown();
+    adminTrackClick('gig-mode-off', 'admin', 'campaign') // C19 #13
   }
 }
 

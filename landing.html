@@ -870,7 +870,7 @@
       box-shadow: 0 1px 8px rgba(8,16,40,0.3), 0 1px 2px rgba(8,16,40,0.2);
       transition: border-color var(--dur-slow), box-shadow var(--dur-slow), transform var(--dur-slow) var(--spring);
     }
-    .feature-card:hover { border-color: var(--border-mid); box-shadow: 0 6px 20px rgba(8,16,40,0.45); transform: translateY(-3px); }
+    .feature-card:hover { border-color: var(--border-mid); box-shadow: 0 6px 24px rgba(8,16,40,0.5); transform: translateY(-4px); }/* C19 #46 — lift parity with pricing-card */
     .feature-card__icon {
       width: 32px; height: 32px; border-radius: var(--r-sm);
       background: rgba(var(--accent-rgb),0.1); border: 1px solid rgba(var(--accent-rgb),0.2);
@@ -945,7 +945,7 @@
     }
     .pricing-card:hover { border-color: var(--border-mid); box-shadow: 0 6px 24px rgba(8,16,40,0.5); transform: translateY(-2px); }
     .pricing-card--featured {
-      border-color: rgba(var(--accent-rgb),0.40);
+      border: 1.5px solid var(--accent); /* C19 #49 — explicit accent border not just ::before gradient */
       background: linear-gradient(160deg, rgba(var(--accent-rgb),0.09) 0%, var(--card) 50%);
       box-shadow: 0 0 0 1px rgba(var(--accent-rgb),0.2), 0 20px 60px rgba(var(--accent-rgb),0.18), 0 4px 16px rgba(8,16,40,0.4);
       transform: translateY(-12px);
@@ -1211,8 +1211,8 @@
     <div class="hero__copy">
       <div class="hero__eyebrow">Artist Before Label</div><!-- C14 #25 -->
       <h1 class="hero__headline">100 real fans<br>beat 10,000<br><em>strangers.</em></h1>
-      <p class="hero__sub hero__sub--long">Your page shifts with your moment.<br><br>Release day.<br><br>Tonight's gig.<br><br>What's dropping next.<br><br>Every fan who signs up — that email is yours.<br><br>Forever.</p>
-      <p class="hero__sub hero__sub--short">Release day. Gig night. What's next. Every fan email is yours. Forever.</p>
+      <p class="hero__sub hero__sub--long">Your fans leave your link in bio and never come back.<br><br>ABLE gives them somewhere worth returning to.<br><br>Your page shifts with the moment — release day, gig night, new drop.<br><br>Every fan who signs up — that contact is yours. Forever.</p>
+      <p class="hero__sub hero__sub--short">Your fans leave your link in bio and never come back. Give them somewhere worth returning to.</p><!-- C19 #31 #41 -->
 
       <div class="hero__platforms" role="list" aria-label="Compatible platforms">
         <span class="hero__platforms-label" aria-hidden="true">Connects to</span>
@@ -1225,10 +1225,10 @@
 
       <div class="hero__actions">
         <a href="start.html" class="btn-primary">Your page is free →</a>
-        <a href="able-v8.html" class="btn-ghost">See a live example</a>
+        <a href="able-v8.html" class="btn-ghost">See LUNA's page →</a><!-- C19 #44 -->
       </div>
 
-      <p class="hero__trust-line">No card required. Free forever. Join 1,200+ artists already on ABLE.</p>
+      <p class="hero__trust-line">No card required. Free forever. Join 1,200+ artists across 40+ countries already on ABLE.</p><!-- C19 #42 -->
       <p class="hero__micro">Live in 5 minutes<span class="micro-dot"></span>No platform cut<span class="micro-dot"></span>No lock-in</p>
       <p style="font-size:12px;color:var(--text-3);margin-top:10px;font-style:italic;">Built by an independent artist, for independent artists.</p>
     </div>
@@ -1873,6 +1873,20 @@
     <!-- Angle 17 — Fan entry point: one quiet door for fans who land here -->
     <p class="footer__fan-entry">Not an artist? <a href="fan.html" class="footer__fan-link">Find artists on ABLE →</a></p>
   </footer>
+  <!-- C19 #50 — Organization structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "ABLE Music",
+    "url": "https://ablemusic.co/",
+    "logo": "https://ablemusic.co/assets/og/og-landing.jpg",
+    "sameAs": [
+      "https://www.instagram.com/ablemusic",
+      "https://open.spotify.com/user/ablemusic"
+    ]
+  }
+  </script>
 
   <script>
     // Global error handlers (H9 #1-2)

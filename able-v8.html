@@ -7103,6 +7103,7 @@
           let dateStr = cellEl.dataset.date
           let dayMoments = moments.filter(function(m) { return m.date === dateStr })
           if (!dayMoments.length) return
+          trackClick(dateStr, 'calendar', 'world-map') // C19 #19
           wmSelectedDate = dateStr
           openWorldMapPanel(dayMoments, year, month, moments, featuredDate, dateStr)
         })
@@ -8185,7 +8186,7 @@
         })
       }
 
-      a.addEventListener('click', () => trackClick(platform.label || platform.name, 'platform'))
+      a.addEventListener('click', () => trackClick(platform.label || platform.name, 'platform', 'pills')) // C19 #16
 
       return a
     }
@@ -8920,6 +8921,8 @@
     let _lastClickTs  = 0
 
     function trackClick(label, type, url) {
+      // C19 #15 — suppress all events for owner/admin preview visits
+      if (isOwnerVisit()) return
       // Double-tap debounce: same label+type within 600ms = ignore (#19)
       const _key = label + '|' + type
       const _now = Date.now()
@@ -9053,7 +9056,7 @@
     function getUtmSource() {
       const params = new URLSearchParams(window.location.search)
       const ALLOWED = new Set(['instagram','tiktok','youtube','qr','email','email-confirm','other','spotify','twitter','fb','footer','direct'])
-      const ALIAS   = { reel:'instagram', story:'instagram', post:'instagram', bio:'direct', ig:'instagram' }
+      const ALIAS   = { reel:'instagram', story:'instagram', post:'instagram', bio:'direct', ig:'instagram', tt:'tiktok', yt:'youtube', sc:'soundcloud' } // C19 #23
       // Capture full UTM set in sessionStorage — all 5 params for attribution analysis (P1-W2 #23 / C2 #28)
       const _utmMedium   = params.get('utm_medium');   if (_utmMedium)   try { sessionStorage.setItem('_able_utm_medium',   _utmMedium.slice(0,100))   } catch(_) {}
       const _utmCampaign = params.get('utm_campaign'); if (_utmCampaign) try { sessionStorage.setItem('_able_utm_campaign', _utmCampaign.slice(0,100)) } catch(_) {}
@@ -9069,6 +9072,10 @@
         const clean = raw.trim().toLowerCase().slice(0, 100).replace(/[<>"']/g, '')  // G9 #14-15
         return ALIAS[clean] || (ALLOWED.has(clean) ? clean : 'direct')
       }
+      // C19 #25/#26 — UA-based detection for in-app browsers that strip referrers
+      const _ua = navigator.userAgent || ''
+      if (_ua.includes('Instagram')) return 'instagram'
+      if (_ua.includes('TikTok'))    return 'tiktok'
       // Referrer fallback — catches Instagram in-app browser when no URL param
       const ref = (document.referrer || '').toLowerCase()
       if (!ref) return 'direct'
@@ -9081,7 +9088,16 @@
       if (ref.includes('ablemusic.co'))                                       return 'footer'
       return 'other'
     }
-    const SESSION_SOURCE = getUtmSource()  // frozen at page load (G9 #11–12)
+    // C19 #22 — session source caching: resolve once, reuse across all events
+    const SESSION_SOURCE = (function() {
+      try {
+        const cached = sessionStorage.getItem('_able_src')
+        if (cached) return cached
+      } catch(_) {}
+      const resolved = getUtmSource()
+      try { sessionStorage.setItem('_able_src', resolved) } catch(_) {}
+      return resolved
+    })()  // frozen at page load (G9 #11–12)
 
     // === CHECKPOINT 4: MAIN CONTENT RENDERING ====================
 
@@ -9449,6 +9465,9 @@
 
           // Sync to Supabase (fire-and-forget — localStorage is the fallback)
           sbSyncFanSignup(email, signupSource, campaignState)
+
+          // C19 #12 — fan sign-up click event fires immediately after successful sign-up
+          trackClick('fan-signup', 'fan', 'capture')
 
           setTimeout(() => {
             // Switch to checkmark
