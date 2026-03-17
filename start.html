@@ -61,7 +61,7 @@
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
 /* iOS Safari zooms viewport on any input with font-size < 16px — defensive backstop (E5) */
 input, textarea, select { font-size: max(16px, 1rem); }
-html { scroll-behavior:smooth; }
+html { scroll-behavior:smooth; overscroll-behavior: none; }
 body {
   font-family: var(--font);
   background: var(--bg);

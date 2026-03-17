@@ -154,7 +154,7 @@
 *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
 /* iOS Safari zooms viewport on any input with font-size < 16px — defensive backstop (E5) */
 input, textarea, select { font-size: max(16px, 1rem); }
-html { font-size:16px; }
+html { font-size:16px; overscroll-behavior: none; }
 /* ── FOCUS VISIBILITY (WCAG 2.2 AA) ── */
 *:focus:not(:focus-visible) { outline: none; }
 *:focus-visible {
@@ -2259,6 +2259,8 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
   z-index: 1001;
   max-height: 80vh;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   transform: translateY(100%);
   transition: transform 0.3s var(--ease);
 }
@@ -4440,6 +4442,7 @@ function openAddShowSheet() {
         if (!errEl) {
           errEl = document.createElement('p');
           errEl.className = 'sheet-error';
+          errEl.setAttribute('role', 'alert');
           errEl.style.cssText = 'color:var(--dash-red);font-size:12px;margin:0 0 8px;';
           sheetBody.insertBefore(errEl, sheetBody.querySelector('.btn-save-show'));
         }
@@ -6919,7 +6922,7 @@ function ywOpenEditForm(id) {
     +   '<label class="yw-form-label" for="ywEditNote">Artist note (private)</label>'
     +   '<input class="yw-form-input" id="ywEditNote" type="text" value="' + escHtml(m.artistNote || '') + '" placeholder="Reminder or context for yourself">'
     + '</div>'
-    + '<div class="yw-form-error" id="ywEditError" style="display:none;color:#e05242;font-size:11px;margin-bottom:8px;"></div>'
+    + '<div class="yw-form-error" id="ywEditError" role="alert" style="display:none;color:#e05242;font-size:11px;margin-bottom:8px;"></div>'
     + '<div style="display:flex;gap:8px;">'
     +   '<button type="button" class="snap-btn" style="flex:1;text-align:center;" onclick="ywUpdateMoment(\'' + id + '\')">Save changes</button>'
     +   '<button type="button" class="snap-btn del" onclick="removeMoment(\'' + id + '\')">Delete</button>'
