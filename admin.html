@@ -4566,6 +4566,8 @@ function setLS(key, val) {
   catch (e) {
     if (e.name === 'QuotaExceededError') {
       showToast('Your device is running low on storage. Export your fans as CSV to free space.', 'amber');
+    } else if (e.name === 'SecurityError') {
+      // Safari private mode — localStorage is quota-zero; degrade silently (#P10-40)
     } else {
       console.error('[ABLE] localStorage write error for "' + key + '"', e);
     }

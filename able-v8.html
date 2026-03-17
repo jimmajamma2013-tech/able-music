@@ -6043,6 +6043,8 @@
       } catch (e) {
         if (e.name === 'QuotaExceededError') {
           showToast('Your device is running low on storage. Time to sync your data.', 'amber')
+        } else if (e.name === 'SecurityError') {
+          // Safari private mode — localStorage is quota-zero; degrade silently (#P10-40)
         } else {
           console.error('[ABLE] localStorage write error for "' + key + '"', e)
         }

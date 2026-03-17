@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Allow: /landing.html
+Allow: /privacy.html
+Allow: /terms.html
+
+# Artist profiles are dynamically routed via /:slug → able-v8.html
+# Allow indexing of artist profile pages
+Allow: /able-v8.html
+
+# Internal pages — do not index
+Disallow: /admin.html
+Disallow: /admin
+Disallow: /start.html
+Disallow: /start
+Disallow: /fan.html
+
+# Sitemap
+Sitemap: https://ablemusic.co/sitemap.xml
