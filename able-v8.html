@@ -97,6 +97,20 @@
       /* --r-sm/md/lg/xl computed by applyDerivedTokens() — defaults match indie rMult:1.0 */
       --r-sm: 4px; --r-md: 8px; --r-lg: 16px; --r-xl: 24px;
 
+      /* ── Z-Index Scale (A9) ──────────────────────────────────────
+         Ascending: base < card < sticky < dropdown < sheet < modal
+         < overlay < tooltip < toast. --z-skip always topmost.     */
+      --z-base:     1;     /* default stacking context */
+      --z-card:     10;    /* hover / active card elevation */
+      --z-sticky:   50;    /* tab bar, sticky headers */
+      --z-dropdown: 100;   /* menus, autocomplete, popovers */
+      --z-sheet:    200;   /* bottom sheets, drawers (lower) */
+      --z-modal:    300;   /* modals, overlay content (lower) */
+      --z-overlay:  9000;  /* full-screen backdrop overlays */
+      --z-tooltip:  9999;  /* tooltips — must clear all layers */
+      --z-toast:    9999;  /* toast — must clear all layers */
+      --z-skip:     9999;  /* skip-to-content link */
+
       /* Vibe letter spacing defaults (overridden per vibe) */
       --ls-d:     0em;
       --ls-label: 0.12em;
@@ -968,7 +982,7 @@
       inset: 0;
       background: rgba(var(--color-ambient), 1);
       pointer-events: none;
-      z-index: 9999;
+      z-index: var(--z-toast);
       animation: gig-flash 600ms var(--ease-decel) forwards;
     }
 
@@ -2437,7 +2451,7 @@
 
     /* ── MEDIA LIGHTBOX ──────────────────────────────────────── */
     .media-lightbox {
-      position: fixed; inset: 0; z-index: 9000;
+      position: fixed; inset: 0; z-index: var(--z-overlay);
       background: rgba(0,0,0,0.88);
       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       display: flex; align-items: center; justify-content: center;
@@ -4921,7 +4935,7 @@
     }
     /* Skip-link — keyboard accessibility */
     .skip-link {
-      position: absolute; top: -100%; left: 8px; z-index: 9999;
+      position: absolute; top: -100%; left: 8px; z-index: var(--z-skip);
       background: var(--color-surface); color: var(--color-text);
       padding: 11px 16px; border-radius: var(--r-md);
       font-size: var(--text-sm); font-weight: 600;
@@ -4935,7 +4949,7 @@
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 9999;
+      z-index: var(--z-toast);
       height: 44px;
       background: rgba(9,9,15,0.92);
       backdrop-filter: blur(12px);
@@ -5072,7 +5086,7 @@
       position: fixed;
       bottom: 88px;
       right: 16px;
-      z-index: 9999;
+      z-index: var(--z-tooltip);
       background: var(--color-card-raised);
       border-radius: var(--r-xl);
       display: flex;
@@ -5248,7 +5262,7 @@
     }
 
     /* === TOAST (error / network status) ======================== */
-    .able-toast { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-family: 'DM Sans', sans-serif; }
+    ; padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-family: 'DM Sans', sans-serif; }
     .able-toast--amber { background: rgba(var(--color-pro-amber-rgb),0.12); border-bottom: 1px solid rgba(var(--color-pro-amber-rgb),0.3); color: var(--color-pro-amber); }
     .able-toast--green  { background: rgba(52,199,89,0.12); border-bottom: 1px solid rgba(52,199,89,0.3); color: #34c759; }
     .able-toast--red    { background: rgba(255,69,58,0.12); border-bottom: 1px solid rgba(255,69,58,0.3); color: #ff453a; }
