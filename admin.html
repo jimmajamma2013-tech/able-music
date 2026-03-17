@@ -984,6 +984,13 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
 .gig-strip.active .gig-toggle { background:var(--gig); }
 .gig-strip.active .gig-toggle::after { transform:translateX(18px); background:#fff; }
 
+/* C5 #7 — Fan row starred flash */
+@keyframes fanStarFlash {
+  0%   { background: rgba(var(--dash-amber-rgb),.22); }
+  100% { background: transparent; }
+}
+.fan-list-row.star-flash { animation: fanStarFlash 600ms var(--ease) forwards; }
+
 /* D13 — Fan list row stagger-in on first reveal (40ms per row, first load only) */
 @keyframes fanRowIn {
   from { opacity: 0; transform: translateY(6px); }
@@ -1109,7 +1116,8 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
   transition:transform var(--dur) var(--spring), box-shadow var(--dur);
 }
 .gold-lock-overlay .glo-btn:hover { transform:translateY(-2px); box-shadow:var(--shadow-amber-lg); }
-.gold-lock .gold-blur { filter:blur(3px); pointer-events:none; user-select:none; }
+.gold-lock .gold-blur { filter:blur(3px); pointer-events:none; user-select:none; transition:filter .35s var(--ease); }
+.gold-lock:hover .gold-blur { filter:blur(1.5px); } /* C5 #19 — tease on hover */
 
 /* Tier badge in topbar */
 .tier-badge {
@@ -2778,6 +2786,15 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         <div class="gig-countdown" id="gigCountdown"><div class="gig-countdown-fill" id="gigCountdownFill"></div></div>
         <div class="gig-countdown-label" id="gigCountdownLabel"></div>
 
+        <!-- C5 #33 — Gig share button: copy tonight's link. Shown only when gig is active -->
+        <div id="gigShareRow" style="display:none;margin-top:10px;">
+          <button id="gigShareBtn" type="button"
+                  onclick="copyGigLink()"
+                  style="width:100%;background:none;border:1px solid rgba(var(--gig-rgb),.35);border-radius:var(--r-md);padding:8px 14px;font-size:12px;font-weight:600;color:var(--st-gig-t);cursor:pointer;font-family:var(--font);transition:background .2s;">
+            Share tonight's link →
+          </button>
+        </div>
+
         <!-- Auto-gig nudge: fires when a show is today but gig mode is not active -->
         <div id="autoGigNudge" style="display:none;margin-top:10px;padding:10px 14px;border-radius:var(--r-md);background:rgba(var(--acc-rgb),.07);border:1px solid rgba(var(--acc-rgb),.18);font-size:12px;color:var(--dash-t2);line-height:1.5;">
           <strong id="autoGigNudgeShow" style="color:var(--dash-text);font-size:13px;display:block;margin-bottom:4px;"></strong>
@@ -4172,6 +4189,9 @@ function renderFanList(filter) {
         setLS('able_fans', fans);
         btn.classList.toggle('starred', !!fan.isStarred);
         btn.setAttribute('aria-label', fan.isStarred ? 'Remove from close circle' : 'Mark as close');
+        // C5 #7 — brief highlight on the row when starred/unstarred
+        const row = btn.closest('.fan-list-row');
+        if (row) { row.classList.remove('star-flash'); void row.offsetWidth; row.classList.add('star-flash'); }
       }
     });
   });
@@ -5038,6 +5058,8 @@ function initCampaignHQ() {
     const hint  = document.getElementById('gigHint');
     if (strip) strip.classList.add('active');
     if (hint) hint.textContent = 'Active — expires in 24 hrs. Your tickets CTA is front and centre.';
+    const _shareRow = document.getElementById('gigShareRow');
+    if (_shareRow) _shareRow.style.display = ''; // C5 #33 — show share row on restore
     updateChqPill('gig');
     const descEl = document.getElementById('chqModeDesc');
     if (descEl) descEl.textContent = 'Your next show is front and centre. Expires in 24 hours automatically.';
@@ -5281,13 +5303,28 @@ function toggleGigHQ() {
   const isActive = strip.classList.contains('active');
   setGigActive(!isActive);
 }
+
+// C5 #33 — copy tonight's link for sharing
+function copyGigLink() {
+  const profile = safeLS(V3_KEY, {});
+  const handle  = profile.handle || '';
+  const url = handle
+    ? `https://ablemusic.co/${handle}?utm_source=tonight`
+    : `${location.origin}/able-v8.html?utm_source=tonight`;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('gigShareBtn');
+    if (btn) { btn.textContent = '✓ Link copied'; setTimeout(() => { btn.textContent = 'Share tonight\'s link →'; }, 2000); }
+  }).catch(() => { showToast('Copy failed — try again.'); });
+}
 function setGigActive(on, source) {
-  const strip  = document.getElementById('gigStrip');
-  const hint   = document.getElementById('gigHint');
-  const toggle = document.getElementById('gigToggle');
+  const strip    = document.getElementById('gigStrip');
+  const hint     = document.getElementById('gigHint');
+  const toggle   = document.getElementById('gigToggle');
+  const shareRow = document.getElementById('gigShareRow');
   if (!strip) return;
   strip.classList.toggle('active', on);
   if (toggle) toggle.setAttribute('aria-checked', on ? 'true' : 'false');
+  if (shareRow) shareRow.style.display = on ? '' : 'none'; // C5 #33
   if (on) {
     // §9.1 moment 3 — show gig mode nudge on first activation this session
     const gigNudge = document.getElementById('gigModeNudge');
@@ -7602,7 +7639,16 @@ function updateCompletenessBar() {
 
   if (pctEl)   pctEl.textContent = pct + '%';
   if (fillEl)  fillEl.style.width = pct + '%';
-  if (nudgeEl) nudgeEl.textContent = missing.length ? missing[0] : '';
+  // C5 #22 — append upgrade CTA to nudge when score < 30% and on free tier
+  const _tier22 = getCurrentTier();
+  if (nudgeEl) {
+    const _nudgeText = missing.length ? missing[0] : '';
+    if (_nudgeText && pct < 30 && _tier22 === 'free') {
+      nudgeEl.innerHTML = escHtml(_nudgeText) + ' <a href="#" onclick="showPage(\'home\');return false;" style="color:var(--dash-link);font-weight:600;white-space:nowrap;">Artist plan — £9/mo →</a>';
+    } else {
+      nudgeEl.textContent = _nudgeText;
+    }
+  }
 
   if (pct >= 100) {
     wrap.classList.add('complete');
@@ -7617,7 +7663,14 @@ function updateCompletenessBar() {
   const profileNudge = document.getElementById('profileCompletenessNudge');
   if (profilePct)   profilePct.textContent = pct + '%';
   if (profileFill)  profileFill.style.width = pct + '%';
-  if (profileNudge) profileNudge.textContent = missing.length ? missing[0] : '';
+  if (profileNudge) {
+    const _profileNudgeText = missing.length ? missing[0] : '';
+    if (_profileNudgeText && pct < 30 && _tier22 === 'free') {
+      profileNudge.innerHTML = escHtml(_profileNudgeText) + ' <a href="#" onclick="showPage(\'home\');return false;" style="color:var(--dash-link);font-weight:600;white-space:nowrap;">Artist plan — £9/mo →</a>';
+    } else {
+      profileNudge.textContent = _profileNudgeText;
+    }
+  }
   if (profileWrap)  pct >= 100 ? profileWrap.classList.add('complete') : profileWrap.classList.remove('complete');
 }
 
