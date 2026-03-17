@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-17 (session 14 — clips V1, PostHog, tier gates, UTM, Ticketmaster, Linktree, dashboard hierarchy, landing doctrine, context/build process overhaul) | Update this file at the end of every session.**
+**Updated: 2026-03-17 (session 15 — NEW-5, @supports view-transition guards, shared/tokens.css, all P0/P1/P2 items audited and confirmed | session 14 — clips V1, PostHog, tier gates, UTM, Ticketmaster, Linktree, dashboard hierarchy, landing doctrine, context/build process overhaul) | Update this file at the end of every session.**
 
 ---
 
@@ -175,6 +175,10 @@
 - [x] **V8** SEO/OG P0 gaps closed (og:image https:// guard, meta description id, canonical)
 - [x] **V8** UI/accessibility P0 bugs closed (focus ring glow pattern, contrast ratios, tap targets)
 - [x] **V8** PostHog P0 — init + 3 core events (page_viewed, cta_tapped, fan_signed_up) in able-v7.html
+- [x] **S15** NEW-5 first-run checklist exit animation — `markFrcDone()` adds `.completing` (reverse 250ms) before `.done`
+- [x] **S15** `@supports (view-transition-name: none)` guard on all 3 files (able-v7.html, admin.html, start.html)
+- [x] **S15** P2.3 sidebar QR: `renderSbQR()` + `downloadSbQR()` — accent-coloured, 120px, `?src=qr` tracking
+- [x] **S15** `shared/tokens.css` created — canonical source of truth for easing, spacing, radius, Surface 1+2 tokens
 
 ### start.html (Onboarding Wizard)
 - [x] Pre-step 0: Spotify/music link import
