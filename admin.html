@@ -4730,6 +4730,9 @@ function evaluateNudge() {
       const visits = safeLS('admin_visit_dates', []);
       if (visits.length === 1 && !dismissed.includes('bio-nudge')) {
         const profile = safeLS('able_v3_profile', {});
+        // C3 #18 — only share nudge when profile is >= 60% complete (name+bio = 35%, CTAs = 20%, artwork = 20%)
+        const _pctComplete = (profile.name ? 15 : 0) + (profile.bio ? 20 : 0) + (profile.artworkUrl ? 20 : 0) + ((profile.ctaPrimary?.url || profile.ctaSecondary?.url) ? 20 : 0) + ((profile.releases?.length || profile.releaseName) ? 15 : 0);
+        if (_pctComplete < 60) return null;
         const name = profile.name || 'artist';
         const handle = (name.toLowerCase().replace(/[^a-z0-9]+/g, '-')) || 'you';
         return {
