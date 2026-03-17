@@ -193,7 +193,7 @@ When backend is added:
 7. **Commit after each logical chunk** with descriptive message
 8. **Run Playwright smoke tests** after major changes (Playwright MCP is configured)
 9. **Never add cheesy copy** — re-read the copy philosophy above before every text change
-10. **Always check `docs/v6/core/V6_BUILD_AUTHORITY.md`** before deciding what to build next — it is the primary authority for all v6 decisions
+10. **V8 strategy docs are primary** — check `docs/pages/[page]/DESIGN-SPEC.md` and relevant `docs/systems/*/SPEC.md` first. Use `docs/v6/core/V6_BUILD_AUTHORITY.md` as fallback only when V8 docs are silent on a decision.
 
 ---
 
