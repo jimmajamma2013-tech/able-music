@@ -1937,6 +1937,13 @@
     .fan-submit-check:not([hidden]) {
       animation: _check-pop 380ms var(--ease-spring, cubic-bezier(0.34,1.56,0.64,1)) both;
     }
+    @media (prefers-reduced-motion: reduce) {
+      .fan-submit-check:not([hidden]) { animation: none; }
+      .snap-card.dragging { opacity: .5; transform: none; }
+      .release-card--skeleton__art,
+      .release-card--skeleton__title,
+      .release-card--skeleton__sub { animation: none; background: rgba(255,255,255,.07); }
+    }
 
     .fan-capture__error {
       margin-top: var(--sp-2);
@@ -2520,6 +2527,20 @@
       transition: color var(--dur-fast);
     }
     .release-card__able-open:hover { color: var(--color-text); }
+
+    /* C18 #49 — "Out now" badge on featured live release */
+    .release-out-now-badge {
+      display: inline-block;
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 2px 7px;
+      border-radius: var(--r-sm);
+      background: rgba(var(--color-accent-rgb), 0.18);
+      color: var(--color-accent);
+      margin-bottom: 4px;
+    }
 
     /* ── RELEASE CARD — Stream/Watch buttons + type badge ───── */
     .release-type-badge {
@@ -3124,6 +3145,7 @@
     .wm-cell:nth-child(7n) { border-right: none; }
 
     .wm-cell--empty { cursor: default; }
+    .wm-cell--no-shows { cursor: default; } /* C18 #48 — days with no events are non-interactive */
 
     @media (hover: hover) and (pointer: fine) {
       .wm-cell:not(.wm-cell--empty):hover {
@@ -6001,7 +6023,7 @@
             See everything
           </a>
         </header>
-        <div class="merch-grid" id="merch-grid"></div>
+        <div class="merch-grid" id="merch-grid" role="list"></div>
       </section>
 
       <!-- ======================================================
@@ -7030,6 +7052,7 @@
         if (isPast) classes.push('wm-cell--past')
         if (isToday) classes.push('wm-cell--today')
         if (hasMoments) classes.push('wm-cell--has-moment')
+        else classes.push('wm-cell--no-shows') // C18 #48 — no-op click, default cursor
         if (isSelected) classes.push('wm-cell--selected')
         if (isFeatured) classes.push('wm-cell--featured')
 
@@ -9137,6 +9160,7 @@
         const form = document.getElementById('fan-form')
         const echo = document.getElementById('fan-echo')
         if (form) form.hidden = true
+        if (fc2) fc2.hidden = true  // C18 #50 — second capture also hidden when echo shown
         if (echo) {
           echo.hidden = false
           const echoText = document.getElementById('fan-echo-text')
@@ -9980,9 +10004,15 @@
           ? (() => { try { return new Date(rel.releaseDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) } catch (_) { return '' } })()
           : ''
 
+        // C18 #49 — "Out now" badge on featured live release
+        const _outNowBadge49 = (_isLive5 && i === 0)
+          ? `<span class="release-out-now-badge" aria-label="Out now">Out now</span>`
+          : ''
+
         card.innerHTML = `
           ${mediaHtml}
           <div class="release-card__info">
+            ${_outNowBadge49}
             <h3 class="release-card__title">${escHtml(rel.title || 'Untitled')}</h3>
             <p class="release-card__meta"><span class="release-type-badge">${escHtml(type)}</span>${_releaseLabel5 ? ` · <span style="color:var(--color-accent);font-weight:600">Released ${escHtml(_releaseLabel5)}</span>` : (year ? ` · ${year}` : '')}${tracks.length ? ` · ${tracks.length} track${tracks.length !== 1 ? 's' : ''}` : ''}</p>
             ${releaseBtns}
@@ -10849,6 +10879,7 @@
       items.forEach(item => {
         const el = document.createElement('div')
         el.className = 'merch-item pressable'
+        el.setAttribute('role', 'listitem') // C18 #33
 
         // price may be "£25", "25", "9.99" — strip leading currency symbol before parsing
         const priceRaw = String(item.price || '').replace(/^[£$€¥]/, '').trim()
@@ -10905,6 +10936,8 @@
       const section = document.getElementById('support-section')
       const packsEl = document.getElementById('support-packs')
       if (!section || !packsEl) return
+      // C18 #47 — set dynamic aria-label so screen readers announce artist name
+      if (profile.name) section.setAttribute('aria-label', 'Support ' + profile.name)
 
       const support = profile.support || {}
       const packs = support.packs || []

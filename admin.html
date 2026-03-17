@@ -2582,7 +2582,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
 </div>
 
 <!-- ── SIDEBAR ── -->
-<aside class="sidebar">
+<aside class="sidebar" aria-label="Sidebar navigation">
   <div class="sb-logo">
     <svg width="8" height="28" viewBox="0 0 24 90" fill="none" aria-hidden="true">
       <rect x="4" y="2" width="16" height="64" fill="#e4dfd2"/>
@@ -3015,8 +3015,11 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
           <input class="yw-form-input" type="url" id="ywCtaUrl" aria-label="Update link URL" placeholder="https://…">
           <input class="yw-form-input" type="text" id="ywCtaLabel" aria-label="Update link label" placeholder="Button label" style="margin-top:6px;" hidden>
 
-          <div class="yw-form-label" style="margin-top:10px;">Artist note <span style="opacity:.5;font-weight:400;">(optional)</span></div>
-          <textarea class="yw-form-input" id="ywNote" aria-label="Artist note" rows="2" placeholder="Something for the people who care…" style="resize:none;"></textarea>
+          <div class="yw-form-label" style="margin-top:10px;display:flex;justify-content:space-between;align-items:baseline;">
+            <span>Artist note <span style="opacity:.5;font-weight:400;">(optional)</span></span>
+            <span id="ywNoteCounter" style="font-size:11px;font-weight:400;opacity:.45;">0/200</span>
+          </div>
+          <textarea class="yw-form-input" id="ywNote" aria-label="Artist note" rows="2" maxlength="200" placeholder="Something for the people who care…" style="resize:none;" oninput="document.getElementById('ywNoteCounter').textContent=this.value.length+'/200'"></textarea>
 
           <div id="ywFormError" style="font-size:12px;color:#f05252;margin-top:8px;display:none;"></div>
 
@@ -7705,7 +7708,7 @@ function ywOpenEditForm(id) {
     + '</div>'
     + '<div class="yw-form-group">'
     +   '<label class="yw-form-label" for="ywEditNote">Artist note (private)</label>'
-    +   '<input class="yw-form-input" id="ywEditNote" type="text" value="' + escHtml(m.artistNote || '') + '" placeholder="Reminder or context for yourself">'
+    +   '<input class="yw-form-input" id="ywEditNote" type="text" maxlength="200" value="' + escHtml(m.artistNote || '') + '" placeholder="Reminder or context for yourself">'
     + '</div>'
     + '<div class="yw-form-error" id="ywEditError" role="alert" style="display:none;color:#e05242;font-size:11px;margin-bottom:8px;"></div>'
     + '<div style="display:flex;gap:8px;">'
@@ -9365,6 +9368,9 @@ function openAdminSheet(icon, title, bodyHTML) {
   document.getElementById('adminSheetIcon').textContent = icon;
   document.getElementById('adminSheetTitle').textContent = title;
   document.getElementById('adminSheetBody').innerHTML = bodyHTML;
+  // C18 #40 — close button label includes sheet name for screen reader context
+  const _closeBtn40 = document.getElementById('adminSheetClose');
+  if (_closeBtn40) _closeBtn40.setAttribute('aria-label', 'Close ' + title);
   const sheet = document.getElementById('adminSheet');
   sheet.hidden = false;
   document.getElementById('adminSheetBackdrop').hidden = false;

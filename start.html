@@ -1202,7 +1202,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   <div class="step-indicator" id="stepInd">Make it yours</div>
 </header>
 
-<div class="progress">
+<div class="progress" role="progressbar" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1" id="progressBar" aria-label="Wizard progress">
   <div class="progress-fill" id="progressFill" style="width:12.5%"></div>
 </div>
 
@@ -1683,6 +1683,9 @@ function goToStep(id) {
     if (id === 'stepDone') fill.style.background = '#4caf6e';
     else fill.style.background = '';
   }
+  // C18 #21 — update progressbar ARIA
+  const _pb21 = document.getElementById('progressBar');
+  if (_pb21) _pb21.setAttribute('aria-valuenow', String(curIdx + 1));
   const ind = document.getElementById('stepInd');
   if (ind) ind.textContent = prog.msg;
 
@@ -2053,6 +2056,14 @@ function v2SelectMoment(mode, btn) {
   // C7 #37 — show release date input for pre-release / live modes
   const relDateWrap = document.getElementById('step1RelDate');
   if (relDateWrap) relDateWrap.style.display = (mode === 'pre-release' || mode === 'live') ? 'block' : 'none';
+  // C18 #29 — set min date to tomorrow (can't pre-save something in the past)
+  if (mode === 'pre-release') {
+    const _rdEl29 = document.getElementById('iReleaseDate');
+    if (_rdEl29 && !_rdEl29.min) {
+      const _tmrw29 = new Date(); _tmrw29.setDate(_tmrw29.getDate() + 1);
+      _rdEl29.min = _tmrw29.toISOString().slice(0, 10);
+    }
+  }
 }
 
 function tryStep2() {
@@ -2156,6 +2167,8 @@ function tryStep3() {
    ══════════════════════════════════════════════════════ */
 function initDone() {
   const profile = safeLS('able_v3_profile', {});
+  // C18 #28 — set page title on wizard completion
+  if (profile.name) document.title = profile.name + ' — your ABLE page is ready.';
   const url = 'ablemusic.co/' + (profile.slug || 'artist');
   const urlEl  = document.getElementById('v2DoneUrl');
   const pillEl = document.getElementById('v2DonePill');

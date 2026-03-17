@@ -1603,6 +1603,27 @@
     if (_tabBtn && followed.length > 0) {
       _tabBtn.textContent = `Following ${followed.length} artist${followed.length === 1 ? '' : 's'}`
     }
+    // C18 #4 — notification badge when there are "New" items
+    ;(function() {
+      try {
+        const _feed4 = getFeed()
+        const _hasNew4 = _feed4.some(i => i.type === 'release' && _prevLastVisit > 0 && i.age > _prevLastVisit)
+        const _dotId4 = 'tab-following-badge'
+        let _dot4 = document.getElementById(_dotId4)
+        if (_hasNew4 && _tabBtn) {
+          if (!_dot4) {
+            _dot4 = document.createElement('span')
+            _dot4.id = _dotId4
+            _dot4.setAttribute('aria-label', 'New items')
+            _tabBtn.style.position = 'relative'
+            _tabBtn.appendChild(_dot4)
+          }
+          _dot4.style.cssText = 'position:absolute;top:4px;right:4px;width:6px;height:6px;background:#4ade80;border-radius:50%;pointer-events:none;'
+        } else if (_dot4) {
+          _dot4.remove()
+        }
+      } catch(_) {}
+    })()
     const followedMap = {}
     followed.forEach(a => { followedMap[a.id] = a })
 
@@ -1688,7 +1709,7 @@
         <div class="feed-item__meta">
           ${_newBadge}
           <span class="type-badge ${typeBadgeClass(item.type)}" aria-label="${typeBadgeLabel(item.type)}">${typeBadgeLabel(item.type)}</span>
-          <span class="feed-item__time" aria-hidden="true">${formatAge(item.age)}</span>
+          <span class="feed-item__time" aria-hidden="true" title="${new Date(item.age).toLocaleString('en-GB', {dateStyle:'long',timeStyle:'short'})}">${formatAge(item.age)}</span>
         </div>
       `
       el.addEventListener('click', () => {
@@ -2372,9 +2393,11 @@
       }
     }
 
-    // Truly empty — no artists followed: show discovery prompt (C14 #35)
-    if (titleEl) titleEl.textContent = 'Discover artists you\u2019ll love.'
-    if (bodyEl) bodyEl.textContent = 'Find artists from their pages, or look through Discover.'
+    // Truly empty — no artists followed: show discovery prompt (C18 #1)
+    if (titleEl) titleEl.textContent = 'No one here yet.'
+    if (bodyEl) {
+      bodyEl.innerHTML = 'Discover artists by visiting their ABLE pages. <a href="/landing.html" style="color:var(--color-accent,#e05242);text-decoration:underline;text-underline-offset:2px;">Explore ABLE →</a>'
+    }
     emptyEl.style.display = 'block'
 
     // Wire up Discover CTA
