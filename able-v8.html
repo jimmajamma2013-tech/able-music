@@ -9646,6 +9646,7 @@
         const date = new Date(ev.date)
         const dayStr = date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
         const timeStr = ev.time || ''
+        const isoDateStr = date.toISOString().split('T')[0] // C3 #46 — machine-readable date
 
         // Task 5.4: TONIGHT badge on first show when gig night is active
         const tonightBadge = (gigActive && evIdx === 0)
@@ -9655,10 +9656,10 @@
         const safeTicketUrl = ev.ticketUrl && isSafeUrl(ev.ticketUrl) ? escHtml(ev.ticketUrl) : ''
         item.innerHTML = `
           ${hasImage ? `<div class="show-item__bg" style="background-image:url('${escHtml(ev.venueImageUrl)}')" role="presentation"></div>` : ''}
-          <div class="show-item__date" aria-label="${escHtml(dayStr)}">
+          <time class="show-item__date" datetime="${isoDateStr}" aria-label="${escHtml(dayStr)}">
             <span class="show-item__month">${date.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}</span>
             <span class="show-item__day">${date.getDate()}</span>
-          </div>
+          </time>
           <div class="show-item__info">
             ${tonightBadge}
             <p class="show-item__venue">${escHtml(ev.venue || 'TBC')}</p>
