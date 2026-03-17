@@ -11,9 +11,23 @@
     X-Frame-Options            = "SAMEORIGIN"
     X-Content-Type-Options     = "nosniff"
     Referrer-Policy            = "strict-origin-when-cross-origin"
-    Permissions-Policy         = "camera=(), microphone=(), geolocation=()"
+    # geolocation=(self) — fan.html Near Me feature needs it; camera/mic not used (#23)
+    Permissions-Policy         = "camera=(), microphone=(), geolocation=(self)"
+    # HSTS — force HTTPS for 1 year including subdomains (#21)
+    Strict-Transport-Security  = "max-age=31536000; includeSubDomains"
     # CSP: blocks external script injection; unsafe-inline required (vanilla HTML, no build step)
     Content-Security-Policy    = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://eu.i.posthog.com https://eu-assets.i.posthog.com https://www.clarity.ms https://scripts.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; frame-src https://www.youtube.com https://open.spotify.com https://w.soundcloud.com https://player.vimeo.com https://bandcamp.com https://embed.music.apple.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://fonts.googleapis.com https://eu.i.posthog.com https://www.clarity.ms https://scripts.clarity.ms; media-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+
+# Admin must not be embeddable in any iframe — prevents clickjacking (#19)
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/admin"
+  [headers.values]
+    X-Frame-Options = "DENY"
 
 # Cache static assets aggressively
 [[headers]]

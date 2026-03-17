@@ -19,19 +19,33 @@
  *   ABLE_BASE_URL    — e.g. https://ablemusic.co
  */
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Content-Type': 'application/json',
-};
+// #P8-72: restrict CORS to known origins — fan emails are sensitive data
+const ALLOWED_ORIGINS = new Set([
+  'https://ablemusic.co',
+  'https://www.ablemusic.co',
+  'https://ablemusic.netlify.app',
+]);
+function corsHeaders(origin) {
+  const allowed = ALLOWED_ORIGINS.has(origin) ? origin : 'https://ablemusic.co';
+  return {
+    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Content-Type': 'application/json',
+  };
+}
 
 exports.handler = async function (event) {
+  const origin = event.headers && (event.headers.origin || event.headers.Origin) || '';
+  const hdrs = corsHeaders(origin);
+  // Scoped response helper that always includes the correct CORS headers for this request
+  const respond = (status, body) => json(status, body, hdrs);
+
   if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 204, headers: CORS_HEADERS, body: '' };
+    return { statusCode: 204, headers: hdrs, body: '' };
   }
   if (event.httpMethod !== 'POST') {
-    return json(405, { error: 'Method not allowed' });
+    return respond(405, { error: 'Method not allowed' });
   }
 
   const apiKey   = process.env.RESEND_API_KEY;
@@ -41,14 +55,14 @@ exports.handler = async function (event) {
   if (!apiKey) {
     // Resend not configured — log and return OK (non-fatal)
     console.warn('fan-confirmation: RESEND_API_KEY not set — email skipped');
-    return json(200, { sent: false, reason: 'email_not_configured' });
+    return respond(200, { sent: false, reason: 'email_not_configured' });
   }
 
   let body;
   try {
     body = JSON.parse(event.body || '{}');
   } catch (_) {
-    return json(400, { error: 'Invalid JSON body' });
+    return respond(400, { error: 'Invalid JSON body' });
   }
 
   const { fanEmail, artistName, artistSlug, campaignState, accentHex, releaseTitle } = body;
@@ -57,25 +71,25 @@ exports.handler = async function (event) {
   const VALID_STATES = new Set(['profile', 'pre-release', 'live', 'gig']);
 
   // Type guards
-  if (typeof fanEmail !== 'string')   return json(400, { error: 'fanEmail must be a string' });
-  if (typeof artistName !== 'string') return json(400, { error: 'artistName must be a string' });
-  if (artistSlug   !== undefined && typeof artistSlug   !== 'string') return json(400, { error: 'artistSlug must be a string' });
-  if (accentHex    !== undefined && typeof accentHex    !== 'string') return json(400, { error: 'accentHex must be a string' });
-  if (releaseTitle !== undefined && typeof releaseTitle !== 'string') return json(400, { error: 'releaseTitle must be a string' });
+  if (typeof fanEmail !== 'string')   return respond(400, { error: 'fanEmail must be a string' });
+  if (typeof artistName !== 'string') return respond(400, { error: 'artistName must be a string' });
+  if (artistSlug   !== undefined && typeof artistSlug   !== 'string') return respond(400, { error: 'artistSlug must be a string' });
+  if (accentHex    !== undefined && typeof accentHex    !== 'string') return respond(400, { error: 'accentHex must be a string' });
+  if (releaseTitle !== undefined && typeof releaseTitle !== 'string') return respond(400, { error: 'releaseTitle must be a string' });
 
   // fanEmail: RFC-compliant length checks + no control chars
-  if (!fanEmail || fanEmail.length < 6 || fanEmail.length > 254) return json(400, { error: 'fanEmail invalid length' });
-  if (/[\x00-\x1F\x7F\n\r]/.test(fanEmail))                     return json(400, { error: 'fanEmail contains invalid characters' });
-  if (!/^[^\s@]{1,64}@[^\s@]{1,255}$/.test(fanEmail))           return json(400, { error: 'fanEmail invalid format' });
+  if (!fanEmail || fanEmail.length < 6 || fanEmail.length > 254) return respond(400, { error: 'fanEmail invalid length' });
+  if (/[\x00-\x1F\x7F\n\r]/.test(fanEmail))                     return respond(400, { error: 'fanEmail contains invalid characters' });
+  if (!/^[^\s@]{1,64}@[^\s@]{1,255}$/.test(fanEmail))           return respond(400, { error: 'fanEmail invalid format' });
 
   // artistName: trim + length
   const trimmedName = artistName.trim();
-  if (!trimmedName || trimmedName.length > 100) return json(400, { error: 'artistName invalid' });
+  if (!trimmedName || trimmedName.length > 100) return respond(400, { error: 'artistName invalid' });
 
   // Optional field validation
-  if (artistSlug && !/^[a-z0-9-]{1,60}$/.test(artistSlug))        return json(400, { error: 'artistSlug invalid format' });
-  if (accentHex  && !/^#[0-9a-fA-F]{6}$/.test(accentHex))         return json(400, { error: 'accentHex invalid format' });
-  if (releaseTitle && releaseTitle.length > 200)                   return json(400, { error: 'releaseTitle too long' });
+  if (artistSlug && !/^[a-z0-9-]{1,60}$/.test(artistSlug))        return respond(400, { error: 'artistSlug invalid format' });
+  if (accentHex  && !/^#[0-9a-fA-F]{6}$/.test(accentHex))         return respond(400, { error: 'accentHex invalid format' });
+  if (releaseTitle && releaseTitle.length > 200)                   return respond(400, { error: 'releaseTitle too long' });
 
   const accent      = (accentHex && /^#[0-9a-fA-F]{6}$/.test(accentHex)) ? accentHex : '#f4b942';
   const name        = trimmedName;
@@ -136,13 +150,13 @@ exports.handler = async function (event) {
     const data = await res.json();
     if (!res.ok) {
       console.error('Resend error:', JSON.stringify(data));
-      return json(502, { error: 'Email delivery failed', detail: data.message || '' });
+      return respond(502, { error: 'Email delivery failed', detail: data.message || '' });
     }
 
-    return json(200, { sent: true, id: data.id });
+    return respond(200, { sent: true, id: data.id });
   } catch (e) {
     console.error('fan-confirmation fetch error:', e.message);
-    return json(500, { error: 'Internal error sending email' });
+    return respond(500, { error: 'Internal error sending email' });
   }
 };
 
@@ -223,6 +237,6 @@ function getLuminance(hex) {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
-function json(status, body) {
-  return { statusCode: status, headers: CORS_HEADERS, body: JSON.stringify(body) };
+function json(status, body, headers) {
+  return { statusCode: status, headers: headers || {}, body: JSON.stringify(body) };
 }
