@@ -3902,7 +3902,7 @@ function checkAndShowMilestone(fans) {
   const highest = reached[reached.length - 1];
   const key = `milestone_${highest}_shown`;
   if (localStorage.getItem(key)) return;
-  localStorage.setItem(key, '1');
+  try { localStorage.setItem(key, '1'); } catch (e) { /* quota — non-critical */ }
 
   const card = document.getElementById('milestoneCard');
   if (!card) return;
@@ -4337,7 +4337,7 @@ function initGigToggle() {
         // Deactivate: clear expiry AND stateOverride
         localStorage.removeItem('able_gig_expires');
         delete profile.stateOverride;
-        localStorage.setItem('able_v3_profile', JSON.stringify(profile));
+        setLS('able_v3_profile', profile);
         btn.setAttribute('aria-checked', 'false');
         btn.classList.remove('active');
         if (note) note.hidden = true;
@@ -4345,9 +4345,9 @@ function initGigToggle() {
       } else {
         // Activate: 24h expiry + stateOverride = 'gig'
         const exp = Date.now() + 24 * 3600 * 1000;
-        localStorage.setItem('able_gig_expires', String(exp));
+        setLS('able_gig_expires', exp);
         profile.stateOverride = 'gig';
-        localStorage.setItem('able_v3_profile', JSON.stringify(profile));
+        setLS('able_v3_profile', profile);
         btn.setAttribute('aria-checked', 'true');
         btn.classList.add('active');
         if (note) note.hidden = false;
@@ -4725,7 +4725,7 @@ function checkFirstFanMoment() {
 }
 
 function dismissFirstFanCard() {
-  localStorage.setItem('able_first_fan_seen', '1');
+  try { localStorage.setItem('able_first_fan_seen', '1'); } catch (e) { /* quota — non-critical */ }
   const card = document.getElementById('firstFanCard');
   if (card) card.style.display = 'none';
 }
@@ -4977,7 +4977,7 @@ document.querySelectorAll('.arc-node').forEach(node => {
     const profile = safeLS('able_v3_profile', {});
     // 'after' maps to 'profile' as stateOverride ('after' is display-only)
     profile.stateOverride = (mode === 'after') ? 'profile' : mode;
-    localStorage.setItem('able_v3_profile', JSON.stringify(profile));
+    setLS('able_v3_profile', profile);
     renderTimelineArc();
   });
 });
@@ -7038,7 +7038,7 @@ function ywUpdateMoment(id) {
       ['name','bio','accent','genre','genres','location'].forEach(k => {
         if (legacyData[k] && !v3data[k]) { v3data[k] = legacyData[k]; merged = true; }
       });
-      if (merged) localStorage.setItem('able_v3_profile', JSON.stringify(v3data));
+      if (merged) setLS('able_v3_profile', v3data);
     }
     localStorage.removeItem('able_profile');
   } catch(e) { /* silent — never break on migration */ }
@@ -7059,7 +7059,7 @@ function ywUpdateMoment(id) {
         f.isStarred = true; changed = true;
       }
     });
-    if (changed) localStorage.setItem('able_fans', JSON.stringify(fans));
+    if (changed) setLS('able_fans', fans);
     // Keep old key as read-only fallback for 1 session, then remove
     if (sessionStorage.getItem('_starredMigrated')) {
       localStorage.removeItem(oldKey);
@@ -7137,7 +7137,7 @@ function applyGreeting(profile) {
 
   const firstEver = !localStorage.getItem('admin_ever_visited');
   if (firstEver) {
-    localStorage.setItem('admin_ever_visited', '1');
+    try { localStorage.setItem('admin_ever_visited', '1'); } catch(e) {}
     greetEl.textContent = firstName ? `Good to meet you, ${firstName}.` : 'Good to meet you.';
     subEl.textContent   = 'Your page is live.';
     setTimeout(() => {
@@ -7386,7 +7386,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const memberSinceEl = document.getElementById('homeMemberSince');
   if (memberSinceEl) {
     const joinedKey = 'able_joined';
-    if (!localStorage.getItem(joinedKey)) localStorage.setItem(joinedKey, new Date().toISOString().slice(0,7));
+    if (!localStorage.getItem(joinedKey)) try { localStorage.setItem(joinedKey, new Date().toISOString().slice(0,7)); } catch(e) {}
     const ym = localStorage.getItem(joinedKey) || '';
     if (ym) {
       const [y,m] = ym.split('-');
@@ -7479,7 +7479,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function dismissUpgradeBar() {
-  localStorage.setItem('able_upgrade_bar_dismissed', '1');
+  try { localStorage.setItem('able_upgrade_bar_dismissed', '1'); } catch(e) {}
   const bar = document.getElementById('upgradeBar');
   if (bar) { bar.style.transition = 'opacity .2s'; bar.style.opacity = '0'; setTimeout(() => bar.style.display = 'none', 200); }
 }
@@ -8078,7 +8078,7 @@ function moveSectionOrder(sectionId, dir) {
   if (swapIdx < 0 || swapIdx >= order.length) return
   ;[order[idx], order[swapIdx]] = [order[swapIdx], order[idx]]
   profile.sectionOrder = order
-  localStorage.setItem(V3_KEY, JSON.stringify(profile))
+  setLS(V3_KEY, profile)
   syncProfile(profile)
   renderSectionOrder()
 }
@@ -8091,7 +8091,7 @@ function toggleSectionVis(btn) {
   const profile = safeLS(V3_KEY, {})
   if (!profile.sectionVisibility) profile.sectionVisibility = {}
   profile.sectionVisibility[sectionId] = next
-  localStorage.setItem(V3_KEY, JSON.stringify(profile))
+  setLS(V3_KEY, profile)
 
   // Keep support-enabled checkbox in sync
   if (sectionId === 'support-section') {
@@ -8099,7 +8099,7 @@ function toggleSectionVis(btn) {
     if (cb) cb.checked = next
     const supportData = profile.support || {}
     profile.support = { ...supportData, enabled: next }
-    localStorage.setItem(V3_KEY, JSON.stringify(profile))
+    setLS(V3_KEY, profile)
   }
 
   syncProfile(profile)
