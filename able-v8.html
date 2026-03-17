@@ -49,6 +49,9 @@
   <meta name="apple-mobile-web-app-title" content="ABLE">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
 
+  <!-- Canonical URL (updated by JS after profile load) -->
+  <link rel="canonical" id="canonical-url" href="https://ablemusic.co/">
+
   <!-- Structured data (populated by JS after profile load) -->
   <script type="application/ld+json" id="structured-data">{}</script>
 
@@ -7967,7 +7970,7 @@
       // Artist name
       const nameEl = document.getElementById('hero-name')
       nameEl.textContent = profile.name || 'Artist'
-      document.title = profile.name ? `${profile.name} — ABLE` : 'ABLE'
+      document.title = profile.name ? `${profile.name} — Music, shows & more | ABLE` : 'ABLE'
 
       // Genre + location
       const genreEl    = document.getElementById('hero-genre')
@@ -10414,7 +10417,11 @@
       setMeta('tw-description', desc)
       setMeta('tw-image',       ogImage)
       setMeta('meta-description', desc)
-      document.title = `${name} — ABLE`
+      document.title = `${name} — Music, shows & more | ABLE`
+
+      // Canonical URL
+      const canonEl = document.getElementById('canonical-url')
+      if (canonEl) canonEl.setAttribute('href', url)
 
       // JSON-LD: MusicGroup + upcoming Event entries
       const schema = {
