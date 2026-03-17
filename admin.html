@@ -427,7 +427,7 @@ body::before {
 
 /* ── PROFILE EDIT ── */
 .field-row { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
-.field-label { font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--dash-t3); }
+.field-label { display:block; font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--dash-t3); }
 .field-input {
   width:100%; padding:10px 13px; border-radius:var(--r-md);
   background:var(--dash-field); border:1.5px solid var(--dash-border);
@@ -2660,7 +2660,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         </div>
 
         <div class="chq-release-row">
-          <input class="chq-release-title" id="chqReleaseTitle" type="text" placeholder="Release title — e.g. 'Dissolve' (Single)">
+          <input class="chq-release-title" id="chqReleaseTitle" type="text" aria-label="Release title" placeholder="Release title — e.g. 'Dissolve' (Single)">
         </div>
         <div class="chq-date-picker">
           <label for="chqReleaseDate" class="sr-only">Release date and time</label>
@@ -2849,10 +2849,10 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
           </div>
 
           <div class="yw-form-label" style="margin-top:12px;">Title</div>
-          <input class="yw-form-input" type="text" id="ywTitle" placeholder="e.g. New EP out now" maxlength="60">
+          <input class="yw-form-input" type="text" id="ywTitle" aria-label="Update title" placeholder="e.g. New EP out now" maxlength="60">
 
           <div class="yw-form-label" style="margin-top:10px;">Date</div>
-          <input class="yw-form-input" type="date" id="ywDate">
+          <input class="yw-form-input" type="date" id="ywDate" aria-label="Update date">
 
           <div class="yw-form-label" style="margin-top:10px;">Who sees it</div>
           <div class="yw-access-row" id="ywAccessRow">
@@ -2863,11 +2863,11 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
           </div>
 
           <div class="yw-form-label" style="margin-top:10px;">Link <span style="opacity:.5;font-weight:400;">(optional)</span></div>
-          <input class="yw-form-input" type="url" id="ywCtaUrl" placeholder="https://…">
-          <input class="yw-form-input" type="text" id="ywCtaLabel" placeholder="Button label" style="margin-top:6px;" hidden>
+          <input class="yw-form-input" type="url" id="ywCtaUrl" aria-label="Update link URL" placeholder="https://…">
+          <input class="yw-form-input" type="text" id="ywCtaLabel" aria-label="Update link label" placeholder="Button label" style="margin-top:6px;" hidden>
 
           <div class="yw-form-label" style="margin-top:10px;">Artist note <span style="opacity:.5;font-weight:400;">(optional)</span></div>
-          <textarea class="yw-form-input" id="ywNote" rows="2" placeholder="Something for the people who care…" style="resize:none;"></textarea>
+          <textarea class="yw-form-input" id="ywNote" aria-label="Artist note" rows="2" placeholder="Something for the people who care…" style="resize:none;"></textarea>
 
           <div id="ywFormError" style="font-size:12px;color:#f05252;margin-top:8px;display:none;"></div>
 
@@ -3006,17 +3006,17 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
             </div>
             <div class="field-row" style="margin:0;">
               <div class="field-label">Artwork URL <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:10px;color:var(--t3);">paste a direct image link</span></div>
-              <input class="field-input" type="url" id="adminArtworkUrl" placeholder="https://i.imgur.com/… or cdn.yoursite.com/artwork.jpg" oninput="previewArtwork(this.value)">
+              <input class="field-input" type="url" id="adminArtworkUrl" aria-label="Artwork URL" placeholder="https://i.imgur.com/… or cdn.yoursite.com/artwork.jpg" oninput="previewArtwork(this.value)">
             </div>
             <div class="field-hint" style="margin-top:4px;">Appears as your hero background. Use a square image for best results. Min 800px.</div>
             <div class="field-row" style="margin-top:10px;">
               <div class="field-label">Video URL <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:10px;color:var(--t3);">YouTube link — overrides artwork</span></div>
-              <input class="field-input" type="url" id="adminVideoUrl" placeholder="https://youtu.be/… or youtube.com/watch?v=…">
+              <input class="field-input" type="url" id="adminVideoUrl" aria-label="Video URL" placeholder="https://youtu.be/… or youtube.com/watch?v=…">
             </div>
             <div class="field-hint" style="margin-top:4px;">Set a music video as your hero. Fans tap to expand it inline.</div>
             <div class="field-row" style="margin-top:10px;margin-bottom:0;">
               <div class="field-label">Credit line <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:10px;color:var(--t3);">optional — shown on the top card</span></div>
-              <input class="field-input" type="text" id="adminCreditLine" placeholder="Prod. by LUNA · Mix. James Reid" maxlength="80">
+              <input class="field-input" type="text" id="adminCreditLine" aria-label="Credit line" placeholder="Prod. by LUNA · Mix. James Reid" maxlength="80">
             </div>
           </div>
         </div>
@@ -3025,22 +3025,22 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
           <div class="dc-body">
             <div class="field-row">
               <div class="field-label">Artist name</div>
-              <input class="field-input" type="text" id="adminName" placeholder="Your artist name" onblur="saveProfilePage()">
+              <input class="field-input" type="text" id="adminName" aria-label="Artist name" placeholder="Your artist name" onblur="saveProfilePage()">
             </div>
             <div class="field-row">
               <div class="field-label">Genre / style</div>
-              <input class="field-input" type="text" id="adminGenre" placeholder="e.g. Electronic, Indie, Hip-Hop">
+              <input class="field-input" type="text" id="adminGenre" aria-label="Genre or style" placeholder="e.g. Electronic, Indie, Hip-Hop">
             </div>
             <div class="field-row">
               <div class="field-label">Location</div>
-              <input class="field-input" type="text" id="adminLocation" placeholder="e.g. London, Berlin, New York">
+              <input class="field-input" type="text" id="adminLocation" aria-label="Location" placeholder="e.g. London, Berlin, New York">
             </div>
             <div class="field-row">
               <div class="field-label" style="display:flex;justify-content:space-between;align-items:center;">
                 <span>Bio</span>
                 <span id="adminBioCount" style="font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;opacity:0;transition:opacity .2s,color .2s;">0 / 120</span>
               </div>
-              <textarea class="field-input field-textarea" id="adminBio" placeholder="One honest sentence. Who you are, where you're from, what you make." maxlength="120" oninput="(function(n){var c=document.getElementById('adminBioCount');c.textContent=n+' / 120';var near=n>=80;c.style.opacity=near?'1':'0';c.style.color=n>=110?'#ef4444':n>=80?'#f4b942':'var(--t3)';})(this.value.length)" onblur="saveProfilePage()"></textarea>
+              <textarea class="field-input field-textarea" id="adminBio" aria-label="Bio" placeholder="One honest sentence. Who you are, where you're from, what you make." maxlength="120" oninput="(function(n){var c=document.getElementById('adminBioCount');c.textContent=n+' / 120';var near=n>=80;c.style.opacity=near?'1':'0';c.style.color=n>=110?'#ef4444':n>=80?'#f4b942':'var(--t3)';})(this.value.length)" onblur="saveProfilePage()"></textarea>
               <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
                 <div class="field-hint">Keep it direct. Fans read it in seconds.</div>
                 <button class="ai-trigger" id="aiBioBtn" type="button" onclick="aiSuggestBio()"><span class="ai-trigger__icon">✦</span>Write with AI</button>
@@ -3057,20 +3057,20 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
                 <span>Primary label</span>
                 <button class="ai-trigger" id="aiCtaBtn" type="button" onclick="aiSuggestCta()"><span class="ai-trigger__icon">✦</span>Suggest</button>
               </div>
-              <input class="field-input" type="text" id="adminCtaPrimaryLabel" placeholder="e.g. Stream Now" maxlength="32">
+              <input class="field-input" type="text" id="adminCtaPrimaryLabel" aria-label="Primary CTA label" placeholder="e.g. Stream Now" maxlength="32">
               <div class="ai-suggestions" id="aiCtaSuggestions"></div>
             </div>
             <div class="field-row">
               <div class="field-label">Primary link</div>
-              <input class="field-input" type="url" id="adminCtaPrimaryUrl" placeholder="https://…">
+              <input class="field-input" type="url" id="adminCtaPrimaryUrl" aria-label="Primary CTA link" placeholder="https://…">
             </div>
             <div class="field-row" style="margin-top:8px;">
               <div class="field-label">Secondary label</div>
-              <input class="field-input" type="text" id="adminCtaSecLabel" placeholder="e.g. Get Tickets" maxlength="32">
+              <input class="field-input" type="text" id="adminCtaSecLabel" aria-label="Secondary CTA label" placeholder="e.g. Get Tickets" maxlength="32">
             </div>
             <div class="field-row">
               <div class="field-label">Secondary link</div>
-              <input class="field-input" type="url" id="adminCtaSecUrl" placeholder="https://… (optional)">
+              <input class="field-input" type="url" id="adminCtaSecUrl" aria-label="Secondary CTA link" placeholder="https://… (optional)">
             </div>
           </div>
         </div>
@@ -3081,35 +3081,35 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
           <div class="dc-body">
             <div class="field-row">
               <div class="field-label">Spotify</div>
-              <input class="field-input" type="url" id="plSpotify" onblur="validatePlatformUrl(this)" placeholder="open.spotify.com/artist/…" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plSpotify" aria-label="Spotify URL" onblur="validatePlatformUrl(this)" placeholder="open.spotify.com/artist/…" oninput="savePlatformLinks()">
             </div>
             <div class="field-row">
               <div class="field-label">Apple Music</div>
-              <input class="field-input" type="url" id="plApple" onblur="validatePlatformUrl(this)" placeholder="music.apple.com/…" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plApple" aria-label="Apple Music URL" onblur="validatePlatformUrl(this)" placeholder="music.apple.com/…" oninput="savePlatformLinks()">
             </div>
             <div class="field-row">
               <div class="field-label">SoundCloud</div>
-              <input class="field-input" type="url" id="plSoundcloud" onblur="validatePlatformUrl(this)" placeholder="soundcloud.com/…" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plSoundcloud" aria-label="SoundCloud URL" onblur="validatePlatformUrl(this)" placeholder="soundcloud.com/…" oninput="savePlatformLinks()">
             </div>
             <div class="field-row">
               <div class="field-label">YouTube</div>
-              <input class="field-input" type="url" id="plYoutube" onblur="validatePlatformUrl(this)" placeholder="youtube.com/@…" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plYoutube" aria-label="YouTube URL" onblur="validatePlatformUrl(this)" placeholder="youtube.com/@…" oninput="savePlatformLinks()">
             </div>
             <div class="field-row">
               <div class="field-label">TikTok</div>
-              <input class="field-input" type="url" id="plTiktok" onblur="validatePlatformUrl(this)" placeholder="tiktok.com/@…" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plTiktok" aria-label="TikTok URL" onblur="validatePlatformUrl(this)" placeholder="tiktok.com/@…" oninput="savePlatformLinks()">
             </div>
             <div class="field-row">
               <div class="field-label">Instagram</div>
-              <input class="field-input" type="url" id="plInstagram" onblur="validatePlatformUrl(this)" placeholder="instagram.com/…" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plInstagram" aria-label="Instagram URL" onblur="validatePlatformUrl(this)" placeholder="instagram.com/…" oninput="savePlatformLinks()">
             </div>
             <div class="field-row">
               <div class="field-label">Bandcamp</div>
-              <input class="field-input" type="url" id="plBandcamp" onblur="validatePlatformUrl(this)" placeholder="yourname.bandcamp.com" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plBandcamp" aria-label="Bandcamp URL" onblur="validatePlatformUrl(this)" placeholder="yourname.bandcamp.com" oninput="savePlatformLinks()">
             </div>
             <div class="field-row" style="margin-bottom:0;">
               <div class="field-label">Resident Advisor</div>
-              <input class="field-input" type="url" id="plRA" onblur="validatePlatformUrl(this)" placeholder="ra.co/dj/…" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plRA" aria-label="Resident Advisor URL" onblur="validatePlatformUrl(this)" placeholder="ra.co/dj/…" oninput="savePlatformLinks()">
             </div>
           </div>
         </div>
@@ -3402,7 +3402,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <div class="dc-body">
         <div class="field-row">
           <div class="field-label">Your merch store link</div>
-          <input class="field-input" type="url" id="merchShopUrl" placeholder="bandcamp.com/… or yourshop.com" oninput="saveMerchShopUrl()">
+          <input class="field-input" type="url" id="merchShopUrl" aria-label="Merch store URL" placeholder="bandcamp.com/… or yourshop.com" oninput="saveMerchShopUrl()">
         </div>
         <p style="font-size:11px;color:var(--t3);margin-top:-4px;line-height:1.5;">Paste any store URL. Fans see a "Visit store →" link on your merch tab.</p>
       </div>
@@ -3447,7 +3447,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         <div style="display:grid;grid-template-columns:80px 1fr;gap:8px;">
           <div class="field-row" style="margin:0;">
             <div class="field-label">Currency</div>
-            <select class="field-input" id="ccCurrency" onchange="saveCloseCircle()">
+            <select class="field-input" id="ccCurrency" aria-label="Currency" onchange="saveCloseCircle()">
               <option value="£">£ GBP</option>
               <option value="$">$ USD</option>
               <option value="€">€ EUR</option>
@@ -3455,12 +3455,12 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
           </div>
           <div class="field-row" style="margin:0;">
             <div class="field-label">Monthly amount</div>
-            <input class="field-input" type="number" id="ccAmount" min="1" max="999" step="1" value="5" oninput="saveCloseCircle()" placeholder="5">
+            <input class="field-input" type="number" id="ccAmount" aria-label="Monthly amount" min="1" max="999" step="1" value="5" oninput="saveCloseCircle()" placeholder="5">
           </div>
         </div>
         <div class="field-row" style="margin-bottom:0;margin-top:8px;">
           <div class="field-label">Intro text <span style="font-weight:400;color:var(--t3);">(shown on the join sheet)</span></div>
-          <input class="field-input" type="text" id="ccIntro" placeholder="Get closer to the music. Early access and more." oninput="saveCloseCircle()">
+          <input class="field-input" type="text" id="ccIntro" aria-label="Close circle intro text" placeholder="Get closer to the music. Early access and more." oninput="saveCloseCircle()">
         </div>
         <div id="ccStripeNotice" style="display:none;margin-top:14px;padding:12px 14px;border-radius:var(--r-md);background:rgba(var(--dash-amber-rgb),0.08);border:1px solid rgba(var(--dash-amber-rgb),0.25);">
           <div style="font-size:12px;font-weight:600;color:var(--dash-text);margin-bottom:4px;">Connect Stripe to go live</div>
@@ -3475,11 +3475,11 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <div class="dc-body">
         <div class="field-row">
           <div class="field-label">Section heading <span style="font-weight:400;color:var(--t3);">(default: "Support")</span></div>
-          <input class="field-input" type="text" id="supportTitle" placeholder="Support" oninput="saveSupportMeta()">
+          <input class="field-input" type="text" id="supportTitle" aria-label="Support section heading" placeholder="Support" oninput="saveSupportMeta()">
         </div>
         <div class="field-row" style="margin-bottom:0;">
           <div class="field-label">Intro text <span style="font-weight:400;color:var(--t3);">(optional — shown above packs)</span></div>
-          <input class="field-input" type="text" id="supportIntro" placeholder="If the music means something to you…" oninput="saveSupportMeta()">
+          <input class="field-input" type="text" id="supportIntro" aria-label="Support section intro text" placeholder="If the music means something to you…" oninput="saveSupportMeta()">
         </div>
       </div>
     </div>
