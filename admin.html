@@ -3556,7 +3556,7 @@ body::before {
     <div id="fansList" class="fans-list-rows"></div>
 
     <div class="fans-export-row">
-      <a class="export-btn" id="fansExportBtn" href="#" download="fans.csv">Export CSV →</a>
+      <button class="export-btn" id="fansExportBtn" onclick="exportFans()" type="button">Export CSV →</button>
     </div>
 
     <p class="fan-ownership-note">These emails are yours. Not ABLE's. Not anyone else's.</p>
@@ -4017,15 +4017,6 @@ function renderFanList(filter) {
     });
   });
 
-  // Export CSV
-  const exportBtn = document.getElementById('fansExportBtn');
-  if (exportBtn) {
-    const csv = 'Email,Source,Joined\n' + confirmed.map(f =>
-      `${f.email},${normaliseSource(f.source)},${new Date(f.ts).toISOString().slice(0,10)}`
-    ).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    exportBtn.href = URL.createObjectURL(blob);
-  }
 }
 
 function renderSourceBreakdown(fans) {
@@ -4199,21 +4190,24 @@ function exportFans() {
   const legacyStarred = safeLS('able_starred_fans', []);
   const real = safeLS('able_fans', []).filter(f => f.confirmed !== false);
   if (!real.length) { showToast('No fans yet — share your page to see who shows up.', 'amber'); return; }
-  const csvRows = [['Email','Level','Date joined','Source','Campaign state','Starred','Opted in','Confirmed']];
+  const csvRows = [['email','signup_date','source','campaign_state','consent_timestamp','consent_version','level','starred','opted_in','confirmed']];
   real.forEach(f => {
     const isStarred = !!(f.isStarred || legacyStarred.includes(f.email));
     csvRows.push([
       f.email || '',
-      f.level || 'listener',
-      new Date(f.ts).toISOString().slice(0,10),
+      f.ts ? new Date(f.ts).toISOString() : '',   // full ISO 8601 (I3 #11)
       normaliseSource(f.source),
       f.campaignState || 'profile',
+      f.consentTs ? new Date(f.consentTs).toISOString() : (f.ts ? new Date(f.ts).toISOString() : ''), // I3 #15
+      f.consentVersion || 'v1',                    // I3 #16
+      f.level || 'listener',
       isStarred ? 'yes' : 'no',
       f.optIn ? 'yes' : 'no',
       f.double_opted_in ? 'yes' : 'no'
     ]);
   });
-  const csv = csvRows.map(row => row.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
+  const BOM = '\uFEFF';                            // UTF-8 BOM for Excel (I3 #19)
+  const csv = BOM + csvRows.map(row => row.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = 'able-fans.csv';
