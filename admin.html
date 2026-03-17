@@ -595,6 +595,15 @@ body::before {
 .page-title { font-family:var(--font); font-size:22px; font-weight:700; color:var(--dash-text); margin-bottom:4px; }
 #homeGreeting { font-family:var(--font); font-size:22px; letter-spacing:0; }
 .page-sub { font-size:13px; color:var(--dash-t2); }
+
+/* NEW-6 — greeting sub-line cross-fade (P1) */
+@keyframes subLineFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#homeSub.updating {
+  animation: subLineFadeIn 0.3s var(--ease, cubic-bezier(0.25,.46,.45,.94)) forwards;
+}
 .page-next-moment { font-size:11px; color:var(--acc, #f4b942); margin-top:4px; font-weight:600; }
 
 /* ── THEME TOGGLE ── */
@@ -6904,6 +6913,13 @@ function buildNextMoment(profile) {
   return `Next: ${next.title} — ${formatted}`;
 }
 
+function setSubWithFade(el, text) {
+  el.classList.remove('updating');
+  void el.offsetWidth; // force reflow so animation restarts
+  el.textContent = text;
+  el.classList.add('updating');
+}
+
 function applyGreeting(profile) {
   const firstName = (profile.name || '').split(' ')[0] || null;
   const greetEl = document.getElementById('homeGreeting');
@@ -6917,16 +6933,11 @@ function applyGreeting(profile) {
     greetEl.textContent = firstName ? `Good to meet you, ${firstName}.` : 'Good to meet you.';
     subEl.textContent   = 'Your page is live.';
     setTimeout(() => {
-      subEl.style.transition = 'opacity 0.4s';
-      subEl.style.opacity = '0';
-      setTimeout(() => {
-        subEl.textContent = buildGreetingSub(profile);
-        subEl.style.opacity = '1';
-      }, 400);
+      setSubWithFade(subEl, buildGreetingSub(profile));
     }, 2500);
   } else {
     greetEl.textContent = firstName ? `Good to see you, ${firstName}.` : 'Good to see you.';
-    subEl.textContent   = buildGreetingSub(profile);
+    setSubWithFade(subEl, buildGreetingSub(profile));
   }
 
   // Next moment line
