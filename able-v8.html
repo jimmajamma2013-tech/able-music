@@ -4345,7 +4345,8 @@
 
     /* === FOOTER ================================================ */
     .profile-footer {
-      padding: var(--sp-6) var(--sp-5) var(--sp-5);
+      /* #17: clear iOS home indicator */
+      padding: var(--sp-6) var(--sp-5) calc(var(--sp-5) + env(safe-area-inset-bottom, 0px));
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -5052,7 +5053,8 @@
     ────────────────────────────────────────────────────────────── */
     #sticky-artist-bar {
       position: fixed;
-      top: 0; left: 50%;
+      /* #20: clear iOS notch / Dynamic Island */
+      top: env(safe-area-inset-top, 0px); left: 50%;
       transform: translateX(-50%) translateY(-100%);
       width: 100%; max-width: 430px;
       height: 44px;
