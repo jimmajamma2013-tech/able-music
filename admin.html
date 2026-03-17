@@ -1322,6 +1322,30 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
 .frc-step-sub { display:none; }
 .frc-step.done .frc-step-title { text-decoration:line-through; color:var(--dash-t3); }
 
+/* ── PROFILE COMPLETENESS BAR (C3 #16) ── */
+.completeness-bar-wrap {
+  background:var(--dash-card); border:1px solid var(--dash-border);
+  border-radius:var(--r-md); padding:12px 14px 10px;
+  margin-bottom:14px; box-shadow:var(--shadow-xs);
+}
+.completeness-bar-wrap.complete { display:none; }
+.completeness-bar-top {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:8px;
+}
+.completeness-bar-label { font-size:12px; font-weight:600; color:var(--dash-text); }
+.completeness-bar-pct { font-size:12px; font-weight:700; color:var(--acc); }
+.completeness-track {
+  height:5px; border-radius:var(--r-pill); background:rgba(0,0,0,.06); overflow:hidden;
+}
+.completeness-fill {
+  height:100%; border-radius:var(--r-pill); background:var(--acc);
+  transition:width .5s var(--ease);
+}
+.completeness-nudge {
+  font-size:11px; color:var(--dash-t3); margin-top:7px; line-height:1.5;
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width:960px) {
   .stats-row { grid-template-columns:1fr 1fr; }
@@ -2590,6 +2614,18 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         <div style="font-size:12px;font-weight:600;color:var(--text);" id="homePageUrl"></div>
         <div style="font-size:10px;color:var(--dash-t3);margin-top:2px;" id="homeMemberSince"></div>
       </div>
+    </div>
+
+    <!-- PROFILE COMPLETENESS BAR (C3 #16) — persistent quality signal, separate from FRC onboarding -->
+    <div class="completeness-bar-wrap" id="completenessBarWrap" aria-live="polite">
+      <div class="completeness-bar-top">
+        <span class="completeness-bar-label">Profile completeness</span>
+        <span class="completeness-bar-pct" id="completenessPct">0%</span>
+      </div>
+      <div class="completeness-track">
+        <div class="completeness-fill" id="completenessFill" style="width:0%"></div>
+      </div>
+      <div class="completeness-nudge" id="completenessNudge"></div>
     </div>
 
     <!-- FIRST-RUN CHECKLIST — compact strip, expands on tap, auto-dismissed after 7 days or completion -->
@@ -7381,6 +7417,42 @@ function updateUpgradeBar() {
   }
 }
 
+/* ── PROFILE COMPLETENESS BAR (C3 #16, #17) ── */
+function updateCompletenessBar() {
+  const wrap = document.getElementById('completenessBarWrap');
+  if (!wrap) return;
+  const profile = safeLS(V3_KEY, {});
+  const fans    = safeLS(FANS_KEY, []);
+  const shows   = safeLS('able_shows', []);
+  const snaps   = safeLS('able_snap_cards', []);
+
+  const dims = [
+    { key:'name',    pts:15, ok: !!profile.name,   nudge:'Add your artist name.' },
+    { key:'bio',     pts:20, ok: !!profile.bio,    nudge:'Add a bio so fans know who you are.' },
+    { key:'artwork', pts:20, ok: !!profile.artworkUrl, nudge:'Add your artwork — it\'s the first thing fans see.' },
+    { key:'ctas',    pts:20, ok: !!(profile.ctaPrimary?.url || profile.ctaSecondary?.url), nudge:'Add a hero CTA — give fans something to tap.' },
+    { key:'snap',    pts:15, ok: Array.isArray(snaps) && snaps.length > 0, nudge:'Add a snap card — give fans somewhere to go.' },
+    { key:'show',    pts:10, ok: Array.isArray(shows) && shows.length > 0, nudge:'Add a show — even one upcoming date tells fans you\'re active.' },
+  ];
+
+  const pct = dims.reduce((sum, d) => sum + (d.ok ? d.pts : 0), 0);
+  const missing = dims.filter(d => !d.ok).map(d => d.nudge);
+
+  const pctEl  = document.getElementById('completenessPct');
+  const fillEl = document.getElementById('completenessFill');
+  const nudgeEl = document.getElementById('completenessNudge');
+
+  if (pctEl)   pctEl.textContent = pct + '%';
+  if (fillEl)  fillEl.style.width = pct + '%';
+  if (nudgeEl) nudgeEl.textContent = missing.length ? missing[0] : '';
+
+  if (pct >= 100) {
+    wrap.classList.add('complete');
+  } else {
+    wrap.classList.remove('complete');
+  }
+}
+
 /* ── LOAD STATE FROM LOCALSTORAGE ── */
 // P0.1 artist-success: admin visit date tracking (drives nudge cadence)
 function recordAdminVisit() {
@@ -7500,6 +7572,7 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
   // Greeting system (§5.2)
   applyGreeting(v3data);
   updateUpgradeBar();
+  updateCompletenessBar(); // C3 #16
   applyGates();
   applyTierPill();
 
@@ -8184,6 +8257,7 @@ function saveProfilePage() {
   }
 
   renderQR();
+  updateCompletenessBar(); // C3 #16 — refresh after each profile save
   showToast('Profile saved.');
   const btn = document.querySelector('.profile-save-btn');
   if (btn) { btn.textContent = '✓ Saved'; setTimeout(() => btn.textContent = 'Save profile changes →', 1800); }
