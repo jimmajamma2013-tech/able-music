@@ -2309,6 +2309,16 @@
       el.textContent = msg
       el.style.display = 'block'
     }
+
+    // C20 #23 — personalise Following tab heading with fan name
+    try {
+      const _fanName = localStorage.getItem('fan_name')
+      const _followTab = document.getElementById('tab-following')
+      if (_fanName && _followTab && !_followTab.dataset.personalised) {
+        _followTab.textContent = `For you, ${_fanName.trim().split(' ')[0]}.`
+        _followTab.dataset.personalised = '1'
+      }
+    } catch(_) {}
   }
 
   function renderFirstVisitState() {
