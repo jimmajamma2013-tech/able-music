@@ -19,7 +19,7 @@ ABLE (Artist Before Label) is a premium mobile-first platform for independent mu
 
 | File | Role | Status |
 |---|---|---|
-| `able-v7.html` | **Artist public profile** — the fan-facing page | ACTIVE — edit this |
+| `able-v8.html` | **Artist public profile** — the fan-facing page | ACTIVE — edit this |
 | `admin.html` | **Artist dashboard** — where artists manage everything | ACTIVE — edit this |
 | `start.html` | **Onboarding wizard** — how new artists set up | ACTIVE — edit this |
 | `landing.html` | **Marketing landing page** — ablemusic.co homepage | ACTIVE — edit this |
@@ -28,8 +28,9 @@ ABLE (Artist Before Label) is a premium mobile-first platform for independent mu
 | `_archive/able-v2.html` | Abandoned | IGNORE |
 | `_archive/able-v4.html` | Superseded | IGNORE |
 | `_archive/able-v5.html` | Superseded | IGNORE |
-| `able-v3.html` | Superseded by v7 | DO NOT EDIT |
-| `able-v6.html` | Superseded by v7 | DO NOT EDIT |
+| `able-v3.html` | Superseded by v8 | DO NOT EDIT |
+| `able-v6.html` | Superseded by v8 | DO NOT EDIT |
+| `able-v7.html` | Superseded by v8 (2026-03-17) | DO NOT EDIT |
 | `screenshots/` | Playwright audit output | NEVER reference in code |
 
 **No build pipeline. No bundler. No npm. All files edited directly.**
