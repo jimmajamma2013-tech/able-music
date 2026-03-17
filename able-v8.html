@@ -8528,7 +8528,7 @@
           sessionId: _sid,
           ...(url ? { url } : {}),
         })
-        localStorage.setItem('able_clicks', JSON.stringify(clicks))
+        setLS('able_clicks', clicks)
       } catch (_) {}
       // PostHog cta_tap — sendBeacon transport survives same-tab navigation on iOS Safari (#18)
       try {
@@ -8585,7 +8585,7 @@
           // Session dedup — one view per tab session
           if (!views.some(v => v.sessionId === sessionId)) {
             views.push({ ts: Date.now(), source, sessionId })
-            localStorage.setItem('able_views', JSON.stringify(views))
+            setLS('able_views', views)
           }
         } catch (_) {}
         sbSyncView(source) // async fire-and-forget
@@ -9550,7 +9550,12 @@
       const events = (profile.events || []).filter(ev => {
         const d = ev.date ? new Date(ev.date) : null
         return d && d > new Date()
-      }).sort((a, b) => new Date(a.date) - new Date(b.date))
+      }).sort((a, b) => {
+        // Featured show always first (#33); within featured/non-featured, sort ascending by date
+        if (a.featured && !b.featured) return -1
+        if (!a.featured && b.featured) return 1
+        return new Date(a.date) - new Date(b.date)
+      })
 
       if (!events.length) {
         if (getIsOwner(profile)) {
