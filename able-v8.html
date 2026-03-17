@@ -8632,7 +8632,7 @@
           const emailInput = document.getElementById(emailId)
           const submitBtn = document.getElementById(submitId)
           const errorEl = document.getElementById('fan-error')
-          const email = emailInput ? emailInput.value.trim() : ''
+          const email = emailInput ? emailInput.value.trim().toLowerCase() : ''
 
           // Fan cap — free tier blocks sign-ups at 100
           const _profile = safeLS('able_v3_profile', {})
@@ -8837,7 +8837,7 @@
         form2.addEventListener('submit', function(e) {
           e.preventDefault()
           const emailInput = document.getElementById('fan-email-2')
-          const email = emailInput ? emailInput.value.trim() : ''
+          const email = emailInput ? emailInput.value.trim().toLowerCase() : ''
           // Fan cap — free tier
           const _p2 = safeLS('able_v3_profile', {})
           if ((_p2.tier || 'free') === 'free') {
