@@ -1146,9 +1146,9 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <div class="step active" id="stepA">
       <!-- Spotify mode (default) -->
       <div id="stepA-spotify">
-        <div class="step-eyebrow">Quick start</div>
-        <h1 class="step-title">Are you on<br>Spotify?</h1>
-        <p class="step-sub">Paste your artist URL — we'll pull in your name, photo, and releases.</p>
+        <div class="step-eyebrow">For independent artists</div>
+        <h1 class="step-title">Your page.<br>Set up in<br>5 minutes.</h1>
+        <p class="step-sub">Paste your Spotify or Linktree link — we'll build the rest.</p>
 
         <div class="field">
           <input class="field-input import-input" type="url" id="iSpotifyImport"
@@ -1179,9 +1179,11 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
             Find me on Spotify →
           </button>
           <button type="button" class="btn-skip" onclick="goToStep('step1')">
-            I'm not on Spotify →
+            Start from scratch →
           </button>
         </div>
+
+        <p style="font-size:12px;color:var(--t3);text-align:center;margin:12px 0 0;">No card. No catch. Your page is free.</p>
 
         <div id="importStatus" class="import-status" style="display:none;">
           <span id="importStatusText">Looking you up…</span>
@@ -1260,7 +1262,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
       <div class="step-nav">
         <button type="button" class="btn-back" onclick="goToStep('stepA')">← Back</button>
-        <button type="button" class="btn-next" id="v2MomentNext" onclick="tryStep1()" disabled>Next →</button>
+        <button type="button" class="btn-next" id="v2MomentNext" onclick="tryStep1()" disabled>Continue →</button>
       </div>
     </div>
 
@@ -1268,12 +1270,13 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     <div class="step" id="step2">
       <!-- progress bar at 66% via JS -->
       <div class="step-eyebrow">Step 2 of 3</div>
-      <h1 class="step-title">Make it<br>yours.</h1>
+      <h1 class="step-title">What do<br>you go by?</h1>
+      <p class="step-sub">Your artist name, your real name — whatever you put on the poster.</p>
 
       <div class="field">
         <label class="field-label" for="iName">Artist name</label>
         <input class="field-input" type="text" id="iName"
-          placeholder="e.g. Nova, Jamie Reeves, MYLA…"
+          placeholder="Your name here"
           autocomplete="off">
         <p class="field-error-msg" id="iNameErr" role="alert">Enter your artist name to continue.</p>
       </div>
@@ -1315,7 +1318,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
       <div class="step-nav">
         <button type="button" class="btn-back" onclick="goToStep('step1')">← Back</button>
-        <button type="button" class="btn-next" onclick="tryStep2()">Next →</button>
+        <button type="button" class="btn-next" onclick="tryStep2()">Continue →</button>
       </div>
     </div>
 
