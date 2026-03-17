@@ -25,13 +25,14 @@
 :root {
   --bg:      #09090f;
   --bg-mid:  #141d2e;
-  --card:    rgba(138,180,206,.06);
-  --card-hv: rgba(138,180,206,.10);
-  --border:  rgba(138,180,206,.10);
-  --bm:      rgba(138,180,206,.18);
-  --text:    #ccddef;
-  --t2:      rgba(204,221,239,.58);
-  --t3:      rgba(204,221,239,.52);
+  /* A2 fix: legacy surface-1 tokens updated to admin light-surface correct values */
+  --card:    var(--dash-card);       /* was rgba(138,180,206,.06) — surface-1 bleed */
+  --card-hv: var(--dash-card);       /* was rgba(138,180,206,.10) — surface-1 bleed */
+  --border:  var(--dash-border);     /* was rgba(138,180,206,.10) — now: #cdc8c0 */
+  --bm:      #a09890;                /* border-medium for hover states on light surface */
+  --text:    var(--dash-text);       /* was #ccddef — now: #1a1a2e */
+  --t2:      var(--dash-t2);         /* was rgba(204,221,239,.58) — now: #555555 */
+  --t3:      var(--dash-t3);         /* was rgba(204,221,239,.52) — now: #595959 */
   --acc:     #c9a84c;
   --acc-rgb: 201,168,76;
   --font:    'Plus Jakarta Sans', sans-serif;
@@ -366,9 +367,9 @@ body::before {
 .skel {
   border-radius:var(--r-xs);
   background:linear-gradient(90deg,
-    rgba(138,180,206,.06) 25%,
-    rgba(138,180,206,.14) 50%,
-    rgba(138,180,206,.06) 75%);
+    rgba(180,170,158,.06) 25%,
+    rgba(180,170,158,.14) 50%,
+    rgba(180,170,158,.06) 75%);
   background-size:1200px 100%;
   animation:shimmer 1.6s ease-in-out infinite;
   color:transparent !important;
@@ -386,7 +387,7 @@ body::before {
 }
 .empty-state-icon {
   width:48px; height:48px; border-radius:var(--r-xl);
-  background:rgba(138,180,206,.07); border:1px solid var(--border);
+  background:rgba(180,170,158,.10); border:1px solid var(--border);
   display:flex; align-items:center; justify-content:center;
   color:var(--t3);
 }
