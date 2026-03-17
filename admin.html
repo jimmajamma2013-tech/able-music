@@ -1549,6 +1549,25 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       color: #fff;
       border-color: var(--dash-shell);
     }
+    /* C17 #41 — analytics date range filter pills */
+    .filter-pill-adm {
+      padding: 5px 12px;
+      border-radius: var(--r-pill);
+      border: 1px solid var(--dash-border);
+      background: var(--dash-card);
+      color: var(--dash-t2);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background 120ms, color 120ms, border-color 120ms;
+    }
+    .filter-pill-adm.active {
+      background: var(--dash-shell);
+      color: #fff;
+      border-color: var(--dash-shell);
+    }
+
     .fans-stat-strip {
       display: flex;
       gap: 16px;
@@ -3632,6 +3651,12 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <div class="page-title">Analytics</div>
       <div class="page-sub">How fans are finding and using your page.</div>
     </div>
+    <!-- C17 #41 — date range filter pills -->
+    <div style="display:flex;gap:6px;margin-bottom:16px;" role="group" aria-label="Analytics date range">
+      <button class="filter-pill-adm active" data-range="7" onclick="setAnalyticsRange(7,this)" aria-pressed="true">Last 7 days</button>
+      <button class="filter-pill-adm" data-range="30" onclick="setAnalyticsRange(30,this)" aria-pressed="false">Last 30 days</button>
+      <button class="filter-pill-adm" data-range="0" onclick="setAnalyticsRange(0,this)" aria-pressed="false">All time</button>
+    </div>
     <!-- Basic stats (free) -->
     <div class="stats-row" style="margin-bottom:36px;">
       <div class="stat-card"><div class="stat-label">Visits</div><div class="stat-value skel" id="aStatViews" aria-hidden="true"> </div><div class="stat-delta skel" id="aStatViewsD" aria-hidden="true"> </div></div>
@@ -5704,11 +5729,10 @@ function tickGigCountdown(exp) {
     const hrs = Math.floor(remaining / 3600000);
     const mins = Math.floor((remaining % 3600000) / 60000);
     const secs = Math.floor((remaining % 60000) / 1000);
+    // C17 #24 — "Gig mode · Xh Xm remaining"
     if (label) label.textContent = remaining > 0
-      ? hrs > 0 ? `${hrs}h ${mins}m remaining`
-        : mins > 0 ? `${mins}m ${secs}s remaining`
-        : `${secs}s remaining`
-      : 'Gig mode expired';
+      ? `Gig mode · ${hrs > 0 ? `${hrs}h ${mins}m` : mins > 0 ? `${mins}m ${secs}s` : `${secs}s`} remaining`
+      : 'Gig mode · expired';
     if (remaining <= 0) {
       clearGigCountdown();
       setGigActive(false);
@@ -7055,6 +7079,18 @@ function updateGatePreviewData() {
 }
 
 /* ── REAL STATS FROM LOCALSTORAGE ── */
+// C17 #41 — analytics date range (days; 0 = all time)
+let _analyticsRangeDays = 7;
+function setAnalyticsRange(days, btn) {
+  _analyticsRangeDays = days;
+  document.querySelectorAll('.filter-pill-adm').forEach(p => {
+    const isActive = p === btn;
+    p.classList.toggle('active', isActive);
+    p.setAttribute('aria-pressed', String(isActive));
+  });
+  loadRealStats();
+}
+
 function loadRealStats() {
   // C8 #50 — guard entire stat block; on failure set all stats to '—'
   try { return _loadRealStatsImpl(); } catch (_err) {
@@ -7156,10 +7192,15 @@ function _loadRealStatsImpl() {
   })();
   animateCount('statStreak', _streak30);
 
-  // Analytics page stats (mirrors home)
-  animateCount('aStatViews',  viewsTotal  || '—');
-  animateCount('aStatClicks', clicksTotal || '—');
-  animateCount('aStatFans',   fansTotal   || '—');
+  // C17 #41 — Analytics page stats with date range filter
+  const _aRange = _analyticsRangeDays > 0 ? _analyticsRangeDays * 86400000 : Infinity
+  const _aViews  = _analyticsRangeDays > 0 ? views.filter(v => now - v.ts < _aRange).length : viewsTotal
+  const _aClicks = _analyticsRangeDays > 0 ? clicks.filter(c => now - c.ts < _aRange).length : clicksTotal
+  const _aFans   = _analyticsRangeDays > 0 ? fans.filter(f => now - f.ts < _aRange).length : fansTotal
+  const _aCtr    = _aViews > 0 ? ((_aClicks / _aViews) * 100).toFixed(1) + '%' : '—'
+  animateCount('aStatViews',  _aViews  || '—');
+  animateCount('aStatClicks', _aClicks || '—');
+  animateCount('aStatFans',   _aFans   || '—');
 
   // C4 #20 — fan conversion rate: fans / views
   const convRate = viewsTotal > 0 ? ((fansTotal / viewsTotal) * 100).toFixed(1) + '% conversion' : (fansWeek ? '↑ ' + fansWeek + ' this week' : ' ');
@@ -7175,11 +7216,12 @@ function _loadRealStatsImpl() {
     set('statStreakDelta', _streak30 === 1 ? 'Day 1' : `${_streak30} day${_streak30 !== 1 ? 's' : ''} in a row`);
     if (_streak30 >= 7) { const el = document.getElementById('statStreakDelta'); if (el) el.classList.add('up'); }
 
-    // Analytics labels
-    set('aStatViewsD', viewsWeek   ? '↑ ' + viewsWeek + ' this week' : ' ');
-    set('aStatCtr',    ctr !== '—' ? ctr + ' CTR' : ' ');
-    set('aStatFansD', convRate);
-    set('aStatRate',   ctr);
+    // Analytics labels (range-aware)
+    const _aLabel = _analyticsRangeDays === 7 ? 'this week' : _analyticsRangeDays === 30 ? 'this month' : 'total'
+    set('aStatViewsD', _aViews > 0 ? `${_aViews} ${_aLabel}` : ' ');
+    set('aStatCtr',    _aCtr !== '—' ? _aCtr + ' CTR' : ' ');
+    set('aStatFansD', _aFans > 0 ? `${_aFans} ${_aLabel}` : ' ');
+    set('aStatRate',   _aCtr);
 
     // Fan stats
     set('statFansTotal', fansTotal  || '0');
