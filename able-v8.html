@@ -11,6 +11,9 @@
   <!-- Preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <!-- Preload Supabase SDK — kicks off fetch early but doesn't block parse/render -->
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" as="script">
 
   <!-- Preload critical display font -->
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap">
@@ -648,7 +651,7 @@
       width: 4px;
       height: 4px;
       border-radius: 50%;
-      background-color: var(--color-accent);
+      background-color: var(--color-accent, #e07b3a);
       transition: transform var(--dur-fast) var(--ease-spring),
                   opacity var(--dur-fast) var(--ease-standard);
       opacity: 0;
@@ -1318,8 +1321,8 @@
       width: 100%;
       min-height: 56px;
       padding: var(--sp-4) var(--sp-6);
-      background-color: var(--color-accent);
-      color: var(--cta-text-color, #fff);
+      background-color: var(--color-accent, #e07b3a);
+      color: var(--cta-text-color, #000);
       border: none;
       border-radius: var(--r-sm);
       font-family: var(--font-body);
@@ -1768,14 +1771,14 @@
       flex: 1;
       min-height: var(--tap-min);
       padding: var(--sp-3) var(--sp-4);
-      background: var(--color-surface);
+      background: var(--color-surface, #0f1018);
       border: 1.5px solid var(--color-border);
       border-radius: var(--r-md);
       font-family: var(--font-body);
       /* iOS Safari zooms the viewport on any input with font-size < 16px.
          16px prevents the zoom; renders the same visually as 15px body. */
       font-size: 16px;
-      color: var(--color-text);
+      color: var(--color-text, #f0ede8);
       outline: none;
       transition: border-color var(--dur-fast) var(--ease-standard),
                   box-shadow var(--dur-fast) var(--ease-standard),
@@ -2248,8 +2251,8 @@
     }
 
     .release-card__embed-btn:hover {
-      background: var(--color-accent);
-      color: var(--cta-text-color, #fff);
+      background: var(--color-accent, #e07b3a);
+      color: var(--cta-text-color, #000);
     }
 
     /* External link as secondary CTA */
@@ -2337,13 +2340,13 @@
     }
     .release-card__able-play {
       width: 36px; height: 36px; border-radius: 50%;
-      background: var(--color-accent); border: none; cursor: pointer;
+      background: var(--color-accent, #e07b3a); border: none; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
       transition: transform 0.2s var(--ease-spring), opacity 0.15s;
     }
     .release-card__able-play:hover { transform: scale(1.09); opacity: 0.88; }
-    .release-card__able-play svg { fill: var(--cta-text-color, #fff); width: 14px; height: 14px; margin-left: 2px; }
+    .release-card__able-play svg { fill: var(--cta-text-color, #000); width: 14px; height: 14px; margin-left: 2px; }
     .release-card__able-open {
       font-size: 11px; font-weight: 600; color: var(--color-text-2);
       background: none; border: none; cursor: pointer;
@@ -2373,7 +2376,7 @@
       font-weight: 700;
       padding: 4px 10px;
       border-radius: 6px;
-      background: var(--color-accent);
+      background: var(--color-accent, #e07b3a);
       color: var(--cta-text-color, #000);
       text-decoration: none;
       display: inline-flex;
@@ -2683,8 +2686,8 @@
       padding: 0 var(--sp-5);
       min-width: 80px;
       min-height: 44px;
-      background: var(--color-accent);
-      color: var(--cta-text-color, #fff);
+      background: var(--color-accent, #e07b3a);
+      color: var(--cta-text-color, #000);
       border: none;
       font-family: var(--font-body);
       font-size: 11px;
@@ -2719,7 +2722,6 @@
       color: var(--color-state-live);
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      opacity: 0.8;
     }
 
     /* Task 5.4 — TONIGHT badge (gig state active) */
@@ -2954,7 +2956,9 @@
         background: rgba(var(--color-accent-rgb), 0.08);
       }
     }
-    .wm-cell--past .wm-date-num { opacity: 0.35; }
+    /* Past date numbers: use solid color-text (not color-text-2 which already has alpha),
+       then reduce opacity — avoids double-alpha that drops effective contrast below 4.5:1 */
+    .wm-cell--past .wm-date-num { color: var(--color-text); opacity: 0.65; }
     .wm-cell--past .wm-dot { opacity: 0.40; }
     .wm-cell--today .wm-date-num {
       color: var(--color-accent);
@@ -3016,7 +3020,7 @@
       top: 3px; left: 3px;
       width: 5px; height: 5px;
       border-radius: 50%;
-      background: var(--color-accent);
+      background: var(--color-accent, #e07b3a);
       pointer-events: none;
       z-index: 1;
     }
@@ -3333,7 +3337,7 @@
 
     .cc-sheet__submit {
       width: 100%;
-      background: var(--color-accent);
+      background: var(--color-accent, #e07b3a);
       color: #fff;
       border: none; border-radius: var(--r-md);
       font: inherit; font-size: 1rem; font-weight: 600;
@@ -3460,8 +3464,8 @@
     }
 
     .snap-card__cta:hover {
-      background: var(--color-accent);
-      color: var(--cta-text-color, #fff);
+      background: var(--color-accent, #e07b3a);
+      color: var(--cta-text-color, #000);
     }
 
     /* === TIER GATING (gold lock pattern) ========================
@@ -3874,7 +3878,7 @@
       top: var(--sp-2);
       right: var(--sp-2);
       padding: 2px var(--sp-2);
-      background: var(--color-accent);
+      background: var(--color-accent, #e07b3a);
       color: var(--cta-text-color, #000);
       border-radius: var(--r-pill);
       font-size: 10px;
@@ -4009,8 +4013,8 @@
       padding: var(--sp-2) var(--sp-4);
       min-height: 40px;
       min-width: 64px;
-      background: var(--color-accent);
-      color: var(--cta-text-color, #fff);
+      background: var(--color-accent, #e07b3a);
+      color: var(--cta-text-color, #000);
       border-radius: var(--r-sm);
       font-family: var(--font-body);
       font-size: var(--text-sm);
@@ -4571,7 +4575,7 @@
     }
     .ep-fan-bar__fill {
       height: 100%;
-      background: var(--color-accent);
+      background: var(--color-accent, #e07b3a);
       border-radius: var(--r-pill);
       transition: width 0.6s var(--ease-decel);
     }
@@ -4591,8 +4595,8 @@
       width: 100%;
       padding: 14px;
       border-radius: var(--r-lg);
-      background: var(--color-accent);
-      color: var(--cta-text-color, #fff);
+      background: var(--color-accent, #e07b3a);
+      color: var(--cta-text-color, #000);
       font-family: var(--font-body);
       font-size: var(--text-sm);
       font-weight: 700;
@@ -4636,7 +4640,7 @@
       display: inline-block; margin-top: 6px;
       padding: 5px 14px; border-radius: 6px;
       font-size: 11px; font-weight: 700;
-      background: var(--color-accent); color: #000;
+      background: var(--color-accent, #e07b3a); color: #000;
       border: none; cursor: pointer;
     }
     .ep-ai-use:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -4744,7 +4748,7 @@
       bottom: 4px;
       left: 0;
       height: 2px;
-      background: var(--color-accent);
+      background: var(--color-accent, #e07b3a);
       border-radius: var(--r-pill);
       transition: transform 350ms var(--ease-spring), width 350ms var(--ease-spring);
       pointer-events: none;
@@ -8887,7 +8891,7 @@
       // The featured/first release earns the embed; everything else is tracklist.
       let _embedBudget = 0
       releases.forEach((rel, i) => {
-        const card = document.createElement('article')
+        const card = document.createElement('div')
 
         const type = rel.type || 'Single'
         const year = rel.year || (rel.releaseDate ? new Date(rel.releaseDate).getFullYear() : '')
@@ -8929,7 +8933,7 @@
                   ${t.duration ? `<span class="release-track__duration">${escHtml(t.duration)}</span>` : ''}
                 </div>`
               }).join('')}
-              ${tracks.length > 5 ? `<div class="release-track"><span class="release-track__title" style="color:var(--color-text-3)">+${tracks.length - 5} more tracks</span></div>` : ''}
+              ${tracks.length > 5 ? `<div class="release-track"><span class="release-track__title" style="color:var(--color-text-2)">+${tracks.length - 5} more tracks</span></div>` : ''}
             </div>`
           : ''
 
@@ -9070,7 +9074,7 @@
             } else if (safeUrl) {
               nameEl = `<a class="release-credits__name" href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeName}</a>`
             } else {
-              nameEl = `<span class="release-credits__name" style="opacity:0.7">${safeName}</span>`
+              nameEl = `<span class="release-credits__name">${safeName}</span>`
             }
             return `<div class="release-credits__row"><span class="release-credits__role">${safeRole}</span>${nameEl}</div>`
           }).join('')
@@ -9662,7 +9666,7 @@
 
       track.innerHTML = ''
       cards.forEach((card, idx) => {
-        const el = document.createElement('article')
+        const el = document.createElement('div')
         el.className = 'snap-card pressable'
         el.setAttribute('role', 'listitem')
 
@@ -9757,7 +9761,7 @@
 
       grid.innerHTML = ''
       items.forEach(item => {
-        const el = document.createElement('article')
+        const el = document.createElement('div')
         el.className = 'merch-item pressable'
 
         // price may be "£25", "25", "9.99" — strip leading currency symbol before parsing
@@ -10176,18 +10180,21 @@
       const cards = document.querySelectorAll(selectors.join(','))
       if (!cards.length) return
 
-      // Prep all cards — start at 0.25 so they're never invisible, just dimmed
-      cards.forEach(card => {
-        card.style.opacity = '0.25'
-        card.style.transform = 'translateY(12px)'
-        card.style.transition = 'none'
-      })
+      // Prep all cards — offset vertically; opacity stays 1 so axe contrast scans
+      // always see the final state (opacity dim was causing false positive contrast
+      // failures because axe scans before requestAnimationFrame fires)
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!reducedMotion) {
+        cards.forEach(card => {
+          card.style.transform = 'translateY(12px)'
+          card.style.transition = 'none'
+        })
+      }
 
       function bloomCard(card, idx) {
+        if (reducedMotion) return
         const delay = (idx % 6) * 60
-        card.style.transition = `opacity var(--dur-slow) var(--ease-decel) ${delay}ms,
-                                 transform var(--dur-slow) var(--ease-decel) ${delay}ms`
-        card.style.opacity = '1'
+        card.style.transition = `transform var(--dur-slow) var(--ease-decel) ${delay}ms`
         card.style.transform = 'translateY(0)'
       }
 
@@ -11483,7 +11490,7 @@
         } else if (zone === 'music') {
           openSheet('\uD83C\uDFB5', 'Releases',
             '<div style="padding:8px 0;"><p style="font-size:14px;color:var(--color-text-2);margin:0 0 16px;">Add and manage your releases from ABLE.</p>' +
-            '<a href="/admin.html#releases" style="display:block;text-align:center;padding:12px 20px;background:var(--color-accent);color:#000;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none">Manage releases \u2192</a></div>',
+            '<a href="/admin.html#releases" style="display:block;text-align:center;padding:12px 20px;background: var(--color-accent, #e07b3a);color:#000;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none">Manage releases \u2192</a></div>',
             null
           );
         } else if (zone === 'events') {
@@ -11505,7 +11512,7 @@
         } else {
           // Unhandled zone — direct to admin
           openSheet('\u270E', 'Edit',
-            '<div style="padding:8px 0;"><a href="/admin.html" style="display:block;text-align:center;padding:12px 20px;background:var(--color-accent);color:#000;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none">Manage this \u2192</a></div>',
+            '<div style="padding:8px 0;"><a href="/admin.html" style="display:block;text-align:center;padding:12px 20px;background: var(--color-accent, #e07b3a);color:#000;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none">Manage this \u2192</a></div>',
             null
           );
         }
