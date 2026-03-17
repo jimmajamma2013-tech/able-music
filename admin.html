@@ -1137,6 +1137,16 @@ body::before {
 }
 .frc-step:hover { background:rgba(0,0,0,.03); }
 .frc-step.done { opacity:.45; }
+/* NEW-5: Step completion exit animation (reverse fade-slide-up) */
+.frc-step.completing {
+  animation: milestoneEnter 0.25s var(--ease,ease) reverse both;
+  pointer-events: none;
+}
+/* NEW-5: All-done completion line entrance */
+.frc-complete-line {
+  animation: milestoneEnter 0.35s var(--spring,cubic-bezier(0.34,1.56,0.64,1)) both;
+  animation-delay: 0.1s;
+}
 .frc-check {
   width:17px; height:17px; border-radius:50%; flex-shrink:0;
   border:1.5px solid var(--dash-border);
@@ -8127,9 +8137,14 @@ function initFirstRun() {
 function markFrcDone(n) {
   const step = document.getElementById('frc' + n);
   const check = document.getElementById('frc' + n + 'check');
-  if (step) step.classList.add('done');
-  if (check) check.textContent = '✓';
-  updateFrcProgress();
+  if (!step) return;
+  step.classList.add('completing');
+  setTimeout(() => {
+    step.classList.remove('completing');
+    step.classList.add('done');
+    if (check) check.textContent = '✓';
+    updateFrcProgress();
+  }, 260);
 }
 
 function toggleFrcOpen() {
