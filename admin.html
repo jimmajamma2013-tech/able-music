@@ -2997,6 +2997,17 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <div class="page-title">Profile</div>
       <div class="page-sub">What fans see on your page.</div>
     </div>
+    <!-- C4 #41 — compact completeness bar on profile tab -->
+    <div class="completeness-bar-wrap" id="profileCompletenessBarWrap" style="margin-bottom:16px;" aria-live="polite">
+      <div class="completeness-bar-top">
+        <span class="completeness-bar-label">Profile completeness</span>
+        <span class="completeness-bar-pct" id="profileCompletenessPct">0%</span>
+      </div>
+      <div class="completeness-track">
+        <div class="completeness-fill" id="profileCompletenessFill" style="width:0%"></div>
+      </div>
+      <div class="completeness-nudge" id="profileCompletenessNudge"></div>
+    </div>
 
     <!-- ── PROFILE IDENTITY CARD ── -->
     <div class="identity-card" id="identityCard" style="max-width:600px;margin-bottom:16px;">
@@ -3101,9 +3112,9 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
                 <span>Bio</span>
                 <span id="adminBioCount" style="font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;opacity:0;transition:opacity .2s,color .2s;">0 / 120</span>
               </div>
-              <textarea class="field-input field-textarea" id="adminBio" aria-label="Bio" placeholder="One honest sentence. Who you are, where you're from, what you make." maxlength="120" oninput="(function(n){var c=document.getElementById('adminBioCount');c.textContent=n+' / 120';var near=n>=80;c.style.opacity=near?'1':'0';c.style.color=n>=110?'#ef4444':n>=80?'#f4b942':'var(--t3)';})(this.value.length)" onblur="saveProfilePage()"></textarea>
+              <textarea class="field-input field-textarea" id="adminBio" aria-label="Bio" placeholder="One honest sentence. Who you are, where you're from, what you make." maxlength="120" oninput="(function(n){var c=document.getElementById('adminBioCount');c.textContent=n+' / 120';var near=n>=80;c.style.opacity=near?'1':'0';c.style.color=n>=110?'#ef4444':n>=80?'#f4b942':'var(--t3)';var h=document.getElementById('adminBioHint');if(h)h.style.opacity=n>0?'0':'1';})(this.value.length)" onblur="saveProfilePage()"></textarea><!-- C4 #39 hint toggle -->
               <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
-                <div class="field-hint">Keep it direct. Fans read it in seconds.</div>
+                <div class="field-hint" id="adminBioHint">Tell fans who you are. One honest sentence.</div><!-- C4 #39 -->
                 <button class="ai-trigger" id="aiBioBtn" type="button" onclick="aiSuggestBio()"><span class="ai-trigger__icon" aria-hidden="true">✦</span>Write with AI</button>
               </div>
               <div class="ai-suggestions" id="aiBioSuggestions"></div>
@@ -3325,7 +3336,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       </div>
       <div class="dc-body">
         <div class="snap-list" id="snapList"><!-- Populated by renderSnapCardsList() --></div>
-        <p id="snapEmpty" style="text-align:center;padding:20px 0;color:rgba(255,255,255,.3);font-size:13px;margin:0;">No snap cards yet. Add one — a note, a link, or a moment — and it lives on your page.</p>
+        <p id="snapEmpty" style="text-align:center;padding:20px 0;color:rgba(255,255,255,.3);font-size:13px;margin:0;">Add a snap card — give fans somewhere to go. <button onclick="addSnapCard()" style="background:none;border:none;color:var(--acc);font-size:13px;cursor:pointer;padding:0;font-weight:600;">Add your first →</button></p><!-- C4 #14 -->
         <button class="snap-add-btn" style="margin-top:8px;" onclick="addSnapCard()">
           <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M6 1v10M1 6h10"/></svg>
           Add update
@@ -3563,6 +3574,18 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <div class="stat-card"><div class="stat-label">Link clicks</div><div class="stat-value skel" id="aStatClicks" aria-hidden="true"> </div><div class="stat-delta skel" id="aStatCtr" aria-hidden="true"> </div></div>
       <div class="stat-card"><div class="stat-label">Fans joined</div><div class="stat-value skel" id="aStatFans" aria-hidden="true"> </div><div class="stat-delta skel" id="aStatFansD" aria-hidden="true"> </div></div>
       <div class="stat-card"><div class="stat-label">Click rate</div><div class="stat-value skel" id="aStatRate" aria-hidden="true"> </div><div class="stat-delta" id="aStatRateDelta"> </div></div>
+    </div>
+    <!-- C4 #17 — 30-day fan sign-up sparkline -->
+    <div class="dash-card" style="margin-bottom:24px;" id="fanSparklineCard" hidden>
+      <div class="dc-head">
+        <div class="dc-title">Fan sign-ups — last 30 days</div>
+        <span id="fanPeakDay" style="font-size:11px;color:var(--t3);"></span>
+      </div>
+      <div class="dc-body" style="padding-top:4px;">
+        <svg id="spark-fans-30d" viewBox="0 0 120 32" preserveAspectRatio="none" style="width:100%;height:48px;" aria-hidden="true">
+          <polyline class="spark-line" points="" fill="none" stroke="var(--dash-green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
     </div>
     <!-- Free: top CTAs clicked -->
     <div class="dash-card" style="margin-bottom:36px;">
@@ -4155,20 +4178,27 @@ function renderFanList(filter) {
 
 }
 
+// C4 #23 — extended source breakdown: any source value, not just the 4 hardcoded ones
 function renderSourceBreakdown(fans) {
   const el = document.getElementById('sourceBreakdownBars');
   if (!el) return;
-  const counts = { ig: 0, tt: 0, sp: 0, direct: 0 };
-  fans.forEach(f => counts[normaliseSource(f.source)]++);
+  const knownColours = { ig: '#e1306c', tt: '#767676', sp: '#1ed760', direct: '#999' };
+  const knownLabels  = { ig: 'Instagram', tt: 'TikTok', sp: 'Spotify', direct: 'Direct' };
+  const counts = {};
+  fans.forEach(f => {
+    const src = normaliseSource(f.source);
+    counts[src] = (counts[src] || 0) + 1;
+  });
   const total = fans.length || 1;
-  const colours = { ig: '#e1306c', tt: '#767676', sp: '#1ed760', direct: '#999' };
-  const labels = { ig: 'Instagram', tt: 'TikTok', sp: 'Spotify', direct: 'Direct' };
-  el.innerHTML = Object.entries(counts).map(([src, count]) => {
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  el.innerHTML = sorted.map(([src, count]) => {
     const pct = Math.round(count / total * 100);
+    const colour = knownColours[src] || 'var(--acc)';
+    const label  = knownLabels[src]  || src.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
     return `<div class="breakdown-row">
-      <span class="breakdown-label">${labels[src]}</span>
+      <span class="breakdown-label">${escHtml(label)}</span>
       <div class="breakdown-bar-wrap">
-        <div class="breakdown-bar" style="width:${pct}%;background:${colours[src]}"></div>
+        <div class="breakdown-bar" style="width:${pct}%;background:${colour}"></div>
       </div>
       <span class="breakdown-pct">${pct}%</span>
     </div>`;
@@ -4646,7 +4676,7 @@ function renderShowsList() {
   if (!el) return;
   const shows = safeLS('able_shows', []).slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
   if (!shows.length) {
-    el.innerHTML = '<div class="empty-state" style="padding:28px 16px;text-align:center;color:var(--dash-t3);font-size:13px;">No shows listed yet. Add one and it appears on your page automatically.</div>';
+    el.innerHTML = '<div class="empty-state" style="padding:28px 16px;text-align:center;color:var(--dash-t3);font-size:13px;">No shows yet. Add one — even one date tells fans you\'re active.</div>'; // C4 #13
     return;
   }
   const today = new Date().toISOString().slice(0, 10);
@@ -4782,6 +4812,17 @@ function get7DayBuckets(events) {
   (events || []).forEach(e => {
     const daysAgo = Math.floor((now - e.ts) / 86400000);
     if (daysAgo >= 0 && daysAgo < 7) buckets[6 - daysAgo]++;
+  });
+  return buckets;
+}
+
+// C4 #17 — 30-day buckets for fan sparkline
+function get30DayBuckets(events) {
+  const buckets = Array(30).fill(0);
+  const now = Date.now();
+  (events || []).forEach(e => {
+    const daysAgo = Math.floor((now - e.ts) / 86400000);
+    if (daysAgo >= 0 && daysAgo < 30) buckets[29 - daysAgo]++;
   });
   return buckets;
 }
@@ -5784,7 +5825,7 @@ function renderAdminEvents() {
   const past = (data.events||[]).filter(e=>new Date(e.date)<now).sort((a,b)=>new Date(b.date)-new Date(a.date));
   const events = [...upcoming, ...past];
   if (!events.length) {
-    el.innerHTML = `<div class="admin-empty">No shows listed yet. Add one and it appears on your page automatically.</div>`;
+    el.innerHTML = `<div class="admin-empty">No shows yet. Add one — even one date tells fans you're active.</div>`; // C4 #13
     return;
   }
   el.innerHTML = events.map(ev => {
@@ -5978,8 +6019,17 @@ function addSnapCard() {
   setTimeout(() => toggleSnapEdit(newCard.id), 50)
 }
 
+// C4 #9 — two-step snap delete, no browser confirm()
 function removeSnapCard(id) {
-  if (!confirm('Remove this snap card?')) return
+  const btn = document.querySelector(`.snap-btn.del[onclick="removeSnapCard('${id}')"]`);
+  if (btn && !btn.dataset.confirming) {
+    btn.dataset.confirming = '1';
+    btn.title = 'Really remove? Click again to confirm.';
+    btn.style.background = 'rgba(220,38,38,.25)';
+    btn.style.color = 'var(--red)';
+    setTimeout(() => { if (btn && btn.dataset.confirming) { delete btn.dataset.confirming; btn.title = 'Remove'; btn.style.background = ''; btn.style.color = ''; } }, 4000);
+    return;
+  }
   const data = safeLS(V3_KEY, {})
   data.snapCards = (data.snapCards || []).filter(c => c.id !== id)
   setLS(V3_KEY, data)
@@ -6797,13 +6847,14 @@ function loadRealStats() {
     broadcastSub.textContent = `You have ${fansTotal} ${fansTotal === 1 ? 'person' : 'people'} waiting to hear your news. Send them something.`;
   }
 
-  // Top clicks list
+  // Top clicks list + C4 #22 most-tapped insight
   const topList = document.getElementById('topClicksList');
   if (topList && clicksTotal > 0) {
     const counts = {};
     clicks.forEach(c => { counts[c.label] = (counts[c.label]||0)+1; });
     const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0,5);
     const maxCount = sorted[0]?.[1] || 1;
+    const topLabel = sorted[0]?.[0];
     topList.innerHTML = sorted.map(([label, count]) => `
       <div style="display:flex;align-items:center;gap:12px;">
         <div style="font-size:12px;color:var(--t2);min-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(label)}</div>
@@ -6811,13 +6862,29 @@ function loadRealStats() {
           <div style="height:100%;width:${(count/maxCount*100).toFixed(0)}%;background:var(--acc);border-radius:var(--r-pill);"></div>
         </div>
         <div style="font-size:12px;color:var(--text);width:30px;text-align:right;">${count}</div>
-      </div>`).join('');
+      </div>`).join('')
+      + (topLabel ? `<div style="margin-top:10px;font-size:11px;color:var(--t3);">Fans tap <strong style="color:var(--t2);">'${escHtml(topLabel)}'</strong> most often.</div>` : ''); // C4 #22
   }
 
   // Sparklines
   renderSparkline('spark-views',  get7DayBuckets(views),  'var(--dash-amber)');
   renderSparkline('spark-fans',   get7DayBuckets(fans),   'var(--dash-green)');
   renderSparkline('spark-clicks', get7DayBuckets(clicks), 'var(--dash-t3)');
+
+  // C4 #17 — 30-day fan sparkline
+  const fans30 = get30DayBuckets(fans);
+  const sparkCard = document.getElementById('fanSparklineCard');
+  if (sparkCard && fans30.some(v => v > 0)) {
+    sparkCard.hidden = false;
+    renderSparkline('spark-fans-30d', fans30, 'var(--dash-green)');
+    // C4 #21 — peak day insight
+    const peakIdx   = fans30.indexOf(Math.max(...fans30));
+    const peakCount = fans30[peakIdx];
+    const peakDate  = new Date(Date.now() - (29 - peakIdx) * 86400000);
+    const peakLabel = peakDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    const peakEl    = document.getElementById('fanPeakDay');
+    if (peakEl) peakEl.textContent = `Peak: ${peakLabel} — ${peakCount} fan${peakCount !== 1 ? 's' : ''}`;
+  }
 }
 
 /* ── LIVE ACTIVITY FEED ── */
@@ -7526,6 +7593,16 @@ function updateCompletenessBar() {
   } else {
     wrap.classList.remove('complete');
   }
+
+  // C4 #41 — also update compact bar on profile tab
+  const profileWrap  = document.getElementById('profileCompletenessBarWrap');
+  const profilePct   = document.getElementById('profileCompletenessPct');
+  const profileFill  = document.getElementById('profileCompletenessFill');
+  const profileNudge = document.getElementById('profileCompletenessNudge');
+  if (profilePct)   profilePct.textContent = pct + '%';
+  if (profileFill)  profileFill.style.width = pct + '%';
+  if (profileNudge) profileNudge.textContent = missing.length ? missing[0] : '';
+  if (profileWrap)  pct >= 100 ? profileWrap.classList.add('complete') : profileWrap.classList.remove('complete');
 }
 
 /* ── LOAD STATE FROM LOCALSTORAGE ── */
@@ -7612,6 +7689,9 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
       counter.style.opacity = near ? '1' : '0';
       counter.style.color = bio.length >= 110 ? '#ef4444' : bio.length >= 80 ? '#f4b942' : 'var(--t3)';
     }
+    // C4 #39 — hide hint when bio has content
+    const bioHint = document.getElementById('adminBioHint');
+    if (bioHint) bioHint.style.opacity = bio.length > 0 ? '0' : '1';
   }
   if (document.getElementById('adminGenre') && genre) document.getElementById('adminGenre').value = genre;
   if (document.getElementById('adminLocation') && v3data.location) document.getElementById('adminLocation').value = v3data.location;
