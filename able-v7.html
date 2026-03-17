@@ -108,6 +108,12 @@
       --color-state-gig:  #8b1e1e;
       --color-state-prof: #06b6d4;
 
+      /* Release type left-border tokens */
+      --color-release-album:   var(--color-accent);
+      --color-release-ep:      #8b5cf6;
+      --color-release-single:  #1e9650;
+      --color-release-mixtape: #f59e0b;
+
       /* Ambient colour — overridden by canvas extraction (§3.6) */
       --color-ambient: 0,0,0;
 
@@ -1876,10 +1882,10 @@
     }
 
     /* Release type left-border — subtle type signal */
-    .release-card[data-release-type="album"]    { border-left-color: var(--color-accent); }
-    .release-card[data-release-type="ep"]       { border-left-color: #8b5cf6; }
-    .release-card[data-release-type="single"]   { border-left-color: #1e9650; }
-    .release-card[data-release-type="mixtape"]  { border-left-color: #f59e0b; }
+    .release-card[data-release-type="album"]    { border-left-color: var(--color-release-album); }
+    .release-card[data-release-type="ep"]       { border-left-color: var(--color-release-ep); }
+    .release-card[data-release-type="single"]   { border-left-color: var(--color-release-single); }
+    .release-card[data-release-type="mixtape"]  { border-left-color: var(--color-release-mixtape); }
 
     @media (hover: hover) and (pointer: fine) {
       .release-card:hover {
