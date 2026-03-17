@@ -6716,8 +6716,9 @@
         })
       }
 
-      // Admin saves shows to profile.events — auto-generate world map moments from them
-      ;(profile.events || []).forEach(show => {
+      // Admin saves shows to able_shows; profile.events is legacy — C5 #55 fix
+      const _wmShows = (() => { const s = safeLS('able_shows',[]); return s.length ? s : (profile.events||[]); })()
+      ;_wmShows.forEach(show => {
         if (!manual.some(m => m.linkedId === show.id)) {
           manual.push({
             id: 'auto_show_' + show.id,
@@ -8274,8 +8275,13 @@
       // Release note (pre-release state — artist-written paragraph)
       const releaseNoteEl = document.getElementById('release-note')
       if (releaseNoteEl) {
+        // C5 #32 — show release title in countdown area when no custom note is set
+        const _relTitle = profile.release?.title || profile.releaseName
         if (state === 'pre-release' && profile.releaseNote) {
           releaseNoteEl.textContent = profile.releaseNote
+          releaseNoteEl.hidden = false
+        } else if (state === 'pre-release' && _relTitle) {
+          releaseNoteEl.textContent = _relTitle + ' — coming soon.'
           releaseNoteEl.hidden = false
         } else {
           releaseNoteEl.hidden = true
@@ -8298,7 +8304,8 @@
       stopCountdown()
 
       if (state === 'pre-release' && profile.releaseDate) {
-        startCountdown(new Date(profile.releaseDate).getTime())
+        // C5 #26 — use local midnight, not UTC midnight (new Date('YYYY-MM-DD') parses as UTC)
+        startCountdown(new Date(profile.releaseDate + 'T00:00:00').getTime())
       }
 
       // World Map — init after state chip (uses same moment data)
@@ -9635,8 +9642,13 @@
       const list = document.getElementById('shows-list')
       if (!section || !list) return
 
+      // C5 #55 — admin saves shows to able_shows; profile.events is the legacy key.
+      // Prefer able_shows when it has data; fall back to profile.events for legacy profiles.
+      const _ableSows = safeLS('able_shows', [])
+      const _evSource = _ableSows.length > 0 ? _ableSows : (profile.events || [])
+
       const _showCutoff = Date.now() - 86400000 // C2 #54 — keep shows within last 24h
-      const events = (profile.events || []).filter(ev => {
+      const events = _evSource.filter(ev => {
         const d = ev.date ? new Date(ev.date) : null
         return d && d.getTime() > _showCutoff
       }).sort((a, b) => {
@@ -9758,8 +9770,11 @@
     function injectEventStructuredData(profile) {
       const sdEl = document.getElementById('structured-data')
       if (!sdEl) return
+      // C5 #55 — use able_shows (canonical) with profile.events fallback
+      const _ldSows = safeLS('able_shows', [])
+      const _ldEvSrc = _ldSows.length > 0 ? _ldSows : (profile.events || [])
       const _cutoff = Date.now() - 86400000
-      const events = (profile.events || []).filter(ev => {
+      const events = _ldEvSrc.filter(ev => {
         const d = ev.date ? new Date(ev.date) : null
         return d && d.getTime() > _cutoff
       })
@@ -9780,13 +9795,14 @@
       try { sdEl.textContent = JSON.stringify(ld) } catch(_) {}
     }
     function buildEventLD(ev, artistName) {
-      return {
+      const obj = {
         name: ev.venue ? artistName + ' at ' + ev.venue : artistName + ' live',
-        startDate: ev.date,
-        location: ev.venue ? { '@type': 'Place', name: ev.venue } : undefined,
         performer: { '@type': 'MusicGroup', name: artistName },
-        url: ev.ticketUrl || undefined
       }
+      if (ev.date) obj.startDate = ev.date + 'T00:00:00' // C5 #54 — null-safe, use midnight ISO
+      if (ev.venue) obj.location = { '@type': 'Place', name: ev.venue, ...(ev.city ? { address: { '@type': 'PostalAddress', addressLocality: ev.city } } : {}) }
+      if (ev.ticketUrl) obj.url = ev.ticketUrl
+      return obj
     }
 
     function renderClips(profile) {

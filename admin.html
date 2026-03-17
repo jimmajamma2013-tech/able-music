@@ -7836,6 +7836,13 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
   const backdrop = document.getElementById('adminSheetBackdrop');
   if (closeBtn) closeBtn.addEventListener('click', closeAdminSheet);
   if (backdrop) backdrop.addEventListener('click', closeAdminSheet);
+  // C5 #40 — Escape key closes any open admin sheet
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const sheet = document.getElementById('adminSheet');
+      if (sheet && !sheet.hidden) closeAdminSheet();
+    }
+  });
 
   // P1-W2 #16 — reactive fan cap: update upgrade bar + fan list when able_fans changes in another tab
   window.addEventListener('storage', (e) => {
@@ -7845,6 +7852,37 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
       updateFanPageStats();
     }
   });
+
+  // C5 #27 — gig expiry toast: fires once when artist opens admin after gig mode has auto-expired
+  ;(function() {
+    const _gigExp = localStorage.getItem('able_gig_expires');
+    if (_gigExp && parseInt(_gigExp, 10) < Date.now()) {
+      const _isoDay = new Date().toISOString().slice(0,10);
+      const _key = 'able_gig_expired_' + _isoDay;
+      if (!localStorage.getItem(_key)) {
+        localStorage.setItem(_key, '1');
+        localStorage.removeItem('able_gig_expires'); // clean up expired key
+        setTimeout(() => showToast('Gig mode off. Hope it went well.', 'amber'), 800);
+      }
+    }
+  })();
+
+  // C5 #29 — live mode transition toast: fires once when release date has passed
+  ;(function() {
+    const _rd = v3data.releaseDate;
+    if (!_rd) return;
+    const _relMs = new Date(_rd).getTime();
+    const _now = Date.now();
+    if (_relMs > _now) return; // not yet released
+    const _liveWindow = 14 * 86400000;
+    if (_now - _relMs > _liveWindow) return; // more than 14 days ago — already profile mode
+    const _notifKey = 'able_live_notif_' + _rd;
+    if (!localStorage.getItem(_notifKey)) {
+      localStorage.setItem(_notifKey, '1');
+      setTimeout(() => showToast('Your release is live. Page is now in live mode.', 'green'), 1200);
+    }
+  })();
+
 } catch(_e) {
   // C3 #37 — if admin init throws, show recovery UI rather than a half-rendered page
   console.error('[ABLE] admin init error', _e);
