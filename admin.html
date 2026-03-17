@@ -5789,7 +5789,7 @@ function renderAdminEvents() {
     const isPast = new Date(ev.date) < now;
     return `<div class="dash-card" style="max-width:560px;margin-bottom:10px;${isPast?'opacity:0.65':''}">
       <div class="dc-head">
-        <div class="dc-title">${escHtml(ev.venue)} <span style="font-weight:400;color:var(--t3);font-size:11px;">${escHtml([ev.city,ev.country].filter(Boolean).join(', ') || '—')} · ${escHtml(ev.date)}</span> ${isPast?'<span style="font-size:10px;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:var(--r-xs);margin-left:4px;color:var(--t3)">Past</span>':''}</div>
+        <div class="dc-title">${escHtml(ev.venue)} <span style="font-weight:400;color:var(--t3);font-size:11px;">${escHtml([ev.city,ev.country].filter(Boolean).join(', ') || '—')} · ${ev.date ? new Date(ev.date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}) : ''}</span> ${isPast?'<span style="font-size:10px;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:var(--r-xs);margin-left:4px;color:var(--t3)">Past</span>':''}</div><!-- C4 #11 -->
         <button class="snap-btn del" onclick="removeEvent('${ev.id}')" aria-label="Remove event" title="Remove">×</button>
       </div>
       <div class="dc-body">
