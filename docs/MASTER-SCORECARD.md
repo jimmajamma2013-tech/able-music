@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–3 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md, CYCLE-3-AUDIT.md**
+**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–9 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-9-AUDIT.md**
 
 ---
 
@@ -35,20 +35,20 @@
 
 | System | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|
-| Artist tools | 8.8/10 | 9.0/10 | Close Circle no payment, accent picker limited | ✅ C4W2: bio hint, profile completeness bar on profile tab, snap delete two-step, empty states |
+| Artist tools | 9.1/10 | 9.3/10 | Close Circle no payment; snap/URL validation Wave 2 | ✅ C9W1: completeness ✓ icon ≥90%, bio counter tokens, maxlengths on snap/name/release |
 | CRM | 8.0/10 | 9.0/10 | Fan search UI exists; `consentVersion` in CSV; dedup check live | ✅ C4W2: extended source breakdown (any source), most-tapped CTA insight |
-| Tier gates | 7.5/10 | 9.0/10 | Server enforcement missing; Stripe not wired | ✅ C6: broadcast lock personalised with fan count, CRM overlay copy updated, button hover darken |
-| Error states | 8.0/10 | 9.0/10 | QuotaExceededError toast; fetch try/catch audit clean; fans Array guard | ✅ C3: crash boundary on admin init; offline bar; Supabase init guard; date parse guard |
+| Tier gates | 8.2/10 | 9.0/10 | Server enforcement missing; Stripe not wired | ✅ C8: show gate (free max 3), CSV export gate, broadcast personalisation verified |
+| Error states | 8.4/10 | 9.0/10 | Fan sign-up Supabase failure UX remaining | ✅ C8: shows parse guard; stats parse guard; fan confirmation timeout note |
 | PWA | 8.5/10 | 9.0/10 | No service worker (offline mode unbuilt) | ✅ `manifest.json` + iOS meta tags + icons exist; service worker is optional V2 |
 | Page state system | 8.2/10 | 9.0/10 | Post-release nudge flow remaining | ✅ C5: gig expiry toast, live-mode transition toast, countdown local midnight fix, release title in countdown |
-| Data architecture | 7.5/10 | 9.3/10 | Multi-artist isolation; `fan.html` Supabase not wired | ✅ C6: verified fan dedup, spam guard, caps, safeLS guard, topCard guard all already built |
+| Data architecture | 8.0/10 | 9.3/10 | Multi-artist isolation; `fan.html` Supabase not wired | ✅ C8: deviceType + path on fan/view writes; updatedAt on every profile save |
 | Analytics | 8.8/10 | 9.4/10 | SessionId in views still missing on page loads | ✅ C4W2: 30-day fan sparkline, peak day insight, most-tapped CTA, extended source breakdown |
 | SEO / OG | 9.2/10 | 9.5/10 | Static OG image needs production deploy | ✅ C3: JSON-LD Event schema on able-v8.html shows; `<time datetime>` on fan rows and show dates |
 | oEmbed proxy | 9.0/10 | 9.5/10 | ✅ SSRF fixed — `isSafeMediaUrl()` uses `new URL().hostname` + ALLOWED_HOSTS Set | Zero vulnerabilities; `data.html` stripped to prevent XSS |
 | Coding strategy | 9.2/10 | 10/10 | `prefers-reduced-motion` audit remaining in admin | ✅ Parse checks every edit; tokenised CSS enforced |
-| UI system | 8.0/10 | 8.6/10 | Component library unbuilt | ✅ C6: sheet close animation, prefers-reduced-motion media query, disabled input state, button hover darken |
+| UI system | 8.4/10 | 8.6/10 | Component library unbuilt | ✅ C8: focus-visible ring, sheet backdrop 50%, glo-btn active scale, toast auto-dismiss |
 | UX system | 8.5/10 | 9.0/10 | fan.html stub remaining | ✅ C7: completeness 100% toast; Artist Pro trial hook; 30-day milestone; handle slug preview; upgrade CTA tracking |
-| World map | 8.0/10 | 9.2/10 | Multi-moment panel copy polish remaining | ✅ C5: shows sync FIXED (able_shows→renderShowsSection); world map also reads able_shows |
+| World map | 8.6/10 | 9.2/10 | Gig countdown (#18), show click-through (#21) Wave 2 | ✅ C9W1: featured show accent border, shows tab active on gig night |
 
 ### Killer features
 
@@ -75,7 +75,7 @@
 |---|---|---|---|---|
 | Legal compliance | 8.5/10 | 9.5/10 | ICO registration research pending; PECR clarity pending | ✅ GDPR Article 13 `privacy.html` written; GDPR consent on fan sign-up; unsubscribe in email; fan deletion per-row; `privacy@ablemusic.co` |
 | Security | 8.5/10 | 9.5/10 | CSP `unsafe-inline` (accepted risk — no build pipeline) | ✅ URL scheme validation (`isSafeAdminUrl()`); CORS restricted; security headers complete in netlify.toml; no console.log/debugger; SSRF fixed |
-| Accessibility (WCAG 2.2 AA) | 8.2/10 | 9.0/10 | VoiceOver test not run | ✅ C7: fan form aria-describedby→consent; verified sheet aria-labelledby, Campaign HQ radiogroup, skip link, mn-item aria-current |
+| Accessibility (WCAG 2.2 AA) | 8.7/10 | 9.0/10 | VoiceOver on real iPhone still untested | ✅ C9W1: accent swatch radiogroup+aria-checked, fan form aria-label, toast focus, focus-visible on start.html |
 | Freelancer auth | pre-launch | — | Discord OAuth fallback unspecced | Quality gate: 5 questions must be "yes" before launch |
 
 ### AI & automation
@@ -92,7 +92,7 @@
 | System | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|
 | Brand identity | 8.0/10 | 9.0/10 | og-default.jpg not yet deployed to production | ✅ favicon.svg; og-default.jpg generated and committed |
-| Copy system | 7.8/10 | 9.5/10 | Some "dashboard" violations remaining; admin error copy | Fix remaining banned-phrase violations |
+| Copy system | 8.6/10 | 9.5/10 | Wave 2: save button specificity, admin greeting personalisation | ✅ C9W1: all banned-phrase audit passed (greeting, fan heading, gig chip, landing, CTA labels) |
 | Explainers | 5.5/10 | 9.0/10 | Close Circle orientation card missing | Screen 6 context line: "you get their email — that's yours" |
 | Social media | 9.1/10 | — | Week 2+ content calendar less specific | None blocking |
 | Instagram strategy | 9.6/10 | — | Content bank not written | None blocking day-1 execution |
@@ -160,7 +160,9 @@
 | Strategy / founder | ~7.8/10 | — | — |
 
 **Overall documentation + spec average: ~9.2/10**
-**Overall current build state average: ~9.15/10** (was ~9.1/10 post-C7W1; was ~9.0/10 post-C6; was ~8.9/10 post-C5W2)
+**Overall current build state average: ~9.2/10** (was ~9.15/10 post-C7W2; was ~9.1/10 post-C7W1; was ~9.0/10 post-C6)
+
+Cycle 8 improvements: Data arch (7.5→8.0) — deviceType/path on writes, updatedAt on saves; Tier gates (7.5→8.2) — show gate, CSV export gate, broadcast verify; UI system (8.0→8.4) — focus-visible, backdrop, glo-btn active, toast auto-dismiss; Error states (8.0→8.4) — shows parse guard, stats parse guard, fan network note
 
 Cycle 7 Wave 2 improvements: Start.html (#33 safe-area, #37 release date hint in moment picker); Admin RAF stat batch (#30 — δ-label writes deferred to single RAF frame)
 Cycle 7 improvements: UX system (7.8→8.5) — Artist Pro trial hook, 30-day milestone, upgrade tracking; Accessibility (7.8→8.2) — fan form aria-describedby; Artist success milestone + completeness celebration

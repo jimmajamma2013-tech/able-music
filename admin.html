@@ -3162,16 +3162,22 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
               <div class="ai-suggestions" id="aiCtaSuggestions"></div>
             </div>
             <div class="field-row">
-              <div class="field-label">Primary link</div>
-              <input class="field-input" type="url" id="adminCtaPrimaryUrl" aria-label="Primary CTA link" placeholder="https://…">
+              <div class="field-label" style="display:flex;justify-content:space-between;align-items:center;">
+                <span>Primary link</span>
+                <span id="ctaPrimaryUrlStatus" aria-live="polite" style="font-size:11px;font-weight:600;"></span>
+              </div>
+              <input class="field-input" type="url" id="adminCtaPrimaryUrl" aria-label="Primary CTA link" placeholder="https://…" oninput="(function(v,s){if(!v){s.textContent='';return;}s.textContent=isSafeAdminUrl(v)?'✓':'Invalid URL';s.style.color=isSafeAdminUrl(v)?'var(--green)':'var(--red)';})(this.value,document.getElementById('ctaPrimaryUrlStatus'))"><!-- C9 #39 -->
             </div>
             <div class="field-row" style="margin-top:8px;">
               <div class="field-label">Secondary label</div>
               <input class="field-input" type="text" id="adminCtaSecLabel" aria-label="Secondary CTA label" placeholder="e.g. Get Tickets" maxlength="32">
             </div>
             <div class="field-row">
-              <div class="field-label">Secondary link</div>
-              <input class="field-input" type="url" id="adminCtaSecUrl" aria-label="Secondary CTA link" placeholder="https://… (optional)">
+              <div class="field-label" style="display:flex;justify-content:space-between;align-items:center;">
+                <span>Secondary link</span>
+                <span id="ctaSecUrlStatus" aria-live="polite" style="font-size:11px;font-weight:600;"></span>
+              </div>
+              <input class="field-input" type="url" id="adminCtaSecUrl" aria-label="Secondary CTA link" placeholder="https://… (optional)" oninput="(function(v,s){if(!v){s.textContent='';return;}s.textContent=isSafeAdminUrl(v)?'✓':'Invalid URL';s.style.color=isSafeAdminUrl(v)?'var(--green)':'var(--red)';})(this.value,document.getElementById('ctaSecUrlStatus'))"><!-- C9 #39 -->
             </div>
           </div>
         </div>
@@ -5354,6 +5360,8 @@ function copyGigLink() {
   const url = handle
     ? `https://ablemusic.co/${handle}?utm_source=tonight`
     : `${location.origin}/able-v8.html?utm_source=tonight`;
+  // C9 #45 — log gig share click to able_clicks
+  try { const _c45c=safeLS('able_clicks',[]); _c45c.push({label:'share-link',type:'share',ts:Date.now()}); setLS('able_clicks',_c45c); } catch(_) {}
   navigator.clipboard.writeText(url).then(() => {
     const btn = document.getElementById('gigShareBtn');
     if (btn) { btn.textContent = '✓ Link copied'; setTimeout(() => { btn.textContent = 'Share tonight\'s link →'; }, 2000); }
@@ -8124,6 +8132,8 @@ function copyPageUrl() {
   const data = safeLS(V3_KEY, {});
   const slug = data.handle || (data.name || 'artist').toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const url = `https://ablemusic.co/${slug}`;
+  // C9 #45 — log share-link click to able_clicks
+  try { const _c45=safeLS('able_clicks',[]); _c45.push({label:'share-link',type:'share',ts:Date.now()}); setLS('able_clicks',_c45); } catch(_) {}
   navigator.clipboard.writeText(url).then(() => {
     const btn = document.getElementById('settingsCopyBtn');
     if (!btn) return;
@@ -8191,6 +8201,8 @@ function copyCampaignUrl() {
   const clean = (document.getElementById('campaignNameInput')?.value || '').trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '').slice(0, 50);
   if (!clean) { showToast('Enter a campaign name first.', 'amber'); return; }
   const url = `${_getCampaignBaseUrl()}?campaign=${clean}`;
+  // C9 #45 — log share-link click to able_clicks
+  try { const _c45b=safeLS('able_clicks',[]); _c45b.push({label:'share-link',type:'share',ts:Date.now()}); setLS('able_clicks',_c45b); } catch(_) {}
   navigator.clipboard.writeText(url).then(() => {
     const btn = document.getElementById('copyCampaignBtn');
     if (btn) { const orig = btn.textContent; btn.textContent = 'Copied.'; setTimeout(() => { btn.textContent = orig; }, 2000); }

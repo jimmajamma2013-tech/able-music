@@ -9740,10 +9740,25 @@
         const timeStr = ev.time || ''
         const isoDateStr = date.toISOString().split('T')[0] // C3 #46 — machine-readable date
 
-        // Task 5.4: TONIGHT badge on first show when gig night is active
-        const tonightBadge = (gigActive && evIdx === 0)
-          ? `<span class="tonight-badge">TONIGHT</span>`
-          : ''
+        // Task 5.4: TONIGHT badge + C9 #18 doors countdown on first show when gig night is active
+        let tonightBadge = ''
+        if (gigActive && evIdx === 0) {
+          let _cdText = 'TONIGHT'
+          if (ev.doorsTime) {
+            // doorsTime format: "HH:MM" 24h
+            try {
+              const [_h, _m] = ev.doorsTime.split(':').map(Number)
+              const _doors = new Date(); _doors.setHours(_h, _m, 0, 0)
+              const _diff = _doors.getTime() - Date.now()
+              if (_diff > 0) {
+                const _dh = Math.floor(_diff / 3600000)
+                const _dm = Math.floor((_diff % 3600000) / 60000)
+                _cdText = _dh > 0 ? `Doors in ${_dh}h ${_dm}m` : `Doors in ${_dm}m`
+              }
+            } catch (_) {}
+          }
+          tonightBadge = `<span class="tonight-badge">${escHtml(_cdText)}</span>`
+        }
 
         const safeTicketUrl = ev.ticketUrl && isSafeUrl(ev.ticketUrl) ? escHtml(ev.ticketUrl) : ''
         item.innerHTML = `
@@ -9775,6 +9790,18 @@
         if (safeTicketUrl) {
           const ticketBtn = item.querySelector('.btn-show')
           if (ticketBtn) ticketBtn.addEventListener('click', () => trackClick(ev.venue || 'show', 'ticket', 'shows'))
+          // C9 #21 — clicking anywhere on card navigates to ticket URL (not just the button)
+          item.dataset.href = safeTicketUrl
+          item.addEventListener('click', function(e) {
+            if (e.target.closest('a') || e.target.closest('button')) return // let native links/buttons handle
+            trackClick(ev.venue || 'show', 'ticket', 'shows')
+            window.open(safeTicketUrl, '_blank', 'noopener,noreferrer')
+          })
+          item.setAttribute('role', 'link')
+          item.setAttribute('tabindex', '0')
+          item.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.open(safeTicketUrl, '_blank', 'noopener,noreferrer') }
+          })
         }
         list.appendChild(item)
       })
