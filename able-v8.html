@@ -2449,6 +2449,7 @@
       font-size: 10px;
       font-weight: 700;
       padding: 4px 10px;
+      min-height: 44px; /* E1 — 44px tap target */
       border-radius: var(--r-sm);
       background: var(--color-accent, #e07b3a);
       color: var(--cta-text-color, #000);
@@ -2460,6 +2461,7 @@
       font-size: 10px;
       font-weight: 700;
       padding: 4px 10px;
+      min-height: 44px; /* E1 — 44px tap target */
       border-radius: var(--r-sm);
       background: transparent;
       color: rgba(255,255,255,0.7);
@@ -3274,7 +3276,7 @@
       border: 1px solid rgba(255,255,255,0.10);
       border-radius: var(--r-sm);
       color: var(--color-text);
-      font-size: var(--text-sm);
+      font-size: 16px; /* E3 — override --text-sm(13px) to prevent iOS auto-zoom */
       padding: var(--sp-3);
       resize: none;
       min-height: 90px;
@@ -3287,7 +3289,7 @@
       border: 1px solid rgba(255,255,255,0.10);
       border-radius: var(--r-sm);
       color: var(--color-text);
-      font-size: var(--text-sm);
+      font-size: 16px; /* E3 — override --text-sm(13px) to prevent iOS auto-zoom */
       padding: 0 var(--sp-3);
       min-height: var(--tap-min);
       margin-bottom: var(--sp-3);
@@ -3406,7 +3408,7 @@
       border: 1px solid rgba(255,255,255,0.10);
       border-radius: var(--r-md);
       color: var(--color-text);
-      font: inherit; font-size: 0.9375rem;
+      font: inherit; font-size: 1rem; /* E3 — 1rem(16px) prevents iOS auto-zoom; was 0.9375rem(15px) */
       padding: 12px 14px; margin-bottom: var(--sp-3);
       transition: border-color var(--dur-fast) var(--ease-decel);
     }
@@ -9464,7 +9466,7 @@
       events.forEach((ev, evIdx) => {
         const item = document.createElement('div')
         const hasImage = Boolean(ev.venueImageUrl)
-        item.className = 'show-item' + (hasImage ? ' show-item--has-image' : '')
+        item.className = 'show-item pressable' + (hasImage ? ' show-item--has-image' : '') // E5 — tap feedback
 
         const date = new Date(ev.date)
         const dayStr = date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
@@ -11626,8 +11628,8 @@
 
         if (zone === 'top-card') {
           openSheet('\uD83C\uDFA8', 'Top card',
-            '<div class="bs-field"><label>Artist name</label><input id="bsf-name" value="' + esc(profile.name) + '"></div>' +
-            '<div class="bs-field"><label>Tagline</label><input id="bsf-tagline" value="' + esc(profile.tagline) + '" placeholder="Optional one-liner"></div>' +
+            '<div class="bs-field"><label>Artist name</label><input type="text" id="bsf-name" value="' + esc(profile.name) + '"></div>' +
+            '<div class="bs-field"><label>Tagline</label><input type="text" id="bsf-tagline" value="' + esc(profile.tagline) + '" placeholder="Optional one-liner"></div>' +
             '<div class="bs-field"><label>Accent colour</label><input type="color" id="bsf-accent" value="' + esc(profile.accent || '#e05242') + '"></div>',
             function() {
               save({
@@ -11687,7 +11689,7 @@
           );
         } else if (zone === 'snap-cards') {
           openSheet('\u2726', 'Add an update',
-            '<div class="bs-field"><label>Title</label><input id="bsf-snap-title" placeholder="New track dropping soon"></div>' +
+            '<div class="bs-field"><label>Title</label><input type="text" id="bsf-snap-title" placeholder="New track dropping soon"></div>' +
             '<div class="bs-field"><label>Body</label><textarea id="bsf-snap-body" placeholder="A bit more detail\u2026" rows="3" style="width:100%;resize:vertical;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-sm);padding:10px;color:inherit;font-family:inherit;font-size:16px;"></textarea></div>',
             function() {
               let t = document.getElementById('bsf-snap-title');
@@ -11707,7 +11709,7 @@
           );
         } else if (zone === 'events') {
           openSheet('\uD83D\uDCC5', 'Add a show',
-            '<div class="bs-field"><label>Venue</label><input id="bsf-ev-venue" placeholder="Fabric, London"></div>' +
+            '<div class="bs-field"><label>Venue</label><input type="text" id="bsf-ev-venue" placeholder="Fabric, London"></div>' +
             '<div class="bs-field"><label>Date</label><input id="bsf-ev-date" type="date"></div>' +
             '<div class="bs-field"><label>Doors time</label><input id="bsf-ev-time" type="time" placeholder="21:00"></div>' +
             '<div class="bs-field"><label>Ticket link</label><input id="bsf-ev-url" type="url" placeholder="https://…"></div>',
