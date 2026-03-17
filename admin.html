@@ -1000,6 +1000,17 @@ body::before {
 }
 .mn-item.on { color:var(--dash-amber); }
 
+/* ── LIFECYCLE STAGE ── */
+/* new: FRC strip gets amber left accent to signal the checklist matters */
+#page-home[data-stage="new"] .first-run-card {
+  border-left:3px solid var(--acc);
+}
+/* gig: Campaign HQ gets a warm border to signal gig mode is active */
+#page-home[data-stage="gig"] .campaign-hq {
+  border-left:3px solid #f46442;
+  padding-left:14px;
+}
+
 /* ── TOAST ── */
 #adminToast {
   position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px);
@@ -7083,6 +7094,18 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('adminCtaPrimaryUrl')   && ctaP.url)   document.getElementById('adminCtaPrimaryUrl').value   = ctaP.url;
   if (document.getElementById('adminCtaSecLabel')     && ctaS.label) document.getElementById('adminCtaSecLabel').value     = ctaS.label;
   if (document.getElementById('adminCtaSecUrl')       && ctaS.url)   document.getElementById('adminCtaSecUrl').value       = ctaS.url;
+
+  // Lifecycle stage — new / gig / active — controls section prominence
+  (function applyLifecycleStage() {
+    const now = Date.now();
+    const gigExpires = parseInt(localStorage.getItem('able_gig_expires') || '0');
+    const everVisited = !!localStorage.getItem('admin_ever_visited');
+    let stage = 'active';
+    if (!everVisited) stage = 'new';
+    else if (gigExpires > now) stage = 'gig';
+    const homeEl = document.getElementById('page-home');
+    if (homeEl) homeEl.dataset.stage = stage;
+  })();
 
   // Greeting system (§5.2)
   applyGreeting(v3data);
