@@ -3257,17 +3257,27 @@
     }
     .close-circle-hero__link {
       font: var(--font-sans);
-      font-size: 0.8125rem; /* 13px */
-      color: var(--color-text-2);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-text);
       text-decoration: none;
       letter-spacing: 0.01em;
-      transition: color var(--dur-fast) var(--ease-decel);
       cursor: pointer;
       background: none;
-      border: none;
-      padding: 0;
+      border: 1.5px solid rgba(var(--color-accent-rgb, 224,82,66), 0.45);
+      border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+      padding: 12px 24px;
+      border-radius: 12px;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      transition: background var(--dur-fast) var(--ease-decel),
+                  border-color var(--dur-fast) var(--ease-decel);
     }
-    .close-circle-hero__link:hover { color: var(--color-text-2); }
+    .close-circle-hero__link:hover {
+      background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+      border-color: color-mix(in srgb, var(--color-accent) 70%, transparent);
+    }
     .close-circle-hero__link--active {
       color: var(--color-accent);
       opacity: 0.8;

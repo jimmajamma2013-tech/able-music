@@ -280,6 +280,13 @@
       .hero__platforms { margin-top: 12px; }
       .hero__actions { margin-top: 18px; }
     }
+    /* Mobile: compact phone so it shows on first scroll */
+    @media (max-width: 899px) {
+      #demoPhone { width: 230px; border-radius: 36px; }
+      .dp-island { width: 72px; height: 22px; }
+      .dp-hero { height: 140px; }
+      .demo-phone-wrap { padding: 0 16px; }
+    }
 
     /* Platform logos */
     .hero__platforms {
@@ -1043,8 +1050,9 @@
       max-width: 300px;
     }
     .proof-line {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 6px 13px; border-radius: 20px;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 14px; border-radius: 22px;
+      min-height: 44px;
       border: 1px solid var(--border);
       background: rgba(255,255,255,0.02);
       cursor: pointer; font-family: var(--font);
@@ -1058,7 +1066,7 @@
       font-family: var(--font-d); color: var(--accent); opacity: 0.5; line-height: 1;
     }
     .proof-line.active .proof-line__num { opacity: 1; }
-    .proof-line__text { font-size: 11px; font-weight: 700; line-height: 1; white-space: nowrap; }
+    .proof-line__text { font-size: 12px; font-weight: 700; line-height: 1; white-space: nowrap; }
 
     /* State description */
     .demo-state-desc {
