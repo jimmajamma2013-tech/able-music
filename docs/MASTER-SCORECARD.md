@@ -40,7 +40,7 @@
 | Tier gates | 6.5/10 | 9.0/10 | Server enforcement missing; Stripe not wired | ✅ `checkTierGate()` + gold lock CSS built; remaining: server-side enforcement |
 | Error states | 8.0/10 | 9.0/10 | QuotaExceededError toast; fetch try/catch audit clean; fans Array guard | ✅ C3: crash boundary on admin init; offline bar; Supabase init guard; date parse guard |
 | PWA | 8.5/10 | 9.0/10 | No service worker (offline mode unbuilt) | ✅ `manifest.json` + iOS meta tags + icons exist; service worker is optional V2 |
-| Page state system | 7.5/10 | 9.0/10 | Arc node radiogroup ARIA just added | ✅ Campaign state machine logic verified |
+| Page state system | 8.2/10 | 9.0/10 | Post-release nudge flow remaining | ✅ C5: gig expiry toast, live-mode transition toast, countdown local midnight fix, release title in countdown |
 | Data architecture | 6.8/10 | 9.3/10 | Multi-artist isolation; `fan.html` Supabase not wired | Implementation ready for Supabase phase |
 | Analytics | 8.8/10 | 9.4/10 | SessionId in views still missing on page loads | ✅ C4W2: 30-day fan sparkline, peak day insight, most-tapped CTA, extended source breakdown |
 | SEO / OG | 9.2/10 | 9.5/10 | Static OG image needs production deploy | ✅ C3: JSON-LD Event schema on able-v8.html shows; `<time datetime>` on fan rows and show dates |
@@ -48,7 +48,7 @@
 | Coding strategy | 9.2/10 | 10/10 | `prefers-reduced-motion` audit remaining in admin | ✅ Parse checks every edit; tokenised CSS enforced |
 | UI system | 7.5/10 | 8.6/10 | Component library unbuilt; some hardcoded values | Fix remaining `#888` violations; shared component primitives |
 | UX system | 7.2/10 | 9.0/10 | Fan sign-up friction; empty state copy | ✅ Fan cap UI enforced; error state copy improved |
-| World map | 7.0/10 | 9.2/10 | Multi-moment panel copy polish; <time> tags missing | ✅ Section heading present; empty state (owner + fan); shows 24h filter; sort ascending |
+| World map | 8.0/10 | 9.2/10 | Multi-moment panel copy polish remaining | ✅ C5: shows sync FIXED (able_shows→renderShowsSection); world map also reads able_shows |
 
 ### Killer features
 
@@ -160,8 +160,9 @@
 | Strategy / founder | ~7.8/10 | — | — |
 
 **Overall documentation + spec average: ~9.2/10**
-**Overall current build state average: ~8.7/10** (was ~8.5/10 post-C4W1; was ~8.3/10 post-Cycle-3; was ~8.0/10 post-Cycle-2)
+**Overall current build state average: ~8.8/10** (was ~8.7/10 post-C4W2; was ~8.5/10 post-C4W1; was ~8.3/10 post-Cycle-3)
 
+Cycle 5 Wave 1 improvements: World map (7.0→8.0) — critical shows sync fix; Page state (7.5→8.2) — toasts + countdown precision; Escape sheet close; JSON-LD null safety
 Cycle 4 Wave 2 improvements: Artist tools (8.5→8.8), CRM (7.8→8.0), Analytics (8.8→8.8 confirmed), snap/shows UX polish, 30-day sparkline, bio hint
 Cycle 4 Wave 1 improvements: Admin UX polish (7.8→8.5), Resilience (8.0→8.8), Analytics (8.2→8.8), Completeness UX (7.8→8.8), start.html wizard re-entry fixed
 Cycle 3 improvements: Deep link campaigns (0→7.5), CRM (6.5→7.8), Error states (7.0→8.0), Artist tools (7.5→7.8), SEO/OG (9.0→9.2)
