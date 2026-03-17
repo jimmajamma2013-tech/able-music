@@ -3641,25 +3641,26 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         <div class="dc-head"><div class="dc-title">Traffic sources &amp; heatmap</div></div>
         <div class="dc-body">
           <div style="display:flex;flex-direction:column;gap:10px;">
+            <!-- C12 #31 — real data preview bars, updated by updateGatePreviewData() -->
             <div style="display:flex;align-items:center;gap:12px;">
               <div style="font-size:12px;color:var(--t2);width:100px;">Instagram</div>
-              <div style="flex:1;height:8px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;"><div style="height:100%;width:42%;background:var(--acc);border-radius:var(--r-pill);"></div></div>
-              <div style="font-size:12px;color:var(--text);width:36px;text-align:right;">42%</div>
+              <div style="flex:1;height:8px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;"><div id="gateBarIg" style="height:100%;width:42%;background:var(--acc);border-radius:var(--r-pill);transition:width .4s ease;"></div></div>
+              <div id="gateBarIgPct" style="font-size:12px;color:var(--text);width:36px;text-align:right;">42%</div>
             </div>
             <div style="display:flex;align-items:center;gap:12px;">
               <div style="font-size:12px;color:var(--t2);width:100px;">TikTok</div>
-              <div style="flex:1;height:8px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;"><div style="height:100%;width:28%;background:var(--acc);border-radius:var(--r-pill);opacity:.7;"></div></div>
-              <div style="font-size:12px;color:var(--text);width:36px;text-align:right;">28%</div>
+              <div style="flex:1;height:8px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;"><div id="gateBarTt" style="height:100%;width:28%;background:var(--acc);border-radius:var(--r-pill);opacity:.7;transition:width .4s ease;"></div></div>
+              <div id="gateBarTtPct" style="font-size:12px;color:var(--text);width:36px;text-align:right;">28%</div>
             </div>
             <div style="display:flex;align-items:center;gap:12px;">
               <div style="font-size:12px;color:var(--t2);width:100px;">Direct</div>
-              <div style="flex:1;height:8px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;"><div style="height:100%;width:18%;background:var(--acc);border-radius:var(--r-pill);opacity:.5;"></div></div>
-              <div style="font-size:12px;color:var(--text);width:36px;text-align:right;">18%</div>
+              <div style="flex:1;height:8px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;"><div id="gateBarDirect" style="height:100%;width:18%;background:var(--acc);border-radius:var(--r-pill);opacity:.5;transition:width .4s ease;"></div></div>
+              <div id="gateBarDirectPct" style="font-size:12px;color:var(--text);width:36px;text-align:right;">18%</div>
             </div>
             <div style="display:flex;align-items:center;gap:12px;">
-              <div style="font-size:12px;color:var(--t2);width:100px;">YouTube</div>
-              <div style="flex:1;height:8px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;"><div style="height:100%;width:12%;background:var(--acc);border-radius:var(--r-pill);opacity:.4;"></div></div>
-              <div style="font-size:12px;color:var(--text);width:36px;text-align:right;">12%</div>
+              <div style="font-size:12px;color:var(--t2);width:100px;">Spotify</div>
+              <div style="flex:1;height:8px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;"><div id="gateBarSp" style="height:100%;width:12%;background:var(--acc);border-radius:var(--r-pill);opacity:.4;transition:width .4s ease;"></div></div>
+              <div id="gateBarSpPct" style="font-size:12px;color:var(--text);width:36px;text-align:right;">12%</div>
             </div>
             <div style="height:80px;border-radius:var(--r-md);background:rgba(255,255,255,.04);margin-top:4px;display:flex;align-items:center;justify-content:center;">
               <span style="font-size:10px;color:var(--t3);">Fan location heatmap</span>
@@ -3953,6 +3954,9 @@ function getArtistId() {
 async function syncProfile(data) {
   if (!sb) return;
   if (!data.handle) return; // C12 #22 — skip sync if no handle (no Supabase row can be keyed)
+  // C12 #46 — 10s AbortController timeout to prevent hung Supabase sync
+  const _ac = new AbortController();
+  const _syncTimer = setTimeout(() => _ac.abort(), 10000);
   // able_shows is a separate localStorage key — include it in the upsert
   const shows = safeLS('able_shows', []);
   try {
@@ -3988,7 +3992,11 @@ async function syncProfile(data) {
       shows:              shows.length           ? JSON.stringify(shows)                  : null,
       updated_at:         Date.now(),
     }, { onConflict: 'id' });
-  } catch(e) {}
+  } catch(e) {
+    if (e?.name === 'AbortError') console.warn('[ABLE] syncProfile timed out after 10s');
+  } finally {
+    clearTimeout(_syncTimer);
+  }
 }
 
 async function syncFans(fans) {
@@ -4576,7 +4584,7 @@ function showPage(id) {
   if (id === 'snaps')     renderSnapCardsList();
   if (id === 'clips')     renderClipsAdminList();
   if (id === 'connect')   renderRecsList();
-  if (id === 'analytics') { loadRealStats(); loadActivityFeed(); }
+  if (id === 'analytics') { loadRealStats(); loadActivityFeed(); updateGatePreviewData(); }
   if (id === 'fans') {
     _activeFanFilter = 'all';
     document.querySelectorAll('#fansFilterPills .filter-pill').forEach(p => {
@@ -6940,6 +6948,30 @@ function saveCloseCircle() {
   showToast('Saved.');
 }
 
+/* ── GATE PREVIEW REAL DATA (C12 #31) ── */
+function updateGatePreviewData() {
+  const fans = safeLS('able_fans', []).filter(f => f.confirmed !== false && !f.deleted_at);
+  const total = fans.length;
+  if (!total) return; // keep fallback percentages when no data
+  const counts = { ig: 0, tt: 0, direct: 0, sp: 0 };
+  fans.forEach(f => {
+    const s = normaliseSource(f.source);
+    if (counts[s] !== undefined) counts[s]++;
+    else counts.direct++;
+  });
+  const pct = k => Math.round((counts[k] / total) * 100);
+  const setBar = (barId, pctId, val) => {
+    const bar = document.getElementById(barId);
+    const label = document.getElementById(pctId);
+    if (bar) bar.style.width = val + '%';
+    if (label) label.textContent = val + '%';
+  };
+  setBar('gateBarIg',     'gateBarIgPct',     pct('ig'));
+  setBar('gateBarTt',     'gateBarTtPct',     pct('tt'));
+  setBar('gateBarDirect', 'gateBarDirectPct', pct('direct'));
+  setBar('gateBarSp',     'gateBarSpPct',     pct('sp'));
+}
+
 /* ── REAL STATS FROM LOCALSTORAGE ── */
 function loadRealStats() {
   // C8 #50 — guard entire stat block; on failure set all stats to '—'
@@ -7018,20 +7050,23 @@ function _loadRealStatsImpl() {
   animateCount('statViews',  viewsTotal  || '—');
   animateCount('statClicks', clicksTotal || '—');
   animateCount('statFans',   fansTotal   || '—');
-  // Days active streak (consecutive daily admin visits)
+  // Days active streak — admin visits + fan sign-ups (C12 #64)
   const _streak30 = (function() {
-    const visitDates = safeLS('admin_visit_dates', []).slice().sort();
-    if (!visitDates.length) return 1;
+    const visitDates = safeLS('admin_visit_dates', []);
+    // Merge in dates of fan sign-ups
+    const _fanDates = safeLS('able_fans', []).map(f => f.ts ? new Date(f.ts).toISOString().slice(0,10) : null).filter(Boolean);
+    const activityDates = [...new Set([...visitDates, ..._fanDates])].sort();
+    if (!activityDates.length) return 1;
     let streak = 0;
     const today = new Date().toISOString().slice(0,10);
     let cursor = today;
-    for (let i = visitDates.length - 1; i >= 0; i--) {
-      if (visitDates[i] === cursor) {
+    for (let i = activityDates.length - 1; i >= 0; i--) {
+      if (activityDates[i] === cursor) {
         streak++;
         const d = new Date(cursor + 'T00:00:00');
         d.setDate(d.getDate() - 1);
         cursor = d.toISOString().slice(0,10);
-      } else if (visitDates[i] < cursor) {
+      } else if (activityDates[i] < cursor) {
         break;
       }
     }
