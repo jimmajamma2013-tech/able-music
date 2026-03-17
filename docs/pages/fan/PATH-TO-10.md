@@ -20,9 +20,9 @@
 - [x] P1.1 — Follower counts removed; location shown instead
 - [x] P1.1 — "Creatives" → "The people behind the music"
 - [x] P1.1 — "Artists connected to yours" Connected section header
-- [ ] P1.2 — Near me location input on first visit (structural — needs location capture UI)
-- [ ] P1.3 — Pre-release countdown strip in Following view
-- [ ] P1.4 — Notification pip real logic
+- [x] P1.2 — Near me location input on first visit (near-location-capture UI in place, session 17)
+- [x] P1.3 — Pre-release countdown strip in Following view (renderPreReleaseStrips implemented, session 13)
+- [ ] P1.4 — Notification pip real logic (needs Supabase backend)
 
 ### P2 — TODO
 - [ ] Close Circle invitation copy stub
