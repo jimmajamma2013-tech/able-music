@@ -1189,6 +1189,15 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
   padding-left:14px;
 }
 
+/* ── OFFLINE BAR (C3 #38) ── */
+#adminOfflineBar {
+  position:fixed; top:0; left:0; right:0; z-index:9998;
+  background:#f4b942; color:#000;
+  font-size:12px; font-weight:600; text-align:center;
+  padding:8px 16px; display:none;
+}
+#adminOfflineBar.visible { display:block; }
+
 /* ── TOAST ── */
 #adminToast {
   position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px);
@@ -8578,6 +8587,16 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
+/* ── OFFLINE BAR (C3 #38) ── */
+(function() {
+  const bar = document.getElementById('adminOfflineBar');
+  if (!bar) return;
+  function _syncOnline() { bar.classList.toggle('visible', !navigator.onLine); }
+  _syncOnline();
+  window.addEventListener('offline', _syncOnline);
+  window.addEventListener('online',  _syncOnline);
+})();
+
 /* ── TOAST ── */
 let _toastTimer;
 function showToast(msg) {
@@ -8720,6 +8739,9 @@ function frcOpenRelease() {
   </div>
   <div class="admin-sheet-body" id="adminSheetBody"></div>
 </div>
+
+<!-- OFFLINE BAR (C3 #38) -->
+<div id="adminOfflineBar" role="status" aria-live="assertive" aria-atomic="true">You're offline — changes save locally.</div>
 
 <div id="adminToast" role="status" aria-live="polite"></div>
 </body>
