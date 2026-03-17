@@ -242,7 +242,7 @@ body::before {
 .section-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
 .section-grid.wide { grid-template-columns:2fr 1fr; }
 .dash-card {
-  border-radius:16px; background:var(--dash-card); border:1px solid var(--dash-border);
+  border-radius:14px; background:var(--dash-card); border:1px solid var(--dash-border);
   overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.06);
 }
 .dc-head {
@@ -2233,7 +2233,7 @@ body::before {
     <div class="topbar-actions">
       <a class="topbar-edit-cta" href="/able-v7.html?edit=1" id="topbarEditCta">Edit page →</a>
       <span class="tier-badge" onclick="showPage('settings')" title="Upgrade plan">✦ Free</span>
-      <a class="tb-btn tb-btn-acc" href="able-v7.html" target="_blank" style="text-decoration:none;" id="topbarViewBtn">View live page ↗</a>
+      <a class="tb-btn tb-btn-acc" href="able-v7.html" target="_blank" style="text-decoration:none;" id="topbarViewBtn">See your page →</a>
     </div>
   </div>
 
@@ -4402,7 +4402,7 @@ function initCampaignHQ() {
     if (hint) hint.textContent = 'Active — expires in 24 hrs. Your tickets CTA is front and centre.';
     updateChqPill('gig');
     const descEl = document.getElementById('chqModeDesc');
-    if (descEl) descEl.textContent = 'Fans see your show and a ticket link.';
+    if (descEl) descEl.textContent = 'Your next show is front and centre. Expires in 24 hours automatically.';
     tickGigCountdown(gigExp);
   }
 }
@@ -4503,12 +4503,12 @@ function renderTimelineArc() {
   const modeLabels = { profile: 'Profile', 'pre-release': 'Pre-release', live: 'Live', after: 'After' };
   if (badge) badge.textContent = modeLabels[displayMode] || 'Profile';
 
-  // Per-mode description
+  // Per-mode description — explains the purpose of each mode, not just what fans see
   const MODE_DESCS = {
-    profile:       'Fans see your latest release and your links.',
-    'pre-release': 'Fans see a countdown and a pre-save button.',
-    live:          'Fans see your release and a stream button.',
-    after:         'Fans see your stream link and your profile.',
+    profile:       'Your page in its natural state — recent music, your links, fan sign-up.',
+    'pre-release': 'Fans see a countdown and can pre-save before it drops. Builds sign-ups in the run-up.',
+    live:          'Release day. Your stream link is front and centre for two weeks.',
+    after:         'The release window is over. Your page returns to profile mode.',
   };
   const descEl = document.getElementById('chqModeDesc');
   if (descEl) descEl.textContent = MODE_DESCS[displayMode] || '';
@@ -5286,7 +5286,7 @@ function addSnapCard() {
   const cards = data.snapCards || []
   // Free tier: max 1 snap card
   if (cards.length >= 1 && !checkTierGate('snap-cards')) {
-    showToast('Add as many snap cards as you want. Artist plan unlocks unlimited.');
+    showToast('Add as many Updates as you want on Artist plan.');
     return;
   }
   const newCard = {
@@ -6513,7 +6513,7 @@ function tierAtLeast(required) {
 }
 
 const GATE_COPY = {
-  'snap-cards':             { headline: 'Add as many snap cards as you want. Artist.',                              cta: 'See Artist plans',     tier: 'artist'     },
+  'snap-cards':             { headline: 'Add as many Updates as you want. Artist plan.',                         cta: 'See Artist plans',     tier: 'artist'     },
   'campaign-modes':         { headline: 'Set a release date, run a live window, or go into gig mode. Artist.',     cta: 'See Artist plans',     tier: 'artist'     },
   'connections':            { headline: "Link to the people you've made music with. Artist.",                      cta: 'See Artist plans',     tier: 'artist'     },
   'fan-list':               { headline: "You've reached 100 fans. Your next 1,900 are one step away. Artist.",     cta: 'See Artist plans',     tier: 'artist'     },
@@ -6599,7 +6599,12 @@ function updateUpgradeBar() {
   const cap   = 100;
   if (count > 0) {
     const near = count >= 80;
-    el.innerHTML = `<strong>Free plan.</strong> ${count} of ${cap} fans.${near ? ' Nearly there.' : ''}`;
+    const remaining = cap - count;
+    if (near) {
+      el.innerHTML = `<strong>${count} of ${cap} fans.</strong> Email broadcasts and full fan list with Artist plan.`;
+    } else {
+      el.innerHTML = `<strong>${count} of ${cap} fans.</strong> Broadcasts and full analytics on Artist plan.`;
+    }
   }
 }
 
