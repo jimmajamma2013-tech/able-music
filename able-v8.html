@@ -3057,6 +3057,10 @@
     @media (hover: hover) and (pointer: fine) {
       .wm-cell:not(.wm-cell--empty):hover {
         background: rgba(var(--color-accent-rgb), 0.08);
+        transform: scale(1.1); /* C11 #47 */
+        transition: transform 100ms ease;
+        z-index: 1;
+        position: relative;
       }
     }
     /* Past date numbers: use solid color-text (not color-text-2 which already has alpha),
@@ -9071,6 +9075,8 @@
               const check = submitBtn.querySelector('.fan-submit-check')
               if (spinner) spinner.hidden = true
               if (check) check.hidden = false
+              // C11 #43 — physical haptic on mobile (subtle 30ms pulse)
+              try { if (navigator.vibrate) navigator.vibrate(30) } catch (_) {}
               // G2 — visual haptic: scale pop on success (threshold moment only)
               submitBtn.style.transition = 'transform 80ms ease-out'
               submitBtn.style.transform = 'scale(0.95)'
@@ -12161,6 +12167,39 @@
           .catch(() => {});
       });
     }
+
+    // C11 #23 — install prompt: stash beforeinstallprompt, show subtle nudge on second visit
+    (function() {
+      let _deferredPrompt = null;
+      window.addEventListener('beforeinstallprompt', e => {
+        e.preventDefault();
+        _deferredPrompt = e;
+        // Only show on second+ visit (session count in localStorage)
+        try {
+          const visits = parseInt(localStorage.getItem('able_pwa_visits') || '0', 10) + 1;
+          localStorage.setItem('able_pwa_visits', visits);
+          if (visits >= 2 && !localStorage.getItem('able_pwa_installed') && !localStorage.getItem('able_pwa_dismissed')) {
+            setTimeout(() => {
+              const banner = document.createElement('div');
+              banner.id = 'pwaInstallBanner';
+              banner.style.cssText = 'position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 80px);left:50%;transform:translateX(-50%);background:rgba(18,21,42,0.96);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:10px 16px;display:flex;align-items:center;gap:12px;font-size:13px;font-family:DM Sans,sans-serif;color:#fff;z-index:500;max-width:320px;backdrop-filter:blur(12px);';
+              banner.innerHTML = '<span style="flex:1">Add to home screen →</span><button style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:18px;padding:0;" aria-label="Dismiss" onclick="localStorage.setItem(\'able_pwa_dismissed\',\'1\');this.closest(\'#pwaInstallBanner\').remove()">×</button>';
+              banner.querySelector('span').addEventListener('click', () => {
+                if (_deferredPrompt) {
+                  _deferredPrompt.prompt();
+                  _deferredPrompt.userChoice.then(r => {
+                    if (r.outcome === 'accepted') localStorage.setItem('able_pwa_installed', '1');
+                    banner.remove();
+                    _deferredPrompt = null;
+                  });
+                }
+              });
+              document.body.appendChild(banner);
+            }, 3000);
+          }
+        } catch (_) {}
+      });
+    })();
   </script>
 
 </body>

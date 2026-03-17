@@ -5457,7 +5457,18 @@ function setGigActive(on, source) {
     if (source !== 'auto') showToast('Gig mode on. Lasts 24 hours.'); // C11 #7
     updateChqPill('gig');
     tickGigCountdown(exp);
+    // C11 #10 — 30-min expiry warning (check every 60s, fire once per session)
+    if (window._gigExpiryWatcher) clearInterval(window._gigExpiryWatcher);
+    window._gigExpiryWatcher = setInterval(() => {
+      const _remaining = parseInt(localStorage.getItem(GIG_KEY) || '0', 10) - Date.now();
+      if (_remaining > 0 && _remaining <= 30 * 60000 && !sessionStorage.getItem('_gigExpWarnShown')) {
+        sessionStorage.setItem('_gigExpWarnShown', '1');
+        showToast('Gig mode ends in 30 minutes.', 'amber');
+      }
+      if (_remaining <= 0) clearInterval(window._gigExpiryWatcher);
+    }, 60000);
   } else {
+    if (window._gigExpiryWatcher) { clearInterval(window._gigExpiryWatcher); window._gigExpiryWatcher = null; }
     setLS(GIG_KEY, 0);
     localStorage.removeItem('able_gig_source');
     if (hint) hint.textContent = 'Flip this on show day — puts tickets front and centre. Auto-expires in 24 hrs.';
@@ -6171,6 +6182,14 @@ function addSnapCard() {
   setLS(V3_KEY, data)
   syncProfile(data)
   renderSnapCardsList()
+  // C11 #41 — slide-in animation for new snap card
+  requestAnimationFrame(() => {
+    const _newWrap = document.querySelector(`.snap-card-wrap[data-scid="${newCard.id}"]`);
+    if (_newWrap && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      _newWrap.style.cssText += ';opacity:0;transform:translateY(8px);transition:opacity 200ms var(--ease-decel),transform 200ms var(--ease-decel);';
+      requestAnimationFrame(() => { _newWrap.style.opacity = '1'; _newWrap.style.transform = 'translateY(0)'; });
+    }
+  });
   // Auto-open the edit form for the new card
   setTimeout(() => toggleSnapEdit(newCard.id), 50)
 }
