@@ -114,6 +114,12 @@
   to     = "/offline.html"
   status = 200
 
+# 404 fallback — also used as offline page by service worker
+[[redirects]]
+  from   = "/*"
+  to     = "/offline.html"
+  status = 404
+
 # Friendly artist profile URLs: ablemusic.co/artistname → able-v8.html
 # (once dynamic routing is in place via Supabase edge functions)
 [[redirects]]

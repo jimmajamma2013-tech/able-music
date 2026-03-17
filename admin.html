@@ -2570,6 +2570,17 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
 
+<!-- C17 #36 — session expiry banner (shown by onAuthStateChange when token expires) -->
+<div id="session-expiry-banner" hidden role="alert" aria-live="assertive" style="
+  position:fixed;top:0;left:0;right:0;z-index:2000;
+  background:#1a1200;border-bottom:1px solid rgba(244,185,66,.25);
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:10px 16px;font-size:13px;color:#e8e9f0;font-family:var(--font);">
+  <span>Your session expired. Sign in again to save changes.</span>
+  <button onclick="document.getElementById('session-expiry-banner').hidden=true" style="background:var(--acc,#f4b942);border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-family:var(--font);font-weight:500;color:#0d0e1a;cursor:pointer;min-height:32px;">Sign in →</button>
+  <button onclick="document.getElementById('session-expiry-banner').hidden=true" aria-label="Dismiss" style="background:none;border:none;color:rgba(232,233,240,.4);font-size:18px;cursor:pointer;padding:4px 8px;line-height:1;min-height:32px;">&times;</button>
+</div>
+
 <!-- ── SIDEBAR ── -->
 <aside class="sidebar">
   <div class="sb-logo">
@@ -3935,7 +3946,9 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
           </div>
           <span class="tier-badge" style="font-size:10px;">✦ Free</span>
         </div>
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px;">
+          <!-- C17 #39 — backup export button (always shown, highlighted when quota ≥80%) -->
+          <button id="backup-export-btn" onclick="exportAllDataJSON()" style="background:none;border:none;padding:0;color:var(--acc);font-size:12px;cursor:pointer;font-family:var(--font);text-align:left;display:none;">Export everything as JSON →</button>
           <button onclick="if(confirm('Clear all local data and restart? This cannot be undone.')){localStorage.clear();location.href='start.html';}" style="background:none;border:none;padding:0;color:rgba(255,80,80,.6);font-size:12px;cursor:pointer;font-family:var(--font);">Reset account data…</button>
         </div>
       </div>
@@ -3996,6 +4009,14 @@ if (sb) {
       // Sync any fans accumulated before auth
       const fans = safeLS('able_fans', []);
       if (fans.length) syncFans(fans);
+      // C17 #36 — hide session expiry banner on re-auth
+      const _sexBanner = document.getElementById('session-expiry-banner');
+      if (_sexBanner) _sexBanner.hidden = true;
+    }
+    if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESH_FAILED') {
+      // C17 #36 — session expiry banner
+      const _sexBanner = document.getElementById('session-expiry-banner');
+      if (_sexBanner) _sexBanner.hidden = false;
     }
   });
 }
@@ -4650,6 +4671,41 @@ function exportFansJson() {
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 5000);
 }
+
+// C17 #39 — export all localStorage data as JSON backup
+function exportAllDataJSON() {
+  try {
+    const _all39 = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const _k = localStorage.key(i);
+      try { _all39[_k] = JSON.parse(localStorage.getItem(_k)); } catch(_) { _all39[_k] = localStorage.getItem(_k); }
+    }
+    const _ts39 = new Date().toISOString().slice(0, 10);
+    const _blob39 = new Blob([JSON.stringify(_all39, null, 2)], { type: 'application/json' });
+    const _url39 = URL.createObjectURL(_blob39);
+    const _a39 = document.createElement('a');
+    _a39.href = _url39;
+    _a39.download = 'able-backup-' + _ts39 + '.json';
+    _a39.click();
+    setTimeout(() => URL.revokeObjectURL(_url39), 5000);
+    showToast('Backup downloaded.', 'green');
+  } catch (_) { showToast('Export failed — try again.'); }
+}
+
+// C17 #39 — show backup button when localStorage quota ≥80%
+;(function() {
+  try {
+    if (!navigator.storage || !navigator.storage.estimate) return;
+    navigator.storage.estimate().then(function(_est39) {
+      if (!_est39.usage || !_est39.quota) return;
+      if (_est39.usage / _est39.quota >= 0.8) {
+        const _btn39 = document.getElementById('backup-export-btn');
+        if (_btn39) _btn39.style.display = '';
+        showToast('Your device is running low on storage. Export your data to free space.', 'amber');
+      }
+    }).catch(function() {});
+  } catch (_) {}
+})();
 
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -8375,7 +8431,7 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
       const _profKey = 'able_profile_notif_' + _rd;
       if (!localStorage.getItem(_profKey)) {
         localStorage.setItem(_profKey, '1');
-        setTimeout(() => showToast('14 days since release. Page is back to profile mode.', 'amber'), 1200);
+        setTimeout(() => showToast('Your release window closed. Share a follow-up or plan your next one.', 'amber'), 1200); // C17 #21
       }
       return;
     }
