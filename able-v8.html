@@ -1209,8 +1209,8 @@
       cursor: pointer;
       font-family: var(--font-body);
       font-size: var(--text-sm);
-      font-weight: 500;
-      color: var(--color-text-2);
+      font-weight: 600;
+      color: var(--color-accent);
       padding: 0;
       min-height: var(--tap-min);
       display: inline-flex;
@@ -1218,14 +1218,14 @@
       letter-spacing: 0.02em;
       text-decoration: underline;
       text-underline-offset: 3px;
-      text-decoration-color: rgba(255,255,255,0.18);
+      text-decoration-color: rgba(var(--color-accent-rgb), 0.35);
       transition: color var(--dur-fast) var(--ease-standard),
                   text-decoration-color var(--dur-fast) var(--ease-standard);
     }
 
     .bio-strip__more:hover {
-      color: var(--color-text-2);
-      text-decoration-color: rgba(255,255,255,0.40);
+      color: var(--color-accent);
+      text-decoration-color: rgba(var(--color-accent-rgb), 0.65);
     }
 
     /* === COUNTDOWN (pre-release state) ========================== */
@@ -1855,7 +1855,8 @@
       margin-top: var(--sp-3);
       font-size: var(--text-xs);
       color: var(--color-text-2);
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
+      line-height: 1.5;
     }
 
     .fan-capture__echo {
