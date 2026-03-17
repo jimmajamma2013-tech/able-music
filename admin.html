@@ -2707,7 +2707,7 @@ body::before {
             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14"><circle cx="5" cy="4" r="2.5"/><path d="M1 12c0-2.2 1.8-4 4-4s4 1.8 4 4"/><circle cx="11" cy="5" r="2"/><path d="M9.5 12c0-1.4.9-2.6 2-3"/></svg>
             View fans
           </button>
-          <a class="tb-btn tb-btn-ghost" href="able-v7.html" target="_blank" style="text-align:left;width:100%;justify-content:flex-start;display:flex;gap:10px;">
+          <a class="tb-btn tb-btn-ghost" href="able-v7.html" target="_blank" id="qaViewLiveBtn" style="text-align:left;width:100%;justify-content:flex-start;display:flex;gap:10px;">
             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14"><path d="M5 2H2v10h10V9M9 2h3v3M7 7l5-5"/></svg>
             View live page
           </a>
@@ -7070,6 +7070,8 @@ window.addEventListener('DOMContentLoaded', () => {
   if (tvb) tvb.href = `able-v7.html?handle=${encodeURIComponent(handle)}`;
   const lc = document.getElementById('liveChip');
   if (lc) lc.onclick = () => window.open(`able-v7.html?handle=${encodeURIComponent(handle)}`, '_blank');
+  const qaLive = document.getElementById('qaViewLiveBtn');
+  if (qaLive) qaLive.href = `able-v7.html?handle=${encodeURIComponent(handle)}`;
 
   // Settings page
   if (document.getElementById('settingsSlug')) document.getElementById('settingsSlug').value = handle;
