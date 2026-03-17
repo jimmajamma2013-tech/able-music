@@ -52,6 +52,14 @@ ABLE (Artist Before Label) is a premium mobile-first platform for independent mu
 | `able_starred_fans` | Starred fan email strings `['fan@example.com', ...]` | admin.html |
 | `able_tier` | Current tier: `"free"` / `"artist"` / `"artist-pro"` / `"label"` | admin.html, able-v8.html |
 | `admin_visit_dates` | ISO date strings of admin loads (last 60) — nudge timing | admin.html |
+| `able_snap_cards` | Snap card array `[{id, type, title, body, url, sortOrder, ...}]` | admin.html, able-v8.html |
+| `able_clips` | Short video/audio clips `[{id, url, caption, ts}]` | admin.html, able-v8.html |
+| `able_fan_feed` | Cached feed items for fan dashboard `[{artistId, type, ...}]` | fan.html |
+| `able_fan_following` | Artists fan follows `[{artistId, name, handle, ...}]` | fan.html |
+| `able_first_fan_seen` | ISO timestamp of first fan sign-up seen (nudge trigger) | admin.html |
+| `fan_last_visit` | Unix timestamp of fan's last visit (for "new" badge logic) | fan.html |
+| `fan_location` | Fan's geolocation cache `{lat, lng, ts}` — Near me filter | fan.html |
+| `able_artist_id` | Stable local artist identifier (pre-Supabase UUID) | admin.html |
 
 **All localStorage keys will map 1:1 to Supabase table rows when backend is added. Do not rename keys.**
 
