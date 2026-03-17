@@ -1370,7 +1370,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
 }
 .completeness-fill {
   height:100%; border-radius:var(--r-pill); background:var(--acc);
-  transition:width .5s var(--ease);
+  transition: width 400ms var(--ease-decel); /* C11 #46 */
 }
 .completeness-nudge {
   font-size:11px; color:var(--dash-t3); margin-top:7px; line-height:1.5;
@@ -2368,7 +2368,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   transform: translateY(100%);
-  transition: transform 0.3s var(--ease);
+  transition: transform 300ms var(--ease-decel); /* C11 #44 */
 }
 .admin-sheet:not([hidden]) { transform: translateY(0); }
 .admin-sheet-handle {
@@ -2743,7 +2743,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         </div>
 
         <div class="chq-release-row">
-          <input class="chq-release-title" id="chqReleaseTitle" type="text" aria-label="Release title" placeholder="Release title — e.g. 'Dissolve' (Single)" maxlength="80"> <!-- C9 #42 -->
+          <input class="chq-release-title" id="chqReleaseTitle" type="text" aria-label="Release title" placeholder="What's it called?" maxlength="80"> <!-- C9 #42 -->
         </div>
         <div class="chq-date-picker">
           <label for="chqReleaseDate" class="sr-only">Release date and time</label>
@@ -4106,8 +4106,8 @@ function renderFanList(filter) {
     return matchFilter && matchSearch && f.confirmed !== false;
   });
 
-  // Stats (on confirmed fans only)
-  const confirmed = allFans.filter(f => f.confirmed !== false);
+  // Stats (on confirmed, non-deleted fans only)
+  const confirmed = allFans.filter(f => f.confirmed !== false && !f.deleted_at); // C11 #19
   const oneWeekAgo = Date.now() - 7 * 86400000;
   const thisWeek = confirmed.filter(f => f.ts >= oneWeekAgo).length;
   const socialSources = ['ig', 'tt', 'sp'];
@@ -5368,7 +5368,8 @@ function saveCampaignHQ() {
   const dateEl  = document.getElementById('chqReleaseDate');
   const activeBtn = document.querySelector('.chq-state-btn.on');
   const override  = activeBtn ? (activeBtn.dataset.state || null) : null;
-  const releaseDate = dateEl?.value ? new Date(dateEl.value).toISOString() : (data.releaseDate || null);
+  // C11 #11 — if field exists and is cleared, clear to null (don't fall back to stored value)
+  const releaseDate = dateEl ? (dateEl.value ? new Date(dateEl.value).toISOString() : null) : (data.releaseDate || null);
   const releaseTitle = titleEl?.value.trim() || data.release?.title || 'New Release';
 
   // C7 #10 — state history log: append to profile.stateHistory[], max 10 entries
@@ -5391,12 +5392,12 @@ function saveCampaignHQ() {
   syncProfile(updated); // async fire-and-forget to Supabase
   updateChqPill(computeEffectiveState(updated));
 
-  // State change toast
+  // C11 #5 — contextual state change toast
   const STATE_TOAST = {
-    profile:     'Profile mode.',
-    'pre-release': 'Pre-release.',
-    live:        'Live.',
-    gig:         'Gig mode on.',
+    profile:       'Profile mode. Fans see your full page.',
+    'pre-release': 'Pre-release mode on. Fans see the countdown now.',
+    live:          'Live mode on. Your release is front and centre.',
+    gig:           'Gig mode on. Ticket button goes first for every fan.',
   };
   const effectiveState = computeEffectiveState(updated);
   showToast(STATE_TOAST[effectiveState] || 'Saved.');
@@ -5453,6 +5454,7 @@ function setGigActive(on, source) {
     localStorage.setItem('able_gig_source', source || 'manual');
     const src = source === 'auto' ? 'Auto-activated from your shows.' : 'Active — expires in 24 hrs. Your tickets CTA is front and centre.';
     if (hint) hint.textContent = src;
+    if (source !== 'auto') showToast('Gig mode on. Lasts 24 hours.'); // C11 #7
     updateChqPill('gig');
     tickGigCountdown(exp);
   } else {
@@ -6320,7 +6322,7 @@ function renderClipsAdminList() {
         </div>
         <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;">
           <button class="snap-btn" onclick="openClipEditForm('${escHtml(clip.id)}')">Close</button>
-          <button class="ci-btn ci-btn-connect" onclick="saveClipEdit('${escHtml(clip.id)}')">Save</button>
+          <button class="ci-btn ci-btn-connect" onclick="saveClipEdit('${escHtml(clip.id)}')">Save link</button>
         </div>
       </div>
     </div>`
@@ -6529,7 +6531,7 @@ function renderRecsList() {
         </div>
         <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px;">
           <button class="snap-btn" onclick="toggleRecEdit(${i})">Close</button>
-          <button class="ci-btn ci-btn-connect" onclick="saveRec(${i})">Save</button>
+          <button class="ci-btn ci-btn-connect" onclick="saveRec(${i})">Save credit</button>
         </div>
       </div>
     </div>`).join('')
@@ -7792,6 +7794,13 @@ function updateCompletenessBar() {
     if (!localStorage.getItem('able_completeness_100')) {
       localStorage.setItem('able_completeness_100', '1');
       setTimeout(() => showToast('Profile complete. Fans get the full picture now.', 'green'), 400);
+      // C11 #20 — PostHog profile_complete event (fires once, same gate as toast)
+      try {
+        if (typeof posthog !== 'undefined') {
+          const _slug = safeLS('able_v3_profile', {}).slug || safeLS('able_v3_profile', {}).handle || null;
+          posthog.capture('profile_complete', { artistSlug: _slug });
+        }
+      } catch (_) {}
     }
   } else {
     wrap.classList.remove('complete');
@@ -8157,7 +8166,7 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
   const _eBar = document.createElement('div');
   _eBar.setAttribute('role', 'alert');
   _eBar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#b91c1c;color:#fff;padding:12px 16px;font-size:13px;font-weight:600;text-align:center;';
-  _eBar.innerHTML = 'Something went wrong loading your dashboard. <button onclick="location.reload()" style="background:rgba(255,255,255,.2);border:none;padding:4px 10px;border-radius:4px;color:#fff;cursor:pointer;font-size:12px;margin-left:8px;">Refresh \u2192</button>';
+  _eBar.innerHTML = 'Dashboard failed to load. <button onclick="location.reload()" style="background:rgba(255,255,255,.2);border:none;padding:4px 10px;border-radius:4px;color:#fff;cursor:pointer;font-size:12px;margin-left:8px;">Refresh \u2192</button>'; // C11 #31
   document.body.prepend(_eBar);
 }});
 

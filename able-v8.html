@@ -1879,6 +1879,10 @@
       border-width: 2px;
       box-shadow: 0 0 0 3px var(--color-accent-soft);
     }
+    .fan-capture__input:focus-visible {
+      outline: 2px solid var(--color-accent); /* C11 #53 — accent focus ring, not browser default */
+      outline-offset: 2px;
+    }
 
     /* Paste flash (interaction #16) */
     .fan-capture__input.paste-flash {
@@ -5324,7 +5328,13 @@
     }
 
     /* === TOAST (error / network status) ======================== */
-    ; padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-family: 'DM Sans', sans-serif; }
+    @keyframes toastSlideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .able-toast {
+      position: fixed; top: env(safe-area-inset-top, 0); right: 0; left: 0; z-index: 9999;
+      padding: 10px 16px; display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-family: 'DM Sans', sans-serif;
+      animation: toastSlideIn 200ms var(--ease-decel) both; /* C11 #52 */
+    }
     .able-toast--amber { background: rgba(var(--color-pro-amber-rgb),0.12); border-bottom: 1px solid rgba(var(--color-pro-amber-rgb),0.3); color: var(--color-pro-amber); }
     .able-toast--green  { background: rgba(52,199,89,0.12); border-bottom: 1px solid rgba(52,199,89,0.3); color: var(--color-ok); } /* C9 #53 */
     .able-toast--red    { background: rgba(255,69,58,0.12); border-bottom: 1px solid rgba(255,69,58,0.3); color: #ff453a; }
@@ -6131,6 +6141,9 @@
       // Cascade accent to :root so html/body-level uses (overscroll tint, section dividers) work
       document.documentElement.style.setProperty('--color-accent-rgb', `${r},${g},${b}`)
       document.documentElement.style.setProperty('--color-accent', accentHex)
+      // C11 #27 — update theme-color meta to match artist accent (browser chrome tint on mobile)
+      const _tcMeta = document.querySelector('meta[name="theme-color"]')
+      if (_tcMeta) _tcMeta.setAttribute('content', accentHex)
     }
 
     // === §3.1 VIBE CONFIGURATION ==================================
