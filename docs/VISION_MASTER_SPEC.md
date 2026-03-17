@@ -1,6 +1,6 @@
 # ABLE — Master Vision Spec
-**Written: 2026-03-15 | Status: AUTHORITATIVE — share with other LLMs for feedback**
-**This is the full vision build spec. Not a patch of v7. Start here.**
+**Written: 2026-03-15 | Status: VISION CONTEXT — rich user stories, personas, system overview**
+**Authority: Superseded by `docs/V8_BUILD_AUTHORITY.md` for any build decision. Read this for product context and user empathy — not for implementation specifics.**
 
 ---
 
