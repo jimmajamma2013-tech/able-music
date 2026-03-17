@@ -326,7 +326,7 @@ body::before {
 .tb-btn-ghost { background:none; border:1.5px solid var(--dash-border); color:var(--dash-t2); }
 .tb-btn-ghost:hover { border-color:var(--dash-text); color:var(--dash-text); }
 .tb-btn-acc { background:var(--acc); border:none; color:var(--dash-text); box-shadow:0 3px 12px rgba(var(--acc-rgb),.3); }
-.tb-btn-acc:hover { transform:translateY(-1px); box-shadow:0 5px 18px rgba(var(--acc-rgb),.4); }
+.tb-btn-acc:hover { transform:translateY(-1px); box-shadow:0 5px 18px rgba(var(--acc-rgb),.4); filter:brightness(.92); } /* C6 #28 */
 /* Live chip — artist accent bridges admin → profile */
 .live-chip {
   display:inline-flex; align-items:center; gap:5px;
@@ -441,6 +441,7 @@ body::before {
   transition:border-color var(--dur); outline:none;
 }
 .field-input:focus { border-color:var(--acc); box-shadow: var(--shadow-focus); }
+.field-input:disabled { cursor:not-allowed; opacity:0.5; } /* C6 #29 */
 .field-textarea { resize:vertical; min-height:72px; line-height:var(--lh-base); }
 .field-hint { font-size:11px; color:var(--dash-t3); line-height:1.4; }
 
@@ -3651,7 +3652,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
           Artist Pro
         </div>
         <div class="glo-title">Traffic sources &amp; fan heatmap</div>
-        <div class="glo-sub">See exactly where your fans are coming from — Instagram, TikTok, QR at gigs, or direct.</div>
+        <div class="glo-sub">Your fans are there. See where they came from, what they tapped. Artist Pro — £19/mo.</div>
         <button class="glo-btn" onclick="showToast('Billing coming soon — currently in early access.')">Move to Artist Pro — £19/mo</button>
       </div>
     </div>
@@ -5982,7 +5983,7 @@ function renderSnapCardsList() {
           </div>
           <div class="snap-body" style="min-width:0;flex:1;">
             <div class="snap-eyebrow">${label}</div>
-            ${sub ? `<div class="snap-label">${sub}</div>` : ''}
+            ${sub ? `<div class="snap-label">${sub}</div>` : (!card.ctaUrl ? `<div class="snap-label" style="color:var(--t3);font-style:italic;">(No description)</div>` : '')}
           </div>
           <div class="snap-actions">
             <button class="snap-btn${isPublished?' published':''}" onclick="toggleSnapPublished('${card.id}')">${isPublished?'Live':'Hidden'}</button>
