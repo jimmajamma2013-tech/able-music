@@ -673,9 +673,9 @@ body::before {
 }
 /* Per-state left border — visual signal of active campaign mode */
 .campaign-hq[data-state="profile"]     { border-left:3px solid var(--dash-amber); }
-.campaign-hq[data-state="pre-release"] { border-left:3px solid #fbbf24; }
-.campaign-hq[data-state="live"]        { border-left:3px solid #ef4444; }
-.campaign-hq[data-state="gig"]         { border-left:3px solid #f46442; }
+.campaign-hq[data-state="pre-release"] { border-left:3px solid var(--dash-amber); }
+.campaign-hq[data-state="live"]        { border-left:3px solid var(--red); }
+.campaign-hq[data-state="gig"]         { border-left:3px solid var(--gig); }
 .chq-head {
   display:flex; align-items:center; justify-content:space-between;
   padding:16px 18px 12px; border-bottom:1px solid var(--dash-border);
@@ -758,7 +758,7 @@ body::before {
 
 .arc-mode-badge {
   background: var(--dash-amber);
-  color: #1a1a2e;
+  color: var(--dash-text);
   font-size: 10px;
   font-weight: 800;
   padding: 3px 10px;
@@ -873,7 +873,7 @@ body::before {
 .gig-toggle {
   width:40px; height:22px; border-radius:var(--r-pill); border:none; cursor:pointer;
   background:rgba(var(--gig-rgb),.2); position:relative; flex-shrink:0;
-  transition:background .2s;
+  transition:background var(--dur-slow);
 }
 .gig-toggle::after {
   content:''; position:absolute; top:3px; left:3px;
@@ -1074,7 +1074,7 @@ body::before {
 }
 /* gig: Campaign HQ gets a warm border to signal gig mode is active */
 #page-home[data-stage="gig"] .campaign-hq {
-  border-left:3px solid #f46442;
+  border-left:3px solid var(--gig);
   padding-left:14px;
 }
 
