@@ -1377,7 +1377,6 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
     <!-- DONE -->
     <div class="step" id="stepDone">
-      <div class="step-eyebrow">You're live</div>
       <h1 class="step-title" id="doneTitle">Your page<br>is live.</h1>
       <div id="doneSubline" style="display:none;font-size:13px;font-weight:500;color:var(--acc);margin-top:6px;letter-spacing:0.01em;"></div>
 
@@ -2246,7 +2245,7 @@ function downloadShareCard(canvas) {
   const btn = document.getElementById('v2ShareCardBtn');
   if (btn) {
     const orig = btn.innerHTML;
-    btn.textContent = 'Downloaded!';
+    btn.textContent = 'Downloaded';
     setTimeout(function() { btn.innerHTML = orig; }, 2500);
   }
 }
@@ -2262,7 +2261,7 @@ function v2CopyLink() {
     const btn = document.getElementById('v2CopyBtn');
     if (btn) {
       const orig = btn.textContent.trim();
-      btn.textContent = 'Copied!';
+      btn.textContent = 'Copied';
       setTimeout(function() { btn.textContent = orig; }, 2000);
     }
   });
@@ -2271,12 +2270,12 @@ function v2CopyLink() {
 function v2ShareInstagram() {
   // Instagram doesn't support direct link-sharing via URL scheme; copy to clipboard instead
   v2CopyLink();
-  alert('Link copied — paste it into your Instagram bio or story.');
+  showWizToast('Link copied. Paste it into your Instagram bio or story.', 'green');
 }
 
 function v2ShareTikTok() {
   v2CopyLink();
-  alert('Link copied — paste it into your TikTok bio.');
+  showWizToast('Link copied. Paste it into your TikTok bio.', 'green');
 }
 
 /* ══════════════════════════════════════════════════════

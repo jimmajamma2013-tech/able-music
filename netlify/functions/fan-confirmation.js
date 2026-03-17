@@ -74,21 +74,21 @@ exports.handler = async function (event) {
 
   if (state === 'pre-release') {
     const title = releaseTitle ? `"${releaseTitle}"` : 'something new';
-    subject     = `${name} — you're on the list`;
+    subject     = `${name} noted you down`;
     headingLine = `${name} is working on ${title}.`;
     bodyLine    = `You asked to be the first to know. You will be.`;
   } else if (state === 'live') {
     const title = releaseTitle ? `"${releaseTitle}"` : 'the release';
-    subject     = `${name} just added you to their list`;
+    subject     = `${name} noted you down`;
     headingLine = `${name} dropped ${title}.`;
     bodyLine    = `You're on their list now. You'll hear directly about what's next.`;
   } else if (state === 'gig') {
-    subject     = `${name} — you're on the list for tonight`;
+    subject     = `${name} noted you down for tonight`;
     headingLine = `${name} is playing tonight.`;
     bodyLine    = `You're on their list. More shows will come directly to you.`;
   } else {
     // profile (default)
-    subject     = `${name} — you're on their list`;
+    subject     = `${name} noted you down`;
     headingLine = `You're on ${name}'s list.`;
     bodyLine    = `No noise. Just the things that matter — direct from them, when they happen.`;
   }

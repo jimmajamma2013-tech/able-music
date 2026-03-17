@@ -1344,6 +1344,17 @@ body::before {
     .stat-strip-item.accent strong {
       color: var(--dash-amber);
     }
+    /* Email value indicator */
+    .fan-email-value {
+      margin: 0 16px 12px;
+      padding: 10px 14px;
+      background: var(--dash-card);
+      border: 1px solid var(--dash-border);
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--dash-t2);
+      line-height: 1.5;
+    }
     /* Fan count progress bar (100-fan Free cap) */
     .fan-count-bar {
       margin: 0 16px 14px;
@@ -3390,6 +3401,8 @@ body::before {
       <div class="page-sub">The people who showed up. Your list, your relationship — no algorithm in the way.</div>
     </div>
 
+    <p class="fan-email-value" id="fanEmailValue" hidden></p>
+
     <div class="fans-search">
       <input id="fansSearch" type="search" placeholder="Search fans..." aria-label="Search fans">
     </div>
@@ -3813,6 +3826,16 @@ function renderFanList(filter) {
   }
   if (nudgeEl) nudgeEl.style.display = (!isArtistPlus && total >= 95) ? '' : 'none';
 
+  // Email value indicator — show once artist has at least 1 confirmed fan
+  const valueEl = document.getElementById('fanEmailValue');
+  if (valueEl && total >= 1) {
+    const reach = total * 4; // email reaches ~4× vs equivalent follower count
+    valueEl.textContent = `${total} ${total === 1 ? 'fan' : 'fans'} — reaches like ${reach} followers. Email opens at 4× the rate of a social post.`;
+    valueEl.hidden = false;
+  } else if (valueEl) {
+    valueEl.hidden = true;
+  }
+
   // List rows
   const listEl = document.getElementById('fansList');
   if (!listEl) return;
@@ -4050,7 +4073,7 @@ function renderFanSupportPacksSummary() {
 function exportFans() {
   const legacyStarred = safeLS('able_starred_fans', []);
   const real = safeLS('able_fans', []).filter(f => f.confirmed !== false);
-  if (!real.length) { alert('No fans yet — share your page link to see who shows up.'); return; }
+  if (!real.length) { showToast('No fans yet — share your page to see who shows up.', 'amber'); return; }
   const csvRows = [['Email','Level','Date joined','Source','Campaign state','Starred','Opted in','Confirmed']];
   real.forEach(f => {
     const isStarred = !!(f.isStarred || legacyStarred.includes(f.email));
@@ -5964,7 +5987,7 @@ function saveRec(idx) {
   const recs = data.recommendations || []
   if (!recs[idx]) return
   const name = document.getElementById('re-name-' + idx)?.value.trim() || ''
-  if (!name) { alert('Artist name is required.'); return }
+  if (!name) { showToast('Add an artist name first.', 'amber'); return }
   recs[idx] = {
     name,
     note:      document.getElementById('re-note-' + idx)?.value.trim()   || '',
@@ -7569,7 +7592,7 @@ function _callAiCopy(payload, containerId, btnId, onUse) {
 
 function aiSuggestBio() {
   var ctx = _getArtistContext();
-  if (!ctx.artistName) { alert('Add your artist name first.'); return; }
+  if (!ctx.artistName) { showToast('Add your artist name first.', 'amber'); return; }
   _callAiCopy(
     { mode:'bio', artistName:ctx.artistName, genre:ctx.genre, bio:ctx.bio },
     'aiBioSuggestions', 'aiBioBtn',
@@ -7579,7 +7602,7 @@ function aiSuggestBio() {
 
 function aiSuggestCta() {
   var ctx = _getArtistContext();
-  if (!ctx.artistName) { alert('Add your artist name first.'); return; }
+  if (!ctx.artistName) { showToast('Add your artist name first.', 'amber'); return; }
   // Detect CTA type from current URL
   var urlEl = document.getElementById('adminCtaPrimaryUrl');
   var url = urlEl ? urlEl.value.toLowerCase() : '';

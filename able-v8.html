@@ -6737,7 +6737,7 @@
               + ' style="--wm-panel-type-color:' + typeColor + '">' + escHtml(moment.cta.label || 'View') + '</a>'
           } else if (moment.cta.type === 'notify') {
             ctaHtml = '<button class="wm-panel__cta" style="--wm-panel-type-color:' + typeColor + '">'
-              + escHtml(moment.cta.label || 'Notify me') + '</button>'
+              + escHtml(moment.cta.label || 'Tell me first') + '</button>'
           }
         } else if (access === 'gate_fan') {
           ctaHtml = '<button class="wm-panel__cta wm-panel__cta--gated" class="wm-fan-gate">Join the list to access this</button>'
@@ -8494,7 +8494,7 @@
 
     const CAPTURE_VARIANTS = {
       'profile':     { heading: 'Stay close.',                          cta: "I'm in",      trust: 'Just {artist}. No spam.' },
-      'pre-release': { heading: 'Be the first to hear it.',             cta: 'Notify me',   trust: 'First listen, nothing else.' },
+      'pre-release': { heading: 'Be the first to hear it.',             cta: 'Tell me first', trust: 'First listen, nothing else.' },
       'live':        { heading: 'Stay on everything I do.',             cta: 'Count me in', trust: 'Just {artist}. No spam.' },
       'gig':         { heading: "I'll let you know about future dates.", cta: 'Let me know',  trust: 'Show news only.' },
       'gig-post':    { heading: 'Were you there tonight?',              cta: 'Let me know',  trust: 'Next show. Nothing else.' },
@@ -10090,7 +10090,7 @@
           list.innerHTML = `<div class="section-empty">
             <p class="section-empty__eyebrow">Only you can see this</p>
             <p class="section-empty__headline">Your world. Add the people around your music.</p>
-            <a class="section-empty__action pressable" href="admin.html">Manage in admin \u2192</a>
+            <a class="section-empty__action pressable" href="admin.html">Manage your page \u2192</a>
           </div>`
           section.hidden = false
         }
