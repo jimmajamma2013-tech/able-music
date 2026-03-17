@@ -8498,11 +8498,14 @@
         let following = safeLS('able_fan_following', [])
         if (!following.some(function(a) { return a.id === artistId })) {
           following.push({
-            id:     artistId,
-            name:   p.name,
-            accent: p.accent || '#f4b942',
-            genre:  p.vibe || (p.genres && p.genres[0]) || '',
-            photo:  p.photo  || '',
+            id:          artistId,
+            name:        p.name,
+            handle:      p.handle || p.slug || artistId, // C10 #1
+            accent:      p.accent || '#f4b942',
+            genre:       p.vibe || (p.genres && p.genres[0]) || '',
+            photo:       p.photo  || '',
+            artworkUrl:  p.topCard?.artworkUrl || p.backgroundImageUrl || '', // C10 #55
+            followedAt:  new Date().toISOString(), // C10 #47
           })
           setLS('able_fan_following', following)
         }
@@ -8739,7 +8742,7 @@
       'profile':     { heading: 'Stay close.',                          cta: "I'm in",      trust: 'Just {artist}. No spam.' },
       'pre-release': { heading: 'Be the first to hear it.',             cta: 'Tell me first', trust: 'First listen, nothing else.' },
       'live':        { heading: 'Stay on everything I do.',             cta: 'Count me in', trust: 'Just {artist}. No spam.' },
-      'gig':         { heading: "I'll let you know about future dates.", cta: 'Let me know',  trust: 'Show news only.' },
+      'gig':         { heading: "On tonight. Stay close.", cta: 'Let me know',  trust: 'Show news only.' }, // C10 #49
       'gig-post':    { heading: 'Were you there tonight?',              cta: 'Let me know',  trust: 'Next show. Nothing else.' },
       'near-future': { heading: 'Remind me.',                           cta: "I'm coming",   trust: 'One email, when it matters.' }
     }
@@ -8992,6 +8995,7 @@
               id: crypto.randomUUID(),
               email,
               ts: Date.now(),
+              joinedAt: new Date().toISOString(), // C10 #5
               source: signupSource,
               utm_medium:   _utmMedium,    // P1-W2 #23 — null when not present
               utm_campaign: _utmCampaign,  // P1-W2 #23
@@ -9154,6 +9158,16 @@
                 emailInput.style.animation = ''
               }, { once: true })
             }
+            // C10 #48 — show dedup/error message in form-2 error span
+            const _errEl2 = document.getElementById('fan-error-2')
+            if (_errEl2) {
+              const _isDup2 = _form2Msg === "You're already on the list."
+              setTimeout(() => {
+                _errEl2.textContent = _form2Msg
+                _errEl2.style.color = _isDup2 ? 'var(--color-ok)' : ''
+                _errEl2.hidden = false
+              }, 400)
+            }
             return
           }
           const signup2Source = SESSION_SOURCE
@@ -9181,6 +9195,7 @@
               id: crypto.randomUUID(),
               email,
               ts: Date.now(),
+              joinedAt: new Date().toISOString(), // C10 #5
               source: signup2Source,
               utm_medium:   _utm2Medium,
               utm_campaign: _utm2Campaign,
@@ -9241,6 +9256,7 @@
           const confirmP = document.createElement('p')
           confirmP.className = 'fan-capture__echo-text'
           confirmP.style.marginTop = 'var(--sp-4)'
+          confirmP.style.animation = 'echo-enter 280ms var(--ease-decel) both' // C10 #41
           confirmP.textContent = `You're in. I'll keep you close.`
           form2.parentNode.appendChild(confirmP)
         })
@@ -11269,7 +11285,13 @@
         try { fanCount = safeLS('able_fans', []).length } catch (_) {}
         if (fanCount >= 95) {
           const banner = document.getElementById('fan-limit-banner')
-          if (banner) banner.classList.add('visible')
+          if (banner) {
+            // C10 #26/#53 — show specific remaining spots count
+            const _remaining = Math.max(0, 100 - fanCount)
+            const _strongEl = banner.querySelector('strong')
+            if (_strongEl) _strongEl.textContent = _remaining > 0 ? `${_remaining} spot${_remaining === 1 ? '' : 's'} left on your free plan.` : 'Your list is full.'
+            banner.classList.add('visible')
+          }
         }
       }
     }

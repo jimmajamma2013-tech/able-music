@@ -1108,7 +1108,9 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
   display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
   padding:24px 20px 20px;
   pointer-events:auto;
+  animation: gloFadeIn 150ms ease-out both; /* C10 #30 */
 }
+@keyframes gloFadeIn { from { opacity:0; } to { opacity:1; } }
 .gold-lock-overlay .glo-badge {
   display:flex; align-items:center; gap:6px;
   padding:5px 14px; border-radius:var(--r-pill); font-size:11px; font-weight:700;
@@ -1127,8 +1129,8 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
 }
 .gold-lock-overlay .glo-btn:hover { transform:translateY(-2px); box-shadow:var(--shadow-amber-lg); }
 .gold-lock-overlay .glo-btn:active { transform:scale(0.96); transition:transform 80ms ease-out; } /* C8 #40 */
-.gold-lock .gold-blur { filter:blur(3px); pointer-events:none; user-select:none; transition:filter .35s var(--ease); }
-.gold-lock:hover .gold-blur { filter:blur(1.5px); } /* C5 #19 — tease on hover */
+.gold-lock .gold-blur { filter:blur(6px); pointer-events:none; user-select:none; transition:filter .35s var(--ease); } /* C10 #22 — spec: 6px */
+.gold-lock:hover .gold-blur { filter:blur(3px); } /* C5 #19 — tease on hover */
 
 /* Tier badge in topbar */
 .tier-badge {
@@ -4118,6 +4120,9 @@ function renderFanList(filter) {
   if (totalEl) totalEl.textContent = total;
   if (weekEl) weekEl.textContent = thisWeek;
   if (pctEl) pctEl.textContent = total > 0 ? Math.round(socialCount / total * 100) + '%' : '0%';
+  // C10 #17 — dynamic aria-label on fans nav tab
+  const _mnFans = document.getElementById('mn-fans');
+  if (_mnFans) _mnFans.setAttribute('aria-label', total > 0 ? `Fans — ${total} total` : 'Fans');
 
   // Fan count progress bar — always visible from fan 1 on Free tier
   const FREE_CAP = 100;
@@ -4179,7 +4184,9 @@ function renderFanList(filter) {
       <span class="source-badge ${src}">${src.toUpperCase()}</span>
       <button class="fan-star ${isStarred ? 'starred' : ''}" data-email="${escHtml(f.email)}" aria-label="${isStarred ? 'Remove from close circle' : 'Mark as close'}">★</button>
     </div>`;
-  }).join('') || '<div class="empty-state" style="padding:28px 16px;text-align:center;color:var(--dash-t3);font-size:13px;">When fans sign up on your page, they\'ll appear here. Your list. Your relationship. No algorithm in the way.</div>';
+  }).join('') || (search
+    ? `<div class="empty-state" style="padding:28px 16px;text-align:center;color:var(--dash-t3);font-size:13px;">No fans match <strong>${escHtml(search)}</strong>.</div>` // C10 #18
+    : '<div class="empty-state" style="padding:28px 16px;text-align:center;color:var(--dash-t3);font-size:13px;">When fans sign up on your page, they\'ll appear here. Your list. Your relationship. No algorithm in the way.</div>');
 
   // Source breakdown
   renderSourceBreakdown(confirmed);
@@ -4509,7 +4516,12 @@ function showPage(id) {
     const searchEl = document.getElementById('fansSearch');
     if (searchEl && !searchEl.dataset.wired) {
       searchEl.dataset.wired = '1';
-      searchEl.addEventListener('input', () => renderFanList());
+      // C10 #12 — debounce 150ms to avoid jank on large lists
+      let _fanSearchTimer = null;
+      searchEl.addEventListener('input', () => {
+        clearTimeout(_fanSearchTimer);
+        _fanSearchTimer = setTimeout(() => renderFanList(), 150);
+      });
     }
   }
 }
@@ -4995,6 +5007,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+/* ── C10 #31/#32 — OFFLINE/ONLINE BANNER ── */
+;(function() {
+  let _offlineBanner = null;
+  function _showOfflineBanner() {
+    if (_offlineBanner) return;
+    _offlineBanner = document.createElement('div');
+    _offlineBanner.id = 'able-offline-banner';
+    _offlineBanner.setAttribute('role', 'status');
+    _offlineBanner.setAttribute('aria-live', 'polite');
+    _offlineBanner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(244,185,66,0.12);border-bottom:1px solid rgba(244,185,66,0.3);color:var(--acc);font-size:12px;font-weight:600;text-align:center;padding:8px 16px;font-family:var(--font-d);letter-spacing:0.04em;';
+    _offlineBanner.textContent = 'No connection. Your data is saved locally.';
+    document.body.prepend(_offlineBanner);
+  }
+  function _hideOfflineBanner() {
+    if (_offlineBanner) { _offlineBanner.remove(); _offlineBanner = null; }
+  }
+  window.addEventListener('offline', _showOfflineBanner);
+  window.addEventListener('online', function() {
+    _hideOfflineBanner();
+    if (typeof showToast === 'function') showToast('Back online.', 'green');
+  });
+  if (!navigator.onLine) _showOfflineBanner();
+})();
 
 /* ── TWO-COLUMN FAN BODY ── */
 function normaliseSource(source) {
@@ -8148,7 +8184,7 @@ function copyPageUrl() {
       btn.style.color = '';
     }, 300);
     setTimeout(() => { btn.innerHTML = orig; btn.style.transition = ''; }, 1800);
-  });
+  }).catch(() => showToast('Copy failed — try again.', 'amber')); // C10 #36
 }
 
 function copyUtmUrl(source) {
@@ -8643,6 +8679,8 @@ function saveProfilePage() {
     },
     ctaPrimary:   { label: ctaPrimaryLabel || data.ctaPrimary?.label || 'Stream Now',  url: (ctaPrimaryUrl && isSafeAdminUrl(ctaPrimaryUrl)) ? ctaPrimaryUrl : (data.ctaPrimary?.url || '') },
     ctaSecondary: { label: ctaSecLabel     || data.ctaSecondary?.label || '',           url: (ctaSecUrl && isSafeAdminUrl(ctaSecUrl)) ? ctaSecUrl : (data.ctaSecondary?.url || '') },
+    slug:         data.handle || (name || data.name || 'artist').toLowerCase().replace(/[^a-z0-9]+/g,'-'), // C10 #10
+    updatedAt:    Date.now(), // ensure every save stamps updatedAt
   };
   setLS(V3_KEY, updated);
   syncProfile(updated);
