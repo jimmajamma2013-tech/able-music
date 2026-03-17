@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-17 | Sessions 11–20 + Cycle 2 Wave 1 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md**
+**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–3 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md, CYCLE-3-AUDIT.md**
 
 ---
 
@@ -35,15 +35,15 @@
 
 | System | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|
-| Artist tools | 7.5/10 | 9.0/10 | Close Circle no payment, accent picker limited | ✅ owner=true on all profile links; Day 1 share card built |
-| CRM | 6.5/10 | 9.0/10 | Fan search UI exists; `consentVersion` in CSV; dedup check live | ✅ campaignState, sessionId, all 5 UTM params, Array guard on fans push |
+| Artist tools | 7.8/10 | 9.0/10 | Close Circle no payment, accent picker limited | ✅ owner=true on all profile links; Day 1 share card built; completeness bar live |
+| CRM | 7.8/10 | 9.0/10 | Fan search UI exists; `consentVersion` in CSV; dedup check live | ✅ C3: campaign analytics, JSON export, two-step delete confirm, time datetime |
 | Tier gates | 6.5/10 | 9.0/10 | Server enforcement missing; Stripe not wired | ✅ `checkTierGate()` + gold lock CSS built; remaining: server-side enforcement |
-| Error states | 7.0/10 | 9.0/10 | QuotaExceededError toast; fetch try/catch audit clean; fans Array guard | ✅ safeLS/setLS global; SecurityError guard; corrupt fans auto-recover |
+| Error states | 8.0/10 | 9.0/10 | QuotaExceededError toast; fetch try/catch audit clean; fans Array guard | ✅ C3: crash boundary on admin init; offline bar; Supabase init guard; date parse guard |
 | PWA | 8.5/10 | 9.0/10 | No service worker (offline mode unbuilt) | ✅ `manifest.json` + iOS meta tags + icons exist; service worker is optional V2 |
 | Page state system | 7.5/10 | 9.0/10 | Arc node radiogroup ARIA just added | ✅ Campaign state machine logic verified |
 | Data architecture | 6.8/10 | 9.3/10 | Multi-artist isolation; `fan.html` Supabase not wired | Implementation ready for Supabase phase |
 | Analytics | 8.2/10 | 9.4/10 | SessionId in views missing; PostHog fan_signup verified | ✅ All 5 UTM params captured; sessionId on cta_tap + fan_signup; isOwnerVisit() 3-signal chain |
-| SEO / OG | 9.0/10 | 9.5/10 | Static OG image needs production deploy | ✅ Twitter card on all 4 pages; `robots.txt` + `sitemap.xml` deployed; canonical tags present |
+| SEO / OG | 9.2/10 | 9.5/10 | Static OG image needs production deploy | ✅ C3: JSON-LD Event schema on able-v8.html shows; `<time datetime>` on fan rows and show dates |
 | oEmbed proxy | 9.0/10 | 9.5/10 | ✅ SSRF fixed — `isSafeMediaUrl()` uses `new URL().hostname` + ALLOWED_HOSTS Set | Zero vulnerabilities; `data.html` stripped to prevent XSS |
 | Coding strategy | 9.2/10 | 10/10 | `prefers-reduced-motion` audit remaining in admin | ✅ Parse checks every edit; tokenised CSS enforced |
 | UI system | 7.5/10 | 8.6/10 | Component library unbuilt; some hardcoded values | Fix remaining `#888` violations; shared component primitives |
@@ -57,7 +57,7 @@
 | Killer features (all) | 4.0/10 | 9.0/10 | Day 1 share card unbuilt; deep link campaigns unbuilt | ✅ Auto-gig built; remaining: Day 1 share card (3–4h) |
 | Reels feed | 8.5/10 spec | 10/10 (post-V3) | oEmbed proxy extension confirmed ✅ | 30-min code review of TikTok/YouTube endpoints |
 | Spotify import | 5.2/10 | 9.0/10 | Netlify function not deployed to production | Deploy Netlify function + configure env vars |
-| Deep link campaigns | 0/10 | 9/10 | Feature not built | URL param parsing + source tagging + campaign creator UI |
+| Deep link campaigns | 7.5/10 | 9/10 | QR codes for campaigns unbuilt; campaign history list | ✅ C3: ?campaign capture, fan tagging, UTM bridge, campaign creator UI, analytics breakdown |
 
 ### Infrastructure & backend
 
@@ -160,8 +160,9 @@
 | Strategy / founder | ~7.8/10 | — | — |
 
 **Overall documentation + spec average: ~9.2/10**
-**Overall current build state average: ~8.0/10** (was ~7.8/10 post-Cycle-1; was ~6.5/10 session 14)
+**Overall current build state average: ~8.3/10** (was ~8.0/10 post-Cycle-2; was ~7.8/10 post-Cycle-1; was ~6.5/10 session 14)
 
+Cycle 3 improvements: Deep link campaigns (0→7.5), CRM (6.5→7.8), Error states (7.0→8.0), Artist tools (7.5→7.8), SEO/OG (9.0→9.2)
 Cycle 2 Wave 1 improvements: CRM (+2.0), Artist Success (+0.3), World Map (+1.8), Error States (+1.0), Analytics (+0.4)
 
 ---
@@ -216,6 +217,43 @@ Cycle 2 Wave 1 improvements: CRM (+2.0), Artist Success (+0.3), World Map (+1.8)
 | World Map / events | 5.2/10 | 7.0/10 | **+1.8** |
 | Error States | 6.0/10 | 7.0/10 | **+1.0** |
 | Analytics | 7.8/10 | 8.2/10 | **+0.4** |
+
+---
+
+## Cycle 3 complete — what changed
+
+| Dimension | Before C3 | After C3 | Delta |
+|---|---|---|---|
+| Deep link campaigns | 0/10 | 7.5/10 | **+7.5** |
+| Admin render / CRM wave 2 | 6.5/10 | 7.8/10 | **+1.3** |
+| Error state polish | 7.0/10 | 8.0/10 | **+1.0** |
+| Artist tools / completeness | 7.5/10 | 7.8/10 | **+0.3** |
+| SEO + structured data | 9.0/10 | 9.2/10 | **+0.2** |
+
+### Key C3 completions
+
+- ✅ `?campaign=NAME` capture → `sessionStorage._able_campaign` → fan object `campaignName`
+- ✅ UTM campaign bridge: `utm_campaign` fallback when `?campaign` absent
+- ✅ `?ref=REFNAME` capture → `sessionStorage._able_ref`
+- ✅ Campaign analytics breakdown: top-5 by campaign name in admin analytics
+- ✅ Campaign creator UI: form + live preview + copy-to-clipboard in admin settings
+- ✅ Campaign CSV column: `campaign_name` in all fan CSV exports
+- ✅ Campaign name validation: 50-char limit, hyphens-not-spaces error
+- ✅ Profile completeness bar: 0–100% with dimension scoring + first-missing nudge
+- ✅ Admin DOMContentLoaded crash boundary: try/catch → recovery bar
+- ✅ Admin offline status bar: amber fixed bar when navigator.onLine = false
+- ✅ Fan delete two-step confirm: inline state swap, no browser confirm()
+- ✅ JSON fan export: `exportFansJson()` Blob download
+- ✅ Campaign name breakdown in analytics: top-5 bars by campaignName field
+- ✅ `<time datetime>` on fan sign-up rows in admin fan list
+- ✅ JSON-LD Event schema: injected into `#structured-data` when shows exist
+- ✅ `<time datetime>` on all show dates in `renderShowsSection()` (C3 Wave 1)
+- ✅ Supabase `createClient()` try/catch on both able-v8.html and admin.html
+- ✅ QuotaExceeded prune + retry in `setLS()`
+- ✅ Share nudge gated at 60% profile completeness
+- ✅ PostHog `fan_signup` enriched: `campaign_name` + `consent_version`
+
+---
 
 ### Key C2 Wave 1 completions
 
