@@ -991,6 +991,14 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
   100% { background: transparent; }
 }
 .fan-list-row.star-flash { animation: fanStarFlash 600ms var(--ease) forwards; }
+/* C6 #30 — prefers-reduced-motion: suppress non-essential animations */
+@media (prefers-reduced-motion: reduce) {
+  .fan-row-stagger { animation: none; opacity: 1; }
+  .fan-list-row.star-flash { animation: none; }
+  .gig-strip, .gig-strip .gig-dot, .gig-strip .gig-toggle, .gig-strip .gig-toggle::after { transition: none; }
+  .admin-sheet { transition: none; }
+  .completeness-fill { transition: none; }
+}
 
 /* D13 — Fan list row stagger-in on first reveal (40ms per row, first load only) */
 @keyframes fanRowIn {
@@ -7961,6 +7969,30 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
     }
   })();
 
+  // C6 #39 — post-release nudge: 2 days after release, if fan count hasn't grown, nudge artist to share
+  ;(function() {
+    const _rd39 = v3data.releaseDate;
+    if (!_rd39) return;
+    const _relMs39 = new Date(_rd39 + 'T00:00:00').getTime();
+    const _now39 = Date.now();
+    const _twoDays = 2 * 86400000;
+    if (_now39 - _relMs39 < _twoDays) return;   // less than 2 days since release
+    if (_now39 - _relMs39 > 14 * 86400000) return; // more than 14 days (page back to profile)
+    const _nudgeKey39 = 'able_post_release_nudge_' + _rd39;
+    if (localStorage.getItem(_nudgeKey39)) return;
+    const _fansAtRelease = parseInt(localStorage.getItem('able_fans_at_release_' + _rd39) || '0', 10);
+    const _fansNow = safeLS(FANS_KEY, []).length;
+    if (_fansNow <= _fansAtRelease) {
+      localStorage.setItem(_nudgeKey39, '1');
+      const _relDateFmt = new Date(_rd39 + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+      setTimeout(() => showToast('Release day was ' + _relDateFmt + '. Share your ABLE link to reach more fans.', 'amber'), 2000);
+    }
+    // Record fan count at release time (first time we detect the release window)
+    if (!localStorage.getItem('able_fans_at_release_' + _rd39)) {
+      localStorage.setItem('able_fans_at_release_' + _rd39, String(_fansNow));
+    }
+  })();
+
 } catch(_e) {
   // C3 #37 — if admin init throws, show recovery UI rather than a half-rendered page
   console.error('[ABLE] admin init error', _e);
@@ -8837,13 +8869,19 @@ function openAdminSheet(icon, title, bodyHTML) {
 }
 
 function closeAdminSheet() {
-  document.getElementById('adminSheet').hidden = true;
-  document.getElementById('adminSheetBackdrop').hidden = true;
-  // Restore focus to the element that opened the sheet
-  if (_sheetTrigger && typeof _sheetTrigger.focus === 'function') {
-    _sheetTrigger.focus();
-    _sheetTrigger = null;
-  }
+  const sheet    = document.getElementById('adminSheet');
+  const backdrop = document.getElementById('adminSheetBackdrop');
+  // C6 #32 — play slide-out animation before hiding
+  sheet.style.transform = 'translateY(100%)';
+  setTimeout(() => {
+    sheet.hidden = true;
+    sheet.style.transform = '';
+    backdrop.hidden = true;
+    if (_sheetTrigger && typeof _sheetTrigger.focus === 'function') {
+      _sheetTrigger.focus();
+      _sheetTrigger = null;
+    }
+  }, 300);
 }
 
 document.addEventListener('keydown', function(e) {
