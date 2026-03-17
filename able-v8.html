@@ -137,6 +137,7 @@
       --dur-instant: 80ms;
       --dur-fast:    150ms;
       --dur-mid:     250ms;
+      --dur-base:    300ms;
       --dur-slow:    400ms;
       --dur-xslow:   600ms;
 
@@ -756,7 +757,7 @@
        .pressing class = pressed state (80ms ease-out compress)
        Release handled in JS by swapping transition to spring BEFORE removing .pressing */
     .pressable {
-      transition: transform 80ms ease-out;
+      transition: transform var(--dur-instant) ease-out;
     }
     .pressable.pressing {
       transform: scale(0.97);
@@ -2484,7 +2485,7 @@
       background: #000; border-radius: var(--r-md); overflow: hidden;
       box-shadow: var(--shadow-deep);
       transform: translateY(20px) scale(0.97);
-      transition: transform 0.3s var(--ease-spring);
+      transition: transform var(--dur-base) var(--ease-spring);
     }
     .media-lightbox.active .media-lightbox__inner { transform: none; }
     .media-lightbox__aspect { position: relative; padding-bottom: 56.25%; height: 0; }
@@ -3152,7 +3153,7 @@
     }
     .wm-panel.closing {
       transform: translateY(100%);
-      transition: transform 250ms var(--ease-decel);
+      transition: transform var(--dur-mid) var(--ease-decel);
     }
     [data-theme="light"] .wm-panel {
       background: #f0ede8;
@@ -4457,7 +4458,7 @@
       flex-direction: column;
       transform: translateY(100%);
       /* Entry: spring 350ms — set in JS. Default is exit timing. */
-      transition: transform 250ms var(--ease-accel);
+      transition: transform var(--dur-mid) var(--ease-accel);
       overflow: hidden;
     }
     #edit-panel.open { transform: translateY(0); }
@@ -4921,7 +4922,7 @@
     [data-theme="glass"] .event-card,
     [data-theme="glass"] .merch-item,
     [data-theme="glass"] .support-pack {
-      transition: backdrop-filter 80ms var(--ease-decel),
+      transition: backdrop-filter var(--dur-instant) var(--ease-decel),
                   transform var(--dur-fast) var(--ease-decel);
     }
     [data-theme="glass"] .release-card:active,
@@ -5051,7 +5052,7 @@
       box-shadow: 0 1px 0 rgba(255,255,255,0.03), 0 4px 24px rgba(0,0,0,0.5);
       pointer-events: none;
       opacity: 0;
-      transition: transform 300ms var(--ease-decel), opacity 300ms var(--ease-decel);
+      transition: transform var(--dur-base) var(--ease-decel), opacity var(--dur-base) var(--ease-decel);
     }
     #sticky-artist-bar.visible {
       transform: translateX(-50%) translateY(0);
@@ -5091,7 +5092,7 @@
       color: var(--color-text);
     }
     @media (prefers-reduced-motion: reduce) {
-      #sticky-artist-bar { transition: opacity 300ms var(--ease-standard); transform: translateX(-50%); }
+      #sticky-artist-bar { transition: opacity var(--dur-base) var(--ease-standard); transform: translateX(-50%); }
       #sticky-artist-bar.visible { transform: translateX(-50%); }
     }
 
@@ -5180,7 +5181,7 @@
       max-height: 85vh;
       overflow-y: auto;
       transform: translateY(100%);
-      transition: transform 0.3s var(--ease-decel);
+      transition: transform var(--dur-base) var(--ease-decel);
     }
     .bs-sheet:not([hidden]) { transform: translateY(0); }
     .bs-handle {
