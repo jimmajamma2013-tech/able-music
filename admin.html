@@ -63,6 +63,7 @@
   --source-direct:  #999999;
 
   /* Radius tokens — use these instead of hardcoded values */
+  --r-xs:   4px;    /* tight corners: inline labels, thumbnails */
   --r-sm:   8px;    /* tags, small badges */
   --r-md:   10px;   /* inputs, small buttons */
   --r-lg:   12px;   /* cards, standard buttons */
@@ -137,13 +138,13 @@ body::before {
 .sb-artist {
   display:flex; align-items:center; gap:10px;
   padding:12px 14px; margin:12px 12px 0;
-  border-radius:12px; background:rgba(255,255,255,.07);
+  border-radius:var(--r-lg); background:rgba(255,255,255,.07);
   border:1px solid rgba(255,255,255,.12);
   cursor:pointer; transition:background .16s;
 }
 .sb-artist:hover { background:rgba(255,255,255,.11); }
 .sb-av {
-  width:36px; height:36px; border-radius:10px; flex-shrink:0;
+  width:36px; height:36px; border-radius:var(--r-md); flex-shrink:0;
   background:linear-gradient(135deg, var(--acc), #e05242);
   display:flex; align-items:center; justify-content:center;
   font-family:var(--font-d); font-size:15px; font-weight:700; color:#121a24;
@@ -156,7 +157,7 @@ body::before {
 .sb-nav { flex:1; padding:16px 12px; display:flex; flex-direction:column; gap:2px; }
 .sb-item {
   display:flex; align-items:center; gap:10px;
-  padding:9px 12px; border-radius:10px; font-size:13px; font-weight:500;
+  padding:9px 12px; border-radius:var(--r-md); font-size:13px; font-weight:500;
   color:rgba(255,255,255,.6); cursor:pointer; transition:background-color 140ms var(--ease,ease), color 140ms var(--ease,ease); text-decoration:none;
   border:none; background:none; font-family:var(--font); text-align:left; width:100%;
 }
@@ -169,12 +170,12 @@ body::before {
 
 .sb-footer { padding:16px; border-top:1px solid rgba(255,255,255,.08); display:flex; flex-direction:column; gap:12px; }
 .sb-qr-block { display:flex; flex-direction:column; align-items:center; gap:6px; }
-.sb-qr-canvas { border-radius:8px; width:120px; height:120px; display:block; }
+.sb-qr-canvas { border-radius:var(--r-sm); width:120px; height:120px; display:block; }
 .sb-qr-download { font-size:10px; color:var(--dash-t3); text-decoration:none; cursor:pointer; background:none; border:none; font-family:var(--font); padding:0; }
 .sb-qr-download:hover { color:var(--acc); }
 .sb-view-btn {
   display:flex; align-items:center; justify-content:center; gap:8px;
-  width:100%; padding:10px; border-radius:10px; font-size:12px; font-weight:600;
+  width:100%; padding:10px; border-radius:var(--r-md); font-size:12px; font-weight:600;
   background:rgba(var(--acc-rgb),.12); color:var(--acc);
   border:1px solid rgba(var(--acc-rgb),.25); cursor:pointer;
   font-family:var(--font); transition:background-color 160ms var(--ease,ease); text-decoration:none;
@@ -198,12 +199,12 @@ body::before {
 .topbar-actions { display:flex; align-items:center; gap:10px; }
 .topbar-edit-cta {
   background:var(--dash-amber); color:#1a1a2e; font-size:12px; font-weight:800;
-  padding:6px 14px; border-radius:20px; text-decoration:none; white-space:nowrap;
+  padding:6px 14px; border-radius:var(--r-pill); text-decoration:none; white-space:nowrap;
   flex-shrink:0; transition:opacity .16s; cursor:pointer;
 }
 .topbar-edit-cta:hover { opacity:0.85; }
 .tb-btn {
-  padding:7px 16px; border-radius:100px; font-size:12px; font-weight:600; white-space:nowrap;
+  padding:7px 16px; border-radius:var(--r-pill); font-size:12px; font-weight:600; white-space:nowrap;
   cursor:pointer; font-family:var(--font); transition:transform 160ms var(--ease,ease), box-shadow 160ms var(--ease,ease), border-color 160ms var(--ease,ease), color 160ms var(--ease,ease);
 }
 .tb-btn-ghost { background:none; border:1.5px solid var(--dash-border); color:var(--dash-t2); }
@@ -213,7 +214,7 @@ body::before {
 /* Live chip — artist accent bridges admin → profile */
 .live-chip {
   display:inline-flex; align-items:center; gap:5px;
-  padding:4px 10px; border-radius:100px; font-size:11px; font-weight:600;
+  padding:4px 10px; border-radius:var(--r-pill); font-size:11px; font-weight:600;
   background:rgba(var(--artist-accent-rgb, var(--acc-rgb)), 0.1);
   color:var(--artist-accent, var(--acc));
   border:1px solid rgba(var(--artist-accent-rgb, var(--acc-rgb)), 0.25);
@@ -234,7 +235,7 @@ body::before {
 /* ── STAT CARDS ── */
 .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
 .stat-card {
-  padding:18px 20px; border-radius:14px;
+  padding:18px 20px; border-radius:var(--r-xl);
   background:var(--dash-card); border:1px solid var(--dash-border);
   box-shadow:0 2px 8px rgba(0,0,0,.08);
   position: relative; overflow: hidden;
@@ -259,7 +260,7 @@ body::before {
   100% { background-position: 600px 0; }
 }
 .skel {
-  border-radius:6px;
+  border-radius:var(--r-xs);
   background:linear-gradient(90deg,
     rgba(138,180,206,.06) 25%,
     rgba(138,180,206,.14) 50%,
@@ -280,7 +281,7 @@ body::before {
   padding:40px 24px; text-align:center;
 }
 .empty-state-icon {
-  width:48px; height:48px; border-radius:14px;
+  width:48px; height:48px; border-radius:var(--r-xl);
   background:rgba(138,180,206,.07); border:1px solid var(--border);
   display:flex; align-items:center; justify-content:center;
   color:var(--t3);
@@ -295,7 +296,7 @@ body::before {
 .section-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
 .section-grid.wide { grid-template-columns:2fr 1fr; }
 .dash-card {
-  border-radius:14px; background:var(--dash-card); border:1px solid var(--dash-border);
+  border-radius:var(--r-xl); background:var(--dash-card); border:1px solid var(--dash-border);
   overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.06);
 }
 .dc-head {
@@ -306,7 +307,7 @@ body::before {
 .dc-action {
   font-size:11px; font-weight:500; color:var(--acc);
   cursor:pointer; background:none; border:none; font-family:var(--font);
-  padding:4px 10px; border-radius:100px;
+  padding:4px 10px; border-radius:var(--r-pill);
   background:rgba(var(--acc-rgb),.1); transition:background .14s;
 }
 .dc-action:hover { background:rgba(var(--acc-rgb),.2); }
@@ -357,7 +358,7 @@ body::before {
 .ai-suggestion-item:hover { border-color:var(--acc); background:rgba(var(--acc-rgb),.06); }
 .ai-suggestion-item__use {
   flex-shrink:0; font-size:10px; font-weight:700; color:var(--acc);
-  padding:3px 7px; border-radius:5px; background:rgba(var(--acc-rgb),.12);
+  padding:3px 7px; border-radius:var(--r-xs); background:rgba(var(--acc-rgb),.12);
   white-space:nowrap;
 }
 .ai-suggestion-label {
@@ -386,7 +387,7 @@ body::before {
 /* ── CTA MODE CARDS ── */
 .mode-cards { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .mode-card {
-  padding:12px; border-radius:12px; border:1px solid var(--dash-border);
+  padding:12px; border-radius:var(--r-lg); border:1px solid var(--dash-border);
   cursor:pointer; transition: background .16s; background:var(--dash-card), color .16s; background:var(--dash-card), border-color .16s; background:var(--dash-card), opacity .16s; background:var(--dash-card), transform .16s; background:var(--dash-card), box-shadow .16s; background:var(--dash-card);
 }
 .mode-card:hover { border-color:var(--dash-border); opacity:.85; }
@@ -411,7 +412,7 @@ body::before {
 .ci-name { font-size:13px; font-weight:600; color:var(--dash-text); }
 .ci-status { font-size:10px; color:var(--dash-t3); }
 .ci-btn {
-  padding:6px 14px; border-radius:100px; font-size:11px; font-weight:600;
+  padding:6px 14px; border-radius:var(--r-pill); font-size:11px; font-weight:600;
   cursor:pointer; font-family:var(--font); transition: background .16s; }
 .ci-btn-connect, color .16s; }
 .ci-btn-connect, border-color .16s; }
@@ -440,20 +441,20 @@ body::before {
 }
 .recs-pool-item__type {
   font-size:8px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
-  padding:2px 7px; border-radius:100px;
+  padding:2px 7px; border-radius:var(--r-pill);
   background:rgba(var(--acc-rgb),.1); color:var(--acc); flex-shrink:0;
 }
 .recs-pool-item__name { font-size:13px; font-weight:600; color:var(--dash-text); flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .recs-pool-item__handle { font-size:10px; color:var(--dash-t3); }
 .recs-pool-item__remove {
   background:none; border:none; cursor:pointer; font-size:14px;
-  color:var(--dash-t3); padding:2px 6px; border-radius:6px;
+  color:var(--dash-t3); padding:2px 6px; border-radius:var(--r-xs);
   transition:color .14s; font-family:var(--font); flex-shrink:0;
 }
 .recs-pool-item__remove:hover { color:#ef4444; }
 .recs-pool-item__move {
   background:none; border:none; cursor:pointer; font-size:14px;
-  color:var(--dash-t3); padding:2px 4px; border-radius:6px;
+  color:var(--dash-t3); padding:2px 4px; border-radius:var(--r-xs);
   transition:color .14s; flex-shrink:0;
 }
 .recs-pool-item__move:hover { color:var(--dash-text); }
@@ -466,12 +467,12 @@ body::before {
   padding:10px 12px; transition:background .15s;
 }
 .clip-admin-thumb {
-  width:36px; height:64px; border-radius:5px; object-fit:cover;
+  width:36px; height:64px; border-radius:var(--r-xs); object-fit:cover;
   flex-shrink:0; background:rgba(255,255,255,.08); display:flex;
   align-items:center; justify-content:center; color:rgba(255,255,255,.3);
   font-size:18px;
 }
-.clip-admin-thumb img { width:100%; height:100%; object-fit:cover; border-radius:5px; }
+.clip-admin-thumb img { width:100%; height:100%; object-fit:cover; border-radius:var(--r-xs); }
 .clip-admin-body { flex:1; min-width:0; }
 .clip-admin-caption {
   font-size:13px; color:var(--dash-text); white-space:nowrap;
@@ -481,7 +482,7 @@ body::before {
 .clip-admin-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
 .clip-admin-toggle {
   position:relative; width:40px; height:22px; cursor:pointer;
-  background:rgba(255,255,255,.12); border-radius:11px;
+  background:rgba(255,255,255,.12); border-radius:var(--r-pill);
   border:none; transition:background .2s; flex-shrink:0;
 }
 .clip-admin-toggle.on { background:var(--acc); }
@@ -495,11 +496,11 @@ body::before {
 .clip-admin-edit:hover { color:var(--dash-text); }
 /* Inline expand editor for clips */
 .clip-edit-panel {
-  background:rgba(255,255,255,.03); border-radius:8px;
+  background:rgba(255,255,255,.03); border-radius:var(--r-sm);
   padding:12px; border:1px solid rgba(255,255,255,.06); margin-top:4px;
 }
 .clip-add-form {
-  background:rgba(255,255,255,.03); border-radius:10px;
+  background:rgba(255,255,255,.03); border-radius:var(--r-md);
   padding:14px; border:1px solid rgba(255,255,255,.06); margin-top:12px;
 }
 
@@ -507,7 +508,7 @@ body::before {
 .snap-list { display:flex; flex-direction:column; gap:8px; }
 .snap-item {
   display:flex; align-items:center; gap:12px;
-  padding:11px 14px; border-radius:12px;
+  padding:11px 14px; border-radius:var(--r-lg);
   background:var(--dash-field); border:1px solid var(--dash-border);
   cursor:grab;
 }
@@ -517,7 +518,7 @@ body::before {
 .snap-label { font-size:12px; font-weight:600; color:var(--dash-text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .snap-actions { display:flex; gap:6px; }
 .snap-btn {
-  padding:5px 10px; border-radius:8px; font-size:11px; font-weight:500;
+  padding:5px 10px; border-radius:var(--r-sm); font-size:11px; font-weight:500;
   border:1px solid var(--border); background:none; color:var(--t2);
   cursor:pointer; font-family:var(--font);
   transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
@@ -526,19 +527,19 @@ body::before {
 .snap-btn.del:hover { border-color:rgba(224,82,66,.5); color:#e05242; }
 .snap-add-btn {
   display:flex; align-items:center; justify-content:center; gap:7px;
-  width:100%; padding:10px; border-radius:12px; font-size:12px; font-weight:500;
+  width:100%; padding:10px; border-radius:var(--r-lg); font-size:12px; font-weight:500;
   border:1.5px dashed var(--border); color:var(--t3); background:none;
   cursor:pointer; font-family:var(--font);
   transition: background var(--dur), color var(--dur), border-color var(--dur);
 }
 .snap-add-btn:hover { border-color:var(--bm); color:var(--t2); }
 .snap-card-wrap { display:flex; flex-direction:column; }
-.snap-card-wrap .snap-item { border-radius:12px; cursor:default; }
-.snap-card-wrap.editing .snap-item { border-radius:12px 12px 0 0; }
+.snap-card-wrap .snap-item { border-radius:var(--r-lg); cursor:default; }
+.snap-card-wrap.editing .snap-item { border-radius:var(--r-lg) var(--r-lg) 0 0; }
 .snap-item-edit {
   padding:12px 14px 14px;
   border:1px solid var(--border); border-top:none;
-  border-radius:0 0 12px 12px;
+  border-radius:0 0 var(--r-lg) var(--r-lg);
   background:rgba(255,255,255,.02);
   display:flex; flex-direction:column; gap:8px;
   animation:fadeSlide .15s ease;
@@ -548,7 +549,7 @@ body::before {
 /* ── ADMIN CONTENT MANAGEMENT ── */
 .admin-add-btn {
   display:flex; align-items:center; justify-content:center; gap:7px;
-  width:100%; max-width:560px; padding:11px; border-radius:12px;
+  width:100%; max-width:560px; padding:11px; border-radius:var(--r-lg);
   font-size:12px; font-weight:600; letter-spacing:.04em;
   border:1.5px dashed var(--border); color:var(--acc); background:rgba(var(--acc-rgb),.06);
   cursor:pointer; font-family:var(--font); transition: background .16s; margin-top:4px, color .16s; margin-top:4px, border-color .16s; margin-top:4px, opacity .16s; margin-top:4px, transform .16s; margin-top:4px, box-shadow .16s; margin-top:4px;
@@ -561,7 +562,7 @@ body::before {
 .admin-release-card .dc-body { display:flex; flex-direction:column; gap:4px; }
 .rel-status-badge {
   display:inline-flex; align-items:center;
-  padding:2px 8px; border-radius:100px;
+  padding:2px 8px; border-radius:var(--r-pill);
   font-size:10px; font-weight:700; letter-spacing:0.03em;
   white-space:nowrap; flex-shrink:0;
 }
@@ -600,7 +601,7 @@ body::before {
 }
 .milestone-card {
   display:flex; align-items:center; gap:12px;
-  padding:14px 16px; border-radius:12px; margin-bottom:16px;
+  padding:14px 16px; border-radius:var(--r-lg); margin-bottom:16px;
   background:rgba(var(--acc-rgb),0.08); border:1px solid rgba(var(--acc-rgb),0.2);
   transition:opacity 0.4s;
 }
@@ -636,7 +637,7 @@ body::before {
 /* ── THEME TOGGLE ── */
 .theme-row { display:flex; gap:8px; flex-wrap:wrap; }
 .theme-chip {
-  padding:7px 14px; border-radius:100px; font-size:12px; font-weight:500;
+  padding:7px 14px; border-radius:var(--r-pill); font-size:12px; font-weight:500;
   border:1.5px solid var(--border); color:var(--t2); background:none;
   cursor:pointer; font-family:var(--font);
   transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
@@ -646,7 +647,7 @@ body::before {
 
 /* ── CAMPAIGN HQ ── */
 .campaign-hq {
-  border-radius:14px; background:var(--dash-card); border:1px solid var(--dash-border);
+  border-radius:var(--r-xl); background:var(--dash-card); border:1px solid var(--dash-border);
   overflow:hidden; margin-bottom:20px; margin-top:32px;
   box-shadow:0 1px 3px rgba(0,0,0,.06), 0 0 0 1px var(--dash-border);
   transition:border-left-color 300ms ease;
@@ -663,7 +664,7 @@ body::before {
 .chq-title { font-family:var(--font); font-size:13px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--dash-text); }
 .chq-state-pill {
   display:inline-flex; align-items:center; gap:6px;
-  padding:4px 12px; border-radius:100px; font-size:11px; font-weight:700;
+  padding:4px 12px; border-radius:var(--r-pill); font-size:11px; font-weight:700;
   letter-spacing:.02em; transition: background .2s; }
 .chq-state-pill.profile, color .2s; }
 .chq-state-pill.profile, border-color .2s; }
@@ -697,7 +698,7 @@ body::before {
   display:flex; gap:8px; margin-bottom:14px;
 }
 .chq-date-picker input {
-  flex:1; padding:10px 13px; border-radius:10px;
+  flex:1; padding:10px 13px; border-radius:var(--r-md);
   background:var(--dash-field); border:1.5px solid var(--dash-border);
   color:var(--dash-text); font-size:12px; font-family:var(--font);
   transition:border-color .16s; outline:none;
@@ -706,13 +707,13 @@ body::before {
 .chq-date-picker input:focus { border-color:var(--acc); box-shadow: 0 0 0 3px rgba(var(--acc-rgb), 0.18); outline: none; }
 .chq-auto-hint {
   font-size:10px; color:var(--dash-t3); line-height:1.5;
-  margin-bottom:14px; padding:8px 12px; border-radius:8px;
+  margin-bottom:14px; padding:8px 12px; border-radius:var(--r-sm);
   background:var(--dash-field); border:1px solid var(--dash-border);
 }
 .chq-auto-hint strong { color:var(--dash-t2); }
 .chq-states { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
 .chq-state-btn {
-  flex:1; min-width:80px; min-height:56px; padding:9px 10px; border-radius:10px; text-align:center;
+  flex:1; min-width:80px; min-height:56px; padding:9px 10px; border-radius:var(--r-md); text-align:center;
   font-size:11px; font-weight:600; cursor:pointer; font-family:var(--font);
   border:1.5px solid var(--dash-border); background:none; color:var(--dash-t3);
   transition: background var(--dur), color var(--dur), border-color var(--dur);
@@ -856,7 +857,7 @@ body::before {
 .gig-label { font-size:12px; font-weight:700; color:#b34000; }
 .gig-hint { font-size:10px; color:var(--dash-t3); margin-top:1px; }
 .gig-toggle {
-  width:40px; height:22px; border-radius:100px; border:none; cursor:pointer;
+  width:40px; height:22px; border-radius:var(--r-pill); border:none; cursor:pointer;
   background:rgba(244,100,66,.2); position:relative; flex-shrink:0;
   transition:background .2s;
 }
@@ -882,7 +883,7 @@ body::before {
 .gig-countdown {
   display: none;
   height: 3px;
-  border-radius: 100px;
+  border-radius: var(--r-pill);
   background: rgba(244,100,66,.12);
   overflow: hidden;
   margin-top: 8px;
@@ -890,7 +891,7 @@ body::before {
 .gig-strip.active + .gig-countdown { display: block; }
 .gig-countdown-fill {
   height: 100%;
-  border-radius: 100px;
+  border-radius: var(--r-pill);
   background: linear-gradient(90deg, #f46442, #f4b942);
   transition: width 1s linear;
 }
@@ -906,7 +907,7 @@ body::before {
 /* ── TIER GATE (declarative gate wrapper — spec §2.1) ── */
 .tier-gate {
   position: relative;
-  border-radius: 12px;
+  border-radius: var(--r-lg);
   overflow: hidden;
 }
 .tier-gate-content {
@@ -927,7 +928,7 @@ body::before {
   background: rgba(9, 9, 15, 0.72);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
-  border-radius: 12px;
+  border-radius: var(--r-lg);
   border: 1px solid rgba(201, 168, 76, 0.22);
   text-align: center;
 }
@@ -954,7 +955,7 @@ body::before {
   color: var(--acc);
   background: rgba(201, 168, 76, 0.12);
   border: 1px solid rgba(201, 168, 76, 0.30);
-  border-radius: 100px;
+  border-radius: var(--r-pill);
   cursor: pointer;
   transition: background 0.14s ease, border-color 0.14s ease;
   min-height: 36px;
@@ -978,7 +979,7 @@ body::before {
 }
 .gold-lock-overlay .glo-badge {
   display:flex; align-items:center; gap:6px;
-  padding:5px 14px; border-radius:100px; font-size:11px; font-weight:700;
+  padding:5px 14px; border-radius:var(--r-pill); font-size:11px; font-weight:700;
   background:linear-gradient(135deg,#f4b942,#e05242); color:#fff;
   margin-bottom:10px;
   box-shadow:0 4px 16px rgba(244,185,66,.3);
@@ -986,7 +987,7 @@ body::before {
 .gold-lock-overlay .glo-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:4px; text-align:center; }
 .gold-lock-overlay .glo-sub { font-size:12px; color:var(--t2); text-align:center; margin-bottom:14px; }
 .gold-lock-overlay .glo-btn {
-  padding:10px 24px; border-radius:100px; font-size:13px; font-weight:700;
+  padding:10px 24px; border-radius:var(--r-pill); font-size:13px; font-weight:700;
   background:linear-gradient(135deg,#f4b942,#f97316); color:#fff; border:none;
   cursor:pointer; font-family:var(--font);
   box-shadow:0 4px 18px rgba(244,185,66,.35);
@@ -998,7 +999,7 @@ body::before {
 /* Tier badge in topbar */
 .tier-badge {
   display:inline-flex; align-items:center; gap:5px;
-  padding:4px 11px; border-radius:100px; font-size:11px; font-weight:700;
+  padding:4px 11px; border-radius:var(--r-pill); font-size:11px; font-weight:700;
   background:rgba(244,185,66,.12); color:#f4b942;
   border:1px solid rgba(244,185,66,.25);
   cursor:pointer;
@@ -1008,7 +1009,7 @@ body::before {
 
 /* Upgrade nudge bar */
 .upgrade-bar {
-  margin:0 28px 20px; padding:12px 16px; border-radius:12px;
+  margin:0 28px 20px; padding:12px 16px; border-radius:var(--r-lg);
   background:linear-gradient(135deg, rgba(244,185,66,.1), rgba(244,100,66,.08));
   border:1px solid rgba(244,185,66,.2);
   display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -1016,7 +1017,7 @@ body::before {
 .upgrade-bar-text { font-size:12px; color:var(--dash-t2); }
 .upgrade-bar-text strong { color:var(--dash-text); }
 .upgrade-bar-btn {
-  padding:6px 16px; border-radius:100px; font-size:11px; font-weight:700;
+  padding:6px 16px; border-radius:var(--r-pill); font-size:11px; font-weight:700;
   background:linear-gradient(135deg,#f4b942,#f97316); color:#fff; border:none;
   cursor:pointer; font-family:var(--font); white-space:nowrap;
   box-shadow:0 2px 10px rgba(244,185,66,.3);
@@ -1047,7 +1048,7 @@ body::before {
 .mn-item {
   display:flex; flex-direction:column; align-items:center; gap:3px;
   font-size:9.5px; font-weight:600; color:rgba(255,255,255,.6);
-  cursor:pointer; padding:4px 12px; border-radius:10px;
+  cursor:pointer; padding:4px 12px; border-radius:var(--r-md);
   transition:color .14s; border:none; background:none; font-family:var(--font);
 }
 .mn-item.on { color:var(--dash-amber); }
@@ -1068,7 +1069,7 @@ body::before {
   position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px);
   background:var(--bg-mid); border:1px solid var(--border);
   color:var(--text); font-size:12px; font-weight:600;
-  padding:10px 20px; border-radius:100px;
+  padding:10px 20px; border-radius:var(--r-pill);
   box-shadow:0 8px 32px rgba(8,16,40,.4);
   pointer-events:none; opacity:0;
   transition:opacity .22s, transform .22s var(--spring);
@@ -1095,7 +1096,7 @@ body::before {
   position:absolute; bottom:calc(100% + 8px); left:50%;
   transform:translateX(-50%);
   background:#1f2d45; border:1px solid rgba(138,180,206,.18);
-  border-radius:10px; padding:10px 14px;
+  border-radius:var(--r-md); padding:10px 14px;
   font-size:12px; font-weight:400; color:var(--text-2, rgba(204,221,239,.58));
   line-height:1.55; width:220px; text-align:left;
   box-shadow:0 8px 28px rgba(8,16,40,.5);
@@ -1115,7 +1116,7 @@ body::before {
 /* ── FIRST-RUN CHECKLIST — compact strip (44px collapsed, expands on tap) ── */
 .first-run-card {
   background:var(--dash-card); border:1px solid var(--dash-border);
-  border-radius:10px; margin-bottom:20px;
+  border-radius:var(--r-md); margin-bottom:20px;
   box-shadow:0 1px 3px rgba(0,0,0,.04);
   overflow:hidden;
 }
@@ -1126,12 +1127,12 @@ body::before {
   user-select:none;
 }
 .frc-strip-bar {
-  flex:1; height:4px; border-radius:100px;
+  flex:1; height:4px; border-radius:var(--r-pill);
   background:rgba(0,0,0,.06); overflow:hidden; position:relative;
 }
 .frc-strip-fill {
   position:absolute; top:0; left:0; height:100%;
-  background:var(--acc); border-radius:100px;
+  background:var(--acc); border-radius:var(--r-pill);
   transition:width .4s cubic-bezier(0.25,0.46,0.45,0.94);
 }
 .frc-strip-label { font-size:11px; color:var(--dash-t3); white-space:nowrap; }
@@ -1160,7 +1161,7 @@ body::before {
 .frc-steps { display:flex; flex-direction:column; gap:1px; padding:2px 8px 0; }
 .frc-step {
   display:flex; align-items:center; gap:10px;
-  padding:8px 6px; border-radius:8px;
+  padding:8px 6px; border-radius:var(--r-sm);
   background:transparent; border:none;
   cursor:pointer; transition:background .12s;
   font-family:var(--font); text-align:left; width:100%;
@@ -1238,7 +1239,7 @@ body::before {
     .nudge-card {
       background: var(--dash-card);
       border: 1.5px solid var(--dash-border);
-      border-radius: 12px;
+      border-radius: var(--r-lg);
       padding: 14px 16px;
       margin-bottom: 12px;
       display: flex;
@@ -1274,7 +1275,7 @@ body::before {
     }
     .fan-col {
       background: var(--dash-card);
-      border-radius: 12px;
+      border-radius: var(--r-lg);
       padding: 14px;
       min-height: 160px;
     }
@@ -1311,7 +1312,7 @@ body::before {
       font-size: 9px;
       font-weight: 700;
       padding: 2px 6px;
-      border-radius: 8px;
+      border-radius: var(--r-sm);
       color: #fff;
       flex-shrink: 0;
     }
@@ -1327,7 +1328,7 @@ body::before {
     .fans-search input {
       width: 100%;
       padding: 10px 14px;
-      border-radius: 10px;
+      border-radius: var(--r-md);
       background: var(--dash-field);
       border: 1px solid var(--dash-border);
       color: var(--dash-text);
@@ -1344,7 +1345,7 @@ body::before {
     }
     .filter-pill {
       padding: 6px 14px;
-      border-radius: 100px;
+      border-radius: var(--r-pill);
       border: 1px solid var(--dash-border);
       background: var(--dash-card);
       color: var(--dash-t2);
@@ -1381,7 +1382,7 @@ body::before {
       padding: 10px 14px;
       background: var(--dash-card);
       border: 1px solid var(--dash-border);
-      border-radius: 10px;
+      border-radius: var(--r-md);
       font-size: 12px;
       color: var(--dash-t2);
       line-height: 1.5;
@@ -1391,7 +1392,7 @@ body::before {
       margin: 0 16px 14px;
       padding: 10px 14px;
       background: var(--dash-card);
-      border-radius: 10px;
+      border-radius: var(--r-md);
     }
     .fcb-header {
       display: flex;
@@ -1405,13 +1406,13 @@ body::before {
     .fcb-cap { font-size: 11px; opacity: .7; }
     .fcb-track {
       height: 4px;
-      border-radius: 100px;
+      border-radius: var(--r-pill);
       background: rgba(0,0,0,.08);
       overflow: hidden;
     }
     .fcb-fill {
       height: 100%;
-      border-radius: 100px;
+      border-radius: var(--r-pill);
       background: var(--dash-amber);
       transition: width .4s cubic-bezier(0.25,0.46,0.45,0.94);
     }
@@ -1421,7 +1422,7 @@ body::before {
       padding: 12px 16px;
       background: rgba(239,68,68,.08);
       border: 1px solid rgba(239,68,68,.25);
-      border-radius: 10px;
+      border-radius: var(--r-md);
       font-size: 13px;
       color: var(--dash-text);
       line-height: 1.5;
@@ -1445,7 +1446,7 @@ body::before {
       gap: 10px;
       padding: 10px 12px;
       background: var(--dash-card);
-      border-radius: 10px;
+      border-radius: var(--r-md);
       cursor: pointer;
       margin-bottom: 4px;
     }
@@ -1488,7 +1489,7 @@ body::before {
       font-size: 10px;
       background: var(--dash-border);
       color: var(--dash-t2);
-      border-radius: 4px;
+      border-radius: var(--r-xs);
       padding: 1px 5px;
       vertical-align: middle;
     }
@@ -1507,7 +1508,7 @@ body::before {
     }
     .level-chips { display:flex; gap:6px; flex-wrap:wrap; }
     .level-chip {
-      padding:5px 12px; border-radius:100px; font-size:11px; font-weight:600;
+      padding:5px 12px; border-radius:var(--r-pill); font-size:11px; font-weight:600;
       font-family:var(--font); cursor:pointer;
       background:var(--dash-field); border:1px solid var(--dash-border); color:var(--dash-t2);
       transition: background var(--dur), color var(--dur), border-color var(--dur);
@@ -1520,7 +1521,7 @@ body::before {
     }
     .export-btn {
       display:inline-flex; align-items:center; gap:6px;
-      padding:10px 18px; border-radius:100px; font-size:12px; font-weight:600;
+      padding:10px 18px; border-radius:var(--r-pill); font-size:12px; font-weight:600;
       color:var(--acc); background:rgba(var(--acc-rgb),0.08);
       border:1px solid rgba(var(--acc-rgb),0.2);
       cursor:pointer; font-family:var(--font); transition:background .14s;
@@ -1528,7 +1529,7 @@ body::before {
     }
     .export-btn:hover { background:rgba(var(--acc-rgb),0.14); }
     .fan-new-badge {
-      display:inline-block; padding:2px 7px; border-radius:100px;
+      display:inline-block; padding:2px 7px; border-radius:var(--r-pill);
       background:rgba(var(--acc-rgb),0.12); color:var(--acc);
       font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
       vertical-align:middle; margin-left:4px;
@@ -1539,7 +1540,7 @@ body::before {
     .source-breakdown {
       padding: 16px;
       background: var(--dash-card);
-      border-radius: 14px;
+      border-radius: var(--r-xl);
       margin: 12px 16px;
     }
     .breakdown-title {
@@ -1566,12 +1567,12 @@ body::before {
       flex: 1;
       height: 6px;
       background: var(--dash-field);
-      border-radius: 100px;
+      border-radius: var(--r-pill);
       overflow: hidden;
     }
     .breakdown-bar {
       height: 100%;
-      border-radius: 100px;
+      border-radius: var(--r-pill);
       transition: width .4s ease;
     }
     .breakdown-pct {
@@ -1589,7 +1590,7 @@ body::before {
       gap: 12px;
       padding: 16px;
       background: var(--dash-card);
-      border-radius: 14px;
+      border-radius: var(--r-xl);
       margin: 0 16px 8px;
     }
     .gig-toggle-text strong {
@@ -1612,7 +1613,7 @@ body::before {
       position: relative;
       width: 44px;
       height: 26px;
-      border-radius: 100px;
+      border-radius: var(--r-pill);
       background: var(--dash-border);
       border: none;
       cursor: pointer;
@@ -1647,7 +1648,7 @@ body::before {
     }
     .show-card {
       background: var(--dash-card);
-      border-radius: 12px;
+      border-radius: var(--r-lg);
       padding: 14px 16px;
       display: flex;
       align-items: center;
@@ -1686,7 +1687,7 @@ body::before {
       padding: 10px 16px;
       background: var(--dash-card);
       border: 1.5px dashed var(--dash-border);
-      border-radius: 12px;
+      border-radius: var(--r-lg);
       font-size: 13px;
       font-weight: 600;
       color: var(--dash-t2);
@@ -1700,7 +1701,7 @@ body::before {
     .admin-sheet-input {
       width: 100%;
       padding: 10px 14px;
-      border-radius: 10px;
+      border-radius: var(--r-md);
       background: var(--dash-field, #f5f2ee);
       border: 1px solid var(--dash-border, #d4cfc8);
       color: var(--dash-text, #1a1a2e);
@@ -1769,7 +1770,7 @@ body::before {
     .yw-moment-row {
       display: flex; align-items: center; gap: 10px;
       background: var(--dash-card);
-      border-radius: 8px;
+      border-radius: var(--r-sm);
       padding: 10px 14px;
       border: 1px solid var(--dash-border);
       font-size: 13px;
@@ -1791,14 +1792,14 @@ body::before {
       transition: color 150ms;
     }
     .yw-edit-btn:hover, .yw-edit-btn.editing { color: var(--acc, #f4b942); }
-    .yw-inline-edit { margin-top: 4px; border-radius: 10px; }
+    .yw-inline-edit { margin-top: 4px; border-radius: var(--r-md); }
     .yw-empty { text-align: center; padding: 24px 16px; color: var(--dash-t3); font-size: 13px; }
     .yw-empty-link { background: none; border: none; padding: 0; color: #6b4a00; font-size: 13px; cursor: pointer; text-decoration: underline; }
     .yw-private-row {
       display: flex; align-items: center; justify-content: space-between;
       padding: 12px 14px;
       background: var(--dash-field);
-      border-radius: 8px;
+      border-radius: var(--r-sm);
       border: 1px solid var(--dash-border);
       margin-bottom: 8px;
     }
@@ -1815,7 +1816,7 @@ body::before {
     .yw-add-form {
       background: var(--dash-card);
       border: 1px solid var(--dash-border);
-      border-radius: 12px;
+      border-radius: var(--r-lg);
       padding: 16px;
       margin-bottom: 14px;
       animation: fadeSlide .18s ease;
@@ -1833,7 +1834,7 @@ body::before {
       box-sizing: border-box;
       background: var(--dash-field);
       border: 1.5px solid var(--dash-border);
-      border-radius: 8px;
+      border-radius: var(--r-sm);
       padding: 9px 12px;
       color: var(--dash-text);
       font-size: 13px;
@@ -1849,7 +1850,7 @@ body::before {
     }
     .yw-type-btn {
       padding: 7px 4px;
-      border-radius: 8px;
+      border-radius: var(--r-sm);
       border: 1.5px solid var(--dash-border);
       background: var(--dash-field);
       color: var(--dash-t2);
@@ -1891,7 +1892,7 @@ body::before {
     .yw-save-btn {
       flex: 1;
       padding: 10px;
-      border-radius: 10px;
+      border-radius: var(--r-md);
       border: none;
       background: var(--acc, #f4b942);
       color: #000;
@@ -1901,7 +1902,7 @@ body::before {
     }
     .yw-cancel-btn {
       padding: 10px 16px;
-      border-radius: 10px;
+      border-radius: var(--r-md);
       border: 1px solid var(--dash-border);
       background: none;
       color: var(--dash-t2);
@@ -1940,7 +1941,7 @@ body::before {
     .section-vis-toggle {
       width: 40px;
       height: 24px;
-      border-radius: 12px;
+      border-radius: var(--r-lg);
       background: rgba(0,0,0,.15);
       border: none;
       cursor: pointer;
@@ -1964,7 +1965,7 @@ body::before {
     .section-order-btn {
       background: none;
       border: 1px solid rgba(255,255,255,.10);
-      border-radius: 5px;
+      border-radius: var(--r-xs);
       color: rgba(255,255,255,.4);
       cursor: pointer;
       font-size: 12px;
@@ -1990,7 +1991,7 @@ body::before {
 .feel-option {
   width: 100%;
   padding: 9px 14px;
-  border-radius: 10px;
+  border-radius: var(--r-md);
   border: 1.5px solid rgba(255,255,255,.09);
   background: rgba(255,255,255,.03);
   color: var(--text, #fff);
@@ -2012,7 +2013,7 @@ body::before {
 .identity-card {
   background: var(--dash-card);
   border: 1px solid var(--dash-border);
-  border-radius: 14px;
+  border-radius: var(--r-xl);
   padding: 18px 16px 16px;
   margin-bottom: 12px;
 }
@@ -2105,7 +2106,7 @@ body::before {
 }
 .identity-preview {
   margin-top: 14px;
-  border-radius: 10px;
+  border-radius: var(--r-md);
   overflow: hidden;
   height: 130px;
   background: var(--bg, #09090f);
@@ -2167,7 +2168,7 @@ body::before {
   left: 0;
   right: 0;
   background: #fff;
-  border-radius: 14px 14px 0 0;
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
   border-top: 1.5px solid var(--dash-border, #d4cfc8);
   z-index: 1001;
   max-height: 80vh;
@@ -2213,7 +2214,7 @@ body::before {
   background: var(--dash-shell);
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--r-md);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -2246,7 +2247,7 @@ body::before {
 .btn-locked {
   width: 100%;
   padding: 12px;
-  border-radius: 10px;
+  border-radius: var(--r-md);
   background: #f5f2ee;
   border: 1px solid #e0dbd4;
   color: var(--dash-t3);
@@ -2263,13 +2264,13 @@ body::before {
   background: #f4b942;
   color: #1a1a2e;
   padding: 2px 6px;
-  border-radius: 6px;
+  border-radius: var(--r-xs);
   font-weight: 700;
 }
 .btn-danger {
   width: 100%;
   padding: 12px;
-  border-radius: 10px;
+  border-radius: var(--r-md);
   background: #fff0ef;
   border: 1px solid #f8b4af;
   color: #c04030;
@@ -2299,7 +2300,7 @@ body::before {
 .state-empty__icon { font-size: 32px; margin-bottom: 8px; opacity: 0.4; }
 .state-empty__text { font-size: 14px; line-height: 1.5; }
 .state-empty__action { margin-top: 12px; }
-.state-error { padding: 16px; border-left: 2px solid #f4b942; background: rgba(244,185,66,0.06); border-radius: 0 8px 8px 0; }
+.state-error { padding: 16px; border-left: 2px solid #f4b942; background: rgba(244,185,66,0.06); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
 .state-error__text { font-size: 13px; color: #f4b942; }
 .state-error__action { margin-top: 8px; font-size: 12px; opacity: 0.8; }
 </style>
@@ -2491,7 +2492,7 @@ body::before {
     </div>
 
     <!-- §9.1 moment 4 — "it's working" gentle inline prompt (appears when first click data arrives) -->
-    <div id="itsWorkingCard" style="display:none;margin-bottom:20px;padding:14px 18px;border-radius:14px;background:rgba(var(--acc-rgb),.08);border:1px solid rgba(var(--acc-rgb),.2);align-items:center;gap:12px;">
+    <div id="itsWorkingCard" style="display:none;margin-bottom:20px;padding:14px 18px;border-radius:var(--r-xl);background:rgba(var(--acc-rgb),.08);border:1px solid rgba(var(--acc-rgb),.2);align-items:center;gap:12px;">
       <div style="font-size:18px;line-height:1;flex-shrink:0;">↗</div>
       <div style="flex:1;">
         <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;" id="itsWorkingCopy">It's working.</div>
@@ -2501,7 +2502,7 @@ body::before {
     </div>
 
     <!-- §9.1 moment: first fan — shown once when able_fans goes from 0→1 -->
-    <div id="firstFanCard" style="display:none;margin-bottom:20px;padding:18px 20px;border-radius:14px;background:rgba(var(--acc-rgb),.08);border:1px solid rgba(var(--acc-rgb),.25);">
+    <div id="firstFanCard" style="display:none;margin-bottom:20px;padding:18px 20px;border-radius:var(--r-xl);background:rgba(var(--acc-rgb),.08);border:1px solid rgba(var(--acc-rgb),.25);">
       <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);margin-bottom:8px;">Your first fan</div>
       <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px;" id="firstFanEmail"></div>
       <div style="font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:14px;">That email is yours. No platform decides whether they hear from you.</div>
@@ -2522,7 +2523,7 @@ body::before {
       </div>
       <div class="chq-body">
         <!-- Top card preview — what fans see right now -->
-        <div id="chqTopCardPreview" style="display:none;margin-bottom:14px;padding:12px;background:var(--dash-card,rgba(255,255,255,0.04));border-radius:10px;border:1px solid var(--border,rgba(255,255,255,0.08));">
+        <div id="chqTopCardPreview" style="display:none;margin-bottom:14px;padding:12px;background:var(--dash-card,rgba(255,255,255,0.04));border-radius:var(--r-md);border:1px solid var(--border,rgba(255,255,255,0.08));">
           <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--dash-t3,#555);margin-bottom:8px;">What fans see right now</div>
           <div id="chqTopCardContent" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
             <!-- populated by initCampaignHQ -->
@@ -2587,7 +2588,7 @@ body::before {
         <div class="gig-countdown-label" id="gigCountdownLabel"></div>
 
         <!-- Auto-gig nudge: fires when a show is today but gig mode is not active -->
-        <div id="autoGigNudge" style="display:none;margin-top:10px;padding:10px 14px;border-radius:10px;background:rgba(var(--acc-rgb),.07);border:1px solid rgba(var(--acc-rgb),.18);font-size:12px;color:var(--dash-t2);line-height:1.5;">
+        <div id="autoGigNudge" style="display:none;margin-top:10px;padding:10px 14px;border-radius:var(--r-md);background:rgba(var(--acc-rgb),.07);border:1px solid rgba(var(--acc-rgb),.18);font-size:12px;color:var(--dash-t2);line-height:1.5;">
           <strong id="autoGigNudgeShow" style="color:var(--dash-text);font-size:13px;display:block;margin-bottom:4px;"></strong>
           You have a show today. Gig mode puts tickets front and centre.
           <button onclick="setGigActive(true);document.getElementById('autoGigNudge').style.display='none';"
@@ -2654,7 +2655,7 @@ body::before {
     </div>
 
     <!-- §9.1 moment 2 — pre-release trial nudge: appears after a future release date is saved -->
-    <div id="preReleaseNudge" style="display:none;margin-bottom:20px;padding:14px 18px;border-radius:14px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);align-items:center;gap:12px;">
+    <div id="preReleaseNudge" style="display:none;margin-bottom:20px;padding:14px 18px;border-radius:var(--r-xl);background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);align-items:center;gap:12px;">
       <div style="flex:1;">
         <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;">You're in launch mode.</div>
         <div style="font-size:11px;color:var(--t2);line-height:1.5;">Artist plan gives you the full pre-release toolkit — email your list on drop day, see who pre-saved, and control exactly when fans hear it.</div>
@@ -2663,7 +2664,7 @@ body::before {
     </div>
 
     <!-- §9.1 moment 3 — gig mode trial nudge: appears when gig is first activated this session -->
-    <div id="gigModeNudge" style="display:none;margin-bottom:20px;padding:14px 18px;border-radius:14px;background:rgba(139,30,30,.08);border:1px solid rgba(139,30,30,.3);align-items:center;gap:12px;">
+    <div id="gigModeNudge" style="display:none;margin-bottom:20px;padding:14px 18px;border-radius:var(--r-xl);background:rgba(139,30,30,.08);border:1px solid rgba(139,30,30,.3);align-items:center;gap:12px;">
       <div style="flex:1;">
         <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;">Tonight's the night.</div>
         <div style="font-size:11px;color:var(--t2);line-height:1.5;">Artist plan lets you email your list tonight — your fans hear about gigs before anyone else does.</div>
@@ -2870,7 +2871,7 @@ body::before {
         <div class="dash-card" style="margin-bottom:16px;">
           <div class="dc-head"><div class="dc-title">Hero media</div></div>
           <div class="dc-body">
-            <div id="artworkPreviewWrap" style="display:none;margin-bottom:12px;border-radius:10px;overflow:hidden;height:120px;background:rgba(255,255,255,.04);">
+            <div id="artworkPreviewWrap" style="display:none;margin-bottom:12px;border-radius:var(--r-md);overflow:hidden;height:120px;background:rgba(255,255,255,.04);">
               <img id="artworkPreview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Artwork preview" style="width:100%;height:100%;object-fit:cover;display:block;">
             </div>
             <div class="field-row" style="margin:0;">
@@ -3014,7 +3015,7 @@ body::before {
         <div class="dash-card" style="margin-top:16px;">
           <div class="dc-head"><div class="dc-title">Your QR code</div></div>
           <div class="dc-body" style="display:flex;flex-direction:column;align-items:center;gap:14px;">
-            <canvas id="qrCanvas" style="border-radius:12px;width:160px;height:160px;"></canvas>
+            <canvas id="qrCanvas" style="border-radius:var(--r-lg);width:160px;height:160px;"></canvas>
             <p style="font-size:11px;color:var(--t2);text-align:center;margin:0;">Drop this at gigs, on merch, or anywhere offline. Fans scan → your page.</p>
             <button class="ci-btn ci-btn-connect" onclick="downloadQR()" style="width:100%;">Download PNG</button>
           </div>
@@ -3050,7 +3051,7 @@ body::before {
             <div id="recsPoolList" style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px;"></div>
 
             <!-- Add item -->
-            <div style="border:1px dashed var(--dash-border);border-radius:10px;padding:14px 16px;">
+            <div style="border:1px dashed var(--dash-border);border-radius:var(--r-md);padding:14px 16px;">
               <div class="field-label" style="margin-bottom:10px;">Add someone</div>
               <div style="display:flex;gap:8px;margin-bottom:10px;">
                 <button class="recs-type-btn active" data-type="artist" onclick="setRecsAddType('artist')">Artist</button>
@@ -3112,7 +3113,7 @@ body::before {
         Import shows →
       </button>
     </div>
-    <div id="tmImportPanel" hidden style="margin-top:16px;padding:16px;background:rgba(255,255,255,0.04);border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+    <div id="tmImportPanel" hidden style="margin-top:16px;padding:16px;background:rgba(255,255,255,0.04);border-radius:var(--r-md);border:1px solid rgba(255,255,255,0.08);">
       <div style="font-size:13px;font-weight:600;margin-bottom:10px;">Find your shows on Ticketmaster</div>
       <input id="tmArtistNameInput" class="field-input" type="text" placeholder="Your artist name…" style="width:100%;margin-bottom:10px;" maxlength="100">
       <button class="dc-action" id="tmFetchBtn" onclick="fetchTicketmasterShows()">Find shows →</button>
@@ -3331,7 +3332,7 @@ body::before {
           <div class="field-label">Intro text <span style="font-weight:400;color:var(--t3);">(shown on the join sheet)</span></div>
           <input class="field-input" type="text" id="ccIntro" placeholder="Get closer to the music. Early access and more." oninput="saveCloseCircle()">
         </div>
-        <div id="ccStripeNotice" style="display:none;margin-top:14px;padding:12px 14px;border-radius:10px;background:rgba(244,185,66,0.08);border:1px solid rgba(244,185,66,0.25);">
+        <div id="ccStripeNotice" style="display:none;margin-top:14px;padding:12px 14px;border-radius:var(--r-md);background:rgba(244,185,66,0.08);border:1px solid rgba(244,185,66,0.25);">
           <div style="font-size:12px;font-weight:600;color:var(--dash-text);margin-bottom:4px;">Connect Stripe to go live</div>
           <div style="font-size:11px;color:var(--dash-t2);line-height:1.5;margin-bottom:10px;">You've set it up. Now connect Stripe to start accepting payments.<br>0% taken by ABLE. Stripe standard fee only.</div>
           <button style="font-size:12px;font-weight:600;color:var(--dash-text);background:var(--acc);border:none;padding:6px 14px;border-radius:7px;cursor:not-allowed;opacity:0.7;font-family:var(--font);" title="Coming soon — Stripe connection is Phase 2">Connect Stripe → (coming soon)</button>
@@ -3389,25 +3390,25 @@ body::before {
           <div style="display:flex;flex-direction:column;gap:10px;">
             <div style="display:flex;align-items:center;gap:12px;">
               <div style="font-size:12px;color:var(--t2);width:100px;">Instagram</div>
-              <div style="flex:1;height:8px;border-radius:100px;background:var(--border);overflow:hidden;"><div style="height:100%;width:42%;background:var(--acc);border-radius:100px;"></div></div>
+              <div style="flex:1;height:8px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;"><div style="height:100%;width:42%;background:var(--acc);border-radius:var(--r-pill);"></div></div>
               <div style="font-size:12px;color:var(--text);width:36px;text-align:right;">42%</div>
             </div>
             <div style="display:flex;align-items:center;gap:12px;">
               <div style="font-size:12px;color:var(--t2);width:100px;">TikTok</div>
-              <div style="flex:1;height:8px;border-radius:100px;background:var(--border);overflow:hidden;"><div style="height:100%;width:28%;background:var(--acc);border-radius:100px;opacity:.7;"></div></div>
+              <div style="flex:1;height:8px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;"><div style="height:100%;width:28%;background:var(--acc);border-radius:var(--r-pill);opacity:.7;"></div></div>
               <div style="font-size:12px;color:var(--text);width:36px;text-align:right;">28%</div>
             </div>
             <div style="display:flex;align-items:center;gap:12px;">
               <div style="font-size:12px;color:var(--t2);width:100px;">Direct</div>
-              <div style="flex:1;height:8px;border-radius:100px;background:var(--border);overflow:hidden;"><div style="height:100%;width:18%;background:var(--acc);border-radius:100px;opacity:.5;"></div></div>
+              <div style="flex:1;height:8px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;"><div style="height:100%;width:18%;background:var(--acc);border-radius:var(--r-pill);opacity:.5;"></div></div>
               <div style="font-size:12px;color:var(--text);width:36px;text-align:right;">18%</div>
             </div>
             <div style="display:flex;align-items:center;gap:12px;">
               <div style="font-size:12px;color:var(--t2);width:100px;">YouTube</div>
-              <div style="flex:1;height:8px;border-radius:100px;background:var(--border);overflow:hidden;"><div style="height:100%;width:12%;background:var(--acc);border-radius:100px;opacity:.4;"></div></div>
+              <div style="flex:1;height:8px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;"><div style="height:100%;width:12%;background:var(--acc);border-radius:var(--r-pill);opacity:.4;"></div></div>
               <div style="font-size:12px;color:var(--text);width:36px;text-align:right;">12%</div>
             </div>
-            <div style="height:80px;border-radius:10px;background:rgba(255,255,255,.04);margin-top:4px;display:flex;align-items:center;justify-content:center;">
+            <div style="height:80px;border-radius:var(--r-md);background:rgba(255,255,255,.04);margin-top:4px;display:flex;align-items:center;justify-content:center;">
               <span style="font-size:10px;color:var(--t3);">Fan location heatmap</span>
             </div>
           </div>
@@ -3515,11 +3516,11 @@ body::before {
           <div class="dc-head"><div class="dc-title">Audience</div></div>
           <div class="dc-body">
             <div style="display:flex;flex-direction:column;gap:8px;opacity:.5;">
-              <div style="padding:10px 12px;border-radius:10px;border:1px solid var(--border);">
+              <div style="padding:10px 12px;border-radius:var(--r-md);border:1px solid var(--border);">
                 <div style="font-size:12px;font-weight:600;color:var(--text);">All fans</div>
                 <div style="font-size:10px;color:var(--t3);">Everyone who signed up</div>
               </div>
-              <div style="padding:10px 12px;border-radius:10px;border:1px solid var(--border);">
+              <div style="padding:10px 12px;border-radius:var(--r-md);border:1px solid var(--border);">
                 <div style="font-size:12px;font-weight:600;color:var(--text);">Core fans only</div>
                 <div style="font-size:10px;color:var(--t3);">Most engaged fans</div>
               </div>
@@ -3559,7 +3560,7 @@ body::before {
           <div class="field-hint" style="margin-top:4px;">Lowercase letters, numbers, and hyphens only. Changes take effect immediately.</div>
         </div>
         <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
-          <div id="settingsUrlPreview" style="flex:1;font-size:12px;color:var(--t2);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">ablemusic.co/yourname</div>
+          <div id="settingsUrlPreview" style="flex:1;font-size:12px;color:var(--t2);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 12px;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">ablemusic.co/yourname</div>
           <button class="tb-btn tb-btn-ghost" onclick="copyPageUrl()" style="flex-shrink:0;gap:6px;" id="settingsCopyBtn">
             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M2 10V3a1 1 0 011-1h7"/></svg>
             Copy
@@ -4028,10 +4029,10 @@ function openFanDetailSheet(fan) {
     </div>
     <div style="display:flex;flex-direction:column;gap:8px;">
       <div style="position:relative;">
-        <button style="width:100%;padding:10px 14px;border-radius:10px;background:var(--dash-field);border:1px solid var(--dash-border);color:var(--dash-t3);font-size:13px;font-family:var(--font);cursor:not-allowed;text-align:left;" disabled>✉ Send a message</button>
-        <span style="position:absolute;top:50%;right:10px;transform:translateY(-50%);font-size:10px;font-weight:700;background:var(--dash-amber);color:#000;border-radius:4px;padding:2px 6px;">Artist</span>
+        <button style="width:100%;padding:10px 14px;border-radius:var(--r-md);background:var(--dash-field);border:1px solid var(--dash-border);color:var(--dash-t3);font-size:13px;font-family:var(--font);cursor:not-allowed;text-align:left;" disabled>✉ Send a message</button>
+        <span style="position:absolute;top:50%;right:10px;transform:translateY(-50%);font-size:10px;font-weight:700;background:var(--dash-amber);color:#000;border-radius:var(--r-xs);padding:2px 6px;">Artist</span>
       </div>
-      <button style="width:100%;padding:10px 14px;border-radius:10px;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:#ef4444;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;" id="removeFanBtn" data-email="${escHtml(fan.email)}">Remove from list</button>
+      <button style="width:100%;padding:10px 14px;border-radius:var(--r-md);background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:#ef4444;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;" id="removeFanBtn" data-email="${escHtml(fan.email)}">Remove from list</button>
     </div>`;
 
   openAdminSheet('👤', fan.email, body);
@@ -4715,17 +4716,17 @@ function renderTopCardPreview(data) {
 
   if (state === 'gig') {
     content.innerHTML = `
-      <div style="width:40px;height:40px;border-radius:8px;background:rgba(255,69,58,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎤</div>
+      <div style="width:40px;height:40px;border-radius:var(--r-sm);background:rgba(255,69,58,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎤</div>
       <div style="flex:1;min-width:0;">
         <div style="font-size:13px;font-weight:600;color:var(--dash-t1,#fff);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">I'm on tonight.</div>
         <div style="font-size:11px;color:var(--dash-t3,#555);">Tickets front and centre</div>
       </div>
-      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;background:rgba(255,69,58,0.15);color:#ff453a;">Gig tonight</span>`;
+      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:var(--r-pill);background:rgba(255,69,58,0.15);color:#ff453a;">Gig tonight</span>`;
     return;
   }
 
-  const art = featured.artworkUrl ? `<img src="${escHtml(featured.artworkUrl)}" style="width:40px;height:40px;border-radius:6px;object-fit:cover;flex-shrink:0;" alt="" loading="lazy">` :
-    `<div style="width:40px;height:40px;border-radius:6px;background:rgba(255,255,255,0.06);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;">🎵</div>`;
+  const art = featured.artworkUrl ? `<img src="${escHtml(featured.artworkUrl)}" style="width:40px;height:40px;border-radius:var(--r-xs);object-fit:cover;flex-shrink:0;" alt="" loading="lazy">` :
+    `<div style="width:40px;height:40px;border-radius:var(--r-xs);background:rgba(255,255,255,0.06);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;">🎵</div>`;
 
   content.innerHTML = `
     ${art}
@@ -4733,7 +4734,7 @@ function renderTopCardPreview(data) {
       <div style="font-size:13px;font-weight:600;color:var(--dash-t1,#fff);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(featured.title || 'Untitled')}</div>
       <div style="font-size:11px;color:var(--dash-t3,#555);">${escHtml(featured.type || 'Single')}${featured.year ? ' · ' + escHtml(featured.year) : ''}</div>
     </div>
-    <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;background:rgba(255,255,255,0.06);color:${stateBadgeColor};white-space:nowrap;">${escHtml(stateLabel)}</span>`;
+    <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:var(--r-pill);background:rgba(255,255,255,0.06);color:${stateBadgeColor};white-space:nowrap;">${escHtml(stateLabel)}</span>`;
 }
 
 function computeEffectiveState(data) {
@@ -5463,7 +5464,7 @@ function renderAdminEvents() {
     const isPast = new Date(ev.date) < now;
     return `<div class="dash-card" style="max-width:560px;margin-bottom:10px;${isPast?'opacity:0.65':''}">
       <div class="dc-head">
-        <div class="dc-title">${escHtml(ev.venue)} <span style="font-weight:400;color:var(--t3);font-size:11px;">${escHtml([ev.city,ev.country].filter(Boolean).join(', ') || '—')} · ${escHtml(ev.date)}</span> ${isPast?'<span style="font-size:10px;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;margin-left:4px;color:var(--t3)">Past</span>':''}</div>
+        <div class="dc-title">${escHtml(ev.venue)} <span style="font-weight:400;color:var(--t3);font-size:11px;">${escHtml([ev.city,ev.country].filter(Boolean).join(', ') || '—')} · ${escHtml(ev.date)}</span> ${isPast?'<span style="font-size:10px;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:var(--r-xs);margin-left:4px;color:var(--t3)">Past</span>':''}</div>
         <button class="snap-btn del" onclick="removeEvent('${ev.id}')" title="Remove">×</button>
       </div>
       <div class="dc-body">
@@ -5777,7 +5778,7 @@ function openClipAddSheet() {
              oninput="onClipUrlInput(this.value)">
     </div>
     <div id="clipAddThumbPreview" style="display:none;margin:8px 0;">
-      <img id="clipAddThumbImg" src="" alt="" style="width:40px;height:72px;object-fit:cover;border-radius:5px;">
+      <img id="clipAddThumbImg" src="" alt="" style="width:40px;height:72px;object-fit:cover;border-radius:var(--r-xs);">
     </div>
     <div class="field-row" style="margin:0;">
       <div class="field-label">Caption <span style="font-weight:400;color:var(--t3);">(optional)</span></div>
@@ -6456,8 +6457,8 @@ function loadRealStats() {
     topList.innerHTML = sorted.map(([label, count]) => `
       <div style="display:flex;align-items:center;gap:12px;">
         <div style="font-size:12px;color:var(--t2);min-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(label)}</div>
-        <div style="flex:1;height:7px;border-radius:100px;background:var(--border);overflow:hidden;">
-          <div style="height:100%;width:${(count/maxCount*100).toFixed(0)}%;background:var(--acc);border-radius:100px;"></div>
+        <div style="flex:1;height:7px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;">
+          <div style="height:100%;width:${(count/maxCount*100).toFixed(0)}%;background:var(--acc);border-radius:var(--r-pill);"></div>
         </div>
         <div style="font-size:12px;color:var(--text);width:30px;text-align:right;">${count}</div>
       </div>`).join('');
