@@ -89,6 +89,11 @@
   --dur:      .16s;
   --dur-slow: .22s;
 
+  /* Line-height scale (B5) */
+  --lh-tight: 1.2;   /* compact headings, metric values */
+  --lh-snug:  1.45;  /* hint text, secondary body */
+  --lh-base:  1.5;   /* primary body, inputs, textarea */
+
   /* Paragraph measure — readability cap (B10) */
   --measure-body: 65ch;
   --measure-wide: 75ch;
@@ -369,7 +374,7 @@ body::before {
   transition:border-color var(--dur); outline:none;
 }
 .field-input:focus { border-color:var(--acc); box-shadow: var(--shadow-focus); }
-.field-textarea { resize:vertical; min-height:72px; line-height:1.5; }
+.field-textarea { resize:vertical; min-height:72px; line-height:var(--lh-base); }
 .field-hint { font-size:11px; color:var(--dash-t3); line-height:1.4; }
 
 /* ── AI SUGGESTIONS ── */
@@ -874,7 +879,7 @@ body::before {
   white-space: normal;
   text-align: center;
   max-width: 52px;
-  line-height: 1.2;
+  line-height: var(--lh-tight);
 }
 
 .arc-node.active .arc-label { color: var(--dash-link); }
@@ -981,7 +986,7 @@ body::before {
   font-size: 13px;
   font-weight: 500;
   color: var(--dash-text, #e8e4dd);
-  line-height: 1.45;
+  line-height: var(--lh-snug);
   max-width: 260px;
   margin: 0;
 }
@@ -1137,7 +1142,7 @@ body::before {
   background:var(--dash-tooltip); border:1px solid rgba(138,180,206,.18);
   border-radius:var(--r-md); padding:10px 14px;
   font-size:12px; font-weight:400; color:var(--text-2, rgba(204,221,239,.58));
-  line-height:1.55; width:220px; text-align:left;
+  line-height:var(--lh-base); width:220px; text-align:left;
   box-shadow:0 8px 28px rgba(8,16,40,.5);
   pointer-events:none; opacity:0;
   transition:opacity var(--dur); z-index:9999;
@@ -1419,7 +1424,7 @@ body::before {
       border-radius: var(--r-md);
       font-size: 12px;
       color: var(--dash-t2);
-      line-height: 1.5;
+      line-height: var(--lh-base);
     }
     /* Fan count progress bar (100-fan Free cap) */
     .fan-count-bar {
@@ -1459,7 +1464,7 @@ body::before {
       border-radius: var(--r-md);
       font-size: 13px;
       color: var(--dash-text);
-      line-height: 1.5;
+      line-height: var(--lh-base);
       display: none;
     }
     .fan-cap-nudge a {
@@ -1893,7 +1898,7 @@ body::before {
       cursor: pointer;
       text-align: center;
       transition: border-color var(--dur-fast), color var(--dur-fast), background var(--dur-fast);
-      line-height: 1.25;
+      line-height: var(--lh-tight);
     }
     .yw-type-btn:hover { border-color: var(--dash-t2); color: var(--dash-text); }
     .yw-type-btn.active {
