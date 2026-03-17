@@ -18,14 +18,14 @@
 
 | Page | File | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|---|
-| Artist profile | `able-v8.html` | 9.2/10 | 9.7/10 | Supabase auth + Spotify auto-import | ✅ C15: srcset Unsplash hero, world-map empty hide, moment labels, fan dedup, install prompt copy+tracking |
-| Admin dashboard | `admin.html` | 9.8/10 | ~9.9/10 | Supabase auth (data portability) | ✅ C15: fan cap nudge at 90, starred row accent, relTime "Yesterday", level chip aria-pressed, CSV filename |
+| Artist profile | `able-v8.html` | 9.3/10 | 9.7/10 | Supabase auth + Spotify auto-import | ✅ C17: live release date label, panel moment count, countdown humanise (<1h), snap card image error fallback |
+| Admin dashboard | `admin.html` | 9.85/10 | ~9.9/10 | Supabase auth (data portability) | ✅ C17: ⌘K fan search, fan row copy-email, snap card char counter, broadcast real fan count, dynamic title, time-of-day greeting, shows inline errors |
 | Onboarding wizard | `start.html` | 9.8/10 | ~9.9/10 | Social proof (real artists) | ✅ Vibe radiogroup ARIA added session 20 |
 | Landing page | `landing.html` | 9.7/10 | ~9.9/10 | FAQ aria-controls wired | ✅ Full Twitter card meta + aria-controls on FAQ done |
 | Fan dashboard | `fan.html` | 9.6/10 | ~9.8/10 | Supabase realtime + Close Circle | ✅ C16: "New" release badge, Coming up shows section, recency sort, artist card tabindex=0, lastVisit timestamp, tap tracking, toast role=alert |
 | Freelancer profile | `freelancer.html` | 8.7/10 | ~9.2/10 | Network maturity + real testimonials | Directory integration + credits management |
 
-**Page average: ~9.47/10**
+**Page average: ~9.49/10**
 
 ---
 
@@ -48,7 +48,7 @@
 | Coding strategy | 9.4/10 | 10/10 | CSP `unsafe-inline` accepted risk | ✅ C13: reduced-motion media query added for gold-blur transition in admin; parse checks every edit |
 | UI system | 9.2/10 | 9.5/10 | Component library unbuilt | ✅ C11: toast slide-in (translateX keyframe), sheet ease-decel, completeness 400ms, wm-cell hover scale, snap card enter animation, haptic vibrate |
 | UX system | 9.0/10 | 9.2/10 | fan.html Supabase realtime remaining | ✅ C12: fan echo contextual (pre-release/live shows "drops [date]. First to know."), streak counts fan sign-ups, fan.html follow data flow verified |
-| World map | 9.1/10 | 9.3/10 | Date grouping edge cases; live state world-map polish | ✅ C15: gig countdown HH:MM:SS in panel, shows capped at 3 + "+N more", world-map empty state hidden, moment label precision |
+| World map | 9.2/10 | 9.3/10 | Date grouping edge cases; live state world-map polish | ✅ C17: panel moment count header ("N moments · date"), countdown humanised < 1h ("Less than an hour" / "Any second now") |
 
 ### Killer features
 
@@ -118,7 +118,7 @@
 |---|---|---|---|---|
 | Filing system | 9.2/10 | — | 6 non-standard SPEC.md names | Verify profile DESIGN-SPEC.md authority chain |
 | QA testing | 9.0/10 spec | — | No Playwright tests for sessions 15–20 features | 6-gate manual smoke check before first artist |
-| Error states | 7.5/10 | 9.0/10 | Offline fallback page; session expiry notice | ✅ C16: admin corruption banner with clear-and-restart, offline banner verified, quota toast verified |
+| Error states | 7.8/10 | 9.0/10 | Offline fallback page; session expiry notice | ✅ C17: shows form field-specific errors, fan form 5-min rate-limit, snap card image onerror fallback |
 | Master review | 7.5/10 | — | One review not a track record | Schedule recurring master review monthly |
 | Hardware / software | 9.5/10 | — | Open WebUI not fully tested | Ergonomics + security setup |
 | Coding strategy | 9.2/10 | 10/10 | `prefers-reduced-motion` admin audit | ✅ All JS parse-checked every session |
