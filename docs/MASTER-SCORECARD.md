@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–11 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-11-AUDIT.md**
+**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–12 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-12-AUDIT.md**
 
 ---
 
@@ -36,18 +36,18 @@
 | System | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|
 | Artist tools | 9.1/10 | 9.3/10 | Close Circle no payment; snap/URL validation Wave 2 | ✅ C9W1: completeness ✓ icon ≥90%, bio counter tokens, maxlengths on snap/name/release |
-| CRM | 8.6/10 | 9.0/10 | Fan list sort UI (Wave 2 remaining) | ✅ C10: fan search debounce, fan tab label dynamic, empty search state, row keyboard nav, soft-delete undo |
-| Tier gates | 8.7/10 | 9.0/10 | Server enforcement missing; Stripe not wired | ✅ C10: gold lock blur 6px, overlay fade-in animation; tier badge already dynamic |
-| Error states | 8.8/10 | 9.0/10 | Supabase retry logic remaining | ✅ C10: offline/online banner, copyPageUrl .catch(), release date parse guard verified |
+| CRM | 9.0/10 | 9.2/10 | Supabase fan sync; server tier enforcement | ✅ C12: fan sort dropdown (Newest/Oldest/Starred/By source), filter pill live counts, CSV starred first + joinedAt, gate preview real data |
+| Tier gates | 8.9/10 | 9.2/10 | Server enforcement missing; Stripe not wired | ✅ C12: analytics gate preview bars show real fan source data from localStorage |
+| Error states | 9.0/10 | 9.3/10 | Session expiry notice remaining | ✅ C12: syncProfile 10s AbortController timeout, quota warning already implemented |
 | PWA | 9.2/10 | 9.5/10 | Offline cache strategy for SW | ✅ C11: theme-color meta updates to artist accent; beforeinstallprompt stashed, 2nd-visit banner; manifest/iOS meta all verified |
 | Page state system | 9.0/10 | 9.3/10 | Post-release nudge flow remaining | ✅ C11: contextual state-change toasts, gig mode 30-min expiry warning, release date null guard |
-| Data architecture | 8.7/10 | 9.3/10 | Multi-artist isolation; Supabase fan sync not wired | ✅ C10: joinedAt on both fan forms, writeFanFollow adds handle+artworkUrl+followedAt, slug field on saveProfilePage |
+| Data architecture | 9.0/10 | 9.3/10 | Multi-artist isolation; Supabase fan sync not wired | ✅ C12: syncProfile handle guard, schemaVersion bump, consentVersion dynamic, form-2 ts/campaignState, release id, merch id |
 | Analytics | 9.3/10 | 9.5/10 | View source breakdown (fans vs views) Wave 2 | ✅ C11: campaign breakdown excludes deleted fans; profile_complete PostHog event; views dedup+owner exclusion verified |
 | SEO / OG | 9.2/10 | 9.5/10 | Static OG image needs production deploy | ✅ C3: JSON-LD Event schema on able-v8.html shows; `<time datetime>` on fan rows and show dates |
 | oEmbed proxy | 9.0/10 | 9.5/10 | ✅ SSRF fixed — `isSafeMediaUrl()` uses `new URL().hostname` + ALLOWED_HOSTS Set | Zero vulnerabilities; `data.html` stripped to prevent XSS |
 | Coding strategy | 9.2/10 | 10/10 | `prefers-reduced-motion` audit remaining in admin | ✅ Parse checks every edit; tokenised CSS enforced |
 | UI system | 9.2/10 | 9.5/10 | Component library unbuilt | ✅ C11: toast slide-in (translateX keyframe), sheet ease-decel, completeness 400ms, wm-cell hover scale, snap card enter animation, haptic vibrate |
-| UX system | 8.5/10 | 9.0/10 | fan.html stub remaining | ✅ C7: completeness 100% toast; Artist Pro trial hook; 30-day milestone; handle slug preview; upgrade CTA tracking |
+| UX system | 9.0/10 | 9.2/10 | fan.html Supabase realtime remaining | ✅ C12: fan echo contextual (pre-release/live shows "drops [date]. First to know."), streak counts fan sign-ups, fan.html follow data flow verified |
 | World map | 8.6/10 | 9.2/10 | Gig countdown (#18), show click-through (#21) Wave 2 | ✅ C9W1: featured show accent border, shows tab active on gig night |
 
 ### Killer features
@@ -160,8 +160,9 @@
 | Strategy / founder | ~7.8/10 | — | — |
 
 **Overall documentation + spec average: ~9.2/10**
-**Overall current build state average: ~9.2/10** (was ~9.15/10 post-C7W2; was ~9.1/10 post-C7W1; was ~9.0/10 post-C6)
+**Overall current build state average: ~9.3/10** (was ~9.2/10 post-C11; was ~9.15/10 post-C7W2; was ~9.1/10 post-C7W1)
 
+Cycle 12 improvements: CRM (8.6→9.0) — fan sort dropdown, filter pill counts, CSV starred+joinedAt, gate preview real data; Data arch (8.7→9.0) — handle guard, consentVersion dynamic, form-2 metadata; Error states (8.8→9.0) — syncProfile 10s timeout; UX system (8.5→9.0) — echo personalisation pre-release/live, streak fan activity counts
 Cycle 8 improvements: Data arch (7.5→8.0) — deviceType/path on writes, updatedAt on saves; Tier gates (7.5→8.2) — show gate, CSV export gate, broadcast verify; UI system (8.0→8.4) — focus-visible, backdrop, glo-btn active, toast auto-dismiss; Error states (8.0→8.4) — shows parse guard, stats parse guard, fan network note
 
 Cycle 7 Wave 2 improvements: Start.html (#33 safe-area, #37 release date hint in moment picker); Admin RAF stat batch (#30 — δ-label writes deferred to single RAF frame)
