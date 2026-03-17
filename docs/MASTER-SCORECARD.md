@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–13 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-13-AUDIT.md**
+**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–14 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-14-AUDIT.md**
 
 ---
 
@@ -22,7 +22,7 @@
 | Admin dashboard | `admin.html` | 9.7/10 | ~9.9/10 | Supabase auth (data portability) | ✅ All WCAG + security fixes applied sessions 19–20 |
 | Onboarding wizard | `start.html` | 9.8/10 | ~9.9/10 | Social proof (real artists) | ✅ Vibe radiogroup ARIA added session 20 |
 | Landing page | `landing.html` | 9.7/10 | ~9.9/10 | FAQ aria-controls wired | ✅ Full Twitter card meta + aria-controls on FAQ done |
-| Fan dashboard | `fan.html` | 9.2/10 | ~9.8/10 | Supabase realtime + Close Circle | ✅ Unsubscribe mechanism added session 19 |
+| Fan dashboard | `fan.html` | 9.4/10 | ~9.8/10 | Supabase realtime + Close Circle | ✅ C14: loading skeleton 2 ghost cards, empty state "Discover artists you'll love.", following count in tab, artist cards link to ablemusic.co/{slug} |
 | Freelancer profile | `freelancer.html` | 8.7/10 | ~9.2/10 | Network maturity + real testimonials | Directory integration + credits management |
 
 **Page average: ~9.4/10**
@@ -43,8 +43,8 @@
 | Page state system | 9.0/10 | 9.3/10 | Post-release nudge flow remaining | ✅ C11: contextual state-change toasts, gig mode 30-min expiry warning, release date null guard |
 | Data architecture | 9.0/10 | 9.3/10 | Multi-artist isolation; Supabase fan sync not wired | ✅ C12: syncProfile handle guard, schemaVersion bump, consentVersion dynamic, form-2 ts/campaignState, release id, merch id |
 | Analytics | 9.3/10 | 9.5/10 | View source breakdown (fans vs views) Wave 2 | ✅ C11: campaign breakdown excludes deleted fans; profile_complete PostHog event; views dedup+owner exclusion verified |
-| SEO / OG | 9.2/10 | 9.5/10 | Static OG image needs production deploy | ✅ C3: JSON-LD Event schema on able-v8.html shows; `<time datetime>` on fan rows and show dates |
-| oEmbed proxy | 9.0/10 | 9.5/10 | ✅ SSRF fixed — `isSafeMediaUrl()` uses `new URL().hostname` + ALLOWED_HOSTS Set | Zero vulnerabilities; `data.html` stripped to prevent XSS |
+| SEO / OG | 9.4/10 | 9.5/10 | Static OG image needs production deploy | ✅ C14: MusicAlbum schema, sameAs from platform URLs, OpenSearch link, og:locale en_GB, JSON-LD eventStatus |
+| oEmbed proxy | 9.3/10 | 9.5/10 | ✅ SSRF fixed — `isSafeMediaUrl()` uses `new URL().hostname` + ALLOWED_HOSTS Set | ✅ C14: Vimeo embed, Bandcamp embed (numeric ID), SoundCloud verified, embed error fallback added |
 | Coding strategy | 9.4/10 | 10/10 | CSP `unsafe-inline` accepted risk | ✅ C13: reduced-motion media query added for gold-blur transition in admin; parse checks every edit |
 | UI system | 9.2/10 | 9.5/10 | Component library unbuilt | ✅ C11: toast slide-in (translateX keyframe), sheet ease-decel, completeness 400ms, wm-cell hover scale, snap card enter animation, haptic vibrate |
 | UX system | 9.0/10 | 9.2/10 | fan.html Supabase realtime remaining | ✅ C12: fan echo contextual (pre-release/live shows "drops [date]. First to know."), streak counts fan sign-ups, fan.html follow data flow verified |
@@ -92,7 +92,7 @@
 | System | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|
 | Brand identity | 8.0/10 | 9.0/10 | og-default.jpg not yet deployed to production | ✅ favicon.svg; og-default.jpg generated and committed |
-| Copy system | 9.2/10 | 9.5/10 | Remaining: snap card empty state, released-out badge phrasing | ✅ C11: save buttons specificised (Save link/credit), CHQ placeholder "What's it called?", error copy "Dashboard failed to load." |
+| Copy system | 9.4/10 | 9.5/10 | CHQ state label copy final polish | ✅ C14: fan detail heading email.split('@')[0], export toast "Fan list downloaded.", unsubscribe toast "You've left [artist]'s list.", share toast "Link copied — share it everywhere.", start.html "Set up your page →", landing eyebrow "Artist Before Label" |
 | Explainers | 5.5/10 | 9.0/10 | Close Circle orientation card missing | Screen 6 context line: "you get their email — that's yours" |
 | Social media | 9.1/10 | — | Week 2+ content calendar less specific | None blocking |
 | Instagram strategy | 9.6/10 | — | Content bank not written | None blocking day-1 execution |
@@ -160,8 +160,9 @@
 | Strategy / founder | ~7.8/10 | — | — |
 
 **Overall documentation + spec average: ~9.2/10**
-**Overall current build state average: ~9.35/10** (was ~9.3/10 post-C12; was ~9.2/10 post-C11)
+**Overall current build state average: ~9.4/10** (was ~9.35/10 post-C13; was ~9.3/10 post-C12)
 
+Cycle 14 improvements: SEO/OG (9.2→9.4) — MusicAlbum schema, sameAs, OpenSearch, eventStatus; oEmbed/media (9.0→9.3) — Vimeo embed, Bandcamp embed, embed error fallback, YouTube nocookie, release card skeleton; Copy system (9.2→9.4) — fan detail heading, export toast, unsubscribe toast, share toast, CTA copy; Fan journey (9.2→9.4) — loading skeleton, empty state discovery copy, following count, artist profile link
 Cycle 13 improvements: Artist tools (9.1→9.3) — videoUrl validated, platform error platform-specific, snap empty state; Accessibility (8.7→9.0) — fan row Space key, reduced-motion admin, focus trap verified; Email (7.5→8.2) — plain text fallback, pre-release PS with drop date; Coding (9.2→9.4) — reduced-motion gold-blur
 Cycle 12 improvements: CRM (8.6→9.0) — fan sort dropdown, filter pill counts, CSV starred+joinedAt, gate preview real data; Data arch (8.7→9.0) — handle guard, consentVersion dynamic, form-2 metadata; Error states (8.8→9.0) — syncProfile 10s timeout; UX system (8.5→9.0) — echo personalisation pre-release/live, streak fan activity counts
 Cycle 8 improvements: Data arch (7.5→8.0) — deviceType/path on writes, updatedAt on saves; Tier gates (7.5→8.2) — show gate, CSV export gate, broadcast verify; UI system (8.0→8.4) — focus-visible, backdrop, glo-btn active, toast auto-dismiss; Error states (8.0→8.4) — shows parse guard, stats parse guard, fan network note
