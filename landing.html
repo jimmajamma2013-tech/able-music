@@ -685,6 +685,18 @@
     }
 
     /* ── PROOF STRIP ──────────────────────────────────────────── */
+    /* Quiet line — Angle 16/20: the page's second-strongest copy. Static. Stillness = confidence. */
+    .quiet-line {
+      font-size: 18px;
+      font-style: italic;
+      color: var(--text-3);
+      text-align: center;
+      padding: 32px 24px;
+      margin: 0;
+      line-height: 1.5;
+    }
+    @media (max-width: 640px) { .quiet-line { font-size: 15px; padding: 24px 20px; } }
+
     .proof {
       padding: 40px 24px;
       border-top: 1px solid var(--border);
@@ -986,6 +998,9 @@
     .footer__authenticity { font-size: 13px; color: var(--text-3); font-style: italic; border-top: 1px solid var(--border); padding-top: 20px; margin-top: 32px; text-align: center; line-height: 1.6; }
     .footer__copy { font-size: 12px; color: var(--text-3); text-align: right; margin-top: 12px; }
     @media (max-width: 640px) { .footer__copy { text-align: left; } }
+    .footer__fan-entry { font-size: 12px; color: var(--text-3); grid-column: 1 / -1; text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .footer__fan-link { color: var(--text-3); text-decoration: underline; text-underline-offset: 3px; }
+    .footer__fan-link:hover { color: var(--text-2); }
 
     /* ── HERO 2-COLUMN DESKTOP ──────────────────────────────── */
     .hero__copy { width: 100%; }
@@ -1311,6 +1326,9 @@
     </div><!-- /.hero__visual -->
   </section>
 
+  <!-- QUIET LINE — Angle 16 "single memory" copy, below demo, Angle 20 north star moment -->
+  <p class="quiet-line">Artists don't change their Linktree on release day. ABLE changes for you.</p>
+
   <!-- PROOF STRIP -->
   <div class="proof">
     <div class="proof__item fade-up"><div class="proof__num">£0</div><div class="proof__label">ABLE cut. Ever.</div></div>
@@ -1458,7 +1476,7 @@
               <div class="col-able">ablemusic.co/you — a clean address, just for artists</div>
             </div>
           </div>
-          <a class="switcher-cta" href="start.html">Paste your Linktree — we'll import your links →</a>
+          <a class="switcher-cta" href="start.html?import=linktree">Paste your Linktree — we'll import your links →</a>
           <p style="font-size:13px;color:var(--text-3);margin-top:10px;line-height:1.6;">Spotify, Apple Music, YouTube, Bandcamp — anything we recognise becomes a native ABLE link. Unknown links import as custom buttons.</p>
           <p style="font-size:13px;color:var(--text-3);margin-top:8px;line-height:1.6;">Your old link still works. Your Linktree doesn't disappear. Import your links in 2 minutes and keep both — or delete Linktree when you're ready.</p>
         </div>
@@ -1751,6 +1769,8 @@
     </div>
     <div class="footer__authenticity">Built by an independent artist who got tired of Linktree not knowing when a release was dropping.</div>
     <div class="footer__copy">© 2026 ABLE Music · Built for artists, not algorithms.</div>
+    <!-- Angle 17 — Fan entry point: one quiet door for fans who land here -->
+    <p class="footer__fan-entry">Not an artist? <a href="fan.html" class="footer__fan-link">Find artists on ABLE →</a></p>
   </footer>
 
   <script>
