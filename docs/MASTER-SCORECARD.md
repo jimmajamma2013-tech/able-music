@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–12 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-12-AUDIT.md**
+**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–13 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-13-AUDIT.md**
 
 ---
 
@@ -35,7 +35,7 @@
 
 | System | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|
-| Artist tools | 9.1/10 | 9.3/10 | Close Circle no payment; snap/URL validation Wave 2 | ✅ C9W1: completeness ✓ icon ≥90%, bio counter tokens, maxlengths on snap/name/release |
+| Artist tools | 9.3/10 | 9.5/10 | Close Circle no payment; snap drag reorder | ✅ C13: top card videoUrl validated with isSafeAdminUrl(), platform URL error platform-specific, snap empty state copy updated |
 | CRM | 9.0/10 | 9.2/10 | Supabase fan sync; server tier enforcement | ✅ C12: fan sort dropdown (Newest/Oldest/Starred/By source), filter pill live counts, CSV starred first + joinedAt, gate preview real data |
 | Tier gates | 8.9/10 | 9.2/10 | Server enforcement missing; Stripe not wired | ✅ C12: analytics gate preview bars show real fan source data from localStorage |
 | Error states | 9.0/10 | 9.3/10 | Session expiry notice remaining | ✅ C12: syncProfile 10s AbortController timeout, quota warning already implemented |
@@ -45,7 +45,7 @@
 | Analytics | 9.3/10 | 9.5/10 | View source breakdown (fans vs views) Wave 2 | ✅ C11: campaign breakdown excludes deleted fans; profile_complete PostHog event; views dedup+owner exclusion verified |
 | SEO / OG | 9.2/10 | 9.5/10 | Static OG image needs production deploy | ✅ C3: JSON-LD Event schema on able-v8.html shows; `<time datetime>` on fan rows and show dates |
 | oEmbed proxy | 9.0/10 | 9.5/10 | ✅ SSRF fixed — `isSafeMediaUrl()` uses `new URL().hostname` + ALLOWED_HOSTS Set | Zero vulnerabilities; `data.html` stripped to prevent XSS |
-| Coding strategy | 9.2/10 | 10/10 | `prefers-reduced-motion` audit remaining in admin | ✅ Parse checks every edit; tokenised CSS enforced |
+| Coding strategy | 9.4/10 | 10/10 | CSP `unsafe-inline` accepted risk | ✅ C13: reduced-motion media query added for gold-blur transition in admin; parse checks every edit |
 | UI system | 9.2/10 | 9.5/10 | Component library unbuilt | ✅ C11: toast slide-in (translateX keyframe), sheet ease-decel, completeness 400ms, wm-cell hover scale, snap card enter animation, haptic vibrate |
 | UX system | 9.0/10 | 9.2/10 | fan.html Supabase realtime remaining | ✅ C12: fan echo contextual (pre-release/live shows "drops [date]. First to know."), streak counts fan sign-ups, fan.html follow data flow verified |
 | World map | 8.6/10 | 9.2/10 | Gig countdown (#18), show click-through (#21) Wave 2 | ✅ C9W1: featured show accent border, shows tab active on gig night |
@@ -63,7 +63,7 @@
 
 | System | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|
-| Email | 7.5/10 | 9.5/10 | RESEND_API_KEY not set in Netlify env (James's task) | ✅ `fan-confirmation.js` built + CORS restricted to `ablemusic.co`; unsubscribe URL in email footer |
+| Email | 8.2/10 | 9.5/10 | RESEND_API_KEY not set in Netlify env (James's task) | ✅ C13: plain text fallback added, releaseDate passed to confirmation, pre-release PS "It drops [date]." added; artist-welcome.js exists |
 | Notifications | 9.5/10 after V2 | 10/10 | Magic link token signing incomplete | None — engineering can start immediately |
 | Integrations | 7.5/10 | 8.0/10 | Spotify env vars not confirmed | ✅ Ticketmaster + Linktree import built; verify Spotify env vars |
 | Platform admin | 7.0/10 | — | No Stripe-linked view; no content moderation | SQL query library + `ADMIN_SECRET` env vars |
@@ -75,7 +75,7 @@
 |---|---|---|---|---|
 | Legal compliance | 8.5/10 | 9.5/10 | ICO registration research pending; PECR clarity pending | ✅ GDPR Article 13 `privacy.html` written; GDPR consent on fan sign-up; unsubscribe in email; fan deletion per-row; `privacy@ablemusic.co` |
 | Security | 8.5/10 | 9.5/10 | CSP `unsafe-inline` (accepted risk — no build pipeline) | ✅ URL scheme validation (`isSafeAdminUrl()`); CORS restricted; security headers complete in netlify.toml; no console.log/debugger; SSRF fixed |
-| Accessibility (WCAG 2.2 AA) | 8.7/10 | 9.0/10 | VoiceOver on real iPhone still untested | ✅ C9W1: accent swatch radiogroup+aria-checked, fan form aria-label, toast focus, focus-visible on start.html |
+| Accessibility (WCAG 2.2 AA) | 9.0/10 | 9.2/10 | VoiceOver on real iPhone still untested | ✅ C13: fan row Space key nav, admin reduced-motion, platform pill aria verified, skip-link verified, focus trap verified, contrast 4.98:1 |
 | Freelancer auth | pre-launch | — | Discord OAuth fallback unspecced | Quality gate: 5 questions must be "yes" before launch |
 
 ### AI & automation
@@ -160,8 +160,9 @@
 | Strategy / founder | ~7.8/10 | — | — |
 
 **Overall documentation + spec average: ~9.2/10**
-**Overall current build state average: ~9.3/10** (was ~9.2/10 post-C11; was ~9.15/10 post-C7W2; was ~9.1/10 post-C7W1)
+**Overall current build state average: ~9.35/10** (was ~9.3/10 post-C12; was ~9.2/10 post-C11)
 
+Cycle 13 improvements: Artist tools (9.1→9.3) — videoUrl validated, platform error platform-specific, snap empty state; Accessibility (8.7→9.0) — fan row Space key, reduced-motion admin, focus trap verified; Email (7.5→8.2) — plain text fallback, pre-release PS with drop date; Coding (9.2→9.4) — reduced-motion gold-blur
 Cycle 12 improvements: CRM (8.6→9.0) — fan sort dropdown, filter pill counts, CSV starred+joinedAt, gate preview real data; Data arch (8.7→9.0) — handle guard, consentVersion dynamic, form-2 metadata; Error states (8.8→9.0) — syncProfile 10s timeout; UX system (8.5→9.0) — echo personalisation pre-release/live, streak fan activity counts
 Cycle 8 improvements: Data arch (7.5→8.0) — deviceType/path on writes, updatedAt on saves; Tier gates (7.5→8.2) — show gate, CSV export gate, broadcast verify; UI system (8.0→8.4) — focus-visible, backdrop, glo-btn active, toast auto-dismiss; Error states (8.0→8.4) — shows parse guard, stats parse guard, fan network note
 
