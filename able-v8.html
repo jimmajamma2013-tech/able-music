@@ -8591,8 +8591,11 @@
     // Priority: ref → source → src/utm_source → referrer → 'direct'
     function getUtmSource() {
       const params = new URLSearchParams(window.location.search)
-      const ALLOWED = new Set(['instagram','tiktok','youtube','qr','email','other','spotify','twitter','fb','footer','direct'])
+      const ALLOWED = new Set(['instagram','tiktok','youtube','qr','email','email-confirm','other','spotify','twitter','fb','footer','direct'])
       const ALIAS   = { reel:'instagram', story:'instagram', post:'instagram', bio:'direct', ig:'instagram' }
+      // Capture full UTM set in sessionStorage — utm_medium + utm_campaign for attribution analysis (P1-W2 #23)
+      const _utmMedium   = params.get('utm_medium');   if (_utmMedium)   try { sessionStorage.setItem('_able_utm_medium',   _utmMedium.slice(0,100))   } catch(_) {}
+      const _utmCampaign = params.get('utm_campaign'); if (_utmCampaign) try { sessionStorage.setItem('_able_utm_campaign', _utmCampaign.slice(0,100)) } catch(_) {}
       // URL param priority: ref → source → src → utm_source (G9 #3–5 / #10)
       const raw = params.get('ref') || params.get('source') || params.get('src') || params.get('utm_source')
       if (raw) {
@@ -8790,6 +8793,8 @@
 
           // Write to localStorage (double_opted_in: false — confirmed via email later)
           const signupSource = SESSION_SOURCE
+          const _utmMedium   = sessionStorage.getItem('_able_utm_medium')   || null  // P1-W2 #23
+          const _utmCampaign = sessionStorage.getItem('_able_utm_campaign') || null  // P1-W2 #23
           const _cp = safeLS('able_v3_profile', {})
           const campaignState = computeState(_cp)
           // --- CAMPAIGN CONTEXT (CRM P0.1) ---
@@ -8810,6 +8815,8 @@
               email,
               ts: Date.now(),
               source: signupSource,
+              utm_medium:   _utmMedium,    // P1-W2 #23 — null when not present
+              utm_campaign: _utmCampaign,  // P1-W2 #23
               campaignState,
               releaseId: _releaseId,
               momentId: _momentId,
@@ -8961,6 +8968,8 @@
             return
           }
           const signup2Source = SESSION_SOURCE
+          const _utm2Medium   = sessionStorage.getItem('_able_utm_medium')   || null
+          const _utm2Campaign = sessionStorage.getItem('_able_utm_campaign') || null
           const _cp2 = safeLS('able_v3_profile', {})
           const campaignState2 = computeState(_cp2)
           // --- CAMPAIGN CONTEXT (CRM P0.1) ---
@@ -8981,6 +8990,8 @@
               email,
               ts: Date.now(),
               source: signup2Source,
+              utm_medium:   _utm2Medium,
+              utm_campaign: _utm2Campaign,
               campaignState: campaignState2,
               releaseId: _releaseId2,
               momentId: _momentId2,
