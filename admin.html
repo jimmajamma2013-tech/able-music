@@ -611,10 +611,10 @@ body::before {
   padding:4px 12px; border-radius:100px; font-size:11px; font-weight:700;
   letter-spacing:.02em; transition:all .2s;
 }
-.chq-state-pill.profile  { background:rgba(var(--acc-rgb),.12); color:var(--acc); border:1px solid rgba(var(--acc-rgb),.25); }
-.chq-state-pill.pre      { background:rgba(251,191,36,.12); color:#fbbf24; border:1px solid rgba(251,191,36,.25); }
-.chq-state-pill.live     { background:rgba(239,68,68,.12); color:#ef4444; border:1px solid rgba(239,68,68,.25); }
-.chq-state-pill.gig      { background:rgba(244,100,66,.12); color:#f46442; border:1px solid rgba(244,100,66,.25); }
+.chq-state-pill.profile  { background:rgba(var(--acc-rgb),.12); color:#6b4a00; border:1px solid rgba(var(--acc-rgb),.25); }
+.chq-state-pill.pre      { background:rgba(251,191,36,.12); color:#5c4e00; border:1px solid rgba(251,191,36,.25); }
+.chq-state-pill.live     { background:rgba(239,68,68,.12); color:#a01010; border:1px solid rgba(239,68,68,.25); }
+.chq-state-pill.gig      { background:rgba(244,100,66,.12); color:#8c3200; border:1px solid rgba(244,100,66,.25); }
 .chq-state-pill.pre::before,
 .chq-state-pill.live::before {
   content:''; width:6px; height:6px; border-radius:50%; flex-shrink:0;
@@ -790,7 +790,7 @@ body::before {
 .gig-dot { width:10px; height:10px; border-radius:50%; background:rgba(244,100,66,.4); flex-shrink:0; transition:background .2s; }
 .gig-strip.active .gig-dot { background:#f46442; animation:livePulse2 1.2s ease-in-out infinite; }
 .gig-info { flex:1; }
-.gig-label { font-size:12px; font-weight:700; color:#f46442; }
+.gig-label { font-size:12px; font-weight:700; color:#b34000; }
 .gig-hint { font-size:10px; color:var(--dash-t3); margin-top:1px; }
 .gig-toggle {
   width:40px; height:22px; border-radius:100px; border:none; cursor:pointer;
@@ -1680,7 +1680,7 @@ body::before {
     .yw-moment-featured { font-size: 9px; color: var(--acc, #f4b942); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
     .yw-moment-auto { color: var(--acc, #f4b942) !important; opacity: 0.7; }
     .yw-empty { text-align: center; padding: 24px 16px; color: var(--dash-t3); font-size: 13px; }
-    .yw-empty-link { background: none; border: none; padding: 0; color: var(--acc, #f4b942); font-size: 13px; cursor: pointer; text-decoration: underline; }
+    .yw-empty-link { background: none; border: none; padding: 0; color: #6b4a00; font-size: 13px; cursor: pointer; text-decoration: underline; }
     .yw-private-row {
       display: flex; align-items: center; justify-content: space-between;
       padding: 12px 14px;
@@ -2311,14 +2311,14 @@ body::before {
       </div>
       <div style="flex-shrink:0;text-align:right;">
         <div style="font-size:12px;font-weight:600;color:var(--text);" id="homePageUrl"></div>
-        <div style="font-size:10px;color:var(--t3);margin-top:2px;" id="homeMemberSince"></div>
+        <div style="font-size:10px;color:var(--dash-t3);margin-top:2px;" id="homeMemberSince"></div>
       </div>
     </div>
 
     <!-- FIRST-RUN CHECKLIST — compact strip, expands on tap, auto-dismissed after 7 days or completion -->
     <div class="first-run-card" id="firstRunCard">
       <!-- Collapsed strip: progress bar + label + chevron -->
-      <div class="frc-strip" onclick="toggleFrcOpen()" aria-expanded="false" id="frcStripToggle">
+      <div class="frc-strip" role="button" tabindex="0" onclick="toggleFrcOpen()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleFrcOpen()" aria-expanded="false" id="frcStripToggle">
         <div class="frc-strip-bar">
           <div class="frc-strip-fill" id="frcProgress" style="width:0%"></div>
         </div>
@@ -2329,28 +2329,28 @@ body::before {
       <div class="frc-body" id="frcBody">
         <div class="frc-steps">
           <button class="frc-step" id="frc1" onclick="showPage('profile')">
-            <div class="frc-check" id="frc1check">✓</div>
-            <div class="frc-step-body">
-              <div class="frc-step-title">Add your photo or artwork</div>
-            </div>
+            <span class="frc-check" id="frc1check">✓</span>
+            <span class="frc-step-body">
+              <span class="frc-step-title">Add your photo or artwork</span>
+            </span>
           </button>
           <button class="frc-step" id="frc2" onclick="frcCopyLink()">
-            <div class="frc-check" id="frc2check">✓</div>
-            <div class="frc-step-body">
-              <div class="frc-step-title">Copy your link · <span id="profileLinkFrc" style="color:var(--acc);font-size:12px;">ablemusic.co/you</span></div>
-            </div>
+            <span class="frc-check" id="frc2check">✓</span>
+            <span class="frc-step-body">
+              <span class="frc-step-title">Copy your link · <span id="profileLinkFrc" style="color:var(--acc);font-size:12px;">ablemusic.co/you</span></span>
+            </span>
           </button>
           <button class="frc-step" id="frc3" onclick="frcShareBio()">
-            <div class="frc-check" id="frc3check">✓</div>
-            <div class="frc-step-body">
-              <div class="frc-step-title">Put it in your Instagram and TikTok bio</div>
-            </div>
+            <span class="frc-check" id="frc3check">✓</span>
+            <span class="frc-step-body">
+              <span class="frc-step-title">Put it in your Instagram and TikTok bio</span>
+            </span>
           </button>
           <button class="frc-step" id="frc4" onclick="frcOpenRelease()">
-            <div class="frc-check" id="frc4check">✓</div>
-            <div class="frc-step-body">
-              <div class="frc-step-title">Add your latest release</div>
-            </div>
+            <span class="frc-check" id="frc4check">✓</span>
+            <span class="frc-step-body">
+              <span class="frc-step-title">Add your latest release</span>
+            </span>
           </button>
         </div>
         <button class="frc-dismiss" onclick="dismissFirstRun()">Hide this →</button>
@@ -2563,7 +2563,7 @@ body::before {
       <!-- YOUR WORLD =========================================== -->
       <section class="yw-section" id="yw-section">
         <div class="yw-section-head">
-          <h3 class="yw-section-title">Your World</h3>
+          <h2 class="yw-section-title">Your World</h2>
           <button class="yw-add-btn" id="yw-add-btn">+ Add moment</button>
         </div>
         <div class="yw-moment-list" id="yw-moment-list">
@@ -2620,7 +2620,7 @@ body::before {
           </div>
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
             <input type="checkbox" id="yw-private-toggle" style="width:36px;height:20px;cursor:pointer;" role="switch">
-            <span style="font-size:12px;color:rgba(255,255,255,0.4)">Open</span>
+            <span style="font-size:12px;color:var(--dash-t2)">Open</span>
           </label>
         </div>
         <div class="yw-enquiry-link" id="yw-enquiry-count" style="display:none;"></div>
@@ -2738,7 +2738,7 @@ body::before {
           <div class="dc-head"><div class="dc-title">Hero media</div></div>
           <div class="dc-body">
             <div id="artworkPreviewWrap" style="display:none;margin-bottom:12px;border-radius:10px;overflow:hidden;height:120px;background:rgba(255,255,255,.04);">
-              <img id="artworkPreview" src="" alt="Artwork preview" style="width:100%;height:100%;object-fit:cover;display:block;">
+              <img id="artworkPreview" alt="Artwork preview" style="width:100%;height:100%;object-fit:cover;display:block;">
             </div>
             <div class="field-row" style="margin:0;">
               <div class="field-label">Artwork URL <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:10px;color:var(--t3);">paste a direct image link</span></div>
