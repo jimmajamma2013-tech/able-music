@@ -36,12 +36,12 @@
 | System | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|
 | Artist tools | 9.1/10 | 9.3/10 | Close Circle no payment; snap/URL validation Wave 2 | ✅ C9W1: completeness ✓ icon ≥90%, bio counter tokens, maxlengths on snap/name/release |
-| CRM | 8.0/10 | 9.0/10 | Fan search UI exists; `consentVersion` in CSV; dedup check live | ✅ C4W2: extended source breakdown (any source), most-tapped CTA insight |
-| Tier gates | 8.2/10 | 9.0/10 | Server enforcement missing; Stripe not wired | ✅ C8: show gate (free max 3), CSV export gate, broadcast personalisation verified |
-| Error states | 8.4/10 | 9.0/10 | Fan sign-up Supabase failure UX remaining | ✅ C8: shows parse guard; stats parse guard; fan confirmation timeout note |
+| CRM | 8.6/10 | 9.0/10 | Fan list sort UI (Wave 2 remaining) | ✅ C10: fan search debounce, fan tab label dynamic, empty search state, row keyboard nav, soft-delete undo |
+| Tier gates | 8.7/10 | 9.0/10 | Server enforcement missing; Stripe not wired | ✅ C10: gold lock blur 6px, overlay fade-in animation; tier badge already dynamic |
+| Error states | 8.8/10 | 9.0/10 | Supabase retry logic remaining | ✅ C10: offline/online banner, copyPageUrl .catch(), release date parse guard verified |
 | PWA | 8.5/10 | 9.0/10 | No service worker (offline mode unbuilt) | ✅ `manifest.json` + iOS meta tags + icons exist; service worker is optional V2 |
 | Page state system | 8.2/10 | 9.0/10 | Post-release nudge flow remaining | ✅ C5: gig expiry toast, live-mode transition toast, countdown local midnight fix, release title in countdown |
-| Data architecture | 8.0/10 | 9.3/10 | Multi-artist isolation; `fan.html` Supabase not wired | ✅ C8: deviceType + path on fan/view writes; updatedAt on every profile save |
+| Data architecture | 8.7/10 | 9.3/10 | Multi-artist isolation; Supabase fan sync not wired | ✅ C10: joinedAt on both fan forms, writeFanFollow adds handle+artworkUrl+followedAt, slug field on saveProfilePage |
 | Analytics | 8.8/10 | 9.4/10 | SessionId in views still missing on page loads | ✅ C4W2: 30-day fan sparkline, peak day insight, most-tapped CTA, extended source breakdown |
 | SEO / OG | 9.2/10 | 9.5/10 | Static OG image needs production deploy | ✅ C3: JSON-LD Event schema on able-v8.html shows; `<time datetime>` on fan rows and show dates |
 | oEmbed proxy | 9.0/10 | 9.5/10 | ✅ SSRF fixed — `isSafeMediaUrl()` uses `new URL().hostname` + ALLOWED_HOSTS Set | Zero vulnerabilities; `data.html` stripped to prevent XSS |
