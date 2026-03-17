@@ -3623,6 +3623,29 @@
       border-bottom: 1px solid rgba(var(--color-accent-rgb), 0.15);
     }
 
+    /* C17 #50 — snap card share button */
+    .snap-card__share {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,.07);
+      color: var(--color-text-3);
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity .15s ease, background .15s ease;
+      z-index: 2;
+    }
+    .snap-card:hover .snap-card__share,
+    .snap-card:focus-within .snap-card__share { opacity: 1; }
+    .snap-card__share:active { background: rgba(255,255,255,.15); }
+
     /* C17 #1 — snap card drag handle */
     .snap-card__drag-handle {
       position: absolute;
@@ -7124,11 +7147,20 @@
           countdownHtml = '<div class="wm-panel__countdown" id="' + countdownId + '" aria-live="polite" aria-atomic="true" style="font-family:var(--font-display);font-weight:700;font-size:28px;letter-spacing:0.04em;color:var(--color-accent);margin:4px 0 2px;">— : — : —</div>'
         }
 
+        // C17 #23 — timezone abbreviation next to time when moment has a city
+        let _tzLabel23 = ''
+        if (moment.city && moment.doorsTime) {
+          try {
+            const _tz23 = new Intl.DateTimeFormat('en-GB', { timeZoneName: 'short', timeStyle: 'short' }).formatToParts(dateObj).find(p => p.type === 'timeZoneName')
+            if (_tz23 && _tz23.value) _tzLabel23 = ' · ' + _tz23.value
+          } catch (_) {}
+        }
+
         return '<div class="wm-panel__moment-item" style="--wm-panel-type-color:' + typeColor + '">'
           + '<div class="wm-panel__type">' + escHtml(typeLabel) + '</div>'
           + '<div class="wm-panel__title">' + escHtml(moment.title) + '</div>'
           + countdownHtml
-          + '<div class="wm-panel__date">' + escHtml(dateStr) + '</div>'
+          + '<div class="wm-panel__date">' + escHtml(dateStr) + (moment.doorsTime ? ' · ' + escHtml(moment.doorsTime) + escHtml(_tzLabel23) : '') + '</div>'
           + '<div class="wm-panel__access ' + accessCfg.cls + '">' + escHtml(accessCfg.label) + '</div>'
           + (moment.artistNote ? '<div class="wm-panel__note">' + escHtml(moment.artistNote) + '</div>' : '')
           + ctaHtml
@@ -10704,11 +10736,36 @@
                  </a>`
               : ''}
           </div>
+          <!-- C17 #50 — share icon on snap card -->
+          <button class="snap-card__share" aria-label="Share this update" data-snap-id="${escHtml(card.id || idx + '')}">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="2.5" r="1.5"/><circle cx="11" cy="11.5" r="1.5"/><circle cx="3" cy="7" r="1.5"/>
+              <line x1="9.5" y1="3.25" x2="4.5" y2="6.25"/><line x1="4.5" y1="7.75" x2="9.5" y2="10.75"/>
+            </svg>
+          </button>
         `
         if (card.ctaLabel && safeCtaUrl) {
           const ctaEl = el.querySelector('.snap-card__cta')
           if (ctaEl) ctaEl.addEventListener('click', () => trackClick(card.ctaLabel, 'snap', 'snap-cards'))
         }
+        // C17 #50 — share button wiring
+        ;(function() {
+          const _shareBtn50 = el.querySelector('.snap-card__share')
+          if (!_shareBtn50) return
+          _shareBtn50.addEventListener('click', function(e50) {
+            e50.stopPropagation()
+            const _shareUrl50 = window.location.href.split('?')[0]
+            const _shareTitle50 = card.title || (getProfile().name || 'ABLE') + ' — update'
+            if (navigator.share) {
+              navigator.share({ title: _shareTitle50, url: _shareUrl50 }).catch(() => {})
+            } else {
+              navigator.clipboard?.writeText(_shareUrl50).then(() => {
+                _shareBtn50.setAttribute('aria-label', 'Copied')
+                setTimeout(() => _shareBtn50.setAttribute('aria-label', 'Share this update'), 2000)
+              }).catch(() => { prompt('Copy link:', _shareUrl50) })
+            }
+          })
+        })()
         // C17 #1 — drag-to-reorder: owner only, ≥2 cards
         if (isOwner && cards.length >= 2) {
           el.draggable = true
