@@ -8462,7 +8462,18 @@
           if (r.status === 404) console.warn('[ABLE] fan-confirmation function not deployed — email skipped')
         }).catch(function(err) {
           clearTimeout(_timer)
-          if (err && err.name === 'AbortError') console.warn('[ABLE] fan-confirmation timed out after 8s')
+          // C8 #46 — show reassurance note on timeout or network failure
+          if (err && (err.name === 'AbortError' || err.name === 'TypeError')) {
+            console.warn('[ABLE] fan-confirmation timed out after 8s')
+            const _echo = document.getElementById('fan-echo')
+            if (_echo && !_echo.querySelector('.fan-echo-net-note')) {
+              const _note = document.createElement('p')
+              _note.className = 'fan-echo-net-note'
+              _note.style.cssText = 'font-size:11px;opacity:0.55;margin-top:6px;'
+              _note.textContent = "Confirmation email taking a moment. Check your inbox soon."
+              _echo.appendChild(_note)
+            }
+          }
         }) // never throw
       } catch(_) {}
     }
