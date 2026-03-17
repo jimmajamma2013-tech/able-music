@@ -8237,13 +8237,14 @@
     async function sbSyncFanSignup(email, source) {
       if (!sb) return
       try {
+        // Ensure profile exists first — fans.profile_id is a FK to profiles.id
+        await sbSyncProfile(safeLS('able_v3_profile', {}))
         await sb.from('fans').upsert({
           id:         crypto.randomUUID(),
           profile_id: getArtistId(),
           email,
           source,
           ts:         Date.now(),
-          created_at: Date.now(),
         }, { onConflict: 'profile_id,email', ignoreDuplicates: true })
       } catch (_) {}
 
@@ -10696,6 +10697,10 @@
 
       // On-page edit bar — show if artist owns this profile (has localStorage data)
       initEditBar(profile)
+
+      // Sync profile to Supabase on load (ensures FK exists for fan sign-ups)
+      // Fire-and-forget — localStorage is always the source of truth
+      sbSyncProfile(profile).catch(function() {})
 
       // Tier gate: fan near-full banner for free-tier owners (§9.1)
       const isOwner = getIsOwner(profile)
