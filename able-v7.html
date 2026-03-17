@@ -1171,6 +1171,7 @@
       align-items: center;
       align-self: flex-start;
       gap: 2px;
+      min-height: 44px;
       padding: 3px 10px;
       margin-top: var(--sp-1);
       background: rgba(255,255,255,0.07);
@@ -3091,11 +3092,13 @@
       text-align: center;
     }
     .wm-footer-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
       font-size: var(--text-sm);
       color: var(--color-text-2);
       text-decoration: none;
       border-bottom: 1px solid rgba(255,255,255,0.12);
-      padding-bottom: 1px;
       transition: color var(--dur-fast) var(--ease-standard);
     }
     .wm-footer-link:hover { color: var(--color-text-2); }
@@ -4299,6 +4302,9 @@
     }
 
     .footer-able-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
       font-size: var(--text-xs);
       color: var(--color-text-2);
       text-decoration: none;
@@ -4918,7 +4924,7 @@
     .skip-link {
       position: absolute; top: -100%; left: 8px; z-index: 9999;
       background: var(--color-surface); color: var(--color-text);
-      padding: 8px 16px; border-radius: var(--r-md);
+      padding: 11px 16px; border-radius: var(--r-md);
       font-size: var(--text-sm); font-weight: 600;
       border: 2px solid var(--color-accent);
       transition: top 0.15s;
@@ -4931,7 +4937,7 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 9999;
-      height: 38px;
+      height: 44px;
       background: rgba(9,9,15,0.92);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
@@ -4947,7 +4953,10 @@
     .owner-bar__back {
       display: flex;
       align-items: center;
+      align-self: stretch;
+      min-height: 44px;
       gap: 5px;
+      padding: 0 8px 0 0;
       font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
       font-size: 12px;
       font-weight: 600;
@@ -4976,7 +4985,9 @@
       background: none;
       border: none;
       cursor: pointer;
-      padding: 4px 6px;
+      padding: 0 6px;
+      align-self: stretch;
+      min-height: 44px;
       border-radius: 6px;
       transition: color 0.15s, background 0.15s;
       white-space: nowrap;
