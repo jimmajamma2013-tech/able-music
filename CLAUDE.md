@@ -47,10 +47,10 @@ ABLE (Artist Before Label) is a premium mobile-first platform for independent mu
 | `able_views` | Page view events [{ts, source}] | able-v3.html, admin.html |
 | `able_gig_expires` | Unix timestamp when gig mode expires | admin.html |
 | `able_profile` | Wizard output (legacy, merged into able_v3_profile) | start.html → admin.html |
-| `able_shows` | Shows list `[{ venue, date, doorsTime, ticketUrl, featured }]` | admin.html, able-v7.html |
+| `able_shows` | Shows list `[{ venue, date, doorsTime, ticketUrl, featured }]` | admin.html, able-v8.html |
 | `able_dismissed_nudges` | Dismissed nudge IDs `['presave-cta', 'add-show', ...]` | admin.html |
 | `able_starred_fans` | Starred fan email strings `['fan@example.com', ...]` | admin.html |
-| `able_tier` | Current tier: `"free"` / `"artist"` / `"artist-pro"` / `"label"` | admin.html, able-v7.html |
+| `able_tier` | Current tier: `"free"` / `"artist"` / `"artist-pro"` / `"label"` | admin.html, able-v8.html |
 | `admin_visit_dates` | ISO date strings of admin loads (last 60) — nudge timing | admin.html |
 
 **All localStorage keys will map 1:1 to Supabase table rows when backend is added. Do not rename keys.**
@@ -203,7 +203,7 @@ When backend is added:
 ### V8 strategy docs — PRIMARY BUILD AUTHORITY (2026-03-15)
 | File | What's in it |
 |---|---|
-| `docs/pages/profile/DESIGN-SPEC.md` | **able-v7.html build spec** — 9.7/10 |
+| `docs/pages/profile/DESIGN-SPEC.md` | **able-v8.html build spec** — 9.7/10 |
 | `docs/pages/admin/DESIGN-SPEC.md` | **admin.html build spec** — 9.7/10 |
 | `docs/pages/onboarding/DESIGN-SPEC.md` | **start.html build spec** — 9.9/10 |
 | `docs/pages/landing/DESIGN-SPEC.md` | **landing.html build spec** — 9.65/10 |
