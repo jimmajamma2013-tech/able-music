@@ -1193,8 +1193,9 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
         <div class="field">
           <input class="field-input import-input" type="url" id="iSpotifyImport"
-            placeholder="https://open.spotify.com/artist/…"
-            autocomplete="off" spellcheck="false">
+            inputmode="url" placeholder="https://open.spotify.com/artist/…"
+            autocomplete="off" autocapitalize="off" autocorrect="off"
+            spellcheck="false" enterkeyhint="go">
           <p class="field-error-msg" id="iSpotifyImportErr" role="alert"></p>
           <p class="field-hint">Your Spotify artist page — not Spotify for Artists. <button type="button" class="hint-toggle" id="spotifyHintToggle" onclick="toggleSpotifyHint()" aria-expanded="false">How do I find it?</button></p>
           <div class="hint-steps" id="spotifyHintSteps" hidden>
@@ -1250,8 +1251,9 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
         <div class="field">
           <input class="field-input import-input" type="url" id="iLinktreeImport"
-            placeholder="https://linktr.ee/yourname"
-            autocomplete="off" spellcheck="false">
+            inputmode="url" placeholder="https://linktr.ee/yourname"
+            autocomplete="off" autocapitalize="off" autocorrect="off"
+            spellcheck="false" enterkeyhint="go">
           <p class="field-error-msg" id="iLinktreeImportErr" role="alert"></p>
         </div>
 
@@ -1329,7 +1331,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
         <label class="field-label" for="iName">Artist name</label>
         <input class="field-input" type="text" id="iName"
           placeholder="Your name here"
-          autocomplete="off" autocapitalize="words" spellcheck="false">
+          autocomplete="off" autocapitalize="words" spellcheck="false"
+          enterkeyhint="next">
         <p class="field-error-msg" id="iNameErr" role="alert">Enter your artist name to continue.</p>
       </div>
 
@@ -1383,7 +1386,9 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       <div class="field">
         <label class="field-label" for="iEmail">Email</label>
         <input class="field-input" type="email" id="iEmail"
-          autocomplete="email"
+          inputmode="email" autocomplete="email"
+          autocapitalize="off" autocorrect="off" spellcheck="false"
+          enterkeyhint="go"
           placeholder="your@email.com">
         <p class="field-error-msg" id="iEmailErr" role="alert">Enter a valid email to continue.</p>
       </div>

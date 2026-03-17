@@ -5511,11 +5511,13 @@
           <div class="fan-capture__field-wrap">
             <label for="fan-email" class="sr-only">Email address</label>
             <input class="fan-capture__input" id="fan-email"
-                   type="email" inputmode="email"
+                   name="email" type="email" inputmode="email"
                    autocomplete="email" autocapitalize="off"
+                   autocorrect="off" spellcheck="false"
+                   enterkeyhint="go"
                    placeholder="your@email.com"
                    aria-required="true"
-                   aria-describedby="fan-error">
+                   aria-describedby="fan-error fan-trust">
             <button class="fan-capture__btn btn-primary pressable" type="submit"
                     id="fan-submit">
               <span class="fan-submit-label">I'm in</span>
@@ -5749,10 +5751,13 @@
           <div class="fan-capture__field-wrap">
             <label for="fan-email-2" class="sr-only">Email address</label>
             <input class="fan-capture__input" id="fan-email-2"
-                   type="email" inputmode="email"
+                   name="email" type="email" inputmode="email"
                    autocomplete="email" autocapitalize="off"
+                   autocorrect="off" spellcheck="false"
+                   enterkeyhint="go"
                    placeholder="your@email.com"
-                   aria-required="true">
+                   aria-required="true"
+                   aria-describedby="fan-trust-2">
             <button class="fan-capture__btn btn-primary pressable" type="submit">
               <span>I'm in</span>
             </button>
