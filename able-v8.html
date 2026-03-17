@@ -8840,6 +8840,18 @@
           if (_fieldWrap2) _fieldWrap2.hidden = true
           if (_capErr1) { _capErr1.textContent = 'The list is full right now.'; _capErr1.hidden = false }
           if (_capErr2) { _capErr2.textContent = 'The list is full right now.'; _capErr2.hidden = false }
+        } else if (_activeFansNow.length >= 95) {
+          // C7 #38 — near cap soft nudge: still captures, but shows supportive message below button
+          const _btn1 = fc1.querySelector('.fan-capture__btn')
+          const _btn2 = fc2.querySelector('.fan-capture__btn')
+          const _nearCapMsg = "We'll keep this safe. Upgrade to unlock your full list."
+          if (_btn1 && !fc1.querySelector('.fan-cap-nudge')) {
+            const _n = document.createElement('p')
+            _n.className = 'fan-cap-nudge'
+            _n.style.cssText = 'font-size:11px;color:rgba(255,255,255,.5);margin-top:8px;text-align:center;'
+            _n.textContent = _nearCapMsg
+            _btn1.insertAdjacentElement('afterend', _n)
+          }
         }
       }
 

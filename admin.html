@@ -4959,6 +4959,8 @@ document.addEventListener('DOMContentLoaded', function() {
       if (id) {
         const dismissed = safeLS('able_dismissed_nudges', []);
         if (!dismissed.includes(id)) dismissed.push(id);
+        // C6 #12 — cap at 50 entries, prune oldest
+        if (dismissed.length > 50) dismissed.splice(0, dismissed.length - 50);
         setLS('able_dismissed_nudges', dismissed);
       }
       document.getElementById('nudgeCard').style.display = 'none';
@@ -5275,11 +5277,20 @@ function saveCampaignHQ() {
   const releaseDate = dateEl?.value ? new Date(dateEl.value).toISOString() : (data.releaseDate || null);
   const releaseTitle = titleEl?.value.trim() || data.release?.title || 'New Release';
 
+  // C7 #10 — state history log: append to profile.stateHistory[], max 10 entries
+  const _newEffective = computeEffectiveState({ ...data, stateOverride: override, releaseDate });
+  const _oldEffective = computeEffectiveState(data);
+  const _history = Array.isArray(data.stateHistory) ? data.stateHistory.slice(-9) : [];
+  if (_newEffective !== _oldEffective) {
+    _history.push({ state: _newEffective, ts: Date.now() });
+  }
+
   const updated = {
     ...data,
     stateOverride: override,
     releaseDate,
     release: { ...(data.release || {}), title: releaseTitle },
+    stateHistory: _history,
   };
   setLS(V3_KEY, updated);
   syncProfile(updated); // async fire-and-forget to Supabase
