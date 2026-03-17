@@ -6018,8 +6018,10 @@
     }
 
     function hexToRgb(hex) {
+      if (!hex || typeof hex !== 'string') return [224, 82, 66] // fallback: rock red
       let c = hex.replace('#', '')
       if (c.length === 3) c = c[0]+c[0]+c[1]+c[1]+c[2]+c[2]
+      if (c.length !== 6) return [224, 82, 66] // guard against malformed input
       return [
         parseInt(c.slice(0, 2), 16),
         parseInt(c.slice(2, 4), 16),
