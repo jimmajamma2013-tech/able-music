@@ -53,7 +53,7 @@ exports.handler = async function (event) {
 
   const { fanEmail, artistName, artistSlug, campaignState, accentHex, releaseTitle } = body;
 
-  if (!fanEmail || !fanEmail.includes('@')) {
+  if (!fanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fanEmail)) {
     return json(400, { error: 'fanEmail required' });
   }
   if (!artistName) {
@@ -188,11 +188,18 @@ function buildEmail({ name, accent, profile, fanDashboard, headingLine, bodyLine
 }
 
 function esc(str) {
-  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
 }
 
 function getLuminance(hex) {
-  const c = hex.replace('#', '');
+  let c = hex.replace('#', '');
+  // Expand 3-digit shorthand (#abc → aabbcc) to prevent NaN from short slices
+  if (c.length === 3) c = c[0]+c[0]+c[1]+c[1]+c[2]+c[2];
   const r = parseInt(c.slice(0, 2), 16) / 255;
   const g = parseInt(c.slice(2, 4), 16) / 255;
   const b = parseInt(c.slice(4, 6), 16) / 255;

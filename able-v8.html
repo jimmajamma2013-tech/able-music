@@ -5985,7 +5985,8 @@
     }
 
     function hexToRgb(hex) {
-      const c = hex.replace('#', '')
+      let c = hex.replace('#', '')
+      if (c.length === 3) c = c[0]+c[0]+c[1]+c[1]+c[2]+c[2]
       return [
         parseInt(c.slice(0, 2), 16),
         parseInt(c.slice(2, 4), 16),
@@ -11537,7 +11538,7 @@
         }
 
         function esc(str) {
-          return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+          return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
         }
 
         if (zone === 'top-card') {

@@ -73,16 +73,25 @@ exports.handler = async function (event) {
 
   const oembedUrl = `${endpoint.base}?url=${encodeURIComponent(mediaUrl)}&format=json`;
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
   try {
     const res = await fetch(oembedUrl, {
       headers: { 'User-Agent': 'ABLE/1.0 (ablemusic.co)' },
+      signal: controller.signal,
     });
+    clearTimeout(timeout);
     if (!res.ok) return json(res.status, { error: `Provider returned ${res.status}` });
     const data = await res.json();
+    // Strip the html field — clients must use title/thumbnail/embed directly.
+    // Passing raw provider HTML through risks XSS; reconstruct iframes client-side.
+    delete data.html;
     return json(200, data);
   } catch (e) {
+    clearTimeout(timeout);
+    const isTimeout = e.name === 'AbortError';
     console.error('oembed-proxy error:', e.message);
-    return json(502, { error: 'Could not fetch oEmbed data' });
+    return json(isTimeout ? 504 : 502, { error: isTimeout ? 'Provider timed out' : 'Could not fetch oEmbed data' });
   }
 };
 
