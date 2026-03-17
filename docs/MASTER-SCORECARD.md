@@ -47,7 +47,7 @@
 | oEmbed proxy | 9.0/10 | 9.5/10 | ✅ SSRF fixed — `isSafeMediaUrl()` uses `new URL().hostname` + ALLOWED_HOSTS Set | Zero vulnerabilities; `data.html` stripped to prevent XSS |
 | Coding strategy | 9.2/10 | 10/10 | `prefers-reduced-motion` audit remaining in admin | ✅ Parse checks every edit; tokenised CSS enforced |
 | UI system | 8.0/10 | 8.6/10 | Component library unbuilt | ✅ C6: sheet close animation, prefers-reduced-motion media query, disabled input state, button hover darken |
-| UX system | 7.8/10 | 9.0/10 | Fan sign-up friction; empty state copy | ✅ C5W2: fan star flash, gig share button, snap URL validation, field save flash |
+| UX system | 8.5/10 | 9.0/10 | fan.html stub remaining | ✅ C7: completeness 100% toast; Artist Pro trial hook; 30-day milestone; handle slug preview; upgrade CTA tracking |
 | World map | 8.0/10 | 9.2/10 | Multi-moment panel copy polish remaining | ✅ C5: shows sync FIXED (able_shows→renderShowsSection); world map also reads able_shows |
 
 ### Killer features
@@ -75,7 +75,7 @@
 |---|---|---|---|---|
 | Legal compliance | 8.5/10 | 9.5/10 | ICO registration research pending; PECR clarity pending | ✅ GDPR Article 13 `privacy.html` written; GDPR consent on fan sign-up; unsubscribe in email; fan deletion per-row; `privacy@ablemusic.co` |
 | Security | 8.5/10 | 9.5/10 | CSP `unsafe-inline` (accepted risk — no build pipeline) | ✅ URL scheme validation (`isSafeAdminUrl()`); CORS restricted; security headers complete in netlify.toml; no console.log/debugger; SSRF fixed |
-| Accessibility (WCAG 2.2 AA) | 7.8/10 | 9.0/10 | VoiceOver test not run; fieldset for some groups | ✅ Skip links; focus trap; aria-label on 25+ inputs; radiogroup on arc/vibe; aria-pressed/aria-checked; decorative aria-hidden; error role=alert |
+| Accessibility (WCAG 2.2 AA) | 8.2/10 | 9.0/10 | VoiceOver test not run | ✅ C7: fan form aria-describedby→consent; verified sheet aria-labelledby, Campaign HQ radiogroup, skip link, mn-item aria-current |
 | Freelancer auth | pre-launch | — | Discord OAuth fallback unspecced | Quality gate: 5 questions must be "yes" before launch |
 
 ### AI & automation
@@ -160,8 +160,9 @@
 | Strategy / founder | ~7.8/10 | — | — |
 
 **Overall documentation + spec average: ~9.2/10**
-**Overall current build state average: ~9.0/10** (was ~8.9/10 post-C5W2; was ~8.8/10 post-C5W1; was ~8.7/10 post-C4W2)
+**Overall current build state average: ~9.1/10** (was ~9.0/10 post-C6; was ~8.9/10 post-C5W2; was ~8.8/10 post-C5W1)
 
+Cycle 7 improvements: UX system (7.8→8.5) — Artist Pro trial hook, 30-day milestone, upgrade tracking; Accessibility (7.8→8.2) — fan form aria-describedby; Artist success milestone + completeness celebration
 Cycle 6 improvements: Data arch (6.8→7.5) — verified existing defences; Tier gates (7.0→7.5) — CRM/broadcast copy; UI system (7.5→8.0) — sheet animation, reduced-motion; post-release nudge
 Cycle 5 Wave 2 improvements: UX system (7.2→7.8) — fan star flash, gig share button; Tier gates (6.5→7.0) — gold lock hover tease, upgrade CTA in completeness; completeness bar dual-render
 Cycle 5 Wave 1 improvements: World map (7.0→8.0) — critical shows sync fix; Page state (7.5→8.2) — toasts + countdown precision; Escape sheet close; JSON-LD null safety
