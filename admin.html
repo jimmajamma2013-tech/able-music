@@ -71,9 +71,18 @@
   --r-pill: 100px;  /* pill chips, status badges */
 
   /* Duration tokens */
-  --dur-fast: var(--dur-fast);
+  --dur-fast: .14s;
   --dur:      .16s;
   --dur-slow: .22s;
+
+  /* Status & UI colour tokens (dark interface) */
+  --green:     #7ec88a;
+  --green-rgb: 120,200,138;
+  --purple:    #9b7cf4;
+  --gig:       #f46442;
+  --gig-rgb:   244,100,66;
+  --red:       #ef4444;
+  --red-rgb:   239,68,68;
 }
 
 [hidden] { display: none !important; }
@@ -396,9 +405,9 @@ body::before {
 .mc-hint { font-size:10px; color:var(--t3); }
 .mode-card.on .mc-hint { color:rgba(var(--acc-rgb),.6); }
 /* gig mode special */
-.mode-card.gig-mode { border-color:rgba(244,100,66,.4); background:rgba(244,100,66,.06); }
-.mode-card.gig-mode .mc-label { color:#f46442; }
-.mode-card.gig-mode.on { border-color:#f46442; background:rgba(244,100,66,.12); }
+.mode-card.gig-mode { border-color:rgba(var(--gig-rgb),.4); background:rgba(var(--gig-rgb),.06); }
+.mode-card.gig-mode .mc-label { color:var(--gig); }
+.mode-card.gig-mode.on { border-color:var(--gig); background:rgba(var(--gig-rgb),.12); }
 
 /* ── CONNECT CARDS ── */
 .connect-list { display:flex; flex-direction:column; gap:8px; }
@@ -421,7 +430,7 @@ body::before {
 .ci-btn-connect, box-shadow .16s; }
 .ci-btn-connect{ background:rgba(var(--acc-rgb),.12); color:var(--acc); border:1px solid rgba(var(--acc-rgb),.25); }
 .ci-btn-connect:hover { background:rgba(var(--acc-rgb),.22); }
-.ci-btn-connected { background:rgba(120,200,138,.1); color:#7ec88a; border:1px solid rgba(120,200,138,.25); cursor:default; }
+.ci-btn-connected { background:rgba(var(--green-rgb),.1); color:var(--green); border:1px solid rgba(var(--green-rgb),.25); cursor:default; }
 
 /* ── YOUR WORLD — recommendations management ── */
 .recs-count-btn {
@@ -451,7 +460,7 @@ body::before {
   color:var(--dash-t3); padding:2px 6px; border-radius:var(--r-xs);
   transition:color var(--dur-fast); font-family:var(--font); flex-shrink:0;
 }
-.recs-pool-item__remove:hover { color:#ef4444; }
+.recs-pool-item__remove:hover { color:var(--red); }
 .recs-pool-item__move {
   background:none; border:none; cursor:pointer; font-size:14px;
   color:var(--dash-t3); padding:2px 4px; border-radius:var(--r-xs);
@@ -544,7 +553,7 @@ body::before {
   display:flex; flex-direction:column; gap:8px;
   animation:fadeSlide .15s ease;
 }
-.snap-btn.published { color:#7ec88a; border-color:rgba(126,200,138,.25); }
+.snap-btn.published { color:var(--green); border-color:rgba(var(--green-rgb),.25); }
 
 /* ── ADMIN CONTENT MANAGEMENT ── */
 .admin-add-btn {
@@ -587,9 +596,9 @@ body::before {
 }
 .activity-item:last-child { border-bottom:none; }
 .ai-dot { width:8px; height:8px; border-radius:50%; background:var(--acc); flex-shrink:0; opacity:.7; }
-.ai-dot.view { background:#7ec88a; }
+.ai-dot.view { background:var(--green); }
 .ai-dot.click { background:var(--acc); }
-.ai-dot.share { background:#9b7cf4; }
+.ai-dot.share { background:var(--purple); }
 .ai-body { flex:1; font-size:12px; color:var(--dash-t2); }
 .ai-body strong { color:var(--dash-text); font-weight:600; }
 .ai-time { font-size:10px; color:var(--dash-t3); }
@@ -673,14 +682,14 @@ body::before {
 .chq-state-pill.profile, box-shadow .2s; }
 .chq-state-pill.profile{ background:rgba(var(--acc-rgb),.12); color:#6b4a00; border:1px solid rgba(var(--acc-rgb),.25); }
 .chq-state-pill.pre      { background:rgba(251,191,36,.12); color:#5c4e00; border:1px solid rgba(251,191,36,.25); }
-.chq-state-pill.live     { background:rgba(239,68,68,.12); color:#a01010; border:1px solid rgba(239,68,68,.25); }
-.chq-state-pill.gig      { background:rgba(244,100,66,.12); color:#8c3200; border:1px solid rgba(244,100,66,.25); }
+.chq-state-pill.live     { background:rgba(var(--red-rgb),.12); color:#a01010; border:1px solid rgba(var(--red-rgb),.25); }
+.chq-state-pill.gig      { background:rgba(var(--gig-rgb),.12); color:#8c3200; border:1px solid rgba(var(--gig-rgb),.25); }
 .chq-state-pill.pre::before,
 .chq-state-pill.live::before {
   content:''; width:6px; height:6px; border-radius:50%; flex-shrink:0;
 }
-.chq-state-pill.live::before { background:#ef4444; animation:livePulse2 1.2s ease-in-out infinite; }
-.chq-state-pill.pre::before  { background:#fbbf24; }
+.chq-state-pill.live::before { background:var(--red); animation:livePulse2 1.2s ease-in-out infinite; }
+.chq-state-pill.pre::before  { background:var(--dash-amber); }
 @keyframes livePulse2 { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
 .chq-body { padding:16px 18px; }
 .chq-release-row {
@@ -845,20 +854,20 @@ body::before {
 .gig-strip {
   display:flex; align-items:center; gap:12px;
   padding:12px 14px; border-radius:var(--r-lg);
-  background:rgba(244,100,66,.06); border:1.5px solid rgba(244,100,66,.25);
+  background:rgba(var(--gig-rgb),.06); border:1.5px solid rgba(var(--gig-rgb),.25);
   cursor:pointer;
   transition: background var(--dur-slow), border-color var(--dur-slow);
 }
-.gig-strip:hover { background:rgba(244,100,66,.1); }
-.gig-strip.active { background:rgba(244,100,66,.14); border-color:#f46442; }
-.gig-dot { width:10px; height:10px; border-radius:50%; background:rgba(244,100,66,.4); flex-shrink:0; transition:background .2s; }
-.gig-strip.active .gig-dot { background:#f46442; animation:livePulse2 1.2s ease-in-out infinite; }
+.gig-strip:hover { background:rgba(var(--gig-rgb),.1); }
+.gig-strip.active { background:rgba(var(--gig-rgb),.14); border-color:var(--gig); }
+.gig-dot { width:10px; height:10px; border-radius:50%; background:rgba(var(--gig-rgb),.4); flex-shrink:0; transition:background .2s; }
+.gig-strip.active .gig-dot { background:var(--gig); animation:livePulse2 1.2s ease-in-out infinite; }
 .gig-info { flex:1; }
 .gig-label { font-size:12px; font-weight:700; color:#b34000; }
 .gig-hint { font-size:10px; color:var(--dash-t3); margin-top:1px; }
 .gig-toggle {
   width:40px; height:22px; border-radius:var(--r-pill); border:none; cursor:pointer;
-  background:rgba(244,100,66,.2); position:relative; flex-shrink:0;
+  background:rgba(var(--gig-rgb),.2); position:relative; flex-shrink:0;
   transition:background .2s;
 }
 .gig-toggle::after {
@@ -866,7 +875,7 @@ body::before {
   width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,.4);
   transition:transform .2s cubic-bezier(0.34,1.56,0.64,1), background .2s;
 }
-.gig-strip.active .gig-toggle { background:#f46442; }
+.gig-strip.active .gig-toggle { background:var(--gig); }
 .gig-strip.active .gig-toggle::after { transform:translateX(18px); background:#fff; }
 
 /* D13 — Fan list row stagger-in on first reveal (40ms per row, first load only) */
@@ -884,7 +893,7 @@ body::before {
   display: none;
   height: 3px;
   border-radius: var(--r-pill);
-  background: rgba(244,100,66,.12);
+  background: rgba(var(--gig-rgb),.12);
   overflow: hidden;
   margin-top: 8px;
 }
@@ -898,7 +907,7 @@ body::before {
 .gig-countdown-label {
   display: none;
   font-size: 10px;
-  color: rgba(244,100,66,.7);
+  color: rgba(var(--gig-rgb),.7);
   margin-top: 4px;
   font-weight: 500;
 }
@@ -1010,7 +1019,7 @@ body::before {
 /* Upgrade nudge bar */
 .upgrade-bar {
   margin:0 28px 20px; padding:12px 16px; border-radius:var(--r-lg);
-  background:linear-gradient(135deg, rgba(244,185,66,.1), rgba(244,100,66,.08));
+  background:linear-gradient(135deg, rgba(244,185,66,.1), rgba(var(--gig-rgb),.08));
   border:1px solid rgba(244,185,66,.2);
   display:flex; align-items:center; justify-content:space-between; gap:12px;
 }
@@ -1033,7 +1042,7 @@ body::before {
 
 /* ── REAL-TIME STATS ── */
 .stat-live-dot {
-  width:6px; height:6px; border-radius:50%; background:#7ec88a;
+  width:6px; height:6px; border-radius:50%; background:var(--green);
   display:inline-block; margin-right:4px;
   animation:livePulse2 2s ease-in-out infinite;
 }
@@ -1190,7 +1199,7 @@ body::before {
 .frc-step.done .frc-check, transform .2s; }
 .frc-step.done .frc-check, box-shadow .2s; }
 .frc-step.done .frc-check{
-  background:rgba(126,200,138,.2); border-color:#7ec88a; color:#7ec88a;
+  background:rgba(var(--green-rgb),.2); border-color:var(--green); color:var(--green);
 }
 .frc-step-body { flex:1; }
 .frc-step-title { font-size:13px; font-weight:500; color:var(--dash-text); }
@@ -1420,8 +1429,8 @@ body::before {
     .fan-cap-nudge {
       margin: 0 16px 14px;
       padding: 12px 16px;
-      background: rgba(239,68,68,.08);
-      border: 1px solid rgba(239,68,68,.25);
+      background: rgba(var(--red-rgb),.08);
+      border: 1px solid rgba(var(--red-rgb),.25);
       border-radius: var(--r-md);
       font-size: 13px;
       color: var(--dash-text);
@@ -3763,7 +3772,7 @@ const DEMO_FANS = [
 
 const LEVEL_STYLES = {
   core:      { label:'Core fan',  bg:'rgba(var(--acc-rgb),.15)',  color:'var(--acc)' },
-  supporter: { label:'Supporter', bg:'rgba(126,200,138,.12)',     color:'#7ec88a' },
+  supporter: { label:'Supporter', bg:'rgba(var(--green-rgb),.12)',     color:'#7ec88a' },
   fan:       { label:'Fan',       bg:'rgba(255,255,255,.07)',      color:'var(--t2)' },
   listener:  { label:'Listener',  bg:'rgba(255,255,255,.04)',      color:'var(--t3)' },
 };
@@ -4032,7 +4041,7 @@ function openFanDetailSheet(fan) {
         <button style="width:100%;padding:10px 14px;border-radius:var(--r-md);background:var(--dash-field);border:1px solid var(--dash-border);color:var(--dash-t3);font-size:13px;font-family:var(--font);cursor:not-allowed;text-align:left;" disabled>✉ Send a message</button>
         <span style="position:absolute;top:50%;right:10px;transform:translateY(-50%);font-size:10px;font-weight:700;background:var(--dash-amber);color:#000;border-radius:var(--r-xs);padding:2px 6px;">Artist</span>
       </div>
-      <button style="width:100%;padding:10px 14px;border-radius:var(--r-md);background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:#ef4444;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;" id="removeFanBtn" data-email="${escHtml(fan.email)}">Remove from list</button>
+      <button style="width:100%;padding:10px 14px;border-radius:var(--r-md);background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:var(--red);font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;" id="removeFanBtn" data-email="${escHtml(fan.email)}">Remove from list</button>
     </div>`;
 
   openAdminSheet('👤', fan.email, body);
@@ -7615,7 +7624,7 @@ function _callAiCopy(payload, containerId, btnId, onUse) {
   .catch(function(err) {
     let container = document.getElementById(containerId);
     if (container) {
-      container.innerHTML = '<div style="font-size:12px;color:#ef4444;padding:4px 0;">' + (err.message || 'Could not reach AI. Check your connection.') + '</div>';
+      container.innerHTML = '<div style="font-size:12px;color:var(--red);padding:4px 0;">' + (err.message || 'Could not reach AI. Check your connection.') + '</div>';
       container.classList.add('show');
     }
     if (btn) { btn.disabled = false; btn.innerHTML = '<span class="ai-trigger__icon">✦</span>Try again'; }
