@@ -4115,7 +4115,7 @@ function renderFanList(filter) {
       ${avatarHtml}
       <div class="fan-row-info">
         <div class="fan-row-email">${escHtml(f.email)}${isUnconfirmed ? ' <span class="unconfirmed-label">pending</span>' : ''}${newBadge}</div>
-        <div class="fan-row-meta">${relTime(f.ts)}</div>
+        <div class="fan-row-meta"><time datetime="${f.ts ? new Date(f.ts).toISOString() : ''}" title="${f.ts ? new Date(f.ts).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : ''}">${relTime(f.ts)}</time></div><!-- C3 #47 -->
       </div>
       <span class="source-badge ${src}">${src.toUpperCase()}</span>
       <button class="fan-star ${isStarred ? 'starred' : ''}" data-email="${escHtml(f.email)}" aria-label="${isStarred ? 'Remove from close circle' : 'Mark as close'}">★</button>

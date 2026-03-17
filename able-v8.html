@@ -9729,6 +9729,41 @@
       return null
     }
 
+    // C3 #48 — JSON-LD Event structured data for Google rich results
+    function injectEventStructuredData(profile) {
+      const sdEl = document.getElementById('structured-data')
+      if (!sdEl) return
+      const _cutoff = Date.now() - 86400000
+      const events = (profile.events || []).filter(ev => {
+        const d = ev.date ? new Date(ev.date) : null
+        return d && d.getTime() > _cutoff
+      })
+      if (!events.length) return
+      const artistName = profile.name || 'Artist'
+      const ld = {
+        '@context': 'https://schema.org',
+        '@type': events.length === 1 ? 'Event' : 'ItemList',
+        ...(events.length === 1 ? buildEventLD(events[0], artistName) : {
+          name: artistName + ' — Upcoming Shows',
+          itemListElement: events.map((ev, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            item: { '@type': 'Event', ...buildEventLD(ev, artistName) }
+          }))
+        })
+      }
+      try { sdEl.textContent = JSON.stringify(ld) } catch(_) {}
+    }
+    function buildEventLD(ev, artistName) {
+      return {
+        name: ev.venue ? artistName + ' at ' + ev.venue : artistName + ' live',
+        startDate: ev.date,
+        location: ev.venue ? { '@type': 'Place', name: ev.venue } : undefined,
+        performer: { '@type': 'MusicGroup', name: artistName },
+        url: ev.ticketUrl || undefined
+      }
+    }
+
     function renderClips(profile) {
       const section = document.getElementById('clips-section')
       const track = document.getElementById('clips-track')
@@ -11043,6 +11078,7 @@
       renderListenSection(profile)
       renderVideosSection(profile.videos || [])
       renderShowsSection(profile)
+      injectEventStructuredData(profile) // C3 #48
       renderSnapCards(profile)
       renderClips(profile)
       renderMerchSection(profile)
