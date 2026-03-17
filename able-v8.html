@@ -8669,6 +8669,10 @@
       const _utmCampaign = params.get('utm_campaign'); if (_utmCampaign) try { sessionStorage.setItem('_able_utm_campaign', _utmCampaign.slice(0,100)) } catch(_) {}
       const _utmTerm     = params.get('utm_term');     if (_utmTerm)     try { sessionStorage.setItem('_able_utm_term',     _utmTerm.slice(0,100))     } catch(_) {}
       const _utmContent  = params.get('utm_content');  if (_utmContent)  try { sessionStorage.setItem('_able_utm_content',  _utmContent.slice(0,100))  } catch(_) {}
+      // Campaign param — ABLE-native deep link campaigns (C3 #1)
+      const _campaign = params.get('campaign'); if (_campaign) try { sessionStorage.setItem('_able_campaign', _campaign.trim().slice(0,50).replace(/[<>"']/g,'')) } catch(_) {}
+      // UTM campaign bridge: if campaign missing but utm_campaign present, use it (C3 #12)
+      if (!_campaign) { const _utmC = params.get('utm_campaign'); if (_utmC) try { sessionStorage.setItem('_able_campaign', _utmC.trim().slice(0,50).replace(/[<>"']/g,'')) } catch(_) {} }
       // URL param priority: ref → source → src → utm_source (G9 #3–5 / #10)
       const raw = params.get('ref') || params.get('source') || params.get('src') || params.get('utm_source')
       if (raw) {
@@ -8907,6 +8911,7 @@
           const _utmCampaign = sessionStorage.getItem('_able_utm_campaign') || null  // P1-W2 #23
           const _utmTerm     = sessionStorage.getItem('_able_utm_term')     || null  // C2 #28
           const _utmContent  = sessionStorage.getItem('_able_utm_content')  || null  // C2 #28
+          const _campaignName = sessionStorage.getItem('_able_campaign')    || null  // C3 #2
           const _cp = safeLS('able_v3_profile', {})
           const campaignState = computeState(_cp)
           // --- CAMPAIGN CONTEXT (CRM P0.1) ---
@@ -8931,6 +8936,7 @@
               utm_campaign: _utmCampaign,  // P1-W2 #23
               utm_term:     _utmTerm,      // C2 #28
               utm_content:  _utmContent,   // C2 #28
+              campaignName: _campaignName, // C3 #2 — ABLE-native campaign name
               campaignState,
               releaseId: _releaseId,
               momentId: _momentId,
@@ -8966,6 +8972,8 @@
                 source:          signupSource,
                 campaign_state:  campaignState,
                 tier:            _cp.tier || 'free',
+                consent_version: '2026-03-16', // C3 #32
+                campaign_name:   _campaignName, // C3 #32
                 artist_slug:     _cp.slug || null,
                 utm_medium:      _utmMedium,
                 utm_campaign:    _utmCampaign,
@@ -9090,6 +9098,7 @@
           const _utm2Campaign = sessionStorage.getItem('_able_utm_campaign') || null
           const _utm2Term     = sessionStorage.getItem('_able_utm_term')     || null  // C2 #28
           const _utm2Content  = sessionStorage.getItem('_able_utm_content')  || null  // C2 #28
+          const _campaign2Name = sessionStorage.getItem('_able_campaign')   || null  // C3 #2
           const _cp2 = safeLS('able_v3_profile', {})
           const campaignState2 = computeState(_cp2)
           // --- CAMPAIGN CONTEXT (CRM P0.1) ---
@@ -9114,6 +9123,7 @@
               utm_campaign: _utm2Campaign,
               utm_term:     _utm2Term,     // C2 #28
               utm_content:  _utm2Content,  // C2 #28
+              campaignName: _campaign2Name, // C3 #2
               campaignState: campaignState2,
               releaseId: _releaseId2,
               momentId: _momentId2,
