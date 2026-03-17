@@ -9673,6 +9673,14 @@
         return
       }
 
+      // C5 #51 — dynamic shows heading: "Shows · N upcoming" when there are upcoming shows
+      const _showsHeading = document.getElementById('shows-heading')
+      if (_showsHeading) {
+        const _todayStr = new Date().toISOString().split('T')[0]
+        const _upcomingCount = events.filter(ev => ev.date && ev.date >= _todayStr).length
+        _showsHeading.textContent = _upcomingCount > 0 ? `Shows · ${_upcomingCount} upcoming` : 'Shows'
+      }
+
       list.innerHTML = ''
       const gigActive = isGigNightActive()
       events.forEach((ev, evIdx) => {

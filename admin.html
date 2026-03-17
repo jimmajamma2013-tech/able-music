@@ -7887,11 +7887,19 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
   ;(function() {
     const _rd = v3data.releaseDate;
     if (!_rd) return;
-    const _relMs = new Date(_rd).getTime();
+    const _relMs = new Date(_rd + 'T00:00:00').getTime();
     const _now = Date.now();
     if (_relMs > _now) return; // not yet released
     const _liveWindow = 14 * 86400000;
-    if (_now - _relMs > _liveWindow) return; // more than 14 days ago — already profile mode
+    if (_now - _relMs > _liveWindow) {
+      // C5 #30 — profile mode toast: fires once when >14 days post-release
+      const _profKey = 'able_profile_notif_' + _rd;
+      if (!localStorage.getItem(_profKey)) {
+        localStorage.setItem(_profKey, '1');
+        setTimeout(() => showToast('14 days since release. Page is back to profile mode.', 'amber'), 1200);
+      }
+      return;
+    }
     const _notifKey = 'able_live_notif_' + _rd;
     if (!localStorage.getItem(_notifKey)) {
       localStorage.setItem(_notifKey, '1');
