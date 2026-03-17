@@ -28,6 +28,7 @@
   --acc:     #8ab4ce;
   --acc-rgb: 138,180,206;
   --acc-glow:rgba(138,180,206,0.24);
+  --on-acc:  #121a24;  /* accessible text on --acc surface */
   --text:    #ccddef;
   --t2:      rgba(204,221,239,0.58);
   --t3:      rgba(204,221,239,0.52);
@@ -737,7 +738,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   background:rgba(0,0,0,.5); backdrop-filter:blur(4px);
   border-radius:var(--r-pill); padding:3px 7px 3px 5px;
   display:flex; align-items:center; gap:4px;
-  font-size:6.5px; font-weight:700; color:#fff; letter-spacing:.06em;
+  font-size:10px; font-weight:700; color:#fff; letter-spacing:.06em;
 }
 .ph-reel-label {
   position:absolute; bottom:32px; left:11px; z-index:4;
@@ -1076,7 +1077,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   font-size: 12px;
   font-weight: 700;
   background: var(--acc);
-  color: #121a24;
+  color: var(--on-acc);
   flex-shrink: 0;
   transition: background var(--dur-slow);
 }

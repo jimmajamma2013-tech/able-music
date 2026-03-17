@@ -63,6 +63,19 @@
   --source-tt:      #777777;
   --source-direct:  #999999;
 
+  /* Campaign state — pre-release yellow (distinct from amber) */
+  --color-state-pre:     #fbbf24;
+  --color-state-pre-rgb: 251,191,36;
+
+  /* Accessible state text colours — for pills on --dash-card (#f8f5f0) light surface */
+  --st-profile-t: #6b4a00;  /* amber-brown  ≥4.5:1 on cream */
+  --st-pre-t:     #5c4e00;  /* yellow-brown ≥4.5:1 on cream */
+  --st-live-t:    #a01010;  /* dark red     ≥4.5:1 on cream */
+  --st-gig-t:     #8c3200;  /* burnt orange ≥4.5:1 on cream */
+
+  /* Tooltip / popover panel */
+  --dash-tooltip: #1f2d45;
+
   /* Radius tokens — use these instead of hardcoded values */
   --r-xs:   4px;    /* tight corners: inline labels, thumbnails */
   --r-sm:   8px;    /* tags, small badges */
@@ -697,10 +710,10 @@ body::before {
   display:inline-flex; align-items:center; gap:6px;
   padding:4px 12px; border-radius:var(--r-pill); font-size:11px; font-weight:700;
   letter-spacing:.02em; transition: background var(--dur), color var(--dur), border-color var(--dur); }
-.chq-state-pill.profile{ background:rgba(var(--acc-rgb),.12); color:#6b4a00; border:1px solid rgba(var(--acc-rgb),.25); }
-.chq-state-pill.pre      { background:rgba(251,191,36,.12); color:#5c4e00; border:1px solid rgba(251,191,36,.25); }
-.chq-state-pill.live     { background:rgba(var(--red-rgb),.12); color:#a01010; border:1px solid rgba(var(--red-rgb),.25); }
-.chq-state-pill.gig      { background:rgba(var(--gig-rgb),.12); color:#8c3200; border:1px solid rgba(var(--gig-rgb),.25); }
+.chq-state-pill.profile{ background:rgba(var(--acc-rgb),.12); color:var(--st-profile-t); border:1px solid rgba(var(--acc-rgb),.25); }
+.chq-state-pill.pre      { background:rgba(var(--color-state-pre-rgb),.12); color:var(--st-pre-t); border:1px solid rgba(var(--color-state-pre-rgb),.25); }
+.chq-state-pill.live     { background:rgba(var(--red-rgb),.12); color:var(--st-live-t); border:1px solid rgba(var(--red-rgb),.25); }
+.chq-state-pill.gig      { background:rgba(var(--gig-rgb),.12); color:var(--st-gig-t); border:1px solid rgba(var(--gig-rgb),.25); }
 .chq-state-pill.pre::before,
 .chq-state-pill.live::before {
   content:''; width:6px; height:6px; border-radius:50%; flex-shrink:0;
@@ -880,7 +893,7 @@ body::before {
 .gig-dot { width:10px; height:10px; border-radius:50%; background:rgba(var(--gig-rgb),.4); flex-shrink:0; transition:background .2s; }
 .gig-strip.active .gig-dot { background:var(--gig); animation:livePulse2 1.2s ease-in-out infinite; }
 .gig-info { flex:1; }
-.gig-label { font-size:12px; font-weight:700; color:#b34000; }
+.gig-label { font-size:12px; font-weight:700; color:var(--st-gig-t); }
 .gig-hint { font-size:10px; color:var(--dash-t3); margin-top:1px; }
 .gig-toggle {
   width:40px; height:22px; border-radius:var(--r-pill); border:none; cursor:pointer;
@@ -1121,7 +1134,7 @@ body::before {
 .tooltip-bubble {
   position:absolute; bottom:calc(100% + 8px); left:50%;
   transform:translateX(-50%);
-  background:#1f2d45; border:1px solid rgba(138,180,206,.18);
+  background:var(--dash-tooltip); border:1px solid rgba(138,180,206,.18);
   border-radius:var(--r-md); padding:10px 14px;
   font-size:12px; font-weight:400; color:var(--text-2, rgba(204,221,239,.58));
   line-height:1.55; width:220px; text-align:left;
