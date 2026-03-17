@@ -151,6 +151,9 @@
       --color-pro-amber:     #f4b942;
       --color-pro-amber-rgb: 244,185,66;
 
+      /* System status tokens — C9 #53 */
+      --color-ok:  #34c759;
+
       /* Ambient colour — overridden by canvas extraction (§3.6) */
       --color-ambient: 0,0,0;
 
@@ -2814,6 +2817,12 @@
       text-transform: uppercase;
     }
 
+    /* C9 #16 — featured show gets accent left border */
+    .show-item--featured {
+      border-left: 3px solid var(--color-accent);
+      padding-left: calc(var(--sp-4) - 3px);
+    }
+
     /* Task 5.4 — TONIGHT badge (gig state active) */
     .tonight-badge {
       display: inline-block;
@@ -5317,7 +5326,7 @@
     /* === TOAST (error / network status) ======================== */
     ; padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-family: 'DM Sans', sans-serif; }
     .able-toast--amber { background: rgba(var(--color-pro-amber-rgb),0.12); border-bottom: 1px solid rgba(var(--color-pro-amber-rgb),0.3); color: var(--color-pro-amber); }
-    .able-toast--green  { background: rgba(52,199,89,0.12); border-bottom: 1px solid rgba(52,199,89,0.3); color: #34c759; }
+    .able-toast--green  { background: rgba(52,199,89,0.12); border-bottom: 1px solid rgba(52,199,89,0.3); color: var(--color-ok); } /* C9 #53 */
     .able-toast--red    { background: rgba(255,69,58,0.12); border-bottom: 1px solid rgba(255,69,58,0.3); color: #ff453a; }
     .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
     .toast-message { flex: 1; }
@@ -8768,6 +8777,13 @@
 
       if (h1) h1.textContent = profile.fanCaptureHeading || variant.heading
       if (h2) h2.textContent = profile.fanCaptureHeading || variant.heading
+
+      // C9 #29 — fan capture form accessible label
+      const _ariaLabel = `Join ${artistName}'s list`
+      const _ff1 = document.getElementById('fan-form')
+      const _ff2 = document.getElementById('fan-form-2')
+      if (_ff1) _ff1.setAttribute('aria-label', _ariaLabel)
+      if (_ff2) _ff2.setAttribute('aria-label', _ariaLabel)
       if (submitLabel) submitLabel.textContent = variant.cta
       if (btn2Span) btn2Span.textContent = variant.cta
       if (trustEl) trustEl.textContent = trustText
@@ -8927,7 +8943,7 @@
               const isDuplicate = _validationMsg === "You're already on the list."
               setTimeout(() => {
                 errorEl.textContent = _validationMsg
-                errorEl.style.color = isDuplicate ? '#34c759' : ''
+                errorEl.style.color = isDuplicate ? 'var(--color-ok)' : '' // C9 #53
                 errorEl.hidden = false
               }, 400)
             }
@@ -9717,7 +9733,7 @@
       events.forEach((ev, evIdx) => {
         const item = document.createElement('div')
         const hasImage = Boolean(ev.venueImageUrl)
-        item.className = 'show-item pressable' + (hasImage ? ' show-item--has-image' : '') // E5 — tap feedback
+        item.className = 'show-item pressable' + (hasImage ? ' show-item--has-image' : '') + (ev.featured ? ' show-item--featured' : '') // E5 — C9 #16
 
         const date = new Date(ev.date)
         const dayStr = date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
@@ -10586,9 +10602,9 @@
       const footerAble = document.getElementById('footer-able')
       const footerExport = document.getElementById('footer-export')
 
-      // "Made with ABLE" — free tier only, with referral tracking
+      // "Made with ABLE" — free tier only, fans only (not owner) — C9 #48
       if (footerAble) {
-        footerAble.hidden = (profile.tier && profile.tier !== 'free')
+        footerAble.hidden = (profile.tier && profile.tier !== 'free') || isOwnerVisit()
         // Referral link: ?ref=artist-handle so we know which profile drove the signup
         const handle = profile.handle || getArtistId().slice(0, 8)
         footerAble.href = `https://ablemusic.co?src=footer&artist=${encodeURIComponent(handle)}`
@@ -11196,6 +11212,14 @@
       // Auto-gig: activate from shows list when on show day
       checkAutoGig()
       setInterval(checkAutoGig, 60000)
+
+      // C9 #17 — on gig night, default shows tab as active so fans see shows first
+      if (isGigNightActive()) {
+        const _showsTab = document.getElementById('tab-shows')
+        if (_showsTab) _showsTab.setAttribute('aria-selected', 'true')
+        const _homeTab = document.getElementById('tab-home')
+        if (_homeTab) _homeTab.setAttribute('aria-selected', 'false')
+      }
 
       // Track page view
       trackView()

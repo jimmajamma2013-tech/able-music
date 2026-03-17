@@ -2741,7 +2741,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         </div>
 
         <div class="chq-release-row">
-          <input class="chq-release-title" id="chqReleaseTitle" type="text" aria-label="Release title" placeholder="Release title — e.g. 'Dissolve' (Single)">
+          <input class="chq-release-title" id="chqReleaseTitle" type="text" aria-label="Release title" placeholder="Release title — e.g. 'Dissolve' (Single)" maxlength="80"> <!-- C9 #42 -->
         </div>
         <div class="chq-date-picker">
           <label for="chqReleaseDate" class="sr-only">Release date and time</label>
@@ -3063,15 +3063,15 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <div class="identity-row">
         <span class="identity-row__label">Accent</span>
         <div class="accent-picker-row" id="accentPickerRow">
-          <div class="acc-presets">
-            <button class="acc-swatch" aria-label="Coral"   style="--c:#e05242" onclick="setAccent('#e05242')"></button>
-            <button class="acc-swatch" aria-label="Amber"   style="--c:#f4b942" onclick="setAccent('#f4b942')"></button>
-            <button class="acc-swatch" aria-label="Violet"  style="--c:#9b7cf4" onclick="setAccent('#9b7cf4')"></button>
-            <button class="acc-swatch" aria-label="Blue"    style="--c:#4a9eff" onclick="setAccent('#4a9eff')"></button>
-            <button class="acc-swatch" aria-label="Green"   style="--c:#1db954" onclick="setAccent('#1db954')"></button>
-            <button class="acc-swatch" aria-label="Pink"    style="--c:#e06b7a" onclick="setAccent('#e06b7a')"></button>
-            <button class="acc-swatch" aria-label="Cyan"    style="--c:#06b6d4" onclick="setAccent('#06b6d4')"></button>
-            <button class="acc-swatch" aria-label="Warm"    style="--c:#e8e4dd" onclick="setAccent('#e8e4dd')"></button>
+          <div class="acc-presets" role="radiogroup" aria-label="Accent colour"><!-- C9 #34 -->
+            <button class="acc-swatch" role="radio" aria-checked="false" aria-label="Coral"   style="--c:#e05242" onclick="setAccent('#e05242')"></button>
+            <button class="acc-swatch" role="radio" aria-checked="false" aria-label="Amber"   style="--c:#f4b942" onclick="setAccent('#f4b942')"></button>
+            <button class="acc-swatch" role="radio" aria-checked="false" aria-label="Violet"  style="--c:#9b7cf4" onclick="setAccent('#9b7cf4')"></button>
+            <button class="acc-swatch" role="radio" aria-checked="false" aria-label="Blue"    style="--c:#4a9eff" onclick="setAccent('#4a9eff')"></button>
+            <button class="acc-swatch" role="radio" aria-checked="false" aria-label="Green"   style="--c:#1db954" onclick="setAccent('#1db954')"></button>
+            <button class="acc-swatch" role="radio" aria-checked="false" aria-label="Pink"    style="--c:#e06b7a" onclick="setAccent('#e06b7a')"></button>
+            <button class="acc-swatch" role="radio" aria-checked="false" aria-label="Cyan"    style="--c:#06b6d4" onclick="setAccent('#06b6d4')"></button>
+            <button class="acc-swatch" role="radio" aria-checked="false" aria-label="Warm"    style="--c:#e8e4dd" onclick="setAccent('#e8e4dd')"></button>
           </div>
           <label class="acc-custom" title="Custom colour">
             <input type="color" id="accentColorInput" value="#e05242" oninput="setAccent(this.value)" aria-label="Custom accent colour">
@@ -3126,7 +3126,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
           <div class="dc-body">
             <div class="field-row">
               <div class="field-label">Artist name</div>
-              <input class="field-input" type="text" id="adminName" aria-label="Artist name" placeholder="Your artist name" onblur="saveProfilePage()" oninput="(function(v){const _d=safeLS('able_v3_profile',{});if(!_d.handle){const _slug=v.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');updateSlugPreview(_slug);}})((this.value||'').trim())">
+              <input class="field-input" type="text" id="adminName" aria-label="Artist name" placeholder="Your artist name" maxlength="60" onblur="saveProfilePage()" oninput="(function(v){const _d=safeLS('able_v3_profile',{});if(!_d.handle){const _slug=v.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');updateSlugPreview(_slug);}})((this.value||'').trim())">
             </div>
             <div class="field-row">
               <div class="field-label">Genre / style</div>
@@ -3141,7 +3141,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
                 <span>Bio</span>
                 <span id="adminBioCount" style="font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;opacity:0;transition:opacity .2s,color .2s;">0 / 120</span>
               </div>
-              <textarea class="field-input field-textarea" id="adminBio" aria-label="Bio" placeholder="One honest sentence. Who you are, where you're from, what you make." maxlength="120" oninput="(function(n){var c=document.getElementById('adminBioCount');c.textContent=n+' / 120';var near=n>=80;c.style.opacity=near?'1':'0';c.style.color=n>=110?'#ef4444':n>=80?'#f4b942':'var(--t3)';var h=document.getElementById('adminBioHint');if(h)h.style.opacity=n>0?'0':'1';})(this.value.length)" onblur="saveProfilePage()"></textarea><!-- C4 #39 hint toggle -->
+              <textarea class="field-input field-textarea" id="adminBio" aria-label="Bio" placeholder="One honest sentence. Who you are, where you're from, what you make." maxlength="120" oninput="(function(n){var c=document.getElementById('adminBioCount');c.textContent=n+' / 120';var near=n>=80;c.style.opacity=near?'1':'0';c.style.color=n>=110?'var(--red)':n>=80?'var(--acc)':'var(--t3)'; /* C9 #37 */var h=document.getElementById('adminBioHint');if(h)h.style.opacity=n>0?'0':'1';})(this.value.length)" onblur="saveProfilePage()"></textarea><!-- C4 #39 hint toggle -->
               <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
                 <div class="field-hint" id="adminBioHint">Tell fans who you are. One honest sentence.</div><!-- C4 #39 -->
                 <button class="ai-trigger" id="aiBioBtn" type="button" onclick="aiSuggestBio()"><span class="ai-trigger__icon" aria-hidden="true">✦</span>Write with AI</button>
@@ -4808,6 +4808,8 @@ function showToast(message, tone, options) {
   }
   toast.appendChild(close);
   document.body.appendChild(toast);
+  // C9 #32 — toast focus so screen readers announce it immediately
+  try { toast.setAttribute('tabindex', '-1'); toast.focus(); } catch (_) {}
   // C8 #42 — auto-dismiss: green after 4s, amber after 6s, others persist until dismissed
   const _toastMs = tone === 'green' ? 4000 : tone === 'amber' ? 6000 : 0;
   if (_toastMs) setTimeout(function() { const t = document.getElementById('ableToast'); if (t) t.remove(); }, _toastMs);
@@ -6034,11 +6036,11 @@ function renderSnapCardsList() {
         <div class="snap-item-edit" id="snap-edit-${card.id}" hidden>
           <div class="field-row" style="margin:0;">
             <div class="field-label">Title / headline</div>
-            <input class="field-input" id="sce-title-${card.id}" value="${escHtml(card.title||'')}" placeholder="What's the update?">
+            <input class="field-input" id="sce-title-${card.id}" value="${escHtml(card.title||'')}" placeholder="What's the update?" maxlength="60"> <!-- C9 #38 -->
           </div>
           <div class="field-row" style="margin:0;">
             <div class="field-label">Body text <span style="font-weight:400;color:var(--t3);">(optional)</span></div>
-            <textarea class="field-input" id="sce-body-${card.id}" rows="2" style="resize:none;" placeholder="One thought. A sentence. Something happening.">${escHtml(card.body||'')}</textarea>
+            <textarea class="field-input" id="sce-body-${card.id}" rows="2" style="resize:none;" placeholder="One thought. A sentence. Something happening." maxlength="240">${escHtml(card.body||'')}</textarea> <!-- C9 #44 -->
           </div>
           <div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;">
             <div class="field-row" style="margin:0;">
@@ -7692,7 +7694,12 @@ function updateCompletenessBar() {
   const fillEl = document.getElementById('completenessFill');
   const nudgeEl = document.getElementById('completenessNudge');
 
-  if (pctEl)   pctEl.textContent = pct + '%';
+  if (pctEl) {
+    pctEl.textContent = pct + '%';
+    // C9 #36 — checkmark icon when completeness ≥ 90%
+    const _lbl = pctEl.closest('.completeness-bar-top') && pctEl.closest('.completeness-bar-top').querySelector('.completeness-bar-label');
+    if (_lbl) _lbl.textContent = pct >= 90 ? 'Profile completeness ✓' : 'Profile completeness';
+  }
   if (fillEl)  fillEl.style.width = pct + '%';
   // C5 #22 — append upgrade CTA to nudge when score < 30% and on free tier
   const _tier22 = getCurrentTier();
@@ -7721,7 +7728,12 @@ function updateCompletenessBar() {
   const profilePct   = document.getElementById('profileCompletenessPct');
   const profileFill  = document.getElementById('profileCompletenessFill');
   const profileNudge = document.getElementById('profileCompletenessNudge');
-  if (profilePct)   profilePct.textContent = pct + '%';
+  if (profilePct) {
+    profilePct.textContent = pct + '%';
+    // C9 #36 — checkmark on profile tab bar too
+    const _plbl = profilePct.closest('.completeness-bar-top') && profilePct.closest('.completeness-bar-top').querySelector('.completeness-bar-label');
+    if (_plbl) _plbl.textContent = pct >= 90 ? 'Profile completeness ✓' : 'Profile completeness';
+  }
   if (profileFill)  profileFill.style.width = pct + '%';
   if (profileNudge) {
     const _profileNudgeText = missing.length ? missing[0] : '';
@@ -7816,7 +7828,7 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
       counter.textContent = bio.length + ' / 120';
       const near = bio.length >= 80;
       counter.style.opacity = near ? '1' : '0';
-      counter.style.color = bio.length >= 110 ? '#ef4444' : bio.length >= 80 ? '#f4b942' : 'var(--t3)';
+      counter.style.color = bio.length >= 110 ? 'var(--red)' : bio.length >= 80 ? 'var(--acc)' : 'var(--t3)'; // C9 #37
     }
     // C4 #39 — hide hint when bio has content
     const bioHint = document.getElementById('adminBioHint');
@@ -8787,7 +8799,9 @@ function setAccent(hex) {
   if (colorInput) colorInput.value = hex;
 
   document.querySelectorAll('.acc-swatch').forEach(s => {
-    s.classList.toggle('active', s.style.getPropertyValue('--c').trim().toLowerCase() === hex.toLowerCase());
+    const isActive = s.style.getPropertyValue('--c').trim().toLowerCase() === hex.toLowerCase();
+    s.classList.toggle('active', isActive);
+    s.setAttribute('aria-checked', String(isActive)); // C9 #34
   });
 
   updateIdentityPreview(profile);
@@ -8812,7 +8826,9 @@ function initIdentityCard() {
   if (colorInput) colorInput.value = accent;
   if (hexLabel) hexLabel.textContent = accent;
   document.querySelectorAll('.acc-swatch').forEach(s => {
-    s.classList.toggle('active', s.style.getPropertyValue('--c').trim().toLowerCase() === accent.toLowerCase());
+    const isActive = s.style.getPropertyValue('--c').trim().toLowerCase() === accent.toLowerCase();
+    s.classList.toggle('active', isActive);
+    s.setAttribute('aria-checked', String(isActive)); // C9 #34
   });
 
   const tier = profile.tier || 'free';
