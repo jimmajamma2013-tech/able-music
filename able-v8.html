@@ -8430,7 +8430,7 @@
     // === CLICK TRACKING ==========================================
 
     function trackClick(label, type, url) {
-      const _src = getUtmSource()
+      const _src = SESSION_SOURCE
       const _sid = getSessionId()
       try {
         let clicks = safeLS('able_clicks', [])
@@ -8492,7 +8492,7 @@
 
     function trackView() {
       const _isArtist = isOwnerVisit()
-      const source = getUtmSource()
+      const source = SESSION_SOURCE
       const sessionId = getSessionId()
       if (!_isArtist) {
         try {
@@ -8535,14 +8535,19 @@
 
     // === UTM SOURCE ==============================================
 
+    // Source attribution — resolved once at page load, never mutated (G9 #1/#11/#12)
+    // Priority: ref → source → src/utm_source → referrer → 'direct'
     function getUtmSource() {
       const params = new URLSearchParams(window.location.search)
-      const raw = params.get('src') || params.get('utm_source')
+      const ALLOWED = new Set(['instagram','tiktok','youtube','qr','email','other','spotify','twitter','fb','footer','direct'])
+      const ALIAS   = { reel:'instagram', story:'instagram', post:'instagram', bio:'direct', ig:'instagram' }
+      // URL param priority: ref → source → src → utm_source (G9 #3–5 / #10)
+      const raw = params.get('ref') || params.get('source') || params.get('src') || params.get('utm_source')
       if (raw) {
-        const map = { reel:'instagram', story:'instagram', post:'instagram', bio:'direct', ig:'instagram' }
-        return map[raw] || (['instagram','tiktok','youtube','qr','email','other','spotify','twitter','fb','footer'].includes(raw) ? raw : 'direct')
+        const clean = raw.trim().toLowerCase().slice(0, 100).replace(/[<>"']/g, '')  // G9 #14-15
+        return ALIAS[clean] || (ALLOWED.has(clean) ? clean : 'direct')
       }
-      // Referrer fallback — catches Instagram in-app browser when no ?src= param
+      // Referrer fallback — catches Instagram in-app browser when no URL param
       const ref = (document.referrer || '').toLowerCase()
       if (!ref) return 'direct'
       if (ref.includes('instagram.com') || ref.includes('l.instagram.com')) return 'instagram'
@@ -8554,6 +8559,7 @@
       if (ref.includes('ablemusic.co'))                                       return 'footer'
       return 'other'
     }
+    const SESSION_SOURCE = getUtmSource()  // frozen at page load (G9 #11–12)
 
     // === CHECKPOINT 4: MAIN CONTENT RENDERING ====================
 
@@ -8715,7 +8721,7 @@
           }
 
           // Write to localStorage (double_opted_in: false — confirmed via email later)
-          const signupSource = getUtmSource()
+          const signupSource = SESSION_SOURCE
           const _cp = safeLS('able_v3_profile', {})
           const campaignState = computeState(_cp)
           // --- CAMPAIGN CONTEXT (CRM P0.1) ---
@@ -8886,7 +8892,7 @@
             }
             return
           }
-          const signup2Source = getUtmSource()
+          const signup2Source = SESSION_SOURCE
           const _cp2 = safeLS('able_v3_profile', {})
           const campaignState2 = computeState(_cp2)
           // --- CAMPAIGN CONTEXT (CRM P0.1) ---
