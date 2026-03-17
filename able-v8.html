@@ -147,6 +147,10 @@
       --color-text-3:      rgba(218,213,207,0.45);
       --color-overlay:     rgba(10,11,16,0.82);
       --shadow-card:       0 4px 28px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.04);
+      --shadow-lift:       0 12px 40px rgba(0,0,0,0.6);
+      --shadow-deep:       0 32px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.08);
+      --shadow-subtle:     0 4px 20px rgba(0,0,0,0.35);
+      --shadow-sheet:      0 -4px 32px rgba(0,0,0,0.5);
       /* Opaque panel — always solid regardless of theme for edit drawers */
       --color-panel:       #1a1a24;
       --color-panel-raised:#22222e;
@@ -164,6 +168,10 @@
       --color-text-3:      rgba(13,14,26,0.38);
       --color-overlay:     rgba(245,242,236,0.90);
       --shadow-card:       0 2px 16px rgba(0,0,0,0.07);
+      --shadow-lift:       0 8px 24px rgba(0,0,0,0.12);
+      --shadow-deep:       0 24px 64px rgba(0,0,0,0.18);
+      --shadow-subtle:     0 2px 10px rgba(0,0,0,0.08);
+      --shadow-sheet:      0 -2px 16px rgba(0,0,0,0.08);
       --color-panel:        #ffffff;
       --color-panel-raised: #f8f5f2;
       --color-panel-text:   #0d0e1a;
@@ -187,6 +195,10 @@
       --color-text-3:      rgba(240,237,232,0.55);
       --backdrop:          blur(28px) saturate(180%);
       --shadow-card:       0 2px 12px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.10);
+      --shadow-lift:       0 12px 40px rgba(0,0,0,0.5);
+      --shadow-deep:       0 32px 80px rgba(0,0,0,0.8);
+      --shadow-subtle:     0 4px 16px rgba(0,0,0,0.25);
+      --shadow-sheet:      0 -4px 24px rgba(0,0,0,0.4);
       /* Glass panels are solid dark — editing on glass must be readable */
       --color-panel:       #1a1a24;
       --color-panel-raised:#22222e;
@@ -203,6 +215,10 @@
       --color-text-2:      rgba(255,255,255,0.85);
       --color-text-3:      rgba(255,255,255,0.65);
       --shadow-card:       0 2px 16px rgba(0,0,0,0.8);
+      --shadow-lift:       0 8px 24px rgba(0,0,0,0.9);
+      --shadow-deep:       0 24px 64px rgba(0,0,0,1);
+      --shadow-subtle:     0 2px 8px rgba(0,0,0,0.6);
+      --shadow-sheet:      0 -2px 16px rgba(0,0,0,0.8);
       --color-panel:       #111111;
       --color-panel-raised:#1a1a1a;
       --color-panel-text:  #ffffff;
@@ -1914,7 +1930,7 @@
 
     @media (hover: hover) and (pointer: fine) {
       .release-card:hover {
-        box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+        box-shadow: var(--shadow-lift);
         transform: translateY(-3px);
       }
     }
@@ -2312,7 +2328,7 @@
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       opacity: 0; transform: scale(0.82);
-      transition: opacity 0.15s, transform 0.2s var(--ease-spring), background 0.15s;
+      transition: opacity var(--dur-fast), transform 0.2s var(--ease-spring), background var(--dur-fast);
       font-family: var(--font-body);
     }
     .release-card__artwork-wrap:hover .release-card__expand-btn,
@@ -2348,7 +2364,7 @@
       background: var(--color-accent, #e07b3a); border: none; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      transition: transform 0.2s var(--ease-spring), opacity 0.15s;
+      transition: transform 0.2s var(--ease-spring), opacity var(--dur-fast);
     }
     .release-card__able-play:hover { transform: scale(1.09); opacity: 0.88; }
     .release-card__able-play svg { fill: var(--cta-text-color, #000); width: 14px; height: 14px; margin-left: 2px; }
@@ -2408,13 +2424,13 @@
       display: flex; align-items: center; justify-content: center;
       padding: 16px;
       opacity: 0; pointer-events: none;
-      transition: opacity 0.25s var(--ease-decel);
+      transition: opacity var(--dur-mid) var(--ease-decel);
     }
     .media-lightbox.active { opacity: 1; pointer-events: all; }
     .media-lightbox__inner {
       position: relative; width: 100%; max-width: 920px;
       background: #000; border-radius: var(--r-md); overflow: hidden;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.08);
+      box-shadow: var(--shadow-deep);
       transform: translateY(20px) scale(0.97);
       transition: transform 0.3s var(--ease-spring);
     }
@@ -2438,7 +2454,7 @@
       font-size: 11px; font-weight: 600;
       cursor: pointer; border: 1px solid rgba(255,255,255,0.14);
       background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.65);
-      transition: background 0.15s, color 0.15s; font-family: var(--font-body);
+      transition: background var(--dur-fast), color var(--dur-fast); font-family: var(--font-body);
       text-decoration: none;
     }
     .media-lightbox__btn:hover { background: rgba(255,255,255,0.11); color: #fff; }
@@ -2468,7 +2484,7 @@
       font-size: 12px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; font-family: var(--font-body);
-      transition: background 0.15s;
+      transition: background var(--dur-fast);
     }
     .media-pip__expand:hover { background: rgba(255,255,255,0.12); }
     /* B18 — icon-only: more prominent press state than label buttons */
@@ -2482,7 +2498,7 @@
       border: 1px solid rgba(255,255,255,0.15);
       background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
       font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; font-family: var(--font-body); transition: background 0.15s;
+      flex-shrink: 0; font-family: var(--font-body); transition: background var(--dur-fast);
     }
     .media-pip__close:hover { background: rgba(255,255,255,0.14); color: #fff; }
     .media-pip__close:active { transform: scale(0.88); background: rgba(255,255,255,0.20); }
@@ -3071,7 +3087,7 @@
       z-index: 300;
       background: var(--color-card);
       border-radius: var(--r-lg) var(--r-lg) 0 0;
-      box-shadow: 0 -4px 32px rgba(0,0,0,0.5);
+      box-shadow: var(--shadow-sheet);
       transform: translateY(100%);
       transition: transform var(--dur-mid) var(--ease-spring);
       max-height: 60vh;
@@ -3088,7 +3104,7 @@
     }
     [data-theme="light"] .wm-panel {
       background: #f0ede8;
-      box-shadow: 0 -4px 32px rgba(0,0,0,0.15);
+      box-shadow: var(--shadow-sheet);
     }
 
     .wm-panel__handle-wrap {
@@ -3845,7 +3861,7 @@
 
     @media (hover: hover) and (pointer: fine) {
       .merch-item:hover {
-        box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+        box-shadow: var(--shadow-subtle);
         transform: translateY(-1px);
         border-color: rgba(var(--color-accent-rgb), 0.45);
       }
@@ -4595,7 +4611,7 @@
       height: 100%;
       background: var(--color-accent, #e07b3a);
       border-radius: var(--r-pill);
-      transition: width 0.6s var(--ease-decel);
+      transition: width var(--dur-xslow) var(--ease-decel);
     }
     .ep-fan-bar__warning {
       font-size: 12px;
@@ -4844,7 +4860,7 @@
     /* #17 — Copy link flash */
     .copy-flash {
       background: var(--color-accent-soft) !important;
-      transition: background-color 0.4s var(--ease-decel);
+      transition: background-color var(--dur-slow) var(--ease-decel);
     }
 
     /* H5 — Glass depth deepens on card press (glass theme only) */
@@ -4891,7 +4907,7 @@
       padding: 11px 16px; border-radius: var(--r-md);
       font-size: var(--text-sm); font-weight: 600;
       border: 2px solid var(--color-accent);
-      transition: top 0.15s;
+      transition: top var(--dur-fast);
     }
     .skip-link:focus-visible { top: 8px; }
 
@@ -4927,7 +4943,7 @@
       color: #f4b942;
       text-decoration: none;
       opacity: 0.9;
-      transition: opacity 0.15s;
+      transition: opacity var(--dur-fast);
       white-space: nowrap;
     }
     .owner-bar__back:hover { opacity: 1; }
@@ -4953,7 +4969,7 @@
       align-self: stretch;
       min-height: 44px;
       border-radius: 6px;
-      transition: color 0.15s, background 0.15s;
+      transition: color var(--dur-fast), background var(--dur-fast);
       white-space: nowrap;
     }
     .owner-bar__share:hover { color: #fff; background: rgba(255,255,255,0.08); }
@@ -5042,7 +5058,7 @@
       border-radius: var(--r-xl);
       display: flex;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+      box-shadow: var(--shadow-subtle);
       gap: 2px;
       padding: 3px;
     }
@@ -5054,7 +5070,7 @@
       font-weight: 700;
       padding: 8px 14px;
       cursor: pointer;
-      transition: color 0.15s ease, background 0.15s ease, opacity 0.15s ease, transform 0.15s ease;
+      transition: color var(--dur-fast) ease, background var(--dur-fast) ease, opacity var(--dur-fast) ease, transform var(--dur-fast) ease;
       white-space: nowrap;
       border-radius: var(--r-lg);
     }
@@ -8625,7 +8641,7 @@
               emailInput.classList.add('error')
               emailInput.setAttribute('aria-invalid', 'true')
               // E5 — shake animation
-              emailInput.style.animation = 'shake 0.4s ease-out'
+              emailInput.style.animation = 'shake var(--dur-slow) ease-out'
               emailInput.addEventListener('animationend', () => {
                 emailInput.style.animation = ''
               }, { once: true })
@@ -8819,7 +8835,7 @@
           if (_form2Msg) {
             if (emailInput) {
               emailInput.classList.add('error')
-              emailInput.style.animation = 'shake 0.4s ease-out'
+              emailInput.style.animation = 'shake var(--dur-slow) ease-out'
               emailInput.addEventListener('animationend', () => {
                 emailInput.style.animation = ''
               }, { once: true })

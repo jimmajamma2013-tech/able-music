@@ -168,13 +168,13 @@
       letter-spacing: 0.06em; color: var(--text);
     }
     .nav__links { display: flex; align-items: center; gap: 4px; }
-    .nav__link { font-size: 13px; font-weight: 500; color: var(--text-2); padding: 7px 13px; border-radius: var(--r-sm); transition: color 0.15s; }
+    .nav__link { font-size: 13px; font-weight: 500; color: var(--text-2); padding: 7px 13px; border-radius: var(--r-sm); transition: color var(--dur-fast); }
     .nav__link:hover { color: var(--text); }
     .nav__cta {
       font-size: 13px; font-weight: 700; background: var(--accent); color: var(--bg-deep);
       padding: 8px 18px; border-radius: var(--r-sm); display: flex; align-items: center; gap: 7px;
       box-shadow: 0 1px 8px rgba(var(--accent-rgb),0.22);
-      transition: opacity 0.15s, transform 0.2s var(--spring);
+      transition: opacity var(--dur-fast), transform 0.2s var(--spring);
     }
     .nav__cta:hover { opacity: 0.88; transform: scale(1.03); }
     .nav__cta-dot {
@@ -191,7 +191,7 @@
       position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
       background: rgba(20,22,40,0.95); color: #fff; font-size: 11px; white-space: nowrap;
       padding: 4px 8px; border-radius: var(--r-xs); pointer-events: none;
-      opacity: 0; transition: opacity 0.15s;
+      opacity: 0; transition: opacity var(--dur-fast);
     }
     .nav__cta-dot:hover::after { opacity: 1; }
     @media (max-width: 520px) { .nav__link { display: none; } }
@@ -311,7 +311,7 @@
       background: var(--card); border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
       font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
-      color: var(--text-3); transition: background 0.15s, color 0.15s, border-color 0.15s;
+      color: var(--text-3); transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
       white-space: nowrap;
       box-shadow: 0 1px 3px rgba(8,16,40,0.3);
     }
@@ -325,7 +325,7 @@
       font-size: 15px; font-weight: 700; background: var(--accent); color: var(--bg-deep);
       padding: 14px 28px; border-radius: var(--r-md);
       box-shadow: 0 2px 14px rgba(var(--accent-rgb),0.28), 0 1px 3px rgba(var(--accent-rgb),0.18);
-      transition: opacity 0.15s, transform 0.3s var(--spring);
+      transition: opacity var(--dur-fast), transform 0.3s var(--spring);
       display: inline-flex; align-items: center; gap: 6px;
     }
     .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
@@ -333,7 +333,7 @@
       font-size: 15px; font-weight: 600; color: var(--text-2);
       padding: 14px 24px; border-radius: var(--r-md);
       border: 1.5px solid var(--border-mid); background: transparent;
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
       display: inline-flex; align-items: center; gap: 6px;
     }
     .btn-ghost:hover { background: var(--card); color: var(--text); border-color: var(--border-strong); }
@@ -940,9 +940,9 @@
     .pricing-card__features li::before { content: '✓'; color: var(--accent); font-weight: 800; flex-shrink: 0; font-size: 12px; margin-top: 1px; }
     .pricing-card__features li.off { color: var(--text-3); }
     .pricing-card__features li.off::before { content: '—'; color: var(--text-3); font-weight: 400; }
-    .btn-outline { width: 100%; padding: 13px; border-radius: var(--r-md); font-size: 14px; font-weight: 600; text-align: center; border: 1.5px solid var(--border-mid); color: var(--text-2); background: transparent; transition: background 0.15s, color 0.15s, border-color 0.15s; display: block; }
+    .btn-outline { width: 100%; padding: 13px; border-radius: var(--r-md); font-size: 14px; font-weight: 600; text-align: center; border: 1.5px solid var(--border-mid); color: var(--text-2); background: transparent; transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast); display: block; }
     .btn-outline:hover { background: var(--bg-mid); color: var(--text); border-color: var(--border-strong); }
-    .btn-accent { width: 100%; padding: 13px; border-radius: var(--r-md); font-size: 14px; font-weight: 700; text-align: center; background: var(--accent); color: var(--bg-deep); box-shadow: 0 2px 14px rgba(var(--accent-rgb),0.28); transition: opacity 0.15s, transform 0.2s var(--spring); display: block; }
+    .btn-accent { width: 100%; padding: 13px; border-radius: var(--r-md); font-size: 14px; font-weight: 700; text-align: center; background: var(--accent); color: var(--bg-deep); box-shadow: 0 2px 14px rgba(var(--accent-rgb),0.28); transition: opacity var(--dur-fast), transform 0.2s var(--spring); display: block; }
     .btn-accent:hover { opacity: 0.9; transform: translateY(-1px); }
 
     /* ── QUOTE ────────────────────────────────────────────────── */
@@ -1028,7 +1028,7 @@
     .footer__logo { display: flex; align-items: center; gap: 10px; }
     .footer__logo-type { font-family: var(--font-d); font-size: 20px; font-weight: 700; letter-spacing: 0.06em; color: var(--text); }
     .footer__links { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
-    .footer__link { font-size: 12px; color: var(--text-3); transition: color 0.15s; }
+    .footer__link { font-size: 12px; color: var(--text-3); transition: color var(--dur-fast); }
     .footer__link:hover { color: var(--text-2); }
     .footer__authenticity { font-size: 13px; color: var(--text-3); font-style: italic; border-top: 1px solid var(--border); padding-top: 20px; margin-top: 32px; text-align: center; line-height: 1.6; }
     .footer__copy { font-size: 12px; color: var(--text-3); text-align: right; margin-top: 12px; }
@@ -1071,7 +1071,7 @@
       background: rgba(255,255,255,0.02);
       cursor: pointer; font-family: var(--font);
       color: var(--text-3);
-      transition: background 0.18s, border-color 0.18s, color 0.18s;
+      transition: background var(--dur), border-color var(--dur), color var(--dur);
     }
     .proof-line:hover { color: var(--text-2); border-color: var(--border-mid); background: rgba(255,255,255,0.04); }
     .proof-line.active { color: var(--text); background: rgba(var(--accent-rgb),0.09); border-color: rgba(var(--accent-rgb),0.3); }
@@ -1088,7 +1088,7 @@
       color: var(--text-2); line-height: 1.55;
       text-align: center; max-width: 280px;
       margin: 0 0 12px; min-height: 34px;
-      transition: opacity 0.18s ease;
+      transition: opacity var(--dur) ease;
     }
     .demo-state-desc em { font-style: normal; color: var(--accent); }
 
