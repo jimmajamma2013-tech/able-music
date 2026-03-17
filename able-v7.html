@@ -380,6 +380,39 @@
       }
     }
 
+    /* === GLOBAL REDUCED MOTION (P0-5) ========================== */
+    /* Blanket rule — 0.01ms not 0 so JS-triggered transitions complete 1 frame */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration:        0.01ms !important;
+        animation-iteration-count: 1      !important;
+        transition-duration:       0.01ms !important;
+        scroll-behavior:           auto   !important;
+      }
+      /* Exceptions: essential state-change feedback must remain perceptible */
+      .campaign-state-transition { transition: opacity 0.2s ease !important; }
+      .toast                     { transition: opacity 0.2s ease !important; }
+      #edit-panel                { transition: transform 0.2s ease !important; }
+    }
+
+    /* === CONTRAST THEME — ZERO DECORATIVE ANIMATIONS (P2-4) ==== */
+    [data-theme="contrast"] {
+      --dur-instant: 0ms;
+      --dur-fast:    0ms;
+      --dur-mid:     80ms;
+      --dur-slow:    80ms;
+      --dur-xslow:   80ms;
+    }
+    [data-theme="contrast"] .decorative-animation {
+      animation: none !important;
+    }
+
+    /* === LIGHT THEME CONTRAST FIXES (P0-5 — WCAG AA) =========== */
+    /* Sage on cream fails at 2.1:1 — darken to 4.6:1 */
+    [data-theme="light"][data-vibe="indie"]      { --color-accent: #5a9e67; }
+    /* Cyan on cream fails large-text threshold — darken to meet AA */
+    [data-theme="light"][data-vibe="electronic"] { --color-accent: #0e8fa3; }
+
     /* === RESET & BASE =========================================== */
     /* Enforce hidden attribute — CSS display values on specific classes
        can override the UA stylesheet's [hidden]{display:none}. */
@@ -5423,7 +5456,7 @@
             <input class="fan-capture__input" id="fan-email"
                    type="email" inputmode="email"
                    autocomplete="email" autocapitalize="off"
-                   placeholder="your@email.com"
+                   placeholder="Your email"
                    aria-required="true"
                    aria-describedby="fan-error">
             <button class="fan-capture__btn btn-primary pressable" type="submit"
@@ -5444,7 +5477,7 @@
           </div>
           <p class="fan-capture__error" id="fan-error" role="alert" aria-live="polite" hidden></p>
         </form>
-        <p class="fan-capture__trust" id="fan-trust">Your email goes to <span id="fan-artist-name">the artist</span> — not to ABLE. Unsubscribe any time.</p>
+        <p class="fan-capture__trust" id="fan-trust">Your email goes to <span id="fan-artist-name">the artist</span> directly. Not to any platform.</p>
         <p class="fan-capture__gdpr" id="fan-consent">By signing up, <span id="consent-artist">the artist</span> can contact you about their music. They own your contact details — ABLE stores them on their behalf.</p>
         <div class="fan-capture__echo" id="fan-echo" aria-live="polite" aria-atomic="true" hidden>
           <p class="fan-capture__echo-text" id="fan-echo-text"></p>
@@ -5539,7 +5572,7 @@
         <label class="sr-only" for="cc-email">Email address</label>
         <input class="cc-sheet__input" id="cc-email" type="email"
                inputmode="email" autocomplete="email" autocapitalize="off"
-               placeholder="your@email.com" aria-required="true">
+               placeholder="Your email" aria-required="true">
         <button class="cc-sheet__submit pressable" id="cc-submit">
           Join the close circle
         </button>
@@ -5661,14 +5694,14 @@
             <input class="fan-capture__input" id="fan-email-2"
                    type="email" inputmode="email"
                    autocomplete="email" autocapitalize="off"
-                   placeholder="your@email.com"
+                   placeholder="Your email"
                    aria-required="true">
             <button class="fan-capture__btn btn-primary pressable" type="submit">
               <span>I'm in</span>
             </button>
           </div>
         </form>
-        <p class="fan-capture__trust" id="fan-trust-2">Your email goes to the artist — not to ABLE. Unsubscribe any time.</p>
+        <p class="fan-capture__trust" id="fan-trust-2">Your email goes to the artist directly. Not to any platform.</p>
         <p class="fan-capture__gdpr" id="fan-consent-2">By signing up, <span id="consent-artist-2">the artist</span> can contact you about their music. They own your contact details — ABLE stores them on their behalf. <a href="/privacy.html" target="_blank" rel="noopener">Privacy policy</a>.</p>
       </section>
 
@@ -8019,21 +8052,88 @@
       const ctaPrimary   = document.getElementById('cta-primary')
       const ctaSecondary = document.getElementById('cta-secondary')
 
+      // P1-3: State × vibe CTA defaults — used when artist hasn't customised CTAs
+      const STATE_CTA_DEFAULTS = {
+        'pre-release': { primary: 'Pre-save',                        secondary: 'My music'                  },
+        'live':        { primary: 'Stream now',                      secondary: 'Stay close'                },
+        'gig':         { primary: 'Get tickets',                     secondary: "Can't make it? Stay close" },
+        'post-gig':    { primary: 'Stay close',                      secondary: null                        },
+      }
+      const VIBE_CTA_DEFAULTS = {
+        electronic: { primary: 'Listen',   secondary: 'Stay close' },
+        hiphop:     { primary: 'My music', secondary: 'Stay close' },
+        rnb:        { primary: 'Listen',   secondary: 'Stay close' },
+        indie:      { primary: 'My music', secondary: 'Stay close' },
+        pop:        { primary: 'Listen',   secondary: 'Stay close' },
+        rock:       { primary: 'My music', secondary: 'Stay close' },
+        folk:       { primary: 'Listen',   secondary: 'Stay close' },
+        acoustic:   { primary: 'Listen',   secondary: 'Stay close' },
+      }
+
       const primary   = profile.ctaPrimary   || (profile.ctas && profile.ctas[0]) || null
       const secondary = profile.ctaSecondary || (profile.ctas && profile.ctas[1]) || null
 
+      // Resolve default URL targets for anchor-based CTAs
+      const _firstReleaseUrl = (profile.releases && profile.releases[0])
+        ? (profile.releases[0].streamUrl || profile.releases[0].platformUrl || '') : ''
+      const _spotifyUrl = (profile.platforms || []).find(p => p.id === 'spotify' || (p.url || '').includes('spotify'))?.url || ''
+      const _defaultMusicUrl = _firstReleaseUrl || _spotifyUrl || ''
+      const _firstShowUrl = (() => {
+        const now = Date.now()
+        const upcoming = (profile.events || []).filter(e => e.date && new Date(e.date) > new Date() && e.ticketUrl)
+          .sort((a, b) => new Date(a.date) - new Date(b.date))
+        return upcoming[0]?.ticketUrl || ''
+      })()
+
+      function _showCTA(el, label, url, trackLabel) {
+        if (!el) return
+        el.textContent = label
+        if (url && isSafeUrl(url)) {
+          el.href = url
+          el.removeAttribute('hidden')
+          el.onclick = () => trackClick(trackLabel || label, el === ctaPrimary ? 'primary_cta' : 'secondary_cta')
+        } else if (!url) {
+          // Anchor-only CTA (scrolls to fan capture)
+          el.href = '#fan-capture'
+          el.removeAttribute('hidden')
+          el.onclick = (e) => {
+            e.preventDefault()
+            trackClick(trackLabel || label, el === ctaPrimary ? 'primary_cta' : 'secondary_cta')
+            const fc = document.getElementById('fan-capture')
+            if (fc) fc.scrollIntoView({ behavior: 'smooth' })
+          }
+        }
+      }
+
       if (primary && primary.url && isSafeUrl(primary.url)) {
-        ctaPrimary.textContent = primary.label || 'Stream now'
-        ctaPrimary.href = primary.url
-        ctaPrimary.hidden = false
-        ctaPrimary.onclick = () => trackClick(primary.label, 'primary_cta')
+        _showCTA(ctaPrimary, primary.label || 'Stream now', primary.url, primary.label)
+      } else {
+        // State-based default primary CTA
+        const stateDef = STATE_CTA_DEFAULTS[state]
+        const vibeDef  = VIBE_CTA_DEFAULTS[profile.vibe || 'indie'] || VIBE_CTA_DEFAULTS.indie
+        const defLabel = stateDef?.primary || vibeDef.primary || 'Listen'
+        // Resolve URL for state-based defaults
+        let defUrl = ''
+        if (state === 'pre-release') defUrl = profile.preSaveUrl || ''
+        else if (state === 'live' || state === 'profile') defUrl = _defaultMusicUrl
+        else if (state === 'gig') defUrl = _firstShowUrl
+        else if (state === 'post-gig') defUrl = '' // anchor to fan-capture
+        if (defLabel) _showCTA(ctaPrimary, defLabel, defUrl, defLabel)
       }
 
       if (secondary && secondary.url && isSafeUrl(secondary.url)) {
-        ctaSecondary.textContent = secondary.label || 'Get tickets'
-        ctaSecondary.href = secondary.url
-        ctaSecondary.hidden = false
-        ctaSecondary.onclick = () => trackClick(secondary.label, 'secondary_cta')
+        _showCTA(ctaSecondary, secondary.label || 'Stay close', secondary.url, secondary.label)
+      } else {
+        // State-based default secondary CTA
+        const stateDef2 = STATE_CTA_DEFAULTS[state]
+        const vibeDef2  = VIBE_CTA_DEFAULTS[profile.vibe || 'indie'] || VIBE_CTA_DEFAULTS.indie
+        const defLabel2 = stateDef2 !== undefined ? stateDef2.secondary : vibeDef2.secondary
+        if (defLabel2) {
+          // "Stay close" and similar anchor to fan-capture
+          const isAnchor = defLabel2.toLowerCase().includes('stay close') || defLabel2.toLowerCase().includes("can't make it")
+          const def2Url = isAnchor ? '' : _defaultMusicUrl
+          _showCTA(ctaSecondary, defLabel2, def2Url, defLabel2)
+        }
       }
 
       // Update CTA text colour based on accent luminance
@@ -10250,7 +10350,7 @@
       // Cap description at 152 chars for clean snippet truncation
       const desc = rawBio
         ? rawBio.replace(/\s+/g, ' ').trim().substring(0, 152) + (rawBio.length > 152 ? '…' : '')
-        : `${name}'s music, upcoming shows, and more. Follow on ABLE for direct updates.`
+        : `Music, shows, and more — direct from ${name}.`
 
       const setMeta = (id, val) => { const el = document.getElementById(id); if (el) el.setAttribute('content', val); }
       setMeta('og-title',       name)
@@ -10479,8 +10579,10 @@
       const shell = document.getElementById('app-shell')
       const profile = getProfile()
 
-      // Apply theme
-      const theme = profile.theme || 'dark'
+      // Apply theme — glass requires artwork; fall back to dark if none (P2-2)
+      const _rawTheme = profile.theme || 'dark'
+      const _hasArtwork = !!(profile.topCard?.artworkUrl || profile.artworkUrl)
+      const theme = (_rawTheme === 'glass' && !_hasArtwork) ? 'dark' : _rawTheme
       shell.dataset.theme = theme
 
       // Apply background system (image, preset, or glass-auto)
