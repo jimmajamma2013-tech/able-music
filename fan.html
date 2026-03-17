@@ -354,6 +354,13 @@
       border: 1px solid rgba(239, 68, 68, 0.22);
     }
 
+    /* C16 #1 — "New" badge for releases newer than last visit */
+    .type-badge--new {
+      background: rgba(74, 222, 128, 0.14);
+      color: #4ade80;
+      border: 1px solid rgba(74, 222, 128, 0.28);
+    }
+
     /* === CLIP FEED ITEM ======================================= */
     .feed-item--clip {
       display: block;
@@ -1285,6 +1292,11 @@
           <span class="caught-up__line" aria-hidden="true"></span>
         </p>
       </div>
+      <!-- C16 #2 — "Coming up" shows from followed artists (next 30 days) -->
+      <div class="feed-section" id="section-coming-up" style="display:none">
+        <h2 class="feed-date-label">Coming up</h2>
+        <div class="show-items" id="coming-up-shows"></div>
+      </div>
       <div class="empty-state" id="empty-following" style="display:none">
         <p class="empty-state__title" id="empty-following-title">Your following list is empty.</p>
         <p class="empty-state__body" id="empty-following-body">Find artists from their pages, or look through Discover.</p>
@@ -1390,6 +1402,10 @@
     catch (e) { console.error('[ABLE] localStorage write error for "' + key + '"', e); return false; }
   }
 
+  // === STATE ================================================
+  // C16 #1 — previous visit timestamp for "New" badge calculation
+  let _prevLastVisit = 0
+
   // === DEMO DATA ============================================
 
   const DEMO_FOLLOWED = [
@@ -1425,6 +1441,13 @@
     { artistId: 'margot-veil', artist: 'Margot Veil', venue: 'The Lexington', city: 'London', day: '19', month: 'Mar', time: '8pm',  followed: false, accent: '#7ec88a' },
     { artistId: 'luna-waves',  artist: 'Luna Waves',  venue: 'Jazz Cafe',   city: 'London',  day: '22', month: 'Mar', time: '9pm',  followed: true,  accent: '#e06b7a' },
     { artistId: 'tendai',      artist: 'Tendai',      venue: 'Village Underground', city: 'London', day: '28', month: 'Mar', time: '9pm', followed: false, accent: '#e06b7a' },
+  ]
+
+  // C16 #2 — Upcoming shows from followed artists (demo data, next 30 days)
+  const DEMO_UPCOMING_SHOWS = [
+    { artistId: 'luna-waves', artist: 'Luna Waves',  venue: 'Jazz Cafe',       city: 'London',    day: '22', month: 'Mar', doorsTime: '9pm',  ticketUrl: '#', accent: '#e06b7a' },
+    { artistId: 'nova-reign', artist: 'Nova Reign',  venue: 'Fabric',          city: 'London',    day: '28', month: 'Mar', doorsTime: '11pm', ticketUrl: '#', accent: '#06b6d4' },
+    { artistId: 'drift',      artist: 'Drift',       venue: 'EartH Hackney',   city: 'London',    day: '4',  month: 'Apr', doorsTime: '8pm',  ticketUrl: '#', accent: '#f4b942' },
   ]
 
   // === UTILITIES ============================================
@@ -1587,11 +1610,12 @@
     const ONE_DAY = 86400000
     const SEVEN_DAYS = 7 * ONE_DAY
 
-    const todayItems  = feed.filter(i => (Date.now() - i.age) < ONE_DAY)
+    // C16 #6 — sort by most recent first within each group
+    const todayItems  = feed.filter(i => (Date.now() - i.age) < ONE_DAY).sort((a, b) => b.age - a.age)
     const weekItems   = feed.filter(i => {
       const age = Date.now() - i.age
       return age >= ONE_DAY && age < SEVEN_DAYS
-    })
+    }).sort((a, b) => b.age - a.age)
 
     const todayEl  = document.getElementById('feed-today')
     const weekEl   = document.getElementById('feed-week')
@@ -1646,8 +1670,12 @@
         return el
       }
 
+      // C16 #1 — "New" badge: release that arrived since last visit
+      const _isNew = item.type === 'release' && _prevLastVisit > 0 && item.age > _prevLastVisit
+      const _newBadge = _isNew ? `<span class="type-badge type-badge--new" aria-label="New since your last visit">New</span>` : ''
+
       el.className = 'feed-item pressable'
-      el.setAttribute('aria-label', `${artist.name} — ${item.title}, ${typeBadgeLabel(item.type)}`)
+      el.setAttribute('aria-label', `${artist.name} — ${item.title}, ${typeBadgeLabel(item.type)}${_isNew ? ', new since your last visit' : ''}`)
       el.innerHTML = `
         <div class="feed-item__art" style="background:rgba(${rgb},0.22);color:#f0ede8">
           ${getInitials(artist.name)}
@@ -1658,6 +1686,7 @@
           <p class="feed-item__sub">${escHtml(item.sub || '')}</p>
         </div>
         <div class="feed-item__meta">
+          ${_newBadge}
           <span class="type-badge ${typeBadgeClass(item.type)}" aria-label="${typeBadgeLabel(item.type)}">${typeBadgeLabel(item.type)}</span>
           <span class="feed-item__time" aria-hidden="true">${formatAge(item.age)}</span>
         </div>
@@ -1684,6 +1713,68 @@
     } else {
       renderEmptyFollowingState()
     }
+
+    // C16 #2 — render upcoming shows from followed artists
+    renderComingUpShows(followed)
+  }
+
+  function renderComingUpShows(followed) {
+    const sec = document.getElementById('section-coming-up')
+    const container = document.getElementById('coming-up-shows')
+    if (!sec || !container) return
+
+    const followedIds = followed.map(a => a.id)
+    const followedMap = {}
+    followed.forEach(a => { followedMap[a.id] = a })
+
+    // Use localStorage shows first; fall back to DEMO
+    let upcomingShows = []
+    try {
+      const stored = safeGet('able_fan_upcoming_shows', [])
+      upcomingShows = stored.length ? stored : DEMO_UPCOMING_SHOWS
+    } catch (_) {
+      upcomingShows = DEMO_UPCOMING_SHOWS
+    }
+
+    // Filter to shows from followed artists only
+    const shows = upcomingShows.filter(s => followedIds.includes(s.artistId))
+    if (!shows.length) return
+
+    sec.style.display = 'block'
+    container.innerHTML = ''
+
+    shows.forEach((show, i) => {
+      const artist = followedMap[show.artistId] || { name: show.artist, accent: show.accent || '#555' }
+      const el = document.createElement('div')
+      el.className = 'show-item'
+      el.style.animationDelay = `${i * 40}ms`
+      el.setAttribute('role', 'article')
+      el.setAttribute('aria-label', `${escHtml(artist.name)} at ${escHtml(show.venue)}, ${escHtml(show.day)} ${escHtml(show.month)}`)
+      el.innerHTML = `
+        <div class="show-item__date-block" aria-hidden="true">
+          <div class="show-item__day">${escHtml(show.day)}</div>
+          <div class="show-item__month">${escHtml(show.month)}</div>
+        </div>
+        <div class="show-item__info">
+          <p class="show-item__artist">${escHtml(artist.name)}</p>
+          <p class="show-item__venue">${escHtml(show.venue)}</p>
+          <p class="show-item__city">${escHtml(show.city)} · Doors ${escHtml(show.doorsTime)}</p>
+        </div>
+        ${show.ticketUrl && show.ticketUrl !== '#'
+          ? `<a class="ticket-btn" href="${escHtml(show.ticketUrl)}" target="_blank" rel="noopener" aria-label="Get tickets for ${escHtml(artist.name)} at ${escHtml(show.venue)}">Tickets</a>`
+          : `<span class="show-item__following-badge" style="background:rgba(${hexToRgb(artist.accent)},0.12);color:${escHtml(artist.accent)}">Following</span>`
+        }
+      `
+      if (show.ticketUrl && show.ticketUrl !== '#') {
+        el.style.cursor = 'default'
+      } else {
+        el.addEventListener('click', () => {
+          const slug = show.artistId || ''
+          if (slug) window.open(`https://ablemusic.co/${encodeURIComponent(slug)}?src=fan-coming-up`, '_blank', 'noopener')
+        })
+      }
+      container.appendChild(el)
+    })
   }
 
   // === RENDER DISCOVER VIEW =================================
@@ -2364,6 +2455,8 @@
   // === INIT =================================================
 
   function init() {
+    // C16 #1 — read previous visit before overwriting (so "New" badge can fire on this visit)
+    try { _prevLastVisit = parseInt(localStorage.getItem('fan_last_visit') || '0', 10) || 0; } catch (_) {}
     // C16 #5 — record last visit timestamp for "New" badge calculation
     try { localStorage.setItem('fan_last_visit', Date.now()); } catch (_) {}
     initArrival()
