@@ -47,8 +47,12 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Only handle same-origin requests
+  // Only handle same-origin GET requests
   if (url.origin !== self.location.origin) return;
+  if (request.method !== 'GET') return;
+
+  // Never intercept Netlify functions — always let them hit the network
+  if (url.pathname.startsWith('/.netlify/')) return;
 
   // HTML pages: network-first
   if (request.headers.get('Accept')?.includes('text/html')) {
