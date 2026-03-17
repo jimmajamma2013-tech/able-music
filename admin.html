@@ -12,7 +12,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="ABLE">
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
-<title>ABLE</title>
+<title>ABLE — Artist Dashboard</title>
+<meta name="description" content="Manage your ABLE artist profile — control your page state, view fan sign-ups, track CTA clicks, and update your releases.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
@@ -1551,6 +1552,9 @@ body::before {
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+    }
+    .show-card--past {
+      opacity: 0.45;
     }
     .show-card-info {
       flex: 1;
@@ -4220,21 +4224,23 @@ function openAddShowSheet() {
 function renderShowsList() {
   const el = document.getElementById('adminEventsList');
   if (!el) return;
-  const shows = safeLS('able_shows', []);
+  const shows = safeLS('able_shows', []).slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
   if (!shows.length) {
     el.innerHTML = '<div class="empty-state" style="padding:28px 16px;text-align:center;color:var(--dash-t3);font-size:13px;">No shows listed yet. Add one and ABLE will surface it to fans on your page automatically.</div>';
     return;
   }
+  const today = new Date().toISOString().slice(0, 10);
   el.innerHTML = '<div class="shows-list">' + shows.map((s, i) => {
+    const isPast = s.date && s.date < today;
     const dateStr = s.date ? new Date(s.date + 'T12:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : '';
-    return `<div class="show-card">
+    return `<div class="show-card${isPast ? ' show-card--past' : ''}">
       <div class="show-card-info">
-        <div class="show-card-venue">${escHtml(s.venue)}</div>
+        <div class="show-card-venue">${escHtml(s.venue)}${isPast ? ' <span style="font-size:11px;opacity:0.5;font-weight:400;">past</span>' : ''}</div>
         <div class="show-card-date">${escHtml(dateStr)}${s.doorsTime ? ' · Doors ' + escHtml(s.doorsTime) : ''}</div>
       </div>
       <div class="show-card-actions">
-        ${s.ticketUrl ? `<a href="${escHtml(s.ticketUrl)}" target="_blank" rel="noopener" class="dc-action" style="text-decoration:none;">Tickets →</a>` : ''}
-        <button class="dc-action" onclick="removeShow(${i})">Remove</button>
+        ${s.ticketUrl && !isPast ? `<a href="${escHtml(s.ticketUrl)}" target="_blank" rel="noopener" class="dc-action" style="text-decoration:none;">Tickets →</a>` : ''}
+        <button class="dc-action" type="button" onclick="removeShow(${i})">Remove</button>
       </div>
     </div>`;
   }).join('') + '</div>';
