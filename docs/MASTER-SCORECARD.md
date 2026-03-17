@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-17 | Sessions 11–20 (continuous improvement engine) | Sources: All FINAL-REVIEW.md, FINAL-20-ANGLE-REVIEW-2.md, PRE-LAUNCH-1000.md audit**
+**Updated: 2026-03-17 | Sessions 11–20 + Cycle 2 Wave 1 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md**
 
 ---
 
@@ -35,20 +35,20 @@
 
 | System | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|
-| Artist tools | 7.2/10 | 9.0/10 | Close Circle no payment, accent picker limited | Shows date sort + Close Circle state toggle |
-| CRM | 4.5/10 | 9.0/10 | `campaignState` capture at fan sign-up; no level system | Add `campaignState` to fan object at sign-up in `able-v8.html` |
+| Artist tools | 7.5/10 | 9.0/10 | Close Circle no payment, accent picker limited | ✅ owner=true on all profile links; Day 1 share card built |
+| CRM | 6.5/10 | 9.0/10 | Fan search UI exists; `consentVersion` in CSV; dedup check live | ✅ campaignState, sessionId, all 5 UTM params, Array guard on fans push |
 | Tier gates | 6.5/10 | 9.0/10 | Server enforcement missing; Stripe not wired | ✅ `checkTierGate()` + gold lock CSS built; remaining: server-side enforcement |
-| Error states | 6.0/10 | 9.0/10 | ✅ `safeLS()`/`setLS()` wrappers now global; SafariSecurityError guard added | Unhandled rejection listeners added; error UI polish remaining |
+| Error states | 7.0/10 | 9.0/10 | QuotaExceededError toast; fetch try/catch audit clean; fans Array guard | ✅ safeLS/setLS global; SecurityError guard; corrupt fans auto-recover |
 | PWA | 8.5/10 | 9.0/10 | No service worker (offline mode unbuilt) | ✅ `manifest.json` + iOS meta tags + icons exist; service worker is optional V2 |
 | Page state system | 7.5/10 | 9.0/10 | Arc node radiogroup ARIA just added | ✅ Campaign state machine logic verified |
 | Data architecture | 6.8/10 | 9.3/10 | Multi-artist isolation; `fan.html` Supabase not wired | Implementation ready for Supabase phase |
-| Analytics | 7.8/10 | 9.4/10 | `sessionId` missing; UTM capture incomplete | ✅ PostHog init correct; EU host config verified; 3 core events built |
+| Analytics | 8.2/10 | 9.4/10 | SessionId in views missing; PostHog fan_signup verified | ✅ All 5 UTM params captured; sessionId on cta_tap + fan_signup; isOwnerVisit() 3-signal chain |
 | SEO / OG | 9.0/10 | 9.5/10 | Static OG image needs production deploy | ✅ Twitter card on all 4 pages; `robots.txt` + `sitemap.xml` deployed; canonical tags present |
 | oEmbed proxy | 9.0/10 | 9.5/10 | ✅ SSRF fixed — `isSafeMediaUrl()` uses `new URL().hostname` + ALLOWED_HOSTS Set | Zero vulnerabilities; `data.html` stripped to prevent XSS |
 | Coding strategy | 9.2/10 | 10/10 | `prefers-reduced-motion` audit remaining in admin | ✅ Parse checks every edit; tokenised CSS enforced |
 | UI system | 7.5/10 | 8.6/10 | Component library unbuilt; some hardcoded values | Fix remaining `#888` violations; shared component primitives |
 | UX system | 7.2/10 | 9.0/10 | Fan sign-up friction; empty state copy | ✅ Fan cap UI enforced; error state copy improved |
-| World map | 5.2/10 | 9.2/10 | Section heading missing, empty state missing | 3 bug fixes (section heading, empty state, multi-moment panel) |
+| World map | 7.0/10 | 9.2/10 | Multi-moment panel copy polish; <time> tags missing | ✅ Section heading present; empty state (owner + fan); shows 24h filter; sort ascending |
 
 ### Killer features
 
@@ -148,21 +148,21 @@
 
 ## Summary stats
 
-| Category | Average | Change from session 14 |
-|---|---|---|
-| Pages (6 pages) | ~9.4/10 | +0.1 |
-| Core product systems (scoring available) | ~6.8/10 | +1.0 |
-| Infrastructure (scoring available) | ~7.1/10 | +1.0 |
-| Legal / security / accessibility | ~8.3/10 | **+5.5** |
-| Brand / copy / design | ~8.1/10 | +0.8 |
-| Growth / marketing | ~6.9/10 | — |
-| Operations / process | ~8.2/10 | +0.7 |
-| Strategy / founder | ~7.8/10 | — |
+| Category | Average | Change from session 14 | Change from Cycle 2 Wave 1 |
+|---|---|---|---|
+| Pages (6 pages) | ~9.4/10 | +0.1 | — |
+| Core product systems (scoring available) | ~7.3/10 | +1.0 | **+0.5** |
+| Infrastructure (scoring available) | ~7.1/10 | +1.0 | — |
+| Legal / security / accessibility | ~8.3/10 | **+5.5** | — |
+| Brand / copy / design | ~8.1/10 | +0.8 | — |
+| Growth / marketing | ~6.9/10 | — | — |
+| Operations / process | ~8.2/10 | +0.7 | — |
+| Strategy / founder | ~7.8/10 | — | — |
 
 **Overall documentation + spec average: ~9.2/10**
-**Overall current build state average: ~7.8/10** (was ~6.5/10 in session 14)
+**Overall current build state average: ~8.0/10** (was ~7.8/10 post-Cycle-1; was ~6.5/10 session 14)
 
-Biggest improvements this cycle: Legal compliance (+6.5 points), Security (+4.8 points), Accessibility (+3.8 points), PWA (+7.9 points), SEO/OG (+1.0 point)
+Cycle 2 Wave 1 improvements: CRM (+2.0), Artist Success (+0.3), World Map (+1.8), Error States (+1.0), Analytics (+0.4)
 
 ---
 
@@ -170,14 +170,14 @@ Biggest improvements this cycle: Legal compliance (+6.5 points), Security (+4.8 
 
 ### Remaining true blockers before first real artist
 
-> ✅ = fixed in sessions 11–20.
+> ✅ = fixed in sessions 11–20 or Cycle 2 Wave 1.
 
 **1. ✅ GDPR consent on fan sign-up form — DONE (session 19)**
 **2. ✅ oEmbed SSRF security fix — DONE (was already properly fixed)**
 **3. ✅ Privacy policy (`privacy.html`) — DONE (Article 13 rewrite session 19)**
 **4. RESEND_API_KEY in Netlify env** — James's manual task at resend.com/domains
 **5. og-default.jpg deployed to ablemusic.co** — ✅ file generated; needs Netlify deploy
-**6. Day 1 share card** — 3–4 hours, highest-leverage single feature remaining
+**6. ✅ Day 1 share card — DONE (fully built in start.html — canvas, native share, copy link)**
 **7. ✅ `safeLS()`/`setLS()` wrappers — DONE globally; Safari SecurityError guard added**
 **8. ✅ `robots.txt` + `sitemap.xml` — DONE (session 19/20)**
 **9. ✅ Fan unsubscribe mechanism — DONE (session 19)**
@@ -185,11 +185,11 @@ Biggest improvements this cycle: Legal compliance (+6.5 points), Security (+4.8 
 
 ### High priority — day-1 quality (still open)
 
-- `campaignState` capture at fan sign-up in `able-v8.html` (20-minute change)
 - Configure UptimeRobot monitoring (James's 10-minute task)
 - VoiceOver test on real iPhone — manual QA required
-- PostHog `sessionId` and UTM capture improvements
+- Deploy to `ablemusic.co` (Netlify) — product not live yet
 - Service worker (offline mode) — optional for V1, V2 feature
+- RESEND_API_KEY in Netlify environment (James's task)
 
 ---
 
@@ -207,5 +207,34 @@ Biggest improvements this cycle: Legal compliance (+6.5 points), Security (+4.8 
 
 ---
 
-*Sources: 62 docs/systems/FINAL-REVIEW.md files + 6 docs/pages/FINAL-20-ANGLE-REVIEW-2.md files + PRE-LAUNCH-1000.md (900-point audit, sessions 19–20)*
-*Updated: 2026-03-17 (sessions 19–20 — continuous improvement engine, cycle 1)*
+## Cycle 2 Wave 1 complete — what changed
+
+| Dimension | Before C2 | After C2 Wave 1 | Delta |
+|---|---|---|---|
+| Artist Success | 4.0/10 | 7.5/10 | **+3.5** |
+| CRM / fan data | 4.5/10 | 6.5/10 | **+2.0** |
+| World Map / events | 5.2/10 | 7.0/10 | **+1.8** |
+| Error States | 6.0/10 | 7.0/10 | **+1.0** |
+| Analytics | 7.8/10 | 8.2/10 | **+0.4** |
+
+### Key C2 Wave 1 completions
+
+- ✅ `owner=true` on all 4 dynamic admin profile links (topbar, liveChip, QA, sidebar)
+- ✅ `isOwnerVisit()` 3-signal chain: URL param → artistId match → local profile exists
+- ✅ All 5 UTM params captured (utm_source, medium, campaign, term, content)
+- ✅ `able_fans` Array.isArray guard — corrupt fans auto-recover to `[]`
+- ✅ Ticket URL `isSafeAdminUrl()` validation before storage + render
+- ✅ Shows 24h trailing filter (keeps tonight's show visible until 24h after)
+- ✅ Fan dedup check live: "You're already on the list." confirmed
+- ✅ Fan CSV export includes `consentVersion` column (GDPR proof)
+- ✅ All fetch() calls verified try/catch or .catch() — zero unguarded
+- ✅ Day 1 share card confirmed built: canvas, native share sheet, copy link fallback
+- ✅ Wizard done screen: `?owner=true` on "See your page" link
+- ✅ Admin Twitter card meta + `<title>ABLE Dashboard</title>` added
+- ✅ World map empty state: owner vs fan copy differentiated
+- ✅ Unsplash hero URL: fm=webp&auto=format (WebP delivery)
+
+---
+
+*Sources: 62 docs/systems/FINAL-REVIEW.md files + 6 docs/pages/FINAL-20-ANGLE-REVIEW-2.md files + PRE-LAUNCH-1000.md + CYCLE-2-AUDIT.md*
+*Updated: 2026-03-17 (Cycle 2 Wave 1 — continuous improvement engine)*
