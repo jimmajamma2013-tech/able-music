@@ -5662,7 +5662,7 @@
       <!-- ======================================================
            CREDITS (collapsed accordion)
            ====================================================== -->
-      <section class="credits-section" id="credits-section" aria-labelledby="credits-toggle" hidden>
+      <div class="credits-section" id="credits-section" hidden>
         <button class="credits-toggle pressable" id="credits-toggle"
                 aria-expanded="false" aria-controls="credits-body">
           <span>Credits</span>
@@ -5674,7 +5674,7 @@
         <div class="credits-body" id="credits-body" hidden>
           <ul class="credits-list" id="credits-list"></ul>
         </div>
-      </section>
+      </div>
 
       <!-- ======================================================
            RECOMMENDATIONS — artist's picks (optional)
@@ -6396,9 +6396,11 @@
     function computeState(profile) {
       if (profile.stateOverride && profile.stateOverride !== 'auto') return profile.stateOverride
       const now = Date.now()
-      // Gig state: check able_gig_expires
+      // Gig state: check able_gig_expires; < 6h left = post-show state
       const gigExpires = parseInt(localStorage.getItem('able_gig_expires') || '0', 10)
-      if (gigExpires && now < gigExpires) return 'gig'
+      if (gigExpires && now < gigExpires) {
+        return (gigExpires - now) < 6 * 3600000 ? 'gig-post' : 'gig'
+      }
       // Release-based states
       const release = profile.releaseDate ? new Date(profile.releaseDate).getTime() : null
       if (!release) return 'profile'
@@ -8480,8 +8482,9 @@
       'profile':     { heading: 'Stay close.',                          cta: "I'm in",      trust: 'Just {artist}. No spam.' },
       'pre-release': { heading: 'Be the first to hear it.',             cta: 'Notify me',   trust: 'First listen, nothing else.' },
       'live':        { heading: 'Stay on everything I do.',             cta: 'Count me in', trust: 'Just {artist}. No spam.' },
-      'gig':         { heading: "I'll let you know about future dates.", cta: 'Let me know', trust: 'Show news only.' },
-      'near-future': { heading: 'Remind me.',                           cta: "I'm coming",  trust: 'One email, when it matters.' }
+      'gig':         { heading: "I'll let you know about future dates.", cta: 'Let me know',  trust: 'Show news only.' },
+      'gig-post':    { heading: 'Were you there tonight?',              cta: 'Let me know',  trust: 'Next show. Nothing else.' },
+      'near-future': { heading: 'Remind me.',                           cta: "I'm coming",   trust: 'One email, when it matters.' }
     }
 
     function renderFanCapture(profile) {
@@ -8495,8 +8498,18 @@
 
       // Apply state-driven copy variant
       const state = computeState(profile)
-      const variant = CAPTURE_VARIANTS[state] || CAPTURE_VARIANTS['profile']
+      const baseVariant = CAPTURE_VARIANTS[state] || CAPTURE_VARIANTS['profile']
       const artistName = profile.name || 'the artist'
+
+      // Personalise headings when release data is available (UX P0.1)
+      let personalHeading = baseVariant.heading
+      if (state === 'pre-release' && profile.release?.title && profile.releaseDate) {
+        const releaseDay = new Date(profile.releaseDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })
+        personalHeading = `${profile.release.title} drops ${releaseDay}. Hear it early.`
+      } else if (state === 'live' && profile.release?.title) {
+        personalHeading = `${profile.release.title} is out now.`
+      }
+      const variant = Object.assign({}, baseVariant, { heading: personalHeading })
 
       const h1 = document.getElementById('fan-capture-heading')
       const h2 = document.getElementById('fan-capture-2-heading')

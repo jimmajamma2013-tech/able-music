@@ -590,6 +590,7 @@ body::before {
 .page-title { font-family:var(--font); font-size:22px; font-weight:700; color:var(--dash-text); margin-bottom:4px; }
 #homeGreeting { font-family:var(--font); font-size:22px; letter-spacing:0; }
 .page-sub { font-size:13px; color:var(--dash-t2); }
+.page-next-moment { font-size:11px; color:var(--acc, #f4b942); margin-top:4px; font-weight:600; }
 
 /* ── THEME TOGGLE ── */
 .theme-row { display:flex; gap:8px; flex-wrap:wrap; }
@@ -764,7 +765,7 @@ body::before {
   border: 2px solid var(--dash-border);
   background: var(--dash-card);
   display: block;
-  transition: all 0.2s ease;
+  transition: background-color 200ms ease, border-color 200ms ease;
 }
 
 .arc-node.done .arc-dot {
@@ -1694,6 +1695,14 @@ body::before {
     .yw-moment-access { font-size: 10px; color: var(--dash-t3); }
     .yw-moment-featured { font-size: 9px; color: var(--acc, #f4b942); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
     .yw-moment-auto { color: var(--acc, #f4b942) !important; opacity: 0.7; }
+    .yw-moment-row--editable { cursor: pointer; }
+    .yw-edit-btn {
+      background: none; border: none; padding: 0 4px; margin-left: 6px; flex-shrink: 0;
+      font-size: 13px; color: var(--dash-t3); cursor: pointer;
+      transition: color 150ms;
+    }
+    .yw-edit-btn:hover, .yw-edit-btn.editing { color: var(--acc, #f4b942); }
+    .yw-inline-edit { margin-top: 4px; border-radius: 10px; }
     .yw-empty { text-align: center; padding: 24px 16px; color: var(--dash-t3); font-size: 13px; }
     .yw-empty-link { background: none; border: none; padding: 0; color: #6b4a00; font-size: 13px; cursor: pointer; text-decoration: underline; }
     .yw-private-row {
@@ -2336,6 +2345,7 @@ body::before {
       <div>
         <div class="page-title" id="homeGreeting">Good to see you.</div>
         <div class="page-sub" id="homeSub">Your page, your list, your relationship.</div>
+        <div class="page-next-moment" id="homeNextMoment" hidden></div>
       </div>
       <div style="flex-shrink:0;text-align:right;">
         <div style="font-size:12px;font-weight:600;color:var(--text);" id="homePageUrl"></div>
@@ -6409,13 +6419,18 @@ function ywRenderMomentList(profile) {
     var accessTag = m.isAuto
       ? '<div class="yw-moment-access yw-moment-auto">from shows</div>'
       : '<div class="yw-moment-access">' + (m.access || 'public') + '</div>'
-    return '<div class="yw-moment-row">'
+    var editBtn = m.isAuto
+      ? ''
+      : '<button class="yw-edit-btn" onclick="ywOpenEditForm(\'' + m.id + '\')" aria-label="Edit moment" title="Edit">✎</button>'
+    return '<div class="yw-moment-wrap" data-moment-id="' + m.id + '">'
+      + '<div class="yw-moment-row' + (m.isAuto ? '' : ' yw-moment-row--editable') + '">'
       + '<div class="yw-dot" style="background:' + color + '"></div>'
       + '<div class="yw-moment-date">' + dateStr + '</div>'
       + '<div class="yw-moment-title">' + escHtml(title) + '</div>'
       + accessTag
       + (isFeatured ? '<div class="yw-moment-featured">● In hero</div>' : '')
-      + (m.isAuto ? '' : '<button class="snap-btn del" style="margin-left:8px;flex-shrink:0;font-size:11px;" onclick="removeMoment(\'' + m.id + '\')" title="Remove">×</button>')
+      + editBtn
+      + '</div>'
       + '</div>'
   }).join('')
 
@@ -6568,6 +6583,166 @@ function removeMoment(id) {
   ywRenderMomentList(p)
 }
 
+function ywCloseEditForm() {
+  var existing = document.querySelector('.yw-inline-edit')
+  if (existing) existing.remove()
+  // Restore any active edit button
+  document.querySelectorAll('.yw-edit-btn.editing').forEach(function(b) {
+    b.classList.remove('editing')
+    b.setAttribute('aria-label', 'Edit moment')
+    b.title = 'Edit'
+    b.textContent = '✎'
+  })
+}
+
+function ywOpenEditForm(id) {
+  // Close any open edit form first
+  if (document.querySelector('.yw-inline-edit[data-editing="' + id + '"]')) {
+    ywCloseEditForm(); return;
+  }
+  ywCloseEditForm()
+
+  var p = safeLS(V3_KEY, {})
+  var m = (p.moments || []).find(function(x) { return x.id === id })
+  if (!m) return
+
+  var wrap = document.querySelector('.yw-moment-wrap[data-moment-id="' + id + '"]')
+  if (!wrap) return
+
+  // Mark the edit button as active
+  var editBtn = wrap.querySelector('.yw-edit-btn')
+  if (editBtn) { editBtn.classList.add('editing'); editBtn.textContent = '✕'; editBtn.title = 'Close'; }
+
+  // Build type buttons
+  var types = ['release','show','announce','milestone','private']
+  var typeLabels = {release:'Release',show:'Show',announce:'Announce',milestone:'Milestone',private:'Private'}
+  var typeBtns = types.map(function(t) {
+    return '<button type="button" class="yw-type-btn yw-edit-type-btn' + (m.type === t ? ' active' : '') + '" data-type="' + t + '">' + typeLabels[t] + '</button>'
+  }).join('')
+
+  var accessLabels = ['public','close-circle','private']
+  var accessBtns = accessLabels.map(function(a) {
+    return '<button type="button" class="yw-access-btn yw-edit-access-btn' + ((m.access || 'public') === a ? ' active' : '') + '" data-access="' + a + '">' + (a === 'close-circle' ? 'Close circle' : a.charAt(0).toUpperCase() + a.slice(1)) + '</button>'
+  }).join('')
+
+  var ctaUrl = (m.cta && m.cta.url) || ''
+  var ctaLbl = (m.cta && m.cta.label) || ''
+
+  var form = document.createElement('div')
+  form.className = 'yw-inline-edit yw-add-form'
+  form.dataset.editing = id
+  form.innerHTML = ''
+    + '<div class="yw-form-label">Type</div>'
+    + '<div class="yw-type-grid" style="margin-bottom:10px;">' + typeBtns + '</div>'
+    + '<div class="yw-form-row">'
+    +   '<div class="yw-form-group" style="flex:1;">'
+    +     '<label class="yw-form-label" for="ywEditTitle">Title</label>'
+    +     '<input class="yw-form-input" id="ywEditTitle" type="text" maxlength="60" value="' + escHtml(m.title || '') + '" placeholder="e.g. Echo Chamber out now">'
+    +   '</div>'
+    +   '<div class="yw-form-group" style="width:130px;">'
+    +     '<label class="yw-form-label" for="ywEditDate">Date</label>'
+    +     '<input class="yw-form-input" id="ywEditDate" type="date" value="' + (m.date || '') + '">'
+    +   '</div>'
+    + '</div>'
+    + '<div class="yw-form-group">'
+    +   '<label class="yw-form-label">Who sees this?</label>'
+    +   '<div class="yw-access-row" style="display:flex;gap:6px;flex-wrap:wrap;">' + accessBtns + '</div>'
+    + '</div>'
+    + '<div class="yw-form-group">'
+    +   '<label class="yw-form-label" for="ywEditCtaUrl">Link (optional)</label>'
+    +   '<input class="yw-form-input" id="ywEditCtaUrl" type="url" value="' + escHtml(ctaUrl) + '" placeholder="https://">'
+    + '</div>'
+    + '<div class="yw-form-group" id="ywEditCtaLabelWrap"' + (ctaUrl ? '' : ' hidden') + '>'
+    +   '<label class="yw-form-label" for="ywEditCtaLabel">Button label</label>'
+    +   '<input class="yw-form-input" id="ywEditCtaLabel" type="text" maxlength="30" value="' + escHtml(ctaLbl) + '" placeholder="e.g. Stream it">'
+    + '</div>'
+    + '<div class="yw-form-group">'
+    +   '<label class="yw-form-label" for="ywEditNote">Artist note (private)</label>'
+    +   '<input class="yw-form-input" id="ywEditNote" type="text" value="' + escHtml(m.artistNote || '') + '" placeholder="Reminder or context for yourself">'
+    + '</div>'
+    + '<div class="yw-form-error" id="ywEditError" style="display:none;color:#e05242;font-size:11px;margin-bottom:8px;"></div>'
+    + '<div style="display:flex;gap:8px;">'
+    +   '<button type="button" class="snap-btn" style="flex:1;text-align:center;" onclick="ywUpdateMoment(\'' + id + '\')">Save changes</button>'
+    +   '<button type="button" class="snap-btn del" onclick="removeMoment(\'' + id + '\')">Delete</button>'
+    + '</div>'
+
+  wrap.appendChild(form)
+
+  // Wire URL input to show/hide label field
+  var urlInput = form.querySelector('#ywEditCtaUrl')
+  var lblWrap  = form.querySelector('#ywEditCtaLabelWrap')
+  if (urlInput && lblWrap) {
+    urlInput.addEventListener('input', function() {
+      lblWrap.hidden = !urlInput.value.trim()
+    })
+  }
+
+  // Wire type buttons
+  form.querySelectorAll('.yw-edit-type-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      form.querySelectorAll('.yw-edit-type-btn').forEach(function(b) { b.classList.remove('active') })
+      btn.classList.add('active')
+    })
+  })
+
+  // Wire access buttons
+  form.querySelectorAll('.yw-edit-access-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      form.querySelectorAll('.yw-edit-access-btn').forEach(function(b) { b.classList.remove('active') })
+      btn.classList.add('active')
+    })
+  })
+
+  form.querySelector('#ywEditTitle').focus()
+}
+
+function ywUpdateMoment(id) {
+  var form = document.querySelector('.yw-inline-edit[data-editing="' + id + '"]')
+  if (!form) return
+
+  var typeBtn   = form.querySelector('.yw-edit-type-btn.active')
+  var accessBtn = form.querySelector('.yw-edit-access-btn.active')
+  var titleEl   = form.querySelector('#ywEditTitle')
+  var dateEl    = form.querySelector('#ywEditDate')
+  var urlEl     = form.querySelector('#ywEditCtaUrl')
+  var lblEl     = form.querySelector('#ywEditCtaLabel')
+  var noteEl    = form.querySelector('#ywEditNote')
+  var errEl     = form.querySelector('#ywEditError')
+
+  var title = titleEl ? titleEl.value.trim() : ''
+  var date  = dateEl  ? dateEl.value.trim()  : ''
+
+  if (!title) {
+    if (errEl) { errEl.textContent = 'Title is required.'; errEl.style.display = 'block'; }
+    if (titleEl) titleEl.focus()
+    return
+  }
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    if (errEl) { errEl.textContent = 'A valid date is required.'; errEl.style.display = 'block'; }
+    if (dateEl) dateEl.focus()
+    return
+  }
+
+  var p = safeLS(V3_KEY, {})
+  p.moments = (p.moments || []).map(function(m) {
+    if (m.id !== id) return m
+    var url = urlEl ? urlEl.value.trim() : ''
+    var lbl = lblEl ? lblEl.value.trim() : ''
+    return Object.assign({}, m, {
+      type:       typeBtn   ? typeBtn.dataset.type     : m.type,
+      access:     accessBtn ? accessBtn.dataset.access : m.access,
+      title:      title.slice(0, 60),
+      date:       date,
+      artistNote: noteEl ? noteEl.value.trim() : (m.artistNote || ''),
+      cta:        url ? { label: lbl || 'View', url: url, type: 'link' } : null,
+    })
+  })
+  setLS(V3_KEY, p)
+  syncProfile(p)
+  ywRenderMomentList(p)
+  showToast('Moment updated.')
+}
+
 /* ── MIGRATE LEGACY WIZARD KEY ── */
 (function migrateWizardKey() {
   try {
@@ -6656,10 +6831,23 @@ function buildGreetingSub(profile) {
   return 'Your page, your list, your relationship.';
 }
 
+function buildNextMoment(profile) {
+  const today = new Date().toISOString().split('T')[0];
+  const upcoming = (profile.moments || [])
+    .filter(m => m.date >= today)
+    .sort((a, b) => a.date.localeCompare(b.date));
+  if (!upcoming.length) return null;
+  const next = upcoming[0];
+  const d = new Date(next.date + 'T00:00:00');
+  const formatted = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+  return `Next: ${next.title} — ${formatted}`;
+}
+
 function applyGreeting(profile) {
   const firstName = (profile.name || '').split(' ')[0] || null;
   const greetEl = document.getElementById('homeGreeting');
   const subEl   = document.getElementById('homeSub');
+  const nextEl  = document.getElementById('homeNextMoment');
   if (!greetEl || !subEl) return;
 
   const firstEver = !localStorage.getItem('admin_ever_visited');
@@ -6678,6 +6866,17 @@ function applyGreeting(profile) {
   } else {
     greetEl.textContent = firstName ? `Good to see you, ${firstName}.` : 'Good to see you.';
     subEl.textContent   = buildGreetingSub(profile);
+  }
+
+  // Next moment line
+  if (nextEl) {
+    const nextText = buildNextMoment(profile);
+    if (nextText) {
+      nextEl.textContent = nextText;
+      nextEl.removeAttribute('hidden');
+    } else {
+      nextEl.setAttribute('hidden', '');
+    }
   }
 }
 
