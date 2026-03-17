@@ -8831,7 +8831,7 @@ function saveProfilePage() {
       ...(data.topCard || {}),
       // Field value is authoritative — empty string clears the stored value
       artworkUrl:  artworkUrl,
-      videoUrl:    videoUrl,
+      videoUrl:    (videoUrl && isSafeAdminUrl(videoUrl)) ? videoUrl : '', // C13 #43 — reject non-https video URLs
       creditLine:  creditLine,
       type:        videoUrl ? 'video' : (artworkUrl ? 'artwork' : ''),
     },

@@ -143,6 +143,7 @@ exports.handler = async function (event) {
         to:      [fanEmail],
         subject,
         html,
+        text:    `${headingLine}\n\n${bodyLine}\n\nVisit your profile: ${profile}\nUnsubscribe: ${unsubscribeUrl}`, // C13 #32 — plain text fallback
         tags: [
           { name: 'type',         value: 'fan-confirmation' },
           { name: 'artist_slug',  value: slug || 'unknown'  },
