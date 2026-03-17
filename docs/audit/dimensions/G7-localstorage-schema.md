@@ -1,118 +1,111 @@
-# Dimension G7 — localStorage Schema Integrity
+# Dimension G7 — localStorage Schema
 **Category:** Core Product Logic & User Flows
-**Phase:** 1 (HIGHEST PRIORITY — do before visual)
+**Phase:** 1 (Foundation)
+**Status:** Not started
 
-All localStorage keys must match the canonical schema in CLAUDE.md. The canonical keys are: `able_v3_profile`, `able_fans`, `able_clicks`, `able_views`, `able_shows`, `able_gig_expires`, `able_dismissed_nudges`, `able_starred_fans`, `able_tier`, `admin_visit_dates`. The code uses constants (`V3_KEY`, `FANS_KEY`, `CLICKS_KEY`, `VIEWS_KEY`, `GIG_KEY`) in admin.html for the most-read keys, but also writes via direct string keys in other places. Cross-page consistency must be verified: start.html writes, admin.html reads.
+localStorage is the current persistence layer for ABLE, and every key in the schema is a future Supabase table row. The schema is therefore load-bearing in two directions: correctness today (the app must read what it wrote) and migration fidelity tomorrow (no renames, no structural drift). This dimension audits whether every key listed in the canonical schema actually exists in the codebase under the exact documented name, whether the data written by start.html is in the correct shape to be consumed by admin.html and able-v7.html, and whether all read paths are defensive against corrupted, missing, or structurally wrong data. Full compliance means a `grep` over the codebase will find every canonical key name exactly as documented, no key is written by one page and read under a different name by another, and every read is wrapped in a try/catch with a validated fallback.
 
 ## 100 Improvement Points
 
 | # | Improvement | Page | Impact | Effort | Risk | Wave |
 |---|---|---|---|---|---|---|
-| 1 | Canonical key `able_v3_profile`: confirm this exact string is used across all pages. admin.html uses `V3_KEY = 'able_v3_profile'` (admin.html:3737). able-v8.html uses `safeLS('able_v3_profile', {})` directly. start.html: verify it writes to `'able_v3_profile'` not `'able_profile'`. Cross-page key name is the single most important schema integrity check. | All | High | Low | None | 1 |
-| 2 | `able_profile` (legacy key) is migrated to `able_v3_profile` on admin load (admin.html:6899–6904). After migration, `able_profile` is deleted (admin.html:6915). Confirm the migration: (1) reads `able_profile`, (2) if `able_v3_profile` absent, writes the legacy value to `able_v3_profile`, (3) if `able_v3_profile` present, merges, (4) deletes `able_profile`. | admin.html | High | Low | None | 1 |
-| 3 | `able_fans` key: confirm the stored value is always an array `[]` of fan objects, never null or a primitive. `safeLS('able_fans', [])` falls back to `[]` if absent or corrupted — but if the key exists as `null` (e.g., `localStorage.setItem('able_fans', 'null')`), `JSON.parse('null')` returns `null`, and the fallback is NOT used because `null` is a valid parse result. Add a type check: `Array.isArray(result) ? result : fallback`. | Both | High | Low | High | 1 |
-| 4 | Same type check needed for all array keys: `able_views`, `able_clicks`, `able_shows`, `able_dismissed_nudges`, `admin_visit_dates`. If any of these is corrupted to a non-array value (null, number, object), the code that iterates over them will throw. | Both | High | Med | High | 1 |
-| 5 | `able_fans` object schema: `{email, ts, source, campaignState, releaseId, momentId, consent, consentMethod, jurisdiction, optIn, consent_ts, consent_source, consentVersion, consentSource, confirmed, double_opted_in, level, isStarred, id, deleted_at}`. The canonical schema in CLAUDE.md only shows `{email, ts, source}`. Update CLAUDE.md to show the full fan object schema. | Both | High | Low | None | 1 |
-| 6 | `able_clicks` object schema: `{label, type, ts, source}` (from CLAUDE.md). The actual write in v8 (v8:8380–8391) adds additional fields: `{label, type, ts, source, sessionId, artistId}`. Update the canonical schema. | able-v8.html | High | Low | None | 1 |
-| 7 | `able_views` object schema: `{ts, source}` (from CLAUDE.md). The actual write in v8 (v8:8447) also includes `sessionId`. Update the canonical schema. | able-v8.html | High | Low | None | 1 |
-| 8 | `able_shows` object schema: `{venue, date, doorsTime, ticketUrl, featured}` (from CLAUDE.md). Confirm every write to `able_shows` uses this exact structure. If a show is added via start.html, does it include `featured: false` by default? | All | High | Low | None | 1 |
-| 9 | `able_shows` items may also have an `id` field (v8:8673 references `_featuredShow.id`). If shows don't have `id`, this is `undefined`. Add `id: crypto.randomUUID()` to all show creation paths. | Both | High | Low | None | 1 |
-| 10 | `able_gig_expires` key: stored as a string (`String(Date.now() + 86400000)`, admin.html:4238). The canonical schema says "Unix timestamp". Read with `parseInt()`. Confirm this consistent across all reads. | admin.html | Med | Low | None | 2 |
-| 11 | `able_dismissed_nudges` key: stored as an array of nudge ID strings. Confirm all nudge IDs used across the codebase are documented. Current nudge IDs (from admin.html:4539, etc.): `'bio-nudge'`, `'presave-cta'`, `'add-show'`, `'add-cta'`, `'share-link'`. List all IDs in the schema. | admin.html | Med | Low | None | 2 |
-| 12 | `able_starred_fans` key (legacy): migrated to `isStarred: true` on fan records by `migrateStarredFans()` (admin.html:6920). After migration, the key is removed. Confirm migration runs on every admin load and the key is absent after first migration. | admin.html | Med | Low | None | 2 |
-| 13 | `able_tier` key: stores `"free"` | `"artist"` | `"artist-pro"` | `"label"`. No other values are valid. Add validation when writing `able_tier`. | Both | High | Low | None | 1 |
-| 14 | `admin_visit_dates` key: stores an array of ISO date strings (last 60 admin loads, admin.html:7147–7151). Confirm the trimming logic (`visits.slice(-60)`) works correctly — it keeps the last 60 entries. | admin.html | Med | Low | None | 2 |
-| 15 | `admin_visit_dates` format: ISO date strings `YYYY-MM-DD`. Stored via `new Date().toISOString().slice(0,10)` (admin.html:7149). Confirm this format is consistent across all writes. | admin.html | Low | None | None | 3 |
-| 16 | `able_gig_source` key (not in canonical schema, admin.html:4930): stores `'manual'` | `'auto'`. Add to canonical schema in CLAUDE.md. | admin.html | Low | None | None | 1 |
-| 17 | `able_first_fan_seen` key (not in canonical schema, admin.html:4617): stores `'1'` when the first-fan moment has been shown. Add to canonical schema. | admin.html | Low | None | None | 1 |
-| 18 | `admin_ever_visited` key (not in canonical schema, admin.html:7010): stores `'1'` on first admin load. Add to canonical schema. | admin.html | Low | None | None | 1 |
-| 19 | `able_frc_dismissed` key (not in canonical schema, admin.html:7336): stores `'1'` when first-run checklist is dismissed. Add to canonical schema. | admin.html | Low | None | None | 1 |
-| 20 | `able_upgrade_bar_dismissed` key (not in canonical schema, admin.html:7335): stores `'1'`. Add to canonical schema. | admin.html | Low | None | None | 1 |
-| 21 | `able_nudge_uses` key (not in canonical schema, admin.html:8038): stores a number string (count of identity nudge uses). Add to canonical schema. | admin.html | Low | None | None | 1 |
-| 22 | `able_artist_id` key (admin.html:3637, 3649): stores a UUID string identifying the artist. Used for owner detection in v8. Not in canonical schema. Add it. | Both | Low | None | None | 1 |
-| 23 | `able_this_fan_email` key (v8:8700): stored in `sessionStorage` (not localStorage). This is the fan's email for the current session. Not in the canonical schema (it's session-level). Add a sessionStorage schema section to docs. | able-v8.html | Low | None | None | 2 |
-| 24 | `fan_location` key (used in fan.html for location capture): not in the canonical schema. Add it. | fan.html | Low | None | None | 2 |
-| 25 | `safeLS()` function (admin.html:4403–4407): `try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }`. If `JSON.parse(v)` throws (corrupted JSON), the catch returns `fallback`. But if `JSON.parse(v)` returns `null` (valid JSON null), the ternary `v ?` catches it — `'null'` is truthy but `JSON.parse('null')` is `null`. The function returns `null` not `fallback`. Bug: change `return v ?` to `return v !== null ?`. | Both | High | Low | High | 1 |
-| 26 | Same `safeLS()` bug in able-v8.html. Confirm v8 has its own `safeLS()` implementation (or imports from a shared source) and that it has the same `null` handling issue. | able-v8.html | High | Low | High | 1 |
-| 27 | `setLS()` function (admin.html:4409): wraps `localStorage.setItem` with `JSON.stringify`. If `JSON.stringify(val)` throws (circular reference), the catch returns `false`. The caller gets `false` but no indication of failure except the return value. Callers must check this return value — confirm they do. | admin.html | High | Med | None | 1 |
-| 28 | `setLS()` swallows `QuotaExceededError` silently. When localStorage is full, writes fail silently. Fan sign-ups and click events are lost. Add quota handling: if `setLS` fails, prune old events (rotate `able_views` and `able_clicks`) and retry once. | Both | High | Med | High | 1 |
-| 29 | `rotateEvents()` (v8:8428–8434): prunes events older than `maxDays`. For `able_clicks`: 180-day retention (v8:8381). For `able_views`: 90-day retention (v8:8444). Confirm these retention periods match the schema documentation. | able-v8.html | Med | Low | None | 2 |
-| 30 | `able_v3_profile` object schema: CLAUDE.md lists top-level fields but the object has many more fields in practice. Audit all fields written by admin.html and start.html and document the complete schema: `name`, `bio`, `accent`, `theme`, `vibe`, `stateOverride`, `releaseDate`, `releaseTitle`, `ctaPrimary`, `ctaSecondary`, `platforms`, `releases`, `shows` (or is this `able_shows`?), `snapCards`, `merch`, `artistId`, `tier`, `slug`. | Both | High | Med | None | 1 |
-| 31 | `able_v3_profile.shows` vs `able_shows` (separate key): confirm that shows are stored ONLY in `able_shows` and that `able_v3_profile` does NOT also store shows. If shows are stored in both places, admin and v8 may read from different sources and show inconsistent data. | Both | High | Low | High | 1 |
-| 32 | The Supabase upsert (admin.html:3639) includes a `shows` object from `safeLS('able_shows', [])` (admin.html:3657). This suggests `able_shows` is the canonical source for shows, not `able_v3_profile.shows`. Confirm that v8 reads shows from `able_shows` not from `able_v3_profile.shows`. | Both | High | Low | None | 1 |
-| 33 | `able_v3_profile.snapCards` vs a dedicated `able_snap_cards` key: are snap cards stored in the profile object or as a separate key? Locate all snap card reads and writes to confirm the single authoritative storage location. | Both | High | Med | None | 1 |
-| 34 | `able_v3_profile.releases` vs individual release fields (`releaseDate`, `releaseTitle`): are releases stored as an array in the profile or as individual fields? Audit all release reads/writes. | Both | High | Med | None | 1 |
-| 35 | The `CLIPS_KEY` constant in admin.html (admin.html:3740): this key is referenced but not in the canonical schema. What is `CLIPS_KEY`? Clips are video entries. Find its value and add to schema. | admin.html | Med | Low | None | 1 |
-| 36 | `CLIPS_KEY` in admin.html:3740 references a key name. Find its definition and confirm it matches the key used in v8. If v8 uses a different key name for clips, data written by admin would not be read by v8. | Both | High | Low | High | 1 |
-| 37 | Cross-page test: write a profile via start.html (simulate onboarding), then open admin.html. Confirm all profile fields are correctly read. Identify any fields that start.html writes but admin.html doesn't read (orphaned fields) or vice versa. | Both | High | High | None | 1 |
-| 38 | `able_v3_profile.accent` stores the artist's accent colour (hex string). Confirm this is the single source of truth for accent — not duplicated in any other key. | Both | Med | Low | None | 2 |
-| 39 | `able_v3_profile.theme` stores 'dark' | 'light' | 'glass' | 'contrast'. Confirm valid values are enforced and that the theme selector in admin writes exactly these strings. | Both | Med | Low | None | 2 |
-| 40 | `able_v3_profile.vibe` stores one of 7 vibe strings: 'electronic', 'hip-hop', 'r&b', 'indie', 'pop', 'rock', 'acoustic'. Confirm valid vibe strings are enforced and match the VIBE_CTA_DEFAULTS keys in v8. | Both | High | Low | None | 1 |
-| 41 | `able_v3_profile.slug` is the artist's profile URL slug. This is used for the canonical URL and Supabase foreign keys. Confirm the slug is always written when the profile is created. If absent, the profile URL defaults to a fallback. | Both | High | Low | None | 1 |
-| 42 | `able_v3_profile.artistId` is used by v8 for owner detection (`profile.artistId` vs `able_artist_id`). Confirm `artistId` is written to the profile by admin during profile save, not just to the standalone `able_artist_id` key. | Both | High | Low | None | 1 |
-| 43 | The `safeLS()` fallback for `able_v3_profile` is `{}`. If the profile is absent (new user), every `profile.releaseDate`, `profile.tier`, etc. access returns `undefined`. All state machine functions must handle `undefined` fields gracefully. Confirm all callers handle this. | Both | High | Med | None | 1 |
-| 44 | When admin.html loads and `able_v3_profile` is absent (no profile data), the admin shows an empty state. Confirm the empty state is handled gracefully — no JS errors from attempting to read properties of `undefined`. | admin.html | High | Low | None | 1 |
-| 45 | The canonical `able_fans` array grows unbounded. There is no maximum fan count beyond the free-tier cap. For Artist tier (up to 2000 fans), each fan object is ~500 bytes. 2000 fans = ~1MB. Within localStorage 5MB limit but approaching. Add a comment to the schema noting the size estimate. | Both | Low | None | None | 3 |
-| 46 | `able_clicks` is pruned to 180 days by `rotateEvents()`. For a high-traffic artist, 180 days of click events could be thousands of entries. Each click object is ~100 bytes. 10,000 clicks = ~1MB. Confirm `rotateEvents()` runs on every write, not just on demand. | able-v8.html | Med | Low | None | 2 |
-| 47 | `able_views` is pruned to 90 days. Same storage concern as #46 but smaller per-object. Confirm the 90-day window is enforced. | able-v8.html | Med | Low | None | 2 |
-| 48 | `admin_visit_dates` is trimmed to last 60 entries (admin.html:7151). 60 date strings = ~720 bytes. No storage concern. But the trim logic: `visits.slice(-60)` — this keeps the most recent 60. Confirm dates are in ascending order so `slice(-60)` gets the most recent. | admin.html | Low | None | None | 3 |
-| 49 | The migration from `able_profile` to `able_v3_profile` (admin.html:6899) checks if `able_v3_profile` is absent. If both exist, it merges: `const merged = { ...JSON.parse(v3), ...JSON.parse(legacy) }` (inferred). Confirm the merge strategy: which takes precedence, legacy or v3? | admin.html | High | Low | None | 1 |
-| 50 | The `migrateProfileKey()` function (admin.html:6899) — locate its full body and confirm the merge logic is documented. A merge that overwrites `able_v3_profile` with legacy data could cause data loss. | admin.html | High | Low | High | 1 |
-| 51 | `migrateStarredFans()` (admin.html:6920): reads `able_starred_fans` (array of email strings), adds `isStarred: true` to matching fan records, saves back to `able_fans`, removes `able_starred_fans`. Confirm that if a fan is starred but not in `able_fans` (edge case: starred email removed from list), the migration does not crash. | admin.html | Med | Low | None | 2 |
-| 52 | `able_artist_joined_YYYY-MM` (admin.html:7259): a dynamically-named key storing the month the artist joined ABLE. This is not in the canonical schema. The key format `able_artist_joined_` + YYYY-MM must be documented. | admin.html | Low | None | None | 2 |
-| 53 | Dynamic key `able_artist_joined_*` (point #52) — this key is created once per artist. There is never a migration or deletion for it. Add it to the schema with a note that it's created once and persists indefinitely. | admin.html | Low | None | None | 3 |
-| 54 | `safeLS()` in admin reads and parses JSON. If the stored value is valid JSON but not the expected type (e.g., `able_fans` is stored as `"hello"` — a string), `JSON.parse` succeeds but the return is a string not an array. All callers that expect an array must have type validation. | Both | High | Med | None | 1 |
-| 55 | Confirm that `setLS()` always calls `JSON.stringify()` before writing. Raw string writes bypass this (e.g., `localStorage.setItem('able_gig_expires', String(exp))` at admin.html:4238 uses raw string, not `setLS`). This is valid for number keys, but all object/array keys must use `setLS`. | Both | Med | Low | None | 2 |
-| 56 | Keys written as raw strings (bypassing `setLS`): `able_gig_expires` (raw number string), `able_tier` (raw string), `able_first_fan_seen` (raw '1'), `admin_ever_visited` (raw '1'), `able_frc_dismissed` (raw '1'), `able_upgrade_bar_dismissed` (raw '1'). These are all primitive values — raw write is correct for these. Document this pattern. | Both | Low | None | None | 3 |
-| 57 | The `safeLS()` function in admin is defined at admin.html:4403. The v8 version is a different implementation (locate in v8). They must behave identically for all input types. Run them against the same test vectors. | Both | High | Med | None | 1 |
-| 58 | `safeGet = safeLS` (admin.html:4407): an alias. Confirm `safeGet` is used consistently or remove it to reduce confusion. | admin.html | Low | Low | None | 3 |
-| 59 | `able_v3_profile` is read by start.html (to check if a profile exists), admin.html (to manage the profile), and able-v8.html (to render the profile). All three reads must produce the same parsed result. Confirm all three use JSON.parse (via their respective `safeLS` wrappers). | All | High | Low | None | 1 |
-| 60 | Cross-page consistency: confirm start.html writes `able_v3_profile` with at minimum: `{name, vibe, accent, slug, artistId}`. Confirm admin.html reads all these fields without error. Confirm v8 renders correctly with only these minimal fields. | All | High | High | None | 1 |
-| 61 | `able_v3_profile.merch` vs a separate `able_merch` key: locate where merch items are stored. If stored in the profile object, very large merch catalogs could make the profile object large. Confirm storage location. | Both | Med | Med | None | 2 |
-| 62 | Confirm that `able_v3_profile` does NOT store fan data, click data, or view data — these have their own keys. The profile object should only store artist configuration, not operational analytics. | Both | High | Low | None | 1 |
-| 63 | Schema completeness test: list all unique localStorage keys used in admin.html via `grep 'localStorage\.\(getItem\|setItem\)' admin.html`. Compare against the canonical schema. Any key not in the schema is undocumented. | admin.html | High | Med | None | 1 |
-| 64 | Same test for able-v8.html: all localStorage key strings used in v8 that are not in the canonical schema. | able-v8.html | High | Med | None | 1 |
-| 65 | Same test for start.html: all localStorage key strings in start.html. | start.html | High | Med | None | 1 |
-| 66 | Same test for fan.html: all localStorage key strings in fan.html. | fan.html | High | Med | None | 1 |
-| 67 | Schema versioning: there is no `schemaVersion` key in localStorage. When the schema evolves and old data exists, migrations run ad hoc. Add `able_schema_version` key to enable clean version-gated migration logic in the future. | Both | Low | Med | None | 3 |
-| 68 | GDPR schema audit: identify which localStorage keys contain personal data (email, location, names). Per GDPR, these must be available for export and deletion. `able_fans` (emails), `fan_location` (location): both are personal data. Document which keys contain personal data. | Both | High | Low | None | 1 |
-| 69 | Fan export in admin must include all personal data fields from `able_fans`: `email`, `ts`, `source`, `campaignState`, `consentVersion`, `confirmed`, `double_opted_in`. Confirm the export CSV includes all these. | admin.html | High | Low | None | 1 |
-| 70 | Fan deletion in admin (admin.html:4041) removes the fan record from `able_fans`. If there is a Supabase fan row, it must also be deleted. Plan the deletion flow for Supabase era. | admin.html | High | Med | None | 3 |
-| 71 | Confirm that `able_fans` is never read by start.html. The onboarding wizard should not access the fan list. | start.html | Low | None | None | 3 |
-| 72 | `able_v3_profile.ctaPrimary` and `able_v3_profile.ctaSecondary` are objects `{label, url}`. Older profiles may have a `ctas: [{label, url}, ...]` array. The migration in v8 falls back to `profile.ctas[0]` (v8:8160). Add a migration in admin that converts `ctas` to `ctaPrimary`/`ctaSecondary` on load. | admin.html | High | Low | None | 1 |
-| 73 | `able_v3_profile.platforms` is an array of `{url, label, type}` objects. Older profiles may have `links: [{url, ...}]` as the field name. Check admin and v8 for any legacy `profile.links` fallback reads. | Both | High | Low | None | 1 |
-| 74 | `able_v3_profile.releases` (if it exists as an array) vs `releaseDate` and `releaseTitle` (singular fields). Determine the canonical model: one current release with dedicated fields, or an array of releases. Document and enforce. | Both | High | Med | None | 1 |
-| 75 | All Supabase upsert fields (admin.html:3639–3685) must have a 1:1 mapping to localStorage fields per the CLAUDE.md guarantee. Audit the upsert object against the localStorage schema and confirm every field maps correctly. | admin.html | High | Med | None | 1 |
-| 76 | `able_gig_expires` is written as a string number (`String(exp)`) and read with `parseInt()`. The Supabase upsert must convert this to a proper timestamp or store as a number. Confirm the upsert handles this. | admin.html | Med | Low | None | 2 |
-| 77 | `able_shows` items: the `date` field is `YYYY-MM-DD`. The `doorsTime` field is a time string (e.g., `'19:30'`). Confirm both formats are consistent and that no show is saved with a full ISO datetime in the `date` field (which would cause auto-gig date comparison to fail). | Both | High | Low | None | 1 |
-| 78 | Add `able_gig_started` key (proposed in G4 to fix post-gig fan count accuracy) to the canonical schema now, even if implementation is pending. | admin.html | Low | None | None | 2 |
-| 79 | Add `able_gig_ended` key (proposed in G4 for preserving post-gig window state) to the canonical schema. | admin.html | Low | None | None | 2 |
-| 80 | `able_v3_profile.worldMap` or similar: does the World Map feature store artist position data in the profile object? Locate all world-map related localStorage reads/writes and add to schema. | Both | Med | Med | None | 2 |
-| 81 | Session-level keys (stored in `sessionStorage`, not `localStorage`): document these separately. Current session keys: `able_this_fan_email`, `_preReleaseNudgeDismissed`, `_gigModeNudgeDismissed`, `_gigModeNudgeDismissed_gigSeq`, `pills-shimmer-done`, `pills-bloom-done`. | Both | Med | Low | None | 2 |
-| 82 | `sessionStorage` keys from v8 (v8:8700 `able_this_fan_email`, v8:7579 `pills-shimmer-done`, v8:7580 `pills-bloom-done`): these are cleared on tab close. Confirm this is the intended lifetime for each. | able-v8.html | Low | Low | None | 3 |
-| 83 | Confirm that `able_v3_profile` is never stored as `undefined` or as a non-JSON-parseable string. Add a validation step before every `setLS(V3_KEY, ...)` call that checks the value is a plain object (not null, not array, not primitive). | Both | High | Low | None | 1 |
-| 84 | When `safeLS('able_v3_profile', {})` is called and the profile is corrupted (e.g., truncated JSON), `JSON.parse` throws, the catch returns `{}`. The admin then works from an empty profile. This silent recovery may overwrite the artist's data on the next save. Add a `console.error` log when this fallback fires so it can be detected. | Both | Med | Low | None | 2 |
-| 85 | `able_fans` array has no cap for Artist tier (2000 fans max implied by pricing). For Label tier with 10 artist pages, each with 2000 fans, a hypothetical merged view would need 20,000 fan records — well beyond localStorage capacity. Plan a storage strategy for this scale. | Both | Low | High | None | 3 |
-| 86 | Confirm all localStorage writes use either `setLS()` (for objects/arrays) or `localStorage.setItem()` directly (for primitive values). No `JSON.stringify` calls outside of `setLS()`. This ensures all complex data is consistently serialised. | Both | Med | Med | None | 2 |
-| 87 | The `able_v3_profile` write by admin (admin.html:4854 direct `localStorage.setItem`) bypasses `setLS()` for one code path (arc-node click). This is an inconsistency. All profile writes should use `setLS(V3_KEY, profile)`. | admin.html | Med | Low | None | 2 |
-| 88 | Confirm that `localStorage.removeItem('able_starred_fans')` (admin.html:6937) does not accidentally remove the wrong key due to typos. The key `'able_starred_fans'` must match exactly. | admin.html | Low | None | None | 3 |
-| 89 | `able_v3_profile.sectionOrder` and `able_v3_profile.sectionVisibility` fields (v8:6455–6456): these are profile fields set by the artist's section reorder/hide choices. Confirm they are persisted correctly and round-trip through admin save. | Both | Med | Low | None | 2 |
-| 90 | When the schema is migrated to Supabase, every localStorage key maps to a Supabase column or table. Document the full mapping now: `able_v3_profile` → `profiles` table, `able_fans` → `fans` table, `able_clicks` → `clicks` table, `able_views` → `views` table, `able_shows` → `shows` table, `able_tier` → `profiles.tier`. | Both | High | Med | None | 1 |
-| 91 | `able_artist_id` maps to `profiles.id` in Supabase. Confirm the UUID format is the same (both are `crypto.randomUUID()` format). | Both | High | Low | None | 2 |
-| 92 | Confirm that the data-architecture SPEC (`docs/systems/data-architecture/SPEC.md`) exists and is current. This file is the authoritative schema reference. If CLAUDE.md and SPEC.md disagree, SPEC.md wins. | Both | High | Low | None | 1 |
-| 93 | Conduct a full grep of all localStorage key strings across all HTML files. Produce a list of every unique key. Compare against the canonical schema. Report discrepancies. | All | High | Med | None | 1 |
-| 94 | The canonical schema in CLAUDE.md needs an "undocumented/operational" section for keys like `able_first_fan_seen`, `admin_ever_visited`, `able_frc_dismissed`, `able_upgrade_bar_dismissed`, `able_nudge_uses`, `able_gig_source`. These are UI state keys, not data keys, but they must be in the schema to avoid accidental clearing. | Both | Med | Low | None | 1 |
-| 95 | `able_v3_profile` stores the artist's `slug`. This slug is used for the canonical profile URL. Confirm it is set during onboarding and not overwritten by any subsequent profile save unless the artist explicitly changes it. | Both | High | Low | None | 1 |
-| 96 | The schema comment "All localStorage keys will map 1:1 to Supabase table rows when backend is added. Do not rename keys." (CLAUDE.md) — add this as a code comment above the key constant definitions in admin.html and able-v8.html. | Both | Low | None | None | 2 |
-| 97 | Confirm that `able_v3_profile.tier` and the standalone `able_tier` key are kept in sync on every tier write. Write a sync function: `function writeTier(tier) { localStorage.setItem('able_tier', tier); const p = safeLS(V3_KEY, {}); p.tier = tier; setLS(V3_KEY, p); }` and use it everywhere. | Both | High | Low | High | 1 |
-| 98 | The `able_fans` array should have a hard cap enforced on write: `if (fans.length > ABSOLUTE_FAN_CAP) throw new Error('Fan cap exceeded')`. This prevents unbounded growth. ABSOLUTE_FAN_CAP should be set per tier. | Both | High | Med | None | 2 |
-| 99 | Write a schema validation function that can be called in development mode: `validateSchema()` checks all keys for correct types and structure. This is a regression test for schema integrity. | Both | High | High | None | 2 |
-| 100 | Create a canonical schema reference in `docs/systems/data-architecture/SCHEMA.md` (separate from SPEC.md) that lists EVERY localStorage key, its type, its format, which pages write it, which pages read it, its Supabase column, and whether it contains personal data. This is the single authoritative schema document. | All | High | Med | None | 1 |
-
-## Wave Summary
-
-| Wave | Points | Focus |
-|---|---|---|
-| Wave 1 (critical bugs) | 1, 2, 3, 4, 5, 6, 7, 8, 9, 13, 16, 17, 18, 19, 20, 21, 22, 25, 26, 27, 28, 30, 31, 32, 33, 34, 35, 36, 37, 40, 41, 42, 43, 44, 49, 50, 54, 57, 59, 60, 62, 63, 64, 65, 66, 68, 69, 72, 73, 74, 75, 77, 83, 86, 90, 92, 93, 94, 95, 97, 100 | safeLS null bug, type coercion, cross-page consistency, undocumented keys |
-| Wave 2 (improvements) | 10, 11, 12, 14, 23, 24, 29, 38, 39, 46, 47, 51, 52, 55, 61, 76, 78, 79, 80, 81, 84, 87, 89, 91, 96, 98, 99 | Retention, session keys, world-map, sync utilities |
-| Wave 3 (docs / future) | 15, 45, 48, 53, 56, 58, 67, 70, 71, 82, 85, 88 | Storage size notes, Supabase migration, GDPR planning |
+| 1 | Run `grep -r "localStorage" *.html` and produce an exhaustive map of every key read and written across all pages — this map is the baseline audit | ALL | 5 | 2 | L | 1 |
+| 2 | Verify `able_v3_profile` is the exact string used in every read and write — no variant spellings like `able_profile_v3` or `ableV3Profile` | ALL | 5 | 1 | H | 1 |
+| 3 | Verify `able_fans` is the exact string in every read/write — not `ableFans`, `able-fans`, or `fans` | ALL | 5 | 1 | H | 1 |
+| 4 | Verify `able_clicks` is the exact string in every read/write — not `able_cta_clicks` or `clicks` | ALL | 5 | 1 | H | 1 |
+| 5 | Verify `able_views` is the exact string in every read/write — not `able_page_views` or `views` | ALL | 5 | 1 | H | 1 |
+| 6 | Verify `able_gig_expires` is the exact string in every read/write — not `gig_expires` or `able_gig_expiry` | ALL | 5 | 1 | H | 1 |
+| 7 | Verify `able_profile` (legacy wizard output key) is not actively written by any current page — it is legacy, superseded by `able_v3_profile` | ALL | 4 | 1 | M | 1 |
+| 8 | If `able_profile` is read anywhere for backward compatibility, document the migration path: on read, merge into `able_v3_profile` and delete the legacy key | ALL | 4 | 2 | M | 2 |
+| 9 | Verify `able_shows` is the exact string in every read/write — not `able_events` or `shows` | ALL | 5 | 1 | H | 1 |
+| 10 | Verify `able_dismissed_nudges` is the exact string in every read/write | ALL | 4 | 1 | M | 1 |
+| 11 | Verify `able_starred_fans` is the exact string in every read/write | ALL | 4 | 1 | M | 1 |
+| 12 | Verify `able_tier` is the exact string in every read/write — not `ableTier` or `user_tier` | ALL | 5 | 1 | H | 1 |
+| 13 | Verify `admin_visit_dates` is the exact string in every read/write | ALL | 3 | 1 | M | 1 |
+| 14 | Produce a definitive list of ALL localStorage keys used across the codebase and compare to the canonical schema in CLAUDE.md — flag any undocumented keys | ALL | 5 | 2 | L | 1 |
+| 15 | Any undocumented localStorage key found in the codebase must be either added to the canonical schema or removed | ALL | 4 | 2 | M | 1 |
+| 16 | Define a `STORAGE_KEYS` constant object in `shared/storage.js` containing all canonical key strings — no raw string literals in any page | ALL | 5 | 2 | M | 1 |
+| 17 | `STORAGE_KEYS` should be the single source of truth: `{ PROFILE: "able_v3_profile", FANS: "able_fans", ... }` — imported by all pages via `<script>` | ALL | 5 | 3 | M | 2 |
+| 18 | All localStorage reads must use `STORAGE_KEYS.X` rather than raw string literals — prevents typo-induced key mismatches | ALL | 5 | 3 | M | 2 |
+| 19 | Every `localStorage.getItem` call must be wrapped in try/catch to handle SecurityError in restricted contexts | ALL | 5 | 1 | H | 1 |
+| 20 | Every `localStorage.setItem` call must be wrapped in try/catch to handle QuotaExceededError | ALL | 5 | 1 | H | 1 |
+| 21 | Create a `safeGet(key, fallback)` utility that wraps getItem + JSON.parse + try/catch and returns the fallback on any failure | ALL | 5 | 2 | M | 1 |
+| 22 | Create a `safeSet(key, value)` utility that wraps JSON.stringify + setItem + try/catch and returns a boolean success flag | ALL | 5 | 2 | M | 1 |
+| 23 | `safeGet` should validate the parsed value against a shape definition before returning — not just parse and return blindly | ALL | 4 | 3 | M | 2 |
+| 24 | Define a shape validator for `able_v3_profile`: required fields, their types, and valid value ranges | ALL | 5 | 3 | M | 2 |
+| 25 | Define a shape validator for `able_fans`: must be an array of objects with `email` (string), `ts` (number), `source` (string) | ALL | 4 | 2 | M | 2 |
+| 26 | Define a shape validator for `able_clicks`: array of `{label: string, type: string, ts: number, source: string}` | ALL | 4 | 2 | M | 2 |
+| 27 | Define a shape validator for `able_views`: array of `{ts: number, source: string}` | ALL | 4 | 2 | M | 2 |
+| 28 | Define a shape validator for `able_shows`: array of `{venue: string, date: string, doorsTime: string, ticketUrl: string, featured: boolean}` | ALL | 4 | 2 | M | 2 |
+| 29 | `able_gig_expires` must be validated as a positive integer (Unix timestamp) — reject strings, objects, null | ALL | 4 | 1 | M | 1 |
+| 30 | `able_tier` must be validated against the enum `["free","artist","artist-pro","label"]` — reject any other value | ALL | 5 | 1 | H | 1 |
+| 31 | `admin_visit_dates` must be validated as an array of ISO date strings — corrupt entries removed, not passed through | ALL | 3 | 2 | M | 2 |
+| 32 | `able_dismissed_nudges` must be validated as an array of strings — corrupt entries removed | ALL | 3 | 1 | L | 2 |
+| 33 | `able_starred_fans` must be validated as an array of email strings — corrupt entries removed | ALL | 3 | 1 | L | 2 |
+| 34 | Verify that start.html wizard writes `able_v3_profile` with the correct shape that admin.html expects — test the round-trip | STR | 5 | 2 | H | 1 |
+| 35 | Verify that `able_v3_profile.name` written by start.html is the same field read as the artist name in admin.html and V8 | STR | 5 | 1 | H | 1 |
+| 36 | Verify that `able_v3_profile.bio` written by start.html is the same field rendered as the bio in V8 | STR | 5 | 1 | H | 1 |
+| 37 | Verify that `able_v3_profile.accent` written by start.html is the same field applied as `--color-accent` in V8 | STR | 5 | 1 | H | 1 |
+| 38 | Verify that `able_v3_profile.theme` written by start.html is the same field used to apply the dark/light/glass/contrast class in V8 | STR | 4 | 1 | M | 1 |
+| 39 | Verify that `able_v3_profile.releaseDate` written by start.html (if set) is in ISO format that V8 state logic can parse with `new Date()` | STR | 5 | 2 | H | 1 |
+| 40 | Verify that `able_v3_profile.stateOverride` is not written by start.html — it should only be set by admin.html | STR | 4 | 1 | M | 1 |
+| 41 | If start.html accidentally writes `stateOverride`, admin.html should clear it on first load rather than inherit an unknown state | ADM | 4 | 2 | M | 2 |
+| 42 | Verify that admin.html reads `able_v3_profile` and `able_shows` as two separate keys — not combined into a single object | ADM | 4 | 1 | M | 1 |
+| 43 | Verify that V8 reads `able_shows` for the events section and not a nested shows array inside `able_v3_profile` | V8 | 4 | 1 | M | 1 |
+| 44 | Verify that `able_fans` is written as an array, not as a JSON-stringified array inside a stringified object | ALL | 5 | 1 | H | 1 |
+| 45 | Verify that `able_clicks` is written as an array and each entry is pushed, not overwritten | ALL | 5 | 1 | H | 1 |
+| 46 | Verify that `able_views` is written as an array and each entry is pushed, not overwritten | ALL | 5 | 1 | H | 1 |
+| 47 | Verify that `able_fans` does not accumulate duplicate entries for the same email address | ALL | 4 | 2 | M | 2 |
+| 48 | Dedupe logic for `able_fans`: before push, check if an entry with the same email already exists — if so, skip (not update) | V8 | 4 | 2 | M | 2 |
+| 49 | Verify that `admin_visit_dates` is capped at the last 60 entries as documented — it must not grow unbounded | ADM | 3 | 2 | L | 2 |
+| 50 | When admin.html loads, append today's ISO date to `admin_visit_dates` and trim to last 60 in a single atomic operation | ADM | 3 | 2 | L | 2 |
+| 51 | `admin_visit_dates` should only push one entry per calendar day — check for today's date before appending | ADM | 3 | 2 | L | 2 |
+| 52 | Verify that `able_dismissed_nudges` entries are nudge ID strings (e.g. "presave-cta") and not random values | ADM | 3 | 1 | L | 2 |
+| 53 | Document all valid nudge IDs: `["presave-cta","add-show","add-bio","connect-spotify",...]` — any undocumented ID found in code must be added | ADM | 3 | 2 | L | 2 |
+| 54 | Verify that dismissing a nudge writes to `able_dismissed_nudges` (array push) and not to a boolean flag inside `able_v3_profile` | ADM | 4 | 1 | M | 1 |
+| 55 | Verify `able_starred_fans` contains email strings, not full fan objects — keeping references lean | ADM | 3 | 1 | L | 1 |
+| 56 | If a starred fan's email is not found in `able_fans`, the star should be silently dropped from the UI — no orphan stars | ADM | 3 | 2 | L | 3 |
+| 57 | Document the maximum expected size of each localStorage key in bytes — `able_fans` with 2000 entries is the largest | ALL | 3 | 2 | L | 2 |
+| 58 | Verify that `able_fans` with 2000 entries stays within localStorage quota (typically 5MB per origin) — estimate JSON size | ALL | 4 | 2 | M | 2 |
+| 59 | If `able_fans.length` would exceed the tier cap on write, reject the write and return an error — do not silently truncate | V8 | 4 | 2 | M | 2 |
+| 60 | Verify that `able_clicks` and `able_views` arrays do not grow indefinitely — document a maximum size or rolling window policy | ALL | 3 | 2 | M | 2 |
+| 61 | Implement a rolling window cap on `able_clicks` and `able_views`: keep the last 1000 entries maximum | ALL | 3 | 3 | M | 3 |
+| 62 | Schema migration strategy: when a new field is added to `able_v3_profile`, existing profiles that lack the field must not crash | ALL | 5 | 2 | H | 2 |
+| 63 | Use optional chaining (`profile?.fieldName`) and nullish coalescing (`?? defaultValue`) throughout all profile reads | ALL | 5 | 2 | M | 1 |
+| 64 | Add a schema version field to `able_v3_profile`: `{ schemaVersion: 1, ... }` — enables future migrations | ALL | 4 | 2 | L | 3 |
+| 65 | When reading `able_v3_profile` with a missing or lower `schemaVersion`, run a `migrateProfile(profile)` function before use | ALL | 4 | 3 | M | 3 |
+| 66 | `migrateProfile` should be a pure function that takes an old shape and returns the current shape — side-effect free | ALL | 4 | 2 | L | 3 |
+| 67 | After migration, write the upgraded profile back to localStorage so future reads are immediate | ALL | 4 | 2 | M | 3 |
+| 68 | Log (debug mode only) when a migration runs: "Migrated able_v3_profile from v1 to v2" | ALL | 2 | 1 | L | 4 |
+| 69 | Verify that the `able_profile` legacy key migration (merge into `able_v3_profile` then delete) is idempotent — running it twice does not corrupt data | ALL | 4 | 2 | M | 3 |
+| 70 | Verify `able_shows` entries have all documented fields: `venue`, `date`, `doorsTime`, `ticketUrl`, `featured` — add defaults for missing fields on read | ALL | 4 | 2 | M | 2 |
+| 71 | `able_shows` date field must be a string in a parseable format — validate on read and remove corrupt entries | ALL | 4 | 2 | M | 2 |
+| 72 | `able_shows` `featured` field must be a boolean — coerce if stored as string "true"/"false" | ALL | 3 | 1 | L | 2 |
+| 73 | Verify that V8 reads `able_shows` sorted by date ascending — events should appear in chronological order | V8 | 3 | 1 | L | 2 |
+| 74 | Verify that admin.html reads `able_shows` in the same sorted order for the events management UI | ADM | 3 | 1 | L | 2 |
+| 75 | Verify that localStorage reads in V8 happen after DOMContentLoaded — no race conditions with script execution order | V8 | 4 | 1 | M | 1 |
+| 76 | Verify that localStorage reads in admin.html happen after DOMContentLoaded — consistent with V8 | ADM | 4 | 1 | M | 1 |
+| 77 | Verify that start.html writes `able_v3_profile` before navigating to admin.html — data must be available when admin.html loads | STR | 5 | 1 | H | 1 |
+| 78 | If start.html navigation happens before localStorage write completes (async edge case), admin.html must handle an absent profile gracefully | ADM | 4 | 2 | M | 2 |
+| 79 | Verify that the schema documentation in CLAUDE.md exactly matches the keys and value shapes found in the codebase — no drift | ALL | 4 | 2 | L | 1 |
+| 80 | Document the `able_artist_claimed` flag used for first-visit detection on V8 — add it to the canonical schema | V8 | 4 | 1 | M | 1 |
+| 81 | Verify `able_artist_claimed` is a boolean (or `"true"`/`"false"` string if localStorage-coerced) — parse explicitly | V8 | 3 | 1 | L | 1 |
+| 82 | When Supabase backend is added, the migration script should read each localStorage key and POST to the matching table — document this mapping | ALL | 4 | 2 | L | 3 |
+| 83 | `able_fans` maps to Supabase `fans` table — document the column mapping: `email → email`, `ts → created_at`, `source → source` | ALL | 4 | 1 | L | 3 |
+| 84 | `able_clicks` maps to Supabase `clicks` table — document the column mapping | ALL | 4 | 1 | L | 3 |
+| 85 | `able_views` maps to Supabase `views` table — document the column mapping | ALL | 4 | 1 | L | 3 |
+| 86 | `able_v3_profile` maps to Supabase `profiles` table — document the column mapping for every field | ALL | 4 | 2 | L | 3 |
+| 87 | `able_shows` maps to Supabase `events` table — document the column mapping | ALL | 4 | 1 | L | 3 |
+| 88 | Verify that no localStorage key contains personally identifiable information beyond what is necessary — fan emails in `able_fans` is expected; nothing else | ALL | 5 | 2 | H | 1 |
+| 89 | Add a privacy note in `docs/systems/data-architecture/SPEC.md`: localStorage stores fan emails; this data must be treated as PII and purged on account deletion | ALL | 4 | 1 | L | 1 |
+| 90 | Verify that `able_fans` does not store fan names, phone numbers, or any data beyond email, timestamp, and source | ALL | 4 | 1 | M | 1 |
+| 91 | Create a `clearAllAbleData()` utility (for account deletion / reset) that removes all `able_*` and `admin_*` keys | ALL | 3 | 2 | M | 3 |
+| 92 | `clearAllAbleData()` should list all keys explicitly, not use `localStorage.clear()` which would delete all domain data | ALL | 4 | 1 | M | 3 |
+| 93 | Verify that clearing data and reloading V8 renders the graceful "profile not set up" state, not a crash | V8 | 4 | 2 | M | 2 |
+| 94 | Verify that clearing data and reloading admin.html redirects to start.html or shows a setup prompt | ADM | 4 | 2 | M | 2 |
+| 95 | Add a `localStorage.key()` enumeration check on admin load: log any keys starting with `able_` or `admin_` that are not in the canonical schema | ADM | 3 | 2 | L | 3 |
+| 96 | Document the localStorage size budget: total ABLE data should stay under 2MB to leave headroom on the 5MB origin limit | ALL | 3 | 1 | L | 2 |
+| 97 | Playwright test: complete start.html wizard, then load admin.html, verify profile name, bio, and accent are all rendered correctly | STR | 5 | 3 | M | 2 |
+| 98 | Playwright test: write a valid `able_fans` array with 5 entries directly to localStorage, load admin.html, verify fan count shows 5 | ADM | 4 | 3 | M | 2 |
+| 99 | Playwright test: write a corrupt (non-JSON) value to `able_v3_profile`, load V8, verify it renders gracefully without crashing | V8 | 5 | 3 | H | 2 |
+| 100 | Write `docs/systems/data-architecture/STORAGE-AUDIT.md` with the grep-verified key inventory, shape definitions, and round-trip test results as a living document | ALL | 3 | 3 | L | 3 |

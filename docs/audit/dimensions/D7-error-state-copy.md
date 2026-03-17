@@ -1,111 +1,111 @@
 # Dimension D7 — Error State Copy
 **Category:** Copy, Voice & Messaging
 **Phase:** 4 (Copy)
-**Status:** Not started
+**Status:** Draft — code-grounded
 
-Error messages are the most trust-sensitive copy in the product. An artist who hits a broken form and reads "Error 500: Internal Server Error" has just learned that ABLE does not care about them. An artist who reads "Your show didn't save. Try once more — if it keeps happening, reach out." has learned that ABLE is on their side. Full compliance means every error scenario — form validation, network failure, Spotify timeout, localStorage corruption, quota exceeded, auth failure — has a human-written message that maintains ABLE voice, names what failed, and offers a clear next action. No technical error codes surface to users. No "Something went wrong." without specific context.
+Error messages are the most trust-sensitive copy in the product. An artist who hits a broken form and reads "Error 500" has learned that ABLE does not care about them. An artist who reads "Your show didn't save. Try once more — if it keeps happening, reach out." has learned ABLE is on their side. Full compliance means every error scenario — form validation, network failure, Spotify timeout, localStorage corruption, quota exceeded, auth failure — has a human-written message that maintains ABLE voice, names what failed, and offers a clear next action. No technical error codes surface to users. No "Something went wrong." without specific context. The spec ban is explicit: `'Something went wrong'` is a banned phrase.
 
 ## 100 Improvement Points
 
 | # | Improvement | Page | Impact | Effort | Risk | Wave |
 |---|---|---|---|---|---|---|
-| 1 | Replace "Something went wrong." with a specific error message naming the operation that failed | ALL | 5 | 1 | L | 1 |
-| 2 | Replace "Error 500" or any HTTP status code shown to users with a human description of what failed | ALL | 5 | 1 | L | 1 |
-| 3 | Replace "Network error" with "Couldn't connect right now. Check your signal and try again." | ALL | 5 | 1 | L | 1 |
-| 4 | Replace "Something went wrong. Try again or use the skip link." on the Spotify step with "Couldn't reach Spotify right now. Skip and enter your name below." | STR | 5 | 1 | L | 1 |
-| 5 | Replace "Failed to save" on any save operation with "[specific thing] didn't save. Try once more." | ADM | 5 | 1 | L | 1 |
-| 6 | Replace "Invalid email" form validation with "That doesn't look like an email." | ALL | 4 | 1 | L | 1 |
-| 7 | Replace "This field is required" with a context-specific message echoing the field label | ALL | 4 | 1 | L | 1 |
-| 8 | Replace "Email already in use" with "There's already a page for that email. Sign in instead." | ALL | 4 | 1 | L | 1 |
-| 9 | Replace "Invalid URL" on any CTA URL validation with "That URL doesn't look right. Make sure it starts with https://" | ALL | 4 | 1 | L | 1 |
-| 10 | Replace "Unauthorised" or "403 Forbidden" with "You don't have access to this. Sign in again." | ALL | 5 | 1 | L | 1 |
-| 11 | Replace "Session expired" with "You've been signed out. Sign back in to continue." | ALL | 5 | 1 | L | 1 |
-| 12 | Replace "QuotaExceededError" or device storage full error with "Your device storage is full. Some changes may not save." | V8 | 4 | 1 | L | 1 |
-| 13 | Replace "LocalStorage unavailable" or private browsing storage error with "Your browser is blocking local storage. Some things won't save until you change that setting." | V8 | 4 | 1 | L | 2 |
-| 14 | Replace any "JSON parse error" or data corruption message with "Your profile data looks like it got corrupted. Let's reset it." with a specific recovery CTA | ALL | 5 | 2 | M | 1 |
-| 15 | Add a data corruption recovery flow with the copy "Your page data looks off. We can reset it — you'll need to set it up again." | ADM | 5 | 3 | H | 2 |
-| 16 | Replace "Upload failed" with "That file didn't upload. Check the file size is under [X]MB and try again." | ADM | 4 | 1 | L | 1 |
-| 17 | Replace "File too large" with "That file is too large. Keep it under [X]MB." | ADM | 4 | 1 | L | 1 |
-| 18 | Replace "Invalid file type" with "That file type won't work here. Use [accepted types]." | ADM | 4 | 1 | L | 1 |
-| 19 | Replace "Spotify connection failed" with "Couldn't connect to Spotify. Try again — or skip and enter your details manually." | ALL | 4 | 1 | L | 1 |
-| 20 | Replace "No Spotify results" with "Nothing came up. Try a different spelling, or skip below." | STR | 4 | 1 | L | 1 |
-| 21 | Replace "Rate limit exceeded" with "Too many requests. Wait a moment and try again." | ALL | 4 | 1 | L | 1 |
-| 22 | Replace "Supabase connection error" with "Couldn't connect right now. Your local changes are safe — try again in a moment." | ALL | 5 | 1 | L | 1 |
-| 23 | Confirm no raw Supabase error object is ever shown to users — all Supabase errors must be caught and translated | ALL | 5 | 2 | H | 1 |
-| 24 | Replace "CORS error" with a user-friendly network description — CORS errors should never surface to users | ALL | 5 | 1 | L | 1 |
-| 25 | Confirm all try/catch blocks in admin.html have a user-visible error message, not just a console.error | ADM | 5 | 3 | M | 1 |
-| 26 | Confirm all try/catch blocks in able-v8.html have a user-visible error message | V8 | 5 | 3 | M | 1 |
-| 27 | Confirm all try/catch blocks in start.html have a user-visible error message | STR | 5 | 3 | M | 1 |
-| 28 | Confirm all try/catch blocks in landing.html have user-visible error handling for any dynamic content | LND | 3 | 2 | M | 2 |
-| 29 | Replace "Email confirmation failed" with "Couldn't confirm your email right now. Try the link again — it's valid for 24 hours." | ALL | 4 | 1 | L | 2 |
-| 30 | Replace "Magic link expired" with "That sign-in link has expired. Request a new one." | ALL | 4 | 1 | L | 2 |
-| 31 | Replace "Magic link already used" with "You've already used that link. Request a new one to sign in." | ALL | 4 | 1 | L | 2 |
-| 32 | Replace "Fan sign-up failed" on the V8 fan capture form with "Couldn't save your email right now. Try again." | V8 | 5 | 1 | L | 1 |
-| 33 | Confirm the fan capture form has an error state that does not clear the fan's email from the input on failure | V8 | 5 | 1 | M | 2 |
-| 34 | Replace "Show save failed" with "That show didn't save. Try once more." with a single retry CTA | ADM | 4 | 1 | L | 1 |
-| 35 | Replace "Release update failed" with "That release didn't update. Try once more." | ADM | 4 | 1 | L | 1 |
-| 36 | Replace "Profile save failed" with "Your page didn't save. Try once more — if it keeps happening, reach out." | ADM | 5 | 1 | L | 1 |
-| 37 | Replace "Snap card save failed" with "That snap card didn't save. Try once more." | ADM | 4 | 1 | L | 1 |
-| 38 | Replace "Gig mode toggle failed" with "Gig mode didn't switch. Try once more." | ADM | 4 | 1 | L | 1 |
-| 39 | Confirm all error toasts in admin.html auto-dismiss after 5 seconds with no action, or persist until dismissed if they require action | ADM | 4 | 2 | M | 2 |
-| 40 | Confirm all error toasts have a dismiss button so artists are never stuck reading an error that can't be closed | ADM | 4 | 1 | M | 2 |
-| 41 | Replace "Error" as a standalone toast heading with the specific failure name — "Show not saved", "Profile not saved" | ADM | 4 | 1 | L | 1 |
-| 42 | Confirm error toasts do not stack more than two deep — a third error replaces the oldest | ADM | 3 | 2 | M | 3 |
-| 43 | Replace "Try again" as a standalone error CTA with the specific operation — "Try saving again", "Try uploading again" | ALL | 3 | 1 | L | 2 |
-| 44 | Confirm the retry CTA on network errors names the specific action being retried | ALL | 3 | 1 | L | 2 |
-| 45 | Replace "Contact support" as an error recovery CTA with "Reach out to us" and a direct email link | ALL | 3 | 1 | L | 2 |
-| 46 | Confirm the fan confirmation email delivery failure message (to the artist in admin) reads "That email didn't send. The fan is still on your list." | ADM | 4 | 2 | M | 2 |
-| 47 | Replace "oEmbed fetch failed" error on snap card media with "Couldn't load that preview. Check the link and try again." | ADM | 3 | 1 | L | 2 |
-| 48 | Replace "Playlist import failed" with "Couldn't load that playlist. Make sure it's public, then try again." | ADM | 3 | 1 | L | 2 |
-| 49 | Confirm all form validation errors appear inline below the relevant field, not at the top of the form | ALL | 4 | 2 | M | 2 |
-| 50 | Confirm form validation errors are associated with their field via aria-describedby for screen readers | ALL | 4 | 2 | M | 2 |
-| 51 | Replace "Required" as a field label suffix with nothing — required fields should be indicated structurally, not via a label suffix | ALL | 3 | 1 | L | 2 |
-| 52 | Confirm the fan sign-up form on V8 shows the error in the same typographic style as the success echo to avoid visual panic | V8 | 4 | 2 | M | 3 |
-| 53 | Replace "Sign-ups are paused right now. Check back soon." with "The list is full right now." | V8 | 3 | 1 | L | 2 |
-| 54 | Confirm the "list is full" message on V8 is artist-authored and not platform-authored — it reads as if the artist configured it | V8 | 3 | 1 | L | 3 |
-| 55 | Replace "Fan limit reached" admin toast with "You've hit 100 fans — that's the free plan limit. Your list is locked until you upgrade or export some fans." | ADM | 4 | 1 | L | 2 |
-| 56 | Replace "Export failed" with "The export didn't complete. Try again — your fan data is safe." | ADM | 4 | 1 | L | 2 |
-| 57 | Replace "Delete failed" on any delete operation with "[specific thing] couldn't be deleted. Try again." | ADM | 4 | 1 | L | 2 |
-| 58 | Confirm the show-delete confirmation dialog has an error state if deletion fails | ADM | 3 | 2 | M | 3 |
-| 59 | Replace "Image upload error" with "That image didn't upload. Check it's a JPG or PNG under 5MB." | ADM | 4 | 1 | L | 2 |
-| 60 | Confirm the Spotify import error state in admin offers both a retry and a manual-entry fallback | ADM | 4 | 1 | L | 2 |
-| 61 | Replace "Cannot read property of undefined" and all JS runtime errors shown to users with a caught error message | ALL | 5 | 3 | H | 1 |
-| 62 | Add a global window.onerror handler in admin.html that catches uncaught errors and shows a friendly recovery message | ADM | 4 | 3 | H | 2 |
-| 63 | Add a global window.onerror handler in able-v8.html for uncaught errors | V8 | 4 | 3 | H | 2 |
-| 64 | Confirm the V8 profile page degrades gracefully if Supabase is unreachable — showing cached localStorage data rather than an error screen | V8 | 5 | 2 | H | 2 |
-| 65 | Confirm admin.html degrades gracefully if Supabase is unreachable — the artist can still edit from localStorage | ADM | 5 | 2 | H | 2 |
-| 66 | Replace "Page not found" for invalid artist profile slugs with "This page isn't live yet." | V8 | 4 | 1 | L | 2 |
-| 67 | Confirm the 404 error state on V8 has a back link to ABLE's homepage | V8 | 3 | 1 | L | 2 |
-| 68 | Replace "Unauthorized" auth error with "You need to sign in to do that." | ALL | 4 | 1 | L | 1 |
-| 69 | Confirm all error messages end with a period, not a question mark or exclamation mark | ALL | 4 | 2 | L | 2 |
-| 70 | Confirm all error messages are written in second person addressing the user, not third person describing the system | ALL | 4 | 2 | L | 2 |
-| 71 | Replace "The system encountered an error" with the specific failure in first or second person | ALL | 5 | 1 | L | 1 |
-| 72 | Confirm all error states have a next-action CTA — never a dead-end error with no path forward | ALL | 5 | 2 | M | 2 |
-| 73 | Confirm the onboarding email resend error reads "Couldn't send the link. Try again in a moment." | STR | 4 | 1 | L | 2 |
-| 74 | Confirm the admin page load error (corrupt localStorage) shows a guided reset: "Your page data looks off. We can help you start fresh." | ADM | 5 | 3 | H | 2 |
-| 75 | Replace "Profile not found" with "Your page isn't set up yet. Build it in a couple of minutes." | ADM | 4 | 1 | L | 2 |
-| 76 | Confirm network connectivity errors have a specific recovery instruction based on what the artist was doing | ALL | 4 | 2 | M | 2 |
-| 77 | Replace "Subscription error" on any tier payment failure with "There was a problem with your subscription. Check your payment details." | ALL | 4 | 1 | L | 2 |
-| 78 | Confirm all Stripe payment errors surface a human message, never a Stripe error code | ALL | 5 | 2 | M | 2 |
-| 79 | Replace "Payment failed" with "That payment didn't go through. Check your card details and try again." | ALL | 5 | 1 | L | 2 |
-| 80 | Confirm the artist welcome email delivery failure is silently retried server-side rather than showing an error to the artist | ALL | 4 | 2 | H | 3 |
-| 81 | Confirm validation error states use the ABLE accent colour for highlighting, not a jarring red | ALL | 3 | 2 | M | 3 |
-| 82 | Replace "URL is too long" URL validation error with "That URL is too long. Shorten it and try again." | ALL | 3 | 1 | L | 2 |
-| 83 | Replace "Name too short" validation error on artist name with "What do you go by? Give it at least two characters." | STR | 3 | 1 | L | 2 |
-| 84 | Replace "Name too long" validation error with "That's a bit long. Try a shorter version." | STR | 3 | 1 | L | 2 |
-| 85 | Confirm the "incorrect format" error on any date input reads "That date doesn't look right." | ADM | 3 | 1 | L | 2 |
-| 86 | Replace "Date in the past" validation on release date with "That date has already passed. Pick a future date." | ADM | 3 | 1 | L | 2 |
-| 87 | Confirm the show date validation reads "That show date has already passed." when an artist adds a past date | ADM | 3 | 1 | L | 2 |
-| 88 | Replace "Tick price cannot be empty" with "Add a ticket price, or mark the show as free." | ADM | 3 | 1 | L | 2 |
-| 89 | Confirm the crop tool error for images reads "That crop didn't apply. Try dragging the crop again." | ADM | 2 | 1 | L | 3 |
-| 90 | Replace "Permission denied" on browser notification permission with "Turn on notifications in your browser settings to get show reminders." | V8 | 3 | 1 | L | 2 |
-| 91 | Confirm the service worker registration failure is silent — it should never show an error to the fan | V8 | 4 | 1 | M | 2 |
-| 92 | Replace "Cache update failed" with silence — cache errors should never surface to users | V8 | 4 | 1 | M | 2 |
-| 93 | Confirm the iframe oEmbed load error replaces the failed iframe with a text link rather than a broken embed | V8 | 3 | 2 | M | 3 |
-| 94 | Replace "Embed failed to load" with "Couldn't load that embed. View it directly →" with a fallback link | V8 | 3 | 1 | L | 2 |
-| 95 | Confirm the admin preview panel error reads "Preview unavailable right now." with a reload link | ADM | 3 | 1 | L | 2 |
-| 96 | Confirm all inline error messages in admin forms clear when the user starts correcting the field | ADM | 4 | 2 | M | 3 |
-| 97 | Confirm all error copy in admin has been reviewed for exclamation marks and none exist | ADM | 4 | 1 | L | 2 |
-| 98 | Confirm all error copy on V8 maintains first-person artist voice even in error — e.g. "My page couldn't load right now." | V8 | 3 | 2 | M | 3 |
-| 99 | Audit all JavaScript catch blocks across all four pages for the string "Something went wrong" and replace each with a specific message | ALL | 5 | 3 | L | 1 |
-| 100 | Run a systematic error injection test (block network, corrupt localStorage, exceed quota) and document every error message shown, verifying all are in ABLE voice | ALL | 5 | 3 | H | 6 |
+| 1 | start.html line 1769: `err.message \|\| 'Something went wrong. Try again or use the skip link.'` — BANNED PHRASE; replace fallback with `'Couldn\'t complete that step. Try again or use the skip link below.'` | STR | 5 | 1 | L | 1 |
+| 2 | start.html line 1701: `'Import failed. Try the skip link below.'` — this is the error thrown when Spotify import returns an error from the server; confirm it surfaces correctly and that `result.data.error` is always a human-readable string before it can override this fallback | STR | 4 | 1 | L | 1 |
+| 3 | admin.html line 4422: `'Your device is running low on storage. Time to sync your data.'` — "Time to sync" implies a sync feature that doesn't exist yet; replace with `'Your device is running low on storage. Export your fans as CSV to free space.'` | ADM | 3 | 1 | L | 1 |
+| 4 | admin.html line 4449: `"No connection — your changes will save when you're back online."` — confirm this is accurate; if changes are NOT actually queued offline, change to `'No connection — reconnect to save your changes.'` to avoid misleading the artist | ADM | 5 | 2 | M | 1 |
+| 5 | admin.html line 4452: `'Back online.'` — clean; confirm retained | ADM | 1 | 1 | L | 3 |
+| 6 | admin.html line 4456: `'No connection — working offline.'` — duplicate of line 4449; confirm both fire in the correct scenario and consolidate if they fire on the same event | ADM | 3 | 1 | L | 2 |
+| 7 | admin.html line 4556: `'Copy failed'` — too bare; replace with `'Couldn\'t copy — try selecting and copying manually.'` | ADM | 2 | 1 | L | 2 |
+| 8 | admin.html line 5844: `'Add a video URL first.'` — correct and direct; confirm retained | ADM | 1 | 1 | L | 3 |
+| 9 | admin.html line 6031: `'Add an artist name first.'` — correct; confirm retained | ADM | 1 | 1 | L | 3 |
+| 10 | admin.html line 7636: `'Add your artist name first.'` — correct; confirm retained | ADM | 1 | 1 | L | 3 |
+| 11 | admin.html line 7646: `'Add your artist name first.'` — second occurrence; same note | ADM | 1 | 1 | L | 3 |
+| 12 | admin.html line 8263: `'Could not copy — try manually.'` — acceptable; but "manually" is vague; consider `'Could not copy — select the URL and copy it yourself.'` | ADM | 1 | 1 | L | 3 |
+| 13 | admin.html: any `catch` block that calls `showToast` without a human string — audit all catch blocks and confirm no technical error message can surface; each catch must have a hardcoded human fallback | ADM | 5 | 2 | M | 1 |
+| 14 | start.html line 1333: `'Enter your artist name to continue.'` — the field error on the name field; this is direct and specific; confirm retained | STR | 1 | 1 | L | 3 |
+| 15 | start.html line 1388: `'Enter a valid email to continue.'` — direct and specific; confirm retained | STR | 1 | 1 | L | 3 |
+| 16 | start.html: the Spotify import error field `iSpotifyImportErr` (line 1198) — confirm what message populates this element when the import fails; it must never show a raw API error string | STR | 4 | 1 | L | 1 |
+| 17 | start.html line 1814: `"Couldn't read that Linktree — try pasting your links manually."` — well-written; confirm retained | STR | 1 | 1 | L | 3 |
+| 18 | able-v8.html line 8774: `'Check your email address.'` — the fan sign-up email validation error; spec-compliant; confirm retained | V8 | 1 | 1 | L | 3 |
+| 19 | able-v8.html: fan sign-up form — if the form submission fails (network error), confirm there is a specific error message: `'Couldn\'t save your sign-up. Try again — or check your signal.'` | V8 | 5 | 2 | M | 1 |
+| 20 | able-v8.html: fan cap reached — the fan-facing message when sign-ups are paused; current text unknown; confirm it does not use SaaS language; canonical: `'Sign-ups are paused right now. Check back soon.'` — if fan cap is hit, this must be in artist voice | V8 | 4 | 1 | L | 1 |
+| 21 | able-v8.html: oEmbed / music embed load failure — if a Spotify or YouTube embed fails to load in the page, there must be a graceful fallback that doesn't leave a broken iframe visible | V8 | 4 | 2 | M | 2 |
+| 22 | admin.html: the profile save operation — if `setLS` fails (which triggers QuotaExceededError), the quota toast (line 4422) fires; confirm this is the only path and no silent save failure is possible | ADM | 5 | 2 | M | 1 |
+| 23 | admin.html: the profile save — if a field fails validation before save, the current behavior is unknown; confirm either inline field errors or a toast fires with a specific message | ADM | 4 | 2 | M | 1 |
+| 24 | admin.html: the accent colour save — `showToast('Accent saved.')` (line 8022); no error case visible; confirm what happens if the colour is invalid | ADM | 2 | 1 | L | 3 |
+| 25 | admin.html: the gig mode expiry — if the gig timer fires but the localStorage write fails, confirm the UI does not silently keep showing gig mode | ADM | 3 | 2 | M | 2 |
+| 26 | admin.html: the slug save — if the slug contains invalid characters, confirm the field error fires with: `'Lowercase letters, numbers, and hyphens only.'` | ADM | 3 | 1 | L | 2 |
+| 27 | admin.html: the slug save — if the slug is already taken (once backend lands), the error must be: `'That URL is taken. Try a variation.'` not a generic save failure | ADM | 3 | 2 | M | 3 |
+| 28 | admin.html: the Spotify artist URL import on the connections page — if the URL is invalid, confirm the error is: `'That doesn\'t look like a Spotify artist URL. Make sure it starts with open.spotify.com/artist/'` | ADM | 3 | 2 | M | 2 |
+| 29 | admin.html: the shows sheet — if a show is saved with no venue name, confirm either a validation error fires or a default is applied | ADM | 3 | 2 | M | 2 |
+| 30 | admin.html: the shows sheet — if a show is saved with a past date, confirm whether this is allowed or blocked; if blocked, the error must be: `'That date has passed. Pick a future date.'` | ADM | 3 | 2 | M | 2 |
+| 31 | admin.html: the shows sheet — if a ticket URL is entered but invalid (not a URL), confirm error: `'That doesn\'t look like a URL. Make sure it starts with https://'` | ADM | 3 | 2 | M | 2 |
+| 32 | admin.html: the release URL validation — if a non-music URL is entered, confirm error: `'That URL isn\'t from a platform we recognise. Paste a Spotify, YouTube, SoundCloud, or Bandcamp link.'` | ADM | 4 | 2 | M | 2 |
+| 33 | admin.html: the oEmbed fetch for releases — if the fetch times out, confirm: `'Couldn\'t load preview — the link is still saved. Check it on the platform.'` | ADM | 4 | 1 | L | 1 |
+| 34 | admin.html: the CTA URL field validation — if a URL is invalid, confirm error: `'That URL doesn\'t look right. Make sure it starts with https://'` | ADM | 4 | 1 | L | 1 |
+| 35 | admin.html: the fan level/star save — `showToast('Saved.')` fires on success (line 4064); confirm the error path (if save fails) has a corresponding toast | ADM | 3 | 2 | M | 2 |
+| 36 | admin.html: the fan export CSV — if the fan list is empty and export is triggered, `showToast('No fans yet — share your page to see who shows up.', 'amber')` fires (line 4117); this is correct; confirm retained | ADM | 2 | 1 | L | 3 |
+| 37 | admin.html: the clip video URL validation — `'Add a video URL first.'` (line 5844) — confirm this fires if the field is empty, not just if null | ADM | 2 | 1 | L | 3 |
+| 38 | admin.html: the clip save success — `'Clip added. Toggle it live when ready.'` (line 5873) — confirm there is an error path if the save fails | ADM | 3 | 2 | M | 2 |
+| 39 | admin.html: the recommendation artist name — `'Add an artist name first.'` (line 6031) fires if the name field is empty; confirm retained | ADM | 1 | 1 | L | 3 |
+| 40 | admin.html: the recommendation save — `showToast('Saved.')` (line 6095) on success; confirm error path | ADM | 2 | 2 | M | 3 |
+| 41 | admin.html: the merch save — `showToast('Saved.')` (line 6272); confirm error path | ADM | 2 | 2 | M | 3 |
+| 42 | admin.html: the support pack save — `showToast('Saved.')` (line 6301); confirm error path | ADM | 2 | 2 | M | 3 |
+| 43 | admin.html: the profile save — `showToast('Profile saved.')` (line 7884) on success; confirm error path if localStorage write fails | ADM | 4 | 2 | M | 1 |
+| 44 | admin.html: the magic link send — start.html line 2066–2069: `if (error) { ... console.warn('Magic link error:', error.message); }` — this logs but may not surface to the user; ensure the artist sees: `'Couldn\'t send your sign-in link. Try again or check your email address.'` | STR | 5 | 2 | M | 1 |
+| 45 | start.html: if the Supabase magic link send succeeds but the artist never clicks the link — no error state, but the done copy must acknowledge the situation: `'Check your inbox — and your spam folder.'` | STR | 3 | 1 | L | 2 |
+| 46 | able-v8.html: if localStorage is corrupted and the profile cannot be parsed, confirm the page shows a graceful fallback rather than a blank or broken page | V8 | 5 | 2 | M | 1 |
+| 47 | admin.html: if localStorage is corrupted and the profile cannot be parsed, confirm the admin shows a recovery path: `'Something went wrong loading your profile. Try refreshing. If it keeps happening, contact us.'` — note: this is the ONLY context where a "something went wrong" variant is acceptable, since the cause is genuinely unknown | ADM | 5 | 2 | M | 1 |
+| 48 | admin.html: the `console.error('[ABLE] localStorage write error')` call (start.html line 1572) — confirm a user-facing toast also fires when this happens | STR | 4 | 2 | M | 1 |
+| 49 | All pages: confirm no raw `Error` object `.message` property ever reaches a user-facing string without being sanitised; `err.message` from browser APIs or fetch can include technical strings | ALL | 5 | 2 | M | 1 |
+| 50 | All pages: confirm no HTTP status codes (404, 500, 403, etc.) surface in any user-facing string | ALL | 5 | 1 | L | 1 |
+| 51 | admin.html: the state change toasts (line 4901–4906) — `'Profile mode.'`, `'Pre-release.'`, `'Live.'`, `'Gig mode on.'` — these are success toasts not errors; confirm the fallback `|| 'Saved.'` never fires silently if an unknown state is computed | ADM | 3 | 1 | L | 2 |
+| 52 | admin.html: the `'Billing coming soon — currently in early access.'` toast (lines 3433, 3548) — this is a temporary placeholder; audit that this toast does not appear in contexts where billing is required (e.g. if the artist tries to perform an action that requires a paid plan, the gate must fire, not a toast) | ADM | 4 | 1 | L | 1 |
+| 53 | admin.html: the moment save — `showToast('Moment updated.')` (line 6903) on success; confirm error path | ADM | 2 | 2 | M | 3 |
+| 54 | admin.html: if the artist tries to delete a fan and the delete fails, confirm: `'Couldn\'t remove that fan. Try again.'` | ADM | 3 | 2 | M | 3 |
+| 55 | admin.html: the snap card save — `showToast('Saved.')` (line 5691); confirm the error path if the save fails | ADM | 3 | 2 | M | 2 |
+| 56 | admin.html: the snap card limit toast (line 5619): `'Add as many Updates as you want on Artist plan.'` — this is a soft gate, not an error; but the wording is passive; replace with `'You\'ve used your free snap card. Artist plan removes the limit.'` | ADM | 3 | 1 | L | 1 |
+| 57 | admin.html: the copy URL operations — `showToast('Copied.')` on success (line 4555) and `'Copy failed'` on failure (line 4556); the failure copy needs to be more helpful (see item 7) | ADM | 2 | 1 | L | 2 |
+| 58 | admin.html: the gig mode toggle — if enabling gig mode succeeds, the STATE_TOAST fires `'Gig mode on.'`; if disabling, nothing fires (falls back to `'Saved.'`); add explicit: `'Gig mode off. Your page is back to your profile.'` | ADM | 3 | 1 | L | 2 |
+| 59 | admin.html: the upgrade bar dismiss — confirm no toast fires when dismissed; just a silent removal is correct | ADM | 1 | 1 | L | 3 |
+| 60 | start.html: the wizard next-step validation — if the artist tries to advance without completing a required field, the field error fires; confirm no secondary "generic" error also fires | STR | 3 | 1 | L | 2 |
+| 61 | fan.html: the fan sign-up from the fan dashboard (if applicable) — confirm error handling mirrors able-v8.html's fan capture form | FAN | 3 | 2 | M | 3 |
+| 62 | fan.html: if the fan page fails to load an artist's profile (network error), confirm there is a graceful state: `'Couldn\'t load that artist right now. Try refreshing.'` | FAN | 4 | 2 | M | 2 |
+| 63 | All pages: the `'Add ablemusic.co/[slug] to your bio.'` fallback toast (admin line 8280) fires when the Clipboard API fails; confirm the artist knows what to do: `'Copy this URL and add it to your bio: ablemusic.co/[slug]'` | ADM | 3 | 1 | L | 2 |
+| 64 | admin.html: the UTM copy buttons (ig, tt, etc.) — if clipboard fails, confirm a fallback toast fires | ADM | 2 | 2 | M | 3 |
+| 65 | start.html: the Linktree import — if the Linktree URL entered is not valid, confirm: `'That doesn\'t look like a Linktree URL. Try pasting just the username part (linktree/yourname).'` | STR | 3 | 1 | L | 2 |
+| 66 | start.html: the Linktree import — if the Linktree page is private or empty, confirm line 1814 fires and not a generic error | STR | 3 | 1 | L | 2 |
+| 67 | admin.html: all `console.warn` calls — confirm none of them are the only signal for a user-visible failure; every warn must have a corresponding user-facing message | ADM | 4 | 2 | M | 1 |
+| 68 | admin.html: the first-run checklist — if the artist's profile URL is not set when they try to copy their link, confirm an error fires: `'Set your URL first — then you can copy it.'` | ADM | 4 | 2 | M | 1 |
+| 69 | admin.html: the profile link copy button (line 8277) — `'Link copied — paste it in your bio.'` on success; confirm failure fires a useful alternative | ADM | 2 | 1 | L | 2 |
+| 70 | All pages: review every `try { ... } catch(e) {}` block — any catch with an empty body is a silent failure and is not acceptable; each must either log and show a toast or log and gracefully degrade | ALL | 5 | 2 | M | 1 |
+| 71 | able-v8.html: the world map section — if a show date cannot be parsed, confirm no broken cell appears; fall back to hiding that cell rather than showing an error | V8 | 3 | 2 | M | 2 |
+| 72 | admin.html: the artist slug field — if the slug is too short (e.g. empty string), confirm: `'Your URL needs at least one character.'` | ADM | 3 | 1 | L | 2 |
+| 73 | admin.html: the artist slug field — if the slug starts with a hyphen or number, confirm validation error fires with a specific message | ADM | 2 | 2 | L | 3 |
+| 74 | start.html: the email field — if the artist enters an email that already has an ABLE account, confirm: `'There\'s already a page for that email. Sign in instead.'` rather than a generic validation error | STR | 4 | 2 | M | 2 |
+| 75 | admin.html: the Supabase auth flow — if the session token expires mid-session, confirm the artist is shown: `'Your session ended. Sign in again to keep going.'` rather than a blank or broken admin | ADM | 5 | 2 | M | 2 |
+| 76 | admin.html: the broadcast send — if the send fails (network or server error), confirm: `'Your broadcast didn\'t send. Try once more.'` | ADM | 5 | 2 | M | 2 |
+| 77 | admin.html: the broadcast send — if the artist tries to send to zero fans, confirm a gate fires before the send: `'You\'ll need at least one fan to send a broadcast.'` | ADM | 4 | 2 | M | 2 |
+| 78 | admin.html: the image upload (if implemented for artwork) — if the file is too large, confirm: `'That file is too large. Use an image under [X]MB.'` | ADM | 3 | 2 | M | 3 |
+| 79 | admin.html: the image upload — if the file type is wrong, confirm: `'That file type isn\'t supported. Use JPEG, PNG, or WebP.'` | ADM | 3 | 2 | M | 3 |
+| 80 | admin.html: the tier gate `checkTierGate` function (line 7077–7083) — when `featureName` is unknown, it `console.warn` and `return true` (fails open); this means tier gates silently do nothing for unknown features; add a visible dev-mode indicator | ADM | 3 | 2 | M | 2 |
+| 81 | admin.html: the snap card sort — if `moveSnapCard` fails because the card doesn't exist, confirm a silent no-op rather than a visible error is the correct behaviour | ADM | 2 | 2 | L | 3 |
+| 82 | admin.html: the release sort order — if a release move operation fails, confirm no toast fires and the UI reverts correctly | ADM | 2 | 2 | L | 3 |
+| 83 | admin.html: the release delete — if the delete fails, confirm: `'Couldn\'t remove that release. Try again.'` | ADM | 3 | 2 | M | 3 |
+| 84 | admin.html: the show delete — if the delete fails, confirm: `'Couldn\'t remove that show. Try again.'` | ADM | 3 | 2 | M | 3 |
+| 85 | admin.html: the recommendation delete — if delete fails, confirm error fires | ADM | 2 | 2 | M | 3 |
+| 86 | admin.html: the snap card delete — if delete fails, confirm error fires | ADM | 2 | 2 | M | 3 |
+| 87 | admin.html: the clip delete — if delete fails, confirm error fires | ADM | 2 | 2 | M | 3 |
+| 88 | All pages: confirm no `alert()` calls exist anywhere — all user-facing messages must go through the toast system or inline field errors | ALL | 4 | 1 | L | 1 |
+| 89 | All pages: confirm no `confirm()` calls exist for destructive actions — replace with inline confirmation patterns (two-step buttons or a sheet) | ALL | 3 | 3 | M | 3 |
+| 90 | admin.html: the export CSV — if the browser does not support the download attribute, confirm a fallback fires: `'Automatic download not available. Right-click the link and choose Save.'` | ADM | 2 | 2 | L | 3 |
+| 91 | All pages: all user-facing error strings must end with a period — scan for strings that end mid-sentence without punctuation | ALL | 2 | 1 | L | 2 |
+| 92 | All pages: confirm no error string uses the word "please" — `'Please try again'` is passive; replace with active forms | ALL | 3 | 1 | L | 2 |
+| 93 | All pages: confirm no error string uses "Oops" — too informal for ABLE's register | ALL | 3 | 1 | L | 2 |
+| 94 | All pages: confirm no error string uses "Uh oh" or "Hmm" — same reason | ALL | 3 | 1 | L | 2 |
+| 95 | All pages: confirm no error string uses an exclamation mark | ALL | 4 | 1 | L | 1 |
+| 96 | admin.html: the offline banner — confirm it dismisses automatically when the connection is restored (line 4452 fires `'Back online.'`) and does not persist after reconnection | ADM | 3 | 1 | L | 2 |
+| 97 | able-v8.html: the pre-save CTA — if the pre-save link is missing (no URL configured), confirm the CTA is hidden rather than pointing to a dead link | V8 | 5 | 1 | L | 1 |
+| 98 | admin.html: confirm the quota exceeded toast (line 4422) also provides a way to recover — the current `'Export your fans as CSV'` direction from item 3 satisfies this; after fix, confirm the updated copy is clear about what "export" achieves in terms of freeing storage | ADM | 3 | 1 | L | 2 |
+| 99 | All pages: compile a master list of all error strings across all pages and add them to `docs/systems/error-states/SPEC.md` — this spec file exists but may not reflect the current codebase state | ALL | 4 | 2 | M | 2 |
+| 100 | All pages: confirm every error message is accessible — `role="alert"` on inline field errors, `aria-live="polite"` on toasts; the toast system uses this correctly (admin line 4439); confirm V8 fan form errors also use `role="alert"` | ALL | 5 | 1 | L | 1 |

@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-17 (session 19 — privacy.html + terms.html committed (tap target + heading hierarchy fixes); start.html: --err/--ok/--warn tokens, field-error-msg + wiz-toast colours tokenised, inline styles removed from btn-next/done-open; landing.html: prefers-reduced-motion block expanded to cover pulse/marquee/drift animations; 183/184 tests (1 confirmed timing flake, passes on retry) | session 18 — ARIA + WCAG AA color-contrast fixes in able-v7.html; tap target improvements (owner bar 38→44px, skip link, footer links, hero copy-link); admin design token cleanup (#aaa→var(--t2/t3), --ease-decel added to :root)) | Update this file at the end of every session.**
+**Updated: 2026-03-17 (session 20 — 10,000-point audit system (100 dimensions × 100 points, docs/audit/dimensions/); iOS auto-zoom prevention across all 4 pages (all inputs/textareas ≥16px); border-radius + transition + shadow tokenization; admin colour tokens (--green/--purple/--gig/--red); admin mobile nav safe-area-inset + 44px tap targets; hover box-shadows use var(--shadow-lift); active file renamed able-v7.html → able-v8.html | session 19 — privacy.html + terms.html; start.html token fixes; landing.html reduced-motion; 183/184 tests) | Update this file at the end of every session.**
 
 ---
 
@@ -85,7 +85,7 @@
 
 ## What's built and working
 
-### able-v7.html (Artist Profile — ACTIVE)
+### able-v8.html (Artist Profile — ACTIVE)
 - [x] Four themes: Dark, Light, Contrast, Glass
 - [x] Hero CTA zone (max 2, accent + ghost)
 - [x] Quick Action pills (max 4/6 + overflow) + owner ghost placeholder
@@ -133,6 +133,11 @@
 - [x] D15 platform pill first-load shimmer confirmed (session-flagged, .pill-shimmer-once)
 - [x] prefers-reduced-motion CSS throughout confirmed
 - [x] touch-action: manipulation on * confirmed
+- [x] **S20** iOS auto-zoom: all inputs/textareas ≥16px (fan-capture was already 16px; snap body textarea fixed)
+- [x] **S20** Border-radius fully tokenized (0 hardcoded px values remaining)
+- [x] **S20** Transition timing tokenized (0.15s/0.25s/0.4s/0.6s → var(--dur-*))
+- [x] **S20** Shadow tokens added to all 4 themes; hover box-shadows use var(--shadow-lift)
+- [x] **S20** 10,000-point audit system: 100 dimension files in docs/audit/dimensions/
 
 ### admin.html (Artist Dashboard)
 - [x] Campaign HQ (page state control)
@@ -174,6 +179,11 @@
 - [x] **V8** oEmbed POST support + Mixcloud autofill via oembed-proxy
 - [x] **V8** SEO/OG P0 gaps closed (og:image https:// guard, meta description id, canonical)
 - [x] **V8** UI/accessibility P0 bugs closed (focus ring glow pattern, contrast ratios, tap targets)
+- [x] **S20** iOS auto-zoom: all inputs ≥16px; .field-input 13→16px, .chq-date-picker 12→16px, .admin-sheet-input 14→16px, .yw-form-input 13→16px
+- [x] **S20** Admin colour semantic tokens added (--green, --green-rgb, --purple, --gig, --gig-rgb, --red, --red-rgb)
+- [x] **S20** --r-xs: 4px added; all hardcoded border-radius values tokenized
+- [x] **S20** Circular CSS token bug fixed: --dur-fast: var(--dur-fast) → .14s
+- [x] **S20** Mobile nav safe-area-inset bottom + 44px min-height on nav items
 - [x] **V8** PostHog P0 — init + 3 core events (page_viewed, cta_tapped, fan_signed_up) in able-v7.html
 - [x] **S15** NEW-5 first-run checklist exit animation — `markFrcDone()` adds `.completing` (reverse 250ms) before `.done`
 - [x] **S15** `@supports (view-transition-name: none)` guard on all 3 files (able-v7.html, admin.html, start.html)

@@ -3,109 +3,109 @@
 **Phase:** 10 (Launch)
 **Status:** Not started
 
-*Documentation that is stale is worse than no documentation — it misleads future development. ABLE's build is guided by CONTEXT.md (session orientation), docs/STATUS.md (build state), CLAUDE.md (rules), and the V8 strategy docs. Before the first real artist uses the product, every document must accurately reflect reality: no referenced files that don't exist, no scores that haven't been updated, no active files listed that are actually archived. This dimension ensures the documentation system stays truthful as a prerequisite for confident autonomous development.*
+`docs/STATUS.md` and `CONTEXT.md` accurately reflect the current build state. No referenced files are missing. No scores are stale. The Supabase project URL and anon key are current. The active file list matches reality. Full compliance means that any developer picking up the project for the first time — or Claude Code starting a new session — gets an accurate, complete picture of where ABLE stands. Stale documentation causes compounding errors: Claude recommends changes to files that no longer exist, references localStorage keys that have been renamed, or reports a feature as complete that has since regressed. Documentation is not an afterthought; it is the single source of truth that prevents the project from becoming incoherent across sessions.
 
 ## 100 Improvement Points
 
 | # | Improvement | Page | Impact | Effort | Risk | Wave |
 |---|---|---|---|---|---|---|
-| 1 | Verify CONTEXT.md active file list matches files actually at those paths on disk | DOC | 5 | 1 | L | 1 |
-| 2 | Update docs/STATUS.md with the current wave completion state after each session | DOC | 5 | 1 | L | 1 |
-| 3 | Verify Supabase project URL in docs is current and points to the live project | DOC | 4 | 1 | L | 1 |
-| 4 | Verify Supabase anon key in docs matches the key currently in the HTML files | DOC | 4 | 1 | L | 1 |
-| 5 | Confirm that able-v7.html is correctly listed as archived, and able-v8.html is the active profile | DOC | 5 | 1 | L | 1 |
-| 6 | Update CONTEXT.md score column for all active pages after each significant session | DOC | 4 | 1 | L | 1 |
-| 7 | Remove or update any reference in docs to files that have been moved to _archive/ | DOC | 4 | 1 | L | 1 |
-| 8 | Ensure the 100-DIMENSIONS.md master sequence table matches the actual phase ordering in current strategy | DOC | 4 | 1 | L | 2 |
-| 9 | Verify docs/systems/data-architecture/SPEC.md localStorage schema matches the actual keys in the HTML | DOC | 4 | 2 | L | 2 |
-| 10 | Ensure CLAUDE.md active files table is accurate — able-v8.html not able-v7.html | DOC | 5 | 1 | L | 1 |
-| 11 | Confirm all V8 DESIGN-SPEC.md files reference able-v8.html not an older version | DOC | 4 | 1 | L | 2 |
-| 12 | Audit 100-DIMENSIONS.md for any dimension descriptions that have been made obsolete by completed work | DOC | 3 | 2 | L | 3 |
-| 13 | Update STATUS.md known issues section after each fix | DOC | 4 | 1 | L | 1 |
-| 14 | Confirm that docs/GPT-REVIEW/SESSION-16-03-26-FULL-REVIEW.md is still the most recent GPT review | DOC | 3 | 1 | L | 2 |
-| 15 | Add a "Last verified" date to each doc file that references specific file paths | DOC | 3 | 2 | L | 4 |
-| 16 | Remove stale "Next steps" sections from docs that have been superseded by the 100-DIMENSIONS framework | DOC | 3 | 2 | L | 4 |
-| 17 | Verify that the token values in CONTEXT.md match the actual tokens in the HTML :root declarations | DOC | 4 | 2 | L | 2 |
-| 18 | Confirm CROSS_PAGE_JOURNEYS.md reflects the actual localStorage data flow between pages | DOC | 3 | 2 | L | 3 |
-| 19 | Verify DESIGN_SYSTEM_SPEC.md radius tokens match the --r-xs/sm/md/lg/xl/pill values in each file | DOC | 3 | 1 | L | 2 |
-| 20 | Ensure DESIGN_SYSTEM_SPEC.md duration tokens match the actual --dur-fast/dur/dur-slow values per page | DOC | 3 | 1 | L | 2 |
-| 21 | Verify the tier gate features list in docs matches the actual features gated in admin.html | DOC | 4 | 2 | L | 3 |
-| 22 | Confirm that the 4 campaign states in docs match the actual stateOverride values in JS | DOC | 4 | 1 | L | 2 |
-| 23 | Update docs/STATUS.md "What's built" checklist to reflect current completion state | DOC | 4 | 1 | L | 1 |
-| 24 | Remove any "TODO" or "TBD" in CONTEXT.md that has since been resolved | DOC | 3 | 1 | L | 3 |
-| 25 | Ensure V6_BUILD_AUTHORITY.md decisions that were superseded by V8 docs are marked as such | DOC | 3 | 2 | L | 4 |
-| 26 | Confirm netlify.toml redirect rules in docs/systems match the actual netlify.toml file | DOC | 4 | 1 | L | 2 |
-| 27 | Verify that the GPT session reviews in docs/GPT-REVIEW/ are named with ISO dates (YYYY-MM-DD format) | DOC | 2 | 1 | L | 4 |
-| 28 | Confirm the domain "ablemusic.co" is referenced consistently (not "able.music.co" or other variants) | DOC | 3 | 1 | L | 2 |
-| 29 | Update the brand token values in DESIGN_SYSTEM_SPEC.md if any were updated in the most recent session | DOC | 3 | 1 | L | 2 |
-| 30 | Verify the Resend API key placeholder in docs is the correct placeholder format (not the real key) | DOC | 4 | 1 | H | 1 |
-| 31 | Ensure admin_visit_dates localStorage key is documented in data-architecture/SPEC.md | DOC | 3 | 1 | L | 2 |
-| 32 | Confirm able_dismissed_nudges localStorage key is documented with its expected values | DOC | 3 | 1 | L | 2 |
-| 33 | Confirm able_starred_fans localStorage key is documented correctly | DOC | 3 | 1 | L | 2 |
-| 34 | The 4 theme names (Dark, Light, Glass, Contrast) must be used consistently across all docs | DOC | 3 | 1 | L | 2 |
-| 35 | Ensure 7 vibe names are listed identically in all relevant docs (Electronic, Hip Hop, R&B, Indie, Pop, Rock, Acoustic) | DOC | 3 | 1 | L | 2 |
-| 36 | Verify that V8 DESIGN-SPEC.md describes the three CTA zones correctly matching the actual implementation | DOC | 3 | 2 | L | 3 |
-| 37 | Confirm MICRO_INTERACTIONS_SPEC.md lists interactions that are actually built, with status notes | DOC | 3 | 2 | L | 4 |
-| 38 | Remove references to files in docs/archive/superseded-v5/ from any non-archive doc context | DOC | 2 | 1 | L | 4 |
-| 39 | Ensure docs/systems/copy/SPEC.md banned phrase list matches the most recent version in CLAUDE.md | DOC | 4 | 1 | L | 2 |
-| 40 | Confirm the email spec in docs/systems/email/SPEC.md reflects the Resend provider, not any legacy provider | DOC | 3 | 1 | L | 3 |
-| 41 | Verify PWA manifest icon paths in docs match actual icon files at those paths | DOC | 3 | 1 | L | 3 |
-| 42 | Check that all doc "See also" cross-references point to files that exist | DOC | 3 | 1 | L | 3 |
-| 43 | Add a changelog section to STATUS.md tracking what changed in each session | DOC | 3 | 2 | L | 4 |
-| 44 | Confirm that the docs/audit/100-DIMENSIONS.md master sequence is still the authoritative ordering | DOC | 4 | 1 | L | 2 |
-| 45 | Ensure docs/audit/dimensions/ contains exactly 100 files (one per dimension) | DOC | 4 | 1 | L | 2 |
-| 46 | Confirm the phase numbering in docs/audit/dimensions/ files matches 100-DIMENSIONS.md sequence | DOC | 3 | 2 | L | 3 |
-| 47 | Verify that CONTEXT.md "current score" column reflects the product score from the most recent GPT review | DOC | 4 | 1 | L | 2 |
-| 48 | Ensure the "Date created" on each V8 DESIGN-SPEC.md reflects when V8 work began (not v6 era) | DOC | 2 | 1 | L | 4 |
-| 49 | Confirm CROSS_PAGE_JOURNEYS.md describes the actual start.html → admin.html data handoff | DOC | 3 | 2 | L | 3 |
-| 50 | Check all doc headings for the word "v3", "v6", "v7" — update to "v8" where the content describes current state | DOC | 3 | 2 | L | 3 |
-| 51 | Ensure the Netlify function names in docs match the actual filenames in netlify/functions/ | DOC | 3 | 1 | L | 3 |
-| 52 | Confirm PLATFORM_STRATEGY.md tier pricing (Free, £9, £19, £49) matches landing.html pricing section | DOC | 4 | 1 | L | 2 |
-| 53 | Verify that the font stack documentation in DESIGN_SYSTEM_SPEC.md matches fonts loaded in HTML | DOC | 3 | 1 | L | 2 |
-| 54 | Ensure no doc references "Plus Jakarta Sans" for V8 profile — that font is admin-only | DOC | 3 | 1 | L | 2 |
-| 55 | Confirm the spring easing cubic-bezier in docs matches the actual value in CSS | DOC | 3 | 1 | L | 2 |
-| 56 | Update 00_AUTHORITY_ORDER.md to reflect V8 docs layer at the top, V6 as fallback | DOC | 3 | 1 | L | 3 |
-| 57 | Ensure all STATUS.md "known issues" that are fixed are removed or marked resolved | DOC | 4 | 1 | L | 2 |
-| 58 | Confirm the "what's next" section in STATUS.md reflects the actual next dimension in the master sequence | DOC | 4 | 1 | L | 1 |
-| 59 | Verify that CONTEXT.md "data architecture" section matches able_v3_profile schema in admin.html | DOC | 4 | 2 | L | 2 |
-| 60 | Confirm no doc references the old "able_profile" key — only "able_v3_profile" is the canonical key | DOC | 4 | 1 | L | 2 |
-| 61 | Check that the three CTA zone names ("Hero CTAs", "Quick Action pills", "Section Actions") are used consistently | DOC | 3 | 1 | L | 2 |
-| 62 | Ensure the "global dedupe rule" is documented in at least one canonical spec doc | DOC | 3 | 1 | L | 3 |
-| 63 | Verify GDPR data controller description in I1-related docs matches the actual consent copy in V8 | DOC | 4 | 2 | L | 3 |
-| 64 | Confirm freelancer layer docs reference V8 ARTIST-PROFILE-RECOMMENDATIONS-DOCTRINE.md as primary | DOC | 3 | 1 | L | 3 |
-| 65 | Ensure PRODUCT_HIERARCHY_AND_TRUST.md priority order is still accurate after V8 feature additions | DOC | 2 | 2 | L | 5 |
-| 66 | Check that all doc dates are in ISO format (YYYY-MM-DD) | DOC | 2 | 2 | L | 5 |
-| 67 | Confirm the visual wave system (Waves 0–8) is documented in STATUS.md or CONTEXT.md | DOC | 3 | 1 | L | 3 |
-| 68 | Verify that any doc referencing "start.html → able_v3_profile" data flow is accurate | DOC | 4 | 1 | L | 2 |
-| 69 | Ensure the four-page architecture (V8, admin, start, landing) is documented in CONTEXT.md | DOC | 4 | 1 | L | 2 |
-| 70 | Remove any doc references to "Linktree" or competitor names in internal technical docs | DOC | 2 | 1 | L | 4 |
-| 71 | Confirm the PWA service worker cache strategy in docs matches the actual sw.js implementation | DOC | 3 | 2 | L | 3 |
-| 72 | Ensure the OG card paths in seo-og/SPEC.md match the actual file locations | DOC | 3 | 1 | L | 3 |
-| 73 | Verify error-states/SPEC.md covers the current error surfaces (localStorage corruption, quota, network) | DOC | 3 | 2 | L | 4 |
-| 74 | Confirm the Spotify import function allowlist in h4 docs matches what's in the actual function | DOC | 3 | 2 | L | 3 |
-| 75 | Ensure the analytics event schema in docs/systems/analytics/SPEC.md matches actual able_clicks structure | DOC | 4 | 2 | L | 3 |
-| 76 | Verify there are no broken internal links in any doc (links to section headers that were renamed) | DOC | 3 | 2 | L | 4 |
-| 77 | Check all "Last updated:" dates in doc files — update stale ones | DOC | 3 | 1 | L | 3 |
-| 78 | Ensure CONTEXT.md "active files" table is the definitive list used at the start of every session | DOC | 5 | 1 | L | 1 |
-| 79 | Confirm no doc describes a feature as "planned" that is now built | DOC | 4 | 1 | L | 2 |
-| 80 | Ensure the ABLE brand accent red (#e05242) is documented as the default, with note it is artist-overrideable | DOC | 3 | 1 | L | 3 |
-| 81 | Verify admin.html amber accent (#f4b942) is documented as admin-only, distinct from artist accent | DOC | 3 | 1 | L | 3 |
-| 82 | Check that all docs are written assuming able-v8.html is the profile file (not v3/v6/v7) | DOC | 5 | 2 | L | 1 |
-| 83 | Confirm the shadow token additions (--shadow-lift, --shadow-deep, etc.) are documented in DESIGN_SYSTEM_SPEC.md | DOC | 3 | 1 | L | 3 |
-| 84 | Confirm --r-xs token addition is documented in DESIGN_SYSTEM_SPEC.md | DOC | 3 | 1 | L | 3 |
-| 85 | Check that CONTEXT.md session history section is updated with the most recent session summary | DOC | 3 | 1 | L | 2 |
-| 86 | Ensure STATUS.md "Current scores" reflect any new GPT review scores | DOC | 4 | 1 | L | 2 |
-| 87 | Verify that the master wave sequence (Waves 0–8) is accurately described in STATUS.md | DOC | 3 | 1 | L | 2 |
-| 88 | Remove any doc reference to "able-merged.html" as an active file — it is archive only | DOC | 3 | 1 | L | 1 |
-| 89 | Ensure all file paths in docs use the correct relative path from the project root | DOC | 3 | 2 | L | 3 |
-| 90 | Confirm the git branch strategy (main, v2-simplified) is documented in STATUS.md or CONTEXT.md | DOC | 2 | 1 | L | 4 |
-| 91 | Verify the Resend sender domain in docs matches the actual DNS records to be configured | DOC | 3 | 2 | M | 3 |
-| 92 | Ensure the freelancer layer spec is marked as Phase 2 and not implied to be currently built | DOC | 3 | 1 | L | 3 |
-| 93 | Check that docs/systems/tier-gates/SPEC.md feature list matches current admin.html gate implementations | DOC | 4 | 2 | L | 3 |
-| 94 | Confirm the 100-DIMENSIONS master sequence is the single authoritative source for "what to do next" | DOC | 4 | 1 | L | 2 |
-| 95 | Ensure STATUS.md is updated within the same commit as any significant feature work | DOC | 4 | 1 | L | 1 |
-| 96 | Verify that CONTEXT.md is always the first file read at session start — add this instruction to the top of STATUS.md | DOC | 3 | 1 | L | 2 |
-| 97 | Confirm docs/audit/ directory structure is documented — 100-DIMENSIONS.md as index, dimensions/ as individual files | DOC | 3 | 1 | L | 3 |
-| 98 | Ensure no internal note (FIXME, TODO, HACK) survives in docs without an associated dimension reference | DOC | 3 | 2 | L | 4 |
-| 99 | Run docs/STATUS.md review as the final action before any push to origin | DOC | 5 | 1 | L | 1 |
-| 100 | Treat documentation currency as a lagging indicator of build health — if STATUS.md is stale, the build is at risk | DOC | 5 | 1 | L | 1 |
+| 1 | Confirm `CONTEXT.md` active files list names `able-v7.html` as the artist profile — not `able-v8.html` (no such file exists) | DOC | 5 | 1 | H | 1 |
+| 2 | Confirm `CONTEXT.md` active files list does not reference `able-v3.html`, `able-v4.html`, `able-v5.html`, or `able-v6.html` as active | DOC | 5 | 1 | H | 1 |
+| 3 | Confirm `CONTEXT.md` Supabase project URL is `https://jgspraqrnjrerzhnnhtb.supabase.co` — verify it is still live | DOC | 4 | 1 | M | 2 |
+| 4 | Confirm `CONTEXT.md` Supabase anon key matches the current publishable key in the Supabase dashboard | DOC | 4 | 1 | M | 2 |
+| 5 | Confirm `CONTEXT.md` localStorage key list matches the keys currently used in the active files — run a grep audit | DOC | 5 | 2 | H | 1 |
+| 6 | Confirm `CONTEXT.md` does not reference `able_profile` (legacy) without noting it is superseded by `able_v3_profile` | DOC | 4 | 1 | M | 2 |
+| 7 | Confirm `CONTEXT.md` "Tokens" section reflects the current CSS custom property names used in `able-v7.html` | DOC | 4 | 1 | M | 2 |
+| 8 | Confirm `CONTEXT.md` "Active rules" section has not been silently overridden by `CLAUDE.md` changes | DOC | 3 | 1 | L | 3 |
+| 9 | Confirm `docs/STATUS.md` correctly lists all four active HTML files with their current build status | DOC | 5 | 1 | H | 1 |
+| 10 | Confirm `docs/STATUS.md` was last updated after the most recent session — check the `Last updated` date at the top | DOC | 5 | 1 | H | 1 |
+| 11 | Confirm `docs/STATUS.md` "Known issues" section is current — no issues marked as fixed that have since regressed | DOC | 5 | 2 | H | 1 |
+| 12 | Confirm `docs/STATUS.md` "What's next" section reflects the actual current priorities — not last month's | DOC | 4 | 1 | M | 2 |
+| 13 | Confirm `docs/STATUS.md` dimension scores are not stale — any dimension completed since the last update must be marked | DOC | 4 | 2 | M | 2 |
+| 14 | Confirm `CLAUDE.md` (project root) active files table is correct and matches the filesystem | DOC | 5 | 1 | H | 1 |
+| 15 | Confirm `CLAUDE.md` does not reference `able-merged.html` as an active file — it is in `_archive/` | DOC | 4 | 1 | M | 2 |
+| 16 | Confirm `CLAUDE.md` localStorage table includes all keys currently used by the active pages | DOC | 4 | 2 | M | 2 |
+| 17 | Confirm `CLAUDE.md` copy philosophy section has not been accidentally overwritten by a session | DOC | 4 | 1 | M | 2 |
+| 18 | Confirm `CLAUDE.md` tier system table is current — prices and feature gates have not changed since last update | DOC | 3 | 1 | L | 3 |
+| 19 | Confirm `CLAUDE.md` design tokens match the CSS custom properties in `able-v7.html` exactly | DOC | 4 | 1 | M | 2 |
+| 20 | Confirm `CLAUDE.md` admin design tokens match the CSS custom properties in `admin.html` exactly | DOC | 4 | 1 | M | 2 |
+| 21 | Confirm `docs/systems/data-architecture/SPEC.md` localStorage schema is current and resolves the `able_profile` vs `able_v3_profile` inconsistency | DOC | 4 | 2 | M | 2 |
+| 22 | Confirm `docs/systems/copy/SPEC.md` banned phrases list is current and has not grown stale | DOC | 3 | 1 | L | 3 |
+| 23 | Confirm `docs/systems/DESIGN_SYSTEM_SPEC.md` token values match `able-v7.html` — spot-check `--color-bg`, `--color-card`, `--color-accent` default | DOC | 4 | 1 | M | 2 |
+| 24 | Confirm `docs/systems/CROSS_PAGE_JOURNEYS.md` journey diagrams reflect the current start.html → admin.html data flow | DOC | 4 | 2 | M | 2 |
+| 25 | Confirm `docs/systems/tier-gates/SPEC.md` gold lock pattern description matches what is currently implemented in `admin.html` | DOC | 3 | 2 | L | 3 |
+| 26 | Confirm `docs/systems/analytics/SPEC.md` event schema matches the events currently being written to `able_clicks` and `able_views` | DOC | 3 | 2 | L | 3 |
+| 27 | Confirm `docs/systems/email/SPEC.md` email templates match the current `fan-confirmation.js` Netlify function output | DOC | 4 | 2 | M | 2 |
+| 28 | Confirm `docs/systems/pwa/SPEC.md` reflects the current `manifest.json` contents — `start_url`, `icons`, `theme_color` | DOC | 3 | 1 | L | 3 |
+| 29 | Confirm `docs/systems/spotify-import/SPEC.md` matches the current state of the Spotify import Netlify function | DOC | 3 | 1 | L | 4 |
+| 30 | Confirm `docs/systems/seo-og/SPEC.md` title and description templates match what is currently in the HTML files | DOC | 3 | 1 | L | 3 |
+| 31 | Confirm `docs/pages/profile/DESIGN-SPEC.md` feature checklist is annotated with "built" / "not built" / "partial" for each item | DOC | 4 | 2 | M | 3 |
+| 32 | Confirm `docs/pages/admin/DESIGN-SPEC.md` feature checklist is annotated with build status | DOC | 4 | 2 | M | 3 |
+| 33 | Confirm `docs/pages/onboarding/DESIGN-SPEC.md` feature checklist is annotated with build status | DOC | 3 | 2 | L | 3 |
+| 34 | Confirm `docs/pages/landing/DESIGN-SPEC.md` feature checklist is annotated with build status | DOC | 3 | 2 | L | 3 |
+| 35 | Confirm `docs/v6/core/V6_BUILD_AUTHORITY.md` resolved decisions have not been silently contradicted by code changes | DOC | 3 | 2 | L | 3 |
+| 36 | Confirm `docs/v6/00_AUTHORITY_ORDER.md` still correctly places V8 docs at the top of the precedence order | DOC | 3 | 1 | L | 3 |
+| 37 | Confirm `MEMORY.md` (`~/.claude/projects/.../memory/MEMORY.md`) active file note says `able-v7.html` not `able-v3.html` | DOC | 4 | 1 | M | 2 |
+| 38 | Confirm `MEMORY.md` Supabase project URL and anon key entries are current | DOC | 4 | 1 | M | 2 |
+| 39 | Confirm `MEMORY.md` does not reference any abandoned or archived files as active | DOC | 4 | 1 | M | 2 |
+| 40 | Confirm `MEMORY.md` `currentDate` is maintained at session start — it must reflect the actual current date | DOC | 3 | 1 | L | 3 |
+| 41 | Confirm no `docs/audit/dimensions/` file references `able-v8.html` — use `able-v7.html` consistently | DOC | 4 | 2 | M | 2 |
+| 42 | Confirm `docs/audit/100-DIMENSIONS.md` dimension status column is current — completed dimensions must be marked | DOC | 4 | 2 | M | 2 |
+| 43 | Confirm `docs/audit/100-DIMENSIONS.md` references all 10 J-series dimensions (J1–J10) as a complete block | DOC | 3 | 1 | L | 3 |
+| 44 | Confirm `docs/STATUS.md` lists the current branch name (`v2-simplified`) and its relationship to `main` | DOC | 3 | 1 | L | 3 |
+| 45 | Confirm `docs/STATUS.md` records the most recent commit hash and message for orientation | DOC | 3 | 1 | L | 3 |
+| 46 | Confirm `docs/STATUS.md` "What's been built" section has not omitted major features added in sessions 11–14 | DOC | 4 | 2 | M | 2 |
+| 47 | Confirm the `netlify.toml` redirect rule documented in `CONTEXT.md` or `CLAUDE.md` matches the current `netlify.toml` file exactly | DOC | 4 | 1 | M | 2 |
+| 48 | Confirm `docs/systems/freelancer-auth/PRODUCT-DOCTRINE.md` build phase references are still accurate | DOC | 3 | 1 | L | 4 |
+| 49 | Confirm all file paths referenced in `CLAUDE.md` "Doc files" section exist on disk | DOC | 4 | 2 | M | 2 |
+| 50 | Confirm all file paths referenced in `CONTEXT.md` "Active files" section exist on disk | DOC | 4 | 2 | M | 2 |
+| 51 | Confirm `docs/systems/error-states/SPEC.md` error patterns match what is currently implemented — not just planned | DOC | 3 | 2 | L | 4 |
+| 52 | Confirm `docs/systems/MICRO_INTERACTIONS_SPEC.md` list of implemented interactions is kept up to date | DOC | 3 | 2 | L | 4 |
+| 53 | Confirm `docs/reference/research/PRODUCT_HIERARCHY_AND_TRUST.md` feature priority order has not been silently overridden | DOC | 3 | 1 | L | 4 |
+| 54 | Confirm `_archive/` directory contains exactly the files referenced as archived in `CLAUDE.md` — no active files have migrated in accidentally | DOC | 4 | 1 | M | 2 |
+| 55 | Confirm `index.html` is still a redirect stub and has not been accidentally edited | DOC | 4 | 1 | M | 2 |
+| 56 | Confirm no `.md` files in `docs/` reference a Supabase URL other than `https://jgspraqrnjrerzhnnhtb.supabase.co` | DOC | 4 | 2 | M | 2 |
+| 57 | Confirm `reference_supabase.md` (if it exists) is consistent with the current Supabase project state | DOC | 3 | 1 | L | 3 |
+| 58 | Confirm `docs/STATUS.md` "P0 blockers" section is empty or lists only real, current blockers | DOC | 5 | 1 | H | 1 |
+| 59 | Confirm `docs/STATUS.md` "P0 NEVER-SHIP" section exists and reflects the current philosophy | DOC | 4 | 1 | M | 2 |
+| 60 | Confirm the `CONTEXT.md` "tokens" section does not list any CSS variables that have been renamed or removed | DOC | 4 | 1 | M | 2 |
+| 61 | Confirm all V8 design spec files have a `Last updated` date that post-dates the corresponding HTML file's last major change | DOC | 3 | 2 | L | 4 |
+| 62 | Confirm `docs/systems/brand-identity/DOCTRINE.md` typography doctrine is consistent with the fonts currently loaded in all four active pages | DOC | 3 | 1 | L | 3 |
+| 63 | Confirm `CONTEXT.md` "CTA architecture" section still reflects the three-zone, max-2-hero model currently in able-v7.html | DOC | 4 | 1 | M | 2 |
+| 64 | Confirm `CONTEXT.md` "Page state system" section matches the current state logic in able-v7.html | DOC | 4 | 2 | M | 2 |
+| 65 | Confirm `CONTEXT.md` campaign state `stateOverride` field name matches the field name currently in `able_v3_profile` | DOC | 4 | 1 | M | 2 |
+| 66 | Confirm `docs/systems/data-architecture/SPEC.md` `able_tier` values ("free", "artist", "artist-pro", "label") match what admin.html writes | DOC | 3 | 1 | L | 3 |
+| 67 | Confirm `docs/STATUS.md` mentions the known localStorage key naming inconsistency with a resolution status | DOC | 4 | 1 | M | 2 |
+| 68 | Confirm `docs/STATUS.md` records whether the J1 DNS records (SPF, DKIM, DMARC) have been set | DOC | 4 | 1 | M | 2 |
+| 69 | Confirm `docs/STATUS.md` records whether the service worker cache version has been bumped after recent changes | DOC | 3 | 1 | L | 3 |
+| 70 | Confirm `docs/STATUS.md` records the current Netlify site URL and the last successful production deploy date | DOC | 3 | 1 | L | 3 |
+| 71 | Confirm `CLAUDE.md` "Working rules" rule #8 ("Run Playwright smoke tests") reflects the current MCP configuration | DOC | 3 | 1 | L | 3 |
+| 72 | Confirm the `.claude/settings.json` MCP config is current and Playwright MCP is correctly configured | DOC | 3 | 1 | L | 3 |
+| 73 | Confirm `docs/STATUS.md` "Sessions" log is maintained with key decisions from each session | DOC | 3 | 1 | L | 3 |
+| 74 | Confirm `docs/STATUS.md` session 14 entry is present and accurate | DOC | 3 | 1 | L | 3 |
+| 75 | Confirm `CONTEXT.md` "Backend plan" Supabase CDN script URL is the current version (`@2`) | DOC | 3 | 1 | L | 3 |
+| 76 | Confirm the `docs/audit/100-DIMENSIONS.md` master index is sorted correctly by category (A through J) | DOC | 3 | 1 | L | 4 |
+| 77 | Confirm `docs/audit/100-DIMENSIONS.md` each dimension entry has a correct file path to its detail file | DOC | 3 | 1 | L | 4 |
+| 78 | Confirm no dimension detail file in `docs/audit/dimensions/` is missing from `100-DIMENSIONS.md` | DOC | 3 | 2 | L | 4 |
+| 79 | Confirm `docs/systems/competitive/PATH-TO-10.md` competitive analysis is dated and not older than 90 days | DOC | 2 | 1 | L | 5 |
+| 80 | Confirm `docs/systems/digital-media/FINAL-REVIEW.md` is not referenced as an active spec in `CLAUDE.md` | DOC | 2 | 1 | L | 5 |
+| 81 | Confirm `docs/systems/master-plan-alignment/FINAL-REVIEW.md` is not referenced as active build authority | DOC | 2 | 1 | L | 5 |
+| 82 | Confirm `instagram-snapshot.md` and `tiktok-snapshot.md` are labelled as research snapshots, not specifications | DOC | 2 | 1 | L | 5 |
+| 83 | Confirm `docs/systems/complaint-resolution/ANALYSIS.md` has a clear status label (research, not active spec) | DOC | 2 | 1 | L | 5 |
+| 84 | Confirm `docs/systems/va-strategy/ANALYSIS.md` has a clear status label | DOC | 2 | 1 | L | 5 |
+| 85 | Confirm `docs/systems/think-out-of-the-box/ANALYSIS.md` has a clear status label | DOC | 2 | 1 | L | 5 |
+| 86 | Confirm `docs/systems/hardware-software/ANALYSIS.md` has a clear status label | DOC | 2 | 1 | L | 5 |
+| 87 | Confirm `CONTEXT.md` lists every `.md` file in `docs/` that Claude should read at session start | DOC | 3 | 2 | L | 3 |
+| 88 | Confirm `CONTEXT.md` has a "Do not read" section listing files Claude should skip to save context window | DOC | 3 | 1 | L | 4 |
+| 89 | Confirm `docs/archive/superseded-v5/PRODUCT_SPEC.md` is correctly labelled as archived — not referenced as active | DOC | 3 | 1 | L | 3 |
+| 90 | Confirm `docs/archive/superseded-v5/QA_SMOKE_TESTS.md` is correctly labelled as archived | DOC | 3 | 1 | L | 3 |
+| 91 | Confirm there are no TODOs or FIXMEs in `CONTEXT.md` or `docs/STATUS.md` that are older than 30 days | DOC | 3 | 1 | L | 3 |
+| 92 | Confirm the project memory file (`MEMORY.md`) has been updated to reflect new working conventions from recent sessions | DOC | 3 | 1 | L | 3 |
+| 93 | Confirm `MEMORY.md` `feedback_check_docs.md` reference is still accurate — Claude must check V6 authority docs before implementing | DOC | 3 | 1 | L | 3 |
+| 94 | Confirm `MEMORY.md` `project_active_file.md` correctly identifies `able-v7.html` as the active artist profile file | DOC | 4 | 1 | M | 2 |
+| 95 | Confirm `CONTEXT.md` CTA zone caps (Hero max 2, Pills max 4/6, Section max 2) match what is enforced in able-v7.html | DOC | 4 | 2 | M | 2 |
+| 96 | Confirm no file in `docs/` references a Netlify function that has not yet been created as if it were complete | DOC | 3 | 1 | L | 3 |
+| 97 | Confirm `docs/STATUS.md` build state matches the actual state of each HTML file when opened in a browser today | DOC | 5 | 2 | H | 1 |
+| 98 | Confirm all session notes in `docs/STATUS.md` are in reverse-chronological order (most recent first) | DOC | 2 | 1 | L | 5 |
+| 99 | Confirm `docs/STATUS.md` contains a "Launch checklist" section with J1–J10 completion status | DOC | 4 | 2 | M | 2 |
+| 100 | Confirm `STATUS.md` is updated to mark J10 complete — confirming that all documentation is current and the project is ready for launch | DOC | 2 | 1 | L | 6 |

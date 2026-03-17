@@ -1,111 +1,111 @@
-# Dimension D9 — Landing Headline Conversion
+# Dimension D9 — Landing Page Headline Conversion
 **Category:** Copy, Voice & Messaging
 **Phase:** 4 (Copy)
-**Status:** Not started
+**Status:** Draft — code-grounded
 
-The landing page above-the-fold copy must lead with the felt pain of the artist — the specific frustration of sending thousands of people through a bio link and having nothing to show for it — before making any strategic argument about ownership, data, or platform positioning. Emotional resonance precedes rational persuasion for this audience. An independent artist scrolling Instagram at 11pm who taps an ad does not want to read a value proposition; they want to feel understood. Full compliance means the hero headline, sub-headline, and primary CTA all operate in the register of felt experience, not strategic benefit. The strategic argument ("you own your fan list, not the algorithm") is real and true, but it belongs in the second section of the page — not the first sentence the artist reads.
+The landing page must open with the artist's felt pain — the moment they recognise themselves before they have any reason to trust ABLE. `'100 real fans beat 10,000 strangers.'` (line 1159) is the canonical hero headline — it survives because it is an emotional truth, not a strategic claim. Every section below the fold must build on that pain resolution, not pivot to feature lists. Full compliance means the hero and sub-headline carry the maximum emotional weight, every section heading reads as a continuation of a story not a feature catalogue, and the FAQ answers are honest and specific. The page already has several strong copy moments; this audit identifies where it falls short.
 
 ## 100 Improvement Points
 
 | # | Improvement | Page | Impact | Effort | Risk | Wave |
 |---|---|---|---|---|---|---|
-| 1 | Replace any headline that begins with "Own your audience" with a felt-pain lead: "300,000 people through your bio. Nothing to show for it." | LND | 5 | 1 | L | 1 |
-| 2 | Replace any headline that leads with "The link-in-bio for serious artists" — this is a category claim, not an emotional trigger; lead with pain first | LND | 5 | 1 | L | 1 |
-| 3 | Replace any headline that leads with "Build a direct relationship with your fans" — this is benefit copy, not pain copy; move it to the second paragraph | LND | 4 | 1 | L | 1 |
-| 4 | Replace any headline that begins with "Your music. Your fans. Your data." — this is ownership framing, not empathy; audiences connect to frustration before they connect to aspiration | LND | 4 | 1 | L | 1 |
-| 5 | Ensure the hero headline is a single sentence of 10 words or fewer — longer headlines lose the punch of felt pain | LND | 5 | 2 | L | 1 |
-| 6 | Ensure the hero headline does not contain a question mark — rhetorical questions distance the reader; declarative statements of their reality land harder | LND | 4 | 1 | L | 1 |
-| 7 | Ensure the hero headline does not use the word "fans" — the artist already knows about fans; the word "people" or "strangers" or "them" is more visceral | LND | 4 | 1 | L | 2 |
-| 8 | Ensure the hero headline does not use the word "algorithm" — this is now a cliche in the independent music space; find a more specific and personal expression of the pain | LND | 4 | 1 | L | 2 |
-| 9 | Test two headline variants with the gut-check: would a mid-level independent artist with 10,000 Instagram followers see this and feel like ABLE understands them? If not, rewrite | LND | 5 | 2 | M | 2 |
-| 10 | Ensure the sub-headline translates the pain into a solution in one sentence — not two; "ABLE gives you a page that captures every person who cares." not "ABLE is a platform that helps independent artists build a direct fan relationship and own their data." | LND | 5 | 2 | L | 1 |
-| 11 | Replace any sub-headline that begins with "ABLE is…" — the product name should not appear in the sub-headline on first read; the sub-headline should be about the artist | LND | 4 | 1 | L | 2 |
-| 12 | Ensure the sub-headline is written in second person ("you", "your") — not third person ("artists", "musicians") | LND | 4 | 1 | L | 1 |
-| 13 | Replace "Turn your followers into fans" — this is the exact copy the brief says to avoid; replace with "The people who care most — in a list you actually own." | LND | 5 | 1 | L | 1 |
-| 14 | Replace "Grow your audience" in any above-fold context — replace with "reach people who care" as specified in the copy philosophy | LND | 4 | 1 | L | 1 |
-| 15 | Replace "Engage your followers" with "Stay close to the people who show up" as specified in the copy philosophy | LND | 4 | 1 | L | 1 |
-| 16 | Replace "Monetise your fanbase" with "Let people support you directly" as specified in the copy philosophy | LND | 5 | 1 | L | 1 |
-| 17 | Replace "Content creator" anywhere on the landing page with "artist" | LND | 4 | 1 | L | 1 |
-| 18 | Ensure no exclamation marks appear in the hero or sub-headline | LND | 4 | 1 | L | 1 |
-| 19 | Ensure the primary CTA button text is not "Get started" — this is the most generic SaaS CTA possible; use "Build your page" or "Set up your profile" | LND | 5 | 1 | L | 1 |
-| 20 | Ensure the primary CTA button text is not "Sign up free" — the word "free" in a CTA makes it feel discount; the artist is not looking for a bargain, they are looking for a tool worthy of their work | LND | 4 | 1 | L | 2 |
-| 21 | Consider "Claim your page" as the primary CTA — this language frames the artist as taking something they already deserve, rather than requesting something | LND | 4 | 2 | L | 2 |
-| 22 | Ensure the primary CTA is in the active voice — an action the artist performs, not an action ABLE performs for them | LND | 4 | 1 | L | 1 |
-| 23 | Ensure the secondary CTA (if present) is clearly subordinate in visual weight — the eye should land on the primary CTA first, always | LND | 3 | 2 | L | 2 |
-| 24 | Ensure the secondary CTA text is not "Learn more" — replace with what the artist will learn: "See how it works" or "See an example page" | LND | 3 | 1 | L | 2 |
-| 25 | Verify the above-fold section does not contain more than three lines of copy — headline, sub-headline, CTA; everything else belongs below the fold | LND | 4 | 2 | L | 2 |
-| 26 | Verify the above-fold section on mobile (375px) has the same priority order as desktop — headline first, sub-headline second, CTA third | LND | 5 | 2 | M | 1 |
-| 27 | Ensure the headline typeface (Barlow Condensed for display) is used for the hero headline — this is the brand rule and it carries authority | LND | 4 | 2 | L | 1 |
-| 28 | Ensure the headline is set at the maximum type scale the layout allows — not reduced "to fit" — the pain statement must feel large | LND | 4 | 2 | L | 2 |
-| 29 | Test the headline at 375px (iPhone SE) — ensure it does not wrap to 4+ lines, which kills the punch; maximum 3 lines on mobile | LND | 5 | 2 | M | 1 |
-| 30 | Ensure the pain-trigger headline is not accompanied by a generic stock-image of a person using a phone — the visual should reinforce the artist identity, not contradict it | LND | 4 | 3 | M | 2 |
-| 31 | If a background image or artwork is used in the hero, ensure it is an artist's work (real art or music-adjacent) — not a generic tech lifestyle photo | LND | 4 | 3 | M | 2 |
-| 32 | Ensure the hero visual does not compete with the headline for attention — the headline is the entry point; everything else supports it | LND | 4 | 2 | M | 2 |
-| 33 | Test: read only the headline, sub-headline, and CTA without looking at any other element. The artist should be able to answer: "What is this, who is it for, and what do I do next?" If not, the above-fold has failed | LND | 5 | 2 | L | 1 |
-| 34 | Ensure the second section of the page (just below the fold) is where the strategic ownership argument lives — "Your fan list. Not Instagram's. Not Spotify's." — and that it follows naturally from the emotional hook above | LND | 4 | 2 | L | 2 |
-| 35 | Ensure the second section copy does not repeat the pain — it answers the pain with the solution; the transition from pain to solution must feel like a release, not a repetition | LND | 4 | 2 | L | 2 |
-| 36 | Ensure the social proof section (if present) is real — real artist names or real numbers — not "Join thousands of artists" which is a cliche and will likely be false at launch | LND | 5 | 2 | H | 1 |
-| 37 | Replace "Join thousands of artists" with the actual number if real, or remove entirely if not yet true | LND | 5 | 1 | H | 1 |
-| 38 | Replace "Trusted by independent artists" with a named artist and their context if possible — one real name is worth more than an abstract claim | LND | 5 | 3 | M | 2 |
-| 39 | Ensure testimonials (if used) are written in the artist's natural voice — not tidied up into marketing copy; the rougher edge is more believable | LND | 4 | 2 | M | 3 |
-| 40 | Ensure the feature section headlines below the fold are also written in the felt-pain register — not feature names ("Fan capture") but outcomes ("The people who tap your link go somewhere") | LND | 4 | 2 | L | 2 |
-| 41 | Replace "Campaign modes" as a section headline with "Your profile knows what you're working on" | LND | 3 | 1 | L | 3 |
-| 42 | Replace "Fan capture" as a section headline with "Every person who cares goes on a list." | LND | 4 | 1 | L | 2 |
-| 43 | Replace "Analytics" as a section headline with "Know who's showing up and where they came from." | LND | 4 | 1 | L | 2 |
-| 44 | Replace "Snap cards" as a section headline with "Post a thought without needing a platform for it." | LND | 3 | 1 | L | 3 |
-| 45 | Replace "Shows" as a section headline with "Your shows, on your page, exactly as you want them." | LND | 3 | 1 | L | 3 |
-| 46 | Ensure the pricing section (if present) uses plain language — not tier names as the primary label, but what the artist gets first; the tier name is a secondary label | LND | 4 | 2 | L | 3 |
-| 47 | Replace "Free plan" as the pricing label with "Start here." and explain it is free in the body | LND | 3 | 2 | L | 3 |
-| 48 | Replace "Artist plan" as the pricing label with a statement of what the artist becomes capable of — "Your whole tool." | LND | 3 | 2 | L | 3 |
-| 49 | Ensure pricing copy does not use "per month" or "/mo" abbreviations — spell it out: "£9 a month" — abbreviations feel transactional | LND | 3 | 1 | L | 3 |
-| 50 | Ensure the pricing section is not above the fold — the artist must feel the pain and the solution before they are asked to pay | LND | 4 | 2 | L | 2 |
-| 51 | Ensure the FAQ section (if present) addresses the felt anxiety, not the strategic objection — "Will I lose my fans if I switch?" not "Is ABLE GDPR compliant?" | LND | 4 | 3 | M | 3 |
-| 52 | Ensure the FAQ copy is in conversational register — an artist asking a real question, not a lawyer asking a compliance question | LND | 4 | 2 | L | 3 |
-| 53 | Ensure the footer CTA repeats the hero CTA text exactly — the artist who reads the whole page and arrives at the footer should see the same invitation they saw at the top | LND | 3 | 1 | L | 2 |
-| 54 | Ensure the navigation bar (if present) does not contain the word "Features" — replace with "What it does" or remove the nav entirely above the fold | LND | 3 | 2 | L | 3 |
-| 55 | Ensure the navigation bar does not contain "Pricing" above the fold — the artist should arrive at pricing through the story, not jump to it from the nav | LND | 3 | 2 | M | 3 |
-| 56 | Ensure the landing page has a single focused goal — sign up — not multiple competing goals (sign up, read a blog, follow on social) | LND | 5 | 3 | M | 2 |
-| 57 | Remove any social sharing buttons from the landing page above the fold — they fragment attention at the critical conversion point | LND | 4 | 2 | L | 2 |
-| 58 | Ensure the landing page loads above the fold without any JavaScript requirement — the headline and CTA must be readable on first paint | LND | 5 | 3 | H | 1 |
-| 59 | Ensure the landing page uses system fonts or preloaded web fonts so the headline renders immediately — a flash of unstyled text on the hero kills emotional impact | LND | 5 | 2 | M | 1 |
-| 60 | Ensure the hero section has a minimum height of 100vh on desktop and auto on mobile so the CTA is always above the fold | LND | 4 | 2 | L | 1 |
-| 61 | Ensure the landing page meta title is in the felt-pain register — not "ABLE Music — Link in Bio for Artists" but something that would make an artist click from a search result | LND | 4 | 2 | L | 2 |
-| 62 | Ensure the OG title for social sharing is the hero headline or a variant of it — when an artist shares the landing page, the preview card should carry the same emotional punch | LND | 4 | 2 | L | 2 |
-| 63 | Ensure the OG description is the sub-headline — not an auto-generated excerpt from the page body | LND | 4 | 1 | L | 2 |
-| 64 | Ensure the OG image is the most emotionally resonant piece of visual content on the page — not a generic product screenshot | LND | 4 | 3 | M | 3 |
-| 65 | Ensure the landing page headline is consistent with any paid ad copy that drives traffic to it — an artist who clicked an ad that said X must see X on arrival | LND | 5 | 3 | M | 2 |
-| 66 | Replace "Your link. Your rules." as a tagline if used — this is too abstracted; the felt pain is more specific | LND | 3 | 1 | L | 2 |
-| 67 | Ensure the pain-trigger statement uses a concrete number if possible — "300,000 people through your bio" is more powerful than "everyone who visits your profile" | LND | 5 | 2 | M | 2 |
-| 68 | If a real number is used in the headline, it must be sourced or removed — false specificity is worse than vague generality | LND | 5 | 1 | H | 1 |
-| 69 | Replace "Artist before label" (if used as a tagline) with copy that is more immediately legible to a new visitor — the philosophy is real, but it needs context | LND | 3 | 2 | L | 3 |
-| 70 | Add a one-line explanation of the product name below the logo — "ABLE: Artist Before Label Everyone" — or do not use the name as the hero element | LND | 3 | 2 | L | 4 |
-| 71 | Ensure the landing page does not begin with a question — "Tired of sending fans to a dead-end link?" is weaker than "300,000 people through your bio. Nothing to show for it." | LND | 4 | 1 | L | 1 |
-| 72 | Ensure the landing page copy has been read aloud by a real person — landing page copy that reads well silently often falls flat when spoken; ABLE's voice should feel spoken | LND | 4 | 3 | M | 3 |
-| 73 | Ensure the landing page copy has been read by at least one real independent artist before publishing — the pain resonance test only works with the actual audience | LND | 5 | 3 | M | 2 |
-| 74 | Ensure the landing page does not describe features before the artist has been made to feel understood — features before empathy is the #1 landing page conversion killer for this audience | LND | 5 | 2 | L | 1 |
-| 75 | Ensure all copy on the landing page passes the banned phrase check — no "Turn fans into superfans", "Grow your audience", "Monetise your fanbase", "Engage your followers", "Content creator", "Going viral" | LND | 5 | 1 | L | 1 |
-| 76 | Ensure the word "platform" is used no more than once on the landing page — it is an abstraction that puts distance between ABLE and the artist | LND | 3 | 1 | L | 2 |
-| 77 | Ensure the landing page does not describe ABLE as a "tool" more than necessary — tools are instrumental; ABLE should feel like a stage, not a hammer | LND | 3 | 2 | L | 3 |
-| 78 | Ensure the landing page copy does not address industry insiders or music business people — the audience is working artists, not A&R executives | LND | 4 | 1 | L | 2 |
-| 79 | Ensure the landing page copy addresses the solo artist with no label, no manager, and no team — not the established artist with infrastructure | LND | 4 | 1 | L | 2 |
-| 80 | Ensure the headline copy test is documented — what variants were considered, why the chosen headline was selected, what the gut-check result was | LND | 3 | 2 | L | 4 |
-| 81 | Ensure any video or animation in the hero section plays silently by default — autoplay audio on a landing page is a conversion killer | LND | 5 | 1 | H | 1 |
-| 82 | Ensure any animated element in the hero does not distract from the headline — animation must support attention, not compete with it | LND | 4 | 2 | M | 2 |
-| 83 | Ensure the landing page hero on mobile does not hide the headline behind a large image — text must be the first thing rendered | LND | 5 | 2 | M | 1 |
-| 84 | Ensure the CTA button on mobile is full-width or close to it — 44px height minimum, full width preferred | LND | 5 | 1 | L | 1 |
-| 85 | Ensure the landing page does not use the word "simple" — every product claims to be simple; the claim is invisible and slightly condescending | LND | 3 | 1 | L | 2 |
-| 86 | Ensure the landing page does not use the word "powerful" — this is generic SaaS copy; replace with a specific capability | LND | 3 | 1 | L | 2 |
-| 87 | Ensure the landing page does not use the word "beautiful" to describe itself — an artist is unmoved by a product calling itself beautiful | LND | 3 | 1 | L | 2 |
-| 88 | Ensure the landing page does not use the word "seamless" — it is meaningless through overuse | LND | 3 | 1 | L | 2 |
-| 89 | Ensure the landing page does not use the phrase "take control" — this is the language of productivity apps, not music platforms | LND | 3 | 1 | L | 2 |
-| 90 | Ensure the landing page does not reference "the music industry" in a way that positions ABLE as anti-industry — ABLE is not a protest; it is a tool for people who want to work | LND | 4 | 1 | M | 2 |
-| 91 | Ensure the landing page does not use the word "community" to describe ABLE's user base at launch — a community with no visible members is an empty promise | LND | 4 | 1 | L | 2 |
-| 92 | Ensure the freelancer use case is either not mentioned on the landing page at V1 (keep focus on artists) or is given its own section after the main artist story | LND | 3 | 2 | M | 3 |
-| 93 | Ensure the landing page copy does not promise future features as present capabilities — if fan broadcasts are not live, do not write them in present tense | LND | 5 | 2 | H | 1 |
-| 94 | Ensure all landing page copy is reviewed against the current feature set in docs/STATUS.md before publishing — no copy for features not yet built | LND | 5 | 2 | H | 1 |
-| 95 | Ensure the landing page is reviewed by James (the founder) as a gut-check — copy that a founder would not say out loud to a real artist should not be on the page | LND | 5 | 2 | M | 2 |
-| 96 | Add a microcopy line just below the CTA that reduces the commitment anxiety — "No card needed. Takes 3 minutes." — specific and honest | LND | 5 | 1 | L | 2 |
-| 97 | Ensure the microcopy beneath the CTA does not contain an exclamation mark | LND | 3 | 1 | L | 1 |
-| 98 | Ensure the landing page copy hierarchy is documented in docs/pages/landing/DESIGN-SPEC.md — hero pain, solution, proof, features, pricing, CTA — so every future edit has a framework | LND | 4 | 2 | L | 3 |
-| 99 | Run an A/B test between a pain-led headline and a benefit-led headline when traffic allows — document the methodology and results | LND | 5 | 5 | M | 5 |
-| 100 | Conduct a complete copy audit of landing.html against this spec before each major release — read every word in order as if you are the artist seeing it for the first time | LND | 5 | 2 | M | 3 |
+| 1 | landing.html line 1159: hero headline `'100 real fans beat 10,000 strangers.'` — canonical; confirmed clean; must never be changed without a full conversion test | LND | 5 | 1 | L | 3 |
+| 2 | landing.html line 1158: hero eyebrow `'For independent artists'` — functional but bland; consider `'For artists without a label'` which names the specific situation rather than a demographic | LND | 3 | 2 | M | 3 |
+| 3 | landing.html line 1160: hero sub-copy long version: `'Your page shifts with your moment. Release day. Tonight's gig. What's dropping next. Every fan who signs up — that email is yours. Forever.'` — the fragment structure is strong but `'Your page shifts with your moment'` is product-first; consider opening with the pain instead: `'Linktree doesn't know you have a release dropping.'` | LND | 4 | 2 | M | 2 |
+| 4 | landing.html line 1161: hero sub-copy short version: `'Release day. Gig night. What's next. Every fan email is yours. Forever.'` — this is the mobile-truncated sub; confirm it still makes sense after any change to the long version | LND | 3 | 1 | L | 2 |
+| 5 | landing.html line 1173: primary CTA `'Your page is free'` — canonical; confirmed clean; direct, specific, zero friction | LND | 5 | 1 | L | 3 |
+| 6 | landing.html line 1174: secondary CTA `'See a live example'` — clean; confirmed retained; removes the abstract by making it tangible | LND | 3 | 1 | L | 3 |
+| 7 | landing.html line 1177: trust line `'No card required. Free forever.'` — excellent; blunt and specific; confirmed retained | LND | 4 | 1 | L | 3 |
+| 8 | landing.html line 1178: micro-copy `'Live in 5 minutes · No platform cut · No lock-in'` — the three bullet points are the strongest trust signals; confirm none are removed or softened | LND | 4 | 1 | L | 3 |
+| 9 | landing.html line 1179: `'Built by an independent artist, for independent artists.'` — honest and credible; confirm retained | LND | 3 | 1 | L | 3 |
+| 10 | landing.html line 1367: quiet line `'Artists don't change their Linktree on release day. ABLE changes for you.'` — this is the best single-line argument on the page; confirm it is placed correctly (below demo, above proof strip) and never removed | LND | 5 | 1 | L | 3 |
+| 11 | landing.html line 1371–1375: proof strip numbers — `'0 Algorithms between you and your fans'` is the most powerful anchor; confirm the strip order puts this last for maximum impact | LND | 3 | 1 | L | 3 |
+| 12 | landing.html line 1407–1409: diff band `'This is not a social network. It is not a marketing tool. It is a place for artists to be themselves — and to own a direct relationship with the people who actually show up.'` — canonical; never soften; confirmed retained | LND | 5 | 1 | L | 3 |
+| 13 | landing.html line 1415: features section eyebrow `'What it does'` — clean and plain; confirmed retained | LND | 2 | 1 | L | 3 |
+| 14 | landing.html line 1416: features section h2 `'Built for the moment you're in.'` — this is product-first (built for you) not pain-first (you have a moment coming); consider `'The right action for wherever you are.'` | LND | 3 | 2 | M | 3 |
+| 15 | landing.html line 1417: features section sub `'They tapped your link because they already care. Give them somewhere that feels like you — not a list of ten blue links.'` — very strong; confirmed retained | LND | 5 | 1 | L | 3 |
+| 16 | landing.html line 1423: hero feature 1 title `'Looks like you. Not like everyone else.'` — confirmed clean | LND | 3 | 1 | L | 3 |
+| 17 | landing.html line 1424: hero feature 1 desc — `'Link your Spotify and we pull it straight from your artwork.'` — specific and reassuring; confirmed retained | LND | 3 | 1 | L | 3 |
+| 18 | landing.html line 1441: hero feature 2 title `'Set a date. Your page does the rest.'` — strong; confirmed retained | LND | 4 | 1 | L | 3 |
+| 19 | landing.html line 1442: hero feature 2 desc — `'Nothing to update, nothing to remember.'` is the strongest closing line in the feature section; confirmed retained | LND | 5 | 1 | L | 3 |
+| 20 | landing.html line 1459: feature card 01 title `'The right action leads every time'` — strong; but could be sharpened to name the pain: `'No more updating your bio on release day.'` | LND | 3 | 2 | M | 3 |
+| 21 | landing.html line 1460: feature card 01 desc — `'not the same thing regardless of when they arrive'` closes the argument cleanly; confirmed retained | LND | 4 | 1 | L | 3 |
+| 22 | landing.html line 1463: feature card 02 title `'Listen here, not somewhere else'` — direct and specific; confirmed retained | LND | 4 | 1 | L | 3 |
+| 23 | landing.html line 1465: feature card 02 desc — `'they don't disappear into another app before you've had a chance to land'` — "land" as a verb is a strong metaphor; confirmed retained | LND | 3 | 1 | L | 3 |
+| 24 | landing.html line 1469: feature card 03 title `'Your page looks like you.'` — weaker than the other titles; too generic; consider `'Your genre sets the whole aesthetic.'` | LND | 3 | 2 | M | 3 |
+| 25 | landing.html line 1470: feature card 03 desc closes with `'Not a template. Your identity.'` — strong closing line; confirmed retained | LND | 3 | 1 | L | 3 |
+| 26 | landing.html line 1474: feature card 04 title `'Your list. Your relationship.'` — the canonical ABLE ownership message; confirmed retained | LND | 5 | 1 | L | 3 |
+| 27 | landing.html line 1475: feature card 04 desc — `'no cut beyond Stripe's standard rate'` is specific and honest; confirmed retained | LND | 4 | 1 | L | 3 |
+| 28 | landing.html line 1486: Linktree comparison h2 `'You've had a Linktree for 2 years. What does it know about your release dropping in 3 days?'` — best conversion heading on the page; confirmed retained | LND | 5 | 1 | L | 3 |
+| 29 | landing.html line 1524: Linktree switcher CTA `'Paste your Linktree — we'll import your links'` — highly specific and friction-reducing; confirmed retained | LND | 4 | 1 | L | 3 |
+| 30 | landing.html line 1535: fan ownership section h2 `'Every email is yours. Forever.'` — strong ownership statement; confirmed retained | LND | 5 | 1 | L | 3 |
+| 31 | landing.html line 1536: `'Not just clicks. Real fans.'` — direct anti-vanity-metric framing; confirmed retained | LND | 4 | 1 | L | 3 |
+| 32 | landing.html line 1537: `'If ABLE closes tomorrow — unlikely, but — you export your list and leave with everything.'` — the vulnerability of `'unlikely, but'` is a trust signal; confirmed retained | LND | 5 | 1 | L | 3 |
+| 33 | landing.html line 1538: `'ABLE is the conduit, not the room.'` — excellent metaphor; confirmed retained | LND | 4 | 1 | L | 3 |
+| 34 | landing.html line 1539: the credits-as-discovery paragraph — `'It's the only discovery mechanic that can't be gamed, bought, or inflated.'` — the strongest single-paragraph argument for the platform's moat; confirmed retained | LND | 5 | 1 | L | 3 |
+| 35 | landing.html line 1547: How it works h2 `'Live in five minutes'` — specific claim; confirm it matches the actual onboarding time on start.html | LND | 4 | 1 | L | 2 |
+| 36 | landing.html line 1551: step 1 title `'Name your world'` — slightly abstract; consider `'Tell us who you are'` for clarity at first-time exposure | LND | 2 | 2 | M | 3 |
+| 37 | landing.html line 1552: step 1 desc — `'Five questions and your page has a personality before you've added a single link.'` — specific claim (five questions); confirm this matches the actual wizard step count | LND | 3 | 1 | L | 2 |
+| 38 | landing.html line 1561: step 3 title `'Tell it what's coming'` — uses the same "Tell it" framing as step 1; consider differentiating: `'Set a date and it does the rest'` | LND | 2 | 2 | M | 3 |
+| 39 | landing.html line 1566: step 4 title `'Put it in your bio'` — direct and action-oriented; confirmed retained | LND | 3 | 1 | L | 3 |
+| 40 | landing.html line 1572: How it works section repeat CTA `'Your page is free'` — consistent with hero CTA; confirmed retained | LND | 3 | 1 | L | 3 |
+| 41 | landing.html line 1579–1583: the testimonial quote — `'First night I had it live, someone signed up at 2am after hearing a demo clip.'` — specific time, specific action, specific outcome; confirmed retained | LND | 5 | 1 | L | 3 |
+| 42 | landing.html line 1582: testimonial attribution `'Early access'` — confirm this is updated to a tier name or removed when early access ends | LND | 3 | 1 | L | 2 |
+| 43 | landing.html line 1589: pricing section eyebrow `'What it costs'` — direct and honest; confirmed retained | LND | 3 | 1 | L | 3 |
+| 44 | landing.html line 1590: pricing h2 `'Free to start. Yours to keep.'` — strong ownership framing; confirmed retained | LND | 4 | 1 | L | 3 |
+| 45 | landing.html line 1591: pricing sub `'Upgrade when you need more — not before.'` is the best anti-pressure line on the page; confirmed retained | LND | 5 | 1 | L | 3 |
+| 46 | landing.html line 1596: free tier card desc `'Everything you need to give fans somewhere to go.'` — confirm this doesn't set a false expectation given the 100-fan cap | LND | 3 | 1 | L | 2 |
+| 47 | landing.html line 1744: FAQ eyebrow `'Questions'` — single word, correct; confirmed retained | LND | 2 | 1 | L | 3 |
+| 48 | landing.html line 1745: FAQ h2 `'The things people actually ask.'` — specific and self-aware; confirmed retained | LND | 4 | 1 | L | 3 |
+| 49 | landing.html line 1749: FAQ answer for Linktree — `'Linktree just lists links.'` is the sharpest competitive line in the FAQ; confirmed retained | LND | 4 | 1 | L | 3 |
+| 50 | landing.html line 1753: FAQ answer for fan list — `'We don't hold it hostage — that's the whole point.'` — strong direct phrase; confirmed retained | LND | 5 | 1 | L | 3 |
+| 51 | landing.html line 1757: FAQ answer for Spotify — `'If you're not on any streaming platform yet, that's fine too. Your page still works.'` — removes a specific doubt; confirmed retained | LND | 4 | 1 | L | 3 |
+| 52 | landing.html line 1761: FAQ answer for fan sign-up — `'No app to download, no account to create.'` — removes friction concerns; confirmed retained | LND | 4 | 1 | L | 3 |
+| 53 | landing.html line 1765: FAQ answer for free tier — `'not a trial, not a watermarked demo'` directly addresses a specific doubt; confirmed retained | LND | 5 | 1 | L | 3 |
+| 54 | landing.html line 1769: FAQ answer for setup time — confirms `'Five minutes'`; must match start.html actual onboarding time | LND | 3 | 1 | L | 2 |
+| 55 | landing.html line 1773: FAQ answer for email ownership — `'We cannot contact your fans.'` — the strongest trust statement in the FAQ; confirmed retained | LND | 5 | 1 | L | 3 |
+| 56 | landing.html line 1777: FAQ answer for Beacons — `'We take 0% — on every plan, always.'` — specific percentage; confirm Beacons 9% figure is accurate and current | LND | 4 | 1 | L | 2 |
+| 57 | landing.html line 1781: FAQ answer for Feature.fm — `'Great campaign tools — ABLE doesn't replace them for paid promotion. But they're not a home.'` — honest positioning; confirmed retained | LND | 4 | 1 | L | 3 |
+| 58 | landing.html line 1789: footer CTA headline `'Your best fans are already out there. Give them a home.'` — `'Give them a home'` framing is strong; confirmed retained | LND | 5 | 1 | L | 3 |
+| 59 | landing.html line 1790: footer CTA sub — `'no algorithm in the way'` is the page's canonical closing phrase; confirmed retained | LND | 5 | 1 | L | 3 |
+| 60 | landing.html line 1792: footer primary CTA `'Your page is free'` — consistent with hero; confirmed retained | LND | 4 | 1 | L | 3 |
+| 61 | landing.html line 1793: footer secondary CTA `'Sign in'` — confirm this destination is admin.html | LND | 2 | 1 | L | 2 |
+| 62 | landing.html line 1816: footer authenticity line `'Built by an independent artist who got tired of Linktree not knowing when a release was dropping.'` — the most human line on the page; confirmed retained | LND | 5 | 1 | L | 3 |
+| 63 | landing.html: the page has one testimonial; add 2–3 more with the same specific format (exact moment, exact detail) before launch | LND | 4 | 3 | M | 3 |
+| 64 | landing.html: comparison table row `'linktr.ee/you — Instagram flags it as spam'` — confirm this claim is accurate and defensible before launch | LND | 4 | 1 | M | 2 |
+| 65 | landing.html: the marquee ticker item `'Fan sign-ups'` is product language; replace with `'Every email is yours'` which is benefit language | LND | 2 | 1 | L | 3 |
+| 66 | landing.html: the marquee has three separate `'Works with [platform]'` items; consolidate to `'Works with every platform'` | LND | 1 | 1 | L | 3 |
+| 67 | landing.html: confirm the nav CTA matches the hero CTA (`'Your page is free'`) | LND | 3 | 1 | L | 2 |
+| 68 | landing.html: confirm nav sign-in reads `'Sign in'` not `'Log in'` | LND | 2 | 1 | L | 2 |
+| 69 | landing.html: confirm `<title>` starts with `'ABLE'` and includes a benefit | LND | 3 | 1 | L | 2 |
+| 70 | landing.html: confirm OG title and description use the canonical headline | LND | 3 | 1 | L | 2 |
+| 71 | landing.html: confirm the Label tier is represented in the pricing section | LND | 3 | 2 | M | 2 |
+| 72 | landing.html: confirm pricing CTA buttons do not use `'Get started'` (banned); should be `'Your page is free'` for free tier and `'See what's included'` for paid | LND | 4 | 1 | L | 1 |
+| 73 | landing.html: the `'How it works'` step numbers are visual decorations — confirm screen readers read them in the correct order | LND | 2 | 1 | L | 2 |
+| 74 | landing.html: the hero platform strip label `'Connects to'` — consider `'Works on'` as more natural | LND | 2 | 1 | L | 3 |
+| 75 | landing.html: no newsletter sign-up for artists not ready to create a page — confirm whether this is intentional (friction is a feature here) | LND | 3 | 2 | M | 3 |
+| 76 | landing.html line 1819: `'Not an artist? Find artists on ABLE'` — confirm this is present and subtle (not a distraction from the artist conversion flow) | LND | 3 | 1 | L | 3 |
+| 77 | landing.html: the proof strip item `'4 Modes that move with you'` is the weakest proof number; consider replacing with a more impactful stat | LND | 2 | 2 | L | 3 |
+| 78 | landing.html: state pills in the feature visual — `'Building anticipation'`, `'Out now'`, `'Always on'`, `'On tonight'` — confirm these match the actual state labels on the artist's profile | LND | 3 | 1 | L | 2 |
+| 79 | landing.html: comparison table row about account suspension — `'Your page can't be suspended. Export everything, any time.'` — confirm this claim is legally accurate | LND | 4 | 1 | M | 2 |
+| 80 | landing.html: the Linktree import CTA is one of the most conversion-efficient lines on the page; confirm it is always visible on the comparison table and not truncated at 375px | LND | 4 | 1 | L | 2 |
+| 81 | landing.html: after early access ends, update the testimonial attribution from `'Early access'` to the artist's actual plan tier | LND | 3 | 1 | L | 2 |
+| 82 | landing.html: `'ABLE is the conduit, not the room.'` (line 1538) — confirmed retained | LND | 4 | 1 | L | 3 |
+| 83 | landing.html line 1539: credits-as-discovery paragraph — `'the only discovery mechanic that can't be gamed, bought, or inflated.'` — strongest competitive moat argument; confirmed retained | LND | 5 | 1 | L | 3 |
+| 84 | landing.html: `'they already care'` (line 1417) is the key insight about warm fans; confirm this framing is consistent across hero, features, and FAQ | LND | 4 | 1 | L | 3 |
+| 85 | landing.html: the page has one primary conversion path (hero CTA to start.html); confirm no secondary CTAs distract from it | LND | 4 | 1 | L | 2 |
+| 86 | landing.html line 1174: secondary CTA `'See a live example'` links to `able-v8.html` — confirm whether this should link to a dedicated demo URL rather than the development filename | LND | 3 | 1 | L | 2 |
+| 87 | landing.html: hero sub long version ends with `'Forever.'` as a fragment — confirm it does not orphan on a new line visually at 375px | LND | 3 | 1 | L | 2 |
+| 88 | landing.html: the free-tier fan cap (100 fans) should be mentioned somewhere above the pricing section so artists are not surprised when they hit the limit | LND | 3 | 2 | M | 2 |
+| 89 | landing.html: the FAQ does not address `'What happens to my data?'` privacy concern; confirm whether this is covered adequately or needs a new FAQ entry | LND | 3 | 2 | M | 3 |
+| 90 | landing.html line 1817: `'Built for artists, not algorithms.'` — confirmed retained | LND | 3 | 1 | L | 3 |
+| 91 | landing.html: audit every heading for `'your'` vs `'my'` — landing is correctly in second person; confirm no first-person (`'my'`) leaks onto the landing page | LND | 4 | 1 | L | 2 |
+| 92 | landing.html: comparison table column headers `'Everyone else'` vs `'ABLE'` — direct and correct; confirmed retained | LND | 3 | 1 | L | 3 |
+| 93 | landing.html: the hero headline uses `<em>strangers.</em>` for italic emphasis — confirm this italic renders in the display font with the intended emotional weight at all breakpoints | LND | 3 | 1 | L | 2 |
+| 94 | landing.html: `'Upgrade when you need more — not before.'` must not conflict with the urgency of gate overlays in admin — both pieces of copy need to be consistent in their positioning | LND | 3 | 1 | L | 2 |
+| 95 | landing.html: the `'What it costs'` section eyebrow should have close visual proximity to the first pricing card — confirm layout | LND | 2 | 1 | L | 3 |
+| 96 | landing.html: the marquee ticker item `'0% platform cut'` — confirm this is accurate on all tiers (ABLE takes no commission beyond the Stripe fee on support packs) | LND | 3 | 1 | L | 2 |
+| 97 | landing.html: confirm `<meta name="description">` uses the canonical headline or a close derivative | LND | 3 | 1 | L | 2 |
+| 98 | landing.html: run a reading-level check on the hero sub, comparison table, and fan ownership section — target Flesch-Kincaid Grade 8 or below | LND | 3 | 1 | L | 3 |
+| 99 | landing.html: confirm `'No card required. Free forever.'` (line 1177) appears above the fold at 375px without scrolling | LND | 5 | 1 | L | 1 |
+| 100 | landing.html: after any copy change to the hero or diff band, run a perception test before committing; the canonical headline `'100 real fans beat 10,000 strangers.'` must not be changed without data | LND | 5 | 2 | M | 3 |
