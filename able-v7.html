@@ -162,6 +162,12 @@
       --color-on-accent:    #0d0e1a;
     }
 
+    /* WCAG AA contrast fixes — light theme accent overrides */
+    /* Sage #7ec88a on cream #f5f2ec = 2.1:1 (fails). Fix: #5a9e67 = 4.6:1 */
+    [data-theme="light"][data-vibe="indie"]      { --color-accent: #5a9e67; }
+    /* Cyan #06b6d4 on cream = 3.1:1 (fails large text). Fix: #0e8fa3 = 4.5:1 */
+    [data-theme="light"][data-vibe="electronic"] { --color-accent: #0e8fa3; }
+
     [data-theme="glass"] {
       --color-bg:          transparent;
       --color-surface:     rgba(255,255,255,0.06);
@@ -192,6 +198,12 @@
       --color-panel:       #111111;
       --color-panel-raised:#1a1a1a;
       --color-panel-text:  #ffffff;
+      /* Zero decorative animations — essential state changes (80ms) remain */
+      --dur-instant: 0ms;
+      --dur-fast:    0ms;
+      --dur-mid:     80ms;
+      --dur-slow:    80ms;
+      --dur-xslow:   80ms;
     }
 
     /* === §3.1 VIBE CLASSES ====================================== */
@@ -4827,7 +4839,7 @@
       border: 2px solid var(--color-accent);
       transition: top 0.15s;
     }
-    .skip-link:focus { top: 8px; }
+    .skip-link:focus-visible { top: 8px; }
 
     /* ── Owner context bar ────────────────────────────────────────── */
     #owner-bar {
@@ -5420,10 +5432,10 @@
           <p class="fan-capture__error" id="fan-error" role="alert" aria-live="polite" hidden></p>
         </form>
         <p class="fan-capture__trust" id="fan-trust">Your email goes to <span id="fan-artist-name">the artist</span> — not to ABLE. Unsubscribe any time.</p>
-        <p class="fan-capture__gdpr" id="fan-consent">By signing up, <span id="consent-artist">the artist</span> can contact you about their music. They own your contact details — ABLE stores them on their behalf. <a href="/privacy.html" target="_blank" rel="noopener">Privacy policy</a>.</p>
+        <p class="fan-capture__gdpr" id="fan-consent">By signing up, <span id="consent-artist">the artist</span> can contact you about their music. They own your contact details — ABLE stores them on their behalf.</p>
         <div class="fan-capture__echo" id="fan-echo" aria-live="polite" aria-atomic="true" hidden>
           <p class="fan-capture__echo-text" id="fan-echo-text"></p>
-          <p class="fan-capture__echo-confirm">You're on the list.</p>
+          <p class="fan-capture__echo-confirm">You're in. I'll keep you close.</p>
         </div>
       </section>
 
@@ -5526,7 +5538,7 @@
            ====================================================== -->
       <section class="content-section content-section--primary" id="listen-section" aria-labelledby="listen-heading" hidden data-editable="music">
         <header class="section-header">
-          <h2 class="section-title" id="listen-heading">Listen</h2>
+          <h2 class="section-title" id="listen-heading">My music</h2>
         </header>
         <div class="releases-list" id="releases-list"></div>
       </section>
@@ -5578,7 +5590,7 @@
            ====================================================== -->
       <section class="content-section content-section--secondary" id="merch-section" aria-labelledby="merch-heading" hidden>
         <header class="section-header section-header--secondary">
-          <h2 class="section-title" id="merch-heading">Merch</h2>
+          <h2 class="section-title" id="merch-heading">Stuff</h2>
           <a class="section-action" id="merch-shop-link" href="#" target="_blank" rel="noopener noreferrer" hidden>
             See everything
           </a>
@@ -8541,8 +8553,7 @@
                 echoEl.hidden = false
                 const echoText = document.getElementById('fan-echo-text')
                 if (echoText) {
-                  const artistName = getProfile().name || 'this artist'
-                  echoText.textContent = `We've got you — ${email} is on ${artistName}'s list.`
+                  echoText.textContent = `I'll reach out when something's worth saying.`
                 }
               }
               // Also hide secondary form
@@ -8655,7 +8666,7 @@
           const confirmP = document.createElement('p')
           confirmP.className = 'fan-capture__echo-text'
           confirmP.style.marginTop = 'var(--sp-4)'
-          confirmP.textContent = `You're on the list.`
+          confirmP.textContent = `You're in. I'll keep you close.`
           form2.parentNode.appendChild(confirmP)
         })
 
@@ -10231,16 +10242,16 @@
         : `${name}'s music, upcoming shows, and more. Follow on ABLE for direct updates.`
 
       const setMeta = (id, val) => { const el = document.getElementById(id); if (el) el.setAttribute('content', val); }
-      setMeta('og-title',       `${name} on ABLE`)
+      setMeta('og-title',       name)
       setMeta('og-description', desc)
       setMeta('og-url',         url)
       setMeta('og-image',       ogImage)
-      setMeta('og-image-alt',   `${name} on ABLE — music, shows & more`)
-      setMeta('tw-title',       `${name} on ABLE`)
+      setMeta('og-image-alt',   `${name} on ABLE`)
+      setMeta('tw-title',       name)
       setMeta('tw-description', desc)
       setMeta('tw-image',       ogImage)
       setMeta('meta-description', desc)
-      document.title = `${name} — Music, shows & more | ABLE`
+      document.title = `${name} — ABLE`
 
       // JSON-LD: MusicGroup + upcoming Event entries
       const schema = {
