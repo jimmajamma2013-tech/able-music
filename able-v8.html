@@ -123,6 +123,9 @@
       --color-state-gig:  #8b1e1e;
       --color-state-prof: #06b6d4;
 
+      /* System / tier UI amber — pro feature locks, limit banners (C9) */
+      --color-pro-amber: #f4b942;
+
       /* Ambient colour — overridden by canvas extraction (§3.6) */
       --color-ambient: 0,0,0;
 
@@ -2756,8 +2759,8 @@
     /* Task 5.4 — TONIGHT badge (gig state active) */
     .tonight-badge {
       display: inline-block;
-      background: #f4b942;
-      color: #1a1a2e;
+      background: var(--color-accent);
+      color: var(--color-on-accent);
       font-size: 9px;
       font-weight: 900;
       padding: 3px 8px;
@@ -3540,7 +3543,7 @@
     .snap-card-lock-overlay__icon {
       font-size: 18px;
       opacity: 0.85;
-      color: #f4b942;
+      color: var(--color-pro-amber);
     }
     .snap-card-lock-overlay__text {
       font-size: var(--text-xs);
@@ -3549,7 +3552,7 @@
     }
     .snap-card-lock-overlay__text strong {
       display: block;
-      color: #f4b942;
+      color: var(--color-pro-amber);
       font-size: var(--text-sm);
       margin-bottom: 2px;
     }
@@ -3843,8 +3846,8 @@
       line-height: 1.5;
     }
     .fan-limit-banner.visible { display: block; }
-    .fan-limit-banner strong { color: #f4b942; display: block; margin-bottom: 2px; font-size: var(--text-sm); }
-    .fan-limit-banner a { color: #f4b942; text-decoration: underline; text-underline-offset: 2px; }
+    .fan-limit-banner strong { color: var(--color-pro-amber); display: block; margin-bottom: 2px; font-size: var(--text-sm); }
+    .fan-limit-banner a { color: var(--color-pro-amber); text-decoration: underline; text-underline-offset: 2px; }
 
     /* === MERCH SECTION ========================================= */
     .merch-grid {
