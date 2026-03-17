@@ -485,7 +485,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 /* Nav buttons */
 .step-nav { display:flex; align-items:center; gap:12px; margin-top:8px; }
 .btn-back {
-  padding:12px 20px; border-radius:var(--r-pill); font-size:13px; font-weight:500;
+  padding:12px 20px; min-height:44px; border-radius:var(--r-pill); font-size:13px; font-weight:500;
   border:1.5px solid var(--border); color:var(--t2);
   cursor:pointer; background:none; font-family:var(--font);
   transition: background var(--dur), color var(--dur), border-color var(--dur);
@@ -493,7 +493,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 .btn-back:hover { color:var(--text); border-color:var(--bm); }
 .btn-back:active { transform:scale(0.97); transition:transform 80ms ease-out; }
 .btn-next {
-  padding:12px 28px; border-radius:var(--r-pill); font-size:14px; font-weight:600;
+  padding:12px 28px; min-height:44px; border-radius:var(--r-pill); font-size:14px; font-weight:600;
   border:none; background:var(--acc); color:#121a24;
   cursor:pointer; font-family:var(--font);
   transition: background var(--dur-slow), color var(--dur-slow), transform var(--dur-slow) var(--spring), box-shadow var(--dur-slow);
@@ -502,7 +502,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 .btn-next:hover { transform:translateY(-2px); box-shadow:0 7px 28px rgba(var(--acc-rgb),.42); }
 .btn-next:active { transform:scale(0.96); transition:transform 80ms ease-out; box-shadow:0 2px 12px rgba(var(--acc-rgb),.28); }
 .btn-skip {
-  padding:12px 20px; border-radius:var(--r-pill); font-size:13px; font-weight:500;
+  padding:12px 20px; min-height:44px; border-radius:var(--r-pill); font-size:13px; font-weight:500;
   border:1.5px solid var(--border); color:var(--t2);
   cursor:pointer; background:none; font-family:var(--font);
   transition: background var(--dur), color var(--dur), border-color var(--dur);

@@ -5305,7 +5305,8 @@
     .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
     .toast-message { flex: 1; }
     .toast-action { color: currentColor; text-decoration: underline; margin-left: 4px; }
-    .toast-close { background: none; border: none; color: currentColor; cursor: pointer; opacity: 0.6; padding: 0; margin-left: 4px; }
+    /* #13: icon-only close button — 44px tap target */
+    .toast-close { background: none; border: none; color: currentColor; cursor: pointer; opacity: 0.6; padding: 0; margin-left: 4px; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
 
     /* === UI P0-6: Glass theme iframe container backdrop ======== */
     [data-theme="glass"] .spotify-embed-wrapper,
