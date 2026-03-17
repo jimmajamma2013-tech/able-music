@@ -8723,29 +8723,17 @@
 
       const releases = profile.releases || []
       if (!releases.length) {
-        const isOwner = getIsOwner(profile)
-        list.innerHTML = isOwner
-          ? `<div class="section-empty">
+        if (getIsOwner(profile)) {
+          list.innerHTML = `<div class="section-empty">
                <div class="section-empty__circle" aria-hidden="true">🎵</div>
                <p class="section-empty__eyebrow">Only you can see this</p>
                <p class="section-empty__headline">Add your music.</p>
                <p class="section-empty__sub">Paste a Spotify, Apple Music, or SoundCloud link and it appears here instantly.</p>
                <a class="section-empty__action pressable" href="admin.html">Add music →</a>
              </div>`
-          : `<div class="section-empty">
-               <div class="section-empty__circle" aria-hidden="true">🎵</div>
-               <p class="section-empty__headline">Something's being made.</p>
-               <p class="section-empty__sub">Sign up and you'll hear it first — before it hits the platforms.</p>
-               <a class="section-empty__action pressable"
-                  href="#fan-capture"
-                  onclick="event.preventDefault();
-                    const fc=document.getElementById('fan-capture');
-                    if(fc){fc.scrollIntoView({behavior:'smooth',block:'center'});
-                    const inp=document.getElementById('fan-email');if(inp)setTimeout(()=>inp.focus(),350);}">
-                 Hear it first
-               </a>
-             </div>`
-        section.hidden = false
+          section.hidden = false
+        }
+        // Fans never see an empty music section — intentional silence
         return
       }
 
@@ -9115,29 +9103,17 @@
       }).sort((a, b) => new Date(a.date) - new Date(b.date))
 
       if (!events.length) {
-        const isOwner = getIsOwner(profile)
-        list.innerHTML = isOwner
-          ? `<div class="section-empty">
+        if (getIsOwner(profile)) {
+          list.innerHTML = `<div class="section-empty">
                <div class="section-empty__circle owner-badge-wrap" aria-hidden="true">🎤</div>
                <p class="section-empty__eyebrow">Only you can see this</p>
                <p class="section-empty__headline">Add a show date.</p>
                <p class="section-empty__sub">When you add a show, the ticket button goes front and centre for every fan who visits.</p>
                <a class="section-empty__action pressable" href="admin.html">Add a show →</a>
              </div>`
-          : `<div class="section-empty">
-               <div class="section-empty__circle" aria-hidden="true">🎤</div>
-               <p class="section-empty__headline">Nothing booked yet.</p>
-               <p class="section-empty__sub">Sign up below — you'll hear about dates before anywhere else.</p>
-               <a class="section-empty__action pressable"
-                  href="#fan-capture"
-                  onclick="event.preventDefault();
-                    const fc=document.getElementById('fan-capture');
-                    if(fc){fc.scrollIntoView({behavior:'smooth',block:'center'});
-                    const inp=document.getElementById('fan-email');if(inp)setTimeout(()=>inp.focus(),350);}">
-                 Get notified
-               </a>
-             </div>`
-        section.hidden = false
+          section.hidden = false
+        }
+        // Fans never see an empty shows section — intentional silence
         return
       }
 
