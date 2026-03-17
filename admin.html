@@ -2330,13 +2330,13 @@ body::before {
   <div class="topbar">
     <h1 class="topbar-title" id="topbarTitle">Overview</h1>
     <div class="topbar-actions">
-      <a class="topbar-edit-cta" href="/able-v8.html?edit=1" id="topbarEditCta">Edit page →</a>
-      <span class="live-chip" id="liveChip" onclick="window.open('able-v8.html','_blank')" title="View your live page">
+      <a class="topbar-edit-cta" href="/able-v7.html?edit=1" id="topbarEditCta">Edit page →</a>
+      <span class="live-chip" id="liveChip" onclick="window.open('able-v7.html','_blank')" title="View your live page">
         <span class="live-dot"></span>
         Live
       </span>
       <span class="tier-badge" onclick="showPage('settings')" title="Upgrade plan">✦ Free</span>
-      <a class="tb-btn tb-btn-acc" href="able-v8.html" target="_blank" style="text-decoration:none;" id="topbarViewBtn">See your page →</a>
+      <a class="tb-btn tb-btn-acc" href="able-v7.html" target="_blank" style="text-decoration:none;" id="topbarViewBtn">See your page →</a>
     </div>
   </div>
 
@@ -7038,9 +7038,9 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sbName').textContent = name;
   document.getElementById('sbUrl').textContent = `ablemusic.co/${handle}`;
   const tvb = document.getElementById('topbarViewBtn');
-  if (tvb) tvb.href = `able-v8.html?handle=${encodeURIComponent(handle)}`;
+  if (tvb) tvb.href = `able-v7.html?handle=${encodeURIComponent(handle)}`;
   const lc = document.getElementById('liveChip');
-  if (lc) lc.onclick = () => window.open(`able-v8.html?handle=${encodeURIComponent(handle)}`, '_blank');
+  if (lc) lc.onclick = () => window.open(`able-v7.html?handle=${encodeURIComponent(handle)}`, '_blank');
 
   // Settings page
   if (document.getElementById('settingsSlug')) document.getElementById('settingsSlug').value = handle;
