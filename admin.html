@@ -48,7 +48,8 @@
   --dash-border: #cdc8c0;   /* border — more contrast against card */
   --dash-shell:  #1a1a2e;
   --dash-field:  #e4dfd7;   /* recessed — matches floor so inputs feel inset */
-  --dash-amber:  #f4b942;
+  --dash-amber:     #f4b942;
+  --dash-amber-rgb: 244,185,66;
   --dash-link:   #8c6200;  /* amber-on-light: ≥4.5:1 on --dash-card */
   --dash-green:  #1e9650;
   --dash-red:    #c04030;
@@ -82,6 +83,17 @@
   /* Structural letter spacing (B9) */
   --ls-wide:  0.1em;
   --ls-xwide: 0.14em;
+
+  /* Shadow tokens — elevation system (A3) */
+  --shadow-xs:      0 1px 3px rgba(0,0,0,.04);
+  --shadow-sm:      0 1px 3px rgba(0,0,0,.06), 0 0 0 1px var(--dash-border);
+  --shadow-md:      0 2px 8px rgba(0,0,0,.08);
+  --shadow-lg:      0 2px 10px rgba(0,0,0,.1);
+  --shadow-overlay: 0 8px 32px rgba(8,16,40,.4);
+  --shadow-focus:   0 0 0 3px rgba(var(--acc-rgb), 0.18);
+  --shadow-amber-sm: 0 3px 12px rgba(var(--dash-amber-rgb),.3);
+  --shadow-amber-md: 0 4px 18px rgba(var(--dash-amber-rgb),.35);
+  --shadow-amber-lg: 0 6px 24px rgba(var(--dash-amber-rgb),.5);
 
   /* Accessible amber text token — use for text on light dashboard surfaces (C5)
      --acc (#c9a84c) = 2.1:1 on dash-card; --dash-link (#8c6200) = 5.0:1 on dash-card */
@@ -258,7 +270,7 @@ body::before {
 .stat-card {
   padding:18px 20px; border-radius:var(--r-xl);
   background:var(--dash-card); border:1px solid var(--dash-border);
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  box-shadow:var(--shadow-md);
   position: relative; overflow: hidden;
 }
 .sparkline {
@@ -343,7 +355,7 @@ body::before {
   color:var(--dash-text); font-size:16px; font-family:var(--font);
   transition:border-color var(--dur); outline:none;
 }
-.field-input:focus { border-color:var(--acc); box-shadow: 0 0 0 3px rgba(var(--acc-rgb), 0.18); }
+.field-input:focus { border-color:var(--acc); box-shadow: var(--shadow-focus); }
 .field-textarea { resize:vertical; min-height:72px; line-height:1.5; }
 .field-hint { font-size:11px; color:var(--dash-t3); line-height:1.4; }
 
@@ -668,7 +680,7 @@ body::before {
 .campaign-hq {
   border-radius:var(--r-xl); background:var(--dash-card); border:1px solid var(--dash-border);
   overflow:hidden; margin-bottom:20px; margin-top:32px;
-  box-shadow:0 1px 3px rgba(0,0,0,.06), 0 0 0 1px var(--dash-border);
+  box-shadow:var(--shadow-sm);
   transition:border-left-color 300ms ease;
 }
 /* Per-state left border — visual signal of active campaign mode */
@@ -707,7 +719,7 @@ body::before {
   color:var(--dash-text); font-size:16px; font-family:var(--font);
   transition:border-color var(--dur); outline:none;
 }
-.chq-release-title:focus { border-color:var(--acc); box-shadow: 0 0 0 3px rgba(var(--acc-rgb), 0.18); outline: none; }
+.chq-release-title:focus { border-color:var(--acc); box-shadow: var(--shadow-focus); outline: none; }
 .chq-date-picker {
   display:flex; gap:8px; margin-bottom:14px;
 }
@@ -718,7 +730,7 @@ body::before {
   transition:border-color var(--dur); outline:none;
   color-scheme:dark;
 }
-.chq-date-picker input:focus { border-color:var(--acc); box-shadow: 0 0 0 3px rgba(var(--acc-rgb), 0.18); outline: none; }
+.chq-date-picker input:focus { border-color:var(--acc); box-shadow: var(--shadow-focus); outline: none; }
 .chq-auto-hint {
   font-size:10px; color:var(--dash-t3); line-height:1.5;
   margin-bottom:14px; padding:8px 12px; border-radius:var(--r-sm);
@@ -837,7 +849,7 @@ body::before {
 .arc-node.active .arc-dot {
   background: var(--dash-amber);
   border-color: var(--dash-amber);
-  box-shadow: 0 0 0 4px rgba(244,185,66,0.25);
+  box-shadow: 0 0 0 4px rgba(var(--dash-amber-rgb),0.25);
 }
 
 .arc-label {
@@ -996,7 +1008,7 @@ body::before {
   padding:5px 14px; border-radius:var(--r-pill); font-size:11px; font-weight:700;
   background:linear-gradient(135deg,#f4b942,#e05242); color:#fff;
   margin-bottom:10px;
-  box-shadow:0 4px 16px rgba(244,185,66,.3);
+  box-shadow:0 4px 16px rgba(var(--dash-amber-rgb),.3);
 }
 .gold-lock-overlay .glo-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:4px; text-align:center; }
 .gold-lock-overlay .glo-sub { font-size:12px; color:var(--t2); text-align:center; margin-bottom:14px; }
@@ -1004,28 +1016,28 @@ body::before {
   padding:10px 24px; border-radius:var(--r-pill); font-size:13px; font-weight:700;
   background:linear-gradient(135deg,#f4b942,#f97316); color:#fff; border:none;
   cursor:pointer; font-family:var(--font);
-  box-shadow:0 4px 18px rgba(244,185,66,.35);
+  box-shadow:var(--shadow-amber-md);
   transition:transform var(--dur) var(--spring), box-shadow var(--dur);
 }
-.gold-lock-overlay .glo-btn:hover { transform:translateY(-2px); box-shadow:0 6px 24px rgba(244,185,66,.5); }
+.gold-lock-overlay .glo-btn:hover { transform:translateY(-2px); box-shadow:var(--shadow-amber-lg); }
 .gold-lock .gold-blur { filter:blur(3px); pointer-events:none; user-select:none; }
 
 /* Tier badge in topbar */
 .tier-badge {
   display:inline-flex; align-items:center; gap:5px;
   padding:4px 11px; border-radius:var(--r-pill); font-size:11px; font-weight:700;
-  background:rgba(244,185,66,.12); color:#f4b942;
-  border:1px solid rgba(244,185,66,.25);
+  background:rgba(var(--dash-amber-rgb),.12); color:#f4b942;
+  border:1px solid rgba(var(--dash-amber-rgb),.25);
   cursor:pointer;
   transition: background var(--dur), color var(--dur), border-color var(--dur);
 }
-.tier-badge:hover { background:rgba(244,185,66,.2); }
+.tier-badge:hover { background:rgba(var(--dash-amber-rgb),.2); }
 
 /* Upgrade nudge bar */
 .upgrade-bar {
   margin:0 28px 20px; padding:12px 16px; border-radius:var(--r-lg);
-  background:linear-gradient(135deg, rgba(244,185,66,.1), rgba(var(--gig-rgb),.08));
-  border:1px solid rgba(244,185,66,.2);
+  background:linear-gradient(135deg, rgba(var(--dash-amber-rgb),.1), rgba(var(--gig-rgb),.08));
+  border:1px solid rgba(var(--dash-amber-rgb),.2);
   display:flex; align-items:center; justify-content:space-between; gap:12px;
 }
 .upgrade-bar-text { font-size:12px; color:var(--dash-t2); }
@@ -1034,7 +1046,7 @@ body::before {
   padding:6px 16px; border-radius:var(--r-pill); font-size:11px; font-weight:700;
   background:linear-gradient(135deg,#f4b942,#f97316); color:#fff; border:none;
   cursor:pointer; font-family:var(--font); white-space:nowrap;
-  box-shadow:0 2px 10px rgba(244,185,66,.3);
+  box-shadow:0 2px 10px rgba(var(--dash-amber-rgb),.3);
   transition: opacity var(--dur-fast), transform var(--dur-fast);
 }
 .upgrade-bar-btn:hover { transform:translateY(-1px); }
@@ -1084,7 +1096,7 @@ body::before {
   background:var(--bg-mid); border:1px solid var(--border);
   color:var(--text); font-size:12px; font-weight:600;
   padding:10px 20px; border-radius:var(--r-pill);
-  box-shadow:0 8px 32px rgba(8,16,40,.4);
+  box-shadow:var(--shadow-overlay);
   pointer-events:none; opacity:0;
   transition:opacity var(--dur-slow), transform var(--dur-slow) var(--spring);
   z-index:9999; white-space:nowrap;
@@ -1131,7 +1143,7 @@ body::before {
 .first-run-card {
   background:var(--dash-card); border:1px solid var(--dash-border);
   border-radius:var(--r-md); margin-bottom:20px;
-  box-shadow:0 1px 3px rgba(0,0,0,.04);
+  box-shadow:var(--shadow-xs);
   overflow:hidden;
 }
 /* Collapsed strip — always visible */
@@ -1874,7 +1886,7 @@ body::before {
     .yw-type-btn.active {
       border-color: var(--acc, #f4b942);
       color: var(--acc, #f4b942);
-      background: rgba(244,185,66,.07);
+      background: rgba(var(--dash-amber-rgb),.07);
     }
     .yw-access-row {
       display: flex;
@@ -1896,7 +1908,7 @@ body::before {
     .yw-access-btn.active {
       border-color: var(--acc, #f4b942);
       color: var(--acc, #f4b942);
-      background: rgba(244,185,66,.07);
+      background: rgba(var(--dash-amber-rgb),.07);
     }
     .yw-save-btn {
       flex: 1;
@@ -2017,7 +2029,7 @@ body::before {
 .feel-option.active {
   border-color: var(--acc, #f4b942);
   color: var(--acc, #f4b942);
-  background: rgba(244,185,66,.07);
+  background: rgba(var(--dash-amber-rgb),.07);
 }
 .identity-card {
   background: var(--dash-card);
@@ -2296,7 +2308,7 @@ body::before {
 
 /* ── TOAST ── */
 .able-toast { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-family: var(--font); }
-.able-toast--amber { background: rgba(244,185,66,0.12); border-bottom: 1px solid rgba(244,185,66,0.3); color: #f4b942; }
+.able-toast--amber { background: rgba(var(--dash-amber-rgb),0.12); border-bottom: 1px solid rgba(var(--dash-amber-rgb),0.3); color: #f4b942; }
 .able-toast--green  { background: rgba(52,199,89,0.12); border-bottom: 1px solid rgba(52,199,89,0.3); color: #34c759; }
 .able-toast--red    { background: rgba(255,69,58,0.12); border-bottom: 1px solid rgba(255,69,58,0.3); color: #ff453a; }
 .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
@@ -2309,7 +2321,7 @@ body::before {
 .state-empty__icon { font-size: 32px; margin-bottom: 8px; opacity: 0.4; }
 .state-empty__text { font-size: 14px; line-height: 1.5; }
 .state-empty__action { margin-top: 12px; }
-.state-error { padding: 16px; border-left: 2px solid #f4b942; background: rgba(244,185,66,0.06); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.state-error { padding: 16px; border-left: 2px solid #f4b942; background: rgba(var(--dash-amber-rgb),0.06); border-radius: 0 var(--r-sm) var(--r-sm) 0; }
 .state-error__text { font-size: 13px; color: #f4b942; }
 .state-error__action { margin-top: 8px; font-size: 12px; opacity: 0.8; }
 </style>
@@ -3341,7 +3353,7 @@ body::before {
           <div class="field-label">Intro text <span style="font-weight:400;color:var(--t3);">(shown on the join sheet)</span></div>
           <input class="field-input" type="text" id="ccIntro" placeholder="Get closer to the music. Early access and more." oninput="saveCloseCircle()">
         </div>
-        <div id="ccStripeNotice" style="display:none;margin-top:14px;padding:12px 14px;border-radius:var(--r-md);background:rgba(244,185,66,0.08);border:1px solid rgba(244,185,66,0.25);">
+        <div id="ccStripeNotice" style="display:none;margin-top:14px;padding:12px 14px;border-radius:var(--r-md);background:rgba(var(--dash-amber-rgb),0.08);border:1px solid rgba(var(--dash-amber-rgb),0.25);">
           <div style="font-size:12px;font-weight:600;color:var(--dash-text);margin-bottom:4px;">Connect Stripe to go live</div>
           <div style="font-size:11px;color:var(--dash-t2);line-height:1.5;margin-bottom:10px;">You've set it up. Now connect Stripe to start accepting payments.<br>0% taken by ABLE. Stripe standard fee only.</div>
           <button style="font-size:12px;font-weight:600;color:var(--dash-text);background:var(--acc);border:none;padding:6px 14px;border-radius:7px;cursor:not-allowed;opacity:0.7;font-family:var(--font);" title="Coming soon — Stripe connection is Phase 2">Connect Stripe → (coming soon)</button>
