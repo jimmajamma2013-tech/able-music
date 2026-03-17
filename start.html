@@ -1357,11 +1357,11 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       <!-- Vibe picker 2×2 -->
       <div class="field">
         <label class="field-label">Your vibe</label>
-        <div class="v2-vibe-grid" id="v2VibeGrid">
-          <button class="v2-vibe-btn" data-vibe="atmospheric" type="button" onclick="selectVibe('atmospheric',this)">🌙 Atmospheric</button>
-          <button class="v2-vibe-btn" data-vibe="hype" type="button" onclick="selectVibe('hype',this)">🔥 Hype</button>
-          <button class="v2-vibe-btn" data-vibe="raw" type="button" onclick="selectVibe('raw',this)">🎸 Raw</button>
-          <button class="v2-vibe-btn" data-vibe="chill" type="button" onclick="selectVibe('chill',this)">🌊 Chill</button>
+        <div class="v2-vibe-grid" id="v2VibeGrid" role="radiogroup" aria-label="Your vibe">
+          <button class="v2-vibe-btn" data-vibe="atmospheric" type="button" role="radio" aria-checked="false" onclick="selectVibe('atmospheric',this)">🌙 Atmospheric</button>
+          <button class="v2-vibe-btn" data-vibe="hype" type="button" role="radio" aria-checked="false" onclick="selectVibe('hype',this)">🔥 Hype</button>
+          <button class="v2-vibe-btn" data-vibe="raw" type="button" role="radio" aria-checked="false" onclick="selectVibe('raw',this)">🎸 Raw</button>
+          <button class="v2-vibe-btn" data-vibe="chill" type="button" role="radio" aria-checked="false" onclick="selectVibe('chill',this)">🌊 Chill</button>
         </div>
       </div>
 
@@ -1936,8 +1936,14 @@ function initStep1() {
 
 function selectVibe(vibe, btn) {
   _v2Vibe = vibe;
-  document.querySelectorAll('.v2-vibe-btn').forEach(b => b.classList.remove('on'));
-  if (btn) btn.classList.add('on');
+  document.querySelectorAll('.v2-vibe-btn').forEach(b => {
+    b.classList.remove('on');
+    b.setAttribute('aria-checked', 'false');
+  });
+  if (btn) {
+    btn.classList.add('on');
+    btn.setAttribute('aria-checked', 'true');
+  }
 }
 
 function v2SetAccent(hex, swatch) {

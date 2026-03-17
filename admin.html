@@ -2695,21 +2695,21 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
             <span class="arc-mode-badge" id="arcModeBadge">Profile</span>
             <span class="arc-countdown" id="arcCountdown"></span>
           </div>
-          <div class="arc-track">
+          <div class="arc-track" role="radiogroup" aria-label="Campaign mode">
             <div class="arc-fill" id="arcFill"></div>
-            <button class="arc-node" id="arcNode0" data-mode="profile" aria-label="Announce">
+            <button class="arc-node" id="arcNode0" data-mode="profile" role="radio" aria-checked="false" aria-label="Announce">
               <span class="arc-dot"></span>
               <span class="arc-label">Announce</span>
             </button>
-            <button class="arc-node" id="arcNode1" data-mode="pre-release" aria-label="Pre-release">
+            <button class="arc-node" id="arcNode1" data-mode="pre-release" role="radio" aria-checked="false" aria-label="Pre-release">
               <span class="arc-dot"></span>
               <span class="arc-label">Pre-release</span>
             </button>
-            <button class="arc-node" id="arcNode2" data-mode="live" aria-label="Release day">
+            <button class="arc-node" id="arcNode2" data-mode="live" role="radio" aria-checked="false" aria-label="Release day">
               <span class="arc-dot"></span>
               <span class="arc-label">Release day</span>
             </button>
-            <button class="arc-node" id="arcNode3" data-mode="after" aria-label="After">
+            <button class="arc-node" id="arcNode3" data-mode="after" role="radio" aria-checked="false" aria-label="After">
               <span class="arc-dot"></span>
               <span class="arc-label">After</span>
             </button>
@@ -4990,8 +4990,9 @@ function renderTimelineArc() {
   const nodes = document.querySelectorAll('.arc-node');
   nodes.forEach((node, i) => {
     node.classList.remove('done', 'active');
+    node.setAttribute('aria-checked', 'false');
     if (i < activeIdx) node.classList.add('done');
-    if (i === activeIdx) node.classList.add('active');
+    if (i === activeIdx) { node.classList.add('active'); node.setAttribute('aria-checked', 'true'); }
   });
 
   const fillPct = [0, 33, 66, 100][activeIdx];
