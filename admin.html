@@ -1131,6 +1131,10 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
 .gold-lock-overlay .glo-btn:active { transform:scale(0.96); transition:transform 80ms ease-out; } /* C8 #40 */
 .gold-lock .gold-blur { filter:blur(6px); pointer-events:none; user-select:none; transition:filter .35s var(--ease); } /* C10 #22 — spec: 6px */
 .gold-lock:hover .gold-blur { filter:blur(3px); } /* C5 #19 — tease on hover */
+@media (prefers-reduced-motion: reduce) {
+  .gold-lock .gold-blur { transition: none; } /* C13 #13 — no filter animation for reduce-motion */
+  .gold-lock:hover .gold-blur { filter: blur(6px); } /* keep blur, skip transition */
+}
 
 /* Tier badge in topbar */
 .tier-badge {
@@ -3375,7 +3379,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       </div>
       <div class="dc-body">
         <div class="snap-list" id="snapList"><!-- Populated by renderSnapCardsList() --></div>
-        <p id="snapEmpty" style="text-align:center;padding:20px 0;color:rgba(255,255,255,.3);font-size:13px;margin:0;">Add a snap card — give fans somewhere to go. <button onclick="addSnapCard()" style="background:none;border:none;color:var(--acc);font-size:13px;cursor:pointer;padding:0;font-weight:600;">Add your first →</button></p><!-- C4 #14 -->
+        <p id="snapEmpty" style="text-align:center;padding:20px 0;color:rgba(255,255,255,.3);font-size:13px;margin:0;">No updates yet. Add a snap card to tell fans what's happening. <button onclick="addSnapCard()" style="background:none;border:none;color:var(--acc);font-size:13px;cursor:pointer;padding:0;font-weight:600;">Add your first →</button></p><!-- C4 #14, C13 #46 -->
         <button class="snap-add-btn" style="margin-top:8px;" onclick="addSnapCard()">
           <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M6 1v10M1 6h10"/></svg>
           Add update
@@ -4256,8 +4260,8 @@ function renderFanList(filter) {
       const fan = allFans.find(f => f.email === row.dataset.email);
       if (fan) openFanDetailSheet(fan);
     });
-    row.addEventListener('keydown', e => { // C10 #13 — Enter key opens detail
-      if (e.key === 'Enter') { const fan = allFans.find(f => f.email === row.dataset.email); if (fan) openFanDetailSheet(fan); }
+    row.addEventListener('keydown', e => { // C10 #13 + C13 #14 — Enter/Space opens detail
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); const fan = allFans.find(f => f.email === row.dataset.email); if (fan) openFanDetailSheet(fan); }
     });
   });
 
@@ -5115,7 +5119,7 @@ document.addEventListener('DOMContentLoaded', function() {
     _offlineBanner.setAttribute('role', 'status');
     _offlineBanner.setAttribute('aria-live', 'polite');
     _offlineBanner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(244,185,66,0.12);border-bottom:1px solid rgba(244,185,66,0.3);color:var(--acc);font-size:12px;font-weight:600;text-align:center;padding:8px 16px;font-family:var(--font-d);letter-spacing:0.04em;';
-    _offlineBanner.textContent = 'No connection. Your data is saved locally.';
+    _offlineBanner.textContent = "You're offline. Changes save locally and sync when you're back."; // C13 #57
     document.body.prepend(_offlineBanner);
   }
   function _hideOfflineBanner() {
@@ -8479,7 +8483,9 @@ function validatePlatformUrl(input) {
   const val = (input.value || '').trim();
   if (!val) { input.setCustomValidity(''); return; }
   if (!isSafeAdminUrl(val)) {
-    input.setCustomValidity("Needs a full URL starting with https://");
+    // C13 #37 — platform-specific error message using aria-label
+    const platform = (input.getAttribute('aria-label') || '').replace(' URL', '') || 'that platform';
+    input.setCustomValidity(`That doesn't look like a ${platform} URL.`);
     input.reportValidity();
   } else {
     input.setCustomValidity('');
