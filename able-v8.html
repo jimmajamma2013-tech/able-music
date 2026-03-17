@@ -1385,6 +1385,18 @@
     }
     [data-prerelease="final"] .hero-ambient { opacity: 0.28; }
 
+    /* C17 #28 — < 1h humanised countdown ("Less than an hour") */
+    .countdown[data-final-hour] .countdown__unit,
+    .countdown[data-final-hour] .countdown__sep { display: none; }
+    .countdown[data-final-hour]::after {
+      content: attr(data-humanized-label);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(22px, 7vw, 32px);
+      letter-spacing: 0.02em;
+      color: var(--color-accent);
+    }
+
     /* === HERO CTAs ============================================== */
     .hero-ctas {
       padding: var(--sp-4) var(--sp-5) var(--sp-5);
@@ -6971,7 +6983,21 @@
           + '</div>'
       }).join('')
 
-      body.innerHTML = itemsHtml
+      // C17 #27 — prepend "N shows on this date" header when > 1 moment
+      const _panelCount = dayMoments.length
+      const _panelDateHeader = selectedDate
+        ? (() => {
+            try {
+              const _d = new Date(selectedDate + 'T00:00:00')
+              return _d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })
+            } catch (_) { return selectedDate }
+          })()
+        : ''
+      const _panelCountHeader = _panelCount > 1
+        ? `<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-text-3);padding:12px 0 4px;">${_panelCount} moments · ${escHtml(_panelDateHeader)}</div>`
+        : ''
+
+      body.innerHTML = _panelCountHeader + itemsHtml
 
       // C15 #11 — start live countdown intervals for today's shows in the panel
       ;(function() {
@@ -8020,6 +8046,18 @@
 
         update(elD, d); update(elH, h); update(elM, m); update(elS, s)
 
+        // C17 #28 — humanise when < 1 hour remaining
+        if (d === 0 && h === 0) {
+          const label = m === 0 ? 'Any second now' : 'Less than an hour'
+          el.setAttribute('data-final-hour', 'true')
+          el.setAttribute('data-humanized-label', label)
+          el.setAttribute('aria-label', label + ' until release')
+        } else {
+          el.removeAttribute('data-final-hour')
+          el.removeAttribute('data-humanized-label')
+          el.setAttribute('aria-label', 'Time until release')
+        }
+
         if (diff === 0) {
           clearInterval(_cdInterval)
           // State has changed — re-render
@@ -9032,9 +9070,9 @@
             }
           }
 
-          // C4 #51 — rate-limit: same email cannot be submitted within 60s
+          // C4 #51 — rate-limit: same email cannot be submitted within 5 minutes (C17 #38 — was 60s)
           const _spamKey = 'able_last_signup_' + (email || '').toLowerCase().trim()
-          try { const _last = parseInt(sessionStorage.getItem(_spamKey) || '0'); if (_last && Date.now() - _last < 60000) { if (errorEl) { errorEl.textContent = "You're already on the list."; errorEl.hidden = false; } return; } } catch(_) {}
+          try { const _last = parseInt(sessionStorage.getItem(_spamKey) || '0'); if (_last && Date.now() - _last < 300000) { if (errorEl) { errorEl.textContent = "You're already on the list."; errorEl.hidden = false; } return; } } catch(_) {}
 
           // Validate
           const _validationMsg = !email.trim()
@@ -9718,11 +9756,17 @@
           : ''
         const releaseBtns = (streamBtn || watchBtn) ? `<div class="release-btn-row">${streamBtn}${watchBtn}</div>` : ''
 
+        // C17 #5 — live state "Released [day] [month]" on featured release
+        const _isLive5 = (typeof computeState === 'function' && computeState(profile) === 'live') || profile.stateOverride === 'live'
+        const _releaseLabel5 = (_isLive5 && i === 0 && rel.releaseDate)
+          ? (() => { try { return new Date(rel.releaseDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) } catch (_) { return '' } })()
+          : ''
+
         card.innerHTML = `
           ${mediaHtml}
           <div class="release-card__info">
             <h3 class="release-card__title">${escHtml(rel.title || 'Untitled')}</h3>
-            <p class="release-card__meta"><span class="release-type-badge">${escHtml(type)}</span>${year ? ` · ${year}` : ''}${tracks.length ? ` · ${tracks.length} track${tracks.length !== 1 ? 's' : ''}` : ''}</p>
+            <p class="release-card__meta"><span class="release-type-badge">${escHtml(type)}</span>${_releaseLabel5 ? ` · <span style="color:var(--color-accent);font-weight:600">Released ${escHtml(_releaseLabel5)}</span>` : (year ? ` · ${year}` : '')}${tracks.length ? ` · ${tracks.length} track${tracks.length !== 1 ? 's' : ''}` : ''}</p>
             ${releaseBtns}
             ${tracksHtml}
             ${creditsHtml}
@@ -10439,7 +10483,8 @@
           ${hasImg
             ? `<img class="snap-card__image" src="${escHtml(card.imageUrl)}"
                          alt="${escHtml(card.alt || card.title || '')}"
-                         loading="lazy" width="220" height="220">`
+                         loading="lazy" width="220" height="220"
+                         onerror="this.style.cssText='aspect-ratio:1;background:var(--color-accent,.88);opacity:.18;border-radius:inherit;display:block';this.alt=''">`
             : `<div class="snap-card__image-placeholder" aria-hidden="true"></div>`
           }
           <div class="snap-card__body">
