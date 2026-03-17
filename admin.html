@@ -4422,7 +4422,9 @@ async function fetchTicketmasterShows() {
 
 function _mergeShows(existing, incoming) {
   const keys = new Set(existing.map(s => `${s.date}__${s.venue}`));
-  const newShows = incoming.filter(s => !keys.has(`${s.date}__${s.venue}`));
+  const newShows = incoming
+    .filter(s => !keys.has(`${s.date}__${s.venue}`))
+    .map(s => s.id ? s : { ...s, id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2) });
   return [...existing, ...newShows].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
 }
 
@@ -4471,7 +4473,8 @@ function openAddShowSheet() {
         return;
       }
       const shows = safeLS('able_shows', []);
-      shows.push({ venue, date, doorsTime, ticketUrl, featured: false });
+      const _newShowId = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36);
+      shows.push({ id: _newShowId, venue, date, doorsTime, ticketUrl, featured: false });
       shows.sort((a, b) => a.date.localeCompare(b.date));
       setLS('able_shows', shows);
       syncProfile(safeLS(V3_KEY, {}));
@@ -4501,15 +4504,22 @@ function renderShowsList() {
       </div>
       <div class="show-card-actions">
         ${s.ticketUrl && !isPast ? `<a href="${escHtml(s.ticketUrl)}" target="_blank" rel="noopener" class="dc-action" style="text-decoration:none;">Tickets →</a>` : ''}
-        <button class="dc-action" type="button" onclick="removeShow(${i})">Remove</button>
+        <button class="dc-action" type="button" onclick="removeShow('${escHtml(s.id || String(i))}')">Remove</button>
       </div>
     </div>`;
   }).join('') + '</div>';
 }
 
-function removeShow(index) {
+function removeShow(idOrIndex) {
   const shows = safeLS('able_shows', []);
-  shows.splice(index, 1);
+  // id-based removal (#31) — fall back to index for legacy shows without id
+  const idx = shows.findIndex(s => s.id === idOrIndex);
+  if (idx !== -1) {
+    shows.splice(idx, 1);
+  } else {
+    const i = parseInt(idOrIndex, 10);
+    if (!isNaN(i) && i >= 0 && i < shows.length) shows.splice(i, 1);
+  }
   setLS('able_shows', shows);
   syncProfile(safeLS(V3_KEY, {}));
   renderShowsList();
@@ -7303,6 +7313,16 @@ window.addEventListener('DOMContentLoaded', () => {
   // Hydrate from v3 profile key (wizard or admin saves)
   const v3data = safeLS(V3_KEY, {});
   const wizData = {}; // legacy key already migrated above
+
+  // P1-W3 #45 — graceful null profile: if no name set, show "Complete setup" prompt
+  if (!v3data.name) {
+    const _bar = document.createElement('div')
+    _bar.id = 'setup-prompt-bar'
+    _bar.setAttribute('role', 'status')
+    _bar.style.cssText = 'background:var(--acc);color:#000;text-align:center;padding:10px 16px;font-size:13px;font-weight:600;position:sticky;top:0;z-index:500;'
+    _bar.innerHTML = 'Your profile isn\'t set up yet. <a href="start.html" style="color:#000;text-decoration:underline;font-weight:700;">Set it up now →</a>'
+    document.body.prepend(_bar)
+  }
 
   const name   = v3data.name   || wizData.name   || 'Your Artist Name';
   const accent = v3data.accent || wizData.accent  || null;

@@ -11029,6 +11029,30 @@
     // === ON-PAGE EDITING (§6.4) ==================================
 
     function initEditBar(profile) {
+      // P1-W3 #44 — graceful empty state: artist has an artist ID but no profile yet
+      const _storedProfile = safeLS('able_v3_profile', null)
+      const _artistId = localStorage.getItem('able_artist_id')
+      const _isOwnerParam = new URLSearchParams(location.search).get('owner') === 'true'
+      if (_artistId && (_isOwnerParam || !_storedProfile || !_storedProfile.name)) {
+        // Artist hasn't completed setup — show prompt in owner bar position
+        const _shell = document.getElementById('app-shell')
+        const _setupBar = document.createElement('div')
+        _setupBar.id = 'setup-prompt-bar'
+        _setupBar.setAttribute('role', 'banner')
+        _setupBar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:38px;background:var(--color-card);border-bottom:1px solid rgba(255,255,255,0.08);font-size:13px;font-family:var(--font);'
+        const _msg = document.createElement('span')
+        _msg.style.cssText = 'color:var(--color-text-2);'
+        _msg.textContent = "This is how your page will look."
+        const _cta = document.createElement('a')
+        _cta.href = 'start.html'
+        _cta.style.cssText = 'color:var(--color-accent);font-weight:600;text-decoration:none;'
+        _cta.textContent = 'Finish setting up →'
+        _setupBar.appendChild(_msg); _setupBar.appendChild(_cta)
+        document.body.appendChild(_setupBar)
+        if (_shell) _shell.style.marginTop = '38px'
+        return // don't init full edit bar for incomplete profiles
+      }
+
       const fab      = document.getElementById('edit-fab')
       const backdrop = document.getElementById('edit-backdrop')
       const panel    = document.getElementById('edit-panel')
