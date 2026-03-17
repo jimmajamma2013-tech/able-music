@@ -23,6 +23,12 @@
 
 # Playwright
 .playwright-mcp/
+playwright-report/
+test-results/
+
+# Accessibility audit outputs
+axe-report*.json
+.html-w3c-validatorrc.json
 
 # Claude / Superpowers tooling
 .claude/
