@@ -4195,10 +4195,15 @@ function renderFanList(filter) {
 
   // Wire row taps → fan detail sheet
   listEl.querySelectorAll('.fan-list-row').forEach(row => {
+    row.setAttribute('tabindex', '0'); // C10 #13 — keyboard-focusable
+    row.setAttribute('role', 'button');
     row.addEventListener('click', e => {
       if (e.target.classList.contains('fan-star')) return;
       const fan = allFans.find(f => f.email === row.dataset.email);
       if (fan) openFanDetailSheet(fan);
+    });
+    row.addEventListener('keydown', e => { // C10 #13 — Enter key opens detail
+      if (e.key === 'Enter') { const fan = allFans.find(f => f.email === row.dataset.email); if (fan) openFanDetailSheet(fan); }
     });
   });
 
@@ -4355,21 +4360,46 @@ function openFanDetailSheet(fan) {
 
   openAdminSheet('👤', fan.email, body);
 
-  // C3 #28 — two-step fan delete (no browser confirm())
+  // C3 #28 / C10 #21 — two-step fan delete with 5s undo
   document.getElementById('removeFanBtn')?.addEventListener('click', function() {
     if (!this.dataset.confirming) {
       this.dataset.confirming = '1';
-      this.textContent = 'Really remove? This can\'t be undone.';
+      this.textContent = 'Really remove? Click again to confirm.';
       this.style.background = 'rgba(220,38,38,.18)';
       this.style.borderColor = 'rgba(220,38,38,.5)';
       setTimeout(() => { if (this.dataset.confirming) { delete this.dataset.confirming; this.textContent = 'Remove from list'; this.style.background = ''; this.style.borderColor = ''; } }, 4000);
       return;
     }
+    // Soft-delete with undo window (C10 #21)
     const fans = safeLS('able_fans', []);
-    setLS('able_fans', fans.filter(f => f.email !== fan.email));
+    const fanIdx = fans.findIndex(f => f.email === fan.email);
+    if (fanIdx !== -1) fans[fanIdx].deleted_at = Date.now();
+    setLS('able_fans', fans);
     closeAdminSheet();
     renderFanList();
     updateCompletenessBar();
+    // Undo toast — 5s window
+    let _undone = false;
+    const _undoToast = showToast('Fan removed. <a href="#" onclick="return false;" id="undoFanRemove" style="color:var(--acc);font-weight:700;margin-left:8px;">Undo</a>', 'amber');
+    const _undoTimer = setTimeout(() => {
+      if (!_undone) { // Hard-delete after 5s if not undone
+        const _fans2 = safeLS('able_fans', []);
+        setLS('able_fans', _fans2.filter(f => f.email !== fan.email));
+        renderFanList();
+      }
+    }, 5000);
+    setTimeout(() => {
+      const _undoBtn = document.getElementById('undoFanRemove');
+      if (_undoBtn) _undoBtn.addEventListener('click', function() {
+        _undone = true;
+        clearTimeout(_undoTimer);
+        const _fans3 = safeLS('able_fans', []);
+        const _fi = _fans3.findIndex(f => f.email === fan.email);
+        if (_fi !== -1) { delete _fans3[_fi].deleted_at; setLS('able_fans', _fans3); }
+        renderFanList();
+        showToast('Fan restored.', 'green');
+      });
+    }, 100);
   });
 
   // Level chip wiring
