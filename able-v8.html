@@ -97,6 +97,11 @@
       /* --r-sm/md/lg/xl computed by applyDerivedTokens() — defaults match indie rMult:1.0 */
       --r-sm: 4px; --r-md: 8px; --r-lg: 16px; --r-xl: 24px;
 
+      /* Icon sizes (A4 #1) — Lucide contract: sm=16px stroke-width:2, md=20px stroke-width:1.5, lg=24px stroke-width:1.5 */
+      --icon-sm: 16px;
+      --icon-md: 20px;
+      --icon-lg: 24px;
+
       /* ── Z-Index Scale (A9) ──────────────────────────────────────
          Ascending: base < card < sticky < dropdown < sheet < modal
          < overlay < tooltip < toast. --z-skip always topmost.     */
@@ -8320,7 +8325,7 @@
 
     function getArtistId() {
       let id = localStorage.getItem('able_artist_id')
-      if (!id) { id = crypto.randomUUID(); localStorage.setItem('able_artist_id', id) }
+      if (!id) { id = crypto.randomUUID(); try { localStorage.setItem('able_artist_id', id) } catch (_) {} }
       return id
     }
 
@@ -8404,7 +8409,7 @@
             genre:  p.vibe || (p.genres && p.genres[0]) || '',
             photo:  p.photo  || '',
           })
-          localStorage.setItem('able_fan_following', JSON.stringify(following))
+          setLS('able_fan_following', following)
         }
 
         // Seed feed items from current profile data
@@ -8439,7 +8444,7 @@
 
         // Keep feed capped at 50 items
         if (feed.length > 50) feed = feed.slice(0, 50)
-        localStorage.setItem('able_fan_feed', JSON.stringify(feed))
+        setLS('able_fan_feed', feed)
 
         // Also seed suggested artists (2-3 connected) from releases credits
         // (Credit-based discovery seeded when freelancer data is available — Phase 3)
@@ -10750,7 +10755,7 @@
       if (!todayShow) {
         // Clear any stale auto-gig
         if (isActive && gigSource === 'auto') {
-          localStorage.setItem(GIG_KEY, '0')
+          try { localStorage.setItem(GIG_KEY, '0') } catch (_) {}
           localStorage.removeItem('able_gig_source')
         }
         return
@@ -10775,8 +10780,8 @@
 
       if (now >= activationMs && now < autoExpiry) {
         if (!isActive) {
-          localStorage.setItem(GIG_KEY, autoExpiry.toString())
-          localStorage.setItem('able_gig_source', 'auto')
+          try { localStorage.setItem(GIG_KEY, autoExpiry.toString()) } catch (_) {}
+          try { localStorage.setItem('able_gig_source', 'auto') } catch (_) {}
           // Re-render to reflect gig state
           const profile = getProfile()
           renderHero(profile)
@@ -10784,7 +10789,7 @@
         }
       } else if (now >= autoExpiry && isActive && gigSource === 'auto') {
         // Show over — clear
-        localStorage.setItem(GIG_KEY, '0')
+        try { localStorage.setItem(GIG_KEY, '0') } catch (_) {}
         localStorage.removeItem('able_gig_source')
         const profile = getProfile()
         renderHero(profile)
@@ -10795,7 +10800,7 @@
     function init() {
       // Generate stable device ID on first load — used for Supabase migration (§6.2)
       if (!localStorage.getItem('able_artist_id')) {
-        localStorage.setItem('able_artist_id', crypto.randomUUID())
+        try { localStorage.setItem('able_artist_id', crypto.randomUUID()) } catch (_) {}
       }
 
       const shell = document.getElementById('app-shell')
@@ -11297,7 +11302,7 @@
             const darkPct = parseInt(body.querySelector('#ep-bg-bright')?.value ?? ((1-(stored.backgroundBrightness??0.45))*100), 10)
             stored.backgroundBrightness = 1 - (darkPct / 100)
 
-            localStorage.setItem('able_v3_profile', JSON.stringify(stored))
+            setLS('able_v3_profile', stored)
             sbSyncProfile(stored) // async fire-and-forget to Supabase
           } catch (_) {}
 
