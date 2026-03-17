@@ -2558,9 +2558,9 @@ body::before {
         <div class="stat-delta skel" id="statFansDelta"> </div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Click rate</div>
-        <div class="stat-value" id="statCtr">—</div>
-        <div class="stat-delta" id="statCtrDelta"> </div>
+        <div class="stat-label">Days active</div>
+        <div class="stat-value" id="statStreak">—</div>
+        <div class="stat-delta" id="statStreakDelta"> </div>
       </div>
     </div>
 
@@ -6253,12 +6253,30 @@ function loadRealStats() {
   animateCount('statFans',   fansTotal   || '—');
   set('statFansDelta',  trendStr(fansWeek, fansPrev));
   cls('statFansDelta', fansWeek || fansPrev ? trendCls(fansWeek, fansPrev) : '');
-  set('statCtr',        ctr);
-  if (clicksTotal && viewsTotal) {
-    const rate = (clicksTotal/viewsTotal)*100;
-    cls('statClickRate', rate > 4.2 ? 'up' : '');
-    cls('statCtr', rate > 4.2 ? 'up' : 'dn');
-  }
+  // Days active streak (consecutive daily admin visits)
+  (function() {
+    const visitDates = safeLS('admin_visit_dates', []).slice().sort();
+    if (!visitDates.length) { set('statStreak', '1'); set('statStreakDelta', 'Day 1 ✦'); return; }
+    // Count consecutive days ending today or yesterday
+    let streak = 0;
+    const today = new Date().toISOString().slice(0,10);
+    let cursor = today;
+    for (let i = visitDates.length - 1; i >= 0; i--) {
+      if (visitDates[i] === cursor) {
+        streak++;
+        const d = new Date(cursor + 'T00:00:00');
+        d.setDate(d.getDate() - 1);
+        cursor = d.toISOString().slice(0,10);
+      } else if (visitDates[i] < cursor) {
+        // Gap — streak ends
+        break;
+      }
+    }
+    streak = Math.max(streak, 1);
+    animateCount('statStreak', streak);
+    set('statStreakDelta', streak === 1 ? 'Day 1' : `${streak} day${streak !== 1 ? 's' : ''} in a row`);
+    if (streak >= 7) { const el = document.getElementById('statStreakDelta'); if (el) el.classList.add('up'); }
+  })();
 
   // Analytics page stats (mirrors home)
   animateCount('aStatViews',  viewsTotal  || '—');
