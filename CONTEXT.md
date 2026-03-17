@@ -44,6 +44,14 @@ Codebase map: `PROJECT_INDEX.md` (section IDs, JS functions, localStorage schema
 
 ## Authority order (read before any decision)
 
+### The authority chain (in conflict, this order wins)
+1. `docs/V8_BUILD_AUTHORITY.md` — **primary build authority** — read before any feature decision
+2. `docs/v6/core/V6_BUILD_AUTHORITY.md` — design system details, micro-interactions, perf law (fallback when V8 silent)
+3. `docs/v6/CANONICAL_OBJECT_MODEL.md` — all shared data structures
+4. `docs/v6/PRODUCT_TRUTH.md` — root truth (any feature that contradicts this is wrong)
+5. Engine specs (`docs/v6/engines/`) — feature-level detail not in 1–4
+6. Page DESIGN-SPEC.md files — surface-specific implementation
+
 ### V8 strategy docs — PRIMARY BUILD AUTHORITY (2026-03-15)
 Supersede all v6 surface docs for build decisions. When V8 is silent, fall back to V6_BUILD_AUTHORITY.md.
 
@@ -90,8 +98,7 @@ Per-page also read: `PATH-TO-10.md` (prioritised fixes) · `COPY.md` (all copy s
 3. `docs/v6/core/VISUAL_SYSTEM.md` — 7 genre vibes, fonts, accent values
 4. `docs/v6/core/COPY_AND_DESIGN_PHILOSOPHY.md` — copy voice, banned phrases
 
-### Strategic reference (valuable — do not build directly from)
-- `docs/V8_BUILD_AUTHORITY.md` — primary authority doc
+### Strategic reference (read when relevant)
 - `docs/VOICE-BIBLE.md` — 1-page voice guide
 - `docs/ABLE_STRATEGY.md` — product vision, North Star, metrics
 - `docs/DECISION-LOG.md` — all major decisions with reasoning
@@ -142,6 +149,22 @@ Per-page also read: `PATH-TO-10.md` (prioritised fixes) · `COPY.md` (all copy s
 - Dashboard greetings: "Good to see you, [Name]." — warm, one beat, done
 - Copy test: Would a credible artist be embarrassed? Does it sound like a startup? If yes — rewrite
 - Best single-sentence product description (from GPT review, validated): *"A music-native bio link that turns moments of attention into owned fan relationships, while adapting automatically to the artist's release cycle."*
+
+### Rendering
+- Render from localStorage immediately — never wait for API calls before showing content
+- External API failure → degrade to cached data → manual data → hidden section. Never blank a shell.
+- Performance budgets (hard): LCP ≤ 2.5s · INP ≤ 200ms · CLS ≤ 0.10 · HTML ≤ 340kB gzipped
+
+### AI copy (when writing AI-assisted features)
+System prompt prefix for ALL ABLE AI requests:
+```
+You are a copy assistant for ABLE, a platform for independent musicians.
+Write in the artist's voice: first person, honest, direct, no marketing language.
+Never use: "superfans", "monetise", "grow your audience", "content creator",
+"going viral", exclamation marks, generic SaaS phrases.
+Write short. Say one true thing. Stop.
+```
+Always show as suggestion, never auto-apply. 3 variants when possible.
 
 ### Git & files
 - Never rename `able_*` localStorage keys — they map 1:1 to Supabase tables
@@ -440,6 +463,8 @@ These specs are complete and referenced here so agents know they exist — but b
 | Fan dashboard (real data) | `docs/pages/fan/DESIGN-SPEC.md` | Phase 2 — fan.html is spec-complete, backend needed |
 
 **V1 showcase equivalent:** The campaign state machine (profile/pre-release/live/gig) already drives profile section emphasis. This is functionally equivalent to showcase mode for V1 artists.
+
+**Never building (ever):** Open CSS editor · arbitrary font upload · unlimited colour palette · AI-generated layouts · artist rating/review system · fan direct messages · fan gamification/leaderboards · pay-per-post fan content · "going viral" anywhere in copy · Rooms/Stage Can community features · Story Mode video assembly
 
 ---
 
