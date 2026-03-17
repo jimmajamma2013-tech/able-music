@@ -4678,6 +4678,25 @@ function updateChqPill(state) {
     hq.dataset.state = state;
     hq.classList.toggle('chq-active', state !== 'profile');
   }
+
+  // P2.2 — context-aware auto-switch hint
+  const hint = document.getElementById('chqAutoHint');
+  if (hint) {
+    const data = safeLS('able_v3_profile', {});
+    if (state === 'pre-release' && data.releaseDate) {
+      const rel = new Date(data.releaseDate);
+      const formatted = rel.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long' });
+      const liveEnd = new Date(rel.getTime() + 14 * 86400000);
+      const endFormatted = liveEnd.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+      hint.innerHTML = `Switches to <strong>Live</strong> automatically on ${formatted}. Profile mode resumes ${endFormatted}.`;
+    } else if (state === 'live' && data.releaseDate) {
+      const liveEnd = new Date(new Date(data.releaseDate).getTime() + 14 * 86400000);
+      const endFormatted = liveEnd.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+      hint.innerHTML = `Live window ends <strong>${endFormatted}</strong>. Profile mode resumes automatically.`;
+    } else {
+      hint.innerHTML = 'Set a release date and ABLE automatically switches your page:<br><strong>Before the date</strong> → Pre-release &nbsp;·&nbsp; <strong>On the date</strong> → Live &nbsp;·&nbsp; <strong>14 days later</strong> → Profile';
+    }
+  }
 }
 
 function renderTimelineArc() {
