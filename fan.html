@@ -12,11 +12,13 @@
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta name="robots" content="noindex,nofollow">
-  <title>ABLE</title>
+  <meta name="description" content="Your artists, your list. Stay close to the musicians you care about — new releases, upcoming shows, and what's happening next.">
+  <title>ABLE — Your artists</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap"></noscript>
 
   <style>
     /* ============================================================
@@ -88,7 +90,7 @@
       --color-border-2: rgba(255, 255, 255, 0.10);
       --color-text:     #f0ede8;
       --color-text-2:   rgba(240, 237, 232, 0.60);
-      --color-text-3:   rgba(240, 237, 232, 0.38);
+      --color-text-3:   rgba(240, 237, 232, 0.50);
       --shadow-card:    0 2px 16px rgba(0, 0, 0, 0.4);
     }
 
@@ -191,6 +193,11 @@
       background: var(--platform-accent-soft);
       color: var(--platform-accent);
       border: 1px solid rgba(139, 124, 244, 0.22);
+    }
+
+    /* === MAIN CONTENT AREA ==================================== */
+    #fan-main {
+      display: contents; /* transparent to flex layout */
     }
 
     /* === SCROLL AREA ========================================== */
@@ -337,13 +344,13 @@
 
     .type-badge--snap {
       background: rgba(240, 237, 232, 0.06);
-      color: rgba(240, 237, 232, 0.45);
+      color: rgba(240, 237, 232, 0.62);
       border: 1px solid rgba(240, 237, 232, 0.10);
     }
 
     .type-badge--clip {
       background: rgba(239, 68, 68, 0.12);
-      color: #ef4444;
+      color: #ff7070;
       border: 1px solid rgba(239, 68, 68, 0.22);
     }
 
@@ -406,9 +413,9 @@
     }
 
     .feed-item--clip .fi-clip-caption {
-      font-size: 13px; color: var(--color-text-1); line-height: 1.4;
+      font-size: 13px; color: var(--color-text); line-height: 1.4;
       display: -webkit-box;
-      -webkit-line-clamp: 2; line-clamp: 2;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
       margin-bottom: var(--sp-3);
@@ -419,7 +426,7 @@
       padding: 6px 14px;
       border-radius: var(--r-pill);
       background: rgba(239,68,68,0.12);
-      color: #ef4444;
+      color: #ff7070;
       border: 1px solid rgba(239,68,68,0.22);
       cursor: pointer;
       transition: background 0.15s;
@@ -486,7 +493,7 @@
 
     .feed-item__time {
       font-size: var(--text-xs);
-      color: var(--color-text-3);
+      color: var(--color-text-2);
     }
 
     /* Today items — slightly elevated */
@@ -579,7 +586,6 @@
       font-size: var(--text-xs);
       color: var(--color-text-3);
       margin-top: var(--sp-2);
-      opacity: 0.7;
     }
 
     /* Empty state */
@@ -1199,6 +1205,7 @@
     </div>
   </header>
 
+  <main id="fan-main">
   <!-- Sub-greeting (conditional, rendered by JS only when genuinely true) -->
   <p class="page-subgreeting" id="page-subgreeting" style="display:none;padding:0 var(--sp-5) var(--sp-2);font-size:var(--text-sm);color:var(--color-text-2);font-weight:500;"></p>
 
@@ -1279,6 +1286,7 @@
     </div>
 
   </div><!-- /scroll-area -->
+  </main><!-- /fan-main -->
 
   <!-- Fan clip player modal (single clip, no swipe nav per spec §5) -->
   <div id="fanClipModal" class="fan-clip-modal" role="dialog" aria-modal="true" aria-label="Clip player">
@@ -1584,7 +1592,7 @@
       el.className = 'feed-item pressable'
       el.setAttribute('aria-label', `${artist.name} — ${item.title}, ${typeBadgeLabel(item.type)}`)
       el.innerHTML = `
-        <div class="feed-item__art" style="background:rgba(${rgb},0.18);color:rgba(${rgb},1)">
+        <div class="feed-item__art" style="background:rgba(${rgb},0.22);color:#f0ede8">
           ${getInitials(artist.name)}
         </div>
         <div class="feed-item__info">
@@ -1672,7 +1680,7 @@
 
     el.innerHTML = `
       <div class="artist-card__accent-strip" style="background:${artist.accent}"></div>
-      <div class="artist-card__avatar" style="background:rgba(${rgb},0.18);color:rgba(${rgb},1)">
+      <div class="artist-card__avatar" style="background:rgba(${rgb},0.22);color:#f0ede8">
         ${getInitials(artist.name)}
       </div>
       <div class="artist-card__info">
@@ -1861,7 +1869,7 @@
       el.className = 'feed-item'
       el.style.animationDelay = `${i * 35}ms`
       el.innerHTML = `
-        <div class="feed-item__art" style="background:rgba(${rgb},0.18);color:rgba(${rgb},1)">
+        <div class="feed-item__art" style="background:rgba(${rgb},0.22);color:#f0ede8">
           ${getInitials(item.artist)}
         </div>
         <div class="feed-item__info">
