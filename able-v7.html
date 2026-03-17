@@ -1309,6 +1309,35 @@
       padding-top: 2px;
     }
 
+    /* === RELEASE NOTE (pre-release state) ======================= */
+    .release-note {
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      text-align: center;
+      padding: 0 var(--sp-5) var(--sp-3);
+      line-height: var(--lh-body);
+      margin: 0;
+    }
+
+    /* Final 24h — countdown intensification */
+    [data-prerelease="final"] .countdown__num {
+      font-size: clamp(56px, 16vw, 96px);
+      color: var(--color-accent);
+    }
+    [data-prerelease="final"] .hero__ambient { opacity: 0.28; }
+    [data-theme="contrast"] [data-prerelease="final"] .countdown__num { font-size: var(--text-3xl); }
+
+    /* === TONIGHT NOTE (gig / post-gig state) ==================== */
+    .tonight-note {
+      font-size: var(--text-base);
+      color: var(--color-text-2);
+      font-style: italic;
+      border-left: 2px solid rgba(var(--color-accent-rgb), 0.4);
+      padding: var(--sp-2) 0 var(--sp-2) var(--sp-4);
+      margin: 0 var(--sp-5) var(--sp-4);
+      line-height: var(--lh-body);
+    }
+
     /* === HERO CTAs ============================================== */
     .hero-ctas {
       padding: var(--sp-4) var(--sp-5) var(--sp-5);
@@ -5407,6 +5436,12 @@
         </div>
       </div>
 
+      <!-- Release note (pre-release state only, artist-written) -->
+      <p class="release-note" id="release-note" hidden></p>
+
+      <!-- Tonight note (gig / post-gig state, artist-written) -->
+      <blockquote class="tonight-note" id="tonight-note" aria-label="Note from the artist" hidden></blockquote>
+
       <!-- ======================================================
            HERO CTAs (max 2)
            ====================================================== -->
@@ -6367,7 +6402,12 @@
       const now = Date.now()
       // Gig state: check able_gig_expires
       const gigExpires = parseInt(localStorage.getItem('able_gig_expires') || '0', 10)
-      if (gigExpires && now < gigExpires) return 'gig'
+      if (gigExpires && now < gigExpires) {
+        // P1-1: Post-show sub-state — show ended but still in gig window
+        const gigShowEnd = parseInt(localStorage.getItem('able_gig_show_end') || '0', 10)
+        if (gigShowEnd && now > gigShowEnd) return 'post-gig'
+        return 'gig'
+      }
       // Release-based states
       const release = profile.releaseDate ? new Date(profile.releaseDate).getTime() : null
       if (!release) return 'profile'
@@ -6384,6 +6424,7 @@
       'pre-release': { 'listen-section': 6, 'world-map-section': 4 },
       'live':        { 'listen-section': 2, 'shows-section': 4, 'merch-section': 5 },
       'gig':         { 'shows-section': 2, 'listen-section': 6 },
+      'post-gig':    { 'merch-section': 3, 'listen-section': 5 },
       'near-future': { 'world-map-section': 2 }
     }
 
@@ -7726,6 +7767,7 @@
         'pre-release':  { cls: 'hero__state-chip--pre',        text: 'Coming soon' },
         'live':         { cls: 'hero__state-chip--live',        text: 'Out now'     },
         'gig':          { cls: 'hero__state-chip--gig',         text: customText || 'On tonight'  },
+        'post-gig':     { cls: 'hero__state-chip--profile',     text: ''            },
         'near-future':  { cls: 'hero__state-chip--near-future', text: customText || '' },
         'profile':      { cls: 'hero__state-chip--profile',     text: ''            },
       }[state] || { cls: 'hero__state-chip--profile', text: '' }
@@ -8042,6 +8084,47 @@
         startCountdown(new Date(profile.releaseDate).getTime())
       }
 
+      // P1-2: Release note + final-24h intensity
+      const releaseNoteEl = document.getElementById('release-note')
+      if (releaseNoteEl) {
+        const releaseNoteText = profile.releaseNote || null
+        if (state === 'pre-release') {
+          const hoursLeft = profile.releaseDate
+            ? (new Date(profile.releaseDate).getTime() - Date.now()) / 3_600_000
+            : Infinity
+          if (releaseNoteText) {
+            releaseNoteEl.textContent = releaseNoteText
+            releaseNoteEl.hidden = false
+          } else if (hoursLeft < 24) {
+            releaseNoteEl.textContent = 'Tomorrow.'
+            releaseNoteEl.hidden = false
+          } else {
+            releaseNoteEl.hidden = true
+          }
+          if (hoursLeft < 24) {
+            document.documentElement.setAttribute('data-prerelease', 'final')
+          } else {
+            document.documentElement.removeAttribute('data-prerelease')
+          }
+        } else {
+          releaseNoteEl.hidden = true
+          document.documentElement.removeAttribute('data-prerelease')
+        }
+      }
+
+      // P1-1: Tonight note (gig / post-gig)
+      const tonightNoteEl = document.getElementById('tonight-note')
+      if (tonightNoteEl) {
+        const gigNoteText = profile.gigNote || null
+        if ((state === 'gig' || state === 'post-gig') && gigNoteText) {
+          tonightNoteEl.textContent = gigNoteText
+          tonightNoteEl.setAttribute('aria-label', `Note from ${profile.name || 'the artist'}`)
+          tonightNoteEl.hidden = false
+        } else {
+          tonightNoteEl.hidden = true
+        }
+      }
+
       // World Map — init after state chip (uses same moment data)
       initWorldMap(profile)
 
@@ -8123,6 +8206,16 @@
 
       if (secondary && secondary.url && isSafeUrl(secondary.url)) {
         _showCTA(ctaSecondary, secondary.label || 'Stay close', secondary.url, secondary.label)
+      } else if (state === 'post-gig') {
+        // P1-1: Post-gig — show Merch if merch exists, else no secondary
+        const hasMerch = profile.merch && profile.merch.length > 0
+        if (hasMerch) {
+          const firstMerchUrl = profile.merch[0].url || ''
+          if (firstMerchUrl && isSafeUrl(firstMerchUrl)) {
+            _showCTA(ctaSecondary, 'Merch', firstMerchUrl, 'Merch')
+          }
+        }
+        // else ctaSecondary stays hidden
       } else {
         // State-based default secondary CTA
         const stateDef2 = STATE_CTA_DEFAULTS[state]
