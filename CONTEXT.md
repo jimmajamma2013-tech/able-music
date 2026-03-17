@@ -486,6 +486,9 @@ These specs are complete and referenced here so agents know they exist — but b
 - `MASTER.md` — James's goals, financial milestones, health context, 5-year plan
 - `PROJECT_INDEX.md` — section IDs, JS functions, localStorage schema map
 - `docs/features/INDEX.md` — V1 vs Phase 2 feature status (what's built, partial, specced)
+- `docs/BUILD-READY-INDEX.md` — build agent orientation: order, P0 bugs, what to read per file (read before any build session)
+- `docs/FULL-REVIEW-50.md` — 50-aspect review snapshot (2026-03-16, pre-sessions 11–14; some items now resolved — cross-reference STATUS.md)
+- `docs/COMPETITIVE_INTELLIGENCE.md` — 11 competitor deep-dives with traffic, pricing, weaknesses
 - `docs/solutions/` — solved problems library: bugs fixed, patterns, regression prevention
 - `docs/systems/ui/SPEC.md` — canonical design tokens (spacing scale, type scale, Surface 1 vs 2)
 - `docs/systems/ux/SPEC.md` — user mental models (artist, fan, freelancer) and journey maps
