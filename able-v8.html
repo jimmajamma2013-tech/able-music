@@ -8230,19 +8230,22 @@
       } catch (_) { /* offline — localStorage is the fallback */ }
     }
 
-    async function sbSyncFanSignup(email, source) {
+    async function sbSyncFanSignup(email, source, campaignState) {
       if (!sb) return
       try {
         // Ensure profile exists first — fans.profile_id is a FK to profiles.id
         await sbSyncProfile(safeLS('able_v3_profile', {}))
+        const profile = safeLS('able_v3_profile', {})
+        const state = campaignState || (typeof computeState === 'function' ? computeState(profile) : 'profile')
         await sb.from('fans').upsert({
-          id:         crypto.randomUUID(),
-          profile_id: getArtistId(),
+          id:             crypto.randomUUID(),
+          profile_id:     getArtistId(),
           email,
           source,
-          ts:         Date.now(),
-          opt_in:     true,
-          consent_ts: new Date().toISOString(),
+          ts:             Date.now(),
+          opt_in:         true,
+          consent_ts:     new Date().toISOString(),
+          campaign_state: state,
         }, { onConflict: 'profile_id,email', ignoreDuplicates: true })
       } catch (_) {}
 
@@ -8665,7 +8668,7 @@
           } catch (_) {}
 
           // Sync to Supabase (fire-and-forget — localStorage is the fallback)
-          sbSyncFanSignup(email, signupSource)
+          sbSyncFanSignup(email, signupSource, campaignState)
 
           setTimeout(() => {
             // Switch to checkmark
@@ -8801,7 +8804,7 @@
             sessionStorage.setItem('able_this_fan_email', email)
           } catch (_) {}
           writeFanFollow() // seed fan.html following + feed
-          sbSyncFanSignup(email, signup2Source) // async fire-and-forget
+          sbSyncFanSignup(email, signup2Source, campaignState2) // async fire-and-forget
           form2.hidden = true
           // Show brief confirmation
           const confirmP = document.createElement('p')
