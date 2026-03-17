@@ -179,6 +179,12 @@ body::before {
 select.field-input { appearance:none; cursor:pointer; }
 textarea.field-input { resize:none; height:76px; line-height:1.5; }
 .field-hint { margin-top:5px; font-size:11.5px; color:var(--t3); line-height:1.5; }
+.hint-toggle { background:none; border:none; padding:0; font-size:11.5px; color:var(--acc); cursor:pointer; text-decoration:underline; text-decoration-style:dotted; font-family:inherit; }
+.hint-steps { margin:10px 0 0; padding:12px 14px; background:rgba(255,255,255,.04); border-radius:10px; border:1px solid rgba(255,255,255,.08); }
+.hint-steps ol { margin:0; padding:0 0 0 18px; font-size:12px; color:var(--t2); line-height:1.9; }
+.hint-steps ol li strong { color:var(--t1); }
+.hint-example { margin:10px 0 0; font-size:11px; color:var(--t3); }
+.hint-example code { color:var(--acc); font-family:monospace; word-break:break-all; }
 .field-error { border-color:rgba(220,80,60,.6) !important; box-shadow:0 0 0 3px rgba(220,80,60,.12) !important; }
 .field-error-msg { margin-top:5px; font-size:11.5px; color:var(--err); display:none; }
 .field-error-msg.show { display:block; }
@@ -1166,6 +1172,17 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
             placeholder="https://open.spotify.com/artist/…"
             autocomplete="off" spellcheck="false">
           <p class="field-error-msg" id="iSpotifyImportErr" role="alert"></p>
+          <p class="field-hint">Your Spotify artist page — not Spotify for Artists. <button type="button" class="hint-toggle" id="spotifyHintToggle" onclick="toggleSpotifyHint()" aria-expanded="false">How do I find it?</button></p>
+          <div class="hint-steps" id="spotifyHintSteps" hidden>
+            <ol>
+              <li>Open <strong>Spotify</strong> on your phone or computer</li>
+              <li>Search for your artist name</li>
+              <li>Tap your name to open your artist page</li>
+              <li>Tap the <strong>⋯ menu</strong> → <strong>Share</strong> → <strong>Copy link</strong></li>
+              <li>Paste it above</li>
+            </ol>
+            <p class="hint-example">Looks like: <code>open.spotify.com/artist/4Z8W4fKeB5YxbusRsdQVPb</code></p>
+          </div>
         </div>
 
         <!-- Import preview — shown after successful fetch -->
@@ -1190,7 +1207,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
             Find me on Spotify →
           </button>
           <button type="button" class="btn-skip" onclick="goToStep('step1')">
-            Start from scratch →
+            I'm not on Spotify →
           </button>
         </div>
 
@@ -1613,6 +1630,15 @@ function setView(v) {
 /* ══════════════════════════════════════════════════════
    STEP A — Spotify Import
    ══════════════════════════════════════════════════════ */
+function toggleSpotifyHint() {
+  const steps = document.getElementById('spotifyHintSteps');
+  const btn   = document.getElementById('spotifyHintToggle');
+  const open  = !steps.hidden;
+  steps.hidden = open;
+  btn.setAttribute('aria-expanded', String(!open));
+  btn.textContent = open ? 'How do I find it?' : 'Hide';
+}
+
 function doSpotifyImport() {
   var inputEl  = document.getElementById('iSpotifyImport');
   var errEl    = document.getElementById('iSpotifyImportErr');
