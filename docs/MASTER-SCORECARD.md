@@ -35,7 +35,7 @@
 
 | System | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|
-| Artist tools | 7.8/10 | 9.0/10 | Close Circle no payment, accent picker limited | ✅ owner=true on all profile links; Day 1 share card built; completeness bar live |
+| Artist tools | 8.5/10 | 9.0/10 | Close Circle no payment, accent picker limited | ✅ C4: wizard re-entry merge, setup bar extended, fan locale dates, completeness key fixes |
 | CRM | 7.8/10 | 9.0/10 | Fan search UI exists; `consentVersion` in CSV; dedup check live | ✅ C3: campaign analytics, JSON export, two-step delete confirm, time datetime |
 | Tier gates | 6.5/10 | 9.0/10 | Server enforcement missing; Stripe not wired | ✅ `checkTierGate()` + gold lock CSS built; remaining: server-side enforcement |
 | Error states | 8.0/10 | 9.0/10 | QuotaExceededError toast; fetch try/catch audit clean; fans Array guard | ✅ C3: crash boundary on admin init; offline bar; Supabase init guard; date parse guard |
@@ -160,8 +160,9 @@
 | Strategy / founder | ~7.8/10 | — | — |
 
 **Overall documentation + spec average: ~9.2/10**
-**Overall current build state average: ~8.3/10** (was ~8.0/10 post-Cycle-2; was ~7.8/10 post-Cycle-1; was ~6.5/10 session 14)
+**Overall current build state average: ~8.5/10** (was ~8.3/10 post-Cycle-3; was ~8.0/10 post-Cycle-2; was ~7.8/10 post-Cycle-1)
 
+Cycle 4 Wave 1 improvements: Admin UX polish (7.8→8.5), Resilience (8.0→8.8), Analytics (8.2→8.8), Completeness UX (7.8→8.8), start.html wizard re-entry fixed
 Cycle 3 improvements: Deep link campaigns (0→7.5), CRM (6.5→7.8), Error states (7.0→8.0), Artist tools (7.5→7.8), SEO/OG (9.0→9.2)
 Cycle 2 Wave 1 improvements: CRM (+2.0), Artist Success (+0.3), World Map (+1.8), Error States (+1.0), Analytics (+0.4)
 
