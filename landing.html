@@ -809,7 +809,7 @@
       background: var(--card); border: 1px solid var(--border); border-radius: 18px;
       padding: 32px; position: relative; overflow: hidden;
       box-shadow: 0 2px 12px rgba(8,16,40,0.35), 0 1px 3px rgba(8,16,40,0.25);
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.25s var(--spring);
+      transition: border-color var(--dur-slow), box-shadow var(--dur-slow), transform var(--dur-slow) var(--spring);
     }
     .hero-feature:hover {
       border-color: var(--border-mid);
@@ -849,7 +849,7 @@
       background: var(--card); border: 1px solid var(--border); border-radius: var(--r-xl);
       padding: 22px;
       box-shadow: 0 1px 8px rgba(8,16,40,0.3), 0 1px 2px rgba(8,16,40,0.2);
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.25s var(--spring);
+      transition: border-color var(--dur-slow), box-shadow var(--dur-slow), transform var(--dur-slow) var(--spring);
     }
     .feature-card:hover { border-color: var(--border-mid); box-shadow: 0 6px 20px rgba(8,16,40,0.45); transform: translateY(-3px); }
     .feature-card__icon {
@@ -922,7 +922,7 @@
       background: var(--card); border: 1px solid var(--border); border-radius: 18px;
       padding: 28px 24px; position: relative;
       box-shadow: 0 2px 12px rgba(8,16,40,0.35);
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.25s var(--spring);
+      transition: border-color var(--dur-slow), box-shadow var(--dur-slow), transform var(--dur-slow) var(--spring);
     }
     .pricing-card:hover { border-color: var(--border-mid); box-shadow: 0 6px 24px rgba(8,16,40,0.5); transform: translateY(-2px); }
     .pricing-card--featured {
@@ -986,10 +986,10 @@
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
       width: 100%; text-align: left; background: none; border: none; cursor: pointer;
       padding: 22px 0; font-size: 16px; font-weight: 700; color: var(--text);
-      font-family: var(--font); line-height: 1.4; transition: color .15s;
+      font-family: var(--font); line-height: 1.4; transition: color var(--dur);
     }
     .faq-q:hover { color: var(--accent); }
-    .faq-chevron { flex-shrink: 0; transition: transform .22s; color: var(--text-3); }
+    .faq-chevron { flex-shrink: 0; transition: transform var(--dur-slow); color: var(--text-3); }
     .faq-q[aria-expanded="true"] .faq-chevron { transform: rotate(180deg); color: var(--accent); }
     .faq-a {
       font-size: 14.5px; color: var(--text-2); line-height: 1.7;
