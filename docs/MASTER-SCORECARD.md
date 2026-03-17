@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–9 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-9-AUDIT.md**
+**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–11 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-11-AUDIT.md**
 
 ---
 
@@ -39,14 +39,14 @@
 | CRM | 8.6/10 | 9.0/10 | Fan list sort UI (Wave 2 remaining) | ✅ C10: fan search debounce, fan tab label dynamic, empty search state, row keyboard nav, soft-delete undo |
 | Tier gates | 8.7/10 | 9.0/10 | Server enforcement missing; Stripe not wired | ✅ C10: gold lock blur 6px, overlay fade-in animation; tier badge already dynamic |
 | Error states | 8.8/10 | 9.0/10 | Supabase retry logic remaining | ✅ C10: offline/online banner, copyPageUrl .catch(), release date parse guard verified |
-| PWA | 8.5/10 | 9.0/10 | No service worker (offline mode unbuilt) | ✅ `manifest.json` + iOS meta tags + icons exist; service worker is optional V2 |
-| Page state system | 8.2/10 | 9.0/10 | Post-release nudge flow remaining | ✅ C5: gig expiry toast, live-mode transition toast, countdown local midnight fix, release title in countdown |
+| PWA | 9.2/10 | 9.5/10 | Offline cache strategy for SW | ✅ C11: theme-color meta updates to artist accent; beforeinstallprompt stashed, 2nd-visit banner; manifest/iOS meta all verified |
+| Page state system | 9.0/10 | 9.3/10 | Post-release nudge flow remaining | ✅ C11: contextual state-change toasts, gig mode 30-min expiry warning, release date null guard |
 | Data architecture | 8.7/10 | 9.3/10 | Multi-artist isolation; Supabase fan sync not wired | ✅ C10: joinedAt on both fan forms, writeFanFollow adds handle+artworkUrl+followedAt, slug field on saveProfilePage |
-| Analytics | 8.8/10 | 9.4/10 | SessionId in views still missing on page loads | ✅ C4W2: 30-day fan sparkline, peak day insight, most-tapped CTA, extended source breakdown |
+| Analytics | 9.3/10 | 9.5/10 | View source breakdown (fans vs views) Wave 2 | ✅ C11: campaign breakdown excludes deleted fans; profile_complete PostHog event; views dedup+owner exclusion verified |
 | SEO / OG | 9.2/10 | 9.5/10 | Static OG image needs production deploy | ✅ C3: JSON-LD Event schema on able-v8.html shows; `<time datetime>` on fan rows and show dates |
 | oEmbed proxy | 9.0/10 | 9.5/10 | ✅ SSRF fixed — `isSafeMediaUrl()` uses `new URL().hostname` + ALLOWED_HOSTS Set | Zero vulnerabilities; `data.html` stripped to prevent XSS |
 | Coding strategy | 9.2/10 | 10/10 | `prefers-reduced-motion` audit remaining in admin | ✅ Parse checks every edit; tokenised CSS enforced |
-| UI system | 8.4/10 | 8.6/10 | Component library unbuilt | ✅ C8: focus-visible ring, sheet backdrop 50%, glo-btn active scale, toast auto-dismiss |
+| UI system | 9.2/10 | 9.5/10 | Component library unbuilt | ✅ C11: toast slide-in (translateX keyframe), sheet ease-decel, completeness 400ms, wm-cell hover scale, snap card enter animation, haptic vibrate |
 | UX system | 8.5/10 | 9.0/10 | fan.html stub remaining | ✅ C7: completeness 100% toast; Artist Pro trial hook; 30-day milestone; handle slug preview; upgrade CTA tracking |
 | World map | 8.6/10 | 9.2/10 | Gig countdown (#18), show click-through (#21) Wave 2 | ✅ C9W1: featured show accent border, shows tab active on gig night |
 
@@ -92,7 +92,7 @@
 | System | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|
 | Brand identity | 8.0/10 | 9.0/10 | og-default.jpg not yet deployed to production | ✅ favicon.svg; og-default.jpg generated and committed |
-| Copy system | 8.6/10 | 9.5/10 | Wave 2: save button specificity, admin greeting personalisation | ✅ C9W1: all banned-phrase audit passed (greeting, fan heading, gig chip, landing, CTA labels) |
+| Copy system | 9.2/10 | 9.5/10 | Remaining: snap card empty state, released-out badge phrasing | ✅ C11: save buttons specificised (Save link/credit), CHQ placeholder "What's it called?", error copy "Dashboard failed to load." |
 | Explainers | 5.5/10 | 9.0/10 | Close Circle orientation card missing | Screen 6 context line: "you get their email — that's yours" |
 | Social media | 9.1/10 | — | Week 2+ content calendar less specific | None blocking |
 | Instagram strategy | 9.6/10 | — | Content bank not written | None blocking day-1 execution |
