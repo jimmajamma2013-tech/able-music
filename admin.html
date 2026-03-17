@@ -3683,6 +3683,14 @@ body::before {
 </nav>
 
 <script>
+/* ── GLOBAL ERROR HANDLERS (H9 #1/#2) ── */
+window.addEventListener('unhandledrejection', function(e) {
+  console.error('ABLE admin: unhandled rejection', e.reason)
+})
+window.onerror = function(msg, src, line, col, err) {
+  console.error('ABLE admin: uncaught error', msg, err)
+}
+
 /* ── SUPABASE ── */
 const SB_URL = 'https://jgspraqrnjrerzhnnhtb.supabase.co';
 const SB_KEY = 'sb_publishable_pRmYph3-GYIeZEeKyY1_sg_5sOPkQp_';

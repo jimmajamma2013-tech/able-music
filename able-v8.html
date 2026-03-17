@@ -5913,6 +5913,14 @@
        ABLE v6 — Core JS: tokens, vibes, shell init
        ============================================================ */
 
+    // === GLOBAL ERROR HANDLERS (H9 #1/#2) ========================
+    window.addEventListener('unhandledrejection', function(e) {
+      console.error('ABLE: unhandled rejection', e.reason)
+    })
+    window.onerror = function(msg, src, line, col, err) {
+      console.error('ABLE: uncaught error', msg, err)
+    }
+
     // === UTILITY =================================================
 
     // === EDIT MODE (§6) — activated by initEditBar for owners ====
@@ -6458,19 +6466,27 @@
 
     // === CAMPAIGN STATE MACHINE (§6.3) ===========================
 
+    // Valid manual override values (G5 #17 — unknown values fall through to date logic)
+    const VALID_STATE_OVERRIDES = new Set(['profile', 'pre-release', 'live', 'announce'])
+
     function computeState(profile) {
-      if (profile.stateOverride && profile.stateOverride !== 'auto') return profile.stateOverride
       const now = Date.now()
-      // Gig state: check able_gig_expires; < 6h left = post-show state
+      // Gig state: checked first so an expired gig timer is never hidden by stateOverride='gig'
+      // (G5 #18 — stateOverride='gig' must not bypass the expiry check)
       const gigExpires = parseInt(localStorage.getItem('able_gig_expires') || '0', 10)
       if (gigExpires && now < gigExpires) {
         return (gigExpires - now) < 6 * 3600000 ? 'gig-post' : 'gig'
       }
+      // Manual override — only allow known valid values (G5 #17)
+      if (profile.stateOverride && profile.stateOverride !== 'auto') {
+        if (VALID_STATE_OVERRIDES.has(profile.stateOverride)) return profile.stateOverride
+        // Unknown override — fall through to date-based logic
+      }
       // Release-based states
-      const release = profile.releaseDate ? new Date(profile.releaseDate).getTime() : null
-      if (!release) return 'profile'
-      if (now < release) return 'pre-release'
-      if (now < release + 14 * 86400000) return 'live'
+      const releaseMs = profile.releaseDate ? new Date(profile.releaseDate).getTime() : NaN
+      if (!releaseMs || isNaN(releaseMs)) return 'profile'  // (G5 #2–5 guard)
+      if (now < releaseMs) return 'pre-release'
+      if (now < releaseMs + 14 * 86400000) return 'live'
       return 'profile'
     }
 
