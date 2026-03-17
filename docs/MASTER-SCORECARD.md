@@ -22,10 +22,10 @@
 | Admin dashboard | `admin.html` | 9.8/10 | ~9.9/10 | Supabase auth (data portability) | ✅ C15: fan cap nudge at 90, starred row accent, relTime "Yesterday", level chip aria-pressed, CSV filename |
 | Onboarding wizard | `start.html` | 9.8/10 | ~9.9/10 | Social proof (real artists) | ✅ Vibe radiogroup ARIA added session 20 |
 | Landing page | `landing.html` | 9.7/10 | ~9.9/10 | FAQ aria-controls wired | ✅ Full Twitter card meta + aria-controls on FAQ done |
-| Fan dashboard | `fan.html` | 9.5/10 | ~9.8/10 | Supabase realtime + Close Circle | ✅ C16: artist card tabindex=0, lastVisit timestamp, tap tracking, toast role=alert |
+| Fan dashboard | `fan.html` | 9.6/10 | ~9.8/10 | Supabase realtime + Close Circle | ✅ C16: "New" release badge, Coming up shows section, recency sort, artist card tabindex=0, lastVisit timestamp, tap tracking, toast role=alert |
 | Freelancer profile | `freelancer.html` | 8.7/10 | ~9.2/10 | Network maturity + real testimonials | Directory integration + credits management |
 
-**Page average: ~9.45/10**
+**Page average: ~9.47/10**
 
 ---
 
