@@ -13,7 +13,7 @@
     Referrer-Policy            = "strict-origin-when-cross-origin"
     Permissions-Policy         = "camera=(), microphone=(), geolocation=()"
     # CSP: blocks external script injection; unsafe-inline required (vanilla HTML, no build step)
-    Content-Security-Policy    = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; frame-src https://www.youtube.com https://open.spotify.com https://w.soundcloud.com https://player.vimeo.com https://bandcamp.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://fonts.googleapis.com; media-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
+    Content-Security-Policy    = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://eu.i.posthog.com https://eu-assets.i.posthog.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; frame-src https://www.youtube.com https://open.spotify.com https://w.soundcloud.com https://player.vimeo.com https://bandcamp.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://fonts.googleapis.com https://eu.i.posthog.com; media-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
 
 # Cache static assets aggressively
 [[headers]]
@@ -74,6 +74,24 @@
 [[redirects]]
   from   = "/start"
   to     = "/start.html"
+  status = 200
+
+# /privacy → privacy.html clean URL (J5 #11)
+[[redirects]]
+  from   = "/privacy"
+  to     = "/privacy.html"
+  status = 200
+
+# /terms → terms.html clean URL (J5 #12)
+[[redirects]]
+  from   = "/terms"
+  to     = "/terms.html"
+  status = 200
+
+# /offline → offline.html (J3 — service worker fallback page)
+[[redirects]]
+  from   = "/offline"
+  to     = "/offline.html"
   status = 200
 
 # Friendly artist profile URLs: ablemusic.co/artistname → able-v8.html
