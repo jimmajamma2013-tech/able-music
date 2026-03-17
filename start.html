@@ -2080,6 +2080,23 @@ function initDone() {
       });
     }
   } catch (_) {}
+
+  // Send artist welcome email (fire-and-forget)
+  try {
+    const _wizEmail = profile.email || '';
+    if (_wizEmail) {
+      fetch('/.netlify/functions/artist-welcome', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          artistEmail: _wizEmail,
+          artistName:  profile.name  || '',
+          artistSlug:  profile.slug  || profile.handle || '',
+          profileUrl:  'https://ablemusic.co/' + (profile.slug || profile.handle || ''),
+        }),
+      }).catch(function() {});
+    }
+  } catch (_) {}
 }
 
 function showDay1ShareCard(profile, url) {
