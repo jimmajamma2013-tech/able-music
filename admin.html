@@ -3726,6 +3726,27 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       </div>
     </div>
 
+    <!-- C3 #4 — Campaign link creator -->
+    <div class="dash-card" style="max-width:480px;margin-top:16px;" id="campaignCreatorCard">
+      <div class="dc-head"><div class="dc-title">Campaign links</div></div>
+      <div class="dc-body">
+        <p style="font-size:12px;color:var(--t2);margin:0 0 12px;">Create a unique link for each campaign. Fans who click it get tagged so you know exactly where they came from.</p>
+        <div class="field-row">
+          <div class="field-label">Campaign name</div>
+          <input class="field-input" type="text" id="campaignNameInput"
+                 placeholder="e.g. ig-story-nov26" maxlength="50"
+                 autocomplete="off" autocapitalize="none" spellcheck="false"
+                 oninput="updateCampaignPreview(this.value)"
+                 aria-label="Campaign name (use hyphens, no spaces)">
+          <div class="field-hint" style="margin-top:4px;" id="campaignNameHint">Use hyphens, not spaces. Max 50 characters.</div>
+        </div>
+        <div style="margin-top:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 12px;font-family:monospace;font-size:11px;color:var(--t2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="campaignUrlPreview">ablemusic.co/yourname?campaign=…</div>
+        <div style="margin-top:8px;display:flex;gap:8px;">
+          <button class="tb-btn tb-btn-ghost" onclick="copyCampaignUrl()" style="flex:1;justify-content:center;" id="copyCampaignBtn" disabled>Copy link</button>
+        </div>
+      </div>
+    </div>
+
     <div class="dash-card" style="max-width:480px;margin-top:16px;">
       <div class="dc-head"><div class="dc-title">Account</div></div>
       <div class="dc-body">
@@ -4253,13 +4274,14 @@ function exportFans() {
   const legacyStarred = safeLS('able_starred_fans', []);
   const real = safeLS('able_fans', []).filter(f => f.confirmed !== false);
   if (!real.length) { showToast('No fans yet — share your page to see who shows up.', 'amber'); return; }
-  const csvRows = [['email','signup_date','source','campaign_state','consent_timestamp','consent_version','level','starred','opted_in','confirmed']];
+  const csvRows = [['email','signup_date','source','campaign_name','campaign_state','consent_timestamp','consent_version','level','starred','opted_in','confirmed']];
   real.forEach(f => {
     const isStarred = !!(f.isStarred || legacyStarred.includes(f.email));
     csvRows.push([
       f.email || '',
       f.ts ? new Date(f.ts).toISOString() : '',   // full ISO 8601 (I3 #11)
       normaliseSource(f.source),
+      f.campaignName || '',                        // C3 #7 — ABLE-native campaign name
       f.campaignState || 'profile',
       f.consentTs ? new Date(f.consentTs).toISOString() : (f.ts ? new Date(f.ts).toISOString() : ''), // I3 #15
       f.consentVersion || 'v1',                    // I3 #16
@@ -7654,6 +7676,41 @@ function copyUtmUrl(source) {
     }, 300);
     setTimeout(() => { btn.innerHTML = orig; btn.style.transition = ''; }, 1800);
   });
+}
+
+/* ── CAMPAIGN CREATOR (C3 #4) ── */
+function _getCampaignBaseUrl() {
+  const data = safeLS(V3_KEY, {});
+  const slug = data.handle || (data.name || 'artist').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  return `https://ablemusic.co/${slug}`;
+}
+
+function updateCampaignPreview(raw) {
+  const clean = raw.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '').slice(0, 50);
+  const previewEl = document.getElementById('campaignUrlPreview');
+  const copyBtn = document.getElementById('copyCampaignBtn');
+  const hintEl = document.getElementById('campaignNameHint');
+  if (!previewEl || !copyBtn) return;
+  if (!clean) {
+    previewEl.textContent = `${_getCampaignBaseUrl()}?campaign=…`;
+    copyBtn.disabled = true;
+    if (hintEl) hintEl.textContent = 'Use hyphens, not spaces. Max 50 characters.';
+    return;
+  }
+  previewEl.textContent = `${_getCampaignBaseUrl()}?campaign=${clean}`;
+  copyBtn.disabled = false;
+  if (hintEl) hintEl.textContent = '\u2713 Looks good.';
+}
+
+function copyCampaignUrl() {
+  const clean = (document.getElementById('campaignNameInput')?.value || '').trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '').slice(0, 50);
+  if (!clean) { showToast('Enter a campaign name first.', 'amber'); return; }
+  const url = `${_getCampaignBaseUrl()}?campaign=${clean}`;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('copyCampaignBtn');
+    if (btn) { const orig = btn.textContent; btn.textContent = 'Copied.'; setTimeout(() => { btn.textContent = orig; }, 2000); }
+    showToast('Campaign link copied.');
+  }).catch(() => { showToast('Clipboard failed — copy from the preview above.', 'amber'); });
 }
 
 /* ── QR CODE ── */
