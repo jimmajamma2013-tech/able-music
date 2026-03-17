@@ -315,6 +315,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   position:relative;
 }
 .c-swatch:hover { transform:scale(1.14); }
+.c-swatch:active { transform:scale(0.94); transition:transform 80ms ease-out; }
 .c-swatch.on { border-color:#fff; box-shadow:0 0 0 3px rgba(255,255,255,.14); transform:scale(1.08); }
 .c-swatch.on::after { content:''; position:absolute; inset:0; border-radius:7px; background:rgba(255,255,255,.18); }
 .colour-custom {
@@ -350,6 +351,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   font-family:var(--font); text-align:center;
 }
 .vibe-card:hover { border-color:var(--bm); }
+.vibe-card:active { transform:scale(0.96); transition:transform 80ms ease-out; }
 .vibe-card.on {
   border-color:var(--acc); background:rgba(var(--acc-rgb),.08);
   box-shadow:0 0 0 3px rgba(var(--acc-rgb),.1);
@@ -487,6 +489,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   transition: background var(--dur), color var(--dur), border-color var(--dur);
 }
 .btn-back:hover { color:var(--text); border-color:var(--bm); }
+.btn-back:active { transform:scale(0.97); transition:transform 80ms ease-out; }
 .btn-next {
   padding:12px 28px; border-radius:var(--r-pill); font-size:14px; font-weight:600;
   border:none; background:var(--acc); color:#121a24;
@@ -495,6 +498,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   box-shadow:0 4px 20px rgba(var(--acc-rgb),.32); letter-spacing:.01em;
 }
 .btn-next:hover { transform:translateY(-2px); box-shadow:0 7px 28px rgba(var(--acc-rgb),.42); }
+.btn-next:active { transform:scale(0.96); transition:transform 80ms ease-out; box-shadow:0 2px 12px rgba(var(--acc-rgb),.28); }
 .btn-skip {
   padding:12px 20px; border-radius:var(--r-pill); font-size:13px; font-weight:500;
   border:1.5px solid var(--border); color:var(--t2);
@@ -1039,8 +1043,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   margin-bottom: 4px;
 }
 .v2-colour-row .c-swatch {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 9px;
 }
 /* Mini live preview */
@@ -1363,7 +1367,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
           <div class="c-swatch" style="background:#7ec88a" data-hex="#7ec88a" title="Sage" onclick="v2SetAccent('#7ec88a',this)"></div>
           <div class="c-swatch" style="background:#9b7cf4" data-hex="#9b7cf4" title="Indigo" onclick="v2SetAccent('#9b7cf4',this)"></div>
           <div class="c-swatch" style="background:#06b6d4" data-hex="#06b6d4" title="Sky" onclick="v2SetAccent('#06b6d4',this)"></div>
-          <div class="colour-custom" style="padding:0;width:36px;height:36px;border-radius:9px;flex-shrink:0;" onclick="document.getElementById('v2ccPicker').click()" title="Custom colour">
+          <div class="colour-custom" style="padding:0;width:44px;height:44px;border-radius:9px;flex-shrink:0;" onclick="document.getElementById('v2ccPicker').click()" title="Custom colour">
             <div id="v2ccSwatch" style="width:100%;height:100%;border-radius:7px;background:#fff;"></div>
             <input type="color" id="v2ccPicker" value="#ffffff" style="position:absolute;opacity:0;width:0;height:0;">
           </div>
