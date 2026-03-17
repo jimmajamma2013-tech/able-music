@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-17 (session 15 — NEW-5, @supports view-transition guards, shared/tokens.css, all P0/P1/P2 items audited and confirmed | session 14 — clips V1, PostHog, tier gates, UTM, Ticketmaster, Linktree, dashboard hierarchy, landing doctrine, context/build process overhaul) | Update this file at the end of every session.**
+**Updated: 2026-03-17 (session 16 — 92/92 Playwright tests green: smoke × 13, copy × 64, a11y × 9, interactions × 6; landing CTA above-fold fix; safeLS admin fix; start.html copy fix | session 15 — NEW-5, @supports view-transition guards, shared/tokens.css, all P0/P1/P2 items audited and confirmed) | Update this file at the end of every session.**
 
 ---
 
@@ -69,7 +69,7 @@
 | Build your own | 8.7/10 avg | ✅ `docs/systems/build-your-own/` — all tools unbuilt pre-launch |
 | Filing system | 9.2/10 | ✅ `docs/systems/filing-system/` |
 | Coding strategy | 7.0→10/10 | ✅ `docs/systems/coding-strategy/` — P0: --dash-t3 WCAG fix (2 min) |
-| QA testing | 9.0/10 spec | ✅ `docs/systems/qa-testing/` — no tests written yet |
+| QA testing | 9.0/10 spec | ✅ `docs/systems/qa-testing/` — **92/92 tests green** (smoke, copy, a11y, interactions) |
 | Master review | 7.5/10 | ✅ `docs/systems/master-review/` — schedule recurring monthly review |
 
 **Rule: No building until all strategy docs are complete.**
