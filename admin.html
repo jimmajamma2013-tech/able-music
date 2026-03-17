@@ -43,11 +43,12 @@
   --dash-shell:  #1a1a2e;
   --dash-field:  #e4dfd7;   /* recessed — matches floor so inputs feel inset */
   --dash-amber:  #f4b942;
+  --dash-link:   #8c6200;  /* amber-on-light: ≥4.5:1 on --dash-card */
   --dash-green:  #1e9650;
   --dash-red:    #c04030;
   --dash-text:   #1a1a2e;
   --dash-t2:     #555555;
-  --dash-t3:     #777777;   /* WCAG AA: 4.6:1 on --dash-card */
+  --dash-t3:     #595959;   /* WCAG AA: ≥4.5:1 on --dash-card (#f8f5f0) */
 
   /* Source badge colours (canonical) */
   --source-ig:      #e1306c;
@@ -57,6 +58,8 @@
 }
 
 [hidden] { display: none !important; }
+/* ── SCREEN-READER ONLY ── */
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
 html { font-size:16px; }
 /* ── FOCUS VISIBILITY (WCAG 2.2 AA) ── */
@@ -256,6 +259,9 @@ body::before {
 }
 .empty-state-title { font-size:14px; font-weight:600; color:var(--text); }
 .empty-state-body  { font-size:12px; color:var(--t3); max-width:260px; line-height:1.55; }
+/* Activity feed empty state — BEM variant used in JS-rendered content */
+.empty-state__title { font-size:14px; font-weight:600; color:var(--dash-text); }
+.empty-state__body  { font-size:12px; color:var(--dash-t2); max-width:260px; line-height:1.55; }
 
 /* ── SECTION GRID ── */
 .section-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
@@ -1106,12 +1112,15 @@ body::before {
 }
 @media (max-width:767px) {
   .sidebar { display:none; }
-  .main { margin-left:0; }
+  .main { margin-left:0; width:100%; }
   .mobile-nav { display:flex; }
   .main { padding-bottom:80px; }
   .page { padding:16px 14px; }
   .page-header { padding-bottom:16px; margin-bottom:16px; }
   .stats-row { grid-template-columns:1fr 1fr; gap:8px; margin-bottom:24px; }
+  .fan-body { grid-template-columns:1fr; }
+  .upgrade-bar { margin:0 0 20px; }
+  body { overflow-x:hidden; }
 }
 @media (max-width:420px) {
   .stats-row { grid-template-columns:1fr; gap:8px; }
@@ -1151,7 +1160,7 @@ body::before {
     .nudge-action {
       font-size: 12px;
       font-weight: 700;
-      color: var(--dash-amber);
+      color: var(--dash-link);
       text-decoration: none;
       white-space: nowrap;
     }
@@ -1622,7 +1631,7 @@ body::before {
       margin-top: 10px;
       font-size: 11px;
       font-weight: 700;
-      color: var(--dash-amber);
+      color: var(--dash-link);
       text-decoration: none;
     }
 
@@ -1638,6 +1647,7 @@ body::before {
       font-size: 20px;
       font-weight: 700;
       letter-spacing: 0.01em;
+      color: var(--dash-text);
     }
     .yw-add-btn {
       display: flex; align-items: center; gap: 6px;
@@ -1653,10 +1663,10 @@ body::before {
     .yw-moment-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
     .yw-moment-row {
       display: flex; align-items: center; gap: 10px;
-      background: rgba(255,255,255,0.04);
+      background: var(--dash-card);
       border-radius: 8px;
       padding: 10px 14px;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid var(--dash-border);
       font-size: 13px;
     }
     .yw-dot {
@@ -1664,23 +1674,23 @@ body::before {
       border-radius: 50%;
       flex-shrink: 0;
     }
-    .yw-moment-date { color: rgba(255,255,255,0.4); width: 48px; flex-shrink: 0; font-size: 11px; }
-    .yw-moment-title { flex: 1; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .yw-moment-access { font-size: 10px; color: rgba(255,255,255,0.35); }
+    .yw-moment-date { color: var(--dash-t2); width: 48px; flex-shrink: 0; font-size: 11px; }
+    .yw-moment-title { flex: 1; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--dash-text); }
+    .yw-moment-access { font-size: 10px; color: var(--dash-t3); }
     .yw-moment-featured { font-size: 9px; color: var(--acc, #f4b942); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
     .yw-moment-auto { color: var(--acc, #f4b942) !important; opacity: 0.7; }
-    .yw-empty { text-align: center; padding: 24px 16px; color: rgba(255,255,255,0.3); font-size: 13px; }
+    .yw-empty { text-align: center; padding: 24px 16px; color: var(--dash-t3); font-size: 13px; }
     .yw-empty-link { background: none; border: none; padding: 0; color: var(--acc, #f4b942); font-size: 13px; cursor: pointer; text-decoration: underline; }
     .yw-private-row {
       display: flex; align-items: center; justify-content: space-between;
       padding: 12px 14px;
-      background: rgba(255,255,255,0.03);
+      background: var(--dash-field);
       border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid var(--dash-border);
       margin-bottom: 8px;
     }
-    .yw-private-label { font-size: 13px; font-weight: 600; }
-    .yw-private-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+    .yw-private-label { font-size: 13px; font-weight: 600; color: var(--dash-text); }
+    .yw-private-sub { font-size: 11px; color: var(--dash-t2); margin-top: 2px; }
     .yw-enquiry-link {
       font-size: 12px;
       color: var(--acc, #f4b942);
@@ -1690,8 +1700,8 @@ body::before {
 
     /* ── ADD MOMENT FORM ── */
     .yw-add-form {
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.08);
+      background: var(--dash-card);
+      border: 1px solid var(--dash-border);
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 14px;
@@ -1702,17 +1712,17 @@ body::before {
       font-weight: 700;
       letter-spacing: .07em;
       text-transform: uppercase;
-      color: rgba(255,255,255,.4);
+      color: var(--dash-t3);
       margin-bottom: 7px;
     }
     .yw-form-input {
       width: 100%;
       box-sizing: border-box;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
+      background: var(--dash-field);
+      border: 1.5px solid var(--dash-border);
       border-radius: 8px;
       padding: 9px 12px;
-      color: #fff;
+      color: var(--dash-text);
       font-size: 13px;
       font-family: inherit;
       outline: none;
@@ -1727,9 +1737,9 @@ body::before {
     .yw-type-btn {
       padding: 7px 4px;
       border-radius: 8px;
-      border: 1.5px solid rgba(255,255,255,.08);
-      background: rgba(255,255,255,.03);
-      color: rgba(255,255,255,.55);
+      border: 1.5px solid var(--dash-border);
+      background: var(--dash-field);
+      color: var(--dash-t2);
       font-size: 11px;
       font-weight: 600;
       cursor: pointer;
@@ -1737,7 +1747,7 @@ body::before {
       transition: border-color .12s, color .12s, background .12s;
       line-height: 1.25;
     }
-    .yw-type-btn:hover { border-color: rgba(255,255,255,.2); color: #fff; }
+    .yw-type-btn:hover { border-color: var(--dash-t2); color: var(--dash-text); }
     .yw-type-btn.active {
       border-color: var(--acc, #f4b942);
       color: var(--acc, #f4b942);
@@ -1751,15 +1761,15 @@ body::before {
     .yw-access-btn {
       padding: 6px 12px;
       border-radius: 20px;
-      border: 1.5px solid rgba(255,255,255,.09);
-      background: rgba(255,255,255,.03);
-      color: rgba(255,255,255,.55);
+      border: 1.5px solid var(--dash-border);
+      background: var(--dash-field);
+      color: var(--dash-t2);
       font-size: 12px;
       font-weight: 500;
       cursor: pointer;
       transition: border-color .12s, color .12s, background .12s;
     }
-    .yw-access-btn:hover { border-color: rgba(255,255,255,.2); color: #fff; }
+    .yw-access-btn:hover { border-color: var(--dash-t2); color: var(--dash-text); }
     .yw-access-btn.active {
       border-color: var(--acc, #f4b942);
       color: var(--acc, #f4b942);
@@ -1779,9 +1789,9 @@ body::before {
     .yw-cancel-btn {
       padding: 10px 16px;
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,.12);
+      border: 1px solid var(--dash-border);
       background: none;
-      color: rgba(255,255,255,.55);
+      color: var(--dash-t2);
       font-size: 13px;
       font-weight: 500;
       cursor: pointer;
@@ -1793,19 +1803,19 @@ body::before {
       align-items: center;
       justify-content: space-between;
       padding: 10px 0;
-      border-top: 1px solid rgba(255,255,255,.06);
+      border-top: 1px solid var(--dash-border);
     }
     .section-vis-row:first-of-type { border-top: none; }
     .section-vis-label {
       font-size: 13px;
-      color: var(--text, #fff);
+      color: var(--dash-text);
       font-weight: 500;
     }
     .section-vis-toggle {
       width: 40px;
       height: 24px;
       border-radius: 12px;
-      background: rgba(255,255,255,.15);
+      background: rgba(0,0,0,.15);
       border: none;
       cursor: pointer;
       position: relative;
@@ -2280,7 +2290,7 @@ body::before {
 
   <!-- TOP BAR -->
   <div class="topbar">
-    <div class="topbar-title" id="topbarTitle">Overview</div>
+    <h1 class="topbar-title" id="topbarTitle">Overview</h1>
     <div class="topbar-actions">
       <a class="topbar-edit-cta" href="/able-v8.html?edit=1" id="topbarEditCta">Edit page →</a>
       <span class="live-chip" id="liveChip" onclick="window.open('able-v8.html','_blank')" title="View your live page">
@@ -2391,6 +2401,7 @@ body::before {
           <input class="chq-release-title" id="chqReleaseTitle" type="text" placeholder="Release title — e.g. 'Dissolve' (Single)">
         </div>
         <div class="chq-date-picker">
+          <label for="chqReleaseDate" class="sr-only">Release date and time</label>
           <input type="datetime-local" id="chqReleaseDate" title="Release date &amp; time">
         </div>
         <div class="chq-auto-hint" id="chqAutoHint">
@@ -4451,7 +4462,7 @@ function renderFanBody() {
         <span class="source-badge ${src}">${src.toUpperCase()}</span>
         <span class="fan-time">${timeAgo}</span>
       </div>`;
-    }).join('') : '<div style="color:#aaa;font-size:12px;padding:4px 0;">No fans yet — share your link.</div>';
+    }).join('') : '<div style="color:var(--dash-t2);font-size:12px;padding:4px 0;">No fans yet — share your link.</div>';
   }
 
   const viewAll = document.getElementById('viewAllFansLink');
@@ -4469,7 +4480,7 @@ function renderFanBody() {
         <span class="tap-label">${escHtml(label)}</span>
         <span class="tap-count">${count}</span>
       </div>`
-    ).join('') : '<div style="color:#aaa;font-size:12px;padding:4px 0;">No taps today yet.</div>';
+    ).join('') : '<div style="color:var(--dash-t2);font-size:12px;padding:4px 0;">No taps today yet.</div>';
   }
 }
 
