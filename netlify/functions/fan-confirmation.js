@@ -124,7 +124,11 @@ exports.handler = async function (event) {
     bodyLine    = `No noise. Just the things that matter — direct from them, when they happen.`;
   }
 
-  const html = buildEmail({ name, accent, profile, fanDashboard, headingLine, bodyLine });
+  const unsubscribeUrl = slug
+    ? `${baseUrl}/fan.html?artist=${encodeURIComponent(slug)}&action=unsubscribe`
+    : `${baseUrl}/fan.html?action=unsubscribe`;
+
+  const html = buildEmail({ name, accent, profile, fanDashboard, unsubscribeUrl, headingLine, bodyLine });
 
   // ── Send via Resend ───────────────────────────────────────────────────────
   try {
@@ -162,7 +166,7 @@ exports.handler = async function (event) {
 
 // ── Email template ──────────────────────────────────────────────────────────
 
-function buildEmail({ name, accent, profile, fanDashboard, headingLine, bodyLine }) {
+function buildEmail({ name, accent, profile, fanDashboard, unsubscribeUrl, headingLine, bodyLine }) {
   // Determine text color for accent bg (simple luminance check)
   const textOnAccent = getLuminance(accent) > 0.4 ? '#000000' : '#ffffff';
 
@@ -206,7 +210,7 @@ function buildEmail({ name, accent, profile, fanDashboard, headingLine, bodyLine
           <!-- Footer -->
           <tr>
             <td style="padding:24px 0 0;text-align:center;">
-              <p style="margin:0;font-size:11px;color:rgba(240,237,232,0.28);">You signed up on <a href="${esc(profile)}" style="color:rgba(240,237,232,0.28);">ABLE</a>. This is not a marketing list.<br>You'll only hear from ${esc(name)} directly.</p>
+              <p style="margin:0;font-size:11px;color:rgba(240,237,232,0.28);">You signed up on <a href="${esc(profile)}" style="color:rgba(240,237,232,0.28);">ABLE</a>. This is not a marketing list.<br>You'll only hear from ${esc(name)} directly. <a href="${esc(unsubscribeUrl)}" style="color:rgba(240,237,232,0.28);text-decoration:underline;">Unsubscribe</a>.</p>
             </td>
           </tr>
 
