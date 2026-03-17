@@ -159,12 +159,14 @@ body::before {
   border-color:rgba(var(--acc-rgb),.5);
   box-shadow:0 0 0 3px rgba(var(--acc-rgb),.1);
 }
-button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
-  outline: 2px solid var(--acc);
-  outline-offset: 3px;
-  border-radius: 8px;
+*:focus:not(:focus-visible) { outline: none; }
+*:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--bg, #12152a),
+    0 0 0 4px var(--acc),
+    0 0 0 6px rgba(var(--acc-rgb), 0.25);
 }
-:focus:not(:focus-visible) { outline: none; }
 .field-input::placeholder { color:var(--t3); }
 select.field-input { appearance:none; cursor:pointer; }
 textarea.field-input { resize:none; height:76px; line-height:1.5; }
