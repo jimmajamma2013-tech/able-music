@@ -2243,7 +2243,7 @@
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 4px;
+      border-radius: var(--r-sm);
       padding: 5px 8px;
       font-size: 10px;
       font-weight: 700;
@@ -2365,7 +2365,7 @@
       border-bottom: 1px solid var(--color-border);
     }
     .release-card__able-art {
-      width: 52px; height: 52px; border-radius: 6px;
+      width: 52px; height: 52px; border-radius: var(--r-sm);
       flex-shrink: 0; background: var(--color-surface); overflow: hidden;
     }
     .release-card__able-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -2400,7 +2400,7 @@
       font-size: 8px;
       font-weight: 700;
       padding: 1px 6px;
-      border-radius: 4px;
+      border-radius: var(--r-sm);
       background: rgba(255,255,255,0.1);
       color: rgba(255,255,255,0.7);
       text-transform: uppercase;
@@ -2415,7 +2415,7 @@
       font-size: 10px;
       font-weight: 700;
       padding: 4px 10px;
-      border-radius: 6px;
+      border-radius: var(--r-sm);
       background: var(--color-accent, #e07b3a);
       color: var(--cta-text-color, #000);
       text-decoration: none;
@@ -2426,7 +2426,7 @@
       font-size: 10px;
       font-weight: 700;
       padding: 4px 10px;
-      border-radius: 6px;
+      border-radius: var(--r-sm);
       background: transparent;
       color: rgba(255,255,255,0.7);
       border: 1px solid rgba(255,255,255,0.25);
@@ -2469,7 +2469,7 @@
     .media-lightbox__actions { display: flex; gap: 6px; flex-shrink: 0; }
     .media-lightbox__btn {
       display: inline-flex; align-items: center; gap: 5px;
-      padding: 5px 11px; border-radius: 6px;
+      padding: 5px 11px; border-radius: var(--r-sm);
       font-size: 11px; font-weight: 600;
       cursor: pointer; border: 1px solid rgba(255,255,255,0.14);
       background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.65);
@@ -2497,7 +2497,7 @@
       padding: 6px 10px; background: #111;
     }
     .media-pip__expand {
-      width: 32px; height: 32px; border-radius: 6px;
+      width: 32px; height: 32px; border-radius: var(--r-sm);
       border: 1px solid rgba(255,255,255,0.15);
       background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
       font-size: 12px; cursor: pointer;
@@ -2537,7 +2537,7 @@
     .video-thumb {
       width: 60px;
       height: 36px;
-      border-radius: 5px;
+      border-radius: var(--r-sm);
       object-fit: cover;
       background: var(--color-card-raised);
       display: block;
@@ -2545,7 +2545,7 @@
     .video-thumb-placeholder {
       width: 60px;
       height: 36px;
-      border-radius: 5px;
+      border-radius: var(--r-sm);
       background: var(--color-card-raised);
       display: block;
     }
@@ -2556,7 +2556,7 @@
       align-items: center;
       justify-content: center;
       background: rgba(0,0,0,0.35);
-      border-radius: 5px;
+      border-radius: var(--r-sm);
       color: #fff;
       font-size: 10px;
     }
@@ -3657,7 +3657,7 @@
       top: 6px;
       right: 6px;
       padding: 2px 6px;
-      border-radius: 4px;
+      border-radius: var(--r-sm);
       font-size: 10px;
       font-weight: 700;
       letter-spacing: 0.03em;
@@ -4691,7 +4691,7 @@
     .ep-ai-draft.loading { color: var(--color-text-3); font-style: italic; }
     .ep-ai-use {
       display: inline-block; margin-top: 6px;
-      padding: 5px 14px; border-radius: 6px;
+      padding: 5px 14px; border-radius: var(--r-sm);
       font-size: 11px; font-weight: 700;
       background: var(--color-accent, #e07b3a); color: #000;
       border: none; cursor: pointer;
@@ -4754,7 +4754,7 @@
     .ep-clear-cta {
       font-size: 10px; font-weight: 600; letter-spacing: 0.03em;
       color: var(--color-text-3); background: none; border: none;
-      cursor: pointer; padding: 2px 6px; border-radius: 4px;
+      cursor: pointer; padding: 2px 6px; border-radius: var(--r-sm);
       opacity: 0.55; transition: opacity var(--dur-fast);
     }
     .ep-clear-cta:hover { opacity: 1; color: var(--color-panel-text); }
@@ -4987,7 +4987,7 @@
       padding: 0 6px;
       align-self: stretch;
       min-height: 44px;
-      border-radius: 6px;
+      border-radius: var(--r-sm);
       transition: color var(--dur-fast), background var(--dur-fast);
       white-space: nowrap;
     }
@@ -5116,7 +5116,7 @@
       font-size: 9px;
       font-weight: 800;
       padding: 2px 5px;
-      border-radius: 5px;
+      border-radius: var(--r-sm);
       z-index: 10;
       pointer-events: none;
     }
@@ -5141,7 +5141,7 @@
       left: 0;
       right: 0;
       background: #fff;
-      border-radius: 16px 16px 0 0;
+      border-radius: var(--r-lg) var(--r-lg) 0 0;
       border-top: 1.5px solid #d4cfc8;
       z-index: 2001;
       max-height: 85vh;
