@@ -3,17 +3,17 @@
  * Strategy:
  *   - Cache-first: static assets (icons)
  *   - Network-first: HTML pages (always get latest content)
- *   - Offline fallback: /fan.html (cached on install)
+ *   - Offline fallback: /offline.html (cached on install)
  *
  * Bump CACHE_VERSION to invalidate all caches on deploy.
  */
 
-const CACHE_VERSION = 'able-v2';
+const CACHE_VERSION = 'able-v3';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE   = `${CACHE_VERSION}-pages`;
 
 const PRECACHE_ASSETS = [
-  '/fan.html',
+  '/offline.html',
   '/able-v8.html',
   '/manifest.json',
   '/icons/icon-192.png',
@@ -69,7 +69,7 @@ async function networkFirstWithFallback(request) {
   } catch (err) {
     const cached = await caches.match(request);
     if (cached) return cached;
-    const fallback = await caches.match('/fan.html');
+    const fallback = await caches.match('/offline.html');
     if (fallback) return fallback;
     return new Response('<h1>No connection</h1>', { headers: { 'Content-Type': 'text/html' } });
   }
