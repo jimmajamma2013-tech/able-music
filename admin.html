@@ -5923,11 +5923,11 @@ function renderSnapCardsList() {
   const _dcAction = document.querySelector('#page-snaps .dc-action')
   if (_dcAction) {
     _dcAction.disabled = _freeLocked
-    _dcAction.title = _freeLocked ? 'Upgrade to Artist plan for unlimited cards' : ''
+    _dcAction.title = _freeLocked ? 'One snap card on free. Unlimited on Artist plan.' : ''
   }
   if (addBtn) {
     addBtn.disabled = _freeLocked
-    addBtn.title = _freeLocked ? 'Upgrade to Artist plan for unlimited cards' : ''
+    addBtn.title = _freeLocked ? 'One snap card on free. Unlimited on Artist plan.' : ''
   }
 
   list.innerHTML = cards.map((card, i) => {
@@ -6061,6 +6061,22 @@ function toggleSnapEdit(id) {
 }
 
 function saveSnapCard(id) {
+  // C5 #3 — validate snap card URL before saving
+  const ctaUrlEl = document.getElementById('sce-ctaurl-' + id)
+  const ctaUrlVal = ctaUrlEl?.value.trim() || ''
+  if (ctaUrlVal) {
+    try { new URL(ctaUrlVal.startsWith('http') ? ctaUrlVal : 'https://' + ctaUrlVal) }
+    catch (_) {
+      if (ctaUrlEl) {
+        ctaUrlEl.style.borderColor = 'var(--red, #ef4444)'
+        ctaUrlEl.title = "That doesn't look like a link."
+        setTimeout(() => { ctaUrlEl.style.borderColor = ''; ctaUrlEl.title = ''; }, 3000)
+      }
+      showToast("That doesn't look like a link.", 'red')
+      return
+    }
+  }
+
   const data = safeLS(V3_KEY, {})
   data.snapCards = (data.snapCards || []).map(c => {
     if (c.id !== id) return c
@@ -6071,7 +6087,7 @@ function saveSnapCard(id) {
       imageUrl: document.getElementById('sce-img-' + id)?.value.trim()      || '',
       alt:      document.getElementById('sce-alt-' + id)?.value.trim()      || '',
       ctaLabel: document.getElementById('sce-ctalabel-' + id)?.value.trim() || '',
-      ctaUrl:   document.getElementById('sce-ctaurl-' + id)?.value.trim()   || '',
+      ctaUrl:   ctaUrlVal || '',
     }
   })
   setLS(V3_KEY, data)
@@ -8459,6 +8475,18 @@ function saveProfilePage() {
 
   renderQR();
   updateCompletenessBar(); // C3 #16 — refresh after each profile save
+
+  // C5 #5/#6 — brief green border flash on name + bio fields to confirm save
+  const _flashEl = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.transition = 'border-color 0ms';
+    el.style.borderColor = 'var(--dash-green, #22c55e)';
+    setTimeout(() => { el.style.transition = 'border-color 600ms'; el.style.borderColor = ''; }, 600);
+  };
+  _flashEl('adminName');
+  _flashEl('adminBio');
+
   showToast('Profile saved.');
   const btn = document.querySelector('.profile-save-btn');
   if (btn) { btn.textContent = '✓ Saved'; setTimeout(() => btn.textContent = 'Save profile changes →', 1800); }
