@@ -3627,7 +3627,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
     <p class="fan-email-value" id="fanEmailValue" hidden></p>
 
     <div class="fans-search">
-      <input id="fansSearch" type="search" placeholder="Search fans..." aria-label="Search fans">
+      <input id="fansSearch" type="search" placeholder="Search by email or campaign…" aria-label="Search fans by email or campaign"><!-- C4 #6 -->
     </div>
 
     <div class="filter-pills" id="fansFilterPills">
@@ -4042,7 +4042,7 @@ function renderFanList(filter) {
     const matchFilter = _activeFanFilter === 'all'
       || src === _activeFanFilter
       || (_activeFanFilter === 'starred' && (f.isStarred || legacyStarredForFilter.includes(f.email)));
-    const matchSearch = !search || (f.email || '').toLowerCase().includes(search);
+    const matchSearch = !search || (f.email || '').toLowerCase().includes(search) || (f.campaignName || '').toLowerCase().includes(search); // C4 #7
     return matchFilter && matchSearch && f.confirmed !== false;
   });
 
@@ -5831,13 +5831,23 @@ function addEvent() {
   renderAdminEvents();
 }
 
+// C4 #8 — two-step show delete, no browser confirm()
 function removeEvent(id) {
-  if (!confirm('Remove this show? This cannot be undone.')) return;
+  const btn = document.querySelector(`.snap-btn.del[onclick="removeEvent('${id}')"]`);
+  if (btn && !btn.dataset.confirming) {
+    btn.dataset.confirming = '1';
+    btn.title = 'Really remove? Click again to confirm.';
+    btn.style.background = 'rgba(220,38,38,.25)';
+    btn.style.color = 'var(--red)';
+    setTimeout(() => { if (btn.dataset.confirming) { delete btn.dataset.confirming; btn.title = 'Remove'; btn.style.background = ''; btn.style.color = ''; } }, 4000);
+    return;
+  }
   const data = safeLS(V3_KEY, {});
   const events = (data.events||[]).filter(e => e.id !== id);
   setLS(V3_KEY, { ...data, events });
   syncProfile({ ...data, events });
   renderAdminEvents();
+  updateCompletenessBar();
 }
 
 function updateEventField(id, field, value) {
@@ -6734,7 +6744,9 @@ function loadRealStats() {
   animateCount('aStatClicks', clicksTotal || '—');
   set('aStatCtr',    ctr !== '—' ? ctr + ' CTR' : ' ');
   animateCount('aStatFans',   fansTotal   || '—');
-  set('aStatFansD',  fansWeek    ? '↑ ' + fansWeek + ' this week' : ' ');
+  // C4 #20 — fan conversion rate: fans / views
+  const convRate = viewsTotal > 0 ? ((fansTotal / viewsTotal) * 100).toFixed(1) + '% conversion' : (fansWeek ? '↑ ' + fansWeek + ' this week' : ' ');
+  set('aStatFansD', convRate);
   set('aStatRate',   ctr);
 
   // Fan stats
@@ -7484,13 +7496,13 @@ function updateCompletenessBar() {
   if (!wrap) return;
   const profile = safeLS(V3_KEY, {});
   const fans    = safeLS(FANS_KEY, []);
-  const shows   = safeLS('able_shows', []);
-  const snaps   = safeLS('able_snap_cards', []);
+  const shows   = safeLS('able_shows', []); // C4 #43 — able_shows is the correct key
+  const snaps   = profile.snapCards || [];  // C4 #42 — snapCards live in profile, not able_snap_cards
 
   const dims = [
     { key:'name',    pts:15, ok: !!profile.name,   nudge:'Add your artist name.' },
     { key:'bio',     pts:20, ok: !!profile.bio,    nudge:'Add a bio so fans know who you are.' },
-    { key:'artwork', pts:20, ok: !!profile.artworkUrl, nudge:'Add your artwork — it\'s the first thing fans see.' },
+    { key:'artwork', pts:20, ok: !!(profile.topCard?.artworkUrl || profile.topCard?.videoUrl), nudge:'Add your artwork — it\'s the first thing fans see.' },
     { key:'ctas',    pts:20, ok: !!(profile.ctaPrimary?.url || profile.ctaSecondary?.url), nudge:'Add a hero CTA — give fans something to tap.' },
     { key:'snap',    pts:15, ok: Array.isArray(snaps) && snaps.length > 0, nudge:'Add a snap card — give fans somewhere to go.' },
     { key:'show',    pts:10, ok: Array.isArray(shows) && shows.length > 0, nudge:'Add a show — even one upcoming date tells fans you\'re active.' },
