@@ -8,13 +8,13 @@
  * Bump CACHE_VERSION to invalidate all caches on deploy.
  */
 
-const CACHE_VERSION = 'able-v1';
+const CACHE_VERSION = 'able-v2';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE   = `${CACHE_VERSION}-pages`;
 
 const PRECACHE_ASSETS = [
   '/fan.html',
-  '/able-v7.html',
+  '/able-v8.html',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',

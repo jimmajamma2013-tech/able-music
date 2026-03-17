@@ -2367,7 +2367,7 @@ body::before {
       <canvas class="sb-qr-canvas" id="sbQrCanvas" aria-label="QR code for your live page"></canvas>
       <button class="sb-qr-download" onclick="downloadSbQR()" aria-label="Download QR code as PNG">Download QR</button>
     </div>
-    <a class="sb-view-btn" href="able-v7.html" target="_blank" id="sbViewLiveBtn">
+    <a class="sb-view-btn" href="able-v8.html" target="_blank" id="sbViewLiveBtn">
       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M1 7a6 6 0 1012 0A6 6 0 001 7z"/><path d="M7 4v3l2 2"/></svg>
       View live page
     </a>
@@ -2381,13 +2381,13 @@ body::before {
   <div class="topbar">
     <h1 class="topbar-title" id="topbarTitle">Overview</h1>
     <div class="topbar-actions">
-      <a class="topbar-edit-cta" href="/able-v7.html?edit=1" id="topbarEditCta">Edit page →</a>
-      <span class="live-chip" id="liveChip" onclick="window.open('able-v7.html','_blank')" title="View your live page">
+      <a class="topbar-edit-cta" href="/able-v8.html?edit=1" id="topbarEditCta">Edit page →</a>
+      <span class="live-chip" id="liveChip" onclick="window.open('able-v8.html','_blank')" title="View your live page">
         <span class="live-dot"></span>
         Live
       </span>
       <span class="tier-badge" onclick="showPage('settings')" title="Upgrade plan">✦ Free</span>
-      <a class="tb-btn tb-btn-acc" href="able-v7.html" target="_blank" style="text-decoration:none;" id="topbarViewBtn">See your page →</a>
+      <a class="tb-btn tb-btn-acc" href="able-v8.html" target="_blank" style="text-decoration:none;" id="topbarViewBtn">See your page →</a>
     </div>
   </div>
 
@@ -2747,7 +2747,7 @@ body::before {
             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14"><circle cx="5" cy="4" r="2.5"/><path d="M1 12c0-2.2 1.8-4 4-4s4 1.8 4 4"/><circle cx="11" cy="5" r="2"/><path d="M9.5 12c0-1.4.9-2.6 2-3"/></svg>
             View fans
           </button>
-          <a class="tb-btn tb-btn-ghost" href="able-v7.html" target="_blank" id="qaViewLiveBtn" style="text-align:left;width:100%;justify-content:flex-start;display:flex;gap:10px;">
+          <a class="tb-btn tb-btn-ghost" href="able-v8.html" target="_blank" id="qaViewLiveBtn" style="text-align:left;width:100%;justify-content:flex-start;display:flex;gap:10px;">
             <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14"><path d="M5 2H2v10h10V9M9 2h3v3M7 7l5-5"/></svg>
             View live page
           </a>
@@ -4445,7 +4445,7 @@ function evaluateNudge() {
           id: 'presave-cta',
           text: `${daysLeft} day${daysLeft !== 1 ? 's' : ''} to release — your hero button isn't set to Pre-save.`,
           action: 'Switch to Pre-save →',
-          href: '/able-v7.html?edit=1'
+          href: '/able-v8.html?edit=1'
         };
       }
       return null;
@@ -7128,13 +7128,13 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sbName').textContent = name;
   document.getElementById('sbUrl').textContent = `ablemusic.co/${handle}`;
   const tvb = document.getElementById('topbarViewBtn');
-  if (tvb) tvb.href = `able-v7.html?handle=${encodeURIComponent(handle)}`;
+  if (tvb) tvb.href = `able-v8.html?handle=${encodeURIComponent(handle)}`;
   const lc = document.getElementById('liveChip');
-  if (lc) lc.onclick = () => window.open(`able-v7.html?handle=${encodeURIComponent(handle)}`, '_blank');
+  if (lc) lc.onclick = () => window.open(`able-v8.html?handle=${encodeURIComponent(handle)}`, '_blank');
   const qaLive = document.getElementById('qaViewLiveBtn');
-  if (qaLive) qaLive.href = `able-v7.html?handle=${encodeURIComponent(handle)}`;
+  if (qaLive) qaLive.href = `able-v8.html?handle=${encodeURIComponent(handle)}`;
   const sbLive = document.getElementById('sbViewLiveBtn');
-  if (sbLive) sbLive.href = `able-v7.html?handle=${encodeURIComponent(handle)}`;
+  if (sbLive) sbLive.href = `able-v8.html?handle=${encodeURIComponent(handle)}`;
 
   // Settings page
   if (document.getElementById('settingsSlug')) document.getElementById('settingsSlug').value = handle;
@@ -7942,7 +7942,7 @@ function setAccent(hex) {
   const profile = safeLS(V3_KEY, {});
   if (!profile.identity) profile.identity = {};
   profile.identity.accent = hex;
-  profile.accent = hex; // canonical path — able-v7.html reads profile.accent
+  profile.accent = hex; // canonical path — able-v8.html reads profile.accent
   setLS(V3_KEY, profile);
 
   const hexLabel = document.getElementById('accentHexLabel');

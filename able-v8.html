@@ -32,14 +32,14 @@
   <meta property="og:title"       id="og-title"       content="Artist on ABLE">
   <meta property="og:description" id="og-description" content="Music, events, and more — direct from the artist.">
   <meta property="og:url"         id="og-url"         content="">
-  <meta property="og:image"       id="og-image"       content="https://ablemusic.co/og-fallback.jpg">
+  <meta property="og:image"       id="og-image"       content="https://ablemusic.co/og-default.jpg">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt"    id="og-image-alt"  content="Artist on ABLE">
   <meta name="twitter:card"        content="summary_large_image">
   <meta name="twitter:title"       id="tw-title"       content="Artist on ABLE">
   <meta name="twitter:description" id="tw-description" content="Music, events, and more — direct from the artist.">
-  <meta name="twitter:image"       id="tw-image"       content="https://ablemusic.co/og-fallback.jpg">
+  <meta name="twitter:image"       id="tw-image"       content="https://ablemusic.co/og-default.jpg">
   <meta name="twitter:site"        content="@ablefm">
 
   <!-- PWA -->
@@ -10101,7 +10101,7 @@
       sorted.forEach(rec => {
         const isProfessional = rec.type === 'professional'
         const hasProfile = !!(rec.handle)
-        const href = hasProfile ? `able-v7.html?artist=${encodeURIComponent(rec.handle)}` : null
+        const href = hasProfile ? `able-v8.html?artist=${encodeURIComponent(rec.handle)}` : null
         const safeHref = href && isSafeUrl ? (isSafeUrl(href) ? escHtml(href) : '') : escHtml(href || '')
 
         const el = document.createElement('li')
@@ -10438,7 +10438,7 @@
 
     // === SEO / STRUCTURED DATA (§12) =============================
 
-    const FALLBACK_OG = 'https://ablemusic.co/og-fallback.jpg'
+    const FALLBACK_OG = 'https://ablemusic.co/og-default.jpg'
 
     function injectSEO(profile) {
       const name    = profile.name || 'Artist'

@@ -1406,7 +1406,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       <button type="button" class="done-preview-toggle" onclick="setView('preview')">Preview your page →</button>
 
       <div class="done-actions" style="margin-top:20px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;">
-        <a id="doneViewPageBtn" href="/able-v7.html" class="done-open" target="_blank" rel="noopener">
+        <a id="doneViewPageBtn" href="/able-v8.html" class="done-open" target="_blank" rel="noopener">
           Go to my page →
         </a>
         <a href="/admin.html" style="font-size:13px;color:var(--t2);text-decoration:underline;text-underline-offset:3px;padding:2px 0;">
@@ -2069,7 +2069,7 @@ function initDone() {
   const viewBtn = document.getElementById('doneViewPageBtn');
   if (viewBtn) {
     const handle = profile.handle || profile.slug || null;
-    viewBtn.href = handle ? `able-v7.html?artist=${encodeURIComponent(handle)}` : 'able-v7.html';
+    viewBtn.href = handle ? `able-v8.html?artist=${encodeURIComponent(handle)}` : 'able-v8.html';
   }
   launchConfetti();
   showDay1ShareCard(profile, url);
