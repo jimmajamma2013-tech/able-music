@@ -4510,7 +4510,8 @@ function openAddShowSheet() {
       }
       const shows = safeLS('able_shows', []);
       const _newShowId = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36);
-      shows.push({ id: _newShowId, venue, date, doorsTime, ticketUrl, featured: false });
+      const safeTicketUrl = (ticketUrl && isSafeAdminUrl(ticketUrl)) ? ticketUrl : ''; // C2 #63
+      shows.push({ id: _newShowId, venue, date, doorsTime, ticketUrl: safeTicketUrl, featured: false });
       shows.sort((a, b) => a.date.localeCompare(b.date));
       setLS('able_shows', shows);
       syncProfile(safeLS(V3_KEY, {}));
@@ -4539,7 +4540,7 @@ function renderShowsList() {
         <div class="show-card-date">${escHtml(dateStr)}${s.doorsTime ? ' · Doors ' + escHtml(s.doorsTime) : ''}</div>
       </div>
       <div class="show-card-actions">
-        ${s.ticketUrl && !isPast ? `<a href="${escHtml(s.ticketUrl)}" target="_blank" rel="noopener" class="dc-action" style="text-decoration:none;">Tickets →</a>` : ''}
+        ${s.ticketUrl && !isPast && isSafeAdminUrl(s.ticketUrl) ? `<a href="${escHtml(s.ticketUrl)}" target="_blank" rel="noopener" class="dc-action" style="text-decoration:none;">Tickets →</a>` : ''}
         <button class="dc-action" type="button" onclick="removeShow('${escHtml(s.id || String(i))}')">Remove</button>
       </div>
     </div>`;
