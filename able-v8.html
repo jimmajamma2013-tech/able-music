@@ -12,8 +12,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
   <!-- Preload Supabase SDK — kicks off fetch early but doesn't block parse/render -->
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" as="script">
+  <!-- Preload demo hero artwork — JS may override src once profile loads -->
+  <link rel="preload" href="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75" as="image" fetchpriority="high">
 
   <!-- Preload critical display font -->
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap">
@@ -5312,6 +5315,7 @@
 
         <!-- Artwork image — LCP element, eager + high priority -->
         <img class="hero__artwork" id="hero-artwork"
+             src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75"
              alt="" role="presentation" loading="eager" fetchpriority="high"
              width="430" height="430"
              crossorigin="anonymous"
@@ -6065,7 +6069,7 @@
       backgroundOpacity: 0.75,
       topCard: {
         type: 'artwork',
-        artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
+        artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75',
         title: 'Echo Chamber',
         releaseType: 'Album',
         creditLine: 'Prod. LUNA · Mix. James Reid · Master. Calum MacPhail'
@@ -6088,7 +6092,7 @@
           type: 'Album',
           platform: 'Spotify',
           releaseDate: '2026-01-15',
-          artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
+          artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75',
           // Spotify embed — shows player with album info and tracks
           streamUrl: 'https://open.spotify.com/album/6rqhFgbbKwnb9MLmUQDhG6',
           displayStyle: 'able-player',
@@ -6112,7 +6116,7 @@
           platform: 'Spotify',
           displayStyle: 'able-player',
           releaseDate: '2025-11-20',
-          artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=800&q=80',
+          artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=430&q=75',
           streamUrl: 'https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh',
           artist: 'LUNA',
           credits: [
@@ -6124,7 +6128,7 @@
           type: 'Video',
           platform: 'YouTube',
           releaseDate: '2025-09-01',
-          artworkUrl: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80',
+          artworkUrl: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=430&q=75',
           // Real YouTube video — Rick Astley Never Gonna Give You Up (safe placeholder)
           streamUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           credits: [
