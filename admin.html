@@ -2411,7 +2411,7 @@ body::before {
 
   <nav class="sb-nav">
     <div class="sb-section">Overview</div>
-    <button class="sb-item on" onclick="showPage('home')">
+    <button class="sb-item on" onclick="showPage('home')" aria-current="page">
       <svg viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path d="M8 1L2 6.5h1.5v7H6v-4h4v4h2.5v-7H14z"/></svg>
       Home
     </button>
@@ -4205,11 +4205,11 @@ function exportFans() {
 
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('on'));
-  document.querySelectorAll('.mn-item').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.sb-item').forEach(b => { b.classList.remove('on'); b.removeAttribute('aria-current'); });
+  document.querySelectorAll('.mn-item').forEach(b => { b.classList.remove('on'); b.removeAttribute('aria-current'); });
   const pg = document.getElementById('page-'+id);
   if (pg) pg.classList.add('active');
-  document.querySelectorAll('[onclick="showPage(\''+id+'\')"]').forEach(b => b.classList.add('on'));
+  document.querySelectorAll('[onclick="showPage(\''+id+'\')"]').forEach(b => { b.classList.add('on'); b.setAttribute('aria-current', 'page'); });
   document.getElementById('topbarTitle').textContent = PAGE_TITLES[id] || id;
   window.scrollTo(0,0);
   // Render dynamic pages on navigate
