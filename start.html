@@ -2066,28 +2066,31 @@ function tryStep3() {
   const draft = getDraft();
   const slug  = makeSlug(draft.name || '');
 
-  // Always write to localStorage first — profile persists even if auth is slow
+  // C4 #37 — merge with existing profile, not a full overwrite
+  // Wizard only touches fields it collects; existing snap cards, events, topCard etc are preserved
+  const _existing = (function() { try { return JSON.parse(localStorage.getItem('able_v3_profile') || 'null') || {}; } catch(_) { return {}; } })();
   const profile = {
-    name:          draft.name   || '',
-    vibe:          draft.vibe   || '',
-    accent:        draft.accent || '#f4b942',
-    stateOverride: draft.stateOverride || 'profile',
+    ..._existing,              // preserve all existing fields (snap cards, events, topCard, etc.)
+    name:          draft.name   || _existing.name   || '',
+    vibe:          draft.vibe   || _existing.vibe   || '',
+    accent:        draft.accent || _existing.accent || '#f4b942',
+    stateOverride: draft.stateOverride || _existing.stateOverride || 'profile',
     email:         email,
     slug:          slug,
-    joinedAt:      Date.now(),
-    handle:        slug,
-    theme:         'dark',
-    genres:        draft.genres    || [],
-    photo:         draft.photo     || '',
-    bio:           draft.bio       || '',
-    spotifyId:     draft.spotifyId || '',
-    spotifyUrl:    draft.spotifyUrl|| '',
-    ctaPrimary:    draft.ctaPrimary  || { label: 'Stream Now', url: '' },
-    ctaSecondary:  { label: 'Get Tickets', url: '' },
-    platforms:     draft.platforms || [],
-    releases:      draft.releases  || [],
+    handle:        _existing.handle || slug,  // preserve existing handle if set
+    theme:         _existing.theme  || 'dark',
+    genres:        draft.genres    || _existing.genres    || [],
+    photo:         draft.photo     || _existing.photo     || '',
+    bio:           draft.bio       || _existing.bio       || '',
+    spotifyId:     draft.spotifyId || _existing.spotifyId || '',
+    spotifyUrl:    draft.spotifyUrl|| _existing.spotifyUrl|| '',
+    ctaPrimary:    draft.ctaPrimary  || _existing.ctaPrimary  || { label: 'Stream Now', url: '' },
+    ctaSecondary:  _existing.ctaSecondary || { label: 'Get Tickets', url: '' },
+    platforms:     draft.platforms || _existing.platforms || [],
+    releases:      draft.releases  || _existing.releases  || [],
+    joinedAt:      _existing.joinedAt || Date.now(),
     identity: {
-      accent:       draft.accent || '#f4b942',
+      accent:       draft.accent || _existing.accent || '#f4b942',
       accentSource: 'artist',
     },
   };
