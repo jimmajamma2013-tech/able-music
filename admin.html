@@ -7135,7 +7135,9 @@ function applyGreeting(profile) {
 const TIER_ORDER = { free: 0, artist: 1, 'artist-pro': 2, label: 3 };
 
 function getCurrentTier() {
-  return localStorage.getItem('able_tier') || 'free';
+  // G6 #1-3: validate against known set; unrecognised or absent → 'free'
+  const raw = localStorage.getItem('able_tier');
+  return (raw && TIER_ORDER[raw] !== undefined) ? raw : 'free';
 }
 
 function tierAtLeast(required) {
