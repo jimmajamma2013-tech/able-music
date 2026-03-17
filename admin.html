@@ -7661,6 +7661,11 @@ function updateCompletenessBar() {
 
   if (pct >= 100) {
     wrap.classList.add('complete');
+    // C7 #6 — one-time celebration toast when completeness reaches 100%
+    if (!localStorage.getItem('able_completeness_100')) {
+      localStorage.setItem('able_completeness_100', '1');
+      setTimeout(() => showToast('Profile complete. Fans get the full picture now.', 'green'), 400);
+    }
   } else {
     wrap.classList.remove('complete');
   }
