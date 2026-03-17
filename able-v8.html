@@ -10222,10 +10222,21 @@
       credits.forEach(credit => {
         const li = document.createElement('li')
         li.className = 'credit-item'
-        li.innerHTML = `
-          <span class="credit-item__name">${escHtml(credit.name)}</span>
-          <span class="credit-item__role">${escHtml(credit.role || 'Contributor')}</span>
-        `
+        // #48: confirmed (handle set) → link at full opacity; unconfirmed → span at 70%
+        const nameEl = document.createElement(credit.handle ? 'a' : 'span')
+        nameEl.className = 'credit-item__name'
+        nameEl.textContent = credit.name || ''
+        if (credit.handle) {
+          nameEl.href = '/' + encodeURIComponent(credit.handle)
+          nameEl.setAttribute('rel', 'noopener')
+        } else {
+          nameEl.style.opacity = '0.7'
+        }
+        const roleEl = document.createElement('span')
+        roleEl.className = 'credit-item__role'
+        roleEl.textContent = credit.role || 'Contributor'
+        li.appendChild(nameEl)
+        li.appendChild(roleEl)
         list.appendChild(li)
       })
 
@@ -11037,8 +11048,9 @@
       // P1-W3 #44 — graceful empty state: artist has an artist ID but no profile yet
       const _storedProfile = safeLS('able_v3_profile', null)
       const _artistId = localStorage.getItem('able_artist_id')
-      const _isOwnerParam = new URLSearchParams(location.search).get('owner') === 'true'
-      if (_artistId && (_isOwnerParam || !_storedProfile || !_storedProfile.name)) {
+      // Only show setup bar when artist ID is set but profile name is missing
+      // (not just because ?owner=true is in URL — that may be set after completing wizard)
+      if (_artistId && (!_storedProfile || !_storedProfile.name)) {
         // Artist hasn't completed setup — show prompt in owner bar position
         const _shell = document.getElementById('app-shell')
         const _setupBar = document.createElement('div')

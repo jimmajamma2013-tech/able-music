@@ -4969,7 +4969,9 @@ function renderTimelineArc() {
     profile:       'Your page in its natural state — recent music, your links, fan sign-up.',
     'pre-release': 'Fans see a countdown and can pre-save before it drops. Builds sign-ups in the run-up.',
     live:          'Release day. Your stream link is front and centre for two weeks.',
+    gig:           "You're on tonight. Ticket button is front and centre. Expires in 24 hours.",
     after:         'The release window is over. Your page returns to profile mode.',
+    announce:      'Announcement mode — your next drop is front and centre before you set a date.',
   };
   const descEl = document.getElementById('chqModeDesc');
   if (descEl) descEl.textContent = MODE_DESCS[displayMode] || '';
@@ -5011,11 +5013,14 @@ document.querySelectorAll('.chq-state-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.chq-state-btn').forEach(b => b.classList.remove('on'));
     btn.classList.add('on');
-    // Live preview of what state the pill shows
+    // Live preview of what state the pill + description shows (#53)
     const data = safeLS(V3_KEY, {});
     const override = btn.dataset.state;
     const previewData = { ...data, stateOverride: override || null };
     updateChqPill(computeEffectiveState(previewData));
+    // Update mode description immediately without requiring save
+    const _descEl = document.getElementById('chqModeDesc');
+    if (_descEl && typeof renderTimelineArc === 'function') renderTimelineArc();
   });
 });
 

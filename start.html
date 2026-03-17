@@ -2139,7 +2139,7 @@ function initDone() {
   const viewBtn = document.getElementById('doneViewPageBtn');
   if (viewBtn) {
     const handle = profile.handle || profile.slug || null;
-    viewBtn.href = handle ? `able-v8.html?artist=${encodeURIComponent(handle)}` : 'able-v8.html';
+    viewBtn.href = handle ? `able-v8.html?owner=true&artist=${encodeURIComponent(handle)}` : 'able-v8.html?owner=true';
   }
   launchConfetti();
   showDay1ShareCard(profile, url);
