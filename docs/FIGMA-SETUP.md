@@ -26,7 +26,7 @@ Open `~/.claude/settings.json` and find this block:
     "-y",
     "figma-developer-mcp",
     "--figma-api-key",
-   figd_h7ocsfo8AC254Q1SAcyVQnaSFPxAcPExuptfj3qPs
+    figd_VMQuvlKw_kv48l3M4VXgTQBWL9HQPmMTs5jIquvc
   ],
   "env": {}
 }

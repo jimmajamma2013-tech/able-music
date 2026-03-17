@@ -1,156 +1,181 @@
 # ABLE — Digital Media Strategy: Final Review
-**Created: 2026-03-16**
-**Purpose: Quality gate before calling this strategy complete**
-**Read alongside:** `DIGITAL-MEDIA.md`, `PATH-TO-10.md`
+**Written: 2026-03-16 | Author: James Cuthbert + Claude**
+**Status: Authoritative scored review — update after each media milestone**
+**Read alongside:** `DIGITAL-MEDIA.md`, `PATH-TO-10.md`, `ANALYSIS.md`
 
 ---
 
-## Review protocol
+## Overall quality score: 7.5/10
 
-Each section corresponds to a part of `DIGITAL-MEDIA.md`. The review confirms: (1) the strategy is internally consistent, (2) it is aligned with ABLE's product strategy and copy philosophy, (3) it is actionable by James alone without an agency, and (4) it is honest about what it can and cannot achieve.
+This score reflects the combined state of ABLE's digital media strategy (the plan) and digital media presence (the execution). The strategy itself would score 9.5/10 in isolation. The presence scores approximately 2.0/10 (see `ANALYSIS.md` for the detailed 20-angle breakdown). The combined score of 7.5 reflects a strong plan not yet in motion.
 
----
-
-## Check 1: Internal consistency
-
-**Does every part of the strategy point toward the same outcome?**
-
-The media landscape (Part 1) maps channels by tier. The earned media strategy (Part 2) specifies pitch angles calibrated to each tier. The podcast strategy (Part 3) specifies talking points that map directly to the angles in the press strategy. The YouTube strategy (Part 4) provides distribution for the same arguments in video format. The community strategy (Part 5) places James in the communities where the Tier 3 press audience lives, deepening trust with the same people the press strategy is reaching. The flywheel (Part 6) shows explicitly how each element feeds the next. The metrics system (Part 7) closes the attribution loop.
-
-The chain is: story → press coverage → community trust → podcast appearance → YouTube feature → compounding sign-ups → data story → second wave of coverage.
-
-Verdict: internally consistent. No section works in isolation. Each part is downstream of the story and upstream of the attribution.
-
-**Do the pitch angles match the publications they are mapped to?**
-
-- Hypebot: macro thesis (broken infrastructure) → correct; Hypebot covers industry arguments, not product news
-- DIY Magazine: personal founder story → correct; DIY covers artist culture, founder essays fit their tone
-- Music Ally: launch news with numbers → correct; Music Ally covers factual music tech industry news
-- Music Tectonics: data-led argument → correct; Music Tectonics is analytical, their audience expects evidence
-- Water & Music: month-8 data story → correct; Cherie Hu specifically wants deep analysis, not launch news
-
-Verdict: angles are correctly calibrated to publication audiences.
+A strong strategy with no execution is a liability — it creates an accurate sense that a lot of thinking has happened while very little has shipped externally. The risk for a solo founder is not that the strategy is wrong. It is that the strategy keeps getting refined instead of executed.
 
 ---
 
-## Check 2: Alignment with ABLE's product strategy and copy philosophy
+## Strategy quality review: 9.2/10
 
-**Target customer match**
+Before addressing the execution gaps, the strategy itself deserves a quality mark because the two should not be conflated.
 
-ABLE's primary target: UK independent artist, 22–38, actively releasing music. The media strategy targets:
-- Tier 2 press (Hypebot, Music Ally) — reaches managers, labels, music tech professionals who influence which tools their artists adopt
-- Tier 3 press (DIY Magazine, Clash, Line of Best Fit) — reaches independent artists directly; these publications are read by the exact demographic ABLE serves
-- Podcasts (New Artist Model, Music Tectonics) — specifically curated for independent artist operators
-- Communities (r/WeAreTheMusicMakers, r/musicproduction) — populated by independent artists and producers
+**What makes the strategy strong:**
 
-Verdict: aligned. The channel selection follows the customer map, not a generic PR channel list.
+The copy philosophy carries through every template. Every pitch in `DIGITAL-MEDIA.md` obeys the ABLE copy rules — no exclamation marks, no generic SaaS language, no product-first pitching. The pitches sound like a real person with something genuine to say. This is rare and will be noticed by editors and podcast hosts who receive dozens of templated pitches weekly.
 
-**Copy philosophy**
+The sequencing is correct. The strategy builds from Music Think Tank → Music Ally → podcast → YouTube → Water & Music in a logical compounding sequence. It does not attempt Tier 1 press coverage in month 1. Each step makes the next more credible.
 
-Review of all templates and talking points against ABLE's copy rules:
+The media angles are correctly calibrated to their publications. Hypebot gets the macro industry thesis. DIY Magazine gets the personal founder story. Music Tectonics gets the data-led argument. Water & Music gets the deep analysis story — but only in month 8 when there is data to analyse. A strategy that maps the same pitch to every publication would score much lower. This one doesn't.
 
-- No exclamation marks in any template — confirmed
-- No "turn fans into superfans" or similar phrases — confirmed
-- No generic SaaS language ("excited to share," "game-changing") — confirmed
-- "Owned fan data" argument is stated plainly — confirmed
-- The podcast pitch explicitly says "no interest in turning your show into a product demo" — this is ABLE's voice applied to media outreach: direct, honest, no performance
-- The community strategy explicitly prohibits joining communities to promote ABLE — consistent with the copy philosophy that authenticity cannot be manufactured
+The flywheel is explicit and measurable. Part 6 of `DIGITAL-MEDIA.md` shows exactly how each piece of coverage produces the next. The UTM attribution framework means the flywheel can be measured, not just felt. This tracking discipline at pre-revenue stage is unusual and valuable.
 
-Verdict: the copy philosophy is applied throughout, not just in product UI.
+The strategy acknowledges its own limits. Part 8 — "What this strategy cannot do" — does not promise exponential results from the first press piece. It does not pretend coverage substitutes for product quality. This honesty prevents mistracking success.
 
-**Beachhead geography**
+**Where the strategy falls short of 10/10:**
 
-The strategy is UK-first by targeting: Hypebot (Hypebot is US but widely read in UK music industry), DIY Magazine (UK indie press), Music Week (UK industry), Clash and Line of Best Fit (UK-based). The Damien Keyes YouTube channel recommendation is UK-based. The community engagement targets communities where UK independent artists are present.
+Named journalist contacts are not identified for any publication. The strategy names publications and pitch angles correctly but does not name the specific editor at Hypebot or the music tech writer at Music Ally. Coverage is earned by specific people finding pitches interesting — not by publications in the abstract. One hour of Muck Rack or LinkedIn research before the first pitch goes out closes this gap.
 
-Verdict: UK beachhead is reflected in the channel prioritisation.
+Three finished pitch drafts have not been written. The templates are frameworks, not finished pitches. A completed pitch for Hypebot is materially different from a completed pitch for DIY Magazine. The templates need to be turned into specific finished pieces before any outreach begins.
 
 ---
 
-## Check 3: Actionability
+## Current state vs target
 
-**Can James execute Phase 1 of this strategy alone?**
+### Current state (2026-03-16)
 
-Phase 1 actions and realistic time estimates:
+**What exists:**
+- A comprehensive earned media strategy covering all relevant publication tiers, specific pitch templates, a community participation protocol, and a UTM attribution framework
+- No active social media presence on any platform
+- No press coverage
+- No podcast appearances
+- No published articles
+- No demo video
+- No indexed website (product not deployed to public domain)
+- No email list or waitlist capture
+- No YouTube channel
 
-| Action | Time required | Dependency |
-|---|---|---|
-| Set up Google Alerts for brand mentions | 10 minutes | None |
-| Set up UTM tracking system (create UTM template doc) | 30 minutes | PostHog already running |
-| Verify PostHog reads UTM parameters | 20 minutes | Technical — check existing implementation |
-| Join Reddit communities (WATMM, r/musicproduction) | 15 minutes | None |
-| Research named journalists at Hypebot, Music Ally, DIY | 60 minutes | None |
-| Write first Hypebot guest post | 3 hours | Time block |
-| Write three pitch drafts | 90 minutes | First article drafted |
-| Submit to Music Think Tank | 15 minutes | Article complete |
-| Apply to Music Tectonics Startup Session | 30 minutes | Product live, some numbers available |
+**The honest picture:** The external public footprint of ABLE as of today is near zero. A potential artist, journalist, or partner searching for ABLE would find almost nothing. This is a normal state for a pre-deployment solo-founded product. It is not alarming. It is simply the current baseline.
 
-Total Phase 1 setup: approximately 7–8 hours spread across 2–3 weeks. This is sustainable alongside building the product.
+### Target (month 12)
 
-Weekly ongoing commitment: 30 minutes per week for community participation + 10 minutes per week for media audit + pitching and writing as opportunities arise. Total: under 2 hours per week in ongoing steady state.
+By month 12 the minimum viable media presence looks like:
+- `ablemusic.co` deployed, indexed, and generating organic search traffic for 3–5 relevant queries
+- 1 Hypebot/Music Think Tank article generating ongoing referral traffic (UTM-tracked)
+- 2–3 podcast appearances (Music Tectonics, New Artist Model, or equivalent)
+- Music Ally launch coverage with artist count and key metrics
+- 1 artist feature video on a music marketing YouTube channel
+- Instagram: 200–400 followers, posting 2–3 times per week, founder face visible
+- Twitter/X: 150+ followers, consistent point of view, regular engagement with music tech conversation
+- UTM attribution working for every external coverage piece
+- Google Alerts system tracking all brand mentions
+- A press kit on `ablemusic.co/press` with logo, tagline, and founder bio
 
-Verdict: actionable by one person. Phase 1 requires time, not team.
-
-**Does the strategy require infrastructure that does not yet exist?**
-
-Infrastructure required from day 1:
-- PostHog running in landing.html and start.html — should be in place per analytics spec
-- Google Alerts — 10-minute setup, no existing infrastructure needed
-- UTM-tagged links — requires only the UTM convention defined in the strategy, no tooling
-
-Infrastructure required from month 3+:
-- Ahrefs free tier — 5-minute account creation
-- PostHog acquisition dashboard view — requires PostHog dashboard to exist with correct event filtering
-
-Infrastructure required from month 6+:
-- YouTube channel — trivially created when needed
-- ABLE's own website blog (for hosting articles that are not placed externally) — Phase 2
-
-Verdict: Phase 1 requires zero new infrastructure. All blockers have clear paths that are not bottlenecks to starting.
+None of this requires budget. It requires approximately 5–8 hours in month 1 and 2 hours per week ongoing.
 
 ---
 
-## Check 4: Honesty about scope and limits
+## Key P0 gaps
 
-**What this strategy will produce in 90 days (realistic)**
+These are the gaps that block all other media progress. Ordered by priority.
 
-If James submits the Hypebot article in month 1, applies to Music Tectonics in month 2, and pitches Music Ally in month 3:
+### P0 Gap 1: No deployment
 
-- 1 published article on Music Think Tank / Hypebot
-- 30–100 referral visits from the article
-- 5–20 artist sign-ups directly attributable to the article
-- 1 podcast application submitted (result in months 2–4)
-- 1 Tier 2 press pitch sent (result in months 3–5)
-- ABLE referenced once or twice in relevant Reddit threads by an established community member (James)
+The product is not publicly accessible at a stable URL. Until ABLE is deployed to `ablemusic.co` on Netlify, no press article, podcast mention, or social post can send traffic to a working product. Every media action taken before deployment either reaches no one or sends them to a broken experience.
 
-This is not a vanity metric outcome. These are small numbers with specific value: the first 20 press-acquired artist sign-ups are higher-trust than cold-acquired ones, because they arrived after reading an argument and deciding it made sense. Their activation and retention will likely be stronger. The article also produces backlinks that improve ablemusic.co's SEO for related searches — a compounding effect that does not show up in short-term sign-up numbers.
+This is the single most important unblocked action in the entire strategy. An undeployed product cannot be covered by press, cannot be discovered via SEO, and cannot convert anyone who hears about ABLE from any channel.
 
-**What this strategy cannot do**
+**Estimate:** 2–4 hours for Netlify deploy + DNS configuration.
 
-- Make press happen faster than relationships build. A cold email to Music Business Worldwide in month 1 with zero track record will not produce coverage. The sequence matters: Tier 2 before Tier 1, community before community mention, article before podcast.
-- Replace the quality of the product. The most damaging thing that can happen is a good press piece that sends 100 artists to a mediocre onboarding. The press moment creates a concentrated sample of first impressions. If the product is not ready to convert those impressions, the coverage creates no lasting value and the follow-up story does not exist.
-- Produce viral growth. This strategy is designed for compounding, not viral. There is no mechanism in earned media for exponential short-term growth. The payoff is durable, trusted, word-of-mouth-accelerated growth over 12 months — not a spike followed by a plateau.
+### P0 Gap 2: No demo video
+
+There is no visual evidence of what the product does. When anyone discovers ABLE and lands on the site, they encounter text and static layouts but no moving demonstration of the campaign state system, the onboarding flow, or the fan sign-up in action. Text does not substitute for this. A 90-second screen recording of the onboarding → profile → campaign mode change → fan sign-up is the most converting asset the landing page can have.
+
+**Estimate:** 2 hours total. Zero production budget.
+
+### P0 Gap 3: Guest post not written
+
+The Hypebot guest post is the first link in the media flywheel. Every subsequent media action is more credible after it exists. The post is outlined in `DIGITAL-MEDIA.md` Part 2.3. The argument structure is complete. The publication target is identified. The post has not been written.
+
+**Estimate:** 3-hour writing block. This is the highest-leverage 3 hours in the strategy.
+
+### P0 Gap 4: No social media presence
+
+ABLE has no active presence on Twitter/X or Instagram. Potential press, partners, and artists check social media as a minimum credibility signal. An account that exists but is empty is better than no account. An account with 10 thoughtful posts is substantially better than either.
+
+**Estimate:** 90 minutes to set up accounts and post first content. 15 minutes per day to maintain.
+
+### P0 Gap 5: No email list capture
+
+`landing.html` has no waitlist form. Every interested visitor who is not ready to commit to full onboarding leaves without capture. These are warm leads permanently lost. An early access / waitlist form with a compelling reason to join (3 months Artist tier free, early access) is a 90-minute task.
+
+**Estimate:** 90 minutes to add a Loops waitlist form to `landing.html`.
 
 ---
 
-## Final score assessment
+## Strategy vs presence gap table
 
-| Dimension | Score | Notes |
-|---|---|---|
-| Media landscape completeness | 9.5/10 | Named journalist contacts not yet identified — 1-hour research task |
-| Pitch quality | 9.5/10 | Templates correct; finished pitches not yet written — 90-minute task |
-| Guest post content | 8/10 | Argument framed; article not written — 3-hour writing block is the gap |
-| Podcast talking points | 9/10 | Prepared but not rehearsed; first appearance will close this gap |
-| Community strategy | 8.5/10 | Correct framework; calendar not yet created — 15-minute task |
-| YouTube strategy | 8/10 | Approach specified; specific channels not yet named — 1-hour research |
-| Attribution system | 9/10 | Convention defined; PostHog UTM capture not yet verified |
-| Product strategy alignment | 10/10 | No gaps |
-| Copy philosophy alignment | 10/10 | No gaps |
-| Honesty about scope | 10/10 | Realistic expectations stated |
-| Actionability (solo founder) | 9/10 | Executable from day 1; minor process gaps identified |
+| Dimension | Strategy quality | Presence/execution | Gap |
+|---|---|---|---|
+| Media landscape knowledge | 9.5/10 | 0/10 | Not started |
+| Press pitching | 9.5/10 | 0/10 | Not started |
+| Guest post content | 8/10 | 0/10 | Article not written |
+| Podcast strategy | 9/10 | 0/10 | No appearances, no applications |
+| Community strategy | 8.5/10 | 0/10 | 30-day rule not started |
+| YouTube strategy | 8/10 | 1/10 | No channel created |
+| Attribution system | 9/10 | 1/10 | PostHog UTM capture unverified |
+| Social media presence | N/A | 2/10 | No accounts active |
+| SEO + organic search | N/A | 3/10 | Product not deployed |
+| Email list | N/A | 1/10 | No capture mechanism |
+| Demo video | N/A | 0/10 | Not recorded |
 
-**Overall: 9.2/10**
+---
 
-This is a complete, actionable digital media strategy. Every gap identified is a specific, time-bounded task — research, writing, or verification — not a structural problem. The strategy is ready to execute. The remaining 0.8 points are closed by the seven implementation tasks in PATH-TO-10.md.
+## Sequenced next actions
+
+The sequencing matters. Do not begin outreach before the product is deployed. Do not pitch podcasts before the guest post exists.
+
+**Week 1 (deployment first):**
+1. Deploy to `ablemusic.co` on Netlify — blocks everything else
+2. Fix the two critical OG meta tag bugs (from `seo-og/SPEC.md`)
+3. Submit `ablemusic.co` to Google Search Console
+4. Record 90-second demo video; embed on `landing.html`
+5. Add waitlist / early access form to `landing.html`
+
+**Week 2 (personal brand foundation):**
+6. Update LinkedIn: "Building ABLE — independent artists deserve to own their fan relationships"
+7. Set up ABLE Twitter/X account; post first thread (why ABLE exists, in James's voice)
+8. Set up ABLE Instagram account; post first 3 pieces of content
+9. Create ABLE YouTube channel (empty — secure the handle)
+10. Set up Google Alerts: "ABLE music", "ablemusic.co", "Artist Before Label"
+
+**Week 3 (first earned media):**
+11. Write and submit Music Think Tank / Hypebot guest post (3-hour block)
+12. Submit Music Tectonics Startup Session application
+13. Join r/WeAreTheMusicMakers and r/musicproduction (30-day participation clock starts)
+14. Add weekly community participation to calendar (15 min x 2 per week)
+
+**Month 2:**
+15. Share Hypebot article on all channels with UTM links; DM warm leads list
+16. Draft finished pitches for Music Ally and DIY Magazine
+17. Research named journalist contacts at each target publication (1 hour)
+18. Identify 5 beta artists for first testimonials
+19. Research 8–10 YouTube channels for outreach list
+
+**Month 3:**
+20. Pitch Music Ally launch coverage (with artist count and first data)
+21. First podcast appearance (Music Tectonics if application accepted)
+22. First community mention on r/WeAreTheMusicMakers (after 30 days)
+23. Reach out to first YouTube channel for product review
+
+---
+
+## What this strategy cannot do
+
+It cannot execute itself. The gap between this strategy and a 9/10 digital media presence is not more planning — it is the first guest post written, the first social account active, the demo video recorded. These require James's face, voice, and judgment.
+
+It cannot produce overnight results. The 12-month calendar in `DIGITAL-MEDIA.md` Part 9 is realistic. The first Hypebot article produces 10–30 artist sign-ups, not 500. That is success at month 1. The compounding effect becomes visible at month 6, not month 2.
+
+It cannot compensate for a weak product. Press coverage creates a concentrated sample of first impressions. If the onboarding is broken or the value is unclear when those impressions arrive, the coverage converts nothing and the follow-up story does not exist. The product needs to be deployed and working before any coverage is earned.
+
+It cannot prevent the most common failure mode for solo founders: spending more time refining the strategy than executing it. This document, along with `DIGITAL-MEDIA.md` and `ANALYSIS.md`, is now complete enough. The next action is not to improve any of these documents. It is to deploy the product.
 
 ---
 
@@ -158,15 +183,33 @@ This is a complete, actionable digital media strategy. Every gap identified is a
 
 Before treating this strategy as fully operational:
 
-- [ ] Google Alerts set up for "ABLE music", "ablemusic.co", "Artist Before Label"
-- [ ] PostHog verified to capture UTM parameters on page_view (landing.html) and artist_signup (start.html) events
+- [ ] Product deployed to `ablemusic.co` on Netlify
+- [ ] OG meta tag bugs fixed and verified
+- [ ] Google Search Console submission complete
+- [ ] Demo video recorded and embedded on `landing.html`
+- [ ] Waitlist form added to `landing.html`
+- [ ] Google Alerts set up for brand mentions
+- [ ] LinkedIn profile updated
+- [ ] Twitter/X account active with first content
+- [ ] Instagram account active with first 3 posts
+- [ ] YouTube channel created (handle secured)
+- [ ] PostHog confirmed capturing UTM parameters on `page_view` and `artist_signup` events
 - [ ] Named journalist contacts identified for Hypebot, Music Ally, DIY Magazine
-- [ ] Three finished pitch drafts written (thesis angle, founder angle, data angle)
-- [ ] First Hypebot guest post written, reviewed, submitted
+- [ ] Three finished pitch drafts written (thesis, founder, data angles)
+- [ ] First Hypebot guest post written and submitted
 - [ ] Music Tectonics Startup Session application submitted
-- [ ] Specific list of 8–10 YouTube channels for outreach built and stored in this directory
-- [ ] Community participation schedule added to calendar (15 min x 2 per week per community)
-- [ ] Podcast talking points rehearsed out loud at least once
-- [ ] UTM tracking spreadsheet created with all current media links logged
+- [ ] Community participation schedule added to calendar
 
-When all boxes are checked: the strategy is operational. Review progress against the media calendar at month 3.
+When all boxes are checked: the strategy is operational. Review progress against the 12-month calendar at month 3.
+
+---
+
+## Score trajectory
+
+| Stage | Score | What changes it |
+|---|---|---|
+| Now (2026-03-16) | 7.5/10 | Strong strategy, near-zero presence |
+| Month 1 (after deploy + first content) | 8.5/10 | Deployed product, demo video, social accounts, guest post submitted |
+| Month 3 (first press + podcast) | 9.0/10 | Hypebot article live, Music Ally coverage, first podcast appearance |
+| Month 6 (attribution data + compounding) | 9.5/10 | Multiple channels attributable, flywheel measurable |
+| Month 12 (mature presence) | 10/10 | Consistent earned media, SEO ranking, community trust established |

@@ -105,6 +105,139 @@ A platform where artists score 7/10+ and say so publicly is a competitive moat. 
 
 ---
 
+## The enemy's playbook — 5 specific moves competitors could make
+
+This section documents the 5 specific moves a competitor could make to materially damage ABLE's position, and ABLE's defence against each. The goal is not paranoia — it is preparation. If any of these happen, ABLE should respond from a prepared position, not from surprise.
+
+---
+
+**Move 1: Linktree ships a "Musician Mode" with release dates and page states.**
+
+Linktree has the distribution (50M+ users), the name recognition, and the engineering capacity. If they decide musicians are worth a dedicated feature set, they could ship a campaign-state system in a quarter. "Set your release date. Your page counts down automatically."
+
+**ABLE's defence:**
+Two layers. First, Linktree's core product thesis is "simple, works for anyone" — complexity like campaign states cuts against their identity. Adding musician-specific logic creates a bifurcation they have historically avoided. A "Musician Mode" would require acknowledging that their current product is wrong for musicians, which they have not done.
+
+Second, and more important: if Linktree ships campaign states, they have validated ABLE's entire thesis. Every music journalist who writes "Linktree launches campaign states for musicians" is writing "ABLE was right." The feature exists in the market. ABLE's defence is depth of execution (gig mode, freelancer layer, design identity, owned fan list) and the philosophy argument (Linktree still has zero fan ownership — states without emails is theatre).
+
+**The residual gap Linktree can never close:** Artist owns the fan email. Linktree's business model requires that fans stay on Linktree's platform. They will not build export-any-time because it reduces their data asset.
+
+---
+
+**Move 2: LayloFM ships a design overhaul and a campaign-state system.**
+
+LayloFM already owns the philosophy overlap. If they hired a good design team and shipped the page state system — particularly the pre-release countdown and gig mode — they would close ABLE's two largest advantages simultaneously.
+
+**ABLE's defence:**
+The freelancer layer and credits system. LayloFM is an email list + direct message product. They have no profile identity system with collaborator credits, no gig-mode full-page transformation, no genre vibes. Even a good design overhaul and campaign states would leave LayloFM without the credits network effect — the thing that makes ABLE a node in the music industry graph, not just a bio link.
+
+Additionally: LayloFM is US-centric. ABLE is UK-first with international ambition. In the short term, they are not competing for the same artists geographically. By the time geographical overlap is real, ABLE will need to have the freelancer layer live.
+
+**The specific action this demands:** accelerate the freelancer credits system. It is the one dimension LayloFM has no roadmap for.
+
+---
+
+**Move 3: Spotify launches a customisable public artist URL with fan sign-up capability.**
+
+Spotify already has artist.spotify.com profiles. If they make these public-facing, customisable bio-link pages with a "follow me" sign-up that includes email capture, they have 600M MAUs to drive through the funnel. No other competitor has distribution at this scale.
+
+**ABLE's defence:**
+Spotify will not give artists the email addresses. This is the permanent structural constraint. A "follow" on Spotify stays inside Spotify's ecosystem. Spotify's business depends on keeping the fan relationship on Spotify — the day they hand the artist a CSV of email addresses is the day artists realise they do not need Spotify's promotional tools.
+
+ABLE's response in this scenario: sharpen the "owned vs. rented" message. If Spotify makes it easy to collect follows but those follows are Spotify's data, the argument that ABLE gives you what Spotify can't becomes sharper, not weaker.
+
+---
+
+**Move 4: Beacons launches a zero-revenue-cut tier and ships music-native features.**
+
+Beacons has the design infrastructure and the growth-stage funding to make a strategic pivot. If they cut their revenue take to 0% and shipped a music-native mode (release dates, countdown, streaming-first layout), they would remove two of ABLE's most concrete differentiators.
+
+**ABLE's defence:**
+The 0% cut on fan income is structural for ABLE — it is not a promotional decision, it is the architecture. If Beacons matches it, it is a promotional or funding decision they could reverse. ABLE's position is "we take 0% because that is the architecture" — Beacons' equivalent would be "we take 0% because we decided to."
+
+On music-native features: Beacons serves every creator type. A true music-native mode would require Beacons to acknowledge that their generic product is inferior for musicians. They have not done this. If they did, ABLE's response is depth of music context — gig mode specifically is a feature that requires understanding the live music scene, not just streaming release cycles. Beacons does not have that context.
+
+---
+
+**Move 5: A well-funded music-specific startup copies ABLE's page state system exactly and launches with a better distribution strategy.**
+
+The scenario: a new entrant, backed by a music industry investor, ships a product with campaign states, gig mode, owned fan emails, and launches with a record label partnership that gives them instant artist distribution.
+
+**ABLE's defence:**
+First-mover advantage on the philosophy and the product truth. An ABLE artist who has been on the platform for 12 months with a fan list, campaign history, and a credits network is not easily moved by a new entrant. The data and the relationship have accumulated.
+
+The more honest answer: ABLE wins this race by building the freelancer credits system and the fan.html dashboard before the copycat launches. Once there are producers and session musicians in the ABLE graph whose professional identity is tied to ABLE, and fans who use fan.html as their primary music discovery tool, the network effect is real and the cost of switching rises for everyone.
+
+**The specific action this demands:** fan.html and the freelancer profile must be live before ABLE reaches public scale. The network layer is what makes ABLE defensible to a well-funded copycat.
+
+---
+
+## Moat stress test: if Linktree ships campaign states tomorrow, does ABLE die?
+
+**The answer is no. Here is the specific argument.**
+
+Assume Linktree announces "Linktree for Musicians" tomorrow. It includes:
+- A release date field
+- An automatic countdown on the profile
+- A "live mode" toggle for drop day
+
+What does ABLE still have that Linktree does not?
+
+**1. Fan ownership is architectural, not a feature.**
+Linktree's business model is platform-mediated attention. Fans who click Linktree links do not leave their email addresses. Linktree does not want them to — the fan's data is Linktree's data. Campaign states on Linktree are states on a platform the artist does not own. An artist with 5,000 page views on Linktree still owns nothing after the campaign. An artist with 5,000 page views on ABLE has emails.
+
+No single sprint closes this gap. It requires Linktree to change their architecture, their pricing model, and their investor story simultaneously.
+
+**2. The design identity system is not copyable at Linktree's scale.**
+ABLE's profiles feel like the artist. The genre vibes, the accent colour, the Barlow Condensed display font, the spring easing — these are a coherent identity system. Linktree's visual model is template-based at scale. To match ABLE's design quality, Linktree would need to ship a fundamentally different visual editor aimed specifically at musicians, tested against music culture standards, not general creator aesthetics.
+
+**3. The gig mode is a specific concept that requires music-culture understanding.**
+"I'm playing tonight. Tickets front. This is not my normal page." This specific concept — that a profile should look completely different on show night — is not something that emerges from a generic product team looking at Linktree analytics. It comes from understanding how musicians' careers actually work. Linktree could ship a "Tonight mode" toggle. Without the cultural context it would be a feature without a soul.
+
+**4. The freelancer credits system is structurally beyond Linktree's scope.**
+Linktree is a link aggregator. A music industry graph — producers credited on releases, fans discovering collaborators through artists, professional profiles tied to shared work — is outside their product thesis entirely.
+
+**The honest version:** If Linktree ships campaign states, ABLE should accelerate on fan ownership and freelancer layer, not on campaign state depth. The response is to widen the gap on the dimensions Linktree structurally cannot reach, not to defend the dimensions they could reach with engineering resources.
+
+**The framing that holds:**
+The moat is not the feature. The moat is the philosophy. Campaign states are the visible expression of a deeper belief: the page belongs to the artist, reflects the artist's current moment, and captures value that stays with the artist permanently. A competitor can copy the countdown. They cannot copy the conviction.
+
+---
+
+## Monitoring cadence: 30 minutes per week maximum
+
+Competitive monitoring at ABLE's current stage does not need to be comprehensive. It needs to be timely. The goal is to know about a material competitor move within 2 weeks of it happening, and to have a prepared response.
+
+**Weekly check — 5 minutes:**
+- Scan X/Twitter for: "Linktree", "Beacons", "LayloFM", "ToneDen" + ["launch", "new feature", "update", "music"]
+- Check if any ABLE-adjacent news has appeared in Music Ally, Hypebot, or Music Week
+- This is passive pattern recognition, not research. If nothing stands out in 5 minutes, move on.
+
+**Monthly check — 15 minutes:**
+- Visit each primary competitor's product (Linktree, Beacons, LayloFM) and test their current onboarding
+- Look for: new feature announcements on their product blogs, pricing changes, job postings that signal product direction (a Linktree job post for "Music Industry Product Manager" would be a signal)
+- Check the quarterly watch list (SPEC.md) to see if any material threat conditions have been met
+
+**Quarterly check — 30 minutes:**
+- Full SPEC.md review against current competitor product state
+- Update any scores in the comparison matrix that have materially changed
+- Review the "enemy's playbook" above and assess whether any move is in progress
+- Add a "competitor moves since last review" entry to FINAL-REVIEW.md
+- No more than 30 minutes. If it takes longer, the scope has expanded beyond useful.
+
+**What to do when a material threat is detected:**
+1. Document the specific feature/move in FINAL-REVIEW.md with a date
+2. Map it against the enemy's playbook — is this a covered scenario?
+3. Identify ABLE's specific response (not a general "we'll build more features" — a specific action tied to a specific ABLE advantage the competitor cannot reach)
+4. Schedule the response into the next sprint if it is P0, or log it for the next quarterly review if it is not
+
+**What not to do:**
+- Do not react to every competitor product update. Most are irrelevant.
+- Do not spend more than 30 minutes/week on competitive monitoring at this stage. ABLE is pre-scale. The time is better spent building.
+- Do not check competitors daily. Anxiety about competition does not improve the product.
+
+---
+
 ## P0 — Actions (must happen before Phase 2)
 
 ### P0.1 — Switching triggers live on landing.html

@@ -1335,6 +1335,16 @@
       margin: 10px auto 0;
       flex-shrink: 0;
     }
+    .v3-able-attr {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 20px 0 8px;
+      opacity: 0.22;
+    }
+    .v3-able-attr span {
+      font-family: var(--font-display); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.18em; color: var(--color-text);
+    }
+
     .v3-admin-head {
       display: flex;
       align-items: center;
@@ -1828,6 +1838,18 @@
       <div class="v3-panel" id="panel-support" role="tabpanel" aria-labelledby="tab-support">
         <div id="supportPanelContent"></div>
       </div>
+      <!-- ABLE attribution -->
+      <div class="v3-able-attr" aria-label="Powered by ABLE">
+        <svg width="4" height="14" viewBox="0 0 24 90" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="atlgb" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#3b82f6"/></linearGradient>
+            <linearGradient id="atlgp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient>
+          </defs>
+          <rect x="4" y="2" width="16" height="64" fill="url(#atlgb)"/>
+          <rect x="4" y="66" width="16" height="16" fill="url(#atlgp)"/>
+        </svg>
+        <span>ABLE</span>
+      </div>
     </div><!-- close .v3-scroll -->
   </div>
 
@@ -1868,7 +1890,17 @@
     <div class="v3-admin-sheet" id="v3AdminSheet">
       <div class="v3-admin-handle"></div>
       <div class="v3-admin-head">
-        <span class="v3-admin-head__title">Edit Profile</span>
+        <span class="v3-admin-head__title" style="display:flex;align-items:center;gap:8px;">
+          <svg width="5" height="18" viewBox="0 0 24 90" fill="none" aria-hidden="true" style="flex-shrink:0">
+            <defs>
+              <linearGradient id="ahlgb" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#3b82f6"/></linearGradient>
+              <linearGradient id="ahlgp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient>
+            </defs>
+            <rect x="4" y="2" width="16" height="64" fill="url(#ahlgb)"/>
+            <rect x="4" y="66" width="16" height="16" fill="url(#ahlgp)"/>
+          </svg>
+          Edit Profile
+        </span>
         <button class="v3-admin-head__done" id="v3AdminClose">Close</button>
       </div>
       <div class="v3-admin-body">

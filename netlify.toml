@@ -50,9 +50,9 @@
   to     = "/admin.html"
   status = 200
 
-# Friendly artist profile URLs: able.fm/artistname → able-v7.html
+# Friendly artist profile URLs: ablemusic.co/artistname → able-v8.html
 # (once dynamic routing is in place via Supabase edge functions)
 [[redirects]]
   from   = "/:slug"
-  to     = "/able-v7.html"
+  to     = "/able-v8.html"
   status = 200
