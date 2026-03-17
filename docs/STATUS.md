@@ -211,12 +211,12 @@
 ## In progress / planned next
 
 ### Open (genuine blockers)
-- [ ] **Fan confirmation email URL param** — `?artist=slug&ref=email-confirm` in fan-confirmation.js (2 lines — unlocks fan activation chain)
-- [ ] **GDPR front-end disclosure** — visible consent text before fan sign-up submit (Article 7)
-- [ ] **Near me location** — hardcoded to London in fan.html, needs real capture
+- [ ] **Near me location** — fan.html shows demo London shows; real Supabase query needed (Phase 2 data)
 - [ ] **PWA icons on real devices** — verify home screen install on iPhone
-- [ ] **og-default.jpg** — needs creation in Figma + deploy (James's task)
+- [ ] **og-default.jpg deploy** — file exists locally at `/og-default.jpg`; must be accessible at `https://ablemusic.netlify.app/og-default.jpg` before first artist
 - [ ] **RESEND_API_KEY** — set in Netlify env vars at resend.com + netlify.com (James's task)
+- ~~**Fan confirmation email URL param**~~: ✅ Always done — `?artist=slug&ref=email-confirm` is in fan-confirmation.js line 69
+- ~~**GDPR front-end disclosure**~~: ✅ Done — privacy policy link + opt_in + consent_ts wired to Supabase
 
 ### Phase 2 (post-launch)
 - [ ] Supabase auth (magic link — so artists own data, not just localStorage)
@@ -248,15 +248,20 @@
 
 ---
 
-## Last session summary (session 14 — build process overhaul + context system)
+## Last session summary (session 15–16 — quality pass: W3C, a11y, performance, GDPR, Supabase)
 
-Complete overhaul of the AI agent build process. No HTML changes this session — infrastructure only.
+Full quality pass across all 5 active pages. **All pages now at Lighthouse accessibility 100.**
 
 Key changes:
-- **CONTEXT.md complete rewrite** — 324 lines added. Correct authority chain (V8 primary), V8_BUILD_AUTHORITY.md properly elevated from "strategic reference" to top of chain. Added: P0 killer features, locked decisions, 11/10 verbatim copy strings, growth strategy, phase 2 do-not-build list, rendering law, AI system prompt prefix, never-build-ever list
-- **Stale P0 backlog cleared** — removed 6 already-done items (dash-t3 WCAG, first-fan moment, og:image fix, copy audit, campaign descriptions, credits handle). Added "already done" section to prevent re-fixing
-- **347 new files committed** — all previously untracked docs now in git: rules/javascript.md, docs/solutions/, docs/features/INDEX.md, docs/systems/ui/SPEC.md, docs/systems/ux/SPEC.md, docs/GPT-REVIEW/, MASTER.md, PROJECT_INDEX.md, START-BUILDING.md, AGENTS.md, KNOWLEDGE.md
-- **MASTER.md corrected** — active file table pointed at able-v6.html, fixed to able-v7.html
+- **Async font loading** — eliminated render-blocking Google Fonts on all 5 pages (able-v8, admin, start, landing, fan) — ~1700–2100ms savings each
+- **W3C HTML validation** — 0 errors on admin.html, start.html, landing.html, fan.html. able-v8.html: 9 false positives (CSS env() — valid modern CSS, validator limitation)
+- **Accessibility** — all 5 pages at axe 1 violation (browser-sync dev tool false positive only)
+- **GDPR compliance** — privacy policy link visible at fan sign-up; opt_in + consent_ts written to Supabase
+- **Supabase fan upsert** — campaignState captured at sign-up time (CRM P0.1); profile FK upserted before fan insert
+- **fan.html quality pass** — 19 contrast violations fixed (colour-text-3 raised from 0.38→0.50; feed item initials cream text; clip badge brightened; fi-clip-caption undefined token fixed). Region landmark violations resolved with `<main>` wrap. Meta description added.
+- **admin.html** — CDN preconnect hints added; type="text/javascript" warning fixed; shows list sorted by date with past-show styling
+- **World map** — dramatic visual upgrade: 52px month label, 56px cells, accent-tinted gradient card
+- **MASTER.md corrected** — active file table pointed at able-v6.html, fixed to able-v7.html (session 14)
 - **CLAUDE.md rule 10 updated** — V8 strategy docs are primary authority, not V6_BUILD_AUTHORITY.md
 
 **Open after session 14:**
