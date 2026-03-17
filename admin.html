@@ -3123,7 +3123,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
           <div class="dc-body">
             <div class="field-row">
               <div class="field-label">Artist name</div>
-              <input class="field-input" type="text" id="adminName" aria-label="Artist name" placeholder="Your artist name" onblur="saveProfilePage()">
+              <input class="field-input" type="text" id="adminName" aria-label="Artist name" placeholder="Your artist name" onblur="saveProfilePage()" oninput="(function(v){const _d=safeLS('able_v3_profile',{});if(!_d.handle){const _slug=v.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');updateSlugPreview(_slug);}})((this.value||'').trim())">
             </div>
             <div class="field-row">
               <div class="field-label">Genre / style</div>
@@ -7653,7 +7653,7 @@ function updateCompletenessBar() {
   if (nudgeEl) {
     const _nudgeText = missing.length ? missing[0] : '';
     if (_nudgeText && pct < 30 && _tier22 === 'free') {
-      nudgeEl.innerHTML = escHtml(_nudgeText) + ' <a href="#" onclick="showPage(\'home\');return false;" style="color:var(--dash-link);font-weight:600;white-space:nowrap;">Artist plan — £9/mo →</a>';
+      nudgeEl.innerHTML = escHtml(_nudgeText) + ' <a href="#" onclick="(function(){try{const _c=safeLS(\'able_clicks\',[]);_c.push({label:\'upgrade-cta\',type:\'upgrade\',ts:Date.now()});setLS(\'able_clicks\',_c);}catch(_){}showPage(\'home\');})();return false;" style="color:var(--dash-link);font-weight:600;white-space:nowrap;">Artist plan — £9/mo →</a>';
     } else {
       nudgeEl.textContent = _nudgeText;
     }
@@ -7680,7 +7680,7 @@ function updateCompletenessBar() {
   if (profileNudge) {
     const _profileNudgeText = missing.length ? missing[0] : '';
     if (_profileNudgeText && pct < 30 && _tier22 === 'free') {
-      profileNudge.innerHTML = escHtml(_profileNudgeText) + ' <a href="#" onclick="showPage(\'home\');return false;" style="color:var(--dash-link);font-weight:600;white-space:nowrap;">Artist plan — £9/mo →</a>';
+      profileNudge.innerHTML = escHtml(_profileNudgeText) + ' <a href="#" onclick="(function(){try{const _c=safeLS(\'able_clicks\',[]);_c.push({label:\'upgrade-cta\',type:\'upgrade\',ts:Date.now()});setLS(\'able_clicks\',_c);}catch(_){}showPage(\'home\');})();return false;" style="color:var(--dash-link);font-weight:600;white-space:nowrap;">Artist plan — £9/mo →</a>';
     } else {
       profileNudge.textContent = _profileNudgeText;
     }
@@ -7972,6 +7972,27 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
       localStorage.setItem(_notifKey, '1');
       setTimeout(() => showToast('Your release is live. Page is now in live mode.', 'green'), 1200);
     }
+  })();
+
+  // C7 #4 — Artist Pro trial hook: when tier is free and fan count >= 10, show once
+  ;(function() {
+    const _tier4 = getCurrentTier();
+    if (_tier4 !== 'free') return;
+    if (safeLS(FANS_KEY, []).length < 10) return;
+    if (localStorage.getItem('able_trial_nudge')) return;
+    localStorage.setItem('able_trial_nudge', '1');
+    setTimeout(() => showToast('10 fans in. Ready to send them a message? Artist Pro unlocks email broadcasts.', 'amber'), 3000);
+  })();
+
+  // C7 #2 — 30-day milestone nudge: when admin_visit_dates spans > 30 unique days
+  ;(function() {
+    if (localStorage.getItem('30day-milestone')) return;
+    const _visits = safeLS('admin_visit_dates', []);
+    if (_visits.length < 30) return;
+    localStorage.setItem('30day-milestone', '1');
+    const _fans30 = safeLS(FANS_KEY, []).length;
+    const _clicks30 = safeLS(CLICKS_KEY, []).length;
+    setTimeout(() => showToast(`30 days in. ${_fans30} ${_fans30 === 1 ? 'fan' : 'fans'}. ${_clicks30} taps. That's yours.`, 'amber'), 2500);
   })();
 
   // C6 #39 — post-release nudge: 2 days after release, if fan count hasn't grown, nudge artist to share
