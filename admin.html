@@ -3766,6 +3766,11 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <div class="page-title">Send to fans</div>
       <div class="page-sub">Direct to inbox. No algorithm.</div>
     </div>
+    <!-- C15 #29 — Artist (not Pro) preview: coming soon teaser -->
+    <div id="broadcastArtistPreview" style="display:none;max-width:860px;background:rgba(244,185,66,0.06);border:1px solid rgba(244,185,66,0.18);border-radius:var(--r-lg);padding:20px 18px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">Email broadcasts — coming to Artist plan</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.55;">Write once, reach every fan directly. No algorithm, no boost required. We're building this now — you'll be first to know when it's live.</div>
+    </div>
     <!-- Gold lock wrapper -->
     <div class="gold-lock" data-tier="artist-pro" data-feature="email-broadcasts" style="max-width:860px;">
       <div class="section-grid gold-blur" tabindex="-1" aria-hidden="true">
@@ -7854,6 +7859,12 @@ function applyGates() {
       blur.querySelectorAll('[disabled]').forEach(el => el.removeAttribute('disabled'));
     }
   });
+
+  // C15 #29 — Broadcast coming-soon preview for Artist tier (not Pro)
+  const _broadcastPreview = document.getElementById('broadcastArtistPreview');
+  if (_broadcastPreview) {
+    _broadcastPreview.style.display = (tierAtLeast('artist') && !tierAtLeast('artist-pro')) ? '' : 'none';
+  }
 }
 
 /** applyTierPill — updates the topbar and sidebar tier badge text */

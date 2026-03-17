@@ -5,6 +5,7 @@
   "start_url": "/fan.html?source=pwa",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "browser"],
   "orientation": "portrait",
   "background_color": "#0d0e1a",
   "theme_color": "#0d0e1a",
@@ -34,5 +35,13 @@
       "purpose": "maskable"
     }
   ],
-  "categories": ["music", "entertainment"]
+  "categories": ["music", "entertainment"],
+  "screenshots": [
+    {
+      "src": "/og-default.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg",
+      "label": "ABLE — stay close to the artists you love"
+    }
+  ]
 }

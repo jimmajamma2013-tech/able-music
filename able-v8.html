@@ -6948,9 +6948,19 @@
           ctaHtml = '<button class="wm-panel__cta wm-panel__cta--gated" class="wm-supporter-gate">Join the close circle \u2192</button>'
         }
 
+        // C15 #11 — live countdown for today's show
+        let isToday11 = moment.date === isoDate(new Date())
+        let countdownHtml = ''
+        let countdownId = ''
+        if (isToday11 && moment.type === 'show') {
+          countdownId = 'wm-gig-cd-' + moment.id.replace(/[^a-z0-9]/gi, '_')
+          countdownHtml = '<div class="wm-panel__countdown" id="' + countdownId + '" aria-live="polite" aria-atomic="true" style="font-family:var(--font-display);font-weight:700;font-size:28px;letter-spacing:0.04em;color:var(--color-accent);margin:4px 0 2px;">— : — : —</div>'
+        }
+
         return '<div class="wm-panel__moment-item" style="--wm-panel-type-color:' + typeColor + '">'
           + '<div class="wm-panel__type">' + escHtml(typeLabel) + '</div>'
           + '<div class="wm-panel__title">' + escHtml(moment.title) + '</div>'
+          + countdownHtml
           + '<div class="wm-panel__date">' + escHtml(dateStr) + '</div>'
           + '<div class="wm-panel__access ' + accessCfg.cls + '">' + escHtml(accessCfg.label) + '</div>'
           + (moment.artistNote ? '<div class="wm-panel__note">' + escHtml(moment.artistNote) + '</div>' : '')
@@ -6959,6 +6969,48 @@
       }).join('')
 
       body.innerHTML = itemsHtml
+
+      // C15 #11 — start live countdown intervals for today's shows in the panel
+      ;(function() {
+        let _cdTimers = []
+        dayMoments.forEach(function(moment) {
+          if (moment.type !== 'show') return
+          let isToday11 = moment.date === isoDate(new Date())
+          if (!isToday11) return
+          let cdEl = document.getElementById('wm-gig-cd-' + moment.id.replace(/[^a-z0-9]/gi, '_'))
+          if (!cdEl) return
+          let _show = safeLS('able_shows', []).find(function(s) { return s.id === moment.linkedId })
+          let doorsTime = _show ? _show.doorsTime : null
+          function _tick() {
+            let now = Date.now()
+            let _refMs = null
+            if (doorsTime) {
+              try {
+                let [_dh, _dm] = doorsTime.split(':').map(Number)
+                let _d = new Date(); _d.setHours(_dh, _dm, 0, 0)
+                _refMs = _d.getTime()
+              } catch (_) {}
+            }
+            if (_refMs && _refMs > now) {
+              let _diff = _refMs - now
+              let _h = Math.floor(_diff / 3600000)
+              let _m = Math.floor((_diff % 3600000) / 60000)
+              let _s = Math.floor((_diff % 60000) / 1000)
+              cdEl.textContent = String(_h).padStart(2,'0') + ':' + String(_m).padStart(2,'0') + ':' + String(_s).padStart(2,'0')
+            } else {
+              cdEl.textContent = 'Tonight'
+            }
+          }
+          _tick()
+          let _t = setInterval(_tick, 1000)
+          _cdTimers.push(_t)
+        })
+        // clear timers when panel closes
+        let _panelClose = document.getElementById('wm-panel-handle')
+        if (_panelClose) {
+          _panelClose.addEventListener('click', function() { _cdTimers.forEach(clearInterval) }, { once: true })
+        }
+      })()
 
       // Wire enquiry submit buttons
       body.querySelectorAll('[id^="wm-enquiry-submit-"]').forEach(function(submitBtn) {
@@ -9870,7 +9922,10 @@
 
       list.innerHTML = ''
       const gigActive = isGigNightActive()
-      events.forEach((ev, evIdx) => {
+      // C15 #18 — max 3 nearest shows; if more, show "+N more" link to see all
+      const _showsToRender = events.slice(0, 3)
+      const _showsExtra = events.length - 3
+      _showsToRender.forEach((ev, evIdx) => {
         const item = document.createElement('div')
         const hasImage = Boolean(ev.venueImageUrl)
         item.className = 'show-item pressable' + (hasImage ? ' show-item--has-image' : '') + (ev.featured ? ' show-item--featured' : '') // E5 — C9 #16
@@ -9945,6 +10000,14 @@
         }
         list.appendChild(item)
       })
+
+      // C15 #18 — "+N more" link when > 3 shows
+      if (_showsExtra > 0) {
+        const _moreEl = document.createElement('div')
+        _moreEl.style.cssText = 'text-align:center;padding:10px 0 4px;'
+        _moreEl.innerHTML = `<button onclick="document.getElementById('tab-shows')?.click()" style="background:none;border:none;color:var(--color-accent);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;padding:8px 0;">+${_showsExtra} more show${_showsExtra > 1 ? 's' : ''} →</button>`
+        list.appendChild(_moreEl)
+      }
 
       section.hidden = false
     }
