@@ -4804,17 +4804,26 @@ function renderTopCardPreview(data) {
     <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:var(--r-pill);background:rgba(255,255,255,0.06);color:${stateBadgeColor};white-space:nowrap;">${escHtml(stateLabel)}</span>`;
 }
 
+// Valid manual override values — 'gig' handled separately via GIG_KEY timer
+const VALID_ADM_OVERRIDES = new Set(['profile', 'pre-release', 'live', 'announce'])
+
 function computeEffectiveState(data) {
+  const now = Date.now()
+  // Gig checked first — stateOverride='gig' must not outlive the expiry timer (G4/G5)
   const gigExp = safeLS(GIG_KEY, 0);
-  if (gigExp && Date.now() < gigExp) return 'gig';
-  if (data.stateOverride) return data.stateOverride;
+  if (gigExp && now < gigExp) return 'gig';
+  // Manual override — only valid known values, skip 'gig' (handled above)
+  if (data.stateOverride && VALID_ADM_OVERRIDES.has(data.stateOverride)) {
+    return data.stateOverride;
+  }
   if (data.releaseDate) {
-    const now = new Date(), rel = new Date(data.releaseDate);
+    const rel = new Date(data.releaseDate).getTime();
+    if (!rel || isNaN(rel)) return 'profile';
     if (now < rel) return 'pre-release';
-    if ((now - rel)/86400000 < 14) return 'live';
+    if ((now - rel) / 86400000 < 14) return 'live';
     return 'profile';
   }
-  return data.pageState || 'live';
+  return data.pageState || 'profile';
 }
 
 function updateChqPill(state) {
