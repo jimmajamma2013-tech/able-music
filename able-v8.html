@@ -3808,7 +3808,7 @@
     .clip-sound-hint {
       font-size: 12px;
       color: rgba(255,255,255,0.7);
-      transition: opacity 0.5s;
+      transition: opacity var(--dur-xslow) var(--ease-standard);
     }
 
     .clip-sound-hint.hidden { opacity: 0; }
@@ -3822,7 +3822,7 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
       opacity: 0;
-      transition: opacity 300ms;
+      transition: opacity var(--dur-mid) var(--ease-standard);
       margin: 0;
     }
 
@@ -4379,7 +4379,7 @@
       white-space: nowrap;
       pointer-events: none;
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity var(--dur-mid) var(--ease-standard);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
@@ -4901,7 +4901,7 @@
     /* B19 — Card tilt on hover (glass theme, desktop pointer only) */
     @media (hover: hover) and (pointer: fine) {
       [data-theme="glass"] .card-tilt {
-        transition: transform 120ms ease-out;
+        transition: transform var(--dur-instant) var(--ease-standard);
         transform-style: preserve-3d;
         will-change: transform;
       }
@@ -5771,7 +5771,7 @@
           <p class="fan-capture__error" id="fan-error-2" role="alert" aria-live="assertive" hidden></p>
         </form>
         <p class="fan-capture__trust" id="fan-trust-2">Your email goes to the artist — not to ABLE. Unsubscribe any time.</p>
-        <p class="fan-capture__gdpr" id="fan-consent-2">By signing up, <span id="consent-artist-2">the artist</span> can contact you about their music. They own your contact details — ABLE stores them on their behalf. <a href="/privacy.html" target="_blank" rel="noopener">Privacy policy</a>.</p>
+        <p class="fan-capture__gdpr" id="fan-consent-2">By signing up, <span id="consent-artist-2">the artist</span> can contact you about their music. They own your contact details — ABLE stores them on their behalf. <a href="/privacy.html" target="_blank" rel="noopener" class="fan-capture__gdpr-link">Privacy policy</a>.</p>
       </section>
 
       <!-- ======================================================

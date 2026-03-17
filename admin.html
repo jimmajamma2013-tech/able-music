@@ -4772,8 +4772,12 @@ function initCampaignHQ() {
   renderTimelineArc();
   renderTopCardPreview(data);
 
-  // Check gig mode
+  // Check gig mode — clean up stale stateOverride='gig' when timer has expired (G1 #9)
   const gigExp = safeLS(GIG_KEY, 0);
+  if (gigExp && Date.now() >= gigExp && data.stateOverride === 'gig') {
+    data.stateOverride = null;
+    setLS(PROFILE_KEY, data);
+  }
   if (gigExp && Date.now() < gigExp) {
     // Restore gig state without resetting the timer
     const strip = document.getElementById('gigStrip');
@@ -4834,8 +4838,9 @@ const VALID_ADM_OVERRIDES = new Set(['profile', 'pre-release', 'live', 'announce
 function computeEffectiveState(data) {
   const now = Date.now()
   // Gig checked first — stateOverride='gig' must not outlive the expiry timer (G4/G5)
+  // Mirror v8's gig-post state for the final 6h window (G1 #2)
   const gigExp = safeLS(GIG_KEY, 0);
-  if (gigExp && now < gigExp) return 'gig';
+  if (gigExp && now < gigExp) return (gigExp - now) < 6 * 3600000 ? 'gig-post' : 'gig';
   // Manual override — only valid known values, skip 'gig' (handled above)
   if (data.stateOverride && VALID_ADM_OVERRIDES.has(data.stateOverride)) {
     return data.stateOverride;
@@ -4858,6 +4863,7 @@ function updateChqPill(state) {
     'pre-release': ['pre',      'Pre-release'],
     'live':        ['live',     '● Live'],
     'gig':         ['gig',      '🔴 Gig tonight'],
+    'gig-post':    ['gig',      '🔴 Gig wrapping up'],
   };
   const [cls, lbl] = MAP[state] || MAP['profile'];
   pill.className = 'chq-state-pill ' + cls;

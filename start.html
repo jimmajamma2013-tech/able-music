@@ -379,7 +379,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   display:inline-block; padding:13px 32px; border-radius:var(--r-pill);
   font-size:15px; font-weight:700; letter-spacing:.01em;
   background:var(--acc); color:#121a24;
-  transition:background .2s, transform .2s var(--spring);
+  transition:background var(--dur-slow), transform var(--dur-slow) var(--spring);
   box-shadow:0 4px 18px rgba(var(--acc-rgb),.38);
 }
 
@@ -454,7 +454,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   padding:16px 18px; border-radius:var(--r-xl);
   background:var(--card); border:1.5px solid var(--border);
   text-align:left; cursor:pointer;
-  transition:border-color .2s, background .2s, transform .2s var(--spring);
+  transition:border-color var(--dur-slow), background var(--dur-slow), transform var(--dur-slow) var(--spring);
 }
 .moment-card:hover { border-color:var(--bm); transform:translateY(-1px); }
 .moment-card.on { border-color:var(--acc); background:rgba(var(--acc-rgb),.08); }
@@ -496,7 +496,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   padding:12px 28px; border-radius:var(--r-pill); font-size:14px; font-weight:600;
   border:none; background:var(--acc); color:#121a24;
   cursor:pointer; font-family:var(--font);
-  transition: background var(--dur-slow) var(--spring), color var(--dur-slow) var(--spring), transform var(--dur-slow) var(--spring), box-shadow var(--dur-slow) var(--spring);
+  transition: background var(--dur-slow), color var(--dur-slow), transform var(--dur-slow) var(--spring), box-shadow var(--dur-slow);
   box-shadow:0 4px 20px rgba(var(--acc-rgb),.32); letter-spacing:.01em;
 }
 .btn-next:hover { transform:translateY(-2px); box-shadow:0 7px 28px rgba(var(--acc-rgb),.42); }
@@ -623,7 +623,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
   background:var(--acc); color:#121a24; border:none;
   cursor:pointer; font-family:var(--font);
   box-shadow:0 4px 20px rgba(var(--acc-rgb),.3);
-  transition: background var(--dur-slow) var(--spring), color var(--dur-slow) var(--spring), transform var(--dur-slow) var(--spring), box-shadow var(--dur-slow) var(--spring);
+  transition: background var(--dur-slow), color var(--dur-slow), transform var(--dur-slow) var(--spring), box-shadow var(--dur-slow);
 }
 .done-open:hover { transform:translateY(-2px); box-shadow:0 7px 28px rgba(var(--acc-rgb),.42); }
 .done-dash {
