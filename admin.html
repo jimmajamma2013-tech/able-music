@@ -7546,15 +7546,23 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
   const v3data = safeLS(V3_KEY, {});
   const wizData = {}; // legacy key already migrated above
 
-  // P1-W3 #45 — graceful null profile: if no name set, show "Complete setup" prompt
-  if (!v3data.name) {
-    const _bar = document.createElement('div')
-    _bar.id = 'setup-prompt-bar'
-    _bar.setAttribute('role', 'status')
-    _bar.style.cssText = 'background:var(--acc);color:#000;text-align:center;padding:10px 16px;font-size:13px;font-weight:600;position:sticky;top:0;z-index:500;'
-    _bar.innerHTML = 'Your profile isn\'t set up yet. <a href="start.html" style="color:#000;text-decoration:underline;font-weight:700;">Set it up now →</a>'
-    document.body.prepend(_bar)
-  }
+  // P1-W3 #45 / C4 #38 — setup prompt when key profile fields are missing
+  (function() {
+    const _missing = [];
+    if (!v3data.name)              _missing.push('name');
+    if (!v3data.bio)               _missing.push('bio');
+    if (!(v3data.topCard?.artworkUrl || v3data.topCard?.videoUrl)) _missing.push('artwork');
+    if (!_missing.length) return;
+    const _bar = document.createElement('div');
+    _bar.id = 'setup-prompt-bar';
+    _bar.setAttribute('role', 'status');
+    _bar.style.cssText = 'background:var(--acc);color:#000;text-align:center;padding:10px 16px;font-size:13px;font-weight:600;position:sticky;top:0;z-index:500;';
+    const _desc = _missing.length === 1
+      ? { name: 'Add your artist name.', bio: 'Add a bio so fans know who you are.', artwork: 'Add your artwork.' }[_missing[0]]
+      : 'Complete your setup: add ' + _missing.slice(0,-1).join(', ') + ' and ' + _missing[_missing.length-1] + '.';
+    _bar.innerHTML = _desc + ' <a href="start.html" style="color:#000;text-decoration:underline;font-weight:700;">Set it up now \u2192</a>';
+    document.body.prepend(_bar);
+  })();
 
   const name   = v3data.name   || wizData.name   || 'Your Artist Name';
   const accent = v3data.accent || wizData.accent  || null;
