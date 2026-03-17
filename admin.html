@@ -3202,7 +3202,7 @@ body::before {
       </div>
       <div class="dc-body">
         <div class="snap-list" id="snapList"><!-- Populated by renderSnapCardsList() --></div>
-        <p id="snapEmpty" style="text-align:center;padding:20px 0;color:rgba(255,255,255,.3);font-size:13px;margin:0;">No updates yet. Add one to share a note, link, or snippet.</p>
+        <p id="snapEmpty" style="text-align:center;padding:20px 0;color:rgba(255,255,255,.3);font-size:13px;margin:0;">No snap cards yet. Add one — a note, a link, or a moment — and it lives on your page.</p>
         <button class="snap-add-btn" style="margin-top:8px;" onclick="addSnapCard()">
           <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M6 1v10M1 6h10"/></svg>
           Add update
@@ -3970,7 +3970,7 @@ function renderFanList(filter) {
       <span class="source-badge ${src}">${src.toUpperCase()}</span>
       <button class="fan-star ${isStarred ? 'starred' : ''}" data-email="${escHtml(f.email)}" aria-label="Mark as close">★</button>
     </div>`;
-  }).join('') || '<div class="empty-state" style="padding:28px 16px;text-align:center;color:var(--dash-t3);font-size:13px;">No fans yet — share your link.</div>';
+  }).join('') || '<div class="empty-state" style="padding:28px 16px;text-align:center;color:var(--dash-t3);font-size:13px;">When fans sign up on your page, they\'ll appear here. Your list. Your relationship. No algorithm in the way.</div>';
 
   // Source breakdown
   renderSourceBreakdown(confirmed);
@@ -4448,7 +4448,7 @@ function renderShowsList() {
   if (!el) return;
   const shows = safeLS('able_shows', []).slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
   if (!shows.length) {
-    el.innerHTML = '<div class="empty-state" style="padding:28px 16px;text-align:center;color:var(--dash-t3);font-size:13px;">No shows listed yet. Add one and ABLE will surface it to fans on your page automatically.</div>';
+    el.innerHTML = '<div class="empty-state" style="padding:28px 16px;text-align:center;color:var(--dash-t3);font-size:13px;">No shows listed yet. Add one and it appears on your page automatically.</div>';
     return;
   }
   const today = new Date().toISOString().slice(0, 10);
@@ -4486,7 +4486,7 @@ function setLS(key, val) {
   try { localStorage.setItem(key, JSON.stringify(val)); return true; }
   catch (e) {
     if (e.name === 'QuotaExceededError') {
-      showToast('Your device is running low on storage. Time to sync your data.', 'amber');
+      showToast('Your device is running low on storage. Export your fans as CSV to free space.', 'amber');
     } else {
       console.error('[ABLE] localStorage write error for "' + key + '"', e);
     }
@@ -4513,14 +4513,14 @@ function showToast(message, tone, options) {
 
 // Network status
 window.addEventListener('offline', function() {
-  showToast("No connection — your changes will save when you're back online.", 'amber');
+  showToast('No connection — reconnect to save your changes.', 'amber');
 });
 window.addEventListener('online', function() {
   showToast('Back online.', 'green');
 });
 if (!navigator.onLine) {
   document.addEventListener('DOMContentLoaded', function() {
-    showToast('No connection — working offline.', 'amber');
+    showToast('No connection — reconnect to save your changes.', 'amber');
   });
 }
 function relTime(ts) {
@@ -4716,7 +4716,7 @@ function renderFanBody() {
         <span class="source-badge ${src}">${src.toUpperCase()}</span>
         <span class="fan-time">${timeAgo}</span>
       </div>`;
-    }).join('') : '<div style="color:var(--dash-t2);font-size:12px;padding:4px 0;">No fans yet — share your link.</div>';
+    }).join('') : '<div style="color:var(--dash-t2);font-size:12px;padding:4px 0;">When fans sign up on your page, they\'ll appear here.</div>';
   }
 
   const viewAll = document.getElementById('viewAllFansLink');
@@ -5544,7 +5544,7 @@ function renderAdminEvents() {
   const past = (data.events||[]).filter(e=>new Date(e.date)<now).sort((a,b)=>new Date(b.date)-new Date(a.date));
   const events = [...upcoming, ...past];
   if (!events.length) {
-    el.innerHTML = `<div class="admin-empty">No shows listed yet. Add one and ABLE will surface it to fans on your page automatically.</div>`;
+    el.innerHTML = `<div class="admin-empty">No shows listed yet. Add one and it appears on your page automatically.</div>`;
     return;
   }
   el.innerHTML = events.map(ev => {
