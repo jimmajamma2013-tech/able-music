@@ -1956,6 +1956,20 @@
       color: var(--color-text-2);
     }
 
+    /* Owner view: replaces fan form when artist visits their own page (#26) */
+    .fan-capture__owner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-4);
+      text-align: center;
+    }
+    .fan-capture__owner-sub {
+      font-size: var(--text-sm);
+      color: var(--color-text-2);
+      margin: 0;
+    }
+
     .spinner-svg {
       display: block;
     }
@@ -5585,6 +5599,13 @@
           <p class="fan-capture__echo-text" id="fan-echo-text"></p>
           <p class="fan-capture__echo-confirm">You're in. I'll keep you close.</p>
         </div>
+        <!-- Owner view: shown instead of fan form when artist visits their own page (#26) -->
+        <div class="fan-capture__owner" id="fan-capture-owner" hidden>
+          <p class="fan-capture__owner-sub">Share this page with the people who care about your music.</p>
+          <button class="fan-capture__btn btn-primary pressable" id="fan-capture-owner-share" type="button">
+            Copy your link
+          </button>
+        </div>
       </section>
 
       <!-- Fan near-full owner banner (hidden by default, shown via JS for owner on free tier) -->
@@ -8481,7 +8502,18 @@
 
     // === CLICK TRACKING ==========================================
 
+    // Debounce guard: prevent double-tap firing two cta_tap events (#19)
+    let _lastClickKey = ''
+    let _lastClickTs  = 0
+
     function trackClick(label, type, url) {
+      // Double-tap debounce: same label+type within 600ms = ignore (#19)
+      const _key = label + '|' + type
+      const _now = Date.now()
+      if (_key === _lastClickKey && _now - _lastClickTs < 600) return
+      _lastClickKey = _key
+      _lastClickTs  = _now
+
       const _src = SESSION_SOURCE
       const _sid = getSessionId()
       try {
@@ -8491,14 +8523,14 @@
           id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2),
           label,
           type,
-          ts: Date.now(),
+          ts: _now,
           source: _src,
           sessionId: _sid,
           ...(url ? { url } : {}),
         })
         localStorage.setItem('able_clicks', JSON.stringify(clicks))
       } catch (_) {}
-      // PostHog cta_tap
+      // PostHog cta_tap — sendBeacon transport survives same-tab navigation on iOS Safari (#18)
       try {
         if (typeof posthog !== 'undefined') {
           posthog.capture('cta_tap', {
@@ -8507,7 +8539,7 @@
             label:      label,
             type:       type,
             url:        url || null,
-          })
+          }, { transport: 'sendBeacon' })
         }
       } catch (_) {}
       sbSyncClick(label, type, _src) // async fire-and-forget
@@ -8693,6 +8725,43 @@
             echoText.textContent = `We've got you — ${myEmail} is on ${artistName}'s list.`
           }
         }
+      }
+
+      // P1-W2 #26 — owner visit: show share prompt, hide fan form
+      if (isOwnerVisit()) {
+        const _fanForm    = document.getElementById('fan-form')
+        const _trustEl    = document.getElementById('fan-trust')
+        const _gdprEl     = document.getElementById('fan-consent')
+        const _ownerView  = document.getElementById('fan-capture-owner')
+        const _ownerShare = document.getElementById('fan-capture-owner-share')
+        if (_fanForm)   _fanForm.hidden   = true
+        if (_trustEl)   _trustEl.hidden   = true
+        if (_gdprEl)    _gdprEl.hidden    = true
+        if (_ownerView) _ownerView.hidden = false
+        // Heading rewrite for owner context
+        if (h1) h1.textContent = 'This is your page.'
+        if (h2) h2.textContent = 'This is your page.'
+        const _subEl = document.getElementById('fan-capture-sub')
+        if (_subEl) _subEl.hidden = true
+        // Share button
+        if (_ownerShare && !_ownerShare.dataset.bound) {
+          _ownerShare.dataset.bound = '1'
+          _ownerShare.addEventListener('click', () => {
+            const _shareUrl = window.location.href.split('?')[0]
+            if (navigator.share) {
+              navigator.share({ url: _shareUrl }).catch(() => {})
+            } else {
+              navigator.clipboard.writeText(_shareUrl).then(() => {
+                const _orig = _ownerShare.textContent
+                _ownerShare.textContent = 'Copied ✓'
+                setTimeout(() => { _ownerShare.textContent = _orig }, 2000)
+              }).catch(() => { prompt('Copy your profile link:', _shareUrl) })
+            }
+          })
+        }
+        fc1.hidden = false
+        fc2.hidden = true // second capture widget not needed for owner
+        return
       }
 
       // P1-W1 #7 — render-time fan cap: hide input & show message when free tier at 100 fans

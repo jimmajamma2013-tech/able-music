@@ -7478,7 +7478,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const _bar = document.getElementById('upgradeBar');
   if (_bar) {
     const _dismissed   = localStorage.getItem('able_upgrade_bar_dismissed') === '1';
-    const _frcDone     = !!localStorage.getItem('able_frc_dismissed');
+    const _frcNudges   = safeLS('able_dismissed_nudges', []);
+    const _frcDone     = _frcNudges.includes('first-run-checklist') || !!localStorage.getItem('able_frc_dismissed');
     const _visitDates  = safeLS('admin_visit_dates', []);
     const _visits      = _visitDates.length;
     if (_dismissed || !_frcDone || _visits < 3) {
@@ -7491,6 +7492,15 @@ window.addEventListener('DOMContentLoaded', () => {
   const backdrop = document.getElementById('adminSheetBackdrop');
   if (closeBtn) closeBtn.addEventListener('click', closeAdminSheet);
   if (backdrop) backdrop.addEventListener('click', closeAdminSheet);
+
+  // P1-W2 #16 — reactive fan cap: update upgrade bar + fan list when able_fans changes in another tab
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'able_fans') {
+      renderFanList();
+      updateUpgradeBar();
+      updateFanPageStats();
+    }
+  });
 });
 
 function dismissUpgradeBar() {
@@ -8334,8 +8344,11 @@ function showToast(msg) {
 function initFirstRun() {
   const frc = document.getElementById('firstRunCard');
   if (!frc) return;
-  // Hide if already dismissed
-  if (localStorage.getItem('able_frc_dismissed') === '1') { frc.hidden = true; return; }
+  // Hide if already dismissed — check canonical key first, then legacy key (#28)
+  const _dismissed = safeLS('able_dismissed_nudges', []);
+  if (_dismissed.includes('first-run-checklist') || localStorage.getItem('able_frc_dismissed') === '1') {
+    frc.hidden = true; return;
+  }
   // Mark steps done based on real data
   const data = safeLS(V3_KEY, {});
   const fans = safeLS('able_fans', []);
@@ -8383,7 +8396,9 @@ function updateFrcProgress() {
     const fill = document.getElementById('frcProgress');
     if (fill) { fill.style.background = 'var(--dash-green)'; }
     setTimeout(() => {
-      localStorage.setItem('able_frc_dismissed', '1');
+      // Write canonical dismiss key to able_dismissed_nudges (#28)
+      const _nd = safeLS('able_dismissed_nudges', []);
+      if (!_nd.includes('first-run-checklist')) { _nd.push('first-run-checklist'); setLS('able_dismissed_nudges', _nd); }
       const frcCard = document.getElementById('firstRunCard');
       if (frcCard) {
         frcCard.innerHTML = `<div style="text-align:center;padding:20px 16px;color:var(--acc-t);font-size:13px;font-weight:600;">Your page is ready. This is where your fans start.</div>`;
@@ -8398,7 +8413,8 @@ function updateFrcProgress() {
 }
 
 function dismissFirstRun() {
-  localStorage.setItem('able_frc_dismissed', '1');
+  const _nd = safeLS('able_dismissed_nudges', []);
+  if (!_nd.includes('first-run-checklist')) { _nd.push('first-run-checklist'); setLS('able_dismissed_nudges', _nd); }
   const frc = document.getElementById('firstRunCard');
   if (frc) { frc.style.opacity = '0'; frc.style.transition = 'opacity .3s'; setTimeout(() => frc.hidden = true, 300); }
 }
