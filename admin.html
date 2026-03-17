@@ -2597,8 +2597,8 @@ body::before {
         </div>
         <div class="chq-auto-hint" id="chqAutoHint">
           Set a release date and ABLE automatically switches your page:<br>
-          <strong>Before the date</strong> → Pre-release (pre-save CTA) &nbsp;·&nbsp;
-          <strong>On the date</strong> → Live (stream CTA) &nbsp;·&nbsp;
+          <strong>Before the date</strong> → Pre-release &nbsp;·&nbsp;
+          <strong>On the date</strong> → Live &nbsp;·&nbsp;
           <strong>14 days later</strong> → Profile
         </div>
 
@@ -3193,7 +3193,7 @@ body::before {
       </div>
       <div class="dc-body">
         <div class="snap-list" id="snapList"><!-- Populated by renderSnapCardsList() --></div>
-        <p id="snapEmpty" style="text-align:center;padding:20px 0;color:rgba(255,255,255,.3);font-size:13px;margin:0;">No updates yet. Add one to post a note, link, or snippet on your profile.</p>
+        <p id="snapEmpty" style="text-align:center;padding:20px 0;color:rgba(255,255,255,.3);font-size:13px;margin:0;">No updates yet. Add one to share a note, link, or snippet.</p>
         <button class="snap-add-btn" style="margin-top:8px;" onclick="addSnapCard()">
           <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><path d="M6 1v10M1 6h10"/></svg>
           Add update
@@ -3929,7 +3929,7 @@ function renderFanList(filter) {
   const valueEl = document.getElementById('fanEmailValue');
   if (valueEl && total >= 1) {
     const reach = total * 4; // email reaches ~4× vs equivalent follower count
-    valueEl.textContent = `${total} ${total === 1 ? 'fan' : 'fans'} — reaches like ${reach} followers. Email opens at 4× the rate of a social post.`;
+    valueEl.textContent = `${total} ${total === 1 ? 'fan' : 'fans'} — email reaches people 4× more reliably than a social post.`;
     valueEl.hidden = false;
   } else if (valueEl) {
     valueEl.hidden = true;

@@ -8661,7 +8661,7 @@
               if (emailInput) emailInput.hidden = true
               const _capMsgEl = document.getElementById('fan-error')
               if (_capMsgEl) {
-                _capMsgEl.textContent = "Sign-ups are paused right now. Check back soon."
+                _capMsgEl.textContent = "The list is full right now."
                 _capMsgEl.hidden = false
               }
               return
@@ -8862,7 +8862,7 @@
               if (emailInput) emailInput.hidden = true
               const _capEl2 = form2.querySelector('.fan-capture__echo-text') || document.createElement('p')
               _capEl2.className = 'fan-capture__echo-text'
-              _capEl2.textContent = "Sign-ups are paused right now. Check back soon."
+              _capEl2.textContent = "The list is full right now."
               form2.hidden = true
               form2.parentNode.appendChild(_capEl2)
               return

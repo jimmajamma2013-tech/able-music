@@ -1765,14 +1765,14 @@ function doSpotifyImport() {
 
       // Advance to step 1 after brief confirmation moment
       setTimeout(function() {
-        if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Looks right — let\'s go →'; }
+        if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Looks right — continue →'; }
         if (btnEl) btnEl.onclick = function() { goToStep('step1'); };
       }, 650);
     })
     .catch(function(err) {
       if (btnEl)    { btnEl.disabled = false; btnEl.textContent = 'Find me on Spotify →'; btnEl.onclick = doSpotifyImport; }
       if (statusEl) statusEl.style.display = 'none';
-      if (errEl)    { errEl.textContent = err.message || 'Something went wrong. Try again or use the skip link.'; errEl.classList.add('show'); }
+      if (errEl)    { errEl.textContent = 'Couldn\'t reach Spotify right now. Skip and enter your name below.'; errEl.classList.add('show'); }
     });
 }
 
