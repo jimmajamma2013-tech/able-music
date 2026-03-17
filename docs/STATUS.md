@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-17 (session 16 — 92/92 Playwright tests green: smoke × 13, copy × 64, a11y × 9, interactions × 6; landing CTA above-fold fix; safeLS admin fix; start.html copy fix | session 15 — NEW-5, @supports view-transition guards, shared/tokens.css, all P0/P1/P2 items audited and confirmed) | Update this file at the end of every session.**
+**Updated: 2026-03-17 (session 18 — ARIA + WCAG AA color-contrast fixes in able-v7.html; tap target improvements (owner bar 38→44px, skip link, footer links, hero copy-link); admin design token cleanup (#aaa→var(--t2/t3), --ease-decel added to :root); 92/92 tests still green | session 16 — 92/92 Playwright tests green: smoke × 13, copy × 64, a11y × 9, interactions × 6) | Update this file at the end of every session.**
 
 ---
 
