@@ -1866,6 +1866,7 @@
       flex-direction: column;
       background: var(--color-card);
       border: 1px solid var(--color-border);
+      border-left: 3px solid var(--color-border);
       border-radius: var(--r-md);
       overflow: hidden;
       box-shadow: var(--shadow-card);
@@ -1873,6 +1874,12 @@
       transition: transform var(--dur-fast) var(--ease-spring),
                   box-shadow var(--dur-fast) var(--ease-standard);
     }
+
+    /* Release type left-border — subtle type signal */
+    .release-card[data-release-type="album"]    { border-left-color: var(--color-accent); }
+    .release-card[data-release-type="ep"]       { border-left-color: #8b5cf6; }
+    .release-card[data-release-type="single"]   { border-left-color: #1e9650; }
+    .release-card[data-release-type="mixtape"]  { border-left-color: #f59e0b; }
 
     @media (hover: hover) and (pointer: fine) {
       .release-card:hover {
@@ -8777,9 +8784,7 @@
 
         card.className = 'release-card' + ((embedUrl && !isSpotify) ? ' release-card--has-embed' : '')
         card.setAttribute('role', 'listitem')
-        const hasVideo = !!rel.videoUrl
-        const borderColour = hasVideo ? '#7c3aed' : '#1e9650'
-        card.style.borderLeft = `3px solid ${borderColour}`
+        card.dataset.releaseType = type.toLowerCase()
 
         // Build tracks list
         let tracksHtml = tracks.length
