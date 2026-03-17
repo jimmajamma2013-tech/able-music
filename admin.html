@@ -1641,6 +1641,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       transition: background var(--dur-fast);
     }
     .fan-list-row:hover { background: var(--dash-card-hover, rgba(255,255,255,0.06)); } /* C12 #14 */
+    .fan-list-row.is-starred { border-left: 2px solid var(--dash-link); } /* C15 #33 — starred row accent */
     .fan-avatar {
       width: 36px;
       height: 36px;
@@ -3641,7 +3642,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
     </div>
     <!-- Pro: source heatmap locked -->
     <div class="gold-lock" data-tier="artist-pro" data-feature="advanced-analytics">
-      <div class="dash-card gold-blur">
+      <div class="dash-card gold-blur" tabindex="-1" aria-hidden="true">
         <div class="dc-head"><div class="dc-title">Traffic sources &amp; heatmap</div></div>
         <div class="dc-body">
           <div style="display:flex;flex-direction:column;gap:10px;">
@@ -3679,7 +3680,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         </div>
         <div class="glo-title">Traffic sources &amp; fan heatmap</div>
         <div class="glo-sub">Your fans are there. See where they came from, what they tapped. Artist Pro — £19/mo.</div>
-        <button class="glo-btn" onclick="showToast('Billing coming soon — currently in early access.')">Move to Artist Pro — £19/mo</button>
+        <button class="glo-btn" onclick="(function(){try{const _c=safeLS('able_clicks',[]);_c.push({label:'upgrade-cta',type:'upgrade',ts:Date.now()});setLS('able_clicks',_c);}catch(_){}showToast('Billing coming soon — currently in early access.');})()">Move to Artist Pro — £19/mo</button>
       </div>
     </div>
   </div>
@@ -3767,7 +3768,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
     </div>
     <!-- Gold lock wrapper -->
     <div class="gold-lock" data-tier="artist-pro" data-feature="email-broadcasts" style="max-width:860px;">
-      <div class="section-grid gold-blur">
+      <div class="section-grid gold-blur" tabindex="-1" aria-hidden="true">
         <div class="dash-card">
           <div class="dc-head"><div class="dc-title">Compose</div></div>
           <div class="dc-body">
@@ -3809,7 +3810,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         </div>
         <div class="glo-title">Email broadcasts</div>
         <div class="glo-sub" id="broadcastGloSub">Send directly to your fans' inboxes. 47% avg open rate — 10× better than social reach.</div>
-        <button class="glo-btn" onclick="showToast('Billing coming soon — currently in early access.')">Move to Artist Pro — £19/mo</button>
+        <button class="glo-btn" onclick="(function(){try{const _c=safeLS('able_clicks',[]);_c.push({label:'upgrade-cta',type:'upgrade',ts:Date.now()});setLS('able_clicks',_c);}catch(_){}showToast('Billing coming soon — currently in early access.');})()">Move to Artist Pro — £19/mo</button>
       </div>
     </div>
   </div>
@@ -4183,11 +4184,11 @@ function renderFanList(filter) {
       if (capEl) capEl.textContent = `/ ${FREE_CAP} on free plan`;
       if (fillEl) {
         fillEl.style.width = pct + '%';
-        fillEl.classList.toggle('near-cap', total >= 95);
+        fillEl.classList.toggle('near-cap', total >= 90); // C15 #24 — warn at 90%, not 95%
       }
     }
   }
-  if (nudgeEl) nudgeEl.style.display = (!isArtistPlus && total >= 95) ? '' : 'none';
+  if (nudgeEl) nudgeEl.style.display = (!isArtistPlus && total >= 90) ? '' : 'none'; // C15 #24
 
   // Email value indicator — show once artist has at least 1 confirmed fan
   const valueEl = document.getElementById('fanEmailValue');
@@ -4233,7 +4234,7 @@ function renderFanList(filter) {
     const avatarHtml = isUnconfirmed
       ? `<div class="fan-avatar fan-avatar--unconfirmed" title="Awaiting confirmation">○</div>`
       : `<div class="fan-avatar" style="background:${colour}">${escHtml(initial)}</div>`;
-    return `<div class="fan-list-row" data-email="${escHtml(f.email)}">
+    return `<div class="fan-list-row${isStarred ? ' is-starred' : ''}" data-email="${escHtml(f.email)}">
       ${avatarHtml}
       <div class="fan-row-info">
         <div class="fan-row-email">${escHtml(f.email)}${isUnconfirmed ? ' <span class="unconfirmed-label">pending</span>' : ''}${newBadge}</div>
@@ -4390,7 +4391,7 @@ function openFanDetailSheet(fan) {
   const levels = ['listener','fan','supporter','core'];
   const levelLabels = { listener:'Listener', fan:'Fan', supporter:'Supporter', core:'Core' };
   const levelChips = levels.map(l =>
-    `<button class="level-chip ${l === curLevel ? 'active' : ''}" data-level="${l}" data-email="${escHtml(fan.email)}">${levelLabels[l]}</button>`
+    `<button class="level-chip ${l === curLevel ? 'active' : ''}" data-level="${l}" data-email="${escHtml(fan.email)}" aria-pressed="${l === curLevel ? 'true' : 'false'}">${levelLabels[l]}</button>` // C15 #37
   ).join('');
   const campaignCtx = buildCampaignContextLine(fan);
 
@@ -4472,7 +4473,11 @@ function openFanDetailSheet(fan) {
       const fans = safeLS('able_fans', []);
       const f = fans.find(f => f.email === email);
       if (f) { f.level = level; setLS('able_fans', fans); showToast('Saved.'); }
-      document.querySelectorAll('#fanLevelChips .level-chip').forEach(c => c.classList.toggle('active', c.dataset.level === level));
+      document.querySelectorAll('#fanLevelChips .level-chip').forEach(c => {
+        const sel = c.dataset.level === level;
+        c.classList.toggle('active', sel);
+        c.setAttribute('aria-pressed', String(sel)); // C15 #37
+      });
     });
   });
 
@@ -4558,7 +4563,10 @@ function exportFans() {
   const csv = BOM + csvRows.map(row => row.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-  a.download = 'able-fans.csv';
+  const _profile38 = safeLS(V3_KEY, {});
+  const _name38 = (_profile38.name || 'artist').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const _date38 = new Date().toISOString().slice(0, 10);
+  a.download = `able-fans-${_name38}-${_date38}.csv`; // C15 #38
   a.click();
   showToast('Fan list downloaded.', 'green');// C14 #33
 }
@@ -4954,11 +4962,13 @@ if (!navigator.onLine) {
 function relTime(ts) {
   const diff = Date.now() - ts;
   if (diff < 60000)    return 'just now';
-  if (diff < 3600000)  return Math.floor(diff/60000) + 'm ago';
-  if (diff < 86400000) return Math.floor(diff/3600000) + 'h ago';
-  if (diff < 604800000) return Math.floor(diff/86400000) + ' days ago'; // C4 #4 — < 7 days
+  if (diff < 3600000)  { const m = Math.floor(diff/60000); return m + (m === 1 ? ' minute ago' : ' minutes ago'); }
+  if (diff < 86400000) { const h = Math.floor(diff/3600000); return h + (h === 1 ? ' hour ago' : ' hours ago'); }
+  const days = Math.floor(diff/86400000);
+  if (days === 1) return 'Yesterday'; // C15 #35
+  if (diff < 604800000) return days + ' days ago'; // C4 #4 — < 7 days
   // > 7 days: show locale date (e.g. "12 Mar")
-  try { return new Date(ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); } catch(_) { return Math.floor(diff/86400000) + 'd ago'; }
+  try { return new Date(ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); } catch(_) { return days + ' days ago'; }
 }
 function escHtml(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -5491,6 +5501,10 @@ function saveCampaignHQ() {
 
 /* ── GIG MODE ── */
 function toggleGigHQ() {
+  if (!checkTierGate('campaign-modes')) { // C15 #28 — Artist tier required for gig mode
+    showToast('Gig mode is part of the Artist plan — set a release date, run a live window, or go into gig mode.');
+    return;
+  }
   const strip = document.getElementById('gigStrip');
   const isActive = strip.classList.contains('active');
   setGigActive(!isActive);
@@ -7781,7 +7795,7 @@ const GATE_COPY = {
   'advanced-analytics':     { headline: 'See where your fans come from, what they tap, and when they show up. Artist Pro.', cta: 'See Artist Pro plans', tier: 'artist-pro' },
   'support-packs':          { headline: 'Let fans support you directly — on your terms. Artist Pro.',              cta: 'See Artist Pro plans', tier: 'artist-pro' },
   'broadcast-scheduling':   { headline: "Schedule a message to go out when the moment's right. Artist Pro.",      cta: 'See Artist Pro plans', tier: 'artist-pro' },
-  'export-fans':            { headline: 'Download your full fan list and take it anywhere. Artist Pro.',           cta: 'See Artist Pro plans', tier: 'artist-pro' },
+  'export-fans':            { headline: 'Export your full fan list. See where they came from. Artist Pro.',       cta: 'See Artist Pro plans', tier: 'artist-pro' },
   'multiple-pages':         { headline: 'Manage up to 10 artist pages from one account. Label.',                   cta: 'See Label plans',      tier: 'label'      },
   'team-access':            { headline: "Give your team access without sharing your login. Label.",                cta: 'See Label plans',      tier: 'label'      },
   'aggregate-analytics':    { headline: 'See how all your artists are performing in one place. Label.',            cta: 'See Label plans',      tier: 'label'      },
