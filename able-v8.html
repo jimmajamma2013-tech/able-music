@@ -8846,6 +8846,22 @@
           } catch (_) {}
           writeFanFollow() // seed fan.html following + feed
           sbSyncFanSignup(email, signup2Source, campaignState2) // async fire-and-forget
+          // Send confirmation email — same as form 1 (fire-and-forget)
+          try {
+            var _p2conf = safeLS('able_v3_profile', {})
+            fetch('/.netlify/functions/fan-confirmation', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                fanEmail:      email,
+                artistName:    _p2conf.name    || '',
+                artistSlug:    _p2conf.slug    || _p2conf.handle || '',
+                campaignState: campaignState2  || 'profile',
+                accentHex:     _p2conf.accent  || '#f4b942',
+                releaseTitle:  _p2conf.release?.title || _p2conf.releaseName || '',
+              }),
+            }).catch(function() {})
+          } catch(_) {}
           form2.hidden = true
           // Show brief confirmation
           const confirmP = document.createElement('p')
