@@ -23,7 +23,7 @@
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap"></noscript>
 
   <!-- Meta -->
-  <meta name="description" id="meta-description" content="Artist profile powered by ABLE">
+  <meta name="description" id="meta-description" content="Music, shows, and more — direct from the artist.">
   <meta name="robots" content="index,follow">
 
   <!-- Open Graph -->
@@ -10389,7 +10389,7 @@
       // Cap description at 152 chars for clean snippet truncation
       const desc = rawBio
         ? rawBio.replace(/\s+/g, ' ').trim().substring(0, 152) + (rawBio.length > 152 ? '…' : '')
-        : `${name}'s music, upcoming shows, and more. Follow on ABLE for direct updates.`
+        : `Music, shows, and more — direct from ${name}.`
 
       const setMeta = (id, val) => { const el = document.getElementById(id); if (el) el.setAttribute('content', val); }
       setMeta('og-title',       name)
