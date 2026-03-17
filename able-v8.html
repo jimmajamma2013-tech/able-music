@@ -16,7 +16,7 @@
   <!-- Preload Supabase SDK — kicks off fetch early but doesn't block parse/render -->
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" as="script">
   <!-- Preload demo hero artwork — JS may override src once profile loads -->
-  <link rel="preload" href="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75" as="image" fetchpriority="high" crossorigin="anonymous">
+  <link rel="preload" href="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75&fm=webp&auto=format" as="image" fetchpriority="high" crossorigin="anonymous">
 
   <!-- Async font load — non-blocking, display=swap prevents FOIT -->
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -5440,7 +5440,7 @@
 
         <!-- Artwork image — LCP element, eager + high priority -->
         <img class="hero__artwork" id="hero-artwork"
-             src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75"
+             src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75&fm=webp&auto=format"
              alt="" aria-hidden="true" loading="eager" fetchpriority="high"
              width="430" height="430"
              crossorigin="anonymous"
@@ -6235,7 +6235,7 @@
       backgroundOpacity: 0.75,
       topCard: {
         type: 'artwork',
-        artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75',
+        artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75&fm=webp&auto=format',
         title: 'Echo Chamber',
         releaseType: 'Album',
         creditLine: 'Prod. LUNA · Mix. James Reid · Master. Calum MacPhail'
@@ -6258,7 +6258,7 @@
           type: 'Album',
           platform: 'Spotify',
           releaseDate: '2026-01-15',
-          artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75',
+          artworkUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75&fm=webp&auto=format',
           // Spotify embed — shows player with album info and tracks
           streamUrl: 'https://open.spotify.com/album/6rqhFgbbKwnb9MLmUQDhG6',
           displayStyle: 'able-player',
@@ -9600,9 +9600,10 @@
       const list = document.getElementById('shows-list')
       if (!section || !list) return
 
+      const _showCutoff = Date.now() - 86400000 // C2 #54 — keep shows within last 24h
       const events = (profile.events || []).filter(ev => {
         const d = ev.date ? new Date(ev.date) : null
-        return d && d > new Date()
+        return d && d.getTime() > _showCutoff
       }).sort((a, b) => {
         // Featured show always first (#33); within featured/non-featured, sort ascending by date
         if (a.featured && !b.featured) return -1
