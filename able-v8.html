@@ -11427,7 +11427,17 @@
 
       // Render all content sections first, then apply visibility + ordering
       renderFanCapture(profile)
-      renderListenSection(profile)
+      // C15 #7 — defer listen section if it's far below fold; render immediately if already visible
+      ;(function() {
+        const _lSec = document.getElementById('listen-section')
+        if (!_lSec || !('IntersectionObserver' in window)) { renderListenSection(profile); return }
+        const _lRect = _lSec.getBoundingClientRect()
+        if (_lRect.top < window.innerHeight * 2) { renderListenSection(profile); return } // within 2 screens — render now
+        const _lObs = new IntersectionObserver(function(entries) {
+          if (entries[0].isIntersecting) { _lObs.disconnect(); renderListenSection(profile); }
+        }, { rootMargin: '200px' })
+        _lObs.observe(_lSec)
+      })()
       renderVideosSection(profile.videos || [])
       renderShowsSection(profile)
       injectEventStructuredData(profile) // C3 #48
