@@ -167,7 +167,7 @@ function buildEmail({ name, accent, profile, fanDashboard, headingLine, bodyLine
               <p style="margin:0 0 32px;font-size:15px;color:rgba(240,237,232,0.62);line-height:1.6;">${esc(bodyLine)}</p>
 
               <!-- CTA -->
-              <a href="${esc(fanDashboard)}" style="display:inline-block;padding:12px 24px;background:${esc(accent)};color:${esc(textOnAccent)};font-size:14px;font-weight:700;text-decoration:none;border-radius:10px;">See ${esc(name)}'s page →</a>
+              <a href="${esc(fanDashboard)}" style="display:inline-block;padding:12px 24px;background:${esc(accent)};color:${esc(textOnAccent)};font-size:14px;font-weight:700;text-decoration:none;border-radius:10px;">${esc(name)}'s page →</a>
 
             </td>
           </tr>

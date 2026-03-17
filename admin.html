@@ -2591,7 +2591,7 @@ body::before {
       <div class="stat-card">
         <svg class="sparkline" viewBox="0 0 60 24" preserveAspectRatio="none"
              aria-hidden="true" id="spark-clicks">
-          <polyline class="spark-line" points="" fill="none" stroke="#999"
+          <polyline class="spark-line" points="" fill="none" stroke="var(--dash-t3)"
                     stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <div class="stat-label" id="statClicksLabel">Link taps</div>
@@ -6435,7 +6435,7 @@ function loadRealStats() {
   // Sparklines
   renderSparkline('spark-views',  get7DayBuckets(views),  'var(--dash-amber)');
   renderSparkline('spark-fans',   get7DayBuckets(fans),   'var(--dash-green)');
-  renderSparkline('spark-clicks', get7DayBuckets(clicks), '#999');
+  renderSparkline('spark-clicks', get7DayBuckets(clicks), 'var(--dash-t3)');
 }
 
 /* ── LIVE ACTIVITY FEED ── */
