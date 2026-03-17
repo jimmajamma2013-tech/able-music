@@ -842,7 +842,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
     border-left:none;
   }
 
-  .form-side { padding:32px 24px; align-items:flex-start; min-height:unset; }
+  /* C7 #33 — safe-area inset so nav buttons clear iOS home indicator */
+  .form-side { padding:32px 24px max(32px, env(safe-area-inset-bottom, 32px)); align-items:flex-start; min-height:unset; }
   .step-title { font-size:44px; }
   .preview-phone { width:200px; height:420px; }
   .moment-grid { gap:8px; }
@@ -1330,6 +1331,15 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
             <span class="moment-card__desc">Tickets jump to the front. Fans know what to do.</span>
           </span>
         </button>
+      </div>
+
+      <!-- C7 #37 — release date input shown when pre-release or live selected -->
+      <div id="step1RelDate" style="display:none;margin-top:20px;">
+        <div class="field">
+          <label class="field-label" for="iReleaseDate">Release date</label>
+          <input class="field-input" type="date" id="iReleaseDate" style="color-scheme:dark;">
+          <p class="field-hint">Don't have a date yet? Leave this blank — you can set it any time.</p>
+        </div>
       </div>
 
       <div class="step-nav">
@@ -1971,7 +1981,10 @@ function updateMiniPreview() {
 function tryStep1() {
   // Step 1 is now the moment picker — validate a mode is selected
   if (!_v2Mode) return;
-  saveDraft({ stateOverride: _v2Mode });
+  // C7 #37 — capture optional release date when pre-release/live selected
+  const relDateInput = document.getElementById('iReleaseDate');
+  const releaseDate  = relDateInput && relDateInput.value ? relDateInput.value : null;
+  saveDraft({ stateOverride: _v2Mode, ...(releaseDate ? { releaseDate } : {}) });
   goToStep('step2');
 }
 
@@ -2022,6 +2035,9 @@ function v2SelectMoment(mode, btn) {
   if (btn) btn.classList.add('on');
   const nextBtn = document.getElementById('v2MomentNext');
   if (nextBtn) nextBtn.disabled = false;
+  // C7 #37 — show release date input for pre-release / live modes
+  const relDateWrap = document.getElementById('step1RelDate');
+  if (relDateWrap) relDateWrap.style.display = (mode === 'pre-release' || mode === 'live') ? 'block' : 'none';
 }
 
 function tryStep2() {

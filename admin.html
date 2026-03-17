@@ -6827,22 +6827,15 @@ function loadRealStats() {
   const clickLabelEl = document.getElementById('statClicksLabel');
   if (clickLabelEl) clickLabelEl.textContent = clickLabelMap[effState] || 'Link taps';
 
-  // Home stats
+  // C7 #30 — batch all non-animated stat DOM writes in a single RAF frame
   const isDay1 = viewsTotal === 0;
   animateCount('statViews',  viewsTotal  || '—');
-  set('statViewsDelta', isDay1 ? 'Day 1 ✦' : trendStr(viewsWeek, viewsPrev));
-  if (isDay1) { const dEl = document.getElementById('statViewsDelta'); if (dEl) dEl.style.color = 'var(--acc,#f4b942)'; }
-  cls('statViewsDelta', (!isDay1 && (viewsWeek || viewsPrev)) ? trendCls(viewsWeek, viewsPrev) : '');
   animateCount('statClicks', clicksTotal || '—');
-  set('statClickRate',  ctr !== '—' ? ctr + ' click rate' : (isDay1 ? 'Share your link to see taps' : 'No clicks yet'));
   animateCount('statFans',   fansTotal   || '—');
-  set('statFansDelta',  trendStr(fansWeek, fansPrev));
-  cls('statFansDelta', fansWeek || fansPrev ? trendCls(fansWeek, fansPrev) : '');
   // Days active streak (consecutive daily admin visits)
-  (function() {
+  const _streak30 = (function() {
     const visitDates = safeLS('admin_visit_dates', []).slice().sort();
-    if (!visitDates.length) { set('statStreak', '1'); set('statStreakDelta', 'Day 1 ✦'); return; }
-    // Count consecutive days ending today or yesterday
+    if (!visitDates.length) return 1;
     let streak = 0;
     const today = new Date().toISOString().slice(0,10);
     let cursor = today;
@@ -6853,31 +6846,43 @@ function loadRealStats() {
         d.setDate(d.getDate() - 1);
         cursor = d.toISOString().slice(0,10);
       } else if (visitDates[i] < cursor) {
-        // Gap — streak ends
         break;
       }
     }
-    streak = Math.max(streak, 1);
-    animateCount('statStreak', streak);
-    set('statStreakDelta', streak === 1 ? 'Day 1' : `${streak} day${streak !== 1 ? 's' : ''} in a row`);
-    if (streak >= 7) { const el = document.getElementById('statStreakDelta'); if (el) el.classList.add('up'); }
+    return Math.max(streak, 1);
   })();
+  animateCount('statStreak', _streak30);
 
   // Analytics page stats (mirrors home)
   animateCount('aStatViews',  viewsTotal  || '—');
-  set('aStatViewsD', viewsWeek   ? '↑ ' + viewsWeek + ' this week' : ' ');
   animateCount('aStatClicks', clicksTotal || '—');
-  set('aStatCtr',    ctr !== '—' ? ctr + ' CTR' : ' ');
   animateCount('aStatFans',   fansTotal   || '—');
+
   // C4 #20 — fan conversion rate: fans / views
   const convRate = viewsTotal > 0 ? ((fansTotal / viewsTotal) * 100).toFixed(1) + '% conversion' : (fansWeek ? '↑ ' + fansWeek + ' this week' : ' ');
-  set('aStatFansD', convRate);
-  set('aStatRate',   ctr);
 
-  // Fan stats
-  set('statFansTotal', fansTotal  || '0');
-  set('fanStatTotal',  fansTotal  || '—');
-  set('fanStatWeek',   fansWeek   ? '↑ ' + fansWeek + ' this week' : ' ');
+  requestAnimationFrame(() => {
+    // Home stat delta labels
+    set('statViewsDelta', isDay1 ? 'Day 1 ✦' : trendStr(viewsWeek, viewsPrev));
+    if (isDay1) { const dEl = document.getElementById('statViewsDelta'); if (dEl) dEl.style.color = 'var(--acc,#f4b942)'; }
+    cls('statViewsDelta', (!isDay1 && (viewsWeek || viewsPrev)) ? trendCls(viewsWeek, viewsPrev) : '');
+    set('statClickRate',  ctr !== '—' ? ctr + ' click rate' : (isDay1 ? 'Share your link to see taps' : 'No clicks yet'));
+    set('statFansDelta',  trendStr(fansWeek, fansPrev));
+    cls('statFansDelta', fansWeek || fansPrev ? trendCls(fansWeek, fansPrev) : '');
+    set('statStreakDelta', _streak30 === 1 ? 'Day 1' : `${_streak30} day${_streak30 !== 1 ? 's' : ''} in a row`);
+    if (_streak30 >= 7) { const el = document.getElementById('statStreakDelta'); if (el) el.classList.add('up'); }
+
+    // Analytics labels
+    set('aStatViewsD', viewsWeek   ? '↑ ' + viewsWeek + ' this week' : ' ');
+    set('aStatCtr',    ctr !== '—' ? ctr + ' CTR' : ' ');
+    set('aStatFansD', convRate);
+    set('aStatRate',   ctr);
+
+    // Fan stats
+    set('statFansTotal', fansTotal  || '0');
+    set('fanStatTotal',  fansTotal  || '—');
+    set('fanStatWeek',   fansWeek   ? '↑ ' + fansWeek + ' this week' : ' ');
+  });
   // GDPR transparency — spec: "X fans on your list. Y confirmed for emails." (never hidden)
   const fanConfirmed = fans.filter(f => f.double_opted_in).length;
   if (fansTotal > 0) {
