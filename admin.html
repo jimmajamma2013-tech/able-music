@@ -148,7 +148,11 @@ body::before {
 .sb-divider { height:1px; background:rgba(255,255,255,.08); margin:8px 0; }
 .sb-section { font-size:9.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.35); padding:6px 12px 4px; }
 
-.sb-footer { padding:16px; border-top:1px solid rgba(255,255,255,.08); }
+.sb-footer { padding:16px; border-top:1px solid rgba(255,255,255,.08); display:flex; flex-direction:column; gap:12px; }
+.sb-qr-block { display:flex; flex-direction:column; align-items:center; gap:6px; }
+.sb-qr-canvas { border-radius:8px; width:120px; height:120px; display:block; }
+.sb-qr-download { font-size:10px; color:var(--dash-t3); text-decoration:none; cursor:pointer; background:none; border:none; font-family:var(--font); padding:0; }
+.sb-qr-download:hover { color:var(--acc); }
 .sb-view-btn {
   display:flex; align-items:center; justify-content:center; gap:8px;
   width:100%; padding:10px; border-radius:10px; font-size:12px; font-weight:600;
@@ -2341,7 +2345,12 @@ body::before {
   </nav>
 
   <div class="sb-footer">
-    <a class="sb-view-btn" href="able-v7.html" target="_blank">
+    <!-- P2.3: Sidebar QR code — src=qr tracking, accent-coloured -->
+    <div class="sb-qr-block" id="sbQrBlock" hidden>
+      <canvas class="sb-qr-canvas" id="sbQrCanvas" aria-label="QR code for your live page"></canvas>
+      <button class="sb-qr-download" onclick="downloadSbQR()" aria-label="Download QR code as PNG">Download QR</button>
+    </div>
+    <a class="sb-view-btn" href="able-v7.html" target="_blank" id="sbViewLiveBtn">
       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M1 7a6 6 0 1012 0A6 6 0 001 7z"/><path d="M7 4v3l2 2"/></svg>
       View live page
     </a>
@@ -2548,8 +2557,8 @@ body::before {
                     stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <div class="stat-label">Visits</div>
-        <div class="stat-value skel" id="statViews"> </div>
-        <div class="stat-delta skel" id="statViewsDelta"> </div>
+        <div class="stat-value skel" id="statViews" aria-hidden="true"> </div>
+        <div class="stat-delta skel" id="statViewsDelta" aria-hidden="true"> </div>
       </div>
       <div class="stat-card">
         <svg class="sparkline" viewBox="0 0 60 24" preserveAspectRatio="none"
@@ -2558,8 +2567,8 @@ body::before {
                     stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <div class="stat-label" id="statClicksLabel">Link taps</div>
-        <div class="stat-value skel" id="statClicks"> </div>
-        <div class="stat-delta skel" id="statClickRate"> </div>
+        <div class="stat-value skel" id="statClicks" aria-hidden="true"> </div>
+        <div class="stat-delta skel" id="statClickRate" aria-hidden="true"> </div>
       </div>
       <div class="stat-card">
         <svg class="sparkline" viewBox="0 0 60 24" preserveAspectRatio="none"
@@ -2568,8 +2577,8 @@ body::before {
                     stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <div class="stat-label">Fans</div>
-        <div class="stat-value skel" id="statFans"> </div>
-        <div class="stat-delta skel" id="statFansDelta"> </div>
+        <div class="stat-value skel" id="statFans" aria-hidden="true"> </div>
+        <div class="stat-delta skel" id="statFansDelta" aria-hidden="true"> </div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Days active</div>
@@ -3299,10 +3308,10 @@ body::before {
     </div>
     <!-- Basic stats (free) -->
     <div class="stats-row" style="margin-bottom:36px;">
-      <div class="stat-card"><div class="stat-label">Visits</div><div class="stat-value skel" id="aStatViews"> </div><div class="stat-delta skel" id="aStatViewsD"> </div></div>
-      <div class="stat-card"><div class="stat-label">Link clicks</div><div class="stat-value skel" id="aStatClicks"> </div><div class="stat-delta skel" id="aStatCtr"> </div></div>
-      <div class="stat-card"><div class="stat-label">Fans joined</div><div class="stat-value skel" id="aStatFans"> </div><div class="stat-delta skel" id="aStatFansD"> </div></div>
-      <div class="stat-card"><div class="stat-label">Click rate</div><div class="stat-value skel" id="aStatRate"> </div><div class="stat-delta" id="aStatRateDelta"> </div></div>
+      <div class="stat-card"><div class="stat-label">Visits</div><div class="stat-value skel" id="aStatViews" aria-hidden="true"> </div><div class="stat-delta skel" id="aStatViewsD" aria-hidden="true"> </div></div>
+      <div class="stat-card"><div class="stat-label">Link clicks</div><div class="stat-value skel" id="aStatClicks" aria-hidden="true"> </div><div class="stat-delta skel" id="aStatCtr" aria-hidden="true"> </div></div>
+      <div class="stat-card"><div class="stat-label">Fans joined</div><div class="stat-value skel" id="aStatFans" aria-hidden="true"> </div><div class="stat-delta skel" id="aStatFansD" aria-hidden="true"> </div></div>
+      <div class="stat-card"><div class="stat-label">Click rate</div><div class="stat-value skel" id="aStatRate" aria-hidden="true"> </div><div class="stat-delta" id="aStatRateDelta"> </div></div>
     </div>
     <!-- Free: top CTAs clicked -->
     <div class="dash-card" style="margin-bottom:36px;">
@@ -7107,6 +7116,8 @@ window.addEventListener('DOMContentLoaded', () => {
   if (lc) lc.onclick = () => window.open(`able-v7.html?handle=${encodeURIComponent(handle)}`, '_blank');
   const qaLive = document.getElementById('qaViewLiveBtn');
   if (qaLive) qaLive.href = `able-v7.html?handle=${encodeURIComponent(handle)}`;
+  const sbLive = document.getElementById('sbViewLiveBtn');
+  if (sbLive) sbLive.href = `able-v7.html?handle=${encodeURIComponent(handle)}`;
 
   // Settings page
   if (document.getElementById('settingsSlug')) document.getElementById('settingsSlug').value = handle;
@@ -7222,6 +7233,7 @@ window.addEventListener('DOMContentLoaded', () => {
   renderAdminSupport();
   hydratePlatformFields(v3data);
   renderQR();
+  renderSbQR();
 
   // Refresh activity every 30s (catches clicks from profile in another tab)
   // Skip when tab is hidden to avoid wasted work on mobile
@@ -7373,6 +7385,34 @@ function renderQR() {
 
 function downloadQR() {
   const canvas = document.getElementById('qrCanvas');
+  if (!canvas) return;
+  const link = document.createElement('a');
+  link.download = 'able-qr.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+/* P2.3: Sidebar QR — compact 120px, same accent colour + src=qr tracking */
+function renderSbQR() {
+  const data   = safeLS(V3_KEY, {});
+  const handle = data.handle || (data.name || 'artist').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const url    = `https://ablemusic.co/${handle}?src=qr`;
+  const accent = data.accent || '#c9a84c';
+  const block  = document.getElementById('sbQrBlock');
+  const canvas = document.getElementById('sbQrCanvas');
+  if (!block || !canvas) return;
+  if (typeof QRCode === 'undefined') return; // CDN unavailable — hide silently
+  block.hidden = false;
+  QRCode.toCanvas(canvas, url, {
+    width: 120,
+    margin: 1,
+    color: { dark: accent, light: '#09090f' },
+    errorCorrectionLevel: 'M',
+  }, err => { if (err) console.warn('Sidebar QR error', err); });
+}
+
+function downloadSbQR() {
+  const canvas = document.getElementById('sbQrCanvas');
   if (!canvas) return;
   const link = document.createElement('a');
   link.download = 'able-qr.png';
