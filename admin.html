@@ -4475,7 +4475,7 @@ function evaluateNudge() {
     },
     () => {
       // P0.2 artist-success: day-0 bio nudge (highest priority on first visit)
-      const visits = JSON.parse(localStorage.getItem('admin_visit_dates') || '[]');
+      const visits = safeLS('admin_visit_dates', []);
       if (visits.length <= 1 && !dismissed.includes('bio-nudge')) {
         const profile = safeLS('able_v3_profile', {});
         const name = profile.name || 'artist';
