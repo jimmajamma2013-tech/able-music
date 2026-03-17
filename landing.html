@@ -1,0 +1,2019 @@
+<!--
+================================================================================
+  ABLE MUSIC — Landing Page (landing.html) v2
+================================================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data:; connect-src 'self' https:;">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#0f1624">
+  <title>ABLE — Your artist page, built for real fans</title>
+  <meta name="description" content="Your page shifts with your moment. Release day, gig night, new drop — ABLE knows. Every fan sign-up goes straight to your list. Free forever.">
+  <link rel="canonical" href="https://ablemusic.co/">
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="ABLE">
+  <meta property="og:title"       content="ABLE — Your artist page, built for real fans">
+  <meta property="og:description" content="Build your fan list. Own your relationship. Free forever.">
+  <meta property="og:url"         content="https://ablemusic.co/">
+  <meta property="og:image"       content="https://ablemusic.co/assets/og/og-landing.png">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <!-- Twitter / X -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:site"        content="@ablefm">
+  <meta name="twitter:title"       content="ABLE — Your artist page, built for real fans">
+  <meta name="twitter:description" content="Your page shifts with your moment. Release day, gig night, new drop — ABLE knows. Every fan sign-up goes straight to your list.">
+  <meta name="twitter:image"       content="https://ablemusic.co/assets/og/og-landing.png">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ABLE">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@700;800;900&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@700;800;900&display=swap"></noscript>
+  <style>
+    :root {
+      /* ── FOUNDATION — ethereal blue, between light and dark ── */
+      --bg:            #0f1624;
+      --bg-mid:        #141d2e;
+      --card:          #192438;
+      --card-raised:   #1f2d45;
+
+      /* ── BORDER ── */
+      --border:        rgba(138,180,206,0.10);
+      --border-mid:    rgba(138,180,206,0.18);
+      --border-strong: rgba(138,180,206,0.30);
+
+      /* ── ACCENT — warm gold per DOCTRINE.md §88 ── */
+      --accent:        #c9a84c;
+      --accent-rgb:    201,168,76;
+      --accent-glow:   rgba(201,168,76,0.13);
+      --accent-dim:    rgba(138,180,206,0.09);
+      --accent-border: rgba(138,180,206,0.24);
+
+      /* ── TEXT — cool blue-white ── */
+      --text:          #ccddef;
+      --text-2:        rgba(204,221,239,0.75);
+      --text-3:        rgba(204,221,239,0.68);
+      --text-4:        rgba(204,221,239,0.28);
+
+      /* ── WISPY ACCENT SURFACES — blue-tinted ── */
+      --wisp-sage:     rgba(90,140,190,0.07);
+      --wisp-rose:     rgba(138,180,206,0.06);
+      --wisp-lavender: rgba(110,100,200,0.07);
+      --wisp-gold:     rgba(138,180,206,0.05);
+      --wisp-border-sage:     rgba(90,140,190,0.14);
+      --wisp-border-lavender: rgba(110,100,200,0.14);
+
+      /* ── STATE PASTELS ── */
+      --state-live:    #7eaac8;
+      --state-pre:     #a8b878;
+      --state-gig:     #b89068;
+      --state-stream:  #6890b0;
+      --state-ok:      #78a880;
+      --state-pro:     #9870a8;
+
+      /* ── TYPE ── */
+      --font:           'DM Sans', system-ui, sans-serif;
+      --font-d:         'Barlow Condensed', 'DM Sans', sans-serif;
+      --font-editorial: 'Barlow Condensed', 'DM Sans', sans-serif;
+      --spring:         cubic-bezier(0.34,1.56,0.64,1);
+      --ease:           cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    [hidden] { display: none !important; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: var(--font); cursor: pointer; border: none; background: none; }
+
+    /* ── ETHEREAL GRAIN TEXTURE ─────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      pointer-events: none;
+      opacity: 0.058;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 180px 180px;
+    }
+
+    /* ── SCROLL ANIMATIONS ─────────────────────────────────────── */
+    /* Progressive enhancement: content visible by default, hidden only when JS runs */
+    .js .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+    }
+    .fade-up.in { opacity: 1; transform: none; }
+    .fade-up:nth-child(2) { transition-delay: 0.08s; }
+    .fade-up:nth-child(3) { transition-delay: 0.16s; }
+    .fade-up:nth-child(4) { transition-delay: 0.24s; }
+    .fade-up:nth-child(5) { transition-delay: 0.32s; }
+    .fade-up:nth-child(6) { transition-delay: 0.40s; }
+    @media (prefers-reduced-motion: reduce) {
+      .js .fade-up { opacity: 1; transform: none; transition: none; }
+      .nav__cta-dot,
+      .dp-waveform,
+      .marquee-inner,
+      .hero__cta-wrap { animation: none !important; }
+      .marquee-inner { animation: none !important; transform: none; }
+    }
+
+    /* ── NAV ─────────────────────────────────────────────────────── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; height: 58px;
+      background: rgba(15,22,36,0.92);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav__logo {
+      display: flex; align-items: center; gap: 10px;
+      color: var(--text); text-decoration: none;
+    }
+    .nav__logo-type {
+      font-family: var(--font-d); font-size: 20px; font-weight: 700;
+      letter-spacing: 0.06em; color: var(--text);
+    }
+    .nav__links { display: flex; align-items: center; gap: 4px; }
+    .nav__link { font-size: 13px; font-weight: 500; color: var(--text-2); padding: 7px 13px; border-radius: 8px; transition: color 0.15s; }
+    .nav__link:hover { color: var(--text); }
+    .nav__cta {
+      font-size: 13px; font-weight: 700; background: var(--accent); color: #060e1a;
+      padding: 8px 18px; border-radius: 8px; display: flex; align-items: center; gap: 7px;
+      box-shadow: 0 1px 8px rgba(var(--accent-rgb),0.22);
+      transition: opacity 0.15s, transform 0.2s var(--spring);
+    }
+    .nav__cta:hover { opacity: 0.88; transform: scale(1.03); }
+    .nav__cta-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #2ecc71; flex-shrink: 0;
+      animation: rec-pulse 2s ease-in-out infinite;
+    }
+    @keyframes rec-pulse {
+      0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(46,204,113,0.6); }
+      50%      { opacity: 0.7; box-shadow: 0 0 0 5px rgba(46,204,113,0); }
+    }
+    .nav__cta-dot { position: relative; }
+    .nav__cta-dot::after {
+      content: attr(title);
+      position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+      background: rgba(20,22,40,0.95); color: #fff; font-size: 11px; white-space: nowrap;
+      padding: 4px 8px; border-radius: 6px; pointer-events: none;
+      opacity: 0; transition: opacity 0.15s;
+    }
+    .nav__cta-dot:hover::after { opacity: 1; }
+    @media (max-width: 520px) { .nav__link { display: none; } }
+
+    /* ── MARQUEE TICKER ──────────────────────────────────────────── */
+    .marquee-strip {
+      overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      background: var(--bg-mid); padding: 12px 0;
+    }
+    .marquee-inner {
+      display: flex; white-space: nowrap;
+      animation: marquee-scroll 32s linear infinite;
+    }
+    .marquee-inner:hover { animation-play-state: paused; }
+    @keyframes marquee-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .marquee-item {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 0 28px; font-size: 11px; font-weight: 700;
+      letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-3);
+    }
+    .marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); opacity: 0.5; flex-shrink: 0; }
+
+    /* ── HERO ─────────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100svh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 110px 24px 40px; position: relative;
+      text-align: center;
+    }
+    /* Ethereal blue ambient — deep indigo top, misty blue right */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 60% at 5% 10%, rgba(70,110,200,0.12) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 45% at 90% 15%, rgba(138,180,206,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 85%, rgba(110,90,200,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 20% 85%, rgba(80,160,200,0.07) 0%, transparent 55%);
+    }
+    /* Subtle horizontal lines — ethereal grid */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: repeating-linear-gradient(
+        180deg,
+        transparent 0px,
+        transparent 47px,
+        rgba(138,180,206,0.04) 47px,
+        rgba(138,180,206,0.04) 48px
+      );
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 0%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 0%, transparent 100%);
+    }
+    .hero__eyebrow {
+      font-family: var(--font); font-size: 12px; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 20px; display: inline-block;
+      animation: fadeDown 0.6s var(--ease) both;
+    }
+    @keyframes fadeDown { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:none; } }
+    .hero__headline {
+      font-family: var(--font-d);
+      font-size: clamp(52px, 6vw, 84px);
+      font-weight: 900; text-transform: uppercase;
+      letter-spacing: -1px; line-height: 0.90;
+      color: var(--text); max-width: 960px;
+      animation: heroIn 0.7s var(--ease) 0.1s both;
+    }
+    @keyframes heroIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+    /* Editorial contrast: the key word goes Fraunces italic in terracotta */
+    .hero__headline em {
+      font-family: var(--font-editorial);
+      font-style: italic;
+      text-transform: none;
+      font-size: 0.92em;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+      font-variation-settings: 'opsz' 72;
+      display: inline-block;
+      vertical-align: baseline;
+    }
+    .hero__sub {
+      font-size: clamp(17px, 1.8vw, 20px); color: var(--text-2);
+      max-width: 460px; line-height: 1.7; margin-top: 22px;
+      animation: heroIn 0.7s var(--ease) 0.2s both;
+      font-weight: 400;
+    }
+    /* Mobile: show condensed single-line sub only — long version with <br><br> pushes CTA below fold */
+    .hero__sub--short { display: none; }
+    @media (max-width: 640px) {
+      .hero { padding-top: 72px; }
+      .hero__sub--long { display: none; }
+      .hero__sub--short { display: block; }
+      .hero__platforms { margin-top: 12px; }
+      .hero__actions { margin-top: 18px; }
+    }
+
+    /* Platform logos */
+    .hero__platforms {
+      display: flex; align-items: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; justify-content: center;
+      animation: heroIn 0.7s var(--ease) 0.28s both;
+    }
+    .hero__platforms-label { font-size: 11px; font-weight: 600; color: var(--text-3); letter-spacing: 0.5px; }
+    .platform-icon {
+      height: 26px; padding: 0 10px; border-radius: 6px;
+      background: var(--card); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
+      color: var(--text-3); transition: background 0.15s, color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+      box-shadow: 0 1px 3px rgba(8,16,40,0.3);
+    }
+    .platform-icon:hover { background: var(--bg-mid); color: var(--text-2); border-color: var(--border-mid); }
+
+    .hero__actions {
+      display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; justify-content: center;
+      animation: heroIn 0.7s var(--ease) 0.35s both;
+    }
+    .btn-primary {
+      font-size: 15px; font-weight: 700; background: var(--accent); color: #060e1a;
+      padding: 14px 28px; border-radius: 10px;
+      box-shadow: 0 2px 14px rgba(var(--accent-rgb),0.28), 0 1px 3px rgba(var(--accent-rgb),0.18);
+      transition: opacity 0.15s, transform 0.3s var(--spring);
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-ghost {
+      font-size: 15px; font-weight: 600; color: var(--text-2);
+      padding: 14px 24px; border-radius: 10px;
+      border: 1.5px solid var(--border-mid); background: transparent;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-ghost:hover { background: var(--card); color: var(--text); border-color: var(--border-strong); }
+    *:focus:not(:focus-visible) { outline: none; }
+    *:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 2px var(--page, #0d0e1a),
+        0 0 0 4px var(--accent),
+        0 0 0 6px rgba(var(--accent-rgb, 224,82,66), 0.25);
+    }
+    .hero__trust-line {
+      font-size: 12px; color: rgba(255,255,255,0.38);
+      margin-top: 12px;
+      animation: heroIn 0.7s var(--ease) 0.38s both;
+    }
+    .hero__micro {
+      font-size: 12px; color: var(--text-3); margin-top: 4px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .micro-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-3); }
+
+    /* ── DEMO PHONE ──────────────────────────────────────────── */
+
+    /* Phone chrome wrapper */
+    .demo-phone-wrap {
+      display: flex; flex-direction: column; align-items: center;
+      animation: heroIn 0.9s var(--ease) 0.3s both;
+      position: relative;
+    }
+    /* Glow beneath phone */
+    .demo-phone-wrap::after {
+      content: '';
+      position: absolute;
+      bottom: -28px; left: 50%; transform: translateX(-50%);
+      width: 220px; height: 120px;
+      background: radial-gradient(ellipse at 50% 100%, rgba(200,104,88,0.28) 0%, transparent 70%);
+      pointer-events: none;
+      filter: blur(18px);
+    }
+
+    /* The phone chrome itself */
+    #demoPhone {
+      width: 280px;
+      border-radius: 44px;
+      background: var(--dp-bg, #0d0e1a);
+      border: 1.5px solid rgba(255,255,255,0.14);
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,0.6),
+        0 2px 0 rgba(255,255,255,0.06) inset,
+        0 48px 120px rgba(0,0,0,0.85),
+        0 16px 40px rgba(0,0,0,0.6);
+      overflow: hidden;
+      position: relative;
+      transition: background 0.3s var(--ease);
+      flex-shrink: 0;
+    }
+
+    /* Glass theme: artwork bleeds full height */
+    #demoPhone[data-theme="glass"] {
+      background-image: linear-gradient(160deg, #3a1810 0%, #1e0e08 40%, #0d0d0d 100%);
+      background-size: cover;
+    }
+    #demoPhone[data-theme="light"] {
+      border-color: rgba(0,0,0,0.12);
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,0.08),
+        0 48px 120px rgba(0,0,0,0.25),
+        0 16px 40px rgba(0,0,0,0.15);
+    }
+
+    /* Dynamic Island */
+    .dp-island {
+      width: 88px; height: 26px;
+      background: #000;
+      border-radius: 0 0 18px 18px;
+      margin: 0 auto 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Status bar */
+    .dp-sb {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 22px 4px;
+      font-size: 9px; font-weight: 700;
+      color: var(--dp-text, #e4dfd2);
+    }
+    .dp-sb-icons { display: flex; align-items: center; gap: 3px; font-size: 8px; opacity: 0.7; }
+
+    /* Hero artwork area */
+    .dp-hero {
+      height: 170px; position: relative; overflow: hidden;
+      background: linear-gradient(160deg, #3a1810 0%, #1e0e08 50%, #0d0a08 100%);
+    }
+    #demoPhone[data-theme="glass"] .dp-hero {
+      background: transparent;
+    }
+    .dp-hero-fade {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--dp-bg, #0d0e1a));
+      pointer-events: none;
+    }
+    #demoPhone[data-theme="glass"] .dp-hero-fade {
+      background: linear-gradient(to bottom, transparent, rgba(14,10,8,0.4));
+    }
+    .dp-artist-name {
+      position: absolute; bottom: 14px; left: 14px; z-index: 2;
+      font-family: var(--font-d); font-size: 34px; font-weight: 900;
+      font-style: italic; text-transform: uppercase;
+      color: #fff; line-height: 0.9;
+      text-shadow: 0 2px 16px rgba(0,0,0,0.7);
+    }
+    .dp-badge {
+      position: absolute; top: 10px; right: 10px; z-index: 2;
+      display: flex; align-items: center; gap: 4px;
+      padding: 3px 8px; border-radius: 20px;
+      font-size: 8px; font-weight: 700; letter-spacing: 0.3px;
+      color: #fff; border: 1px solid;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+    .dp-badge-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: currentColor; flex-shrink: 0;
+      animation: dp-pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes dp-pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+    .dp-badge-text { white-space: nowrap; }
+
+    /* Hero CTAs */
+    .dp-ctas {
+      display: flex; gap: 6px; padding: 8px 12px 6px;
+    }
+    .dp-cta1 {
+      flex: 1; font-size: 9.5px; font-weight: 700;
+      padding: 7px 6px; border-radius: 9px;
+      background: #c86858; color: #fff; border: none;
+      text-align: center; font-family: var(--font);
+      box-shadow: 0 2px 8px rgba(200,104,88,0.32);
+      cursor: pointer;
+    }
+    .dp-cta2 {
+      flex: 1; font-size: 9.5px; font-weight: 700;
+      padding: 7px 6px; border-radius: 9px;
+      background: transparent; color: var(--dp-text, #e4dfd2);
+      border: 1px solid var(--dp-border, rgba(255,252,240,0.12));
+      text-align: center; font-family: var(--font);
+      cursor: pointer;
+    }
+
+    /* Countdown row (pre-release only) */
+    .dp-countdown {
+      display: flex; justify-content: center; gap: 12px;
+      padding: 2px 12px 6px; font-size: 8px;
+      font-weight: 700; color: var(--dp-text2, rgba(228,223,210,0.55));
+      letter-spacing: 0.2px;
+    }
+    .dp-countdown-sep { opacity: 0.4; }
+
+    /* Platform pills row */
+    .dp-pills {
+      display: flex; gap: 4px; padding: 2px 12px 8px; flex-wrap: wrap;
+    }
+    .dp-pill {
+      font-size: 7.5px; font-weight: 600;
+      padding: 3px 8px; border-radius: 20px;
+      background: var(--dp-surface, #131628);
+      border: 1px solid var(--dp-border, rgba(255,252,240,0.07));
+      color: var(--dp-text2, rgba(228,223,210,0.55));
+      white-space: nowrap;
+    }
+    .dp-pill-more {
+      color: #c86858; border-color: rgba(200,104,88,0.22);
+    }
+
+    /* ── SPOTIFY EMBED MOCKUP ────────────────────────────────── */
+    .dp-spotify {
+      margin: 0 10px 8px;
+      background: #121212;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    #demoPhone[data-theme="light"] .dp-spotify { background: #e8e4de; border-color: rgba(0,0,0,0.08); }
+    .dp-sp-top {
+      display: flex; align-items: center; gap: 8px; padding: 8px 10px 6px;
+    }
+    .dp-sp-art {
+      width: 34px; height: 34px; border-radius: 4px; flex-shrink: 0;
+      background: linear-gradient(135deg, #c86858 0%, #5a1e14 100%);
+    }
+    .dp-sp-meta { flex: 1; min-width: 0; }
+    .dp-sp-track {
+      font-size: 8.5px; font-weight: 700; color: #fff; margin: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    #demoPhone[data-theme="light"] .dp-sp-track { color: #1c1a14; }
+    .dp-sp-artist {
+      font-size: 7px; color: rgba(255,255,255,0.55); margin: 1px 0 0;
+    }
+    #demoPhone[data-theme="light"] .dp-sp-artist { color: rgba(28,26,20,0.5); }
+    .dp-sp-badge {
+      font-size: 6px; font-weight: 800; letter-spacing: 0.08em;
+      color: #1DB954; align-self: flex-start; margin-top: 1px;
+    }
+    .dp-sp-prog { padding: 0 10px 8px; }
+    .dp-sp-bar {
+      height: 2px; background: rgba(255,255,255,0.18); border-radius: 2px;
+      margin-bottom: 4px; position: relative;
+    }
+    #demoPhone[data-theme="light"] .dp-sp-bar { background: rgba(0,0,0,0.14); }
+    .dp-sp-fill {
+      width: 42%; height: 100%; background: #1DB954; border-radius: 2px;
+    }
+    .dp-sp-times {
+      display: flex; justify-content: space-between;
+      font-size: 6px; color: rgba(255,255,255,0.4);
+    }
+    #demoPhone[data-theme="light"] .dp-sp-times { color: rgba(28,26,20,0.4); }
+    .dp-sp-controls {
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+      padding: 0 10px 9px;
+    }
+    .dp-sp-btn { font-size: 10px; color: rgba(255,255,255,0.55); cursor: default; }
+    #demoPhone[data-theme="light"] .dp-sp-btn { color: rgba(0,0,0,0.5); }
+    .dp-sp-play {
+      width: 22px; height: 22px; border-radius: 50%; background: #1DB954;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dp-sp-play::after {
+      content: ''; width: 0; height: 0;
+      border-top: 4px solid transparent; border-bottom: 4px solid transparent;
+      border-left: 6.5px solid #000; margin-left: 1.5px;
+    }
+
+    /* ── YOUTUBE THUMBNAIL ───────────────────────────────────── */
+    .dp-youtube {
+      margin: 0 10px 8px;
+      border-radius: 10px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+    }
+    #demoPhone[data-theme="light"] .dp-youtube { border-color: rgba(0,0,0,0.08); }
+    .dp-yt-thumb {
+      height: 58px; position: relative;
+      background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dp-yt-play {
+      width: 28px; height: 20px; background: #FF0000; border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dp-yt-play::after {
+      content: ''; width: 0; height: 0;
+      border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+      border-left: 8px solid #fff; margin-left: 2px;
+    }
+    .dp-yt-label {
+      padding: 5px 9px 7px; background: #121212;
+      font-size: 7.5px; font-weight: 600; color: rgba(255,255,255,0.85);
+    }
+    #demoPhone[data-theme="light"] .dp-yt-label { background: #e0dcd5; color: rgba(28,26,20,0.8); }
+
+    /* ── EVENT CARD (gig state) ──────────────────────────────── */
+    .dp-event {
+      margin: 0 10px 8px; border-radius: 10px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .dp-ev-img {
+      height: 50px;
+      background: linear-gradient(160deg, #1a0e08 0%, #3d1c0e 40%, #2a1408 100%);
+      position: relative;
+    }
+    .dp-ev-img::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.6));
+    }
+    .dp-ev-body {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 10px; background: var(--dp-surface, #131628);
+    }
+    .dp-ev-date { text-align: center; flex-shrink: 0; }
+    .dp-ev-mon {
+      font-size: 6px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: #c86858; display: block;
+    }
+    .dp-ev-day {
+      font-size: 16px; font-weight: 800; line-height: 1;
+      color: var(--dp-text, #e4dfd2); display: block;
+    }
+    .dp-ev-venue {
+      font-size: 8.5px; font-weight: 700; color: var(--dp-text, #e4dfd2); margin: 0;
+    }
+    .dp-ev-loc {
+      font-size: 7px; color: var(--dp-text2, rgba(228,223,210,0.55)); margin: 1px 0 0;
+    }
+    .dp-ev-ticket {
+      background: #c86858; color: #fff;
+      font-size: 7px; font-weight: 800; letter-spacing: 0.1em;
+      text-transform: uppercase; text-align: center;
+      padding: 8px; cursor: default;
+    }
+
+    /* ── WORLD MAP DEMO STATE ────────────────────────────────── */
+    .dp-wm { margin: 0 10px 8px; }
+    .dp-wm-month {
+      font-size: 15px; font-weight: 700; letter-spacing: -0.02em;
+      color: var(--dp-text, #e4dfd2);
+      padding: 0 2px 6px;
+    }
+    .dp-wm-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .dp-wm-cell {
+      height: 28px;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center;
+      font-size: 6.5px; font-weight: 500;
+      color: rgba(232,228,222,0.45);
+      gap: 2px;
+      border-right: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .dp-wm-cell:nth-child(7n) { border-right: none; }
+    .dp-wm-dot { width: 4px; height: 4px; border-radius: 50%; }
+    .dp-wm-cell--accent .dp-wm-dot   { background: #e05242; }
+    .dp-wm-cell--coral .dp-wm-dot    { background: #e8715a; }
+    .dp-wm-cell--gold .dp-wm-dot     { background: #d4a84b; }
+    .dp-wm-cell--teal .dp-wm-dot     { background: #2db8b0; }
+    .dp-wm-cell--selected { background: rgba(224,82,66,0.12); }
+    .dp-wm-cell--selected .dp-wm-date { color: rgba(232,228,222,0.9); }
+    .dp-wm-cell--locked .dp-wm-dot   { background: rgba(255,255,255,0.25); }
+    .dp-wm-lock { font-size: 5px; opacity: 0.35; }
+    #demoPhone[data-theme="light"] .dp-wm-cell { color: rgba(28,26,20,0.4); }
+    #demoPhone[data-theme="light"] .dp-wm-grid { border-top-color: rgba(0,0,0,0.06); }
+    #demoPhone[data-theme="light"] .dp-wm-month { color: #1c1a14; }
+
+    /* Tab bar */
+    .dp-tabs {
+      display: flex;
+      background: var(--dp-tab, #0a0b14);
+      border-top: 1px solid var(--dp-border, rgba(255,252,240,0.07));
+      padding: 7px 4px 10px;
+    }
+    #demoPhone[data-theme="glass"] .dp-tabs {
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    }
+    .dp-tab {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; gap: 2px;
+    }
+    .dp-tab-icon { font-size: 13px; line-height: 1; color: var(--dp-text2, rgba(228,223,210,0.55)); }
+    .dp-tab-icon.active { color: #c86858; }
+    .dp-tab-label {
+      font-size: 6.5px; font-weight: 600;
+      color: var(--dp-text2, rgba(228,223,210,0.55)); opacity: 0.5;
+    }
+    .dp-tab-label.active { color: #c86858; opacity: 1; }
+
+    /* Theme CSS custom props */
+    #demoPhone[data-theme="dark"]     { --dp-bg:#0d0e1a; --dp-surface:#131628; --dp-text:#e4dfd2; --dp-text2:rgba(228,223,210,.55); --dp-border:rgba(255,252,240,.07); --dp-tab:#0a0b14; }
+    #demoPhone[data-theme="light"]    { --dp-bg:#f0ede8; --dp-surface:#e0dcd5; --dp-text:#1c1a14; --dp-text2:rgba(28,26,20,.52); --dp-border:rgba(28,26,20,.09); --dp-tab:#e8e4de; }
+    #demoPhone[data-theme="glass"]    { --dp-bg:transparent; --dp-surface:rgba(14,12,10,.55); --dp-text:#e4dfd2; --dp-text2:rgba(228,223,210,.65); --dp-border:rgba(255,252,240,.12); --dp-tab:rgba(8,7,5,.75); }
+    #demoPhone[data-theme="contrast"] { --dp-bg:#000; --dp-surface:#0c0c0c; --dp-text:#fff; --dp-text2:rgba(255,255,255,.55); --dp-border:rgba(255,255,255,.12); --dp-tab:#000; }
+
+    /* Light theme overrides */
+    #demoPhone[data-theme="light"] .dp-cta2 { color: #1c1a14; }
+    #demoPhone[data-theme="light"] .dp-artist-name { color: #1c1a14; text-shadow: none; }
+    #demoPhone[data-theme="light"] .dp-hero {
+      background: linear-gradient(160deg, #e8c4b0 0%, #d4a898 50%, #f0ede8 100%);
+    }
+    #demoPhone[data-theme="light"] .dp-hero-fade {
+      background: linear-gradient(to bottom, transparent, #f0ede8);
+    }
+    #demoPhone[data-theme="light"] .dp-sb { color: #1c1a14; }
+    #demoPhone[data-theme="contrast"] .dp-hero {
+      background: linear-gradient(160deg, #2a0e08 0%, #180804 50%, #000 100%);
+    }
+    #demoPhone[data-theme="contrast"] .dp-hero-fade {
+      background: linear-gradient(to bottom, transparent, #000);
+    }
+
+    /* ── PROOF STRIP ──────────────────────────────────────────── */
+    /* Quiet line — Angle 16/20: the page's second-strongest copy. Static. Stillness = confidence. */
+    .quiet-line {
+      font-size: 18px;
+      font-style: italic;
+      color: var(--text-3);
+      text-align: center;
+      padding: 32px 24px;
+      margin: 0;
+      line-height: 1.5;
+    }
+    @media (max-width: 640px) { .quiet-line { font-size: 15px; padding: 24px 20px; } }
+
+    .proof {
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; flex-wrap: wrap;
+      background: var(--card);
+    }
+    .proof__item {
+      flex: 1; min-width: 120px; max-width: 200px;
+      text-align: center; padding: 8px 16px;
+      border-right: 1px solid var(--border);
+    }
+    .proof__item:last-child { border-right: none; }
+    .proof__num {
+      font-family: var(--font-editorial); font-size: 44px; font-weight: 700;
+      font-style: italic; color: var(--accent);
+      letter-spacing: -0.5px; line-height: 1;
+      font-variation-settings: 'opsz' 44;
+    }
+    .proof__label { font-size: 11px; font-weight: 500; color: var(--text-3); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 6px; }
+    @media (max-width: 480px) {
+      .proof__item { border-right: none; border-bottom: 1px solid var(--border); min-width: 45%; }
+      .proof__item:last-child { border-bottom: none; }
+    }
+
+    /* ── DIFFERENTIATOR BAND ──────────────────────────────────── */
+    .diff-band {
+      padding: 36px 24px;
+      background: var(--wisp-sage);
+      border-bottom: 1px solid var(--wisp-border-sage);
+      border-top: 1px solid var(--wisp-border-sage);
+      text-align: center;
+      position: relative;
+    }
+    .diff-band__text {
+      font-size: 16px; font-weight: 400; color: var(--text-2);
+      max-width: 680px; margin: 0 auto; line-height: 1.75;
+      font-family: var(--font-editorial); font-style: italic;
+      font-variation-settings: 'opsz' 18;
+    }
+    .diff-band__text strong {
+      font-family: var(--font); font-style: normal;
+      color: var(--text); font-weight: 700;
+    }
+
+    /* ── SECTIONS ─────────────────────────────────────────────── */
+    .section { padding: 88px 24px; }
+    .section--alt { background: var(--wisp-sage); border-top: 1px solid var(--wisp-border-sage); border-bottom: 1px solid var(--wisp-border-sage); }
+    .section--lavender { background: var(--wisp-lavender); border-top: 1px solid var(--wisp-border-lavender); border-bottom: 1px solid var(--wisp-border-lavender); }
+    .section__inner { max-width: 1100px; margin: 0 auto; }
+    .section__eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-3); margin-bottom: 14px; }
+    .section__title {
+      font-family: var(--font-editorial); font-size: clamp(34px, 4.5vw, 58px); font-weight: 700;
+      font-style: italic; letter-spacing: -0.02em; line-height: 1.02;
+      color: var(--text); max-width: 680px; margin-bottom: 18px;
+      font-variation-settings: 'opsz' 48;
+    }
+    .section__title strong {
+      font-family: var(--font-d); font-style: normal; font-weight: 900;
+      text-transform: uppercase; letter-spacing: -0.5px; font-size: 0.95em;
+    }
+    .section__sub { font-size: 16px; color: var(--text-2); max-width: 500px; line-height: 1.7; margin-bottom: 52px; font-weight: 400; }
+
+    /* ── HERO FEATURES (2-col large) ──────────────────────────── */
+    .hero-features { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    @media (max-width: 700px) { .hero-features { grid-template-columns: 1fr; } }
+    .hero-feature {
+      background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+      padding: 32px; position: relative; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(8,16,40,0.35), 0 1px 3px rgba(8,16,40,0.25);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.25s var(--spring);
+    }
+    .hero-feature:hover {
+      border-color: var(--border-mid);
+      box-shadow: 0 8px 28px rgba(8,16,40,0.45), 0 2px 8px rgba(8,16,40,0.3);
+      transform: translateY(-3px);
+    }
+    .hero-feature__icon {
+      font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-3); margin-bottom: 16px; display: block;
+    }
+    .hero-feature__title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 10px; letter-spacing: -0.3px; line-height: 1.2; }
+    .hero-feature__desc { font-size: 14px; color: var(--text-2); line-height: 1.7; }
+    .hero-feature__visual {
+      margin-top: 24px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 12px; color: var(--text-3);
+    }
+    /* Colour swatch demo */
+    .colour-swatches { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+    .swatch {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1.5px solid rgba(255,252,240,0.12);
+    }
+    /* State demo */
+    .state-pills { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .state-pill {
+      font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── FEATURE GRID (smaller) ───────────────────────────────── */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+    .feature-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 1px 8px rgba(8,16,40,0.3), 0 1px 2px rgba(8,16,40,0.2);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.25s var(--spring);
+    }
+    .feature-card:hover { border-color: var(--border-mid); box-shadow: 0 6px 20px rgba(8,16,40,0.45); transform: translateY(-3px); }
+    .feature-card__icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(var(--accent-rgb),0.1); border: 1px solid rgba(var(--accent-rgb),0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 900; color: var(--accent);
+      margin-bottom: 14px;
+    }
+    .feature-card__title { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 6px; letter-spacing: -0.2px; }
+    .feature-card__desc { font-size: 12.5px; color: var(--text-2); line-height: 1.6; }
+
+    /* ── COMPARISON SECTION ───────────────────────────────────── */
+    .comp-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; max-width:1100px; margin:0 auto; }
+    @media (max-width:768px) { .comp-grid { grid-template-columns:1fr; gap:40px; } }
+    .comparison-table { border:1px solid var(--border); border-radius:16px; overflow:hidden; }
+    .comparison-header { display:grid; grid-template-columns:1fr 1fr; background:rgba(255,255,255,0.04); padding:12px 20px; border-bottom:1px solid var(--border); }
+    .comparison-header span:first-child { font-size:12px; font-weight:600; color:var(--text-3); letter-spacing:0.1em; text-transform:uppercase; }
+    .comparison-header span:last-child  { font-size:12px; font-weight:600; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase; }
+    .comparison-row { display:grid; grid-template-columns:1fr 1fr; padding:14px 20px; border-bottom:1px solid var(--border); gap:16px; }
+    .comparison-row:last-child { border-bottom:none; }
+    .col-linktree { font-size:14px; color:var(--text-3); line-height:1.5; }
+    .col-able { font-size:14px; color:var(--text); line-height:1.5; display:flex; align-items:flex-start; gap:8px; }
+    .col-able::before { content:'✓'; color:var(--accent); font-weight:700; flex-shrink:0; margin-top:1px; }
+    .switcher-cta { display:inline-flex; align-items:center; justify-content:center; height:48px; padding:0 24px; border:1.5px solid rgba(255,255,255,0.25); border-radius:10px; font-family:var(--font-body); font-size:15px; font-weight:600; color:var(--text); cursor:pointer; background:transparent; text-decoration:none; transition:all 200ms var(--ease-decel); margin-top:28px; width:100%; }
+
+    /* ── FEATURE COMPARISON TABLE ─────────────────────────────── */
+    .feat-table { width:100%; border-collapse:collapse; border:1px solid var(--border); border-radius:12px; overflow:hidden; font-size:13px; }
+    .feat-table thead th { padding:10px 14px; background:rgba(255,255,255,0.04); font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-3); text-align:center; border-bottom:1px solid var(--border); }
+    .feat-table thead th:first-child { text-align:left; color:var(--text-3); }
+    .feat-table thead th.th-able { color:var(--accent); }
+    .feat-table tbody tr { border-bottom:1px solid var(--border); }
+    .feat-table tbody tr:last-child { border-bottom:none; }
+    .feat-table tbody td { padding:11px 14px; color:var(--text-2); text-align:center; vertical-align:middle; }
+    .feat-table tbody td:first-child { text-align:left; color:var(--text); font-weight:500; }
+    .feat-table .ft-yes { color:var(--accent); font-weight:700; }
+    .feat-table .ft-no  { color:var(--text-3); }
+    .feat-table .ft-partial { color:var(--text-3); font-style:italic; }
+    @media (max-width:600px) {
+      .feat-table thead th, .feat-table tbody td { padding:9px 8px; font-size:12px; }
+      .feat-table thead th:first-child, .feat-table tbody td:first-child { font-size:11px; }
+    }
+    .switcher-cta:hover { border-color:rgba(255,255,255,0.45); background:rgba(255,255,255,0.05); }
+
+    /* ── STEPS ────────────────────────────────────────────────── */
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0; counter-reset: steps; }
+    .step {
+      counter-increment: steps; padding: 32px;
+      border-right: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .step:last-child { border-right: none; }
+    @media (max-width: 640px) { .steps { grid-template-columns:1fr; } .step { border-right: none; border-bottom: 1px solid var(--border); padding: 24px 0; } .step:last-child { border-bottom: none; } }
+    /* Big watermark number in background */
+    .step__num {
+      font-family: var(--font-d); font-size: 120px; font-weight: 900;
+      color: rgba(var(--accent-rgb),0.06); line-height: 1;
+      position: absolute; top: -8px; left: 16px;
+      letter-spacing: -4px; pointer-events: none; user-select: none;
+      transition: color 0.3s;
+    }
+    .step:hover .step__num { color: rgba(var(--accent-rgb),0.10); }
+    .step__num::before { content: counter(steps, decimal-leading-zero); }
+    .step__title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; letter-spacing: -0.2px; }
+    .step__desc { font-size: 13px; color: var(--text-2); line-height: 1.7; }
+
+    /* ── PRICING ──────────────────────────────────────────────── */
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; max-width: 920px; margin: 0 auto; align-items: start; }
+    .pricing-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+      padding: 28px 24px; position: relative;
+      box-shadow: 0 2px 12px rgba(8,16,40,0.35);
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.25s var(--spring);
+    }
+    .pricing-card:hover { border-color: var(--border-mid); box-shadow: 0 6px 24px rgba(8,16,40,0.5); transform: translateY(-2px); }
+    .pricing-card--featured {
+      border-color: rgba(var(--accent-rgb),0.40);
+      background: linear-gradient(160deg, rgba(var(--accent-rgb),0.09) 0%, var(--card) 50%);
+      box-shadow: 0 0 0 1px rgba(var(--accent-rgb),0.2), 0 20px 60px rgba(var(--accent-rgb),0.18), 0 4px 16px rgba(8,16,40,0.4);
+      transform: translateY(-12px);
+    }
+    .pricing-card--featured::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent 10%, var(--accent) 50%, transparent 90%);
+      border-radius: 18px 18px 0 0;
+    }
+.pricing-card__tier { font-size: 10px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .pricing-card__price { font-family: var(--font-editorial); font-size: 56px; font-weight: 700; font-style: italic; color: var(--text); line-height: 1; margin-bottom: 4px; font-variation-settings: 'opsz' 56; }
+    .pricing-card__price span { font-family: var(--font); font-size: 14px; font-weight: 500; color: var(--text-3); }
+    .pricing-card__desc { font-size: 13px; color: var(--text-2); margin-bottom: 20px; line-height: 1.6; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+    .pricing-card__features { list-style: none; display: flex; flex-direction: column; gap: 9px; margin-bottom: 24px; }
+    .pricing-card__features li { font-size: 13px; color: var(--text-2); display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
+    .pricing-card__features li::before { content: '✓'; color: var(--accent); font-weight: 800; flex-shrink: 0; font-size: 12px; margin-top: 1px; }
+    .pricing-card__features li.off { color: var(--text-3); }
+    .pricing-card__features li.off::before { content: '—'; color: var(--text-3); font-weight: 400; }
+    .btn-outline { width: 100%; padding: 13px; border-radius: 10px; font-size: 14px; font-weight: 600; text-align: center; border: 1.5px solid var(--border-mid); color: var(--text-2); background: transparent; transition: background 0.15s, color 0.15s, border-color 0.15s; display: block; }
+    .btn-outline:hover { background: var(--bg-mid); color: var(--text); border-color: var(--border-strong); }
+    .btn-accent { width: 100%; padding: 13px; border-radius: 10px; font-size: 14px; font-weight: 700; text-align: center; background: var(--accent); color: #060e1a; box-shadow: 0 2px 14px rgba(var(--accent-rgb),0.28); transition: opacity 0.15s, transform 0.2s var(--spring); display: block; }
+    .btn-accent:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ── QUOTE ────────────────────────────────────────────────── */
+    .quote-section { padding: 72px 24px; text-align: left; background: var(--wisp-lavender); border-top: 1px solid var(--wisp-border-lavender); border-bottom: 1px solid var(--wisp-border-lavender); }
+    .quote {
+      max-width: 700px; margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 16px 16px 0;
+      padding: 36px 44px; position: relative;
+      box-shadow: 0 4px 24px rgba(8,16,40,0.5);
+      transform: rotate(-1.2deg);
+      transform-origin: center left;
+    }
+    .quote__mark {
+      font-family: var(--font-editorial); font-size: 72px; font-weight: 300;
+      font-style: italic; color: var(--accent); line-height: 0.6; display: block;
+      margin-bottom: 22px; opacity: 0.5;
+      font-variation-settings: 'opsz' 72;
+    }
+    .quote__text {
+      font-family: var(--font-editorial); font-size: 19px; font-weight: 400; font-style: italic;
+      color: var(--text); line-height: 1.7;
+      font-variation-settings: 'opsz' 19;
+    }
+    .quote__author { font-size: 11px; color: var(--text-3); margin-top: 20px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; font-family: var(--font); font-style: normal; }
+    .quote__author strong { color: var(--text-2); font-weight: 700; }
+
+    /* ── FOOTER CTA ───────────────────────────────────────────── */
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-q {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      width: 100%; text-align: left; background: none; border: none; cursor: pointer;
+      padding: 22px 0; font-size: 15px; font-weight: 600; color: var(--text);
+      font-family: var(--font); line-height: 1.4; transition: color .15s;
+    }
+    .faq-q:hover { color: var(--accent); }
+    .faq-chevron { flex-shrink: 0; transition: transform .22s; color: var(--text-3); }
+    .faq-q[aria-expanded="true"] .faq-chevron { transform: rotate(180deg); color: var(--accent); }
+    .faq-a {
+      font-size: 14.5px; color: var(--text-2); line-height: 1.7;
+      padding-bottom: 20px; max-width: 600px;
+      animation: faqSlide .2s ease both;
+    }
+    @keyframes faqSlide { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+
+    .footer-cta { padding: 100px 24px 96px; text-align: center; position: relative; overflow: hidden; background: var(--bg-mid); border-top: 1px solid var(--border); }
+    .footer-cta::before {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; top: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 120%, rgba(138,180,206,0.14) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 35% at 15% 30%, rgba(80,120,200,0.09) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 35% at 85% 70%, rgba(110,90,200,0.08) 0%, transparent 55%);
+      pointer-events: none;
+      animation: cta-drift 8s ease-in-out infinite alternate;
+    }
+    @keyframes cta-drift {
+      from { opacity: 1; transform: scale(1) translateY(0); }
+      to   { opacity: 0.75; transform: scale(1.04) translateY(-8px); }
+    }
+    .footer-cta__headline {
+      font-family: var(--font-editorial); font-size: clamp(44px, 8vw, 82px);
+      font-weight: 700; font-style: italic; letter-spacing: -0.02em; line-height: 1.0;
+      margin-bottom: 22px; position: relative; z-index: 1;
+      font-variation-settings: 'opsz' 72;
+    }
+    .footer-cta__headline em { font-style: normal; color: var(--accent); }
+    .footer-cta__sub { font-size: 15px; color: var(--text-2); margin-bottom: 34px; position: relative; z-index: 1; font-weight: 400; line-height: 1.65; }
+
+    /* ── FOOTER ───────────────────────────────────────────────── */
+    .footer {
+      padding: 28px 28px 36px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: start;
+      gap: 20px;
+    }
+    @media (max-width: 640px) { .footer { grid-template-columns: 1fr; } }
+    .footer__logo { display: flex; align-items: center; gap: 10px; }
+    .footer__logo-type { font-family: var(--font-d); font-size: 20px; font-weight: 700; letter-spacing: 0.06em; color: var(--text); }
+    .footer__links { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+    .footer__link { font-size: 12px; color: var(--text-3); transition: color 0.15s; }
+    .footer__link:hover { color: var(--text-2); }
+    .footer__authenticity { font-size: 13px; color: var(--text-3); font-style: italic; border-top: 1px solid var(--border); padding-top: 20px; margin-top: 32px; text-align: center; line-height: 1.6; }
+    .footer__copy { font-size: 12px; color: var(--text-3); text-align: right; margin-top: 12px; }
+    @media (max-width: 640px) { .footer__copy { text-align: left; } }
+    .footer__fan-entry { font-size: 12px; color: var(--text-3); grid-column: 1 / -1; text-align: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .footer__fan-link { color: var(--text-3); text-decoration: underline; text-underline-offset: 3px; }
+    .footer__fan-link:hover { color: var(--text-2); }
+
+    /* ── HERO 2-COLUMN DESKTOP ──────────────────────────────── */
+    .hero__copy { width: 100%; }
+    .hero__visual { width: 100%; display: flex; flex-direction: column; align-items: center; }
+
+    @media (min-width: 900px) {
+      .hero {
+        flex-direction: row;
+        text-align: left;
+        padding: 100px 80px 80px;
+        gap: 80px;
+        max-width: 1280px;
+        margin: 0 auto;
+        align-items: center;
+        min-height: 100svh;
+      }
+      .hero__copy { flex: 0 0 420px; }
+      .hero__visual { flex: 1; position: relative; align-items: center; justify-content: center; }
+      .hero__platforms, .hero__actions, .hero__micro { justify-content: flex-start; }
+    }
+
+    /* ── PROOF LINES ────────────────────────────────────────────────────── */
+    .proof-lines {
+      display: flex; flex-wrap: wrap; gap: 5px;
+      justify-content: center; margin-bottom: 14px;
+      max-width: 300px;
+    }
+    .proof-line {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 13px; border-radius: 20px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      cursor: pointer; font-family: var(--font);
+      color: var(--text-3);
+      transition: background 0.18s, border-color 0.18s, color 0.18s;
+    }
+    .proof-line:hover { color: var(--text-2); border-color: var(--border-mid); background: rgba(255,255,255,0.04); }
+    .proof-line.active { color: var(--text); background: rgba(var(--accent-rgb),0.09); border-color: rgba(var(--accent-rgb),0.3); }
+    .proof-line__num {
+      font-size: 7.5px; font-weight: 900; letter-spacing: 0.5px;
+      font-family: var(--font-d); color: var(--accent); opacity: 0.5; line-height: 1;
+    }
+    .proof-line.active .proof-line__num { opacity: 1; }
+    .proof-line__text { font-size: 11px; font-weight: 700; line-height: 1; white-space: nowrap; }
+
+    /* State description */
+    .demo-state-desc {
+      font-size: 11.5px; font-weight: 500;
+      color: var(--text-2); line-height: 1.55;
+      text-align: center; max-width: 280px;
+      margin: 0 0 12px; min-height: 34px;
+      transition: opacity 0.18s ease;
+    }
+    .demo-state-desc em { font-style: normal; color: var(--accent); }
+
+    /* ── PROOF PHONE INTERACTIONS ────────────────────────────────────────── */
+    /* Smooth theme transition on the phone */
+    #demoPhone { transition: background 0.55s var(--ease), border-color 0.4s var(--ease); }
+
+    /* proof-action: CTA row ambient glow */
+    #demoPhone.proof-action .dp-ctas {
+      background: rgba(200,104,88,0.06);
+      border-radius: 10px;
+    }
+    /* proof-action: CTA pulsing opacity (opacity/transform only — no box-shadow animation) */
+    @media (prefers-reduced-motion: no-preference) {
+      #demoPhone.proof-action .dp-cta1 {
+        animation: ctaPulse 1.8s ease-in-out infinite;
+      }
+    }
+    @keyframes ctaPulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.82; transform: scale(0.98); }
+    }
+
+    /* proof-music: embedded content highlight */
+    #demoPhone.proof-music .dp-spotify,
+    #demoPhone.proof-music .dp-youtube {
+      border-color: rgba(var(--accent-rgb),0.32);
+      transition: border-color 0.35s var(--ease);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      #demoPhone.proof-music .dp-sp-art {
+        animation: artPulse 2s ease-in-out infinite;
+      }
+    }
+    @keyframes artPulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.88; transform: scale(1.04); }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#hero" style="position:absolute;top:-100%;left:8px;z-index:9999;background:var(--card);color:var(--text);padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:2px solid var(--accent);transition:top .15s" onfocus="this.style.top='8px'" onblur="this.style.top='-100%'">Skip to content</a>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="#" class="nav__logo">
+      <svg width="6" height="20" viewBox="0 0 24 90" fill="none" aria-hidden="true">
+        <rect x="4" y="2" width="16" height="64" fill="#e4dfd2"/>
+        <rect x="4" y="66" width="16" height="16" fill="#c9b76c"/>
+      </svg>
+      <span class="nav__logo-type">ABLE</span>
+    </a>
+    <div class="nav__links">
+      <a href="#features" class="nav__link">How it works</a>
+      <a href="#pricing" class="nav__link">Pricing</a>
+      <a href="admin.html" class="nav__link">Log in</a>
+      <a href="start.html" class="nav__cta"><span class="nav__cta-dot" role="img" aria-label="ABLE is live" title="ABLE is live and accepting new artists"></span>Your page is free →</a>
+    </div>
+  </nav>
+
+  <main id="main-content">
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <!-- Left: copy -->
+    <div class="hero__copy">
+      <div class="hero__eyebrow">For independent artists</div>
+      <h1 class="hero__headline">100 real fans<br>beat 10,000<br><em>strangers.</em></h1>
+      <p class="hero__sub hero__sub--long">Your page shifts with your moment.<br><br>Release day.<br><br>Tonight's gig.<br><br>What's dropping next.<br><br>Every fan who signs up — that email is yours.<br><br>Forever.</p>
+      <p class="hero__sub hero__sub--short">Release day. Gig night. What's next. Every fan email is yours. Forever.</p>
+
+      <div class="hero__platforms" role="list" aria-label="Compatible platforms">
+        <span class="hero__platforms-label" aria-hidden="true">Connects to</span>
+        <span class="platform-icon" role="listitem">Spotify</span>
+        <span class="platform-icon" role="listitem">Apple Music</span>
+        <span class="platform-icon" role="listitem">YouTube</span>
+        <span class="platform-icon" role="listitem">TikTok</span>
+        <span class="platform-icon" role="listitem">Bandcamp</span>
+      </div>
+
+      <div class="hero__actions">
+        <a href="start.html" class="btn-primary">Your page is free →</a>
+        <a href="able-v7.html" class="btn-ghost">See a live example</a>
+      </div>
+
+      <p class="hero__trust-line">No card required. Free forever.</p>
+      <p class="hero__micro">Live in 5 minutes<span class="micro-dot"></span>No platform cut<span class="micro-dot"></span>No lock-in</p>
+      <p style="font-size:12px;color:var(--text-3);margin-top:10px;font-style:italic;">Built by an independent artist, for independent artists.</p>
+    </div>
+
+    <!-- Right: phone mockup + interactive demo -->
+    <div class="hero__visual">
+      <div class="demo-phone-wrap">
+        <!-- Proof lines — interactive copy triggers -->
+        <p style="font-size:11px;color:var(--text-3);margin-bottom:8px;text-align:center;">Tap to see how your page changes →</p>
+        <div class="proof-lines" role="group" aria-label="See how ABLE works">
+          <button class="proof-line active" data-proof="moment">
+            <span class="proof-line__num">01</span>
+            <span class="proof-line__text">Changes with your moment</span>
+          </button>
+          <button class="proof-line" data-proof="action">
+            <span class="proof-line__num">02</span>
+            <span class="proof-line__text">Leads with the right action</span>
+          </button>
+          <button class="proof-line" data-proof="music">
+            <span class="proof-line__num">03</span>
+            <span class="proof-line__text">Music lives in the page</span>
+          </button>
+          <button class="proof-line" data-proof="look">
+            <span class="proof-line__num">04</span>
+            <span class="proof-line__text">Your look, exactly</span>
+          </button>
+        </div>
+
+        <!-- Dynamic caption — updates with each proof line -->
+        <p class="demo-state-desc" id="demo-desc"><em>Release is out.</em> The page leads with streaming. Music plays here, not somewhere else.</p>
+
+        <!-- Single phone chrome -->
+        <div id="demoPhone" data-theme="dark" data-state="live">
+          <!-- Dynamic Island -->
+          <div class="dp-island"></div>
+
+          <!-- Status bar -->
+          <div class="dp-sb">
+            <span>9:41</span>
+            <span class="dp-sb-icons">●●● ▐▌</span>
+          </div>
+
+          <!-- Hero artwork -->
+          <div class="dp-hero">
+            <div class="dp-hero-fade"></div>
+            <div class="dp-artist-name">NOVA<br>WAVE</div>
+            <div class="dp-badge" style="display:none;">
+              <span class="dp-badge-dot"></span>
+              <span class="dp-badge-text"></span>
+            </div>
+          </div>
+
+          <!-- Fan count (live state only) -->
+          <div class="dp-fan-count" id="dp-fan-count" style="display:none;font-size:8px;color:rgba(255,255,255,0.5);text-align:center;padding:2px 0 4px;letter-spacing:0.04em;">● 47 fans signed up</div>
+
+          <!-- Hero CTAs -->
+          <div class="dp-ctas">
+            <button class="dp-cta1">Stream Now</button>
+            <button class="dp-cta2">Tickets</button>
+          </div>
+
+          <!-- Countdown (pre-release only) -->
+          <div class="dp-countdown" style="display:none;">
+            <span>3d</span><span class="dp-countdown-sep">·</span>
+            <span>14h</span><span class="dp-countdown-sep">·</span>
+            <span>22m</span>
+          </div>
+
+          <!-- Platform pills -->
+          <div class="dp-pills">
+            <div class="dp-pill">Spotify</div>
+            <div class="dp-pill">Apple Music</div>
+            <div class="dp-pill">YouTube</div>
+            <div class="dp-pill dp-pill-more">+2</div>
+          </div>
+
+          <!-- Spotify embed mockup (live / profile states) -->
+          <div class="dp-spotify" id="dp-spotify">
+            <div class="dp-sp-top">
+              <div class="dp-sp-art"></div>
+              <div class="dp-sp-meta">
+                <p class="dp-sp-track" id="dp-sp-track">Resonance</p>
+                <p class="dp-sp-artist">NOVA WAVE</p>
+              </div>
+              <span class="dp-sp-badge">SPOTIFY</span>
+            </div>
+            <div class="dp-sp-prog">
+              <div class="dp-sp-bar"><div class="dp-sp-fill"></div></div>
+              <div class="dp-sp-times"><span>1:24</span><span>3:06</span></div>
+            </div>
+            <div class="dp-sp-controls">
+              <span class="dp-sp-btn">⏮</span>
+              <div class="dp-sp-play"></div>
+              <span class="dp-sp-btn">⏭</span>
+            </div>
+          </div>
+
+          <!-- YouTube thumbnail (live state) -->
+          <div class="dp-youtube" id="dp-youtube">
+            <div class="dp-yt-thumb">
+              <div class="dp-yt-play"></div>
+            </div>
+            <div class="dp-yt-label">Resonance — Official Video</div>
+          </div>
+
+          <!-- Event card (gig state only) -->
+          <div class="dp-event" id="dp-event" style="display:none;">
+            <div class="dp-ev-img"></div>
+            <div class="dp-ev-body">
+              <div class="dp-ev-date">
+                <span class="dp-ev-mon">MON</span>
+                <span class="dp-ev-day">24</span>
+              </div>
+              <div>
+                <p class="dp-ev-venue">Roundhouse</p>
+                <p class="dp-ev-loc">London · Doors 20:00</p>
+              </div>
+            </div>
+            <div class="dp-ev-ticket">Get Tickets</div>
+          </div>
+
+          <!-- World map state -->
+          <div class="dp-wm" id="dp-worldmap" style="display:none;">
+            <div class="dp-wm-month">May</div>
+            <div class="dp-wm-grid">
+              <!-- Row 1: days 1-7, day 3 = early access (gold) -->
+              <div class="dp-wm-cell"><span class="dp-wm-date">1</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">2</span></div>
+              <div class="dp-wm-cell dp-wm-cell--gold"><span class="dp-wm-date">3</span><div class="dp-wm-dot"></div></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">4</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">5</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">6</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">7</span></div>
+              <!-- Row 2: day 8 = release (accent), day 14 = show (coral) -->
+              <div class="dp-wm-cell dp-wm-cell--accent"><span class="dp-wm-date">8</span><div class="dp-wm-dot"></div></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">9</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">10</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">11</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">12</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">13</span></div>
+              <div class="dp-wm-cell dp-wm-cell--coral"><span class="dp-wm-date">14</span><div class="dp-wm-dot"></div></div>
+              <!-- Row 3: day 15 = selected/release, day 19 = merch (teal), day 21 = private (locked) -->
+              <div class="dp-wm-cell dp-wm-cell--accent dp-wm-cell--selected"><span class="dp-wm-date">15</span><div class="dp-wm-dot"></div></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">16</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">17</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">18</span></div>
+              <div class="dp-wm-cell dp-wm-cell--teal"><span class="dp-wm-date">19</span><div class="dp-wm-dot"></div></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">20</span></div>
+              <div class="dp-wm-cell dp-wm-cell--locked"><span class="dp-wm-date">21</span><div class="dp-wm-dot"></div><span class="dp-wm-lock">🔒</span></div>
+              <!-- Row 4: empty -->
+              <div class="dp-wm-cell"><span class="dp-wm-date">22</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">23</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">24</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">25</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">26</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">27</span></div>
+              <div class="dp-wm-cell"><span class="dp-wm-date">28</span></div>
+            </div>
+          </div>
+
+          <!-- Tab bar -->
+          <div class="dp-tabs">
+            <div class="dp-tab">
+              <span class="dp-tab-icon active">⌂</span>
+              <span class="dp-tab-label active">Home</span>
+            </div>
+            <div class="dp-tab">
+              <span class="dp-tab-icon">♪</span>
+              <span class="dp-tab-label">Music</span>
+            </div>
+            <div class="dp-tab">
+              <span class="dp-tab-icon">◈</span>
+              <span class="dp-tab-label">Events</span>
+            </div>
+            <div class="dp-tab">
+              <span class="dp-tab-icon">▤</span>
+              <span class="dp-tab-label">Merch</span>
+            </div>
+            <div class="dp-tab">
+              <span class="dp-tab-icon">♡</span>
+              <span class="dp-tab-label">Support</span>
+            </div>
+          </div>
+        </div><!-- /#demoPhone -->
+      </div><!-- /.demo-phone-wrap -->
+    </div><!-- /.hero__visual -->
+  </section>
+
+  <!-- QUIET LINE — Angle 16 "single memory" copy, below demo, Angle 20 north star moment -->
+  <p class="quiet-line">Artists don't change their Linktree on release day. ABLE changes for you.</p>
+
+  <!-- PROOF STRIP -->
+  <div class="proof">
+    <div class="proof__item fade-up"><div class="proof__num">£0</div><div class="proof__label">ABLE cut. Ever.</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">100%</div><div class="proof__label">Your fan list — not ours</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">5 min</div><div class="proof__label">From nothing to live</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">4</div><div class="proof__label">Modes that move with you</div></div>
+    <div class="proof__item fade-up"><div class="proof__num">0</div><div class="proof__label">Algorithms between you and your fans</div></div>
+  </div>
+
+  <!-- MARQUEE TICKER -->
+  <div class="marquee-strip" aria-hidden="true">
+    <div class="marquee-inner">
+      <!-- duplicated for seamless loop -->
+      <span class="marquee-item">Free forever<span class="marquee-dot"></span></span>
+      <span class="marquee-item">0% platform cut<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Every email is yours<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Pre-release countdown<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Gig mode<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Fan sign-ups<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Works with Spotify<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Works with Bandcamp<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Works with SoundCloud<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Live in 5 minutes<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Free forever<span class="marquee-dot"></span></span>
+      <span class="marquee-item">0% platform cut<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Every email is yours<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Pre-release countdown<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Gig mode<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Fan sign-ups<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Works with Spotify<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Works with Bandcamp<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Works with SoundCloud<span class="marquee-dot"></span></span>
+      <span class="marquee-item">Live in 5 minutes<span class="marquee-dot"></span></span>
+    </div>
+  </div>
+
+  <!-- DIFFERENTIATOR -->
+  <div class="diff-band fade-up">
+    <p class="diff-band__text">
+      This is not a social network. It is not a marketing tool. <strong>It is a place for artists to be themselves</strong> — and to own a direct relationship with the people who actually show up.
+    </p>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="section" id="features">
+    <div class="section__inner">
+      <div class="section__eyebrow fade-up">What it does</div>
+      <h2 class="section__title fade-up">Built for the<br>moment you're in.</h2>
+      <p class="section__sub fade-up">They tapped your link because they already care. Give them somewhere that feels like you — not a list of ten blue links.</p>
+
+      <!-- Hero features -->
+      <div class="hero-features">
+        <div class="hero-feature fade-up">
+          <span class="hero-feature__icon">— Colour system</span>
+          <div class="hero-feature__title">Looks like you. Not like everyone else.</div>
+          <div class="hero-feature__desc">One accent colour — set it once and it runs through every button, every chip, every detail. Link your Spotify and we pull it straight from your artwork.</div>
+          <div class="hero-feature__visual">
+            <div style="font-size:11px;color:var(--text-3);margin-bottom:8px;">Artist accent examples</div>
+            <div class="colour-swatches">
+              <div class="swatch" style="background:#c9b76c;" title="Pale gold"></div>
+              <div class="swatch" style="background:#8870a8;" title="Dusty violet"></div>
+              <div class="swatch" style="background:#b87880;" title="Dusty rose"></div>
+              <div class="swatch" style="background:#a89060;" title="Warm taupe"></div>
+              <div class="swatch" style="background:#7aaa68;" title="Sage"></div>
+              <div class="swatch" style="background:#5898b0;" title="Steel cyan"></div>
+              <div class="swatch" style="background:#ae6060;" title="Muted red"></div>
+              <div class="swatch" style="background:#d8d0c0;" title="Off-white"></div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-feature fade-up">
+          <span class="hero-feature__icon">— Campaign modes</span>
+          <div class="hero-feature__title">Set a date. Your page does the rest.</div>
+          <div class="hero-feature__desc">Set a release date and your page builds anticipation with a pre-save countdown. On drop day it flips to streaming. A fortnight later it settles into your permanent profile. Nothing to update, nothing to remember.</div>
+          <div class="hero-feature__visual">
+            <div style="font-size:11px;color:var(--text-3);margin-bottom:8px;">Page states</div>
+            <div class="state-pills">
+              <span class="state-pill" style="background:rgba(168,184,120,0.10);color:var(--state-pre);border:1px solid rgba(168,184,120,0.20);">Building anticipation</span>
+              <span class="state-pill" style="background:rgba(126,170,200,0.12);color:var(--state-live);border:1px solid rgba(126,170,200,0.22);">● Out now</span>
+              <span class="state-pill" style="background:rgba(138,180,206,0.06);color:var(--text-3);border:1px solid rgba(138,180,206,0.12);">Always on</span>
+              <span class="state-pill" style="background:rgba(184,144,104,0.10);color:var(--state-gig);border:1px solid rgba(184,144,104,0.20);">On tonight</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Smaller feature cards -->
+      <div class="features-grid">
+        <div class="feature-card fade-up">
+          <div class="feature-card__icon">01</div>
+          <div class="feature-card__title">The right action leads every time</div>
+          <div class="feature-card__desc">Stream on release day. Pre-save in the build-up. Tickets on show night. The top of your page leads with what matters most — not the same thing regardless of when they arrive.</div>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-card__icon">02</div>
+          <div class="feature-card__title">Listen here, not somewhere else</div>
+          <div class="feature-card__desc">Spotify plays in the page. YouTube loads when they tap. Fans stay with you — they don't disappear into another app before you've had a chance to land.</div>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-card__icon">03</div>
+          <div class="feature-card__title">Your page looks like you.</div>
+          <div class="feature-card__desc">Pick your genre — electronic, hip-hop, indie, R&B and more — and the whole page shifts to match. Then set your feel: intimate or bold, raw or refined. Not a template. Your identity.</div>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-card__icon">04</div>
+          <div class="feature-card__title">Your list. Your relationship.</div>
+          <div class="feature-card__desc">Fans sign up on your page — that list is yours. Not the platform's. Support packs and one-off contributions go directly to you, with no cut beyond Stripe's standard rate.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LINKTREE COMPARISON -->
+  <section class="section" style="background:var(--bg);border-top:1px solid var(--border);">
+    <div class="section__inner">
+      <div class="comp-grid">
+        <div class="fade-up">
+          <h2 style="font-family:var(--font-disp);font-weight:700;font-size:42px;color:var(--text);margin-bottom:12px;line-height:1.05;">You've had a Linktree<br>for 2 years.</h2>
+          <p style="font-size:18px;color:var(--text-2);line-height:1.6;">What does it know about your release dropping in 3 days?</p>
+        </div>
+        <div class="fade-up">
+          <div class="comparison-table">
+            <div class="comparison-header">
+              <span>Linktree</span>
+              <span>ABLE</span>
+            </div>
+            <div class="comparison-row">
+              <div class="col-linktree">Same links on release day</div>
+              <div class="col-able">Page shifts to release mode</div>
+            </div>
+            <div class="comparison-row">
+              <div class="col-linktree">Same links when you're gigging</div>
+              <div class="col-able">Gig mode activates, tickets front</div>
+            </div>
+            <div class="comparison-row">
+              <div class="col-linktree">0 emails collected</div>
+              <div class="col-able">Every sign-up is your email list</div>
+            </div>
+            <div class="comparison-row">
+              <div class="col-linktree">Links belong to Linktree</div>
+              <div class="col-able">Your fans belong to you</div>
+            </div>
+            <div class="comparison-row">
+              <div class="col-linktree">linktr.ee/you — Instagram flags it as spam</div>
+              <div class="col-able">ablemusic.co/you — a clean address, just for artists</div>
+            </div>
+          </div>
+          <a class="switcher-cta" href="start.html?import=linktree">Paste your Linktree — we'll import your links →</a>
+          <p style="font-size:13px;color:var(--text-3);margin-top:10px;line-height:1.6;">Spotify, Apple Music, YouTube, Bandcamp — anything we recognise becomes a native ABLE link. Unknown links import as custom buttons.</p>
+          <p style="font-size:13px;color:var(--text-3);margin-top:8px;line-height:1.6;">Your old link still works. Your Linktree doesn't disappear. Import your links in 2 minutes and keep both — or delete Linktree when you're ready.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAN OWNERSHIP -->
+  <section class="section" style="background:var(--bg-mid);border-top:1px solid var(--border);">
+    <div class="section__inner" style="max-width:680px;margin:0 auto;text-align:center;">
+      <h2 class="fade-up" style="font-family:var(--font-disp);font-weight:700;font-size:52px;color:var(--text);margin-bottom:20px;line-height:1.05;">Every email is yours. Forever.</h2>
+      <p class="fade-up" style="font-size:16px;font-weight:500;color:var(--accent);margin-bottom:28px;line-height:1.5;">Not just clicks. Real fans. Every sign-up tells you which platform sent them, which CTA they tapped, and when.</p>
+      <p class="fade-up" style="font-size:18px;color:var(--text-2);line-height:1.8;margin-bottom:20px;">When a fan signs up on your page, that email goes straight to your list. Not ours. If ABLE closes tomorrow — unlikely, but — you export your list and leave with everything. We take 0%. No commission. No lock-in.</p>
+      <p class="fade-up" style="font-size:18px;color:var(--text-2);line-height:1.8;">If you have 500 fans who signed up on your ABLE page, those 500 emails are yours. You own that relationship. ABLE is the conduit, not the room.</p>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section section--alt">
+    <div class="section__inner">
+      <div class="section__eyebrow fade-up">Setup</div>
+      <h2 class="section__title fade-up">Live in<br>five minutes</h2>
+      <div class="steps">
+        <div class="step fade-up">
+          <div class="step__num"></div>
+          <div class="step__title">Name your world</div>
+          <div class="step__desc">Name, genre, a colour, and how your music feels. Five questions and your page has a personality before you've added a single link.</div>
+        </div>
+        <div class="step fade-up">
+          <div class="step__num"></div>
+          <div class="step__title">Add your links and music</div>
+          <div class="step__desc">Streaming, tickets, merch, support — whatever matters right now. ABLE surfaces the most relevant one first based on where you are in your campaign.</div>
+        </div>
+        <div class="step fade-up">
+          <div class="step__num"></div>
+          <div class="step__title">Tell it what's coming</div>
+          <div class="step__desc">Set a release date and your page builds anticipation with a countdown. The morning it drops, it flips to streaming. A show coming up? One toggle puts tickets front and centre.</div>
+        </div>
+        <div class="step fade-up">
+          <div class="step__num"></div>
+          <div class="step__title">Put it in your bio</div>
+          <div class="step__desc">One URL. Every platform, every post, every caption. Wherever fans come from, they land somewhere that makes sense.</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:48px;">
+        <a href="start.html" class="btn-primary fade-up" style="display:inline-flex;">Your page is free →</a>
+        <p style="font-size:13px;color:var(--text-3);margin-top:16px;line-height:1.6;">Works with SoundCloud, Bandcamp, YouTube — or nothing at all.<br>You don't need a Spotify page to get started.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE -->
+  <div class="quote-section fade-up" role="region" aria-label="Artist testimonial">
+    <div class="quote">
+      <span class="quote__mark">"</span>
+      <p class="quote__text">First night I had it live, someone signed up at 2am after hearing a demo clip. That email is mine. No platform decides whether she sees me tomorrow. That changes everything about how I think about putting music out.</p>
+      <p class="quote__author"><strong>Nadia Osei</strong> · Indie R&amp;B · London · Early access</p>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <section class="section section--lavender" id="pricing">
+    <div class="section__inner">
+      <div class="section__eyebrow fade-up" style="text-align:center;">What it costs</div>
+      <h2 class="section__title fade-up" style="text-align:center;max-width:100%;margin-bottom:10px;">Free to start.<br>Yours to keep.</h2>
+      <p class="section__sub fade-up" style="text-align:center;margin:0 auto 48px;">No contracts. No platform cut. Upgrade when you need more — not before.</p>
+      <div class="pricing-grid">
+        <div class="pricing-card fade-up">
+          <div class="pricing-card__tier">Free</div>
+          <div class="pricing-card__price">£0<span> / mo</span></div>
+          <div class="pricing-card__desc">Everything you need to give fans somewhere to go.</div>
+          <ul class="pricing-card__features">
+            <li>Full artist profile page</li>
+            <li>Music, Events, Merch, Support</li>
+            <li>Custom accent colour</li>
+            <li>Dark + Light themes</li>
+            <li>2 Hero CTAs + 4 pills</li>
+            <li>Basic stats (views, clicks, fans)</li>
+            <li>Up to 100 fan sign-ups</li>
+            <li class="off">Glass theme</li>
+            <li class="off">Advanced analytics</li>
+            <li class="off">Remove ABLE branding</li>
+          </ul>
+          <a href="start.html" class="btn-outline">Your page is free →</a>
+          <p style="font-size:12px;color:var(--text-3);margin-top:12px;line-height:1.5;">When your list reaches 100, Artist is £9/mo — no auto-upgrade, your choice.</p>
+        </div>
+        <div class="pricing-card pricing-card--featured fade-up">
+          <div class="pricing-card__tier">Artist</div>
+          <div class="pricing-card__price">£9<span> / mo</span></div>
+          <div class="pricing-card__desc">For artists releasing regularly who want the full set of tools.</div>
+          <ul class="pricing-card__features">
+            <li>Everything in Free</li>
+            <li>Analytics</li>
+            <li>All 4 themes incl. Glass</li>
+            <li>Unlimited fan sign-ups</li>
+            <li>Pre-release countdown</li>
+            <li>Campaign modes</li>
+            <li>6 Quick Action pills</li>
+            <li>Remove ABLE branding</li>
+            <li class="off">Broadcasts + advanced fan list</li>
+            <li class="off">Priority support</li>
+          </ul>
+          <a href="start.html" class="btn-accent">Start Artist →</a>
+        </div>
+        <div class="pricing-card fade-up">
+          <div class="pricing-card__tier">Artist Pro</div>
+          <div class="pricing-card__price">£19<span> / mo</span></div>
+          <div class="pricing-card__desc">For artists who want to actually talk to the people who show up.</div>
+          <ul class="pricing-card__features">
+            <li>Everything in Artist</li>
+            <li>Full fan list — who signed up, from where, when</li>
+            <li>Email broadcasts to fans</li>
+            <li>Credits + recommend section</li>
+            <li>Advanced analytics + exports</li>
+            <li>Support packs (direct fan income)</li>
+            <li>Custom domain</li>
+            <li>Priority support</li>
+            <li>Early access to features</li>
+          </ul>
+          <a href="start.html" class="btn-outline">Start Pro →</a>
+        </div>
+        <div class="pricing-card fade-up">
+          <div class="pricing-card__tier">Label</div>
+          <div class="pricing-card__price">£49<span> / mo</span></div>
+          <div class="pricing-card__desc">For independent labels with a roster to look after.</div>
+          <ul class="pricing-card__features">
+            <li>10 artist pages</li>
+            <li>Team access + permissions</li>
+            <li>Aggregate analytics across roster</li>
+            <li>Everything in Artist Pro per page</li>
+            <li>Priority onboarding support</li>
+            <li>API access</li>
+            <li>Custom label branding</li>
+          </ul>
+          <a href="mailto:labels@ablemusic.co" class="btn-outline">Talk to us →</a>
+        </div>
+      </div>
+      <div style="margin-top:36px;padding:18px 24px;background:rgba(var(--accent-rgb),0.05);border:1px solid rgba(var(--accent-rgb),0.15);border-radius:12px;text-align:center;max-width:580px;margin-left:auto;margin-right:auto;">
+        <p style="font-size:13px;color:var(--text-2);line-height:1.65;">0% ABLE cut on everything you earn. Stripe's standard rate only (1.4% + 20p for UK cards). <span style="color:var(--text-3);">Beacons charges 9% on their free plan.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURE COMPARISON TABLE -->
+  <section class="section" style="border-top:1px solid var(--border);">
+    <div class="section__inner" style="max-width:840px;">
+      <div class="section__eyebrow fade-up" style="text-align:center;">How it compares</div>
+      <h2 class="section__title fade-up" style="text-align:center;max-width:100%;margin-bottom:36px;">The features that matter.</h2>
+      <div class="fade-up" style="overflow-x:auto;">
+        <table class="feat-table">
+          <thead>
+            <tr>
+              <th scope="col" style="min-width:160px;"><span class="sr-only">Feature</span></th>
+              <th class="th-able">ABLE Free</th>
+              <th class="th-able">ABLE Artist</th>
+              <th>Linktree</th>
+              <th>Beacons</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Pre-release countdown</td>
+              <td class="ft-no">—</td>
+              <td class="ft-yes">Yes</td>
+              <td class="ft-no">No</td>
+              <td class="ft-no">No</td>
+            </tr>
+            <tr>
+              <td>Gig mode</td>
+              <td class="ft-no">—</td>
+              <td class="ft-yes">Yes</td>
+              <td class="ft-no">No</td>
+              <td class="ft-no">No</td>
+            </tr>
+            <tr>
+              <td>Release window</td>
+              <td class="ft-no">—</td>
+              <td class="ft-yes">Yes</td>
+              <td class="ft-no">No</td>
+              <td class="ft-no">No</td>
+            </tr>
+            <tr>
+              <td>Platform revenue cut</td>
+              <td class="ft-yes">0%</td>
+              <td class="ft-yes">0%</td>
+              <td class="ft-yes">0%</td>
+              <td class="ft-partial">5–30%</td>
+            </tr>
+            <tr>
+              <td>Music-first design</td>
+              <td class="ft-yes">Yes</td>
+              <td class="ft-yes">Yes</td>
+              <td class="ft-no">No</td>
+              <td class="ft-no">No</td>
+            </tr>
+            <tr>
+              <td>Fan email capture</td>
+              <td class="ft-yes">Yes (100)</td>
+              <td class="ft-yes">Yes (2,000)</td>
+              <td class="ft-no">No</td>
+              <td class="ft-partial">Partial</td>
+            </tr>
+            <tr>
+              <td><strong>You own the emails. Forever.</strong></td>
+              <td class="ft-yes">Yes</td>
+              <td class="ft-yes">Yes</td>
+              <td class="ft-no">No</td>
+              <td class="ft-no">No</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq" style="background:var(--bg-mid);border-top:1px solid var(--border);">
+    <div class="section__inner" style="max-width:720px;">
+      <div class="section__eyebrow">Questions</div>
+      <h2 class="section__title" style="margin-bottom:40px;">The things people<br>actually ask.</h2>
+      <div class="faq-list" id="faqList">
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Will this replace my Linktree?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>ABLE is built for music specifically — it changes based on what's happening with your career. Pre-release, drop day, gig night — the page shifts automatically. Linktree just lists links. You can run both in parallel while you're setting this up. Most artists who try it switch their bio link over pretty quickly.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">What happens to my fan list if I leave?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>It's yours. You can export every email address any time from your ABLE page as a CSV. We don't hold it hostage — that's the whole point.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Do I need to be on Spotify?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>No. ABLE works with Spotify, Apple Music, YouTube, SoundCloud, Bandcamp, and anything else — just paste the link. If you're not on any streaming platform yet, that's fine too. Your page still works.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">What do fans have to do to sign up?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>Just an email address. No app to download, no account to create. They type it in and they're on your list. You own that relationship — it lives on your ABLE page.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Is it actually free?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>Yes. Free forever for a real working page — not a trial, not a watermarked demo. You get your profile, fan sign-ups, and the smart mode system at no cost. Paid plans add more fans, email broadcasts, and deeper analytics when you're ready.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">How long does setup take?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>Five minutes if you have your links handy. We grab artwork and track info from Spotify automatically — you paste the link, we do the rest. You can always add more later.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Who owns my fans' emails?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>You do. We cannot contact your fans. Export your full list at any time, even on the free tier. The relationship is yours — we are just the conduit.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">What about Beacons?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>Beacons takes 9% of every sale you make on their free plan. We take 0% — on every plan, always. Beyond that: Beacons has no concept of a release cycle. You get a link page. ABLE gets out of the way and lets the moment lead — whether that's a pre-save, a drop, or a show tonight.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">What about Feature.fm or Hypeddit?<svg class="faq-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M2 4l4 4 4-4"/></svg></button>
+          <div class="faq-a" hidden>Great campaign tools — ABLE doesn't replace them for paid promotion. But they're not a home. Feature.fm meters how many fan emails you can access (200 per link until you pay $39/mo). Hypeddit has no persistent profile at all. ABLE is where fans land and stay, not just where the click ends.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER CTA -->
+  <section class="footer-cta fade-up">
+    <h2 class="footer-cta__headline">Your best fans<br>are already out there.<br><em style="color:var(--accent);">Give them a home.</em></h2>
+    <p class="footer-cta__sub">Free to start. Live in five minutes. Your list, your relationship — no algorithm in the way.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;position:relative;z-index:1;">
+      <a href="start.html" class="btn-primary" style="display:inline-flex;">Your page is free →</a>
+      <a href="admin.html" class="btn-ghost" style="display:inline-flex;">Sign in →</a>
+    </div>
+  </section>
+
+  </main><!-- /#main-content -->
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer__logo">
+      <svg width="6" height="20" viewBox="0 0 24 90" fill="none" aria-hidden="true">
+        <rect x="4" y="2" width="16" height="64" fill="#e4dfd2"/>
+        <rect x="4" y="66" width="16" height="16" fill="#c9b76c"/>
+      </svg>
+      <span class="footer__logo-type">ABLE</span>
+    </div>
+    <div class="footer__links">
+      <a href="#features" class="footer__link">Features</a>
+      <a href="#pricing" class="footer__link">Pricing</a>
+      <a href="#pricing" class="footer__link">For Labels</a>
+      <a href="#faq" class="footer__link">FAQ</a>
+      <a href="/privacy.html" class="footer__link">Privacy</a>
+      <a href="/terms.html" class="footer__link">Terms</a>
+    </div>
+    <div class="footer__authenticity">Built by an independent artist who got tired of Linktree not knowing when a release was dropping.</div>
+    <div class="footer__copy">© 2026 ABLE Music · Built for artists, not algorithms.</div>
+    <!-- Angle 17 — Fan entry point: one quiet door for fans who land here -->
+    <p class="footer__fan-entry">Not an artist? <a href="fan.html" class="footer__fan-link">Find artists on ABLE →</a></p>
+  </footer>
+
+  <script>
+    // FAQ — event delegation (no inline handlers)
+    document.addEventListener('DOMContentLoaded', function() {
+      const faqList = document.getElementById('faqList');
+      if (faqList) {
+        faqList.addEventListener('click', function(e) {
+          const btn = e.target.closest('.faq-q');
+          if (!btn) return;
+          const answer = btn.nextElementSibling;
+          const isOpen = !answer.hidden;
+          faqList.querySelectorAll('.faq-a').forEach(a => { a.hidden = true; });
+          faqList.querySelectorAll('.faq-q').forEach(q => q.setAttribute('aria-expanded', 'false'));
+          if (!isOpen) {
+            answer.hidden = false;
+            answer.style.animation = 'none';
+            requestAnimationFrame(() => { answer.style.animation = ''; });
+            btn.setAttribute('aria-expanded', 'true');
+          }
+        });
+      }
+    });
+
+    // Progressive enhancement — hide fade-up elements only when JS is available
+    document.documentElement.classList.add('js');
+
+    // Scroll-in animations
+    const fadeEls = document.querySelectorAll('.fade-up');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px 80px 0px' });
+    fadeEls.forEach(el => observer.observe(el));
+
+    // Fallback: reveal anything still hidden after 1.5s (e.g. if IO never fires)
+    setTimeout(() => { fadeEls.forEach(el => el.classList.add('in')); }, 1500);
+
+    // Interactive phone demo
+    (function() {
+      const phone = document.getElementById('demoPhone');
+      if (!phone) return;
+
+      // ── State definitions ─────────────────────────────────────────────
+      const STATES = {
+        live:    { badge: '● Out now',      badgeRgb: '184,120,112', dot: true,  cta1: 'Stream Now',      cta2: 'Tickets',        countdown: false, spotify: true,  youtube: true,  event: false, desc: '<em>Release is out.</em> The page leads with streaming. Music plays here, not somewhere else.' },
+        pre:     { badge: '⏳ Drops 28 Mar', badgeRgb: '184,168,96',  dot: false, cta1: 'Pre-save',        cta2: 'My music',             countdown: true,  spotify: false, youtube: false, event: false, desc: '<em>Dropping soon.</em> A countdown. A pre-save CTA. Fans lock in before the release exists.' },
+        gig:     { badge: '● On tonight',   badgeRgb: '184,144,104', dot: true,  cta1: 'Get Tickets',     cta2: 'Can\'t make it? Stay close', countdown: false, spotify: false, youtube: false, event: true,  desc: '<em>Show tonight.</em> Tickets take the front. Fans know exactly what to do.' },
+        profile:  { badge: null,             badgeRgb: null,           dot: false, cta1: 'Stream my music', cta2: 'All platforms',  countdown: false, spotify: true,  youtube: false, event: false, worldmap: false, desc: '<em>Between moments.</em> Your full profile leads — music, identity, links. Always ready.' },
+        worldmap: { badge: null,             badgeRgb: null,           dot: false, cta1: 'Plan your month', cta2: 'Set a reminder',  countdown: false, spotify: false, youtube: false, event: false, worldmap: true,  desc: '<em>A living artist world.</em> Releases, shows, drops — your whole month mapped. Not a static page.' },
+      };
+
+      const descEl = document.getElementById('demo-desc');
+      const PROOF_CLASSES = ['proof-action', 'proof-music'];
+      let activeInterval = null;
+
+      // ── Core: apply a state to the phone ─────────────────────────────
+      function applyState(key, updateDesc) {
+        const s = STATES[key];
+        phone.dataset.state = key;
+        const badge = phone.querySelector('.dp-badge');
+        if (s.badge) {
+          badge.style.display = 'flex';
+          badge.querySelector('.dp-badge-text').textContent = s.badge;
+          badge.style.background = 'rgba(' + s.badgeRgb + ',0.85)';
+          badge.style.borderColor = 'rgba(' + s.badgeRgb + ',0.4)';
+          badge.querySelector('.dp-badge-dot').style.display = s.dot ? 'block' : 'none';
+        } else {
+          badge.style.display = 'none';
+        }
+        phone.querySelector('.dp-cta1').textContent = s.cta1;
+        phone.querySelector('.dp-cta2').textContent = s.cta2;
+        const cd = phone.querySelector('.dp-countdown');
+        if (cd) cd.style.display = s.countdown ? 'flex' : 'none';
+        const spEl = document.getElementById('dp-spotify');
+        const ytEl = document.getElementById('dp-youtube');
+        const evEl = document.getElementById('dp-event');
+        if (spEl) spEl.style.display = s.spotify   ? 'block' : 'none';
+        if (ytEl) ytEl.style.display = s.youtube   ? 'block' : 'none';
+        if (evEl) evEl.style.display = s.event     ? 'block' : 'none';
+        const wmEl = document.getElementById('dp-worldmap');
+        if (wmEl) wmEl.style.display = s.worldmap  ? 'block' : 'none';
+        const fcEl = document.getElementById('dp-fan-count');
+        if (fcEl) fcEl.style.display = (key === 'live') ? 'block' : 'none';
+        if (updateDesc !== false && descEl && s.desc) {
+          descEl.style.opacity = '0';
+          setTimeout(function() { descEl.innerHTML = s.desc; descEl.style.opacity = '1'; }, 110);
+        }
+      }
+
+      function applyTheme(key) { phone.dataset.theme = key; }
+
+      function setDesc(html) {
+        if (!descEl) return;
+        descEl.style.opacity = '0';
+        setTimeout(function() { descEl.innerHTML = html; descEl.style.opacity = '1'; }, 110);
+      }
+
+      function clearInteraction() {
+        if (activeInterval) { clearInterval(activeInterval); activeInterval = null; }
+        PROOF_CLASSES.forEach(function(c) { phone.classList.remove(c); });
+      }
+
+      // ── Proof line behaviours ─────────────────────────────────────────
+      const MOMENT_CYCLE = ['live', 'pre', 'gig', 'profile', 'worldmap'];
+      const THEME_CYCLE  = ['dark', 'light', 'glass', 'dark', 'contrast', 'dark'];
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const PROOFS = {
+        moment: function() {
+          applyState('live');
+          if (reducedMotion) return;
+          var idx = 0;
+          activeInterval = setInterval(function() {
+            idx = (idx + 1) % MOMENT_CYCLE.length;
+            applyState(MOMENT_CYCLE[idx]);
+          }, 1300);
+        },
+        action: function() {
+          applyState('live');
+          setDesc('The top of your page always leads with the most relevant action — before fans have to look for it.');
+          phone.classList.add('proof-action');
+        },
+        music: function() {
+          applyState('live');
+          setDesc('Spotify plays here. YouTube loads when they tap. Fans stay — they don\'t disappear into another app.');
+          phone.classList.add('proof-music');
+        },
+        look: function() {
+          applyState('live');
+          setDesc('<em>One accent. Four looks.</em> Your colour runs through everything — dark, light, glass, or contrast.');
+          if (reducedMotion) return;
+          var idx = 0;
+          activeInterval = setInterval(function() {
+            idx = (idx + 1) % THEME_CYCLE.length;
+            applyTheme(THEME_CYCLE[idx]);
+          }, 950);
+        },
+      };
+
+      // ── Wire up proof line clicks ─────────────────────────────────────
+      document.querySelectorAll('.proof-line').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          clearInteraction();
+          applyTheme('dark'); // always reset theme between proofs
+          document.querySelectorAll('.proof-line').forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          var key = btn.dataset.proof;
+          if (PROOFS[key]) PROOFS[key]();
+        });
+      });
+
+      // Init
+      applyState('live');
+      applyTheme('dark');
+    })();
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function(err) {
+        // Log unexpected failures for debugging (not shown to user)
+        if (err && err.name !== 'SecurityError') console.warn('[SW]', err.message);
+      });
+    }
+  </script>
+
+  <!-- PostHog Analytics — deferred to end of body, no render-blocking -->
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId setPersonPropertiesForFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init("phc_dyzmnJIRrL8CKVverRnJgngpEOvPgQdMM1AmZbfNdJH", { api_host: "https://eu.i.posthog.com", person_profiles: "identified_only" });
+  </script>
+  <!-- Microsoft Clarity — deferred to end of body -->
+  <script>
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "vwbqr4zdzn");
+  </script>
+
+  <!-- PostHog event capture — CTAs, demo, FAQ, comparison -->
+  <script>
+    (function() {
+      function ph(event, props) {
+        if (typeof posthog === 'undefined') return;
+        posthog.capture(event, props || {});
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        // Primary CTAs
+        document.querySelectorAll('a[href="start.html"]').forEach(function(el) {
+          el.addEventListener('click', function() {
+            ph('cta_click', { label: el.textContent.trim(), location: el.closest('section,nav,footer') ? (el.closest('[id]') || {id:'unknown'}).id : 'unknown' });
+          });
+        });
+
+        // Demo proof line interactions
+        document.querySelectorAll('.proof-line').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            ph('demo_proof_click', { proof: btn.dataset.proof });
+          });
+        });
+
+        // FAQ interactions (via faqList delegation)
+        const faqList = document.getElementById('faqList');
+        if (faqList) {
+          faqList.addEventListener('click', function(e) {
+            const btn = e.target.closest('.faq-q');
+            if (!btn) return;
+            const isNowOpen = btn.getAttribute('aria-expanded') === 'true';
+            if (isNowOpen) ph('faq_open', { question: btn.textContent.replace(/[\u2039\u203a]/g, '').trim().slice(0, 80) });
+          }, true); // capture phase so this fires after the toggle handler
+        }
+
+        // Linktree import CTA
+        document.querySelectorAll('a[href*="import=linktree"]').forEach(function(el) {
+          el.addEventListener('click', function() { ph('linktree_import_click'); });
+        });
+
+        // Pricing CTAs
+        document.querySelectorAll('.pricing-card a').forEach(function(el) {
+          el.addEventListener('click', function() {
+            const tier = el.closest('.pricing-card').querySelector('.pricing-card__tier');
+            ph('pricing_cta_click', { tier: tier ? tier.textContent.trim() : 'unknown' });
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

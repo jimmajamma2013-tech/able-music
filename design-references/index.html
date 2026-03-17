@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABLE — Design References</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080808;
+    --surface: #111;
+    --border: rgba(255,255,255,0.08);
+    --text: #e8e5de;
+    --muted: rgba(232,229,222,0.45);
+    --gold: #c9a84c;
+    --gold-dim: rgba(201,168,76,0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  header {
+    position: relative;
+    padding: 100px 60px 80px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 30%, rgba(255,255,255,0.03) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+  h1 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(3rem, 6vw, 7rem);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+    margin-bottom: 32px;
+  }
+  h1 em { font-style: italic; color: var(--gold); }
+  .header-desc {
+    max-width: 520px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .header-meta {
+    margin-top: 40px;
+    display: flex;
+    gap: 40px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .header-meta span b { color: var(--text); font-weight: 500; margin-right: 6px; }
+
+  /* Nav */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(8,8,8,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 60px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 52px;
+  }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 4px;
+    transition: color 0.2s, background 0.2s;
+  }
+  nav a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+  nav a.active { color: var(--gold); }
+
+  /* Grid */
+  main { padding: 80px 60px; }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 32px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+    margin-bottom: 80px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 40px;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, background 0.3s;
+    min-height: 240px;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .card:hover { border-color: rgba(255,255,255,0.15); background: #161616; }
+  .card:hover::before { opacity: 1; }
+
+  .card--music::before { background: radial-gradient(ellipse at 0% 100%, rgba(201,168,76,0.08) 0%, transparent 60%); }
+  .card--ux::before    { background: radial-gradient(ellipse at 0% 100%, rgba(99,179,237,0.08) 0%, transparent 60%); }
+  .card--ui::before    { background: radial-gradient(ellipse at 0% 100%, rgba(246,135,179,0.08) 0%, transparent 60%); }
+  .card--styles::before { background: radial-gradient(ellipse at 0% 100%, rgba(154,205,50,0.08) 0%, transparent 60%); }
+  .card--synthesis::before { background: radial-gradient(ellipse at 0% 100%, rgba(180,120,255,0.08) 0%, transparent 60%); }
+
+  .card-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 56px;
+    font-weight: 300;
+    line-height: 1;
+    opacity: 0.12;
+    position: absolute;
+    top: 20px;
+    right: 30px;
+  }
+  .card-icon {
+    font-size: 28px;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .card-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 2px;
+  }
+  .card--music .card-tag { background: rgba(201,168,76,0.12); color: var(--gold); }
+  .card--ux .card-tag    { background: rgba(99,179,237,0.12); color: #63b3ed; }
+  .card--ui .card-tag    { background: rgba(246,135,179,0.12); color: #f687b3; }
+  .card--styles .card-tag { background: rgba(154,205,50,0.12); color: #9acd32; }
+  .card--synthesis .card-tag { background: rgba(180,120,255,0.12); color: #b478ff; }
+
+  .card-arrow {
+    position: absolute;
+    bottom: 28px;
+    right: 32px;
+    font-size: 18px;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.3s, transform 0.3s;
+    color: var(--muted);
+  }
+  .card:hover .card-arrow { opacity: 1; transform: translateX(0); }
+
+  /* About section */
+  .about {
+    border-top: 1px solid var(--border);
+    padding-top: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-bottom: 80px;
+  }
+  .about h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+  .about p { color: var(--muted); font-size: 14px; line-height: 1.8; margin-bottom: 14px; }
+
+  .principles { list-style: none; }
+  .principles li {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .principles li:first-child { border-top: 1px solid var(--border); }
+  .principle-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--gold);
+    min-width: 28px;
+    line-height: 1.4;
+  }
+  .principle-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .principle-text b { color: var(--text); font-weight: 500; }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+
+  @media (max-width: 768px) {
+    header { padding: 60px 24px 48px; }
+    nav { padding: 0 24px; }
+    main { padding: 48px 24px; }
+    .about { grid-template-columns: 1fr; gap: 40px; }
+    footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">ABLE Music — Design Research</p>
+  <h1>Design<br><em>References</em></h1>
+  <p class="header-desc">A curated research archive of music industry design, leading UX and UI practitioners, and the twenty most influential visual styles on the web. Built to inform ABLE's aesthetic direction.</p>
+  <div class="header-meta">
+    <span><b>80</b> references</span>
+    <span><b>4</b> categories</span>
+    <span><b>March 2026</b></span>
+  </div>
+</header>
+
+<nav>
+  <a href="index.html" class="active">Index</a>
+  <a href="music-companies.html">Music Industry</a>
+  <a href="ux-designers.html">UX Designers</a>
+  <a href="ui-designers.html">UI Designers</a>
+  <a href="design-styles.html">Design Styles</a>
+  <a href="able-synthesis.html">ABLE Synthesis</a>
+</nav>
+
+<main>
+  <p class="section-label">Reference Library</p>
+
+  <div class="grid">
+    <a href="music-companies.html" class="card card--music">
+      <span class="card-num">20</span>
+      <span class="card-icon">♪</span>
+      <h2 class="card-title">Music Industry Companies</h2>
+      <p class="card-desc">From Spotify to Beatport, Ableton to Bandcamp — the design language of the industry ABLE competes in.</p>
+      <span class="card-tag">→ View reference</span>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a href="ux-designers.html" class="card card--ux">
+      <span class="card-num">20</span>
+      <span class="card-icon">◎</span>
+      <h2 class="card-title">Top UX Designers</h2>
+      <p class="card-desc">The practitioners and thinkers who define how interactions are designed — from Don Norman to Kat Holmes.</p>
+      <span class="card-tag">→ View reference</span>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a href="ui-designers.html" class="card card--ui">
+      <span class="card-num">20</span>
+      <span class="card-icon">◈</span>
+      <h2 class="card-title">Top UI Designers</h2>
+      <p class="card-desc">Visual craftspeople whose work defines the aesthetic standards of digital product design today.</p>
+      <span class="card-tag">→ View reference</span>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a href="design-styles.html" class="card card--styles">
+      <span class="card-num">20</span>
+      <span class="card-icon">⬡</span>
+      <h2 class="card-title">Design Styles</h2>
+      <p class="card-desc">Live visual specimens of the twenty most influential web design aesthetics — from Swiss modernism to Spatial UI.</p>
+      <span class="card-tag">→ View specimens</span>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a href="able-synthesis.html" class="card card--synthesis">
+      <span class="card-num">✦</span>
+      <span class="card-icon">✦</span>
+      <h2 class="card-title">ABLE Synthesis</h2>
+      <p class="card-desc">What all of this means for ABLE — the patterns, principles, and design directions most relevant to a premium artist profile.</p>
+      <span class="card-tag">→ View synthesis</span>
+      <span class="card-arrow">→</span>
+    </a>
+  </div>
+
+  <div class="about">
+    <div>
+      <h2>Why this archive exists</h2>
+      <p>ABLE is a premium artist conversion profile. To build something genuinely excellent, we need to understand what excellence looks like across the landscape it inhabits — music platforms, their designers, their visual languages.</p>
+      <p>These references are not mood boards. They are analytical — each entry captures what works, why it works, and what ABLE can learn from it.</p>
+      <p>The best design decisions are informed ones. This archive is the foundation.</p>
+    </div>
+    <div>
+      <ul class="principles">
+        <li>
+          <span class="principle-num">01</span>
+          <span class="principle-text"><b>Dark is the premium default</b> — Spotify, Apple Music, Beatport, Tidal all default dark. Light signals indie or technical tools.</span>
+        </li>
+        <li>
+          <span class="principle-num">02</span>
+          <span class="principle-text"><b>One signature accent</b> — Every leading music platform has one unmistakable color. Spotify green. SoundCloud orange. Beatport neon.</span>
+        </li>
+        <li>
+          <span class="principle-num">03</span>
+          <span class="principle-text"><b>Album art is the hero</b> — The best music UIs recede to let content dominate. UI chrome is intentionally subdued.</span>
+        </li>
+        <li>
+          <span class="principle-num">04</span>
+          <span class="principle-text"><b>Custom type signals investment</b> — Spotify (Circular), Beatport (Aeonik), Apple (SF Pro) — distinctive type is a marker of quality.</span>
+        </li>
+        <li>
+          <span class="principle-num">05</span>
+          <span class="principle-text"><b>Glassmorphism is now standard</b> — Not a trend anymore. Background-image themes require frosted surfaces. It's the baseline.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>ABLE Design References · March 2026</span>
+  <span>
+    <a href="music-companies.html">Music</a> ·
+    <a href="ux-designers.html">UX</a> ·
+    <a href="ui-designers.html">UI</a> ·
+    <a href="design-styles.html">Styles</a> ·
+    <a href="able-synthesis.html">Synthesis</a>
+  </span>
+</footer>
+
+</body>
+</html>

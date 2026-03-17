@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABLE Synthesis — Design References</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080508;
+    --surface: #110f12;
+    --border: rgba(180,120,255,0.1);
+    --text: #ede8f0;
+    --muted: rgba(237,232,240,0.45);
+    --accent: #b478ff;
+    --accent-dim: rgba(180,120,255,0.08);
+    --gold: #c9a84c;
+    --cyan: #63b3ed;
+    --green: #68d391;
+    --red: #fc8181;
+  }
+
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 14px; line-height: 1.6; }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(8,5,8,0.92); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 60px; display: flex; align-items: center; gap: 2px; height: 52px;
+  }
+  nav a { color: var(--muted); text-decoration: none; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 14px; border-radius: 4px; transition: color 0.2s, background 0.2s; }
+  nav a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+  nav a.active { color: var(--accent); }
+
+  header {
+    padding: 80px 60px 60px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden;
+  }
+  header::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 80% 20%, rgba(180,120,255,0.07) 0%, transparent 55%),
+      radial-gradient(ellipse at 20% 80%, rgba(201,168,76,0.04) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+  h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 300; line-height: 1; margin-bottom: 24px; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .header-desc { max-width: 620px; color: var(--muted); font-size: 14px; line-height: 1.7; }
+
+  main { padding: 60px; max-width: 1400px; }
+
+  /* Section structure */
+  .section { margin-bottom: 72px; }
+  .section-label {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 28px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  }
+
+  /* Principle cards */
+  .principles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2px;
+    margin-bottom: 4px;
+  }
+  .principle-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .principle-card:hover { border-color: rgba(180,120,255,0.25); }
+  .principle-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .principle-card:hover::before { opacity: 1; }
+  .pc-do::before { background: radial-gradient(ellipse at 0% 100%, rgba(104,211,145,0.06) 0%, transparent 60%); }
+  .pc-dont::before { background: radial-gradient(ellipse at 0% 100%, rgba(252,129,129,0.06) 0%, transparent 60%); }
+  .pc-learn::before { background: radial-gradient(ellipse at 0% 100%, rgba(99,179,237,0.06) 0%, transparent 60%); }
+
+  .pc-type {
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 4px 8px; border-radius: 2px; margin-bottom: 16px; display: inline-block;
+  }
+  .pc-do .pc-type { background: rgba(104,211,145,0.12); color: var(--green); }
+  .pc-dont .pc-type { background: rgba(252,129,129,0.12); color: var(--red); }
+  .pc-learn .pc-type { background: rgba(99,179,237,0.12); color: var(--cyan); }
+
+  .pc-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; margin-bottom: 10px; line-height: 1.2; }
+  .pc-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
+  .pc-body strong { color: var(--text); font-weight: 500; }
+  .pc-source { margin-top: 14px; font-size: 11px; color: rgba(180,120,255,0.5); }
+
+  /* Signal/noise matrix */
+  .matrix {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 4px;
+  }
+  .matrix-cell {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+  }
+  .matrix-cell h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; margin-bottom: 16px; }
+  .matrix-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px; color: var(--muted);
+  }
+  .matrix-item:last-child { border-bottom: none; }
+  .matrix-item::before { content: '→'; color: var(--accent); flex-shrink: 0; }
+  .matrix-item.avoid::before { content: '✕'; color: var(--red); }
+  .matrix-item strong { color: var(--text); font-weight: 500; }
+
+  /* Style DNA */
+  .dna-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2px;
+  }
+  .dna-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+    transition: border-color 0.3s;
+  }
+  .dna-card:hover { border-color: rgba(180,120,255,0.25); }
+  .dna-pct { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .dna-name { font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+  .dna-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .dna-bar { height: 3px; border-radius: 2px; background: rgba(255,255,255,0.08); margin-top: 12px; overflow: hidden; }
+  .dna-fill { height: 100%; border-radius: 2px; background: var(--accent); }
+
+  /* Designer Lessons */
+  .designer-lessons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 2px;
+  }
+  .lesson-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+    display: flex; gap: 20px;
+    transition: border-color 0.3s;
+  }
+  .lesson-card:hover { border-color: rgba(180,120,255,0.2); }
+  .lesson-num { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: rgba(180,120,255,0.3); flex-shrink: 0; width: 36px; text-align: right; }
+  .lesson-content h3 { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .lesson-content p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .lesson-content p strong { color: var(--text); font-weight: 500; }
+  .lesson-source { font-size: 11px; color: rgba(180,120,255,0.5); margin-top: 8px; display: block; }
+
+  /* Color palette section */
+  .palette-row {
+    display: flex; gap: 2px; height: 80px; margin-bottom: 16px;
+  }
+  .palette-swatch {
+    flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 8px;
+  }
+  .swatch-label { font-size: 10px; font-weight: 500; opacity: 0.9; }
+  .swatch-hex { font-size: 9px; letter-spacing: 0.05em; opacity: 0.6; }
+
+  .palette-section { margin-bottom: 28px; }
+  .palette-name { font-size: 12px; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.08em; }
+
+  /* Priority table */
+  .priority-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--surface); border: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+  .priority-table th {
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); padding: 12px 16px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .priority-table td {
+    font-size: 13px; padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top; line-height: 1.5;
+  }
+  .priority-table tr:last-child td { border-bottom: none; }
+  .priority-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .p-1 { color: var(--accent); font-weight: 500; }
+  .p-2 { color: var(--gold); }
+  .p-3 { color: var(--cyan); }
+  .detail-muted { color: var(--muted); font-size: 12px; }
+
+  footer {
+    border-top: 1px solid var(--border); padding: 32px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--muted); margin-top: 40px;
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+
+  @media (max-width: 900px) {
+    .matrix { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    header { padding: 48px 24px 40px; }
+    main { padding: 32px 24px; }
+    footer { flex-direction: column; gap: 16px; padding: 24px; }
+    .palette-row { height: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Index</a>
+  <a href="music-companies.html">Music Industry</a>
+  <a href="ux-designers.html">UX Designers</a>
+  <a href="ui-designers.html">UI Designers</a>
+  <a href="design-styles.html">Design Styles</a>
+  <a href="able-synthesis.html" class="active">ABLE Synthesis</a>
+</nav>
+
+<header>
+  <p class="eyebrow">Synthesis — What it means for ABLE</p>
+  <h1>Design DNA<br><em>for ABLE</em></h1>
+  <p class="header-desc">Everything we've researched — 20 music companies, 20 UX designers, 20 UI designers, 20 design styles — distilled into actionable principles, visual direction, and a design DNA for ABLE's artist conversion profile. This is the point.</p>
+</header>
+
+<main>
+
+  <!-- ABLE's style DNA -->
+  <div class="section">
+    <p class="section-label">ABLE's Design Style DNA</p>
+    <p style="color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 680px; margin-bottom: 32px;">ABLE is not one style. It inherits from six proven aesthetic lineages, each contributing a distinct quality. Together they form something specific: <em>a premium, music-forward, conversion-optimised artist presence.</em></p>
+    <div class="dna-grid">
+      <div class="dna-card">
+        <p class="dna-pct">40%</p>
+        <p class="dna-name">Dark Luxury</p>
+        <p class="dna-desc">The foundation. Near-black surfaces, gold accents, generous negative space. The premium baseline that signals artist quality before a single word is read.</p>
+        <div class="dna-bar"><div class="dna-fill" style="width: 40%"></div></div>
+      </div>
+      <div class="dna-card">
+        <p class="dna-pct">25%</p>
+        <p class="dna-name">Glassmorphism</p>
+        <p class="dna-desc">The texture layer. Frosted surfaces over artist photography. ABLE's background-image theme is pure glassmorphism — translucent cards floating over the artist's world.</p>
+        <div class="dna-bar"><div class="dna-fill" style="width: 25%"></div></div>
+      </div>
+      <div class="dna-card">
+        <p class="dna-pct">15%</p>
+        <p class="dna-name">Editorial Web</p>
+        <p class="dna-desc">The narrative layer. Long-form artist story, bio sections, music journalism aesthetic. ABLE tells an artist's story, not just their links.</p>
+        <div class="dna-bar"><div class="dna-fill" style="width: 15%"></div></div>
+      </div>
+      <div class="dna-card">
+        <p class="dna-pct">10%</p>
+        <p class="dna-name">Aurora / Gradient</p>
+        <p class="dna-desc">The atmosphere. Gradient mesh backgrounds, ambient color derived from album artwork (Jason Yuan's Apple Music technique), atmospheric depth.</p>
+        <div class="dna-bar"><div class="dna-fill" style="width: 10%"></div></div>
+      </div>
+      <div class="dna-card">
+        <p class="dna-pct">7%</p>
+        <p class="dna-name">Spatial / AI-Native</p>
+        <p class="dna-desc">The future-forward signal. Ultra-thin panels, 0.5px borders, depth through glass layers. Communicates forward-orientation, especially for tech-aware audiences.</p>
+        <div class="dna-bar"><div class="dna-fill" style="width: 7%"></div></div>
+      </div>
+      <div class="dna-card">
+        <p class="dna-pct">3%</p>
+        <p class="dna-name">Bento Grid</p>
+        <p class="dna-desc">The information architecture. Section overviews, feature highlights, mosaic content layouts. Particularly useful for artist discography and "about" sections.</p>
+        <div class="dna-bar"><div class="dna-fill" style="width: 3%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Color Intelligence -->
+  <div class="section">
+    <p class="section-label">Color Intelligence — What the Research Tells Us</p>
+
+    <div class="palette-section">
+      <p class="palette-name">Spotify's lesson — One unmistakable accent on deep dark:</p>
+      <div class="palette-row">
+        <div class="palette-swatch" style="background:#000000; color:#fff;">
+          <span class="swatch-label">Base</span><span class="swatch-hex">#000000</span>
+        </div>
+        <div class="palette-swatch" style="background:#191414; color:#fff;">
+          <span class="swatch-label">Surface</span><span class="swatch-hex">#191414</span>
+        </div>
+        <div class="palette-swatch" style="background:#1DB954; color:#000;">
+          <span class="swatch-label">Signal</span><span class="swatch-hex">#1DB954</span>
+        </div>
+        <div class="palette-swatch" style="background:#ffffff; color:#000;">
+          <span class="swatch-label">Text</span><span class="swatch-hex">#FFFFFF</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="palette-section">
+      <p class="palette-name">Apple Music's lesson — Dynamic color from artwork, system stays neutral:</p>
+      <div class="palette-row">
+        <div class="palette-swatch" style="background:#010202; color:#fff;">
+          <span class="swatch-label">Base</span><span class="swatch-hex">#010202</span>
+        </div>
+        <div class="palette-swatch" style="background:#131722; color:#fff;">
+          <span class="swatch-label">Surface</span><span class="swatch-hex">#131722</span>
+        </div>
+        <div class="palette-swatch" style="background:linear-gradient(135deg, #dcb72f, #ea31a4, #1941d8); color:#fff;">
+          <span class="swatch-label">Dynamic</span><span class="swatch-hex">from artwork</span>
+        </div>
+        <div class="palette-swatch" style="background:#f5f5f5; color:#111;">
+          <span class="swatch-label">Text</span><span class="swatch-hex">#F5F5F5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="palette-section">
+      <p class="palette-name">Dark Luxury lesson — Gold accent, maximum restraint, near-black not pure black:</p>
+      <div class="palette-row">
+        <div class="palette-swatch" style="background:#0a0a0a; color:#fff;">
+          <span class="swatch-label">Base</span><span class="swatch-hex">#0a0a0a</span>
+        </div>
+        <div class="palette-swatch" style="background:#1a1a1a; color:#fff;">
+          <span class="swatch-label">Surface</span><span class="swatch-hex">#1a1a1a</span>
+        </div>
+        <div class="palette-swatch" style="background:#c9a84c; color:#000;">
+          <span class="swatch-label">Gold</span><span class="swatch-hex">#c9a84c</span>
+        </div>
+        <div class="palette-swatch" style="background:#f5f5f0; color:#111;">
+          <span class="swatch-label">Text</span><span class="swatch-hex">#F5F5F0</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: var(--surface); border: 1px solid var(--border); padding: 28px; margin-top: 4px;">
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; margin-bottom: 12px;">The synthesis for ABLE's color system:</p>
+      <p style="font-size: 13px; color: var(--muted); line-height: 1.7;"><strong style="color: var(--text);">Base (#0a0a0a):</strong> Near-black, not pure black — dark luxury, never OLED void.<br>
+      <strong style="color: var(--text);">Surface (#141414–#1c1c1c):</strong> Cards, panels, elevated content zones.<br>
+      <strong style="color: var(--text);">Artist accent:</strong> One unmistakable color per artist — their signature. Never generic.<br>
+      <strong style="color: var(--text);">Dynamic:</strong> Artwork-derived ambient color for glass/background-image mode (Apple Music / Jason Yuan technique).<br>
+      <strong style="color: var(--text);">Text (#f5f5f0):</strong> Warm white, not pure white — slightly warm, like premium paper.</p>
+    </div>
+  </div>
+
+  <!-- Do / Don't / Learn -->
+  <div class="section">
+    <p class="section-label">Principles — Do, Don't, Learn</p>
+    <div class="principles-grid">
+
+      <div class="principle-card pc-do">
+        <span class="pc-type">Do</span>
+        <h2 class="pc-title">Make album art the hero</h2>
+        <p class="pc-body">Spotify, Apple Music, Beatport all explicitly subdue UI chrome to let artwork dominate. <strong>The artist's visual identity should overwhelm the platform's visual identity.</strong> ABLE should feel like it disappears, leaving only the artist.</p>
+        <p class="pc-source">Source: Spotify · Apple Music · Tobias van Schneider</p>
+      </div>
+
+      <div class="principle-card pc-dont">
+        <span class="pc-type">Don't</span>
+        <h2 class="pc-title">Use more than one signature accent</h2>
+        <p class="pc-body">Every major music platform has exactly one unmistakable accent color. Spotify green. SoundCloud orange. Beatport neon green. <strong>Multiple accent colors dilute identity.</strong> Per-artist theming must be one color, strongly expressed.</p>
+        <p class="pc-source">Source: Music industry color research</p>
+      </div>
+
+      <div class="principle-card pc-learn">
+        <span class="pc-type">Learn from</span>
+        <h2 class="pc-title">Apple Music's dynamic color</h2>
+        <p class="pc-body">Apple Music extracts a dominant color from the current album artwork and propagates it through the entire background, gradients, and ambient lighting. <strong>This makes every page feel unique while the system stays cohesive.</strong> ABLE's glass mode can apply the same principle.</p>
+        <p class="pc-source">Source: Apple Music · Jason Yuan (Mercury OS ambient bloom)</p>
+      </div>
+
+      <div class="principle-card pc-do">
+        <span class="pc-type">Do</span>
+        <h2 class="pc-title">Use spring physics for all motion</h2>
+        <p class="pc-body">Emil Kowalski, Rauno Freiberg, Jorn van Dijk, Andy Chung all default to spring-based animation. <strong>Easing that feels physical is now the baseline expectation for premium UI.</strong> CSS ease curves that feel "computational" register as cheap. Every transition should feel like it has mass.</p>
+        <p class="pc-source">Source: Emil Kowalski · Rauno Freiberg · Framer Motion</p>
+      </div>
+
+      <div class="principle-card pc-dont">
+        <span class="pc-type">Don't</span>
+        <h2 class="pc-title">Use Inter or Arial as primary display type</h2>
+        <p class="pc-body">Spotify (Circular), Beatport (Aeonik), Native Instruments (Graphik), Apple (SF Pro) all use custom or licensed typefaces. <strong>Inter is the commodity font of our era.</strong> For display type, a more distinctive choice communicates investment and taste. Reserve Inter for utility text.</p>
+        <p class="pc-source">Source: Music company typography research · Rasmus Andersson</p>
+      </div>
+
+      <div class="principle-card pc-learn">
+        <span class="pc-type">Learn from</span>
+        <h2 class="pc-title">Paco Coursey's "1px more precise"</h2>
+        <p class="pc-body">The designers whose work stands out are doing invisible work that only registers as "quality". <strong>Micro-spacing, optical sizing, exact color relationships — none of these are visible individually, but together they create the difference between "good" and "excellent."</strong> ABLE's polish lives in unseeable details.</p>
+        <p class="pc-source">Source: Paco Coursey · paco.me</p>
+      </div>
+
+      <div class="principle-card pc-do">
+        <span class="pc-type">Do</span>
+        <h2 class="pc-title">Default dark — light is for tools, not artists</h2>
+        <p class="pc-body">15 of 20 music industry companies default dark. The exceptions (Bandcamp, Native Instruments, TuneCore) serve specific non-consumer or technical audiences. <strong>Premium music means dark mode.</strong> It is not a preference — it is an industry signal of quality and category belonging.</p>
+        <p class="pc-source">Source: Music industry research (15/20 dark default)</p>
+      </div>
+
+      <div class="principle-card pc-dont">
+        <span class="pc-type">Don't</span>
+        <h2 class="pc-title">Fight the grid — own the glassmorphism</h2>
+        <p class="pc-body">Glassmorphism is no longer a trend — it is a settled standard, the baseline technique for background-image UI. <strong>ABLE already uses it correctly. The risk is under-committing</strong> — using backdrop-filter values that are too subtle to read on complex photographic backgrounds. Go stronger, not weaker.</p>
+        <p class="pc-source">Source: Design styles research · Apple macOS Big Sur</p>
+      </div>
+
+      <div class="principle-card pc-learn">
+        <span class="pc-type">Learn from</span>
+        <h2 class="pc-title">AEG's per-event dynamic theming</h2>
+        <p class="pc-body">Unlike Live Nation's uniform red, AEG lets each event breathe with per-event color themes. <strong>The platform recedes; the content leads.</strong> This is exactly what ABLE's per-artist accent system does — and it is a meaningful differentiator from link-in-bio competitors who impose a single platform color on everyone.</p>
+        <p class="pc-source">Source: AEG Presents · Live events design research</p>
+      </div>
+
+      <div class="principle-card pc-do">
+        <span class="pc-type">Do</span>
+        <h2 class="pc-title">Treat emotional design as a UX requirement</h2>
+        <p class="pc-body">Aarron Walter's framework — personality must be consistent from onboarding to error states. <strong>ABLE's empty states, loading moments, CTA microcopy, and transitions are all emotional design opportunities.</strong> A fan's first impression of an artist through ABLE must carry the same warmth as the artist's music.</p>
+        <p class="pc-source">Source: Aarron Walter · "Designing for Emotion" · Mailchimp</p>
+      </div>
+
+      <div class="principle-card pc-dont">
+        <span class="pc-type">Don't</span>
+        <h2 class="pc-title">Use pill CTAs exclusively</h2>
+        <p class="pc-body">9999px border-radius buttons dominate streaming platforms. But <strong>pill buttons read as "consumer app."</strong> For ABLE's premium positioning, consider a mix: square-corner or 4px radius buttons for primary hero CTAs (luxury signal), with pills reserved for secondary quick actions and pills. Hard edges on primary = confidence.</p>
+        <p class="pc-source">Source: Native Instruments (2px radius), dark luxury brands</p>
+      </div>
+
+      <div class="principle-card pc-learn">
+        <span class="pc-type">Learn from</span>
+        <h2 class="pc-title">SoundCloud's waveform as identity</h2>
+        <p class="pc-body">The waveform comment system is unique in the industry. <strong>No other platform lets listeners mark where in a track they reacted.</strong> This single UX feature defines SoundCloud's identity more than its color or logo. Ask: what is ABLE's equivalent unique affordance? The CTA hierarchy system is a candidate — it's genuinely different from every link-in-bio competitor.</p>
+        <p class="pc-source">Source: SoundCloud · creator streaming research</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Signal vs Noise matrix -->
+  <div class="section">
+    <p class="section-label">What to Apply / What to Avoid</p>
+    <div class="matrix">
+      <div class="matrix-cell">
+        <h3>Apply to ABLE</h3>
+        <div class="matrix-item"><div><strong>Dark luxury foundations</strong> — #0a0a0a base, warm white text, generous negative space, slow deliberate motion</div></div>
+        <div class="matrix-item"><div><strong>Glassmorphism, properly committed</strong> — backdrop-filter: blur(24px) saturate(180%), strong enough to read on photography</div></div>
+        <div class="matrix-item"><div><strong>Album art as visual hero</strong> — every design decision should make artwork larger and more dominant</div></div>
+        <div class="matrix-item"><div><strong>One unmistakable accent per artist</strong> — the artist's brand color, strongly expressed, not diluted by platform chrome</div></div>
+        <div class="matrix-item"><div><strong>Spring physics for all motion</strong> — transitions with mass, not ease-in-out curves</div></div>
+        <div class="matrix-item"><div><strong>Display typography with character</strong> — a distinctive serif or custom-feeling display face for headlines, not Inter</div></div>
+        <div class="matrix-item"><div><strong>Editorial narrative moments</strong> — bio sections that feel like magazine profiles, not LinkedIn summaries</div></div>
+        <div class="matrix-item"><div><strong>Horizontal shelf patterns for discovery</strong> — tracks, events, merch all work as horizontal shelves on desktop</div></div>
+        <div class="matrix-item"><div><strong>Ambient color from artwork</strong> — let the artist's visual identity bleed into the environment (Apple Music / Jason Yuan technique)</div></div>
+      </div>
+      <div class="matrix-cell">
+        <h3>Avoid for ABLE</h3>
+        <div class="matrix-item avoid"><div><strong>Claymorphism / puffy UI</strong> — incompatible with premium positioning; signals consumer-app not artist-platform</div></div>
+        <div class="matrix-item avoid"><div><strong>Pure flat design</strong> — ABLE needs depth, texture, and atmosphere; pure flat reads as productivity tool</div></div>
+        <div class="matrix-item avoid"><div><strong>System/utility typography</strong> — Inter, Roboto, Arial for display type all signal "no typeface budget" which reads as "no design budget"</div></div>
+        <div class="matrix-item avoid"><div><strong>Pure white (#ffffff) backgrounds</strong> — even "light mode" for ABLE should use warm off-white (#fafaf8) not pure white</div></div>
+        <div class="matrix-item avoid"><div><strong>Multiple competing accent colors</strong> — every leading platform has one. ABLE must too. Accent + neutral + semantic only.</div></div>
+        <div class="matrix-item avoid"><div><strong>Decorative animation without purpose</strong> — motion that doesn't communicate state, hierarchy, or narrative is noise</div></div>
+        <div class="matrix-item avoid"><div><strong>Heavy platform branding over artist branding</strong> — ABLE should feel like it belongs to the artist, not to a startup</div></div>
+        <div class="matrix-item avoid"><div><strong>Skeuomorphism</strong> — except for very specific audio-tool contexts; it conflicts with ABLE's contemporary positioning</div></div>
+        <div class="matrix-item avoid"><div><strong>Memphis / maximalism without intent</strong> — only appropriate for specific artist aesthetics (hip-hop, experimental); never as a platform-wide style</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lessons from designers -->
+  <div class="section">
+    <p class="section-label">12 Designer Lessons Directly Applicable to ABLE</p>
+    <div class="designer-lessons">
+
+      <div class="lesson-card">
+        <span class="lesson-num">01</span>
+        <div class="lesson-content">
+          <h3>Don Norman — Affordances must be obvious</h3>
+          <p>Every CTA in ABLE must afford the right action without explanation. <strong>If a fan can't tell what to do next in 2 seconds, the design has failed.</strong> The three-zone CTA hierarchy (Hero → Quick Actions → Section) must feel inevitable, not discovered.</p>
+          <span class="lesson-source">Norman: Affordances, feedback loops, discoverability</span>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <span class="lesson-num">02</span>
+        <div class="lesson-content">
+          <h3>Jony Ive — Restraint is the hardest discipline</h3>
+          <p>ABLE's premium quality signal is not what is added but what is removed. <strong>Every element that doesn't earn its place weakens the artist's presence.</strong> The dedupe rule (same destination can't appear in multiple zones) is a design decision in this tradition.</p>
+          <span class="lesson-source">Ive: Radical simplicity, manufacturing-informed, material honesty</span>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <span class="lesson-num">03</span>
+        <div class="lesson-content">
+          <h3>Tobias van Schneider — Taste is the differentiator</h3>
+          <p>The difference between ABLE and a generic link-in-bio is not features — it is taste. <strong>Van Schneider built Spotify's early design language by caring about things most people don't notice.</strong> The micro-details — border radii, hover states, transition timing — are where ABLE's taste lives.</p>
+          <span class="lesson-source">Van Schneider: Spotify early design, Beats Music, Semplice</span>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <span class="lesson-num">04</span>
+        <div class="lesson-content">
+          <h3>Aarron Walter — Personality survives error states</h3>
+          <p><strong>A product's personality must be consistent from onboarding to error states.</strong> ABLE's empty states (no tracks added, no events, no merch) are emotional design opportunities. "Nothing here yet — add your first track" with the right tone is a different product than "No items."</p>
+          <span class="lesson-source">Walter: Emotional design, Mailchimp voice, delight as retention</span>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <span class="lesson-num">05</span>
+        <div class="lesson-content">
+          <h3>Luke Wroblewski — Mobile-first means ruthless priority</h3>
+          <p>ABLE must be designed for the smallest mobile screen first. <strong>Every element that makes the cut on mobile earns its place everywhere.</strong> The 44px tap target rule, the one-thumb reach zone, the above-fold CTA — these are not accessibility requirements, they are quality requirements.</p>
+          <span class="lesson-source">Wroblewski: Mobile First, progressive disclosure, constraint-led</span>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <span class="lesson-num">06</span>
+        <div class="lesson-content">
+          <h3>Jason Yuan — Let artwork define the environment</h3>
+          <p>Mercury OS and Apple Music's ambient color bloom: <strong>the album art is not in the UI — the UI is inside the artwork.</strong> ABLE's background-image mode already does this. Push it further: color extracted from the hero image should influence gradient surfaces, glow colors, and card tints.</p>
+          <span class="lesson-source">Yuan: Apple Music, Mercury OS ambient color bloom</span>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <span class="lesson-num">07</span>
+        <div class="lesson-content">
+          <h3>Emil Kowalski — Motion should feel physical</h3>
+          <p>Spring animations with accurate mass and damping values make interfaces feel real. <strong>A button that responds to click with a press animation that decelerates naturally is a different product from one that just changes color.</strong> Every interactive element in ABLE deserves a physical response.</p>
+          <span class="lesson-source">Kowalski: Spring physics UI, Vaul library, emilkowal.ski</span>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <span class="lesson-num">08</span>
+        <div class="lesson-content">
+          <h3>Khoi Vinh — Structure is not decoration</h3>
+          <p>The grid on which ABLE is built should be a deliberate design decision, not a Bootstrap default. <strong>The spacing rhythm, the column widths, the vertical baseline — these create the sense of order that makes complex content feel effortless.</strong> ABLE's sections should share a single spatial language.</p>
+          <span class="lesson-source">Vinh: Grid systems, editorial digital design, subtraction.com</span>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <span class="lesson-num">09</span>
+        <div class="lesson-content">
+          <h3>Kat Holmes — Design from the edges</h3>
+          <p>The most constrained ABLE user — a fan on a slow connection in emerging markets on an old Android — defines the quality floor for everyone. <strong>If it works beautifully for them, it works beautifully for everyone.</strong> Performance, accessibility, and progressive enhancement are ABLE's design constraints, not afterthoughts.</p>
+          <span class="lesson-source">Holmes: Inclusive Design Toolkit, "Mismatch", Salesforce CDO</span>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <span class="lesson-num">10</span>
+        <div class="lesson-content">
+          <h3>Rasmus Andersson — Dense information can feel airy</h3>
+          <p>Linear's UI is information-dense but never claustrophobic because of micro-spacing and type scale precision. <strong>ABLE's Music section (tracklist + embeds + both) carries a lot of content — the challenge is making it feel spacious through rhythm, not reduction.</strong> Consistent 8px grid multiples, generous row heights.</p>
+          <span class="lesson-source">Andersson: Linear, Inter typeface, rsms.me</span>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <span class="lesson-num">11</span>
+        <div class="lesson-content">
+          <h3>Paula Scher — Bold typography communicates before content</h3>
+          <p><strong>An artist's name, set well, in the right typeface at the right size, communicates their entire aesthetic before any bio is read.</strong> The typographic treatment of the hero — weight, tracking, case, size — is the single most powerful design lever in ABLE's hero section.</p>
+          <span class="lesson-source">Scher: Pentagram, Windows 8 Metro identity, Citi rebrand</span>
+        </div>
+      </div>
+
+      <div class="lesson-card">
+        <span class="lesson-num">12</span>
+        <div class="lesson-content">
+          <h3>Frank Chimero — Design with the grain of the web</h3>
+          <p>ABLE lives on a URL, opened on a phone, in a browser. <strong>Design with how that medium actually works: links that resolve instantly, layout that adapts without JavaScript, CSS that renders before fonts load.</strong> Reliability and speed are premium design qualities. A blank white flash on load is a design failure.</p>
+          <span class="lesson-source">Chimero: "The Web's Grain", "The Shape of Design", frankchimero.com</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Priority table -->
+  <div class="section">
+    <p class="section-label">Design Priority — What to Tackle Next</p>
+    <table class="priority-table">
+      <thead>
+        <tr>
+          <th>Priority</th>
+          <th>Design area</th>
+          <th>Research-backed rationale</th>
+          <th>Informed by</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="p-1">P1 · Critical</td>
+          <td>Typography — hero display type</td>
+          <td>Artist name must be set in a typeface with genuine character. Currently the most impactful untouched lever in ABLE's visual hierarchy.</td>
+          <td class="detail-muted">Paula Scher · Jessica Hische · Spotify (Circular) · Beatport (Aeonik)</td>
+        </tr>
+        <tr>
+          <td class="p-1">P1 · Critical</td>
+          <td>Motion — spring physics</td>
+          <td>CTA hover states, card lifts, transition animations — all should use spring-based physics, not ease curves. This is the current industry baseline for premium UI.</td>
+          <td class="detail-muted">Emil Kowalski · Rauno Freiberg · Framer Motion · Arc Browser</td>
+        </tr>
+        <tr>
+          <td class="p-1">P1 · Critical</td>
+          <td>Glass theme — backdrop-filter strength</td>
+          <td>Glassmorphism only reads on complex photographic backgrounds when blur values are strong (blur 20px+, saturation 160%+). Weak glass disappears.</td>
+          <td class="detail-muted">Apple macOS Big Sur · Design styles research</td>
+        </tr>
+        <tr>
+          <td class="p-2">P2 · High</td>
+          <td>Color — per-artist accent system</td>
+          <td>One unmistakable accent color per artist. Must propagate consistently: CTAs, progress bars, focus rings, hover states, decorative rules. No dilution.</td>
+          <td class="detail-muted">Spotify green · SoundCloud orange · Beatport neon · Ableton orange</td>
+        </tr>
+        <tr>
+          <td class="p-2">P2 · High</td>
+          <td>Empty states — emotional design</td>
+          <td>Empty sections (no tracks, no events, no merch) are high-emotion moments for a new ABLE artist. These need warmth and encouragement, not generic placeholder text.</td>
+          <td class="detail-muted">Aarron Walter · "Designing for Emotion" · Mailchimp voice</td>
+        </tr>
+        <tr>
+          <td class="p-2">P2 · High</td>
+          <td>Section rhythm — spatial grid</td>
+          <td>Consistent spacing rhythm (8px multiples, generous section padding, baseline grid) that creates effortless coherence across all sections regardless of content.</td>
+          <td class="detail-muted">Khoi Vinh · Rasmus Andersson (Linear) · Swiss typographic tradition</td>
+        </tr>
+        <tr>
+          <td class="p-3">P3 · Medium</td>
+          <td>Artwork ambient color</td>
+          <td>Extract dominant color from hero/album image to influence background gradients, card tint, and glow colors in glass mode. Jason Yuan's Apple Music technique.</td>
+          <td class="detail-muted">Jason Yuan · Apple Music · Aurora/Gradient Mesh style</td>
+        </tr>
+        <tr>
+          <td class="p-3">P3 · Medium</td>
+          <td>CTA edge radius audit</td>
+          <td>Pill CTAs read as "consumer app." Primary hero CTAs with 4–8px radius signal premium confidence. Audit the border-radius values across all three CTA zones.</td>
+          <td class="detail-muted">Native Instruments (2px) · dark luxury brands · CTA architecture research</td>
+        </tr>
+        <tr>
+          <td class="p-3">P3 · Medium</td>
+          <td>Performance — load experience</td>
+          <td>A blank white flash on load is a design failure. CSS renders before fonts. Critical above-fold content must be perceptibly instant. Skeleton states for async content.</td>
+          <td class="detail-muted">Frank Chimero · Kat Holmes (edge cases) · mobile-first research</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer>
+  <a href="design-styles.html">← Design Styles</a>
+  <span>ABLE Design References · Synthesis</span>
+  <a href="index.html">Back to Index →</a>
+</footer>
+
+</body>
+</html>

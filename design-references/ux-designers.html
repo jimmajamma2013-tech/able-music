@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top UX Designers — ABLE Design References</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #06080c;
+    --surface: #0d1117;
+    --border: rgba(99,179,237,0.1);
+    --text: #e2e8f0;
+    --muted: rgba(226,232,240,0.45);
+    --accent: #63b3ed;
+    --accent-dim: rgba(99,179,237,0.08);
+  }
+
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 14px; line-height: 1.6; }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(6,8,12,0.92); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 60px; display: flex; align-items: center; gap: 2px; height: 52px;
+  }
+  nav a { color: var(--muted); text-decoration: none; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 14px; border-radius: 4px; transition: color 0.2s, background 0.2s; }
+  nav a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+  nav a.active { color: var(--accent); }
+
+  header {
+    padding: 80px 60px 60px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden;
+  }
+  header::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 10% 80%, rgba(99,179,237,0.06) 0%, transparent 55%);
+    pointer-events: none;
+  }
+  .eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+  h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 300; line-height: 1; margin-bottom: 24px; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .header-desc { max-width: 560px; color: var(--muted); font-size: 14px; line-height: 1.7; }
+
+  main { padding: 60px; }
+
+  .designers-list { display: flex; flex-direction: column; gap: 2px; }
+
+  .designer-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 60px 280px 1fr auto;
+    gap: 0;
+    transition: border-color 0.3s, background 0.3s;
+    overflow: hidden;
+  }
+  .designer-card:hover { border-color: rgba(99,179,237,0.25); background: #0f1520; }
+
+  .designer-num {
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 28px 0;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; color: var(--muted);
+    border-right: 1px solid var(--border);
+  }
+
+  .designer-identity {
+    padding: 24px 28px;
+    border-right: 1px solid var(--border);
+  }
+  .designer-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 300; line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .designer-role { font-size: 12px; color: var(--muted); line-height: 1.4; margin-bottom: 12px; }
+  .designer-domain {
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 4px 8px; border-radius: 2px;
+    background: var(--accent-dim); color: var(--accent);
+    display: inline-block;
+  }
+
+  .designer-philosophy {
+    padding: 24px 28px;
+    border-right: 1px solid var(--border);
+  }
+  .philosophy-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .philosophy-text { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+  .philosophy-text strong { color: var(--text); font-weight: 500; }
+
+  .designer-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+  .tag { font-size: 10px; padding: 3px 8px; border-radius: 2px; background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid rgba(255,255,255,0.07); }
+
+  .designer-principles {
+    padding: 24px 24px;
+    min-width: 200px;
+  }
+  .principles-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .principle {
+    font-size: 12px; color: var(--muted); padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .principle::before { content: '—'; color: var(--accent); font-size: 10px; }
+  .principle:last-child { border-bottom: none; }
+
+  .section-label {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin: 48px 0 20px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  }
+
+  .notable-works {
+    background: var(--accent-dim);
+    border: 1px solid rgba(99,179,237,0.15);
+    border-radius: 4px;
+    padding: 28px 32px;
+    margin: 48px 0;
+  }
+  .notable-works h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--accent); margin-bottom: 16px; }
+  .notable-works p { font-size: 13px; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
+
+  footer {
+    border-top: 1px solid var(--border); padding: 32px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--muted);
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+
+  @media (max-width: 1100px) {
+    .designer-card { grid-template-columns: 1fr; }
+    .designer-num { display: none; }
+    .designer-identity, .designer-philosophy { border-right: none; border-bottom: 1px solid var(--border); }
+    .designer-principles { border-left: none; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    header { padding: 48px 24px 40px; }
+    main { padding: 32px 24px; }
+    footer { flex-direction: column; gap: 16px; padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Index</a>
+  <a href="music-companies.html">Music Industry</a>
+  <a href="ux-designers.html" class="active">UX Designers</a>
+  <a href="ui-designers.html">UI Designers</a>
+  <a href="design-styles.html">Design Styles</a>
+  <a href="able-synthesis.html">ABLE Synthesis</a>
+</nav>
+
+<header>
+  <p class="eyebrow">Category 02 of 04</p>
+  <h1>Top UX<br><em>Designers</em></h1>
+  <p class="header-desc">Twenty practitioners and thinkers who define how digital interactions are designed — from the founding theorists to current leaders pushing the craft forward.</p>
+</header>
+
+<main>
+
+  <p class="section-label">Foundational Theorists</p>
+  <div class="designers-list">
+
+    <div class="designer-card">
+      <div class="designer-num">01</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Don Norman</h2>
+        <p class="designer-role">Co-Founder, Nielsen Norman Group · Coined "User Experience" at Apple (1993)</p>
+        <span class="designer-domain">Cognitive UX / Theory</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text">Design must serve <strong>human cognition, not the other way around.</strong> Good design is invisible — it affords the right actions naturally. Technology should adapt to people.</p>
+        <div class="designer-tags">
+          <span class="tag">Human-centered</span><span class="tag">Cognitive</span><span class="tag">Invisible</span><span class="tag">Principled</span><span class="tag">Foundational</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Affordances</div>
+        <div class="principle">Feedback loops</div>
+        <div class="principle">Conceptual models</div>
+        <div class="principle">Discoverability</div>
+        <div class="principle">Constraints</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">02</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Dieter Rams</h2>
+        <p class="designer-role">Retired VP Design, Braun · Ten Principles of Good Design</p>
+        <span class="designer-domain">Industrial / Foundational</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text"><strong>Good design is as little design as possible.</strong> Products should serve people quietly and reliably. Innovation is not novelty — it solves real problems in enduring ways.</p>
+        <div class="designer-tags">
+          <span class="tag">Less</span><span class="tag">Honest</span><span class="tag">Enduring</span><span class="tag">Functional</span><span class="tag">Unobtrusive</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Innovative</div>
+        <div class="principle">Useful</div>
+        <div class="principle">Honest</div>
+        <div class="principle">Long-lasting</div>
+        <div class="principle">As little as possible</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">03</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Brenda Laurel</h2>
+        <p class="designer-role">Professor Emerita, California College of Arts · Author "Computers as Theatre"</p>
+        <span class="designer-domain">HCI / Narrative Interaction</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text">Computers are a <strong>theatrical medium</strong> — interactivity is performance. Users are actors, not operators. Inclusive design creates richer systems for everyone.</p>
+        <div class="designer-tags">
+          <span class="tag">Theatrical</span><span class="tag">Inclusive</span><span class="tag">Narrative</span><span class="tag">Pioneering</span><span class="tag">Humanist</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Interactivity as drama</div>
+        <div class="principle">Inclusive by design</div>
+        <div class="principle">Narrative interaction</div>
+        <div class="principle">Games as serious design</div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="section-label">Product Leaders</p>
+  <div class="designers-list">
+
+    <div class="designer-card">
+      <div class="designer-num">04</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Jony Ive</h2>
+        <p class="designer-role">Founder, LoveFrom · Previously Chief Design Officer, Apple</p>
+        <span class="designer-domain">Hardware + Software</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text">Form and function are inseparable. <strong>Simplicity is the hardest discipline</strong> — it requires removing everything unnecessary until nothing remains but essence. Materials inform experience.</p>
+        <div class="designer-tags">
+          <span class="tag">Obsessive</span><span class="tag">Restrained</span><span class="tag">Material</span><span class="tag">Emotional</span><span class="tag">Elemental</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Material honesty</div>
+        <div class="principle">Radical simplicity</div>
+        <div class="principle">Emotional resonance</div>
+        <div class="principle">Manufacturing-informed</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">05</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Julie Zhuo</h2>
+        <p class="designer-role">Co-Founder, Sundial · Previously VP Product Design, Facebook/Meta</p>
+        <span class="designer-domain">Product / Leadership</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text">Great design is a craft that <strong>compounds over time.</strong> You build taste by shipping and reflecting, not theorizing. Millions of people interpret your interface through their own lens.</p>
+        <div class="designer-tags">
+          <span class="tag">Craft</span><span class="tag">Leadership</span><span class="tag">Iterative</span><span class="tag">Outcome-driven</span><span class="tag">Generous</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Outcome-driven design</div>
+        <div class="principle">Iterative craft</div>
+        <div class="principle">Design at scale</div>
+        <div class="principle">Taste development</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">06</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Luke Wroblewski</h2>
+        <p class="designer-role">Product Director, Google · "Mobile First" author</p>
+        <span class="designer-domain">Mobile / Forms</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text"><strong>Constraints drive better design.</strong> Mobile-first forces prioritisation of what truly matters — it strips away noise that desktop-first design hides. Data should inform but never replace design judgment.</p>
+        <div class="designer-tags">
+          <span class="tag">Mobile-first</span><span class="tag">Data-literate</span><span class="tag">Constraint-led</span><span class="tag">Pragmatic</span><span class="tag">Accessible</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Mobile-first design</div>
+        <div class="principle">Progressive disclosure</div>
+        <div class="principle">Form UX excellence</div>
+        <div class="principle">Data-informed judgment</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">07</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Kat Holmes</h2>
+        <p class="designer-role">Chief Design Officer, Salesforce · Author "Mismatch: How Inclusion Shapes Design"</p>
+        <span class="designer-domain">Inclusive Design</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text">Exclusion in design is not accidental — it is <strong>the default when designers center themselves.</strong> Designing for the most excluded user unlocks solutions that work for everyone.</p>
+        <div class="designer-tags">
+          <span class="tag">Inclusive</span><span class="tag">Edge-first</span><span class="tag">Systemic</span><span class="tag">Empowering</span><span class="tag">Rigorous</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Design from the edges</div>
+        <div class="principle">Mismatches as constraints</div>
+        <div class="principle">Inclusion as strategy</div>
+        <div class="principle">Measurable accessibility</div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="section-label">Emotional & Brand UX</p>
+  <div class="designers-list">
+
+    <div class="designer-card">
+      <div class="designer-num">08</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Aarron Walter</h2>
+        <p class="designer-role">VP Design Education, InVision · Previously Design Director, Mailchimp</p>
+        <span class="designer-domain">Emotional Design</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text">Users are humans with feelings first. <strong>Emotional resonance — delight, humor, surprise — builds loyalty</strong> that purely functional design cannot. A product's personality must be consistent from onboarding to error states.</p>
+        <div class="designer-tags">
+          <span class="tag">Emotional</span><span class="tag">Playful</span><span class="tag">Human</span><span class="tag">Personality-led</span><span class="tag">Warm</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Emotional design</div>
+        <div class="principle">Consistent personality</div>
+        <div class="principle">Delight as strategy</div>
+        <div class="principle">Human hierarchy of needs</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">09</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Tobias van Schneider</h2>
+        <p class="designer-role">Founder, Semplice · Previously Lead Designer, Spotify</p>
+        <span class="designer-domain">Music / Media UX ★</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text">Taste is built by <strong>sustained exposure to great work across disciplines.</strong> The best interfaces feel inevitable in retrospect. Side projects are the most honest form of design exploration.</p>
+        <div class="designer-tags">
+          <span class="tag">Tasteful</span><span class="tag">Music-aware</span><span class="tag">Independent</span><span class="tag">Restrained</span><span class="tag">Culture-fed</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Taste over skill</div>
+        <div class="principle">Music UX pioneer</div>
+        <div class="principle">Neon on dark vocabulary</div>
+        <div class="principle">Side project culture</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">10</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Jessica Hische</h2>
+        <p class="designer-role">Independent lettering artist, type designer · San Francisco</p>
+        <span class="designer-domain">Type / Lettering</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text">Type is never neutral — <strong>letterforms carry emotional weight that shapes perception before content is read.</strong> The craft of lettering forces designers to think about character and voice at the most granular level.</p>
+        <div class="designer-tags">
+          <span class="tag">Typographic</span><span class="tag">Crafted</span><span class="tag">Voiced</span><span class="tag">Expressive</span><span class="tag">Meticulous</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Type as voice</div>
+        <div class="principle">Process transparency</div>
+        <div class="principle">Personality in letterform</div>
+        <div class="principle">Craft precision</div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="section-label">Systemic & Structural</p>
+  <div class="designers-list">
+
+    <div class="designer-card">
+      <div class="designer-num">11</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Khoi Vinh</h2>
+        <p class="designer-role">Principal Designer, Adobe · Previously Design Director, NYT Digital</p>
+        <span class="designer-domain">Editorial / Systems</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text"><strong>Visual structure is not decoration — the grid is a design decision that carries meaning.</strong> Digital products exist in broader visual culture and should be designed as cultural objects, not just functional tools.</p>
+        <div class="designer-tags">
+          <span class="tag">Grid-literate</span><span class="tag">Editorial</span><span class="tag">Structural</span><span class="tag">Critical</span><span class="tag">Systems-minded</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Grid systems</div>
+        <div class="principle">Typographic hierarchy</div>
+        <div class="principle">Editorial digital design</div>
+        <div class="principle">Design criticism</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">12</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Paula Scher</h2>
+        <p class="designer-role">Principal, Pentagram New York · Citi, Windows 8, Public Theater identity</p>
+        <span class="designer-domain">Graphic / Identity Systems</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text"><strong>Design is language. Bold typographic choices communicate institutional values</strong> before a single word is read. The job is to make complex systems legible and exciting to people who didn't ask to engage.</p>
+        <div class="designer-tags">
+          <span class="tag">Bold</span><span class="tag">Typographic</span><span class="tag">Institutional</span><span class="tag">Legible</span><span class="tag">Cultural</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Typography as identity</div>
+        <div class="principle">Boldness signals confidence</div>
+        <div class="principle">Cultural legibility</div>
+        <div class="principle">Systems at brand scale</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">13</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">John Maeda</h2>
+        <p class="designer-role">Advisor/investor · Previously Publicis Sapient CDO, KPCB partner, RISD President</p>
+        <span class="designer-domain">Simplicity / Leadership</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text">Simplicity is about <strong>subtracting the obvious and adding the meaningful.</strong> Computation is a creative medium. Design leadership requires bilingual fluency in craft and code.</p>
+        <div class="designer-tags">
+          <span class="tag">Simple</span><span class="tag">Computational</span><span class="tag">Cross-disciplinary</span><span class="tag">Curious</span><span class="tag">Inclusive</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Laws of simplicity</div>
+        <div class="principle">STEAM (not just STEM)</div>
+        <div class="principle">Design + code fluency</div>
+        <div class="principle">Strategic design value</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">14</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Tim Brown (IDEO)</h2>
+        <p class="designer-role">Chair, IDEO · Author "Change by Design" · Apple mouse (1st gen)</p>
+        <span class="designer-domain">Design Thinking</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text">Design thinking is not a style but <strong>a method for solving complex systemic problems</strong> by centering human needs. Prototype fast and fail cheap — insight comes from doing, not analysis paralysis.</p>
+        <div class="designer-tags">
+          <span class="tag">Systemic</span><span class="tag">Empathetic</span><span class="tag">Prototype-driven</span><span class="tag">Multidisciplinary</span><span class="tag">Humanist</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Human-centered research</div>
+        <div class="principle">Rapid prototyping</div>
+        <div class="principle">Systemic problem-solving</div>
+        <div class="principle">Multidisciplinary teams</div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="section-label">Ethics, Culture & Web</p>
+  <div class="designers-list">
+
+    <div class="designer-card">
+      <div class="designer-num">15</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Frank Chimero</h2>
+        <p class="designer-role">Independent designer, writer · "The Shape of Design" · "The Web's Grain"</p>
+        <span class="designer-domain">Web / Editorial</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text">The web is a material with its own grain — <strong>designing with that grain produces better work than fighting it.</strong> Storytelling and design are the same discipline. Design for other people with care.</p>
+        <div class="designer-tags">
+          <span class="tag">Caring</span><span class="tag">Literary</span><span class="tag">Material-aware</span><span class="tag">Web-native</span><span class="tag">Generous</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Web as material</div>
+        <div class="principle">Craft with care</div>
+        <div class="principle">Narrative design</div>
+        <div class="principle">Design with generosity</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">16</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Mike Monteiro</h2>
+        <p class="designer-role">Founder, Mule Design · Author "Ruined by Design" · Design ethicist</p>
+        <span class="designer-domain">Design Ethics</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text">Designers are not neutral — <strong>every design decision is a political and ethical act.</strong> Designers who claim ignorance of the impact of their work are complicit. The profession must refuse harmful work.</p>
+        <div class="designer-tags">
+          <span class="tag">Ethical</span><span class="tag">Confrontational</span><span class="tag">Responsible</span><span class="tag">Political</span><span class="tag">Uncompromising</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Design ethics</div>
+        <div class="principle">Professional responsibility</div>
+        <div class="principle">Refusing harmful work</div>
+        <div class="principle">Designer advocacy</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">17</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Liz Danzico</h2>
+        <p class="designer-role">Creative Director, NPR · Previously Chair of MFA IxD, SVA New York</p>
+        <span class="designer-domain">Editorial / Education</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text"><strong>Listening is a design skill.</strong> Truly understanding what people need before reaching for a solution is the hardest and most undervalued part of the process. Institutions have designed voices, and those voices shape public trust.</p>
+        <div class="designer-tags">
+          <span class="tag">Listening</span><span class="tag">Editorial</span><span class="tag">Institutional</span><span class="tag">Educational</span><span class="tag">Measured</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Listening before solving</div>
+        <div class="principle">Institutional voice design</div>
+        <div class="principle">Education as design</div>
+        <div class="principle">Editorial UX</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">18</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Cap Watkins</h2>
+        <p class="designer-role">VP Design, BuzzFeed · Previously Etsy, Amazon design leadership</p>
+        <span class="designer-domain">Design Culture</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text"><strong>Design culture eats design process for breakfast.</strong> You can have the right tools and the wrong environment and produce nothing good. The design leader's job is to build conditions for good work, not produce the work themselves.</p>
+        <div class="designer-tags">
+          <span class="tag">Culture-first</span><span class="tag">Honest</span><span class="tag">Leadership</span><span class="tag">Team-centered</span><span class="tag">Pragmatic</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Design culture</div>
+        <div class="principle">Psychological safety</div>
+        <div class="principle">Team conditions</div>
+        <div class="principle">Design management writing</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">19</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Yves Béhar</h2>
+        <p class="designer-role">Founder/CCO, fuseproject · Jawbone, OLPC, Herman Miller SAYL, August</p>
+        <span class="designer-domain">Social Impact / Hardware</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text">The best product design <strong>makes technology disappear into everyday life.</strong> Social impact is a design constraint, not an afterthought. Products designed for constrained users yield solutions with the widest benefit.</p>
+        <div class="designer-tags">
+          <span class="tag">Social-impact</span><span class="tag">Integrated</span><span class="tag">Sustainable</span><span class="tag">Humanitarian</span><span class="tag">Premium</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Technology disappears</div>
+        <div class="principle">Social impact as constraint</div>
+        <div class="principle">Brand-product integration</div>
+        <div class="principle">Sustainable materials</div>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="designer-num">20</div>
+      <div class="designer-identity">
+        <h2 class="designer-name">Andy Budd</h2>
+        <p class="designer-role">Founder, Clearleft (Brighton) · UX London organiser · Design leadership advisor</p>
+        <span class="designer-domain">Org Design / Agency</span>
+      </div>
+      <div class="designer-philosophy">
+        <p class="philosophy-label">Philosophy</p>
+        <p class="philosophy-text"><strong>Design maturity inside organisations is a prerequisite for good product outcomes.</strong> You cannot ship great design from a structurally weak design function. The design community must assert its strategic value clearly.</p>
+        <div class="designer-tags">
+          <span class="tag">Strategic</span><span class="tag">Organizational</span><span class="tag">Maturity-focused</span><span class="tag">Community-builder</span><span class="tag">Direct</span>
+        </div>
+      </div>
+      <div class="designer-principles">
+        <p class="principles-label">Key principles</p>
+        <div class="principle">Design maturity model</div>
+        <div class="principle">Org conditions for craft</div>
+        <div class="principle">Designer strategic value</div>
+        <div class="principle">Community as infrastructure</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="notable-works">
+    <h3>Most relevant for ABLE: Music UX lineage</h3>
+    <p><strong>Tobias van Schneider (#09)</strong> — Designed Spotify's early desktop app visual language and Beats Music. The neon-on-dark aesthetic and editorial boldness he brought to Spotify is the most direct precedent for music streaming UI design. His writing on "taste" is required reading.</p>
+    <p><strong>Wilson Miner (honorable mention)</strong> — Designed Rdio, widely considered the most beautifully designed music streaming product ever made. His "When We Build" talk (2011) is essential viewing for anyone designing for digital music. Rdio's UX set benchmarks Spotify later iterated toward.</p>
+    <p><strong>Jason Yuan (see UI Designers)</strong> — Worked on Apple Music UI and created Mercury OS, a speculative OS rethink. His ambient color bloom effect (color radiating from album artwork) has been widely copied across music apps including Apple Music's current implementation.</p>
+  </div>
+
+</main>
+
+<footer>
+  <a href="music-companies.html">← Music Industry</a>
+  <span>ABLE Design References · UX Designers</span>
+  <a href="ui-designers.html">UI Designers →</a>
+</footer>
+
+</body>
+</html>

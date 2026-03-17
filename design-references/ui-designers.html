@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top UI Designers — ABLE Design References</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0c0608;
+    --surface: #130a0f;
+    --border: rgba(246,135,179,0.1);
+    --text: #f0e6ea;
+    --muted: rgba(240,230,234,0.45);
+    --accent: #f687b3;
+    --accent-dim: rgba(246,135,179,0.08);
+  }
+
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 14px; line-height: 1.6; }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(12,6,8,0.92); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 60px; display: flex; align-items: center; gap: 2px; height: 52px;
+  }
+  nav a { color: var(--muted); text-decoration: none; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 14px; border-radius: 4px; transition: color 0.2s, background 0.2s; }
+  nav a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+  nav a.active { color: var(--accent); }
+
+  header {
+    padding: 80px 60px 60px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden;
+  }
+  header::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 90% 10%, rgba(246,135,179,0.07) 0%, transparent 55%);
+    pointer-events: none;
+  }
+  .eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+  h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 300; line-height: 1; margin-bottom: 24px; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .header-desc { max-width: 560px; color: var(--muted); font-size: 14px; line-height: 1.7; }
+
+  main { padding: 60px; }
+
+  .section-label {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin: 40px 0 20px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2px; margin-bottom: 4px; }
+
+  .designer-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .designer-card:hover { border-color: rgba(246,135,179,0.3); }
+
+  .card-top {
+    padding: 28px 28px 20px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .card-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px; font-weight: 300;
+    color: rgba(246,135,179,0.12);
+    position: absolute; top: 16px; right: 20px;
+  }
+  .designer-name { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; margin-bottom: 6px; }
+  .designer-role { font-size: 12px; color: var(--muted); line-height: 1.4; margin-bottom: 10px; }
+  .designer-category { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 8px; border-radius: 2px; background: var(--accent-dim); color: var(--accent); display: inline-block; }
+
+  .card-body { padding: 20px 28px 24px; }
+
+  .style-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+
+  .visual-signature {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px; padding: 12px; border-radius: 4px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  }
+  .sig-bar { width: 4px; height: 40px; border-radius: 2px; flex-shrink: 0; }
+  .sig-text { font-size: 13px; font-style: italic; color: var(--text); line-height: 1.4; }
+
+  .style-detail { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+  .style-detail strong { color: var(--text); font-weight: 500; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag { font-size: 10px; padding: 3px 8px; border-radius: 2px; background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid rgba(255,255,255,0.06); }
+
+  .find-at { font-size: 11px; color: rgba(246,135,179,0.6); margin-top: 10px; }
+
+  .insight-box {
+    background: var(--accent-dim);
+    border: 1px solid rgba(246,135,179,0.15);
+    border-radius: 4px; padding: 28px 32px; margin: 48px 0;
+  }
+  .insight-box h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--accent); margin-bottom: 16px; }
+  .insight-box p { font-size: 13px; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
+
+  footer {
+    border-top: 1px solid var(--border); padding: 32px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--muted);
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    header { padding: 48px 24px 40px; }
+    main { padding: 32px 24px; }
+    footer { flex-direction: column; gap: 16px; padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Index</a>
+  <a href="music-companies.html">Music Industry</a>
+  <a href="ux-designers.html">UX Designers</a>
+  <a href="ui-designers.html" class="active">UI Designers</a>
+  <a href="design-styles.html">Design Styles</a>
+  <a href="able-synthesis.html">ABLE Synthesis</a>
+</nav>
+
+<header>
+  <p class="eyebrow">Category 03 of 04</p>
+  <h1>Top UI<br><em>Designers</em></h1>
+  <p class="header-desc">Twenty visual craftspeople whose work defines the aesthetic standards of digital product design — from pixel-level icons to spring-physics interfaces to generative art systems.</p>
+</header>
+
+<main>
+
+  <p class="section-label">Historical Foundations</p>
+  <div class="grid">
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">01</span>
+        <h2 class="designer-name">Susan Kare</h2>
+        <p class="designer-role">Founder, Susan Kare User Interface Graphics · Original Mac icons, Pinterest</p>
+        <span class="designer-category">Historical / Iconography</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #222, #fff, #222);"></div>
+          <p class="sig-text">"Pixel-perfect metaphor, warm bitmap warmth"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> Black, white, single accent — avoids gradients entirely. <strong>Typography:</strong> Bitmap-native clarity at small sizes. <strong>Style:</strong> Real-world objects translated to screen — skeuomorphic before the term existed. The trash can, the paintbrush, the lasso. Icons that look like what they are.</p>
+        <div class="tags"><span class="tag">Pixel-perfect</span><span class="tag">Metaphor</span><span class="tag">Bitmap warmth</span><span class="tag">Foundational</span></div>
+        <p class="find-at">susankare.com · Computer History Museum</p>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">02</span>
+        <h2 class="designer-name">Dieter Rams</h2>
+        <p class="designer-role">Retired VP Design, Braun · 10 Principles, direct ancestor of Apple iOS/iPod UI</p>
+        <span class="designer-category">Industrial / Foundational</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #f0f0f0, #888, #222);"></div>
+          <p class="sig-text">"Functional monochrome, rational grid, zero decoration"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> Grey, off-white, black — color only as functional indicator (red = power). <strong>Typography:</strong> Helvetica equivalent — neutral, systemised. <strong>Legacy:</strong> The Braun calculator directly preceded the iOS calculator (visually almost identical).</p>
+        <div class="tags"><span class="tag">Monochrome</span><span class="tag">Rational grid</span><span class="tag">Functionalism</span><span class="tag">Zero decoration</span></div>
+        <p class="find-at">vitsoe.com · "Objectified" documentary · MOMA</p>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">03</span>
+        <h2 class="designer-name">Jony Ive</h2>
+        <p class="designer-role">Founder, LoveFrom · Previously Chief Design Officer, Apple</p>
+        <span class="designer-category">Historical / Product</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #fff, #d0d0d0, #fff);"></div>
+          <p class="sig-text">"Surgical restraint, translucent layers, earned whitespace"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> White space as material, not absence. Monochromatic palettes. Translucency for depth. <strong>Typography:</strong> San Francisco (commissioned), large light-weight display type, generous leading. <strong>Key:</strong> iOS 7's translucency language — "nothing but the content" doctrine.</p>
+        <div class="tags"><span class="tag">Surgical restraint</span><span class="tag">Translucent</span><span class="tag">Whitespace</span><span class="tag">Premium</span></div>
+        <p class="find-at">lovefrom.com · Apple design archives</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="section-label">Music / Media Interface Specialists</p>
+  <div class="grid">
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">04</span>
+        <h2 class="designer-name">Tobias van Schneider</h2>
+        <p class="designer-role">Founder, Superfried/Semplice · Previously Lead Designer, Spotify</p>
+        <span class="designer-category">Music UI ★ Key Reference</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #1DB954, #000, #1DB954);"></div>
+          <p class="sig-text">"Editorial neon, album-art immersion, cinematic motion"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> Neon on void black; Spotify green as signal, high saturation against very dark backgrounds. <strong>Typography:</strong> Bold condensed grotesque + editorial hierarchy. <strong>Motion:</strong> Dramatic entrance animations, scroll-triggered reveals, cinematic transitions. Album art as background.</p>
+        <div class="tags"><span class="tag">Editorial neon</span><span class="tag">Album-art</span><span class="tag">Cinematic motion</span><span class="tag">Dark-premium</span></div>
+        <p class="find-at">vanschneider.com · Dribbble @vanschneider</p>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">05</span>
+        <h2 class="designer-name">Jason Yuan</h2>
+        <p class="designer-role">Design Engineer · Previously Apple Music, Spotify · Creator: Mercury OS</p>
+        <span class="designer-category">Music / Speculative UI ★</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #ea31a4, #dcb72f, #1941d8);"></div>
+          <p class="sig-text">"OS deconstruction, ambient art-color bloom, editorial type"</p>
+        </div>
+        <p class="style-detail"><strong>Key innovation:</strong> The ambient color bloom effect — color radiating from album artwork into the surrounding UI. Now used in Apple Music. Mercury OS challenges the window paradigm entirely. <strong>Typography:</strong> Magazine-weight display type in OS context. <strong>Layout:</strong> Document-as-surface, no windows.</p>
+        <div class="tags"><span class="tag">Ambient color</span><span class="tag">OS deconstruction</span><span class="tag">Art-driven palette</span><span class="tag">Speculative</span></div>
+        <p class="find-at">jasonyuan.design · Medium @jasonyuan</p>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">06</span>
+        <h2 class="designer-name">Tony Fadell</h2>
+        <p class="designer-role">Founder, Future Shape · Previously CEO Nest, VP iPod/iPhone Apple</p>
+        <span class="designer-category">Hardware-UI / Gesture</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #8B7355, #d4a96a, #2c2c2c);"></div>
+          <p class="sig-text">"Hardware-native UI, warm analogue palette, gesture-physics coupling"</p>
+        </div>
+        <p class="style-detail"><strong>Key work:</strong> iPod click wheel (scroll physics = part of the UI), Nest thermostat ring (analog skeuomorphism in a digital object). <strong>Colors:</strong> Warm blacks, amber, silvery neutrals. <strong>Typography:</strong> Large, bold, high contrast at natural viewing distance.</p>
+        <div class="tags"><span class="tag">Hardware-native</span><span class="tag">Warm analogue</span><span class="tag">Gesture-physics</span><span class="tag">Tactile</span></div>
+        <p class="find-at">futureshapeinc.com · "There Are No Small Parts"</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="section-label">Precision & Minimalism School</p>
+  <div class="grid">
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">07</span>
+        <h2 class="designer-name">Rasmus Andersson</h2>
+        <p class="designer-role">Staff Designer, Linear · Previously Spotify, Facebook · Creator: Inter typeface</p>
+        <span class="designer-category">Current / Tooling</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #5E5CE6, #1a1a2e, #5E5CE6);"></div>
+          <p class="sig-text">"Dense precision, Inter type, productive dark neutrals"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> Deep greys, single vibrant accent (purple at Linear), high contrast dark mode. <strong>Typography:</strong> Inter (his own typeface) — built for screens at small sizes. <strong>Key:</strong> Dense information displays that somehow feel airy, through micro-spacing and type scale.</p>
+        <div class="tags"><span class="tag">Dense precision</span><span class="tag">Inter</span><span class="tag">Dark neutrals</span><span class="tag">Keyboard-first</span></div>
+        <p class="find-at">rsms.me · @rasmus on GitHub</p>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">08</span>
+        <h2 class="designer-name">Paco Coursey</h2>
+        <p class="designer-role">Independent designer · Previously Linear · paco.me</p>
+        <span class="designer-category">Current / Minimalist</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #fafafa, #e0e0e0, #1a1a1a);"></div>
+          <p class="sig-text">"1px precision, negative space, invisible craft"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> Muted neutrals, near-white/near-black, accent used once per view maximum. <strong>Motion:</strong> Cursor dot effects, hover states, subtle parallax — never calls attention to itself. <strong>Hallmark:</strong> Everything feels exactly 1px more precise than expected.</p>
+        <div class="tags"><span class="tag">1px precision</span><span class="tag">Negative space</span><span class="tag">Invisible craft</span><span class="tag">Cursor-effects</span></div>
+        <p class="find-at">paco.me · @pacocoursey GitHub</p>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">09</span>
+        <h2 class="designer-name">Gavin Nelson</h2>
+        <p class="designer-role">Independent designer · Previously Stripe</p>
+        <span class="designer-category">Current / Product</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #6772e5, #fff, #425466);"></div>
+          <p class="sig-text">"Typographic legibility, premium restraint, Stripe clarity"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> Stripe's muted blues and grays — functional, businesslike with personality moments. <strong>Typography:</strong> Strong hierarchy, generous text sizing, never makes you squint. <strong>Quality signal:</strong> "This feels expensive without being loud."</p>
+        <div class="tags"><span class="tag">Typographic clarity</span><span class="tag">Premium restraint</span><span class="tag">Stripe aesthetic</span><span class="tag">Legible</span></div>
+        <p class="find-at">nelson.co · @gavin__nelson</p>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">10</span>
+        <h2 class="designer-name">Frank Chimero</h2>
+        <p class="designer-role">Independent designer/writer · "The Shape of Design" · Editorially</p>
+        <span class="designer-category">Current / Humanist</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #f5e6d3, #a87b50, #5c3a1e);"></div>
+          <p class="sig-text">"Humanist warmth, essay layout, type-first hierarchy"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> Warm off-whites, faded blues and greens, muted terracotta. Avoids pure white or pure black. <strong>Typography:</strong> Humanist serif (Freight), generous leading, text as primary aesthetic element. <strong>Motion:</strong> Very restrained — prefers stillness.</p>
+        <div class="tags"><span class="tag">Humanist warmth</span><span class="tag">Essay layout</span><span class="tag">Type-first</span><span class="tag">Literary</span></div>
+        <p class="find-at">frankchimero.com · @frank_chimero</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="section-label">Motion & Interaction</p>
+  <div class="grid">
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">11</span>
+        <h2 class="designer-name">Emil Kowalski</h2>
+        <p class="designer-role">Independent UI designer/engineer · emilkowal.ski · Vaul library</p>
+        <span class="designer-category">Current / Motion-UI</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #fff, #888, #000);"></div>
+          <p class="sig-text">"Spring physics UI, luxury void, cursor-responsive surfaces"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> Black, white, warm grey — near-colorless with moments of pure accent. <strong>Motion:</strong> Every interaction has spring physics. Cards that tilt in 3D space on cursor hover. Physical, not decorative. <strong>Typography:</strong> Large, light display type. Extreme breathing room.</p>
+        <div class="tags"><span class="tag">Spring physics</span><span class="tag">Luxury void</span><span class="tag">3D cursor tilt</span><span class="tag">Physical motion</span></div>
+        <p class="find-at">emilkowal.ski · @emilkowalski_</p>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">12</span>
+        <h2 class="designer-name">Rauno Freiberg</h2>
+        <p class="designer-role">Design Engineer, Vercel · rauno.me</p>
+        <span class="designer-category">Current / Design Engineering</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #000, #333, #000);"></div>
+          <p class="sig-text">"Engineered precision, interactive surprise, Vercel dark"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> Vercel black/white with blue-ish neutrals, high contrast, dark mode default. <strong>Motion:</strong> "Hover over anything and something surprising and delightful happens." Spring-based micro-animations that feel like 3 extra hours of work. <strong>Typography:</strong> Geist (custom Vercel typeface).</p>
+        <div class="tags"><span class="tag">Engineered precision</span><span class="tag">Interactive surprise</span><span class="tag">Dark palette</span><span class="tag">Hover delight</span></div>
+        <p class="find-at">rauno.me · @raunofreiberg · Vercel Design System</p>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">13</span>
+        <h2 class="designer-name">Sarah Drasner</h2>
+        <p class="designer-role">VP Dev Experience, Google · Vue.js core team · SVG Animations author</p>
+        <span class="designer-category">Current / Motion</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #ff6b9d, #8338ec, #06ffa5);"></div>
+          <p class="sig-text">"SVG morphing continuity, gradient warmth, motion as narrative"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> Gradient-rich, purple-to-teal or warm orange-to-pink. <strong>Motion:</strong> SVG morphing animations — elements don't pop in/out, they transform through shared shape. Motion is the primary communication layer. <strong>Key:</strong> Treats animation as narrative, not decoration.</p>
+        <div class="tags"><span class="tag">SVG morphing</span><span class="tag">Gradient warmth</span><span class="tag">Motion-narrative</span><span class="tag">GSAP</span></div>
+        <p class="find-at">sarah.dev · CodePen @sdras · @sarah_edo</p>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">14</span>
+        <h2 class="designer-name">Jorn van Dijk</h2>
+        <p class="designer-role">Co-founder & CEO, Framer · Previously Twitter, Sofa</p>
+        <span class="designer-category">Current / Tool-maker</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #0099FF, #6366f1, #a855f7);"></div>
+          <p class="sig-text">"Tool-native interactivity, Swiss grid, spring-default motion"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> White-dominant with primary blue accent, very Swiss, very systematic. Recently introduced gradient branding. <strong>Motion:</strong> Framer Motion (his library) — spring physics as default. Transitions that prototype the transition. <strong>Philosophy:</strong> Everything interactive by default.</p>
+        <div class="tags"><span class="tag">Tool-native</span><span class="tag">Swiss grid</span><span class="tag">Spring-default</span><span class="tag">Interactive</span></div>
+        <p class="find-at">framer.com · @jornvandijk · Framer Motion library</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="section-label">Systems & Platform</p>
+  <div class="grid">
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">15</span>
+        <h2 class="designer-name">Sebastien Gabriel</h2>
+        <p class="designer-role">Design Lead, Google DeepMind · Material Design, Material You</p>
+        <span class="designer-category">Current / Systems</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #4285f4, #ea4335, #fbbc04, #34a853);"></div>
+          <p class="sig-text">"Tonal dynamic color, wallpaper-derived palettes, expressive Material"</p>
+        </div>
+        <p class="style-detail"><strong>Key innovation:</strong> Material You — dynamic color derived from user's wallpaper. Tonal palettes generated algorithmically from seed colors. <strong>Typography:</strong> Google Sans / Product Sans, humanist grotesque. <strong>Motion:</strong> Shared element transitions, container transforms.</p>
+        <div class="tags"><span class="tag">Dynamic color</span><span class="tag">Tonal palettes</span><span class="tag">Expressive Material</span><span class="tag">Adaptive</span></div>
+        <p class="find-at">sebi.io · @SebGabriel · Material Design 3</p>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">16</span>
+        <h2 class="designer-name">Hiroaki Hayashi</h2>
+        <p class="designer-role">Design Lead, Figma · Multiplayer cursor, smart animate</p>
+        <span class="designer-category">Current / Tooling</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #FF7262, #A259FF, #1ABCFE, #0ACF83);"></div>
+          <p class="sig-text">"Multiplayer legibility, color-coded clarity, smart transitions"</p>
+        </div>
+        <p class="style-detail"><strong>Key work:</strong> Figma's multiplayer cursor experience. Color-coded layer logic. Smart animate — transitions that understand component structure. Motion as pedagogy. <strong>Typography:</strong> Inter throughout, precise size scale. <strong>Colors:</strong> Figma's purple-pink spectrum for functional coding.</p>
+        <div class="tags"><span class="tag">Multiplayer</span><span class="tag">Color-coded</span><span class="tag">Smart transitions</span><span class="tag">Pedagogical motion</span></div>
+        <p class="find-at">figma.com · @hayateclimate</p>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">17</span>
+        <h2 class="designer-name">Andy Chung</h2>
+        <p class="designer-role">Design Director, Arc (The Browser Company) · Previously Figma</p>
+        <span class="designer-category">Current / Browser UI</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #8B5CF6, #EC4899, #F59E0B);"></div>
+          <p class="sig-text">"Gradient identity, spring physics, spatial browser UI"</p>
+        </div>
+        <p class="style-detail"><strong>Key work:</strong> Arc browser — most distinctive browser UI in years. Gradient-rich backgrounds, pastel-to-vivid transitions, personalised color themes per workspace. <strong>Innovation:</strong> Sidebar-primary, breaks horizontal tab paradigm. Color as workspace identity.</p>
+        <div class="tags"><span class="tag">Gradient identity</span><span class="tag">Spring physics</span><span class="tag">Spatial UI</span><span class="tag">Color-as-identity</span></div>
+        <p class="find-at">thebrowser.company · @andychung__</p>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="section-label">Generative & Experimental</p>
+  <div class="grid">
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">18</span>
+        <h2 class="designer-name">Refik Anadol</h2>
+        <p class="designer-role">Founder, Refik Anadol Studio · MOMA permanent collection</p>
+        <span class="designer-category">Current / Generative</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #00fff0, #ff00ff, #39ff14);"></div>
+          <p class="sig-text">"Bioluminescent data flow, machine hallucination, full-bleed generative"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> Electric blues, magentas, cyans on black — bioluminescent. <strong>Style:</strong> Neural network outputs rendered as flowing liquid or smoke. Data as aesthetic material. Full-bleed immersive — no chrome, the content IS the environment. Everything moves.</p>
+        <div class="tags"><span class="tag">Bioluminescent</span><span class="tag">Data flow</span><span class="tag">Generative</span><span class="tag">Immersive</span></div>
+        <p class="find-at">refikanadol.com · Instagram @refikanadol</p>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">19</span>
+        <h2 class="designer-name">Meng To</h2>
+        <p class="designer-role">Founder, Design+Code · SwiftUI tutorials · Framer education</p>
+        <span class="designer-category">Current / Education-UI</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #a855f7, #ec4899, #3b82f6);"></div>
+          <p class="sig-text">"Neon glassmorphism, gradient-on-dark, Framer-animated depth"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> Purple, pink, blue neons on near-black. Glassmorphism surfaces with blur and tint. <strong>Style:</strong> The "glassmorphism card with gradient glow" aesthetic that half of design Twitter copied 2020–2022. <strong>Typography:</strong> Large bold display, gradient text effects.</p>
+        <div class="tags"><span class="tag">Neon glassmorphism</span><span class="tag">Gradient-dark</span><span class="tag">Framer depth</span><span class="tag">Glow effects</span></div>
+        <p class="find-at">designcode.io · Dribbble @mengto</p>
+      </div>
+    </div>
+
+    <div class="designer-card">
+      <div class="card-top">
+        <span class="card-num">20</span>
+        <h2 class="designer-name">Luca Orio</h2>
+        <p class="designer-role">Independent UI designer · Italy · Music app concept specialist</p>
+        <span class="designer-category">Current / Concept-UI</span>
+      </div>
+      <div class="card-body">
+        <div class="visual-signature">
+          <div class="sig-bar" style="background: linear-gradient(to bottom, #0a0a1a, #1a1a3e, #39ff14);"></div>
+          <p class="sig-text">"Dark moody depth, concept-perfect shadow, neon accent precision"</p>
+        </div>
+        <p class="style-detail"><strong>Colors:</strong> Navy, charcoal, deep purple — single vivid accent (neon green or electric blue). <strong>Style:</strong> Ultra-polished concept UI — the "too beautiful to be real" quality. Impeccable shadow and light logic. Asymmetric hero layouts, overlapping elements. <strong>Notable:</strong> Music app concepts widely circulated.</p>
+        <div class="tags"><span class="tag">Dark moody</span><span class="tag">Neon accent</span><span class="tag">Concept-perfect</span><span class="tag">Shadow logic</span></div>
+        <p class="find-at">Dribbble @lucaorio · Behance @lucaorio</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="insight-box">
+    <h3>What these UI designers tell us about ABLE</h3>
+    <p><strong>Music-specific UI has a clear lineage:</strong> Van Schneider → Spotify's early dark/editorial neon vocabulary. Jason Yuan → Apple Music's ambient color extraction from artwork. Luca Orio → music app concept aesthetics. ABLE inherits and should consciously reference this lineage.</p>
+    <p><strong>The spring physics standard:</strong> Emil Kowalski, Rauno Freiberg, Jorn van Dijk, and Andy Chung all use spring-based animations as default. Easing that feels physical is now the baseline expectation for premium UI. CSS ease curves that feel "computational" read as cheap.</p>
+    <p><strong>Precision is the differentiator:</strong> Paco Coursey's "1px more precise than expected" principle — the designers whose work stands out are doing invisible work that only registers as "quality." Micro-spacing, optical sizing, exact color relationships. ABLE's polish lives in these unseeable details.</p>
+    <p><strong>Dark luxury + content-derived color = the music UI sweet spot:</strong> Jason Yuan's ambient color bloom (artwork → environment) and Sebastien Gabriel's Material You (wallpaper → palette) both prove that <em>letting the content define the color</em> is both premium and personal. ABLE's glass/background-image mode does exactly this.</p>
+  </div>
+
+</main>
+
+<footer>
+  <a href="ux-designers.html">← UX Designers</a>
+  <span>ABLE Design References · UI Designers</span>
+  <a href="design-styles.html">Design Styles →</a>
+</footer>
+
+</body>
+</html>

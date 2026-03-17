@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Styles — ABLE Design References</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #050505;
+    --surface: #0d0d0d;
+    --border: rgba(154,205,50,0.1);
+    --text: #e8f5e2;
+    --muted: rgba(232,245,226,0.45);
+    --accent: #9acd32;
+    --accent-dim: rgba(154,205,50,0.08);
+  }
+
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 14px; line-height: 1.6; }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(5,5,5,0.95); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 60px; display: flex; align-items: center; gap: 2px; height: 52px;
+  }
+  nav a { color: var(--muted); text-decoration: none; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 14px; border-radius: 4px; transition: color 0.2s, background 0.2s; }
+  nav a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+  nav a.active { color: var(--accent); }
+
+  header {
+    padding: 80px 60px 60px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden;
+  }
+  header::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 70% 20%, rgba(154,205,50,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 30% 80%, rgba(99,179,237,0.03) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+  h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 300; line-height: 1; margin-bottom: 24px; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .header-desc { max-width: 560px; color: var(--muted); font-size: 14px; line-height: 1.7; }
+
+  main { padding: 60px; }
+
+  /* Style card layout */
+  .style-entry {
+    display: grid;
+    grid-template-columns: 300px 1fr 280px;
+    grid-template-rows: auto;
+    gap: 0;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    margin-bottom: 2px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .style-entry:hover { border-color: rgba(154,205,50,0.25); }
+
+  /* Column 1: Specimen */
+  .specimen {
+    height: 220px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  /* Column 2: Description */
+  .style-desc {
+    padding: 28px;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+  .style-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+  .style-num { font-family: 'Cormorant Garamond', serif; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  .style-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; line-height: 1.1; }
+  .relevance-badge {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 8px; border-radius: 2px; flex-shrink: 0;
+    background: var(--accent-dim); color: var(--accent);
+  }
+  .relevance-badge.high { background: rgba(154,205,50,0.2); color: #b8e06e; }
+  .relevance-badge.medium { background: rgba(201,168,76,0.15); color: #c9a84c; }
+  .relevance-badge.niche { background: rgba(255,255,255,0.06); color: var(--muted); }
+
+  .style-summary { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+  .style-summary strong { color: var(--text); font-weight: 500; }
+
+  .style-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag { font-size: 10px; padding: 3px 8px; border-radius: 2px; background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid rgba(255,255,255,0.06); }
+
+  /* Column 3: Details */
+  .style-details { padding: 28px 24px; }
+  .detail-group { margin-bottom: 14px; }
+  .detail-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+  .detail-val { font-size: 12px; line-height: 1.5; color: var(--text); }
+  .detail-val.muted { color: var(--muted); }
+  .trend-bar { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.08); margin-top: 6px; overflow: hidden; }
+  .trend-fill { height: 100%; border-radius: 2px; background: var(--accent); }
+
+  /* ============================================
+     SPECIMEN STYLES — each one renders the aesthetic
+     ============================================ */
+
+  /* 01 Swiss International */
+  .sp-swiss {
+    background: #fff; display: flex; align-items: stretch;
+  }
+  .sp-swiss-left { width: 6px; background: #cc0000; flex-shrink: 0; }
+  .sp-swiss-content { padding: 20px 18px; flex: 1; }
+  .sp-swiss h3 { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 700; color: #111; line-height: 1; letter-spacing: -0.02em; text-transform: uppercase; }
+  .sp-swiss p { font-family: 'Inter', sans-serif; font-size: 11px; color: #555; line-height: 1.5; margin-top: 10px; max-width: 200px; }
+  .sp-swiss-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin-top: 14px; }
+  .sp-swiss-cell { background: #f0f0f0; height: 20px; }
+  .sp-swiss-cell:nth-child(1) { grid-column: span 2; }
+
+  /* 02 Glassmorphism */
+  .sp-glass {
+    background: linear-gradient(135deg, #6e40c9 0%, #e040fb 50%, #40c9e0 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 16px;
+    padding: 18px 22px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    min-width: 160px;
+  }
+  .glass-card h4 { font-size: 16px; color: #fff; font-weight: 500; margin-bottom: 6px; }
+  .glass-card p { font-size: 11px; color: rgba(255,255,255,0.7); }
+  .glass-card .pill { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 100px; padding: 4px 12px; font-size: 11px; color: #fff; margin-top: 10px; }
+
+  /* 03 Neumorphism */
+  .sp-neu {
+    background: #e0e5ec; display: flex; align-items: center; justify-content: center; gap: 16px;
+  }
+  .neu-btn {
+    width: 60px; height: 60px; border-radius: 16px; background: #e0e5ec;
+    box-shadow: 5px 5px 10px #b8bec7, -5px -5px 10px #ffffff;
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+  }
+  .neu-card {
+    background: #e0e5ec;
+    box-shadow: 8px 8px 16px #b8bec7, -8px -8px 16px #ffffff;
+    border-radius: 20px; padding: 16px 20px;
+  }
+  .neu-card p { font-size: 12px; color: #777; }
+  .neu-card strong { font-size: 18px; color: #444; display: block; margin-bottom: 4px; }
+
+  /* 04 Brutalism */
+  .sp-brutal {
+    background: #fff; padding: 0; display: flex; flex-direction: column;
+  }
+  .sp-brutal-top { background: #ff0000; padding: 12px 16px; }
+  .sp-brutal-top h3 { font-family: 'Times New Roman', serif; font-size: 22px; color: #fff; text-transform: uppercase; font-style: italic; }
+  .sp-brutal-body { flex: 1; padding: 12px 16px; border: 4px solid #000; margin: -1px; }
+  .sp-brutal-body p { font-family: 'Times New Roman', serif; font-size: 13px; color: #000; line-height: 1.4; }
+  .sp-brutal-link { color: blue; text-decoration: underline; font-size: 13px; display: block; margin-top: 8px; }
+  .sp-brutal-rule { height: 3px; background: #000; margin: 8px 0; }
+
+  /* 05 Flat Design */
+  .sp-flat {
+    background: #f0f4f8; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 8px; padding: 16px;
+  }
+  .flat-card { background: #4a9eff; border-radius: 4px; padding: 14px; }
+  .flat-card.green { background: #4caf82; }
+  .flat-card.orange { background: #ff7043; }
+  .flat-card.purple { background: #7c4dff; }
+  .flat-card h4 { font-size: 12px; font-weight: 600; color: #fff; }
+  .flat-card p { font-size: 10px; color: rgba(255,255,255,0.8); margin-top: 2px; }
+
+  /* 06 Material Design */
+  .sp-material {
+    background: #f5f5f5; padding: 0;
+  }
+  .mat-appbar { background: #1976d2; padding: 14px 16px; display: flex; align-items: center; gap: 10px; }
+  .mat-appbar span { font-size: 14px; color: #fff; font-weight: 500; }
+  .mat-content { padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mat-card { background: #fff; border-radius: 4px; padding: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.08); }
+  .mat-card h4 { font-size: 12px; font-weight: 500; color: #212121; }
+  .mat-card p { font-size: 10px; color: #757575; margin-top: 2px; }
+  .mat-fab { position: absolute; bottom: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; background: #f44336; box-shadow: 0 4px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; }
+  .sp-material { position: relative; }
+
+  /* 07 Dark Luxury */
+  .sp-luxury {
+    background: #0a0a0a; display: flex; flex-direction: column; justify-content: center; padding: 28px;
+  }
+  .lux-rule { width: 40px; height: 1px; background: #c9a84c; margin-bottom: 20px; }
+  .sp-luxury h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; color: #f5f5f0; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.2; }
+  .sp-luxury p { font-size: 11px; color: rgba(245,245,240,0.4); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 14px; }
+  .sp-luxury .lux-btn { display: inline-block; border: 1px solid #c9a84c; color: #c9a84c; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; padding: 8px 20px; margin-top: 18px; }
+
+  /* 08 Bento Grid */
+  .sp-bento {
+    background: #1c1c1e; padding: 12px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 80px 60px;
+    gap: 8px;
+  }
+  .bento-cell { background: #2c2c2e; border-radius: 12px; padding: 12px; overflow: hidden; }
+  .bento-cell.hero { grid-column: span 2; background: linear-gradient(135deg, #5e35b1, #7b1fa2); }
+  .bento-cell.wide { grid-column: span 2; }
+  .bento-cell h4 { font-size: 11px; font-weight: 600; color: #fff; line-height: 1.2; }
+  .bento-cell p { font-size: 9px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+  .bento-num { font-size: 22px; font-weight: 700; color: rgba(255,255,255,0.9); }
+
+  /* 09 Editorial */
+  .sp-editorial {
+    background: #f9f7f2; padding: 18px; overflow: hidden;
+  }
+  .ed-issue { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #999; margin-bottom: 8px; }
+  .sp-editorial h3 { font-family: 'Cormorant Garamond', serif; font-size: 30px; line-height: 1; color: #111; font-weight: 400; }
+  .sp-editorial h3 em { font-style: italic; }
+  .ed-rule { height: 1px; background: #111; margin: 12px 0; }
+  .sp-editorial p { font-size: 11px; line-height: 1.6; color: #444; columns: 2; column-gap: 16px; }
+  .ed-drop { font-size: 28px; float: left; line-height: 0.85; margin: 0 6px 0 0; font-family: 'Cormorant Garamond', serif; }
+
+  /* 10 Maximalism */
+  .sp-maximal {
+    background: #fff; position: relative; overflow: hidden; padding: 0;
+  }
+  .sp-maximal::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, #ffd700 0, #ffd700 2px, transparent 0, transparent 50%); background-size: 14px 14px; opacity: 0.15; }
+  .max-headline {
+    position: absolute; top: -8px; left: -4px;
+    font-family: 'Cormorant Garamond', serif; font-size: 80px; font-weight: 400; line-height: 1; color: #ff0066; z-index: 1; letter-spacing: -0.04em;
+  }
+  .max-sub {
+    position: absolute; bottom: 20px; left: 12px; right: 12px; z-index: 2;
+    font-size: 11px; color: #111; font-weight: 500; line-height: 1.4;
+    background: rgba(255,255,0,0.8); padding: 6px 8px;
+  }
+  .max-circle { position: absolute; top: 30px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: #00e5ff; z-index: 1; }
+  .max-bar { position: absolute; top: 0; right: 0; width: 20px; height: 100%; background: #000; z-index: 1; }
+
+  /* 11 Cyberpunk */
+  .sp-cyber {
+    background: #0d0d0d; padding: 16px; position: relative; overflow: hidden;
+  }
+  .sp-cyber::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,255,240,0.03) 3px, rgba(0,255,240,0.03) 4px); pointer-events: none; }
+  .cyber-label { font-family: 'Space Mono', monospace; font-size: 9px; color: #00fff0; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 10px; }
+  .cyber-headline { font-family: 'Space Mono', monospace; font-size: 18px; color: #00fff0; text-shadow: 0 0 10px #00fff0; line-height: 1.2; }
+  .cyber-sub { font-family: 'Space Mono', monospace; font-size: 9px; color: rgba(0,255,240,0.5); margin-top: 6px; }
+  .cyber-bar { height: 2px; background: linear-gradient(to right, #00fff0, transparent); margin: 12px 0; }
+  .cyber-data { display: flex; gap: 8px; }
+  .cyber-tag { font-family: 'Space Mono', monospace; font-size: 9px; border: 1px solid rgba(0,255,240,0.4); color: rgba(0,255,240,0.6); padding: 3px 6px; }
+
+  /* 12 Y2K / Retro-Futurism */
+  .sp-y2k {
+    background: linear-gradient(135deg, #0a001a, #1a0038, #000);
+    position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+  }
+  .y2k-chrome {
+    font-size: 36px; font-weight: 900; letter-spacing: -0.02em;
+    background: linear-gradient(180deg, #e8e8e8 0%, #a0a0a0 30%, #ffffff 50%, #808080 70%, #c0c0c0 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    position: relative; z-index: 2;
+  }
+  .y2k-glow { position: absolute; width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, rgba(180,0,255,0.4) 0%, transparent 70%); top: 20%; left: 20%; }
+  .y2k-ring { position: absolute; width: 80px; height: 80px; border-radius: 50%; border: 2px solid rgba(0,200,255,0.4); bottom: 10%; right: 15%; }
+  .y2k-star { position: absolute; font-size: 20px; color: #ff00ff; opacity: 0.5; }
+  .y2k-star:nth-child(3) { top: 20px; right: 30px; }
+  .y2k-star:nth-child(4) { bottom: 30px; left: 20px; font-size: 12px; color: #00ffff; }
+
+  /* 13 Minimalism */
+  .sp-minimal {
+    background: #fafaf8; display: flex; flex-direction: column; justify-content: center; padding: 36px;
+  }
+  .sp-minimal h3 { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: #111; line-height: 1; letter-spacing: -0.01em; }
+  .sp-minimal p { font-size: 12px; color: #888; line-height: 1.8; margin-top: 14px; max-width: 200px; font-style: italic; }
+
+  /* 14 Claymorphism */
+  .sp-clay {
+    background: #f0e8ff; display: flex; align-items: center; justify-content: center; gap: 14px;
+  }
+  .clay-elem {
+    border-radius: 24px; padding: 14px 18px;
+    background: linear-gradient(135deg, #ff6b9d, #ff8e53);
+    box-shadow: 0 12px 28px rgba(255,107,157,0.4), inset 0 -3px 6px rgba(0,0,0,0.12), inset 0 3px 6px rgba(255,255,255,0.5);
+    border: 2px solid rgba(255,255,255,0.6);
+  }
+  .clay-elem span { font-size: 20px; display: block; }
+  .clay-elem p { font-size: 11px; color: #fff; font-weight: 600; margin-top: 4px; }
+  .clay-elem-blue {
+    border-radius: 20px; width: 60px; height: 60px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: 0 10px 24px rgba(102,126,234,0.45), inset 0 -3px 6px rgba(0,0,0,0.15), inset 0 3px 6px rgba(255,255,255,0.4);
+    border: 2px solid rgba(255,255,255,0.5);
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+  }
+
+  /* 15 Aurora / Gradient Mesh */
+  .sp-aurora {
+    position: relative; overflow: hidden;
+    background: #0f0f1a;
+  }
+  .aurora-blob1 { position: absolute; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(124,58,237,0.6) 0%, transparent 70%); top: -40px; left: -40px; }
+  .aurora-blob2 { position: absolute; width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle, rgba(219,39,119,0.5) 0%, transparent 70%); top: 20px; right: -30px; }
+  .aurora-blob3 { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(37,99,235,0.4) 0%, transparent 70%); bottom: -40px; left: 30%; }
+  .aurora-content { position: relative; z-index: 2; padding: 28px; }
+  .aurora-content h3 { font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 600; color: #fff; }
+  .aurora-content p { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 8px; }
+  .aurora-btn { display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 100px; padding: 8px 18px; font-size: 12px; color: #fff; margin-top: 16px; }
+
+  /* 16 Typographic / Type-First */
+  .sp-type {
+    background: #111; overflow: hidden; position: relative; display: flex; align-items: flex-end; padding: 0;
+  }
+  .type-mega { font-family: 'Cormorant Garamond', serif; font-size: 120px; line-height: 1; color: #fff; font-weight: 400; letter-spacing: -0.04em; position: absolute; bottom: -20px; left: -4px; opacity: 0.95; }
+  .type-label { position: absolute; top: 18px; right: 16px; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+  .type-accent { position: absolute; top: 18px; left: 16px; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+  .type-rule { position: absolute; top: 0; left: 50%; width: 1px; height: 100%; background: rgba(255,255,255,0.08); }
+
+  /* 17 Memphis */
+  .sp-memphis {
+    background: #fff; position: relative; overflow: hidden; padding: 20px;
+  }
+  .sp-memphis::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(circle, #ff6b6b 2px, transparent 2px), radial-gradient(circle, #4ecdc4 1.5px, transparent 1.5px);
+    background-size: 24px 24px, 12px 12px;
+    background-position: 0 0, 6px 6px;
+    opacity: 0.4;
+  }
+  .mem-headline { font-size: 28px; font-weight: 900; text-transform: uppercase; color: #ff3366; position: relative; z-index: 2; line-height: 0.9; transform: rotate(-3deg); display: inline-block; }
+  .mem-shape { position: absolute; z-index: 1; }
+  .mem-tri { width: 0; height: 0; border-left: 30px solid transparent; border-right: 30px solid transparent; border-bottom: 52px solid #ffd700; top: 30px; right: 30px; }
+  .mem-circle { width: 40px; height: 40px; border-radius: 50%; background: #00bcd4; bottom: 20px; right: 20px; border: 3px solid #111; }
+  .mem-stripe { width: 100%; height: 12px; background: repeating-linear-gradient(90deg, #111 0, #111 8px, transparent 8px, transparent 16px); bottom: 0; left: 0; position: absolute; }
+
+  /* 18 Organic / Bio */
+  .sp-organic {
+    background: #f5ede0; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+  }
+  .blob-shape {
+    width: 120px; height: 100px;
+    background: #d4a574;
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; z-index: 2;
+    box-shadow: 0 12px 32px rgba(180,120,80,0.3);
+  }
+  .blob-shape span { font-size: 28px; }
+  .blob-sm {
+    width: 60px; height: 55px;
+    background: #8fa87a;
+    border-radius: 30% 70% 50% 50% / 40% 60% 40% 60%;
+    position: absolute; right: 30px; top: 30px;
+    opacity: 0.8;
+  }
+  .blob-xs {
+    width: 36px; height: 36px;
+    background: #c8a86e;
+    border-radius: 70% 30% 50% 50% / 50% 70% 30% 50%;
+    position: absolute; left: 24px; bottom: 28px;
+    opacity: 0.7;
+  }
+  .org-text { position: absolute; bottom: 16px; left: 16px; font-size: 11px; font-style: italic; color: #8a6040; }
+
+  /* 19 Spatial / AI-Native */
+  .sp-spatial {
+    background: #000; display: flex; align-items: center; justify-content: center;
+  }
+  .spatial-panel {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(40px);
+    border: 0.5px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 18px 22px;
+    box-shadow: 0 0 0 0.5px rgba(255,255,255,0.08), 0 32px 60px rgba(0,0,0,0.5);
+    min-width: 160px;
+  }
+  .spatial-label { font-size: 9px; font-weight: 300; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 10px; }
+  .spatial-panel h4 { font-size: 18px; font-weight: 300; color: rgba(255,255,255,0.9); line-height: 1.2; }
+  .spatial-panel p { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 6px; }
+  .spatial-dots { display: flex; gap: 5px; margin-top: 12px; }
+  .spatial-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.2); }
+  .spatial-dot.active { background: rgba(255,255,255,0.8); }
+
+  /* 20 Skeuomorphism */
+  .sp-skeu {
+    background: linear-gradient(to bottom, #c8b8a2, #a89070); padding: 16px; position: relative;
+  }
+  .skeu-note { background: #fffde7; border-radius: 2px; padding: 14px; box-shadow: 2px 3px 8px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.9); position: relative; }
+  .skeu-note::before { content: ''; position: absolute; left: 28px; right: 0; top: 0; bottom: 0; background: repeating-linear-gradient(transparent, transparent 19px, #c8c8ff 19px, #c8c8ff 20px); border-radius: 0 2px 2px 0; }
+  .skeu-note-line { position: absolute; left: 28px; top: 0; bottom: 0; width: 2px; background: #ff8888; }
+  .skeu-note-content { padding-left: 14px; font-family: 'Space Mono', monospace; font-size: 11px; color: #333; line-height: 20px; position: relative; z-index: 2; }
+  .skeu-rings { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 8px; }
+  .skeu-ring { width: 12px; height: 12px; border-radius: 50%; background: #c0c0c0; border: 2px solid #888; box-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+
+  /* Section label */
+  .section-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin: 48px 0 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+
+  /* Quick reference table */
+  .quick-ref { margin: 60px 0; overflow-x: auto; }
+  .quick-ref table { width: 100%; border-collapse: collapse; }
+  .quick-ref th { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  .quick-ref td { font-size: 12px; color: var(--text); padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .quick-ref tr:hover td { background: rgba(255,255,255,0.02); }
+  .rel-high { color: #9acd32; font-weight: 500; }
+  .rel-med { color: #c9a84c; }
+  .rel-niche { color: var(--muted); }
+
+  footer {
+    border-top: 1px solid var(--border); padding: 32px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--muted);
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+
+  @media (max-width: 1100px) {
+    .style-entry { grid-template-columns: 1fr; }
+    .specimen { height: 160px; }
+    .style-desc { border-left: none; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .style-details { border-left: none; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    header { padding: 48px 24px 40px; }
+    main { padding: 32px 24px; }
+    footer { flex-direction: column; gap: 16px; padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Index</a>
+  <a href="music-companies.html">Music Industry</a>
+  <a href="ux-designers.html">UX Designers</a>
+  <a href="ui-designers.html">UI Designers</a>
+  <a href="design-styles.html" class="active">Design Styles</a>
+  <a href="able-synthesis.html">ABLE Synthesis</a>
+</nav>
+
+<header>
+  <p class="eyebrow">Category 04 of 04</p>
+  <h1>Twenty Design<br><em>Styles</em></h1>
+  <p class="header-desc">Live visual specimens of the twenty most influential web and UI design aesthetics — rendered in CSS. Each specimen shows the style in action, with key characteristics, CSS techniques, and relevance rating for ABLE.</p>
+</header>
+
+<main>
+
+  <p class="section-label">Timeless / Evergreen</p>
+
+  <!-- 01 Swiss International -->
+  <div class="style-entry">
+    <div class="specimen sp-swiss">
+      <div class="sp-swiss-left"></div>
+      <div class="sp-swiss-content">
+        <h3>Neue<br>Grafik</h3>
+        <p>Grid-based typographic structure with functional precision.</p>
+        <div class="sp-swiss-grid">
+          <div class="sp-swiss-cell"></div>
+          <div class="sp-swiss-cell"></div>
+          <div class="sp-swiss-cell"></div>
+        </div>
+      </div>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">01</p>
+          <h2 class="style-name">Swiss / International Typographic</h2>
+        </div>
+        <span class="relevance-badge medium">Medium relevance</span>
+      </div>
+      <p class="style-summary">Extreme restraint. Asymmetric grids aligned to an invisible underlying structure. Black or single-accent type on white. <strong>Every element has a reason to exist and a precise position.</strong> Photography used as documentary fact, never decorative.</p>
+      <p class="style-summary">Direct lineage from Bauhaus (1919–1933). Josef Müller-Brockmann, Armin Hofmann, Emil Ruder. The intellectual DNA of Stripe, Linear, and Vercel.</p>
+      <div class="style-tags">
+        <span class="tag">Grid</span><span class="tag">Typographic</span><span class="tag">Modernist</span><span class="tag">Functional</span><span class="tag">Helvetica</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Architecture, institutions, editorial, premium developer tools, financial services</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Modern heirs</p>
+        <p class="detail-val muted">Stripe.com, Linear.app, gov.uk, Vercel.com</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Classic · Evergreen</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 85%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 Glassmorphism -->
+  <div class="style-entry">
+    <div class="specimen sp-glass">
+      <div class="glass-card">
+        <h4>Artist Profile</h4>
+        <p>Glass surface over vivid gradient background</p>
+        <span class="pill">→ Follow</span>
+      </div>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">02</p>
+          <h2 class="style-name">Glassmorphism</h2>
+        </div>
+        <span class="relevance-badge high">★ High — ABLE uses this</span>
+      </div>
+      <p class="style-summary">Frosted glass panels floating over blurred gradient backgrounds. <strong>Semi-transparent surfaces with visible backdrop-blur.</strong> Subtle white border on the glass edge catches light. Background must always be vivid — the blur needs material to work with.</p>
+      <p class="style-summary">Apple macOS Big Sur (2020) brought it mainstream. ABLE's background-image theme is a direct application of this technique. Now a settled standard, not a trend.</p>
+      <div class="style-tags">
+        <span class="tag">Frosted-glass</span><span class="tag">Transparency</span><span class="tag">Blur</span><span class="tag">Depth</span><span class="tag">Layered</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">CSS technique</p>
+        <p class="detail-val muted">backdrop-filter: blur(20px) saturate(180%);<br>background: rgba(255,255,255,0.12);<br>border: 1px solid rgba(255,255,255,0.25);</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Consumer apps, music/entertainment, lifestyle, creative tools</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Settled standard (2020–∞)</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 90%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 Dark Luxury -->
+  <div class="style-entry">
+    <div class="specimen sp-luxury">
+      <div class="lux-rule"></div>
+      <h3>Maison<br>Noire</h3>
+      <p>Collection</p>
+      <span class="lux-btn">Explore</span>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">03</p>
+          <h2 class="style-name">Dark Luxury / Dark Mode Premium</h2>
+        </div>
+        <span class="relevance-badge high">★ High — ABLE's aesthetic</span>
+      </div>
+      <p class="style-summary">Deep near-black backgrounds (#0a0a0a, not pure #000). Gold, platinum, or monochrome accents. <strong>Ultra-thin typography with generous tracking.</strong> Photography: low-key lighting, cinematic. Negative space used lavishly. Micro-animations slow and deliberate.</p>
+      <p class="style-summary">Luxury watches, high-end fashion (Net-A-Porter, Mr Porter), premium automotive. Accelerated by OS-level dark mode adoption (2018–2019). <strong>The definitive premium UI language.</strong></p>
+      <div class="style-tags">
+        <span class="tag">Luxury</span><span class="tag">Dark</span><span class="tag">Gold</span><span class="tag">Cinematic</span><span class="tag">Exclusive</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Color recipe</p>
+        <p class="detail-val muted">bg: #0f0f0f · surface: #1a1a1a<br>gold: #c9a84c · text: #f5f5f0<br>rule: 1px solid var(--gold)</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Luxury goods, premium spirits, high-end fashion, exclusive membership, premium music artist profiles</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Very current · Sustained</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 95%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 Bento Grid -->
+  <div class="style-entry">
+    <div class="specimen sp-bento">
+      <div class="bento-cell hero">
+        <h4>Feature highlight</h4>
+        <p>Primary hero cell spans multiple columns</p>
+      </div>
+      <div class="bento-cell">
+        <span class="bento-num">4K</span>
+        <p style="font-size:9px;color:rgba(255,255,255,0.4);margin-top:2px;">Resolution</p>
+      </div>
+      <div class="bento-cell wide">
+        <h4>Secondary feature description goes here</h4>
+      </div>
+      <div class="bento-cell">
+        <h4>Stat</h4>
+      </div>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">04</p>
+          <h2 class="style-name">Bento Grid Layout</h2>
+        </div>
+        <span class="relevance-badge high">★ High — feature sections</span>
+      </div>
+      <p class="style-summary">Named after the Japanese bento box. A mosaic of rectangular cards, each containing one piece of content. Cells are different sizes — some span multiple columns — but fit together like a puzzle. <strong>Spatial hierarchy through cell size, not visual weight.</strong></p>
+      <p class="style-summary">Apple WWDC23 feature pages launched this into mainstream design consciousness. Now standard for SaaS feature highlights and "about" pages.</p>
+      <div class="style-tags">
+        <span class="tag">Mosaic</span><span class="tag">Grid</span><span class="tag">Cards</span><span class="tag">Apple-style</span><span class="tag">Feature-highlights</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">CSS technique</p>
+        <p class="detail-val muted">display: grid;<br>grid-template-columns: repeat(12, 1fr);<br>.hero { grid-column: span 8; grid-row: span 2; }</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">SaaS feature highlights, portfolio overviews, product landing pages, company "about" sections</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Peak standard (2023–∞)</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 88%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 Minimalism -->
+  <div class="style-entry">
+    <div class="specimen sp-minimal">
+      <h3>Nothing extra.<br>Everything earned.</h3>
+      <p>The confidence to leave space is a design decision in itself.</p>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">05</p>
+          <h2 class="style-name">Minimalism / White Space</h2>
+        </div>
+        <span class="relevance-badge medium">Medium relevance</span>
+      </div>
+      <p class="style-summary">Almost nothing on the page. A single word or image surrounded by vast white space. <strong>If something can be removed without losing meaning, it is removed.</strong> Breathing room is the design itself. Dieter Rams, John Pawson, Japanese Ma.</p>
+      <p class="style-summary">One typeface (or one serif + one sans). Extreme margins. Nothing is small — everything that stays is large enough to own its space.</p>
+      <div class="style-tags">
+        <span class="tag">Whitespace</span><span class="tag">Restrained</span><span class="tag">Singular</span><span class="tag">Breathing-room</span><span class="tag">Confident</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Independent designers, architects, luxury single-SKU products, premium food brands, writing/essays</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Timeless · Evergreen</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 80%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-label">Contemporary Trends</p>
+
+  <!-- 06 Aurora / Gradient Mesh -->
+  <div class="style-entry">
+    <div class="specimen sp-aurora">
+      <div class="aurora-blob1"></div>
+      <div class="aurora-blob2"></div>
+      <div class="aurora-blob3"></div>
+      <div class="aurora-content">
+        <h3>Ship faster.</h3>
+        <p>The gradient is the brand. Atmospheric, warm, alive.</p>
+        <span class="aurora-btn">Get started →</span>
+      </div>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">06</p>
+          <h2 class="style-name">Aurora / Gradient Mesh</h2>
+        </div>
+        <span class="relevance-badge high">★ High — background themes</span>
+      </div>
+      <p class="style-summary">Smooth large-scale colour gradients that blend across the entire screen — like the Northern Lights. <strong>Colours shift from one hue to another across enormous distances.</strong> Background is the hero; UI elements float on top as clean flat components.</p>
+      <p class="style-summary">Stripe's animated gradient homepage is the definitive web implementation. Instagram's 2016 rebrand popularised gradient-as-primary-brand-element.</p>
+      <div class="style-tags">
+        <span class="tag">Gradient</span><span class="tag">Mesh</span><span class="tag">Aurora</span><span class="tag">Colour-blend</span><span class="tag">Atmospheric</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">CSS technique</p>
+        <p class="detail-val muted">background: radial-gradient(ellipse at 20% 50%, #7c3aed 0%, transparent 50%),<br>radial-gradient(ellipse at 80% 20%, #db2777 0%, transparent 50%);</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">SaaS, tech, social platforms, consumer apps, anything needing warmth and energy</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Very current (2020–∞)</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 85%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 Spatial / AI-Native -->
+  <div class="style-entry">
+    <div class="specimen sp-spatial">
+      <div class="spatial-panel">
+        <p class="spatial-label">Intelligence layer</p>
+        <h4>Near nothing.<br>Everything here.</h4>
+        <p>Designed for what comes next.</p>
+        <div class="spatial-dots">
+          <div class="spatial-dot active"></div>
+          <div class="spatial-dot"></div>
+          <div class="spatial-dot"></div>
+        </div>
+      </div>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">07</p>
+          <h2 class="style-name">Spatial / AI-Native UI</h2>
+        </div>
+        <span class="relevance-badge high">★ High — future direction</span>
+      </div>
+      <p class="style-summary">Sparse, near-empty interfaces designed for screens that don't yet exist. <strong>Thin UI chrome — only the minimum container needed.</strong> Information appears on demand. Deep depth — elements at different perceived distances, as if viewed through spatial computing glasses.</p>
+      <p class="style-summary">Apple Vision Pro (2024) establishes the template. Perplexity, Cursor, Arc, Linear all adopt this language. The definitive emerging direction for premium AI-native software.</p>
+      <div class="style-tags">
+        <span class="tag">Spatial</span><span class="tag">Sparse</span><span class="tag">Glass</span><span class="tag">Depth</span><span class="tag">AI-native</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">CSS technique</p>
+        <p class="detail-val muted">background: rgba(255,255,255,0.05);<br>backdrop-filter: blur(40px);<br>border: 0.5px solid rgba(255,255,255,0.12);<br>border-radius: 24px;</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">AI tools, spatial computing apps, deep-tech, creative tools, premium developer tools</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Emerging dominant (2024–∞)</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 80%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 08 Cyberpunk / Neon Noir -->
+  <div class="style-entry">
+    <div class="specimen sp-cyber">
+      <p class="cyber-label">SYS://ONLINE — 03.10.2026</p>
+      <p class="cyber-headline">NEON_DARK<br>INTERFACE</p>
+      <p class="cyber-sub">Connection established. Awaiting input.</p>
+      <div class="cyber-bar"></div>
+      <div class="cyber-data">
+        <span class="cyber-tag">TECHNO</span>
+        <span class="cyber-tag">DARK</span>
+        <span class="cyber-tag">NEON</span>
+      </div>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">08</p>
+          <h2 class="style-name">Cyberpunk / Neon Noir</h2>
+        </div>
+        <span class="relevance-badge medium">Medium — electronic music</span>
+      </div>
+      <p class="style-summary">Dark near-black backgrounds. <strong>Neon accent colours — electric cyan, hot magenta, acid green.</strong> Glitch effects on type and images (RGB channel split). Scan lines. HUD-style overlays. Monospaced type. Elements feel like a futuristic OS in a rain-soaked city.</p>
+      <p class="style-summary">Blade Runner, Neuromancer, Ghost in the Shell, The Matrix. Game UI (Deus Ex, Cyberpunk 2077). Beatport and electronic music UI use this vocabulary. Sustained niche with major spikes around gaming releases.</p>
+      <div class="style-tags">
+        <span class="tag">Neon</span><span class="tag">Glitch</span><span class="tag">Dark</span><span class="tag">HUD</span><span class="tag">Futuristic</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Key CSS</p>
+        <p class="detail-val muted">text-shadow: 0 0 10px #00fff0, 0 0 20px #00fff0;<br>font-family: 'Space Mono';<br>scanlines via repeating-linear-gradient</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Gaming, crypto/DeFi, electronic/industrial music, sci-fi entertainment</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Sustained niche</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 60%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 09 Y2K Retro-Futurism -->
+  <div class="style-entry">
+    <div class="specimen sp-y2k">
+      <div class="y2k-glow"></div>
+      <div class="y2k-ring"></div>
+      <span class="y2k-star">✦</span>
+      <span class="y2k-star">✧</span>
+      <span class="y2k-chrome">Y2K</span>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">09</p>
+          <h2 class="style-name">Y2K / Retro-Futurism</h2>
+        </div>
+        <span class="relevance-badge medium">Medium — music artists</span>
+      </div>
+      <p class="style-summary">Late 1990s and early 2000s aesthetics imagining the future. <strong>Shiny chrome type with gradients. Metallics — silver, iridescent, holographic.</strong> Oval shapes, 3D bubble objects. A palette that is simultaneously naïve and futuristic: electric blue, lilac, silver, hot pink.</p>
+      <p class="style-summary">Revived by GenZ nostalgia (~2020–present). Charli XCX, Caroline Polachek, 100 Gecs aesthetic references. Active in music, fashion, beauty targeting Gen Z audiences.</p>
+      <div class="style-tags">
+        <span class="tag">Chrome</span><span class="tag">Holographic</span><span class="tag">Nostalgic</span><span class="tag">Futuristic</span><span class="tag">Iridescent</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Key CSS</p>
+        <p class="detail-val muted">background: linear-gradient(180deg, #e8e8e8, #a0a0a0, #ffffff, #808080);<br>-webkit-background-clip: text;<br>-webkit-text-fill-color: transparent;</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Pop/hyperpop music artists, Gen Z beauty brands, nightlife, event identity</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Active, post-peak (2021–2025)</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 65%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10 Claymorphism -->
+  <div class="style-entry">
+    <div class="specimen sp-clay">
+      <div class="clay-elem">
+        <span>🎵</span>
+        <p>Now Playing</p>
+      </div>
+      <div class="clay-elem-blue">♪</div>
+      <div class="clay-elem" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+        <span>⭐</span>
+        <p>Favourite</p>
+      </div>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">10</p>
+          <h2 class="style-name">Claymorphism</h2>
+        </div>
+        <span class="relevance-badge niche">Low — not ABLE's register</span>
+      </div>
+      <p class="style-summary">Rounded, puffy 3D-looking shapes that appear to be made of coloured clay or soft plastic. <strong>Very high border-radius, bright saturated colours, thick coloured inner glow suggests inflated volume.</strong> Friendly, toy-like. Often combined with bold drop shadows.</p>
+      <p class="style-summary">Emerged 2021–2022, driven by Apple's redesigned iOS emoji. Duolingo owl is the most recognisable example. Becoming associated with a specific moment — will age.</p>
+      <div class="style-tags">
+        <span class="tag">Puffy</span><span class="tag">Rounded</span><span class="tag">3D-toy</span><span class="tag">Clay</span><span class="tag">Playful</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Key CSS</p>
+        <p class="detail-val muted">box-shadow: 0 20px 40px rgba(color, 0.4), inset 0 -4px 8px rgba(0,0,0,0.15), inset 0 4px 8px rgba(255,255,255,0.4);</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Children's apps, gaming, food brands, health/wellness consumer apps</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Peak 2022–2024, will date</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 55%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-label">Cultural & Editorial</p>
+
+  <!-- 11 Editorial -->
+  <div class="style-entry">
+    <div class="specimen sp-editorial">
+      <p class="ed-issue">Vol. 12 — Issue 03 — March 2026</p>
+      <h3><span class="ed-drop">W</span>hen <em>Sound</em><br>Becomes Vision</h3>
+      <div class="ed-rule"></div>
+      <p>The relationship between music and visual identity has never been more deliberate. Artists now treat their aesthetic presence as inseparable from their sound.</p>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">11</p>
+          <h2 class="style-name">Editorial / Long-Form Web</h2>
+        </div>
+        <span class="relevance-badge high">★ High — ABLE's content mode</span>
+      </div>
+      <p class="style-summary">Treats the browser as a magazine page. Full-bleed imagery alternates with dense typographic sections. <strong>Pull quotes in oversized display type break the text flow. Drop caps. Art-directed photography with specific bleeds and crops.</strong></p>
+      <p class="style-summary">NYT Snowfall (2012) is the founding document. The Pudding, Bloomberg Visual Stories. ABLE's "About" sections and long-form artist storytelling naturally inhabit this aesthetic.</p>
+      <div class="style-tags">
+        <span class="tag">Editorial</span><span class="tag">Scroll-driven</span><span class="tag">Magazine</span><span class="tag">Typographic</span><span class="tag">Narrative</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Key CSS</p>
+        <p class="detail-val muted">.drop-cap::first-letter { font-size: 5em; float: left; }<br>.pull-quote { font-size: clamp(1.5rem, 4vw, 3rem); }<br>animation-timeline: scroll();</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Journalism, brand storytelling, cultural institutions, luxury brand narratives, documentary-style launches</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Growing · scroll-driven APIs</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 78%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12 Maximalism -->
+  <div class="style-entry">
+    <div class="specimen sp-maximal">
+      <span class="max-headline">MORE</span>
+      <div class="max-circle"></div>
+      <div class="max-bar"></div>
+      <div class="max-sub">Everything at once — the density IS the message — layer upon layer</div>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">12</p>
+          <h2 class="style-name">Maximalism / Anti-Minimalism</h2>
+        </div>
+        <span class="relevance-badge medium">Medium — artist expression</span>
+      </div>
+      <p class="style-summary">More of everything. <strong>Multiple typefaces in one composition. Overlapping elements. Loud colour combinations. Dense, information-rich layouts.</strong> Visual rhythm through organised chaos — there is a system, but it is complex. David Carson's Ray Gun magazine.</p>
+      <p class="style-summary">GenZ aesthetic codes favour maximalism. Fashion brands and music industry are primary adopters. Dazed Digital, i-D Magazine, Dover Street Market. Growing as counter to the Apple/Linear minimalism.</p>
+      <div class="style-tags">
+        <span class="tag">Dense</span><span class="tag">Layered</span><span class="tag">Expressive</span><span class="tag">Anti-minimal</span><span class="tag">Chaotic</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Music artists (hip-hop, pop, experimental), fashion brands, cultural events, festival identity, streetwear</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Growing (2018–∞)</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 72%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 13 Typographic / Type-First -->
+  <div class="style-entry">
+    <div class="specimen sp-type">
+      <div class="type-rule"></div>
+      <span class="type-accent">Type as image</span>
+      <span class="type-label">Variable fonts</span>
+      <span class="type-mega">Aa</span>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">13</p>
+          <h2 class="style-name">Typographic / Type-First Design</h2>
+        </div>
+        <span class="relevance-badge medium">Medium — hero moments</span>
+      </div>
+      <p class="style-summary">Typography is the entire design. <strong>Giant type that fills the full viewport. Words as visual objects, not just carriers of meaning.</strong> Letter-spacing pushed to extremes. Headlines might be 20vw. Every pixel decision is a typographic decision.</p>
+      <p class="style-summary">Made practical by variable fonts (OpenType 2016), CSS viewport units, and scroll-driven animation APIs. Active Theory, Fantasy, Pentagram, Wieden+Kennedy. High-craft respected niche — requires genuine typographic knowledge.</p>
+      <div class="style-tags">
+        <span class="tag">Kinetic</span><span class="tag">Variable-fonts</span><span class="tag">Letterform</span><span class="tag">Type-as-image</span><span class="tag">Typographic</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Key CSS</p>
+        <p class="detail-val muted">font-size: clamp(4rem, 15vw, 20rem);<br>font-variation-settings: "wght" var(--w);<br>animation-timeline: scroll();</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Design agencies, cultural institutions, music/editorial brands, fashion, independent artists</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Growing (variable fonts era)</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 70%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-label">Niche & Periodic</p>
+
+  <!-- 14 Brutalism -->
+  <div class="style-entry">
+    <div class="specimen sp-brutal">
+      <div class="sp-brutal-top">
+        <h3>THE UNDERGROUND</h3>
+      </div>
+      <div class="sp-brutal-body">
+        <p>Raw. Exposed. Nothing hidden. The structure IS the aesthetic.</p>
+        <div class="sp-brutal-rule"></div>
+        <a href="#" class="sp-brutal-link">Read more →</a>
+      </div>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">14</p>
+          <h2 class="style-name">Web Brutalism</h2>
+        </div>
+        <span class="relevance-badge niche">Niche — experimental artists</span>
+      </div>
+      <p class="style-summary">Intentional "ugliness" as aesthetic. Raw HTML-era aesthetics deliberately deployed: visible structure, exposed function, no decorative smoothing. <strong>Times New Roman. Black borders. Primary colours without curation. Deliberately unfinished.</strong></p>
+      <p class="style-summary">Counter-movement to homogenised startup/Bootstrap aesthetic (~2014–2016). Balenciaga.com uses luxury brutalism — raw black, extreme spacing. Increasingly adopted by experimental music artists.</p>
+      <div class="style-tags">
+        <span class="tag">Raw</span><span class="tag">Anti-design</span><span class="tag">Punk</span><span class="tag">Exposed-structure</span><span class="tag">Vernacular</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Cultural/artistic institutions, punk/experimental music labels, zines, creative agencies wanting anti-corporate identity</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Sustained niche</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 45%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 15 Neumorphism -->
+  <div class="style-entry">
+    <div class="specimen sp-neu">
+      <div class="neu-btn">▶</div>
+      <div class="neu-card">
+        <strong>Volume</strong>
+        <p>Soft UI</p>
+      </div>
+      <div class="neu-btn">⏭</div>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">15</p>
+          <h2 class="style-name">Neumorphism (Soft UI)</h2>
+        </div>
+        <span class="relevance-badge niche">Niche — music player widgets</span>
+      </div>
+      <p class="style-summary">Elements appear extruded from or pressed into the background. Everything is the same colour. <strong>Two shadows per element: light (top-left, white) and dark (bottom-right), creating a bas-relief, tactile, physical feel.</strong> Very soft, pillowy, quiet.</p>
+      <p class="style-summary">Peaked 2019–2021. Significant accessibility criticism (contrast ratios fail WCAG). Niche use in prototype/concept work. Still instructive as a shadow technique — the dual-shadow principle is worth knowing.</p>
+      <div class="style-tags">
+        <span class="tag">Soft-UI</span><span class="tag">Shadows</span><span class="tag">Monochromatic</span><span class="tag">Tactile</span><span class="tag">Bas-relief</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Key CSS</p>
+        <p class="detail-val muted">box-shadow: 6px 6px 12px #b8bec7, -6px -6px 12px #ffffff;<br>/* active */ box-shadow: inset 4px 4px 8px #b8bec7, inset -4px -4px 8px #fff;</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Smart home dashboards, wearable companion apps, music player widgets, productivity widgets</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Declining / niche</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 30%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 16 Flat Design -->
+  <div class="style-entry">
+    <div class="specimen sp-flat">
+      <div class="flat-card"><h4>Streams</h4><p>2.4M this week</p></div>
+      <div class="flat-card green"><h4>Follows</h4><p>+12.8K</p></div>
+      <div class="flat-card orange"><h4>Events</h4><p>4 upcoming</p></div>
+      <div class="flat-card purple"><h4>Revenue</h4><p>£4,200</p></div>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">16</p>
+          <h2 class="style-name">Flat Design 2.0</h2>
+        </div>
+        <span class="relevance-badge medium">Medium — dashboard/stats</span>
+      </div>
+      <p class="style-summary">Pure two-dimensional. <strong>No gradients, no shadows, no textures, no bevels.</strong> Shapes are clean geometric fills. Colour is bold and saturated. Treats the screen as a flat surface, not a simulation of three-dimensional space.</p>
+      <p class="style-summary">Flat 2.0 includes subtle shadows for depth cues. Microsoft Metro / Windows Phone (2010) pioneered it. Apple iOS 7 (2013) mainstream adoption. Permanent baseline for dashboards and data-dense UI.</p>
+      <div class="style-tags">
+        <span class="tag">Two-dimensional</span><span class="tag">Minimal</span><span class="tag">Geometric</span><span class="tag">Functional</span><span class="tag">Clean</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Mobile OS, productivity apps, analytics dashboards, public sector, educational technology</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Classic · Evergreen baseline</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 85%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 17 Material Design -->
+  <div class="style-entry">
+    <div class="specimen sp-material">
+      <div class="mat-appbar"><span>App Name</span></div>
+      <div class="mat-content">
+        <div class="mat-card"><h4>Card title</h4><p>Supporting text describing feature</p></div>
+        <div class="mat-card"><h4>Card title</h4><p>Supporting text describing feature</p></div>
+        <div class="mat-card"><h4>Card title</h4><p>Supporting text describing feature</p></div>
+        <div class="mat-card"><h4>Card title</h4><p>Supporting text describing feature</p></div>
+      </div>
+      <div class="mat-fab">+</div>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">17</p>
+          <h2 class="style-name">Material Design</h2>
+        </div>
+        <span class="relevance-badge niche">Low — Android ecosystem</span>
+      </div>
+      <p class="style-summary">Flat design with a physics layer. <strong>Elements cast shadows that communicate their elevation on a z-axis. Cards rise above surfaces. Ripple animations radiate from tap points.</strong> Material You (M3) derives color from the user's wallpaper — tonal palettes generated algorithmically.</p>
+      <p class="style-summary">Google's design language launched 2014. Based on "paper and ink" metaphor. Dominant across Android ecosystem. Material 3 / Material You is the current evolution.</p>
+      <div class="style-tags">
+        <span class="tag">Elevation</span><span class="tag">Motion</span><span class="tag">Cards</span><span class="tag">Systematic</span><span class="tag">Accessible</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Android apps, cross-platform Google products, enterprise dashboards, productivity tools</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Active · Evolving (M3)</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 75%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 18 Skeuomorphism -->
+  <div class="style-entry">
+    <div class="specimen sp-skeu">
+      <div class="skeu-note">
+        <div class="skeu-rings">
+          <div class="skeu-ring"></div>
+          <div class="skeu-ring"></div>
+          <div class="skeu-ring"></div>
+        </div>
+        <div class="skeu-note-line"></div>
+        <div class="skeu-note-content">
+          Artist name<br>
+          Upcoming tour dates<br>
+          New album — June 2026
+        </div>
+      </div>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">18</p>
+          <h2 class="style-name">Skeuomorphism</h2>
+        </div>
+        <span class="relevance-badge niche">Niche — audio plugin UIs</span>
+      </div>
+      <p class="style-summary">UI elements that look exactly like their real-world physical counterparts. <strong>Every surface has texture — felt, leather, wood grain, metal brushing, paper.</strong> Buttons have bevels and gradients to suggest three-dimensional objects. The notes app looks like a yellow legal pad.</p>
+      <p class="style-summary">Apple under Steve Jobs (2007–2013). Mostly historical in mainstream UI. Returns selectively: luxury products, <strong>audio hardware UIs (UAD, Arturia V Collection — simulate hardware exactly)</strong>, games, VR/AR.</p>
+      <div class="style-tags">
+        <span class="tag">Realistic</span><span class="tag">Textured</span><span class="tag">Physical-metaphor</span><span class="tag">Tactile</span><span class="tag">Immersive</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Games and game UIs, luxury brand experiences, themed apps, VR/AR interfaces, premium audio equipment software</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Historical · Niche revival</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 35%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 19 Organic / Bio -->
+  <div class="style-entry">
+    <div class="specimen sp-organic">
+      <div class="blob-shape"><span>🌿</span></div>
+      <div class="blob-sm"></div>
+      <div class="blob-xs"></div>
+      <p class="org-text">Naturally formed</p>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">19</p>
+          <h2 class="style-name">Morphic / Organic / Bio Design</h2>
+        </div>
+        <span class="relevance-badge niche">Niche — wellness context</span>
+      </div>
+      <p class="style-summary">Shapes that look like they <em>grew</em> rather than were drawn. <strong>Fluid, asymmetric blobs. Natural textures — marble, stone, plant. Earthy colour palettes.</strong> Soft, irregular, never perfectly geometric. Feels like a natural object placed on screen.</p>
+      <p class="style-summary">Biophilia — humans are neurologically predisposed to find natural shapes calming. Wellness industry adopted it first. Headspace, Calm, Frank Body, Aesop. Peaked 2020–2023 for wellness brands. Enduring in wellness; spreading to sustainability and food.</p>
+      <div class="style-tags">
+        <span class="tag">Organic</span><span class="tag">Blob</span><span class="tag">Biophilic</span><span class="tag">Earthy</span><span class="tag">Morphing</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Key CSS</p>
+        <p class="detail-val muted">border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;<br>animation: morph 8s ease-in-out infinite;<br>@keyframes morph { ... }</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Wellness and mental health apps, organic food brands, cosmetics, sustainability, yoga/meditation</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Active in wellness</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 55%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 20 Memphis -->
+  <div class="style-entry">
+    <div class="specimen sp-memphis">
+      <span class="mem-headline">POP!</span>
+      <div class="mem-shape mem-tri"></div>
+      <div class="mem-shape mem-circle"></div>
+      <div class="mem-stripe"></div>
+    </div>
+    <div class="style-desc">
+      <div class="style-header">
+        <div>
+          <p class="style-num">20</p>
+          <h2 class="style-name">Memphis / Post-Modern Graphic</h2>
+        </div>
+        <span class="relevance-badge niche">Niche — festival branding</span>
+      </div>
+      <p class="style-summary">Geometric shapes in primary and secondary colours, scattered without apparent functional purpose. <strong>Squiggles, dots, stripes, checkers — decorative and playful, like a 1980s kitchen.</strong> Bold outlines on shapes. Pattern and colour as the primary visual language.</p>
+      <p class="style-summary">Memphis Group, Italy (1981–1988) — Ettore Sottsass. Revived in 2014–2018 especially on Instagram. Mailchimp and Slack illustration style draws heavily from it. The Barbie movie (2023) caused a pastel Memphis/80s revival.</p>
+      <div class="style-tags">
+        <span class="tag">Geometric</span><span class="tag">Playful</span><span class="tag">80s</span><span class="tag">Pattern</span><span class="tag">Memphis-Group</span>
+      </div>
+    </div>
+    <div class="style-details">
+      <div class="detail-group">
+        <p class="detail-label">Best for</p>
+        <p class="detail-val">Lifestyle brands, food/beverage, music festival identity, retail targeting millennials, social media templates</p>
+      </div>
+      <div class="detail-group">
+        <p class="detail-label">Trend status</p>
+        <p class="detail-val">Niche · Periodic revival</p>
+        <div class="trend-bar"><div class="trend-fill" style="width: 40%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Reference Table -->
+  <div class="quick-ref">
+    <p class="section-label">Quick Reference — All 20 Styles</p>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Style</th><th>Peak era</th><th>Best for</th><th>ABLE relevance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>01</td><td>Swiss / International</td><td>1950s–∞</td><td>Authority, publishing, developer tools</td><td class="rel-med">Medium</td></tr>
+        <tr><td>02</td><td>Glassmorphism</td><td>2020–∞</td><td>Consumer, lifestyle, music</td><td class="rel-high">★ High</td></tr>
+        <tr><td>03</td><td>Dark Luxury</td><td>2018–∞</td><td>Premium, fashion, exclusive music profiles</td><td class="rel-high">★ High</td></tr>
+        <tr><td>04</td><td>Bento Grid</td><td>2023–∞</td><td>SaaS feature highlights, about pages</td><td class="rel-high">★ High</td></tr>
+        <tr><td>05</td><td>Minimalism</td><td>1990s–∞</td><td>Luxury, architects, writing</td><td class="rel-med">Medium</td></tr>
+        <tr><td>06</td><td>Aurora / Gradient Mesh</td><td>2016–∞</td><td>SaaS, tech, social, music backgrounds</td><td class="rel-high">★ High</td></tr>
+        <tr><td>07</td><td>Spatial / AI-Native UI</td><td>2024–∞</td><td>AI tools, spatial computing, creative tools</td><td class="rel-high">★ High</td></tr>
+        <tr><td>08</td><td>Cyberpunk / Neon Noir</td><td>2020–∞</td><td>Gaming, crypto, electronic music</td><td class="rel-med">Medium</td></tr>
+        <tr><td>09</td><td>Y2K / Retro-Futurism</td><td>2021–2025</td><td>Pop music artists, Gen Z brands</td><td class="rel-med">Medium</td></tr>
+        <tr><td>10</td><td>Claymorphism</td><td>2022–2024</td><td>Children's apps, food, gaming</td><td class="rel-niche">Low</td></tr>
+        <tr><td>11</td><td>Editorial Web</td><td>2012–∞</td><td>Journalism, brand storytelling, artists</td><td class="rel-high">★ High</td></tr>
+        <tr><td>12</td><td>Maximalism</td><td>2018–∞</td><td>Music, fashion, culture, GenZ</td><td class="rel-med">Medium</td></tr>
+        <tr><td>13</td><td>Typographic / Type-First</td><td>2016–∞</td><td>Agencies, culture, music editorial</td><td class="rel-med">Medium</td></tr>
+        <tr><td>14</td><td>Brutalism</td><td>2014–∞</td><td>Cultural, anti-brand, punk/experimental</td><td class="rel-niche">Niche</td></tr>
+        <tr><td>15</td><td>Neumorphism</td><td>2019–2021</td><td>Concept, dashboards, widgets</td><td class="rel-niche">Niche</td></tr>
+        <tr><td>16</td><td>Flat Design 2.0</td><td>2012–∞</td><td>OS, productivity, analytics</td><td class="rel-med">Medium</td></tr>
+        <tr><td>17</td><td>Material Design</td><td>2014–∞</td><td>Android, enterprise, Google products</td><td class="rel-niche">Low</td></tr>
+        <tr><td>18</td><td>Skeuomorphism</td><td>2007–2013</td><td>Games, VR/AR, audio plugin UIs</td><td class="rel-niche">Niche</td></tr>
+        <tr><td>19</td><td>Organic / Bio Design</td><td>2020–∞</td><td>Wellness, sustainability, food brands</td><td class="rel-niche">Niche</td></tr>
+        <tr><td>20</td><td>Memphis / Post-Modern</td><td>1981, 2014–2018</td><td>Festival identity, lifestyle, food</td><td class="rel-niche">Niche</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer>
+  <a href="ui-designers.html">← UI Designers</a>
+  <span>ABLE Design References · Design Styles</span>
+  <a href="able-synthesis.html">ABLE Synthesis →</a>
+</footer>
+
+</body>
+</html>
