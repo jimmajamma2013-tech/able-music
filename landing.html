@@ -266,6 +266,15 @@
       animation: heroIn 0.7s var(--ease) 0.2s both;
       font-weight: 400;
     }
+    /* Mobile: show condensed single-line sub only — long version with <br><br> pushes CTA below fold */
+    .hero__sub--short { display: none; }
+    @media (max-width: 640px) {
+      .hero { padding-top: 72px; }
+      .hero__sub--long { display: none; }
+      .hero__sub--short { display: block; }
+      .hero__platforms { margin-top: 12px; }
+      .hero__actions { margin-top: 18px; }
+    }
 
     /* Platform logos */
     .hero__platforms {
@@ -1121,7 +1130,8 @@
     <div class="hero__copy">
       <div class="hero__eyebrow">For independent artists</div>
       <h1 class="hero__headline">100 real fans<br>beat 10,000<br><em>strangers.</em></h1>
-      <p class="hero__sub">Your page shifts with your moment.<br><br>Release day.<br><br>Tonight's gig.<br><br>What's dropping next.<br><br>Every fan who signs up — that email is yours.<br><br>Forever.</p>
+      <p class="hero__sub hero__sub--long">Your page shifts with your moment.<br><br>Release day.<br><br>Tonight's gig.<br><br>What's dropping next.<br><br>Every fan who signs up — that email is yours.<br><br>Forever.</p>
+      <p class="hero__sub hero__sub--short">Release day. Gig night. What's next. Every fan email is yours. Forever.</p>
 
       <div class="hero__platforms" role="list" aria-label="Compatible platforms">
         <span class="hero__platforms-label" aria-hidden="true">Connects to</span>
