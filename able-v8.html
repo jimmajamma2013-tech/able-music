@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
   <link rel="dns-prefetch" href="https://jgspraqrnjrerzhnnhtb.supabase.co"><!-- C14 #51 -->
+  <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="ABLE Music"><!-- C14 #4 -->
   <!-- Preload Supabase SDK — kicks off fetch early but doesn't block parse/render -->
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" as="script">
   <!-- Preload demo hero artwork — JS may override src once profile loads -->
@@ -9372,6 +9373,23 @@
         return `https://www.mixcloud.com/widget/iframe/?hide_cover=1&light=0&feed=${encodeURIComponent(u)}`
       }
 
+      // Vimeo — C14 #20
+      const vimeoMatch = u.match(/vimeo\.com\/(?:video\/)?(\d+)/)
+      if (vimeoMatch) {
+        return `https://player.vimeo.com/video/${vimeoMatch[1]}?color=ffffff&title=0&byline=0&portrait=0`
+      }
+
+      // Bandcamp — C14 #15: require numeric data-album/data-track in URL or fall through
+      // (Bandcamp EmbeddedPlayer needs a numeric ID; full oEmbed is a Wave 3 server-side task)
+      const bcAlbum = u.match(/[?&]album=(\d+)/)
+      const bcTrack = u.match(/[?&]track=(\d+)/)
+      if (u.includes('bandcamp.com') && bcAlbum) {
+        return `https://bandcamp.com/EmbeddedPlayer/album=${bcAlbum[1]}/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/transparent=true/`
+      }
+      if (u.includes('bandcamp.com') && bcTrack) {
+        return `https://bandcamp.com/EmbeddedPlayer/track=${bcTrack[1]}/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/transparent=true/`
+      }
+
       return null
     }
 
@@ -9381,6 +9399,8 @@
       if (streamUrl.includes('youtube') || streamUrl.includes('youtu.be')) return 200
       if (streamUrl.includes('soundcloud')) return 166
       if (streamUrl.includes('mixcloud')) return 120
+      if (streamUrl.includes('vimeo.com')) return 200
+      if (streamUrl.includes('bandcamp.com')) return 120
       return 152
     }
 
@@ -9539,9 +9559,12 @@
           // SoundCloud / Mixcloud / generic — artwork + play overlay or external link
           mediaHtml = `<div class="release-card__artwork-wrap">
             ${artworkSrc
-              ? `<img class="release-card__artwork" src="${escHtml(artworkSrc)}"
+              ? `<div class="release-card__artwork-skeleton ghost-block" aria-hidden="true" style="position:absolute;inset:0;border-radius:inherit;"></div>
+                 <img class="release-card__artwork" src="${escHtml(artworkSrc)}"
                       alt="${escHtml(rel.title || 'Release')} artwork" loading="lazy"
-                      width="300" height="300">`
+                      width="300" height="300"
+                      onload="this.previousElementSibling&&(this.previousElementSibling.style.display='none')"
+                      onerror="this.previousElementSibling&&(this.previousElementSibling.style.display='none')">`
               : `<div class="release-card__artwork" aria-hidden="true" style="aspect-ratio:1;background:var(--color-surface)"></div>`
             }
             ${embedUrl ? `<button class="release-card__play-overlay pressable" aria-label="Play ${escHtml(rel.title || 'release')} inline">
@@ -11037,7 +11060,28 @@
       const canonEl = document.getElementById('canonical-url')
       if (canonEl) canonEl.setAttribute('href', url)
 
-      // JSON-LD: MusicGroup + upcoming Event entries
+      // JSON-LD: MusicGroup + MusicAlbum entries + upcoming Event entries
+      // C14 #9 — sameAs from platform URLs
+      const _sameAs = []
+      const _pLinks = profile.platformLinks || []
+      _pLinks.forEach(p => { if (p.url && isSafeUrl(p.url)) _sameAs.push(p.url) })
+      // Also pick up top-level known platform properties
+      const _knownPlatforms = ['spotifyUrl','appleMusicUrl','bandcampUrl','soundcloudUrl','youtubeUrl','tiktokUrl','instagramUrl']
+      _knownPlatforms.forEach(k => { if (profile[k] && isSafeUrl(profile[k]) && !_sameAs.includes(profile[k])) _sameAs.push(profile[k]) })
+
+      // C14 #2 — MusicAlbum entries for releases with titles
+      const _releases = Array.isArray(profile.releases) ? profile.releases : []
+      const _albumEntries = _releases
+        .filter(r => r.title)
+        .map(r => ({
+          '@type': 'MusicAlbum',
+          name: r.title,
+          byArtist: { '@type': 'MusicGroup', name },
+          ...(r.releaseDate ? { datePublished: r.releaseDate } : {}),
+          ...(r.artworkUrl ? { image: r.artworkUrl } : {}),
+          ...(r.streamUrl  ? { url: r.streamUrl }   : {}),
+        }))
+
       const schema = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -11048,7 +11092,9 @@
             url,
             image: ogImage !== FALLBACK_OG ? ogImage : undefined,
             genre: profile.genres || [],
+            ...(_sameAs.length ? { sameAs: _sameAs } : {}),
           },
+          ..._albumEntries,
           // C14 #8 — prefer able_shows (canonical); eventStatus added
           ...((() => { try { const s = JSON.parse(localStorage.getItem('able_shows') || '[]'); return s.length ? s : (profile.events || []); } catch(_) { return profile.events || []; } })())
             .filter(e => e.date && new Date(e.date) > new Date())

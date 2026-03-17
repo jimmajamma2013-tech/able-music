@@ -588,6 +588,37 @@
       margin-top: var(--sp-2);
     }
 
+    /* C14 #37 — loading skeleton ghost cards */
+    @keyframes fan-shimmer {
+      0%   { opacity: 0.4; }
+      50%  { opacity: 0.7; }
+      100% { opacity: 0.4; }
+    }
+    .fan-ghost-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px var(--sp-5);
+      animation: fan-shimmer 1.4s ease-in-out infinite;
+    }
+    .fan-ghost-card__thumb {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--r-md);
+      background: rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    .fan-ghost-card__lines { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .fan-ghost-card__line {
+      height: 10px;
+      border-radius: 5px;
+      background: rgba(255,255,255,0.08);
+    }
+    .fan-ghost-card__line--short { width: 55%; }
+    @media (prefers-reduced-motion: reduce) {
+      .fan-ghost-card { animation: none; opacity: 0.5; }
+    }
+
     /* Empty state */
     .empty-state {
       padding: var(--sp-10) var(--sp-5) var(--sp-6);
@@ -1221,6 +1252,23 @@
 
     <!-- === FOLLOWING VIEW ==================================== -->
     <div class="view active" id="view-following" role="tabpanel" aria-labelledby="tab-following">
+      <!-- C14 #37 — loading skeleton: 2 ghost cards shown while able_fan_following is read -->
+      <div id="fan-loading-skeleton" aria-hidden="true">
+        <div class="fan-ghost-card">
+          <div class="fan-ghost-card__thumb"></div>
+          <div class="fan-ghost-card__lines">
+            <div class="fan-ghost-card__line"></div>
+            <div class="fan-ghost-card__line fan-ghost-card__line--short"></div>
+          </div>
+        </div>
+        <div class="fan-ghost-card" style="animation-delay:0.2s">
+          <div class="fan-ghost-card__thumb"></div>
+          <div class="fan-ghost-card__lines">
+            <div class="fan-ghost-card__line"></div>
+            <div class="fan-ghost-card__line fan-ghost-card__line--short"></div>
+          </div>
+        </div>
+      </div>
       <div id="prerelease-strips-container"></div>
       <div class="feed-section feed-section--today">
         <h2 class="feed-date-label">Today</h2>
@@ -1520,6 +1568,10 @@
   // === RENDER FOLLOWING VIEW ================================
 
   function renderFollowing() {
+    // C14 #37 — remove loading skeleton immediately
+    const _skeleton = document.getElementById('fan-loading-skeleton')
+    if (_skeleton) _skeleton.remove()
+
     renderPreReleaseStrips()
 
     const followed = getFollowed()
