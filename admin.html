@@ -1819,6 +1819,19 @@ body::before {
       color: var(--dash-text);
       font-weight: 500;
     }
+    .section-empty-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 20px;
+      background: rgba(244,185,66,0.12);
+      color: var(--acc);
+      border: 1px solid rgba(244,185,66,0.25);
+      margin-left: 6px;
+      cursor: default;
+    }
     .section-vis-toggle {
       width: 40px;
       height: 24px;
@@ -4727,6 +4740,16 @@ function saveCampaignHQ() {
   syncProfile(updated); // async fire-and-forget to Supabase
   updateChqPill(computeEffectiveState(updated));
 
+  // State change toast
+  const STATE_TOAST = {
+    profile:     'Profile mode.',
+    'pre-release': 'Pre-release.',
+    live:        'Live.',
+    gig:         'Gig mode on.',
+  };
+  const effectiveState = computeEffectiveState(updated);
+  showToast(STATE_TOAST[effectiveState] || 'Saved.');
+
   // Visual save feedback
   const btn = document.querySelector('[onclick="saveCampaignHQ()"]');
   if (btn) { btn.textContent = '✓ Saved'; setTimeout(() => btn.textContent = 'Apply to live page →', 1800); }
@@ -7449,6 +7472,17 @@ const ADMIN_SECTION_ORDER = [
   'snap-cards-section','merch-section','support-section','recs-section',
 ]
 
+function sectionHasContent(sectionKey, profile) {
+  switch (sectionKey) {
+    case 'listen-section':    return (profile.releases || []).length > 0
+    case 'shows-section':     return (safeLS('able_shows', [])).length > 0
+    case 'merch-section':     return (profile.merch || []).length > 0
+    case 'snap-cards-section':return (profile.snapCards || []).some(c => c.published)
+    case 'support-section':   return !!(profile.closeCircle?.enabled)
+    default:                  return true
+  }
+}
+
 function renderSectionOrder() {
   const body = document.getElementById('sectionOrderBody')
   if (!body) return
@@ -7460,6 +7494,10 @@ function renderSectionOrder() {
   body.innerHTML = order.map((id, i) => {
     const isVisible = vis[id] !== false
     const label = SECTION_LABELS[id] || id
+    const hasContent = sectionHasContent(id, profile)
+    const emptyBadge = (isVisible && !hasContent)
+      ? `<span class="section-empty-badge" title="Visible but has no content — fans will see an empty section">Empty</span>`
+      : ''
     return `<div class="section-vis-row" data-section="${id}">
       <div style="display:flex;gap:4px;flex-shrink:0;">
         <button class="section-order-btn" onclick="moveSectionOrder('${id}',-1)"
@@ -7467,7 +7505,7 @@ function renderSectionOrder() {
         <button class="section-order-btn" onclick="moveSectionOrder('${id}',1)"
           ${i === order.length - 1 ? 'disabled' : ''} aria-label="Move ${label} down" title="Move down">↓</button>
       </div>
-      <span class="section-vis-label" style="flex:1;padding:0 10px;">${label}</span>
+      <span class="section-vis-label" style="flex:1;padding:0 10px;">${label}${emptyBadge}</span>
       <button class="section-vis-toggle pressable"
         data-section="${id}" aria-pressed="${isVisible}"
         onclick="toggleSectionVis(this)" aria-label="Toggle ${label} section"></button>
