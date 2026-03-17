@@ -306,17 +306,11 @@
     .btn-ghost:hover { background: var(--card); color: var(--text); border-color: var(--border-strong); }
     :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
     :focus:not(:focus-visible) { outline: none; }
-    .hero__auth {
-      display: flex; flex-direction: column; gap: 8px;
-      margin-top: 24px; align-items: flex-start;
+    .hero__trust-line {
+      font-size: 12px; color: rgba(255,255,255,0.38);
+      margin-top: 12px;
       animation: heroIn 0.7s var(--ease) 0.38s both;
     }
-    @media (max-width: 899px) { .hero__auth { align-items: center; } }
-.hero__auth-email {
-      font-size: 13px; color: var(--text-3);
-    }
-    .hero__auth-email a { color: var(--accent); text-decoration: underline; text-decoration-color: rgba(var(--accent-rgb),0.3); }
-    .hero__auth-email a:hover { text-decoration-color: var(--accent); }
     .hero__micro {
       font-size: 12px; color: var(--text-3); margin-top: 4px;
       display: flex; align-items: center; gap: 8px;
@@ -1005,7 +999,6 @@
       .hero__copy { flex: 0 0 420px; }
       .hero__visual { flex: 1; position: relative; align-items: center; justify-content: center; }
       .hero__platforms, .hero__actions, .hero__micro { justify-content: flex-start; }
-      .hero__auth { align-items: flex-start; }
     }
 
     /* ── PROOF LINES ────────────────────────────────────────────────────── */
@@ -1123,9 +1116,7 @@
         <a href="able-v7.html" class="btn-ghost">See a live example</a>
       </div>
 
-      <div class="hero__auth">
-        <span class="hero__auth-email"><a href="start.html">Start with your email</a> — free forever, no card needed</span>
-      </div>
+      <p class="hero__trust-line">No card required. Free forever.</p>
       <p class="hero__micro">Live in 5 minutes<span class="micro-dot"></span>No platform cut<span class="micro-dot"></span>No lock-in</p>
       <p style="font-size:12px;color:var(--text-3);margin-top:10px;font-style:italic;">Built by an independent artist, for independent artists.</p>
     </div>
