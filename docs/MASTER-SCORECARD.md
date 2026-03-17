@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–14 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-14-AUDIT.md**
+**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–15 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-15-AUDIT.md**
 
 ---
 
@@ -18,14 +18,14 @@
 
 | Page | File | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|---|
-| Artist profile | `able-v8.html` | 9.1/10 | 9.7/10 | Supabase auth + Spotify auto-import | ✅ GDPR consent on fan sign-up — done session 19 |
-| Admin dashboard | `admin.html` | 9.7/10 | ~9.9/10 | Supabase auth (data portability) | ✅ All WCAG + security fixes applied sessions 19–20 |
+| Artist profile | `able-v8.html` | 9.2/10 | 9.7/10 | Supabase auth + Spotify auto-import | ✅ C15: srcset Unsplash hero, world-map empty hide, moment labels, fan dedup, install prompt copy+tracking |
+| Admin dashboard | `admin.html` | 9.8/10 | ~9.9/10 | Supabase auth (data portability) | ✅ C15: fan cap nudge at 90, starred row accent, relTime "Yesterday", level chip aria-pressed, CSV filename |
 | Onboarding wizard | `start.html` | 9.8/10 | ~9.9/10 | Social proof (real artists) | ✅ Vibe radiogroup ARIA added session 20 |
 | Landing page | `landing.html` | 9.7/10 | ~9.9/10 | FAQ aria-controls wired | ✅ Full Twitter card meta + aria-controls on FAQ done |
 | Fan dashboard | `fan.html` | 9.4/10 | ~9.8/10 | Supabase realtime + Close Circle | ✅ C14: loading skeleton 2 ghost cards, empty state "Discover artists you'll love.", following count in tab, artist cards link to ablemusic.co/{slug} |
 | Freelancer profile | `freelancer.html` | 8.7/10 | ~9.2/10 | Network maturity + real testimonials | Directory integration + credits management |
 
-**Page average: ~9.4/10**
+**Page average: ~9.45/10**
 
 ---
 
@@ -36,10 +36,10 @@
 | System | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|
 | Artist tools | 9.3/10 | 9.5/10 | Close Circle no payment; snap drag reorder | ✅ C13: top card videoUrl validated with isSafeAdminUrl(), platform URL error platform-specific, snap empty state copy updated |
-| CRM | 9.0/10 | 9.2/10 | Supabase fan sync; server tier enforcement | ✅ C12: fan sort dropdown (Newest/Oldest/Starred/By source), filter pill live counts, CSV starred first + joinedAt, gate preview real data |
-| Tier gates | 8.9/10 | 9.2/10 | Server enforcement missing; Stripe not wired | ✅ C12: analytics gate preview bars show real fan source data from localStorage |
+| CRM | 9.3/10 | 9.5/10 | Supabase fan sync; server tier enforcement | ✅ C15: fan note search, starred row indicator, relTime "Yesterday", level chip aria-pressed, CSV filename with date |
+| Tier gates | 9.3/10 | 9.5/10 | Server enforcement missing; Stripe not wired | ✅ C15: export gate copy updated, fan cap at 90%, upgrade click tracking on glo-btn, gold-blur tabindex=-1, gig mode tier gate |
 | Error states | 9.0/10 | 9.3/10 | Session expiry notice remaining | ✅ C12: syncProfile 10s AbortController timeout, quota warning already implemented |
-| PWA | 9.2/10 | 9.5/10 | Offline cache strategy for SW | ✅ C11: theme-color meta updates to artist accent; beforeinstallprompt stashed, 2nd-visit banner; manifest/iOS meta all verified |
+| PWA | 9.4/10 | 9.5/10 | Offline fallback page | ✅ C15: install prompt "Add to home screen — opens like an app.", pwa-install click event, manifest display_override + screenshots |
 | Page state system | 9.0/10 | 9.3/10 | Post-release nudge flow remaining | ✅ C11: contextual state-change toasts, gig mode 30-min expiry warning, release date null guard |
 | Data architecture | 9.0/10 | 9.3/10 | Multi-artist isolation; Supabase fan sync not wired | ✅ C12: syncProfile handle guard, schemaVersion bump, consentVersion dynamic, form-2 ts/campaignState, release id, merch id |
 | Analytics | 9.3/10 | 9.5/10 | View source breakdown (fans vs views) Wave 2 | ✅ C11: campaign breakdown excludes deleted fans; profile_complete PostHog event; views dedup+owner exclusion verified |
@@ -48,7 +48,7 @@
 | Coding strategy | 9.4/10 | 10/10 | CSP `unsafe-inline` accepted risk | ✅ C13: reduced-motion media query added for gold-blur transition in admin; parse checks every edit |
 | UI system | 9.2/10 | 9.5/10 | Component library unbuilt | ✅ C11: toast slide-in (translateX keyframe), sheet ease-decel, completeness 400ms, wm-cell hover scale, snap card enter animation, haptic vibrate |
 | UX system | 9.0/10 | 9.2/10 | fan.html Supabase realtime remaining | ✅ C12: fan echo contextual (pre-release/live shows "drops [date]. First to know."), streak counts fan sign-ups, fan.html follow data flow verified |
-| World map | 8.6/10 | 9.2/10 | Gig countdown (#18), show click-through (#21) Wave 2 | ✅ C9W1: featured show accent border, shows tab active on gig night |
+| World map | 9.1/10 | 9.3/10 | Date grouping edge cases; live state world-map polish | ✅ C15: gig countdown HH:MM:SS in panel, shows capped at 3 + "+N more", world-map empty state hidden, moment label precision |
 
 ### Killer features
 
