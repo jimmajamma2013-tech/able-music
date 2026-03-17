@@ -8682,6 +8682,22 @@
         }
       }
 
+      // P1-W1 #7 — render-time fan cap: hide input & show message when free tier at 100 fans
+      const _tierNow = profile.tier || 'free'
+      if (_tierNow === 'free') {
+        const _activeFansNow = safeLS('able_fans', []).filter(f => !f.deleted_at)
+        if (_activeFansNow.length >= 100) {
+          const _fieldWrap1 = fc1.querySelector('.fan-capture__field-wrap')
+          const _fieldWrap2 = fc2.querySelector('.fan-capture__field-wrap')
+          const _capErr1 = document.getElementById('fan-error')
+          const _capErr2 = fc2.querySelector('.fan-capture__error')
+          if (_fieldWrap1) _fieldWrap1.hidden = true
+          if (_fieldWrap2) _fieldWrap2.hidden = true
+          if (_capErr1) { _capErr1.textContent = 'The list is full right now.'; _capErr1.hidden = false }
+          if (_capErr2) { _capErr2.textContent = 'The list is full right now.'; _capErr2.hidden = false }
+        }
+      }
+
       fc1.hidden = false
       fc2.hidden = false
     }
