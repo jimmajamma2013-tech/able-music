@@ -8639,14 +8639,18 @@
           // Write to localStorage (double_opted_in: false — confirmed via email later)
           const signupSource = getUtmSource()
           const _cp = safeLS('able_v3_profile', {})
-          const campaignState = (function() {
-            if (_cp.stateOverride) return _cp.stateOverride
-            const now = Date.now()
-            const rd = _cp.releaseDate ? new Date(_cp.releaseDate).getTime() : null
-            if (rd && now < rd) return 'pre-release'
-            if (rd && now < rd + 14 * 24 * 60 * 60 * 1000) return 'live'
-            return 'profile'
-          })()
+          const campaignState = computeState(_cp)
+          // --- CAMPAIGN CONTEXT (CRM P0.1) ---
+          const _releaseId = _cp.releaseDate
+            ? ((_cp.release && _cp.release.title ? _cp.release.title : 'release').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + _cp.releaseDate)
+            : null
+          let _momentId = null
+          if (campaignState === 'gig' || campaignState === 'gig-post') {
+            const _gigShows = JSON.parse(localStorage.getItem('able_shows') || '[]')
+            const _featuredShow = _gigShows.find(function(s) { return s.featured; }) || _gigShows[0] || null
+            _momentId = _featuredShow ? (_featuredShow.id || _featuredShow.venue || null) : null
+          }
+          // --- END CAMPAIGN CONTEXT ---
           try {
             const fans = safeLS('able_fans', [])
             fans.push({
@@ -8655,6 +8659,8 @@
               ts: Date.now(),
               source: signupSource,
               campaignState,
+              releaseId: _releaseId,
+              momentId: _momentId,
               consent: true,
               consentMethod: 'email_field',
               jurisdiction: 'GDPR',
@@ -8799,7 +8805,19 @@
             return
           }
           const signup2Source = getUtmSource()
-          const campaignState2 = computeState(safeLS('able_v3_profile', {}))
+          const _cp2 = safeLS('able_v3_profile', {})
+          const campaignState2 = computeState(_cp2)
+          // --- CAMPAIGN CONTEXT (CRM P0.1) ---
+          const _releaseId2 = _cp2.releaseDate
+            ? ((_cp2.release && _cp2.release.title ? _cp2.release.title : 'release').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + _cp2.releaseDate)
+            : null
+          let _momentId2 = null
+          if (campaignState2 === 'gig' || campaignState2 === 'gig-post') {
+            const _gigShows2 = JSON.parse(localStorage.getItem('able_shows') || '[]')
+            const _featuredShow2 = _gigShows2.find(function(s) { return s.featured; }) || _gigShows2[0] || null
+            _momentId2 = _featuredShow2 ? (_featuredShow2.id || _featuredShow2.venue || null) : null
+          }
+          // --- END CAMPAIGN CONTEXT ---
           try {
             const fans = safeLS('able_fans', [])
             fans.push({
@@ -8808,6 +8826,8 @@
               ts: Date.now(),
               source: signup2Source,
               campaignState: campaignState2,
+              releaseId: _releaseId2,
+              momentId: _momentId2,
               consent: true,
               consentMethod: 'email_field',
               jurisdiction: 'GDPR',
@@ -8817,7 +8837,9 @@
               consentVersion: '2026-03-16',
               consentSource: 'profile-signup-' + (signup2Source || 'direct'),
               confirmed: false,
-              double_opted_in: false
+              double_opted_in: false,
+              level: 'listener',
+              isStarred: false
             })
             setLS('able_fans', fans)
             sessionStorage.setItem('able_this_fan_email', email)

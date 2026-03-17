@@ -1093,7 +1093,8 @@ body::before {
   transition:color .15s;
 }
 .frc-dismiss:hover { color:var(--dash-t2); }
-.frc-steps { display:flex; flex-direction:column; gap:1px; padding:6px 8px 0; }
+.frc-title { font-size:13px; font-weight:700; color:var(--text); padding:12px 14px 4px; font-family:var(--font-d,'Barlow Condensed'),sans-serif; letter-spacing:.01em; }
+.frc-steps { display:flex; flex-direction:column; gap:1px; padding:2px 8px 0; }
 .frc-step {
   display:flex; align-items:center; gap:10px;
   padding:8px 6px; border-radius:8px;
@@ -2365,6 +2366,7 @@ body::before {
       </div>
       <!-- Expandable body -->
       <div class="frc-body" id="frcBody">
+        <div class="frc-title">Four things, then you're live.</div>
         <div class="frc-steps">
           <button class="frc-step" id="frc1" onclick="showPage('profile')">
             <span class="frc-check" id="frc1check">✓</span>
@@ -7160,10 +7162,16 @@ window.addEventListener('DOMContentLoaded', () => {
   // First-run checklist
   initFirstRun();
 
-  // Hide upgrade bar if already dismissed
-  if (localStorage.getItem('able_upgrade_bar_dismissed') === '1') {
-    const bar = document.getElementById('upgradeBar');
-    if (bar) bar.style.display = 'none';
+  // Upgrade bar: only after FRC complete + 3+ visits (P0.5)
+  const _bar = document.getElementById('upgradeBar');
+  if (_bar) {
+    const _dismissed   = localStorage.getItem('able_upgrade_bar_dismissed') === '1';
+    const _frcDone     = !!localStorage.getItem('able_frc_dismissed');
+    const _visitDates  = safeLS('admin_visit_dates', []);
+    const _visits      = _visitDates.length;
+    if (_dismissed || !_frcDone || _visits < 3) {
+      _bar.style.display = 'none';
+    }
   }
 
   // Admin sheet close button listeners
