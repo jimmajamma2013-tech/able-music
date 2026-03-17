@@ -5993,6 +5993,8 @@
       root.style.setProperty('--color-accent-glow',   `rgba(${r},${g},${b},0.35)`)
       root.style.setProperty('--color-accent-soft',   `rgba(${r},${g},${b},0.12)`)
       root.style.setProperty('--color-accent-subtle', `rgba(${r},${g},${b},0.12)`)
+      // C6: derive on-accent text colour from WCAG luminance — ensures AA for any accent (C6)
+      root.style.setProperty('--color-on-accent', getCtaTextColour(accentHex))
       root.style.setProperty('--r-sm',  `${Math.round(4  * rMult)}px`)
       root.style.setProperty('--r-md',  `${Math.round(8  * rMult)}px`)
       root.style.setProperty('--r-lg',  `${Math.round(16 * rMult)}px`)
