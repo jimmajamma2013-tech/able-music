@@ -2838,35 +2838,35 @@ body::before {
           <div class="dc-body">
             <div class="field-row">
               <div class="field-label">Spotify</div>
-              <input class="field-input" type="url" id="plSpotify" placeholder="open.spotify.com/artist/…" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plSpotify" onblur="validatePlatformUrl(this)" placeholder="open.spotify.com/artist/…" oninput="savePlatformLinks()">
             </div>
             <div class="field-row">
               <div class="field-label">Apple Music</div>
-              <input class="field-input" type="url" id="plApple" placeholder="music.apple.com/…" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plApple" onblur="validatePlatformUrl(this)" placeholder="music.apple.com/…" oninput="savePlatformLinks()">
             </div>
             <div class="field-row">
               <div class="field-label">SoundCloud</div>
-              <input class="field-input" type="url" id="plSoundcloud" placeholder="soundcloud.com/…" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plSoundcloud" onblur="validatePlatformUrl(this)" placeholder="soundcloud.com/…" oninput="savePlatformLinks()">
             </div>
             <div class="field-row">
               <div class="field-label">YouTube</div>
-              <input class="field-input" type="url" id="plYoutube" placeholder="youtube.com/@…" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plYoutube" onblur="validatePlatformUrl(this)" placeholder="youtube.com/@…" oninput="savePlatformLinks()">
             </div>
             <div class="field-row">
               <div class="field-label">TikTok</div>
-              <input class="field-input" type="url" id="plTiktok" placeholder="tiktok.com/@…" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plTiktok" onblur="validatePlatformUrl(this)" placeholder="tiktok.com/@…" oninput="savePlatformLinks()">
             </div>
             <div class="field-row">
               <div class="field-label">Instagram</div>
-              <input class="field-input" type="url" id="plInstagram" placeholder="instagram.com/…" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plInstagram" onblur="validatePlatformUrl(this)" placeholder="instagram.com/…" oninput="savePlatformLinks()">
             </div>
             <div class="field-row">
               <div class="field-label">Bandcamp</div>
-              <input class="field-input" type="url" id="plBandcamp" placeholder="yourname.bandcamp.com" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plBandcamp" onblur="validatePlatformUrl(this)" placeholder="yourname.bandcamp.com" oninput="savePlatformLinks()">
             </div>
             <div class="field-row" style="margin-bottom:0;">
               <div class="field-label">Resident Advisor</div>
-              <input class="field-input" type="url" id="plRA" placeholder="ra.co/dj/…" oninput="savePlatformLinks()">
+              <input class="field-input" type="url" id="plRA" onblur="validatePlatformUrl(this)" placeholder="ra.co/dj/…" oninput="savePlatformLinks()">
             </div>
           </div>
         </div>
@@ -7085,6 +7085,17 @@ function downloadQR() {
 /* ── PROFILE PAGE SAVE ── */
 /* ── PLATFORM LINKS ── */
 let _platformSyncTimer = null;
+function validatePlatformUrl(input) {
+  const val = (input.value || '').trim();
+  if (!val) { input.setCustomValidity(''); return; }
+  if (!val.startsWith('https://') && !val.startsWith('http://')) {
+    input.setCustomValidity("Needs a full URL — try starting with https://");
+    input.reportValidity();
+  } else {
+    input.setCustomValidity('');
+  }
+}
+
 function savePlatformLinks() {
   const data = safeLS(V3_KEY, {});
   const raw = [
