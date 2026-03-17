@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–16 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-16-AUDIT.md**
+**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–17 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-17-AUDIT.md**
 
 ---
 
@@ -18,14 +18,14 @@
 
 | Page | File | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|---|
-| Artist profile | `able-v8.html` | 9.3/10 | 9.7/10 | Supabase auth + Spotify auto-import | ✅ C17: live release date label, panel moment count, countdown humanise (<1h), snap card image error fallback |
-| Admin dashboard | `admin.html` | 9.85/10 | ~9.9/10 | Supabase auth (data portability) | ✅ C17: ⌘K fan search, fan row copy-email, snap card char counter, broadcast real fan count, dynamic title, time-of-day greeting, shows inline errors |
+| Artist profile | `able-v8.html` | 9.5/10 | 9.7/10 | Supabase auth + Spotify auto-import | ✅ C17W2: no-profile error state, owner completeness bar, social proof tag, merch sold-out badge, fan checkmark animation, snap video embed, drag reorder, release skeleton, timezone label, snap share |
+| Admin dashboard | `admin.html` | 9.9/10 | ~9.9/10 | Supabase auth (data portability) | ✅ C17W2: post-release nudge copy, session expiry banner, backup export + quota check |
 | Onboarding wizard | `start.html` | 9.8/10 | ~9.9/10 | Social proof (real artists) | ✅ Vibe radiogroup ARIA added session 20 |
 | Landing page | `landing.html` | 9.7/10 | ~9.9/10 | FAQ aria-controls wired | ✅ Full Twitter card meta + aria-controls on FAQ done |
 | Fan dashboard | `fan.html` | 9.6/10 | ~9.8/10 | Supabase realtime + Close Circle | ✅ C16: "New" release badge, Coming up shows section, recency sort, artist card tabindex=0, lastVisit timestamp, tap tracking, toast role=alert |
 | Freelancer profile | `freelancer.html` | 8.7/10 | ~9.2/10 | Network maturity + real testimonials | Directory integration + credits management |
 
-**Page average: ~9.49/10**
+**Page average: ~9.57/10**
 
 ---
 
@@ -38,9 +38,9 @@
 | Artist tools | 9.3/10 | 9.5/10 | Close Circle no payment; snap drag reorder | ✅ C13: top card videoUrl validated with isSafeAdminUrl(), platform URL error platform-specific, snap empty state copy updated |
 | CRM | 9.3/10 | 9.5/10 | Supabase fan sync; server tier enforcement | ✅ C15: fan note search, starred row indicator, relTime "Yesterday", level chip aria-pressed, CSV filename with date |
 | Tier gates | 9.3/10 | 9.5/10 | Server enforcement missing; Stripe not wired | ✅ C15: export gate copy updated, fan cap at 90%, upgrade click tracking on glo-btn, gold-blur tabindex=-1, gig mode tier gate |
-| Error states | 9.0/10 | 9.3/10 | Session expiry notice remaining | ✅ C12: syncProfile 10s AbortController timeout, quota warning already implemented |
-| PWA | 9.4/10 | 9.5/10 | Offline fallback page | ✅ C15: install prompt "Add to home screen — opens like an app.", pwa-install click event, manifest display_override + screenshots |
-| Page state system | 9.0/10 | 9.3/10 | Post-release nudge flow remaining | ✅ C11: contextual state-change toasts, gig mode 30-min expiry warning, release date null guard |
+| Error states | 9.3/10 | 9.5/10 | Fan form localStorage-first (already correct) | ✅ C17W2: offline.html branded page + netlify.toml 404 fallback; session expiry banner; backup export + quota check |
+| PWA | 9.5/10 | 9.5/10 | ✅ offline.html landed | ✅ C17W2: /offline.html created with ABLE branding; netlify.toml 404 → offline.html |
+| Page state system | 9.2/10 | 9.3/10 | ✅ Post-release nudge copy improved | ✅ C17W2: post-release nudge "Your release window closed. Share a follow-up or plan your next one." |
 | Data architecture | 9.0/10 | 9.3/10 | Multi-artist isolation; Supabase fan sync not wired | ✅ C12: syncProfile handle guard, schemaVersion bump, consentVersion dynamic, form-2 ts/campaignState, release id, merch id |
 | Analytics | 9.3/10 | 9.5/10 | View source breakdown (fans vs views) Wave 2 | ✅ C11: campaign breakdown excludes deleted fans; profile_complete PostHog event; views dedup+owner exclusion verified |
 | SEO / OG | 9.5/10 | 9.6/10 | Sitemap dynamic artist profile entries (Supabase) | ✅ C16: WebApplication JSON-LD landing+start, BreadcrumbList, twitter:label1, og:image:alt landing, sitemap lastmod+start.html |
