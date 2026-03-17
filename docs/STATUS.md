@@ -1,5 +1,5 @@
 # ABLE — Current Build Status
-**Updated: 2026-03-17 (session 18 — ARIA + WCAG AA color-contrast fixes in able-v7.html; tap target improvements (owner bar 38→44px, skip link, footer links, hero copy-link); admin design token cleanup (#aaa→var(--t2/t3), --ease-decel added to :root); 92/92 tests still green | session 16 — 92/92 Playwright tests green: smoke × 13, copy × 64, a11y × 9, interactions × 6) | Update this file at the end of every session.**
+**Updated: 2026-03-17 (session 19 — privacy.html + terms.html committed (tap target + heading hierarchy fixes); start.html: --err/--ok/--warn tokens, field-error-msg + wiz-toast colours tokenised, inline styles removed from btn-next/done-open; landing.html: prefers-reduced-motion block expanded to cover pulse/marquee/drift animations; 183/184 tests (1 confirmed timing flake, passes on retry) | session 18 — ARIA + WCAG AA color-contrast fixes in able-v7.html; tap target improvements (owner bar 38→44px, skip link, footer links, hero copy-link); admin design token cleanup (#aaa→var(--t2/t3), --ease-decel added to :root)) | Update this file at the end of every session.**
 
 ---
 
