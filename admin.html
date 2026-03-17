@@ -7716,11 +7716,18 @@ function downloadSbQR() {
 /* ── PROFILE PAGE SAVE ── */
 /* ── PLATFORM LINKS ── */
 let _platformSyncTimer = null;
+function isSafeAdminUrl(val) {
+  // Block dangerous schemes — P8 #76
+  const scheme = (val.match(/^([a-z][a-z0-9+\-.]*):/) || [])[1];
+  if (!scheme) return false;
+  return /^https?$/i.test(scheme);
+}
+
 function validatePlatformUrl(input) {
   const val = (input.value || '').trim();
   if (!val) { input.setCustomValidity(''); return; }
-  if (!val.startsWith('https://') && !val.startsWith('http://')) {
-    input.setCustomValidity("Needs a full URL — try starting with https://");
+  if (!isSafeAdminUrl(val)) {
+    input.setCustomValidity("Needs a full URL starting with https://");
     input.reportValidity();
   } else {
     input.setCustomValidity('');
@@ -8070,8 +8077,8 @@ function saveProfilePage() {
       creditLine:  creditLine,
       type:        videoUrl ? 'video' : (artworkUrl ? 'artwork' : ''),
     },
-    ctaPrimary:   { label: ctaPrimaryLabel || data.ctaPrimary?.label || 'Stream Now',  url: ctaPrimaryUrl   || data.ctaPrimary?.url   || '' },
-    ctaSecondary: { label: ctaSecLabel     || data.ctaSecondary?.label || '',           url: ctaSecUrl       || data.ctaSecondary?.url  || '' },
+    ctaPrimary:   { label: ctaPrimaryLabel || data.ctaPrimary?.label || 'Stream Now',  url: (ctaPrimaryUrl && isSafeAdminUrl(ctaPrimaryUrl)) ? ctaPrimaryUrl : (data.ctaPrimary?.url || '') },
+    ctaSecondary: { label: ctaSecLabel     || data.ctaSecondary?.label || '',           url: (ctaSecUrl && isSafeAdminUrl(ctaSecUrl)) ? ctaSecUrl : (data.ctaSecondary?.url || '') },
   };
   setLS(V3_KEY, updated);
   syncProfile(updated);
