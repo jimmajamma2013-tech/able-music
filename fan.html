@@ -2142,10 +2142,17 @@
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-state__emoji">📍</div>
-          <p class="empty-state__title">No shows nearby</p>
+          <p class="empty-state__title">No shows near you in the next 3 months.</p>
           <p class="empty-state__body">We'll show you shows from artists near your location as they get added.</p>
         </div>
       `
+    }
+
+    // C19 #7 — show count badge on Near me tab when shows are found
+    const _nearTab = document.getElementById('tab-near')
+    if (_nearTab) {
+      const _nearCount = DEMO_NEAR.length
+      _nearTab.textContent = _nearCount > 0 ? `Near me (${_nearCount})` : 'Near me'
     }
   }
 

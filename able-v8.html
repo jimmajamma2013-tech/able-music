@@ -9099,6 +9099,20 @@
       return resolved
     })()  // frozen at page load (G9 #11–12)
 
+    // C19 #30 — strip tracking params from URL bar after capturing (prevents accidental sharing with UTMs)
+    ;(function() {
+      try {
+        const _p = new URLSearchParams(window.location.search)
+        const _toStrip = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','ref','source','src']
+        let _dirty = false
+        _toStrip.forEach(function(k) { if (_p.has(k)) { _p.delete(k); _dirty = true } })
+        if (_dirty) {
+          const _qs = _p.toString()
+          history.replaceState(null, '', window.location.pathname + (_qs ? '?' + _qs : '') + window.location.hash)
+        }
+      } catch(_) {}
+    })()
+
     // === CHECKPOINT 4: MAIN CONTENT RENDERING ====================
 
     // --- Fan capture -------------------------------------------
