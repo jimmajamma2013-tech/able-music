@@ -8847,7 +8847,16 @@
           echo.hidden = false
           const echoText = document.getElementById('fan-echo-text')
           if (echoText) {
-            echoText.textContent = `We've got you — ${myEmail} is on ${artistName}'s list.`
+            // C12 #56 — contextual echo for returning visitor
+            const _rvState = computeState(profile)
+            let _rvMsg = `We've got you — ${myEmail} is on ${artistName}'s list.`
+            if ((_rvState === 'pre-release' || _rvState === 'live') && profile.releaseTitle) {
+              const _rvDate = profile.releaseDate ? new Date(profile.releaseDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : null
+              _rvMsg = _rvDate
+                ? `You're in. ${profile.releaseTitle} drops ${_rvDate}. First to know.`
+                : `You're in. ${profile.releaseTitle} is coming. First to know.`
+            }
+            echoText.textContent = _rvMsg
           }
         }
       }
@@ -9112,7 +9121,16 @@
                 echoEl.hidden = false
                 const echoText = document.getElementById('fan-echo-text')
                 if (echoText) {
-                  echoText.textContent = `I'll reach out when something's worth saying.`
+                  // C12 #56 — contextual echo for pre-release / live state
+                  const _echoState = computeState(profile)
+                  let _echoMsg = `I'll reach out when something's worth saying.`
+                  if ((_echoState === 'pre-release' || _echoState === 'live') && profile.releaseTitle) {
+                    const _echoDate = profile.releaseDate ? new Date(profile.releaseDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : null
+                    _echoMsg = _echoDate
+                      ? `You're in. ${profile.releaseTitle} drops ${_echoDate}. First to know.`
+                      : `You're in. ${profile.releaseTitle} is coming. First to know.`
+                  }
+                  echoText.textContent = _echoMsg
                 }
               }
               // Also hide secondary form
@@ -9291,7 +9309,16 @@
           confirmP.className = 'fan-capture__echo-text'
           confirmP.style.marginTop = 'var(--sp-4)'
           confirmP.style.animation = 'echo-enter 280ms var(--ease-decel) both' // C10 #41
-          confirmP.textContent = `You're in. I'll keep you close.`
+          // C12 #56 — contextual echo for pre-release / live state
+          const _f2State = computeState(profile)
+          let _f2EchoMsg = `You're in. I'll keep you close.`
+          if ((_f2State === 'pre-release' || _f2State === 'live') && profile.releaseTitle) {
+            const _f2Date = profile.releaseDate ? new Date(profile.releaseDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : null
+            _f2EchoMsg = _f2Date
+              ? `You're in. ${profile.releaseTitle} drops ${_f2Date}. First to know.`
+              : `You're in. ${profile.releaseTitle} is coming. First to know.`
+          }
+          confirmP.textContent = _f2EchoMsg
           form2.parentNode.appendChild(confirmP)
         })
 

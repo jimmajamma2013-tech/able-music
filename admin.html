@@ -3692,13 +3692,22 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <input id="fansSearch" type="search" placeholder="Search by email or campaign…" aria-label="Search fans by email or campaign"><!-- C4 #6 -->
     </div>
 
-    <div class="filter-pills" id="fansFilterPills">
-      <button class="filter-pill active" data-filter="all">All</button>
-      <button class="filter-pill" data-filter="starred">Starred</button>
-      <button class="filter-pill" data-filter="ig">Instagram</button>
-      <button class="filter-pill" data-filter="tt">TikTok</button>
-      <button class="filter-pill" data-filter="sp">Spotify</button>
-      <button class="filter-pill" data-filter="direct">Direct</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;">
+      <div class="filter-pills" id="fansFilterPills" style="flex:1;margin-bottom:0;">
+        <button class="filter-pill active" data-filter="all">All</button>
+        <button class="filter-pill" data-filter="starred">Starred</button>
+        <button class="filter-pill" data-filter="ig">Instagram</button>
+        <button class="filter-pill" data-filter="tt">TikTok</button>
+        <button class="filter-pill" data-filter="sp">Spotify</button>
+        <button class="filter-pill" data-filter="direct">Direct</button>
+      </div>
+      <!-- C12 #1 — sort dropdown -->
+      <select id="fansSortSelect" aria-label="Sort fans" style="background:var(--dash-field);border:1px solid var(--dash-border);color:var(--dash-text);border-radius:var(--r-md);padding:5px 8px;font-size:11px;font-family:var(--font);cursor:pointer;flex-shrink:0;min-height:32px;">
+        <option value="newest">Newest</option>
+        <option value="oldest">Oldest</option>
+        <option value="starred">Starred first</option>
+        <option value="source">By source</option>
+      </select>
     </div>
 
     <div class="fans-stat-strip" id="fansStatStrip">
@@ -4111,6 +4120,23 @@ function renderFanList(filter) {
 
   // Stats (on confirmed, non-deleted fans only)
   const confirmed = allFans.filter(f => f.confirmed !== false && !f.deleted_at); // C11 #19
+
+  // C12 #10 — update filter pill counts
+  const legacyStarredCount = safeLS('able_starred_fans', []);
+  const pillCounts = {
+    all: confirmed.length,
+    starred: confirmed.filter(f => !!(f.isStarred || legacyStarredCount.includes(f.email))).length,
+    ig: confirmed.filter(f => normaliseSource(f.source) === 'ig').length,
+    tt: confirmed.filter(f => normaliseSource(f.source) === 'tt').length,
+    sp: confirmed.filter(f => normaliseSource(f.source) === 'sp').length,
+    direct: confirmed.filter(f => normaliseSource(f.source) === 'direct').length,
+  };
+  document.querySelectorAll('#fansFilterPills .filter-pill').forEach(pill => {
+    const key = pill.dataset.filter;
+    const count = pillCounts[key] ?? 0;
+    const label = { all: 'All', starred: 'Starred', ig: 'Instagram', tt: 'TikTok', sp: 'Spotify', direct: 'Direct' }[key] || key;
+    pill.textContent = count > 0 ? `${label} ${count}` : label;
+  });
   const oneWeekAgo = Date.now() - 7 * 86400000;
   const thisWeek = confirmed.filter(f => f.ts >= oneWeekAgo).length;
   const socialSources = ['ig', 'tt', 'sp'];
@@ -4167,7 +4193,24 @@ function renderFanList(filter) {
   const legacyStarred = safeLS('able_starred_fans', []);
   const avatarColours = ['#e05242','#4e7cff','#9b59b6','#27ae60','#e67e22'];
 
-  listEl.innerHTML = filtered.sort((a, b) => b.ts - a.ts).map(f => {
+  // C12 #1 — dynamic sort based on fansSortSelect
+  const _sortVal = document.getElementById('fansSortSelect')?.value || 'newest';
+  const legacyStarredSort = safeLS('able_starred_fans', []);
+  if (_sortVal === 'oldest') {
+    filtered.sort((a, b) => (a.ts || 0) - (b.ts || 0));
+  } else if (_sortVal === 'starred') {
+    filtered.sort((a, b) => {
+      const aS = !!(a.isStarred || legacyStarredSort.includes(a.email)) ? 1 : 0;
+      const bS = !!(b.isStarred || legacyStarredSort.includes(b.email)) ? 1 : 0;
+      return bS - aS || (b.ts || 0) - (a.ts || 0);
+    });
+  } else if (_sortVal === 'source') {
+    filtered.sort((a, b) => (a.source || '').localeCompare(b.source || '') || (b.ts || 0) - (a.ts || 0));
+  } else {
+    filtered.sort((a, b) => (b.ts || 0) - (a.ts || 0)); // newest (default)
+  }
+
+  listEl.innerHTML = filtered.map(f => {
     const initial = (f.email || '?')[0].toUpperCase();
     const src = normaliseSource(f.source);
     const colour = avatarColours[initial.charCodeAt(0) % avatarColours.length];
@@ -4562,6 +4605,12 @@ function showPage(id) {
         clearTimeout(_fanSearchTimer);
         _fanSearchTimer = setTimeout(() => renderFanList(), 150);
       });
+    }
+    // C12 #1 — wire sort dropdown
+    const sortEl = document.getElementById('fansSortSelect');
+    if (sortEl && !sortEl.dataset.wired) {
+      sortEl.dataset.wired = '1';
+      sortEl.addEventListener('change', () => renderFanList());
     }
   }
 }
