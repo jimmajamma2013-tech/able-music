@@ -160,8 +160,9 @@
 | Strategy / founder | ~7.8/10 | — | — |
 
 **Overall documentation + spec average: ~9.2/10**
-**Overall current build state average: ~9.1/10** (was ~9.0/10 post-C6; was ~8.9/10 post-C5W2; was ~8.8/10 post-C5W1)
+**Overall current build state average: ~9.15/10** (was ~9.1/10 post-C7W1; was ~9.0/10 post-C6; was ~8.9/10 post-C5W2)
 
+Cycle 7 Wave 2 improvements: Start.html (#33 safe-area, #37 release date hint in moment picker); Admin RAF stat batch (#30 — δ-label writes deferred to single RAF frame)
 Cycle 7 improvements: UX system (7.8→8.5) — Artist Pro trial hook, 30-day milestone, upgrade tracking; Accessibility (7.8→8.2) — fan form aria-describedby; Artist success milestone + completeness celebration
 Cycle 6 improvements: Data arch (6.8→7.5) — verified existing defences; Tier gates (7.0→7.5) — CRM/broadcast copy; UI system (7.5→8.0) — sheet animation, reduced-motion; post-release nudge
 Cycle 5 Wave 2 improvements: UX system (7.2→7.8) — fan star flash, gig share button; Tier gates (6.5→7.0) — gold lock hover tease, upgrade CTA in completeness; completeness bar dual-render

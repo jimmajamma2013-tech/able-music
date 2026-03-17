@@ -8636,7 +8636,7 @@
           if (views.length > 500) views = views.slice(-400) // C4 #53 — count cap 500, prune to 400
           // Session dedup — one view per tab session
           if (!views.some(v => v.sessionId === sessionId)) {
-            views.push({ ts: Date.now(), source, sessionId })
+            views.push({ ts: Date.now(), source, sessionId, path: location.pathname }) // C8 #6
             setLS('able_views', views)
           }
         } catch (_) {}
@@ -8989,7 +8989,8 @@
               confirmed: false,
               double_opted_in: false,
               level: 'listener',
-              isStarred: false
+              isStarred: false,
+              deviceType: window.innerWidth < 768 ? 'mobile' : 'desktop', // C8 #4
             })
             setLS('able_fans', fans)
             sessionStorage.setItem('able_this_fan_email', email)
@@ -9175,7 +9176,8 @@
               confirmed: false,
               double_opted_in: false,
               level: 'listener',
-              isStarred: false
+              isStarred: false,
+              deviceType: window.innerWidth < 768 ? 'mobile' : 'desktop', // C8 #4
             })
             setLS('able_fans', fans)
             sessionStorage.setItem('able_this_fan_email', email)
@@ -9650,6 +9652,12 @@
     }
 
     function renderShowsSection(profile) {
+      // C8 #49 — parse/render guard: silently hide section on any exception
+      try { return _renderShowsSectionImpl(profile) } catch (_) {
+        const s = document.getElementById('shows-section'); if (s) s.hidden = true
+      }
+    }
+    function _renderShowsSectionImpl(profile) {
       const section = document.getElementById('shows-section')
       const list = document.getElementById('shows-list')
       if (!section || !list) return
@@ -9729,9 +9737,9 @@
               : safeTicketUrl
                 ? `<a class="btn-show pressable"
                       href="${safeTicketUrl}" target="_blank" rel="noopener noreferrer"
-                      aria-label="Buy tickets for ${escHtml(ev.venue || 'show')} on ${escHtml(dayStr)}"
+                      aria-label="Get tickets for ${escHtml(ev.venue || 'show')} on ${escHtml(dayStr)}"
                       data-track-label="${escHtml(ev.venue || 'show')}">
-                     Tickets
+                     Get tickets
                    </a>`
                 : ''
             }

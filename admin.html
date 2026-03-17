@@ -4414,6 +4414,11 @@ function renderFanSupportPacksSummary() {
 }
 
 function exportFans() {
+  // C8 #18 — free tier cannot export (encourage upgrade)
+  if (getCurrentTier() === 'free') {
+    showToast('Export your full list with Artist plan — £9/mo.', 'amber');
+    return;
+  }
   const legacyStarred = safeLS('able_starred_fans', []);
   const real = safeLS('able_fans', []).filter(f => f.confirmed !== false);
   if (!real.length) { showToast('No fans yet — share your page to see who shows up.', 'amber'); return; }
@@ -4643,6 +4648,16 @@ function _mergeShows(existing, incoming) {
 }
 
 function openAddShowSheet() {
+  // C8 #17 — free tier: max 3 upcoming shows
+  if (getCurrentTier() === 'free') {
+    const _todayStr = new Date().toISOString().slice(0, 10);
+    const _upcomingShows = safeLS('able_shows', []).filter(s => s.date && s.date >= _todayStr);
+    if (_upcomingShows.length >= 3) {
+      showToast('Add up to 3 shows on free. Artist plan removes the limit.', 'amber');
+      return;
+    }
+  }
+
   const body = `
     <div class="admin-sheet-field-group">
       <label class="admin-sheet-label">Venue / event name</label>
@@ -5291,6 +5306,7 @@ function saveCampaignHQ() {
     releaseDate,
     release: { ...(data.release || {}), title: releaseTitle },
     stateHistory: _history,
+    updatedAt: Date.now(), // C8 #7 — enable "last updated" display and migration ordering
   };
   setLS(V3_KEY, updated);
   syncProfile(updated); // async fire-and-forget to Supabase
@@ -6765,6 +6781,15 @@ function saveCloseCircle() {
 
 /* ── REAL STATS FROM LOCALSTORAGE ── */
 function loadRealStats() {
+  // C8 #50 — guard entire stat block; on failure set all stats to '—'
+  try { return _loadRealStatsImpl(); } catch (_err) {
+    console.warn('[ABLE] stats error:', _err);
+    ['statViews','statClicks','statFans','statStreak','aStatViews','aStatClicks','aStatFans'].forEach(id => {
+      const el = document.getElementById(id); if (el) { el.classList.remove('skel'); el.textContent = '—'; }
+    });
+  }
+}
+function _loadRealStatsImpl() {
   const views  = safeLS(VIEWS_KEY,  []);
   const clicks = safeLS(CLICKS_KEY, []);
   const fans   = safeLS(FANS_KEY,   []);
