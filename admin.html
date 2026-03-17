@@ -4978,7 +4978,7 @@ function checkAutoGig() {
 }
 
 /* C16 — Gig mode depletion bar */
-var _gigCountdownInterval = null;
+let _gigCountdownInterval = null;
 function tickGigCountdown(exp) {
   clearGigCountdown();
   const fill  = document.getElementById('gigCountdownFill');
@@ -5771,7 +5771,7 @@ function openClipAddSheet() {
   setTimeout(function() { const f = document.getElementById('clipAddUrl'); if (f) f.focus() }, 50)
 }
 
-var _clipOembedTimer = null
+let _clipOembedTimer = null
 function onClipUrlInput(url) {
   clearTimeout(_clipOembedTimer)
   if (!url || !url.startsWith('http')) return
@@ -6491,19 +6491,19 @@ function updateFanPageStats() {
 
 // === YOUR WORLD (ADMIN) =====================================
 
-var WM_TYPE_COLOR_ADM = {
+let WM_TYPE_COLOR_ADM = {
   release: '#3b82f6', show: '#e8715a', on_sale: '#f4b942',
   merch_drop: '#2db8b0', early_access: '#d4a84b',
   livestream: '#4b8fd4', private_access: '#767676', announcement: '#aaaaaa',
 }
 
 function ywRenderMomentList(profile) {
-  var list = document.getElementById('yw-moment-list')
+  let list = document.getElementById('yw-moment-list')
   if (!list) return
 
-  var moments = (profile.moments || []).filter(function(m) { return m.active !== false })
-  var today = new Date().toISOString().slice(0,10)
-  var in7 = new Date(Date.now() + 7*86400000).toISOString().slice(0,10)
+  let moments = (profile.moments || []).filter(function(m) { return m.active !== false })
+  let today = new Date().toISOString().slice(0,10)
+  let in7 = new Date(Date.now() + 7*86400000).toISOString().slice(0,10)
 
   // Auto-include upcoming shows from profile.events (same as public profile does)
   ;(profile.events || []).forEach(function(ev) {
@@ -6520,25 +6520,25 @@ function ywRenderMomentList(profile) {
     }
   })
 
-  var upcoming = moments.filter(function(m) { return m.date >= today }).sort(function(a,b) { return a.date.localeCompare(b.date) })
+  let upcoming = moments.filter(function(m) { return m.date >= today }).sort(function(a,b) { return a.date.localeCompare(b.date) })
 
   if (!upcoming.length) {
     list.innerHTML = '<div class="yw-empty">No upcoming moments yet. Add shows in the <button class="yw-empty-link" onclick="showPage(\'events\')">Events</button> page, or add a moment here.</div>'
     return
   }
 
-  var featuredId = (upcoming.find(function(m) { return m.date <= in7 && m.access !== 'private' }) || {}).id
+  let featuredId = (upcoming.find(function(m) { return m.date <= in7 && m.access !== 'private' }) || {}).id
 
   list.innerHTML = upcoming.slice(0, 12).map(function(m) {
-    var d = new Date(m.date + 'T00:00:00')
-    var dateStr = d.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' })
-    var color = WM_TYPE_COLOR_ADM[m.type] || '#767676'
-    var isFeatured = m.id === featuredId
-    var title = m.title || '(untitled)'
-    var accessTag = m.isAuto
+    let d = new Date(m.date + 'T00:00:00')
+    let dateStr = d.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' })
+    let color = WM_TYPE_COLOR_ADM[m.type] || '#767676'
+    let isFeatured = m.id === featuredId
+    let title = m.title || '(untitled)'
+    let accessTag = m.isAuto
       ? '<div class="yw-moment-access yw-moment-auto">from shows</div>'
       : '<div class="yw-moment-access">' + (m.access || 'public') + '</div>'
-    var editBtn = m.isAuto
+    let editBtn = m.isAuto
       ? ''
       : '<button class="yw-edit-btn" onclick="ywOpenEditForm(\'' + m.id + '\')" aria-label="Edit moment" title="Edit">✎</button>'
     return '<div class="yw-moment-wrap" data-moment-id="' + m.id + '">'
@@ -6554,12 +6554,12 @@ function ywRenderMomentList(profile) {
   }).join('')
 
   // Private toggle state
-  var toggle = document.getElementById('yw-private-toggle')
+  let toggle = document.getElementById('yw-private-toggle')
   if (toggle) toggle.checked = !!profile.privateAccessOpen
 
   // Enquiry count
-  var enquiries = (profile.privateAccessEnquiries || []).filter(function(e) { return e.status === 'pending' || !e.status })
-  var enqEl = document.getElementById('yw-enquiry-count')
+  let enquiries = (profile.privateAccessEnquiries || []).filter(function(e) { return e.status === 'pending' || !e.status })
+  let enqEl = document.getElementById('yw-enquiry-count')
   if (enqEl) {
     if (enquiries.length) {
       enqEl.style.display = 'block'
@@ -6573,39 +6573,39 @@ function ywRenderMomentList(profile) {
 function ywInit(profile) {
   ywRenderMomentList(profile)
 
-  var addBtn = document.getElementById('yw-add-btn')
+  let addBtn = document.getElementById('yw-add-btn')
   if (addBtn) addBtn.addEventListener('click', function() { ywToggleAddForm(true) })
 
   // Type button group
-  var typeGrid = document.getElementById('ywTypeGrid')
+  let typeGrid = document.getElementById('ywTypeGrid')
   if (typeGrid) typeGrid.addEventListener('click', function(e) {
-    var btn = e.target.closest('.yw-type-btn')
+    let btn = e.target.closest('.yw-type-btn')
     if (!btn) return
     typeGrid.querySelectorAll('.yw-type-btn').forEach(function(b) { b.classList.remove('active') })
     btn.classList.add('active')
   })
 
   // Access button group
-  var accessRow = document.getElementById('ywAccessRow')
+  let accessRow = document.getElementById('ywAccessRow')
   if (accessRow) accessRow.addEventListener('click', function(e) {
-    var btn = e.target.closest('.yw-access-btn')
+    let btn = e.target.closest('.yw-access-btn')
     if (!btn) return
     accessRow.querySelectorAll('.yw-access-btn').forEach(function(b) { b.classList.remove('active') })
     btn.classList.add('active')
   })
 
   // Show/hide CTA label when URL is entered
-  var ctaUrlEl = document.getElementById('ywCtaUrl')
-  var ctaLabelEl = document.getElementById('ywCtaLabel')
+  let ctaUrlEl = document.getElementById('ywCtaUrl')
+  let ctaLabelEl = document.getElementById('ywCtaLabel')
   if (ctaUrlEl && ctaLabelEl) {
     ctaUrlEl.addEventListener('input', function() {
       ctaLabelEl.hidden = !ctaUrlEl.value.trim()
     })
   }
 
-  var toggle = document.getElementById('yw-private-toggle')
+  let toggle = document.getElementById('yw-private-toggle')
   if (toggle) toggle.addEventListener('change', function(e) {
-    var p = safeLS(V3_KEY, {})
+    let p = safeLS(V3_KEY, {})
     p.privateAccessOpen = e.target.checked
     setLS(V3_KEY, p)
     syncProfile(p)
@@ -6613,20 +6613,20 @@ function ywInit(profile) {
 }
 
 function ywToggleAddForm(open) {
-  var form   = document.getElementById('yw-add-form')
-  var addBtn = document.getElementById('yw-add-btn')
+  let form   = document.getElementById('yw-add-form')
+  let addBtn = document.getElementById('yw-add-btn')
   if (!form) return
   form.hidden = !open
   if (addBtn) addBtn.textContent = open ? '✕ Cancel' : '+ Add moment'
   if (open) {
     // Reset form to defaults
-    var today = new Date().toISOString().slice(0, 10)
-    var titleEl = document.getElementById('ywTitle')
-    var dateEl  = document.getElementById('ywDate')
-    var urlEl   = document.getElementById('ywCtaUrl')
-    var lblEl   = document.getElementById('ywCtaLabel')
-    var noteEl  = document.getElementById('ywNote')
-    var errEl   = document.getElementById('ywFormError')
+    let today = new Date().toISOString().slice(0, 10)
+    let titleEl = document.getElementById('ywTitle')
+    let dateEl  = document.getElementById('ywDate')
+    let urlEl   = document.getElementById('ywCtaUrl')
+    let lblEl   = document.getElementById('ywCtaLabel')
+    let noteEl  = document.getElementById('ywNote')
+    let errEl   = document.getElementById('ywFormError')
     if (titleEl) titleEl.value = ''
     if (dateEl)  dateEl.value  = today
     if (urlEl)   urlEl.value   = ''
@@ -6646,22 +6646,22 @@ function ywToggleAddForm(open) {
 }
 
 function ywSaveMoment() {
-  var typeBtn   = document.querySelector('.yw-type-btn.active')
-  var accessBtn = document.querySelector('.yw-access-btn.active')
-  var titleEl   = document.getElementById('ywTitle')
-  var dateEl    = document.getElementById('ywDate')
-  var urlEl     = document.getElementById('ywCtaUrl')
-  var lblEl     = document.getElementById('ywCtaLabel')
-  var noteEl    = document.getElementById('ywNote')
-  var errEl     = document.getElementById('ywFormError')
+  let typeBtn   = document.querySelector('.yw-type-btn.active')
+  let accessBtn = document.querySelector('.yw-access-btn.active')
+  let titleEl   = document.getElementById('ywTitle')
+  let dateEl    = document.getElementById('ywDate')
+  let urlEl     = document.getElementById('ywCtaUrl')
+  let lblEl     = document.getElementById('ywCtaLabel')
+  let noteEl    = document.getElementById('ywNote')
+  let errEl     = document.getElementById('ywFormError')
 
-  var type   = typeBtn   ? typeBtn.dataset.type     : 'release'
-  var access = accessBtn ? accessBtn.dataset.access : 'public'
-  var title  = titleEl   ? titleEl.value.trim()     : ''
-  var date   = dateEl    ? dateEl.value.trim()      : ''
-  var url    = urlEl     ? urlEl.value.trim()       : ''
-  var lbl    = lblEl     ? lblEl.value.trim()       : ''
-  var note   = noteEl    ? noteEl.value.trim()      : ''
+  let type   = typeBtn   ? typeBtn.dataset.type     : 'release'
+  let access = accessBtn ? accessBtn.dataset.access : 'public'
+  let title  = titleEl   ? titleEl.value.trim()     : ''
+  let date   = dateEl    ? dateEl.value.trim()      : ''
+  let url    = urlEl     ? urlEl.value.trim()       : ''
+  let lbl    = lblEl     ? lblEl.value.trim()       : ''
+  let note   = noteEl    ? noteEl.value.trim()      : ''
 
   // Validate
   if (!title) {
@@ -6675,8 +6675,8 @@ function ywSaveMoment() {
     return
   }
 
-  var p = safeLS(V3_KEY, {})
-  var moments = p.moments || []
+  let p = safeLS(V3_KEY, {})
+  let moments = p.moments || []
   moments.push({
     id: 'm_' + Date.now(),
     type: type,
@@ -6695,7 +6695,7 @@ function ywSaveMoment() {
 }
 
 function removeMoment(id) {
-  var p = safeLS(V3_KEY, {})
+  let p = safeLS(V3_KEY, {})
   p.moments = (p.moments || []).filter(function(m) { return m.id !== id })
   setLS(V3_KEY, p)
   syncProfile(p)
@@ -6703,7 +6703,7 @@ function removeMoment(id) {
 }
 
 function ywCloseEditForm() {
-  var existing = document.querySelector('.yw-inline-edit')
+  let existing = document.querySelector('.yw-inline-edit')
   if (existing) existing.remove()
   // Restore any active edit button
   document.querySelectorAll('.yw-edit-btn.editing').forEach(function(b) {
@@ -6721,33 +6721,33 @@ function ywOpenEditForm(id) {
   }
   ywCloseEditForm()
 
-  var p = safeLS(V3_KEY, {})
-  var m = (p.moments || []).find(function(x) { return x.id === id })
+  let p = safeLS(V3_KEY, {})
+  let m = (p.moments || []).find(function(x) { return x.id === id })
   if (!m) return
 
-  var wrap = document.querySelector('.yw-moment-wrap[data-moment-id="' + id + '"]')
+  let wrap = document.querySelector('.yw-moment-wrap[data-moment-id="' + id + '"]')
   if (!wrap) return
 
   // Mark the edit button as active
-  var editBtn = wrap.querySelector('.yw-edit-btn')
+  let editBtn = wrap.querySelector('.yw-edit-btn')
   if (editBtn) { editBtn.classList.add('editing'); editBtn.textContent = '✕'; editBtn.title = 'Close'; }
 
   // Build type buttons
-  var types = ['release','show','announce','milestone','private']
-  var typeLabels = {release:'Release',show:'Show',announce:'Announce',milestone:'Milestone',private:'Private'}
-  var typeBtns = types.map(function(t) {
+  let types = ['release','show','announce','milestone','private']
+  let typeLabels = {release:'Release',show:'Show',announce:'Announce',milestone:'Milestone',private:'Private'}
+  let typeBtns = types.map(function(t) {
     return '<button type="button" class="yw-type-btn yw-edit-type-btn' + (m.type === t ? ' active' : '') + '" data-type="' + t + '">' + typeLabels[t] + '</button>'
   }).join('')
 
-  var accessLabels = ['public','close-circle','private']
-  var accessBtns = accessLabels.map(function(a) {
+  let accessLabels = ['public','close-circle','private']
+  let accessBtns = accessLabels.map(function(a) {
     return '<button type="button" class="yw-access-btn yw-edit-access-btn' + ((m.access || 'public') === a ? ' active' : '') + '" data-access="' + a + '">' + (a === 'close-circle' ? 'Close circle' : a.charAt(0).toUpperCase() + a.slice(1)) + '</button>'
   }).join('')
 
-  var ctaUrl = (m.cta && m.cta.url) || ''
-  var ctaLbl = (m.cta && m.cta.label) || ''
+  let ctaUrl = (m.cta && m.cta.url) || ''
+  let ctaLbl = (m.cta && m.cta.label) || ''
 
-  var form = document.createElement('div')
+  let form = document.createElement('div')
   form.className = 'yw-inline-edit yw-add-form'
   form.dataset.editing = id
   form.innerHTML = ''
@@ -6788,8 +6788,8 @@ function ywOpenEditForm(id) {
   wrap.appendChild(form)
 
   // Wire URL input to show/hide label field
-  var urlInput = form.querySelector('#ywEditCtaUrl')
-  var lblWrap  = form.querySelector('#ywEditCtaLabelWrap')
+  let urlInput = form.querySelector('#ywEditCtaUrl')
+  let lblWrap  = form.querySelector('#ywEditCtaLabelWrap')
   if (urlInput && lblWrap) {
     urlInput.addEventListener('input', function() {
       lblWrap.hidden = !urlInput.value.trim()
@@ -6816,20 +6816,20 @@ function ywOpenEditForm(id) {
 }
 
 function ywUpdateMoment(id) {
-  var form = document.querySelector('.yw-inline-edit[data-editing="' + id + '"]')
+  let form = document.querySelector('.yw-inline-edit[data-editing="' + id + '"]')
   if (!form) return
 
-  var typeBtn   = form.querySelector('.yw-edit-type-btn.active')
-  var accessBtn = form.querySelector('.yw-edit-access-btn.active')
-  var titleEl   = form.querySelector('#ywEditTitle')
-  var dateEl    = form.querySelector('#ywEditDate')
-  var urlEl     = form.querySelector('#ywEditCtaUrl')
-  var lblEl     = form.querySelector('#ywEditCtaLabel')
-  var noteEl    = form.querySelector('#ywEditNote')
-  var errEl     = form.querySelector('#ywEditError')
+  let typeBtn   = form.querySelector('.yw-edit-type-btn.active')
+  let accessBtn = form.querySelector('.yw-edit-access-btn.active')
+  let titleEl   = form.querySelector('#ywEditTitle')
+  let dateEl    = form.querySelector('#ywEditDate')
+  let urlEl     = form.querySelector('#ywEditCtaUrl')
+  let lblEl     = form.querySelector('#ywEditCtaLabel')
+  let noteEl    = form.querySelector('#ywEditNote')
+  let errEl     = form.querySelector('#ywEditError')
 
-  var title = titleEl ? titleEl.value.trim() : ''
-  var date  = dateEl  ? dateEl.value.trim()  : ''
+  let title = titleEl ? titleEl.value.trim() : ''
+  let date  = dateEl  ? dateEl.value.trim()  : ''
 
   if (!title) {
     if (errEl) { errEl.textContent = 'Title is required.'; errEl.style.display = 'block'; }
@@ -6842,11 +6842,11 @@ function ywUpdateMoment(id) {
     return
   }
 
-  var p = safeLS(V3_KEY, {})
+  let p = safeLS(V3_KEY, {})
   p.moments = (p.moments || []).map(function(m) {
     if (m.id !== id) return m
-    var url = urlEl ? urlEl.value.trim() : ''
-    var lbl = lblEl ? lblEl.value.trim() : ''
+    let url = urlEl ? urlEl.value.trim() : ''
+    let lbl = lblEl ? lblEl.value.trim() : ''
     return Object.assign({}, m, {
       type:       typeBtn   ? typeBtn.dataset.type     : m.type,
       access:     accessBtn ? accessBtn.dataset.access : m.access,
@@ -7529,7 +7529,7 @@ function wireProfileSave() {
    ══════════════════════════════════════════════════════ */
 
 function _getArtistContext() {
-  var data = safeLS('able_v3_profile', {});
+  let data = safeLS('able_v3_profile', {});
   return {
     artistName: data.name  || '',
     genre:      data.vibe  || (data.genres && data.genres[0]) || '',
@@ -7538,8 +7538,8 @@ function _getArtistContext() {
 }
 
 function _renderSuggestions(containerId, btnId, suggestions, onUse) {
-  var container = document.getElementById(containerId);
-  var btn       = document.getElementById(btnId);
+  let container = document.getElementById(containerId);
+  let btn       = document.getElementById(btnId);
   if (!container) return;
 
   if (!suggestions || !suggestions.length) {
@@ -7549,9 +7549,9 @@ function _renderSuggestions(containerId, btnId, suggestions, onUse) {
     return;
   }
 
-  var html = '<div class="ai-suggestion-label"><span>AI suggestions — pick one or edit freely</span><button class="ai-suggestion-dismiss" onclick="document.getElementById(\'' + containerId + '\').classList.remove(\'show\')">✕</button></div>';
+  let html = '<div class="ai-suggestion-label"><span>AI suggestions — pick one or edit freely</span><button class="ai-suggestion-dismiss" onclick="document.getElementById(\'' + containerId + '\').classList.remove(\'show\')">✕</button></div>';
   suggestions.forEach(function(s, i) {
-    var safe = s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    let safe = s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     html += '<div class="ai-suggestion-item" onclick="(function(){' +
       'var f=function(){' + onUse + '}; f.call({suggestion:' + JSON.stringify(s) + '});' +
       'document.getElementById(\'' + containerId + '\').classList.remove(\'show\');' +
@@ -7567,7 +7567,7 @@ function _renderSuggestions(containerId, btnId, suggestions, onUse) {
 }
 
 function _callAiCopy(payload, containerId, btnId, onUse) {
-  var btn = document.getElementById(btnId);
+  let btn = document.getElementById(btnId);
   if (btn) { btn.disabled = true; btn.innerHTML = '<span class="ai-trigger__icon">⟳</span>Writing…'; }
 
   fetch('/.netlify/functions/ai-copy', {
@@ -7581,7 +7581,7 @@ function _callAiCopy(payload, containerId, btnId, onUse) {
     _renderSuggestions(containerId, btnId, data.suggestions, onUse);
   })
   .catch(function(err) {
-    var container = document.getElementById(containerId);
+    let container = document.getElementById(containerId);
     if (container) {
       container.innerHTML = '<div style="font-size:12px;color:#ef4444;padding:4px 0;">' + (err.message || 'Could not reach AI. Check your connection.') + '</div>';
       container.classList.add('show');
@@ -7591,7 +7591,7 @@ function _callAiCopy(payload, containerId, btnId, onUse) {
 }
 
 function aiSuggestBio() {
-  var ctx = _getArtistContext();
+  let ctx = _getArtistContext();
   if (!ctx.artistName) { showToast('Add your artist name first.', 'amber'); return; }
   _callAiCopy(
     { mode:'bio', artistName:ctx.artistName, genre:ctx.genre, bio:ctx.bio },
@@ -7601,12 +7601,12 @@ function aiSuggestBio() {
 }
 
 function aiSuggestCta() {
-  var ctx = _getArtistContext();
+  let ctx = _getArtistContext();
   if (!ctx.artistName) { showToast('Add your artist name first.', 'amber'); return; }
   // Detect CTA type from current URL
-  var urlEl = document.getElementById('adminCtaPrimaryUrl');
-  var url = urlEl ? urlEl.value.toLowerCase() : '';
-  var ctaType = url.includes('spotify') || url.includes('apple') || url.includes('soundcloud') ? 'stream'
+  let urlEl = document.getElementById('adminCtaPrimaryUrl');
+  let url = urlEl ? urlEl.value.toLowerCase() : '';
+  let ctaType = url.includes('spotify') || url.includes('apple') || url.includes('soundcloud') ? 'stream'
     : url.includes('ticketmaster') || url.includes('eventbrite') || url.includes('dice') ? 'tickets'
     : url.includes('shop') || url.includes('merch') || url.includes('bigcartel') ? 'merch'
     : 'stream';

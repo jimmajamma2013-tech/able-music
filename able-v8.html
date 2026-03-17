@@ -5244,7 +5244,7 @@
         bootstrap: {
           distinctID: (function() {
             try {
-              var p = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+              let p = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
               return p.slug || null;
             } catch(_) { return null; }
           })(),
@@ -6624,34 +6624,34 @@
         monthLabel.textContent = new Date(year, month, 1).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
       }
 
-      var cellHtmlArr = cells.map(function(cell) {
+      let cellHtmlArr = cells.map(function(cell) {
         if (!cell) return '<div class="wm-cell wm-cell--empty" aria-hidden="true"></div>'
 
-        var day = cell.day, dateStr = cell.dateStr, moms = cell.moments, isToday = cell.isToday
-        var isPast = dateStr < today
-        var hasMoments = moms.length > 0
-        var isSelected = dateStr === selectedDate
-        var isFeatured = dateStr === featuredDate
+        let day = cell.day, dateStr = cell.dateStr, moms = cell.moments, isToday = cell.isToday
+        let isPast = dateStr < today
+        let hasMoments = moms.length > 0
+        let isSelected = dateStr === selectedDate
+        let isFeatured = dateStr === featuredDate
 
-        var classes = ['wm-cell']
+        let classes = ['wm-cell']
         if (isPast) classes.push('wm-cell--past')
         if (isToday) classes.push('wm-cell--today')
         if (hasMoments) classes.push('wm-cell--has-moment')
         if (isSelected) classes.push('wm-cell--selected')
         if (isFeatured) classes.push('wm-cell--featured')
 
-        var primaryColor = hasMoments ? (WM_TYPE_COLOR[moms[0].type] || 'var(--color-accent)') : 'var(--color-accent)'
-        var styleStr = '--wm-type-color: ' + primaryColor + ';'
+        let primaryColor = hasMoments ? (WM_TYPE_COLOR[moms[0].type] || 'var(--color-accent)') : 'var(--color-accent)'
+        let styleStr = '--wm-type-color: ' + primaryColor + ';'
 
-        var profile4dots = safeLS('able_v3_profile', {})
-        var isSupporter4dots = !!(profile4dots.supporterSince)
-        var dotsHtml = '<div class="wm-dots" aria-hidden="true">'
+        let profile4dots = safeLS('able_v3_profile', {})
+        let isSupporter4dots = !!(profile4dots.supporterSince)
+        let dotsHtml = '<div class="wm-dots" aria-hidden="true">'
         if (hasMoments) {
-          var visible = moms.slice(0, 3)
-          var extra = moms.length - 3
+          let visible = moms.slice(0, 3)
+          let extra = moms.length - 3
           visible.forEach(function(m) {
-            var isLocked = (m.access === 'supporter' && !isSupporter4dots) || m.access === 'private'
-            var c = WM_TYPE_COLOR[m.type] || 'var(--color-accent)'
+            let isLocked = (m.access === 'supporter' && !isSupporter4dots) || m.access === 'private'
+            let c = WM_TYPE_COLOR[m.type] || 'var(--color-accent)'
             if (isLocked) {
               dotsHtml += '<div class="wm-dot wm-dot--locked" style="color:' + c + '"></div>'
             } else {
@@ -6662,8 +6662,8 @@
         }
         dotsHtml += '</div>'
 
-        var monthName = new Date(year, month, 1).toLocaleDateString('en-GB', { month: 'long' })
-        var ariaLabel = hasMoments
+        let monthName = new Date(year, month, 1).toLocaleDateString('en-GB', { month: 'long' })
+        let ariaLabel = hasMoments
           ? day + ' ' + monthName + ', ' + moms.map(function(m) { return WM_TYPE_LABEL[m.type] || m.type }).join(', ')
           : day + ' ' + monthName
 
@@ -6676,7 +6676,7 @@
       })
 
       // Wrap every 7 cells in a role="row" for WCAG aria-required-parent compliance
-      var rowsHtml = ''
+      let rowsHtml = ''
       for (var ri = 0; ri < cellHtmlArr.length; ri += 7) {
         rowsHtml += '<div role="row">' + cellHtmlArr.slice(ri, ri + 7).join('') + '</div>'
       }
@@ -6684,8 +6684,8 @@
 
       grid.querySelectorAll('.wm-cell[data-date]').forEach(function(cellEl) {
         cellEl.addEventListener('click', function() {
-          var dateStr = cellEl.dataset.date
-          var dayMoments = moments.filter(function(m) { return m.date === dateStr })
+          let dateStr = cellEl.dataset.date
+          let dayMoments = moments.filter(function(m) { return m.date === dateStr })
           if (!dayMoments.length) return
           wmSelectedDate = dateStr
           openWorldMapPanel(dayMoments, year, month, moments, featuredDate, dateStr)
@@ -6696,30 +6696,30 @@
     function openWorldMapPanel(dayMoments, year, month, moments, featuredDate, selectedDate) {
       renderWorldMapGrid(year, month, moments, featuredDate, selectedDate)
 
-      var panel = document.getElementById('wm-panel')
-      var body  = document.getElementById('wm-panel-body')
-      var backdrop = document.getElementById('wm-backdrop')
+      let panel = document.getElementById('wm-panel')
+      let body  = document.getElementById('wm-panel-body')
+      let backdrop = document.getElementById('wm-backdrop')
       if (!panel || !body) return
 
-      var profile = safeLS('able_v3_profile', {})
-      var fans = safeLS('able_fans', [])
-      var userState = {
+      let profile = safeLS('able_v3_profile', {})
+      let fans = safeLS('able_fans', [])
+      let userState = {
         isFan: fans.length > 0,
         isSupporter: !!(profile.supporterSince),
       }
-      var artistName = escHtml(profile.name || 'the artist')
+      let artistName = escHtml(profile.name || 'the artist')
 
       // Build HTML for all moments on this day
-      var itemsHtml = dayMoments.map(function(moment, idx) {
-        var typeColor = WM_TYPE_COLOR[moment.type] || 'var(--color-accent)'
-        var typeLabel = WM_TYPE_LABEL[moment.type] || 'Moment'
-        var accessCfg = WM_ACCESS[moment.access] || WM_ACCESS.public
-        var access = resolveAccess(moment, userState)
-        var dateObj = new Date(moment.date + 'T00:00:00')
-        var dateStr = dateObj.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long' })
-        var enquiryId = 'wm-enquiry-submit-' + idx
+      let itemsHtml = dayMoments.map(function(moment, idx) {
+        let typeColor = WM_TYPE_COLOR[moment.type] || 'var(--color-accent)'
+        let typeLabel = WM_TYPE_LABEL[moment.type] || 'Moment'
+        let accessCfg = WM_ACCESS[moment.access] || WM_ACCESS.public
+        let access = resolveAccess(moment, userState)
+        let dateObj = new Date(moment.date + 'T00:00:00')
+        let dateStr = dateObj.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long' })
+        let enquiryId = 'wm-enquiry-submit-' + idx
 
-        var ctaHtml = ''
+        let ctaHtml = ''
         if (access === 'enquire' || (access === 'full' && moment.access === 'private')) {
           ctaHtml = '<div class="wm-panel__enquiry">'
             + '<textarea class="wm-panel__enquiry-field" data-idx="' + idx + '"'
@@ -6759,17 +6759,17 @@
 
       // Wire enquiry submit buttons
       body.querySelectorAll('[id^="wm-enquiry-submit-"]').forEach(function(submitBtn) {
-        var momentId = submitBtn.dataset.momentId
-        var idx = parseInt(submitBtn.id.split('-').pop())
+        let momentId = submitBtn.dataset.momentId
+        let idx = parseInt(submitBtn.id.split('-').pop())
         submitBtn.addEventListener('click', function() {
-          var msgEl   = body.querySelectorAll('.wm-panel__enquiry-field')[idx]
-          var emailEl = body.querySelectorAll('.wm-panel__enquiry-email')[idx]
-          var msg   = msgEl ? msgEl.value.trim() : ''
-          var email = emailEl ? emailEl.value.trim() : ''
+          let msgEl   = body.querySelectorAll('.wm-panel__enquiry-field')[idx]
+          let emailEl = body.querySelectorAll('.wm-panel__enquiry-email')[idx]
+          let msg   = msgEl ? msgEl.value.trim() : ''
+          let email = emailEl ? emailEl.value.trim() : ''
           if (msg.length < 50) { submitBtn.textContent = 'Write a bit more first'; return }
           if (!email.includes('@')) { submitBtn.textContent = 'Add your email'; return }
-          var enq = safeLS('able_v3_profile', {})
-          var enquiries = enq.privateAccessEnquiries || []
+          let enq = safeLS('able_v3_profile', {})
+          let enquiries = enq.privateAccessEnquiries || []
           enquiries.push({ momentId: momentId, email: email, message: msg, submittedAt: new Date().toISOString(), status: 'pending' })
           enq.privateAccessEnquiries = enquiries
           setLS('able_v3_profile', enq)
@@ -6778,7 +6778,7 @@
         })
       })
 
-      var fanGateBtn = body.querySelector('.wm-fan-gate')
+      let fanGateBtn = body.querySelector('.wm-fan-gate')
       if (fanGateBtn) {
         fanGateBtn.addEventListener('click', function() {
           closeWorldMapPanel()
@@ -6797,13 +6797,13 @@
       })
 
       // P0.5: Focus trap
-      var _wmTrapFn = null
-      var _wmTriggerCell = document.activeElement
+      let _wmTrapFn = null
+      let _wmTriggerCell = document.activeElement
       function _wmTrap(e) {
         if (e.key !== 'Tab') return
-        var focusable = panel.querySelectorAll('a[href], button:not([disabled]), input, textarea, [tabindex]:not([tabindex="-1"])')
+        let focusable = panel.querySelectorAll('a[href], button:not([disabled]), input, textarea, [tabindex]:not([tabindex="-1"])')
         if (!focusable.length) return
-        var first = focusable[0], last = focusable[focusable.length - 1]
+        let first = focusable[0], last = focusable[focusable.length - 1]
         if (e.shiftKey) {
           if (document.activeElement === first) { e.preventDefault(); last.focus() }
         } else {
@@ -6825,8 +6825,8 @@
     }
 
     function closeWorldMapPanel() {
-      var panel = document.getElementById('wm-panel')
-      var backdrop = document.getElementById('wm-backdrop')
+      let panel = document.getElementById('wm-panel')
+      let backdrop = document.getElementById('wm-backdrop')
       if (!panel) return
       if (panel._wmCleanup) { panel._wmCleanup(); panel._wmCleanup = null }
       panel.classList.remove('open')
@@ -6840,11 +6840,11 @@
       }, 260)
     }
 
-    var wmYear  = new Date().getFullYear()
-    var wmMonth = new Date().getMonth()
-    var wmAllMoments = []
-    var wmFeaturedDate = null
-    var wmSelectedDate = null
+    let wmYear  = new Date().getFullYear()
+    let wmMonth = new Date().getMonth()
+    let wmAllMoments = []
+    let wmFeaturedDate = null
+    let wmSelectedDate = null
 
     function wmNavigate(delta) {
       wmMonth += delta
@@ -6852,9 +6852,9 @@
       if (wmMonth > 11) { wmMonth = 0;  wmYear++; }
       wmSelectedDate = null
       closeWorldMapPanel()
-      var grid = document.getElementById('wm-grid')
+      let grid = document.getElementById('wm-grid')
       if (grid) {
-        var cls = delta > 0 ? 'wm-slide-left' : 'wm-slide-right'
+        let cls = delta > 0 ? 'wm-slide-left' : 'wm-slide-right'
         grid.classList.remove('wm-slide-left', 'wm-slide-right')
         void grid.offsetWidth
         grid.classList.add(cls)
@@ -6866,13 +6866,13 @@
     // === CLOSE CIRCLE ============================================
 
     function initCloseCircle(profile) {
-      var cc = profile.closeCircle || {}
-      var isEnabled = !!cc.enabled
-      var isSupporter = !!(profile.supporterSince)
+      let cc = profile.closeCircle || {}
+      let isEnabled = !!cc.enabled
+      let isSupporter = !!(profile.supporterSince)
 
       // Hero entry point: show if CC enabled, hide if already supporter
-      var heroEntry = document.getElementById('cc-hero-entry')
-      var heroBtn   = document.getElementById('cc-hero-btn')
+      let heroEntry = document.getElementById('cc-hero-entry')
+      let heroBtn   = document.getElementById('cc-hero-btn')
       if (heroEntry) {
         if (isEnabled && !isSupporter) {
           heroEntry.hidden = false
@@ -6888,18 +6888,18 @@
       }
 
       // Populate join sheet
-      var sheet     = document.getElementById('cc-sheet')
-      var backdrop  = document.getElementById('cc-backdrop')
-      var nameEl    = document.getElementById('cc-artist-name')
-      var priceEl   = document.getElementById('cc-price')
-      var introEl   = document.getElementById('cc-intro')
-      var termsEl   = document.getElementById('cc-terms')
-      var emailEl   = document.getElementById('cc-email')
-      var submitEl  = document.getElementById('cc-submit')
+      let sheet     = document.getElementById('cc-sheet')
+      let backdrop  = document.getElementById('cc-backdrop')
+      let nameEl    = document.getElementById('cc-artist-name')
+      let priceEl   = document.getElementById('cc-price')
+      let introEl   = document.getElementById('cc-intro')
+      let termsEl   = document.getElementById('cc-terms')
+      let emailEl   = document.getElementById('cc-email')
+      let submitEl  = document.getElementById('cc-submit')
 
-      var amount    = cc.monthlyAmount || 5
-      var currency  = cc.currency || '£'
-      var intro     = cc.introText || ('Get closer to ' + escHtml(profile.name || 'the artist') + '\u2019s music. Early access, close circle sessions, and more.')
+      let amount    = cc.monthlyAmount || 5
+      let currency  = cc.currency || '£'
+      let intro     = cc.introText || ('Get closer to ' + escHtml(profile.name || 'the artist') + '\u2019s music. Early access, close circle sessions, and more.')
 
       if (nameEl)  nameEl.textContent  = profile.name || ''
       if (priceEl) priceEl.textContent = currency + amount + '/month'
@@ -6918,7 +6918,7 @@
         sheet.focus()
         if (emailEl) {
           // Pre-fill if already a fan
-          var fans = safeLS('able_fans', [])
+          let fans = safeLS('able_fans', [])
           if (fans.length > 0 && fans[fans.length - 1].email && !emailEl.value) {
             emailEl.value = fans[fans.length - 1].email
           }
@@ -6946,7 +6946,7 @@
 
       // Swipe down to close
       if (sheet) {
-        var startY = 0
+        let startY = 0
         sheet.addEventListener('touchstart', function(e) { startY = e.touches[0].clientY }, { passive: true })
         sheet.addEventListener('touchend', function(e) {
           if (e.changedTouches[0].clientY - startY > 60) closeSheet()
@@ -6970,7 +6970,7 @@
       // Submit
       if (submitEl && emailEl) {
         submitEl.addEventListener('click', function() {
-          var email = emailEl.value.trim()
+          let email = emailEl.value.trim()
           if (!email || !EMAIL_RX.test(email)) {
             emailEl.style.borderColor = 'var(--color-state-pre)'
             emailEl.focus()
@@ -6978,7 +6978,7 @@
           }
           emailEl.style.borderColor = ''
           // Mark as supporter (prototype — no real payment)
-          var p = safeLS('able_v3_profile', {})
+          let p = safeLS('able_v3_profile', {})
           p.supporterSince = Date.now()
           setLS('able_v3_profile', p)
           submitEl.textContent = 'Welcome to the close circle'
@@ -6999,21 +6999,21 @@
     }
 
     function initWorldMap(profile) {
-      var section = document.getElementById('world-map-section')
+      let section = document.getElementById('world-map-section')
       if (!section) return
 
       wmAllMoments = buildWorldMapMoments(profile)
 
-      var today = isoDate(new Date())
-      var in12mo = isoDate(new Date(Date.now() + 365 * 86400000))
-      var hasUpcoming = wmAllMoments.some(function(m) { return m.date >= today && m.date <= in12mo })
+      let today = isoDate(new Date())
+      let in12mo = isoDate(new Date(Date.now() + 365 * 86400000))
+      let hasUpcoming = wmAllMoments.some(function(m) { return m.date >= today && m.date <= in12mo })
       section.hidden = false
       if (!hasUpcoming) {
         renderWorldMapGrid(wmYear, wmMonth, [], null, null)
-        var footer = document.getElementById('wm-footer')
+        let footer = document.getElementById('wm-footer')
         if (footer) {
           footer.hidden = false
-          var isOwner = getIsOwner(profile)
+          let isOwner = getIsOwner(profile)
           footer.innerHTML = isOwner
             ? '<a class="wm-footer-link" href="admin.html">Add shows and moments to your world →</a>'
             : '<span style="font-size:var(--text-sm);color:var(--color-text-3);font-style:italic;">Nothing announced yet. Check back.</span>'
@@ -7021,47 +7021,47 @@
         return
       }
 
-      var now = new Date()
+      let now = new Date()
       wmYear  = now.getFullYear()
       wmMonth = now.getMonth()
 
-      var featured = selectFeaturedMoment(wmAllMoments)
+      let featured = selectFeaturedMoment(wmAllMoments)
       wmFeaturedDate = featured ? featured.date : null
 
-      var nearest = wmAllMoments.find(function(m) { return m.date >= today })
+      let nearest = wmAllMoments.find(function(m) { return m.date >= today })
       if (nearest) {
-        var d = new Date(nearest.date)
+        let d = new Date(nearest.date)
         wmYear = d.getFullYear()
         wmMonth = d.getMonth()
         wmSelectedDate = nearest.date
       }
 
-      var hasShows = wmAllMoments.some(function(m) { return m.type === 'show' || m.type === 'on_sale' })
-      var footer = document.getElementById('wm-footer')
+      let hasShows = wmAllMoments.some(function(m) { return m.type === 'show' || m.type === 'on_sale' })
+      let footer = document.getElementById('wm-footer')
       if (footer && hasShows) footer.hidden = false
 
       renderWorldMapGrid(wmYear, wmMonth, wmAllMoments, wmFeaturedDate, wmSelectedDate)
 
-      var prevBtn = document.getElementById('wm-prev')
-      var nextBtn = document.getElementById('wm-next')
+      let prevBtn = document.getElementById('wm-prev')
+      let nextBtn = document.getElementById('wm-next')
       if (prevBtn) prevBtn.addEventListener('click', function() { wmNavigate(-1) })
       if (nextBtn) nextBtn.addEventListener('click', function() { wmNavigate(1) })
 
-      var grid = document.getElementById('wm-grid')
+      let grid = document.getElementById('wm-grid')
       if (grid) {
-        var sx = 0, sy = 0
+        let sx = 0, sy = 0
         grid.addEventListener('touchstart', function(e) { sx = e.touches[0].clientX; sy = e.touches[0].clientY }, { passive: true })
         grid.addEventListener('touchend', function(e) {
-          var dx = sx - e.changedTouches[0].clientX
-          var dy = Math.abs(sy - e.changedTouches[0].clientY)
+          let dx = sx - e.changedTouches[0].clientX
+          let dy = Math.abs(sy - e.changedTouches[0].clientY)
           if (Math.abs(dx) > 40 && dy < 20) wmNavigate(dx > 0 ? 1 : -1)
         }, { passive: true })
       }
 
-      var backdrop = document.getElementById('wm-backdrop')
+      let backdrop = document.getElementById('wm-backdrop')
       if (backdrop) backdrop.addEventListener('click', closeWorldMapPanel)
 
-      var handle = document.getElementById('wm-panel-handle')
+      let handle = document.getElementById('wm-panel-handle')
       if (handle) {
         handle.addEventListener('click', closeWorldMapPanel)
         handle.addEventListener('keydown', function(e) {
@@ -7069,16 +7069,16 @@
         })
       }
 
-      var panel = document.getElementById('wm-panel')
+      let panel = document.getElementById('wm-panel')
       if (panel) {
-        var psy = 0
+        let psy = 0
         panel.addEventListener('touchstart', function(e) { psy = e.touches[0].clientY }, { passive: true })
         panel.addEventListener('touchend', function(e) {
           if (e.changedTouches[0].clientY - psy > 60) closeWorldMapPanel()
         }, { passive: true })
       }
 
-      var showsLink = document.getElementById('wm-shows-link')
+      let showsLink = document.getElementById('wm-shows-link')
       if (showsLink) {
         showsLink.addEventListener('click', function(e) {
           e.preventDefault()
@@ -8031,9 +8031,9 @@
 
       // Gig state: venue photo + enriched chip text
       if (state === 'gig' && !hasVideo) {
-        var gigEvent = (profile.events || []).find(function(e) {
-          var d = new Date(e.date).getTime()
-          var now = Date.now()
+        let gigEvent = (profile.events || []).find(function(e) {
+          let d = new Date(e.date).getTime()
+          let now = Date.now()
           return d > now - 86400000 && d < now + 86400000
         })
         // If no event within 24h, use first event as stand-in for demo/testing
@@ -8045,39 +8045,39 @@
           if (artEl) artEl.style.filter = 'brightness(0.72)'
         }
         // Will be used for chip text below
-        var gigChipEvent = gigEvent
+        let gigChipEvent = gigEvent
       }
 
       // State chip — check for State 4 (near-future world map moment)
       // Runs before applyStateChip so it can override 'profile' state with a near-future chip
-      var chipState = state
-      var chipCustomText = undefined
+      let chipState = state
+      let chipCustomText = undefined
       if (state === 'gig') {
         // Enrich gig chip with venue + set time
         if (typeof gigChipEvent !== 'undefined' && gigChipEvent) {
-          var timeStr = gigChipEvent.setTime || gigChipEvent.time || ''
-          var location = [gigChipEvent.venue, gigChipEvent.city].filter(Boolean).join(', ')
+          let timeStr = gigChipEvent.setTime || gigChipEvent.time || ''
+          let location = [gigChipEvent.venue, gigChipEvent.city].filter(Boolean).join(', ')
           chipCustomText = location
             ? (timeStr ? `On tonight \u2014 ${location} \u2014 ${timeStr}` : `On tonight \u2014 ${location}`)
             : (timeStr ? `On tonight \u2014 ${timeStr}` : 'On tonight')
         }
       } else if (state === 'profile') {
         // Build moments early enough to check for near-future moment
-        var moments4 = buildWorldMapMoments(profile)
-        var featured4 = selectFeaturedMoment(moments4)
+        let moments4 = buildWorldMapMoments(profile)
+        let featured4 = selectFeaturedMoment(moments4)
         if (featured4) {
           chipState = 'near-future'
           // Generate copy: "[Type action] [timing]"
-          var typeLabels4 = {
+          let typeLabels4 = {
             release: 'New music', show: 'Playing', on_sale: 'Tickets', merch_drop: 'Merch drop',
             early_access: 'Early access', livestream: 'Livestream', announcement: 'Announcement'
           }
-          var tLabel = typeLabels4[featured4.type] || 'Coming up'
-          var mDate = new Date(featured4.date + 'T00:00:00')
-          var today4 = new Date(); today4.setHours(0,0,0,0)
-          var diff4 = Math.round((mDate - today4) / 86400000)
-          var timing4 = diff4 === 0 ? 'tonight' : diff4 === 1 ? 'tomorrow' : (function() {
-            var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+          let tLabel = typeLabels4[featured4.type] || 'Coming up'
+          let mDate = new Date(featured4.date + 'T00:00:00')
+          let today4 = new Date(); today4.setHours(0,0,0,0)
+          let diff4 = Math.round((mDate - today4) / 86400000)
+          let timing4 = diff4 === 0 ? 'tonight' : diff4 === 1 ? 'tomorrow' : (function() {
+            let days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
             return diff4 <= 6 ? days[mDate.getDay()] : 'soon'
           })()
           chipCustomText = tLabel + ' ' + timing4
@@ -8270,7 +8270,7 @@
 
       // Send confirmation email (fire-and-forget)
       try {
-        var profile = safeLS('able_v3_profile', {})
+        let profile = safeLS('able_v3_profile', {})
         fetch('/.netlify/functions/fan-confirmation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -8289,12 +8289,12 @@
     // Write artist to able_fan_following + seed feed for fan.html
     function writeFanFollow() {
       try {
-        var p = getProfile()
+        let p = getProfile()
         if (!p || !p.name) return
-        var artistId = p.slug || p.handle || p.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,20)
+        let artistId = p.slug || p.handle || p.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,20)
 
         // Add to following list (dedupe by id)
-        var following = safeLS('able_fan_following', [])
+        let following = safeLS('able_fan_following', [])
         if (!following.some(function(a) { return a.id === artistId })) {
           following.push({
             id:     artistId,
@@ -8307,32 +8307,32 @@
         }
 
         // Seed feed items from current profile data
-        var feed = safeLS('able_fan_feed', [])
+        let feed = safeLS('able_fan_feed', [])
 
         // Release item
-        var releases = p.releases || []
+        let releases = p.releases || []
         if (releases.length && !feed.some(function(f) { return f.artistId === artistId && f.type === 'release' })) {
-          var rel = releases[0]
+          let rel = releases[0]
           feed.unshift({ type:'release', artistId:artistId, title:rel.title || 'New release', sub:rel.type || 'New single', age:Date.now()-2*3600000 })
         } else if (p.releaseName && !feed.some(function(f) { return f.artistId === artistId && f.type === 'release' })) {
           feed.unshift({ type:'release', artistId:artistId, title:p.releaseName, sub:'New single', age:Date.now()-2*3600000 })
         }
 
         // Show item
-        var shows = safeLS('able_shows', [])
+        let shows = safeLS('able_shows', [])
         if (shows.length && !feed.some(function(f) { return f.artistId === artistId && f.type === 'event' })) {
-          var nextShow = shows.slice().sort(function(a,b){ return (a.date||'') < (b.date||'') ? -1 : 1 })[0]
+          let nextShow = shows.slice().sort(function(a,b){ return (a.date||'') < (b.date||'') ? -1 : 1 })[0]
           if (nextShow) {
-            var sub = nextShow.date || ''
+            let sub = nextShow.date || ''
             if (nextShow.doorsTime) sub += ' · Doors ' + nextShow.doorsTime
             feed.unshift({ type:'event', artistId:artistId, title:nextShow.venue || 'Show', sub:sub, age:Date.now()-3600000 })
           }
         }
 
         // Snap card item (most recent)
-        var snaps = p.snapCards || []
+        let snaps = p.snapCards || []
         if (snaps.length && !feed.some(function(f) { return f.artistId === artistId && f.type === 'snap' })) {
-          var snap = snaps[0]
+          let snap = snaps[0]
           feed.unshift({ type:'snap', artistId:artistId, title:snap.title || 'Update', sub:snap.body ? snap.body.slice(0,60) : 'Drop from the artist', age:Date.now()-4*3600000 })
         }
 
@@ -8859,7 +8859,7 @@
           sbSyncFanSignup(email, signup2Source, campaignState2) // async fire-and-forget
           // Send confirmation email — same as form 1 (fire-and-forget)
           try {
-            var _p2conf = safeLS('able_v3_profile', {})
+            let _p2conf = safeLS('able_v3_profile', {})
             fetch('/.netlify/functions/fan-confirmation', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -9395,14 +9395,14 @@
 
     // --- Clips -------------------------------------------------
 
-    var _clipPlayerOpen = false
-    var _clipList = []
-    var _clipIdx = 0
-    var _clipSoundOn = false
-    var _clipPlayerEl = null
-    var _clipTouchStartY = 0
-    var _clipTouchStartX = 0
-    var _clipReturnFocusEl = null
+    let _clipPlayerOpen = false
+    let _clipList = []
+    let _clipIdx = 0
+    let _clipSoundOn = false
+    let _clipPlayerEl = null
+    let _clipTouchStartY = 0
+    let _clipTouchStartX = 0
+    let _clipReturnFocusEl = null
 
     function detectClipType(url) {
       if (!url) return 'video_url'
@@ -11453,7 +11453,7 @@
       }
 
       function showBsSaved() {
-        var el = document.getElementById('bsSaved');
+        let el = document.getElementById('bsSaved');
         if (el) { el.textContent = 'Saved \u2713'; setTimeout(function() { el.textContent = ''; }, 2000); }
       }
 
@@ -11473,7 +11473,7 @@
       if (EDIT_MODE) {
         document.addEventListener('click', function(e) {
           if (!document.documentElement.classList.contains('edit-active')) return;
-          var zone = e.target.closest('[data-editable]');
+          let zone = e.target.closest('[data-editable]');
           if (!zone) return;
           e.preventDefault();
           e.stopPropagation();
@@ -11482,10 +11482,10 @@
       }
 
       function openZoneSheet(zone) {
-        var profile = safeLS('able_v3_profile', {});
+        let profile = safeLS('able_v3_profile', {});
 
         function save(updates) {
-          var p = safeLS('able_v3_profile', {});
+          let p = safeLS('able_v3_profile', {});
           Object.assign(p, updates);
           setLS('able_v3_profile', p);
         }
@@ -11519,17 +11519,17 @@
             }
           );
         } else if (zone === 'hero-ctas') {
-          var cta0 = profile.ctaPrimary   || {};
-          var cta1 = profile.ctaSecondary || {};
+          let cta0 = profile.ctaPrimary   || {};
+          let cta1 = profile.ctaSecondary || {};
           openSheet('\uD83D\uDD17', 'Your CTAs',
             '<div class="bs-field"><label>Primary button — label</label><input id="bsf-cta0-label" value="' + esc(cta0.label || 'Stream Now') + '" placeholder="Stream Now"></div>' +
             '<div class="bs-field"><label>Primary button — link</label><input id="bsf-cta0-url" type="url" value="' + esc(cta0.url || '') + '" placeholder="https://open.spotify.com/…"></div>' +
             '<div class="bs-field" style="margin-top:16px"><label>Second button — label</label><input id="bsf-cta1-label" value="' + esc(cta1.label || '') + '" placeholder="Get Tickets (optional)"></div>' +
             '<div class="bs-field"><label>Second button — link</label><input id="bsf-cta1-url" type="url" value="' + esc(cta1.url || '') + '" placeholder="https://…"></div>',
             function() {
-              var l0 = document.getElementById('bsf-cta0-label'); var u0 = document.getElementById('bsf-cta0-url');
-              var l1 = document.getElementById('bsf-cta1-label'); var u1 = document.getElementById('bsf-cta1-url');
-              var updates = { ctaPrimary: { label: l0 ? l0.value : (cta0.label || ''), url: u0 ? u0.value : (cta0.url || '') } };
+              let l0 = document.getElementById('bsf-cta0-label'); var u0 = document.getElementById('bsf-cta0-url');
+              let l1 = document.getElementById('bsf-cta1-label'); var u1 = document.getElementById('bsf-cta1-url');
+              let updates = { ctaPrimary: { label: l0 ? l0.value : (cta0.label || ''), url: u0 ? u0.value : (cta0.url || '') } };
               if (l1 && l1.value.trim()) updates.ctaSecondary = { label: l1.value, url: u1 ? u1.value : '' };
               else updates.ctaSecondary = null;
               save(updates);
@@ -11537,17 +11537,17 @@
             }
           );
         } else if (zone === 'link-pills') {
-          var pls = profile.platforms || [];
-          var PLATS = ['Spotify','Apple Music','YouTube','SoundCloud','Bandcamp','Instagram','TikTok','Twitter'];
-          var fields = PLATS.map(function(name) {
-            var existing = pls.find(function(p) { return p.label === name || (p.id && name.toLowerCase().startsWith(p.id)); }) || {};
+          let pls = profile.platforms || [];
+          let PLATS = ['Spotify','Apple Music','YouTube','SoundCloud','Bandcamp','Instagram','TikTok','Twitter'];
+          let fields = PLATS.map(function(name) {
+            let existing = pls.find(function(p) { return p.label === name || (p.id && name.toLowerCase().startsWith(p.id)); }) || {};
             return '<div class="bs-field" style="margin-bottom:8px"><label style="font-size:11px">' + esc(name) + '</label><input class="bsf-platform" data-name="' + esc(name) + '" type="url" value="' + esc(existing.url || '') + '" placeholder="https://…"></div>';
           }).join('');
           openSheet('\uD83D\uDD17', 'Your links',
             fields,
             function() {
-              var inputs = document.querySelectorAll('#bsBody .bsf-platform');
-              var newPlatforms = [];
+              let inputs = document.querySelectorAll('#bsBody .bsf-platform');
+              let newPlatforms = [];
               inputs.forEach(function(inp) {
                 if (inp.value.trim()) newPlatforms.push({ label: inp.dataset.name, url: inp.value.trim() });
               });
@@ -11560,10 +11560,10 @@
             '<div class="bs-field"><label>Title</label><input id="bsf-snap-title" placeholder="New track dropping soon"></div>' +
             '<div class="bs-field"><label>Body</label><textarea id="bsf-snap-body" placeholder="A bit more detail\u2026" rows="3" style="width:100%;resize:vertical;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px;color:inherit;font-family:inherit;font-size:14px;"></textarea></div>',
             function() {
-              var t = document.getElementById('bsf-snap-title');
-              var b = document.getElementById('bsf-snap-body');
+              let t = document.getElementById('bsf-snap-title');
+              let b = document.getElementById('bsf-snap-body');
               if (!t || !t.value.trim()) return;
-              var snaps = safeLS('able_snap_cards', []);
+              let snaps = safeLS('able_snap_cards', []);
               snaps.unshift({ id: Date.now().toString(36), title: t.value.trim(), body: b ? b.value.trim() : '', ts: Date.now() });
               setLS('able_snap_cards', snaps);
               if (typeof renderHero === 'function') renderHero(safeLS('able_v3_profile', {}));
@@ -11582,10 +11582,10 @@
             '<div class="bs-field"><label>Doors time</label><input id="bsf-ev-time" type="time" placeholder="21:00"></div>' +
             '<div class="bs-field"><label>Ticket link</label><input id="bsf-ev-url" type="url" placeholder="https://…"></div>',
             function() {
-              var v = document.getElementById('bsf-ev-venue'); var d = document.getElementById('bsf-ev-date');
-              var t = document.getElementById('bsf-ev-time'); var u = document.getElementById('bsf-ev-url');
+              let v = document.getElementById('bsf-ev-venue'); var d = document.getElementById('bsf-ev-date');
+              let t = document.getElementById('bsf-ev-time'); var u = document.getElementById('bsf-ev-url');
               if (!v || !v.value.trim() || !d || !d.value) return;
-              var shows = safeLS('able_shows', []);
+              let shows = safeLS('able_shows', []);
               shows.push({ id: Date.now().toString(36), venue: v.value.trim(), date: d.value, doorsTime: t ? t.value : '', ticketUrl: u ? u.value : '', featured: false });
               setLS('able_shows', shows);
               if (typeof renderHero === 'function') renderHero(safeLS('able_v3_profile', {}));
