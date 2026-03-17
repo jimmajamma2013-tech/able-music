@@ -4365,19 +4365,23 @@ function renderCampaignNameBreakdown(fans) {
 }
 
 function buildCampaignContextLine(fan) {
+  let stateLine = '';
   if (!fan.campaignState || fan.campaignState === 'profile') {
-    return '<div style="font-size:11px;color:var(--dash-t3);margin-top:4px;">Signed up while your page was in default mode.</div>';
+    stateLine = 'Signed up while your page was in default mode.';
+  } else if (fan.campaignState === 'pre-release') {
+    stateLine = `Signed up during <strong style="color:var(--dash-t2);">pre-release</strong>${fan.releaseTitle ? ' — ' + escHtml(fan.releaseTitle) : ''}`;
+  } else if (fan.campaignState === 'live') {
+    stateLine = `Signed up on <strong style="color:var(--dash-t2);">release day</strong>${fan.releaseTitle ? ' — ' + escHtml(fan.releaseTitle) : ''}`;
+  } else if (fan.campaignState === 'gig') {
+    stateLine = 'Signed up on a <strong style="color:var(--dash-t2);">gig night</strong>';
   }
-  if (fan.campaignState === 'pre-release') {
-    return `<div style="font-size:11px;color:var(--dash-t3);margin-top:4px;">Signed up during <strong style="color:var(--dash-t2);">pre-release</strong>${fan.releaseTitle ? ' — ' + escHtml(fan.releaseTitle) : ''}</div>`;
-  }
-  if (fan.campaignState === 'live') {
-    return `<div style="font-size:11px;color:var(--dash-t3);margin-top:4px;">Signed up on <strong style="color:var(--dash-t2);">release day</strong>${fan.releaseTitle ? ' — ' + escHtml(fan.releaseTitle) : ''}</div>`;
-  }
-  if (fan.campaignState === 'gig') {
-    return `<div style="font-size:11px;color:var(--dash-t3);margin-top:4px;">Signed up on a <strong style="color:var(--dash-t2);">gig night</strong></div>`;
-  }
-  return '';
+  // C14 #43 — show campaign name slug if present
+  const campaignLine = fan.campaignName
+    ? `<div style="font-size:11px;color:var(--dash-t3);margin-top:2px;">Campaign: <strong style="color:var(--dash-t2);">${escHtml(fan.campaignName)}</strong></div>`
+    : '';
+  return stateLine
+    ? `<div style="font-size:11px;color:var(--dash-t3);margin-top:4px;">${stateLine}</div>${campaignLine}`
+    : campaignLine;
 }
 
 function openFanDetailSheet(fan) {
@@ -4394,7 +4398,7 @@ function openFanDetailSheet(fan) {
     <div class="fan-detail-header" style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
       <div class="fan-avatar" style="background:#4e7cff;width:44px;height:44px;font-size:18px;">${escHtml((fan.email||'?')[0].toUpperCase())}</div>
       <div>
-        <div style="font-size:14px;font-weight:600;color:var(--dash-text);">${escHtml(fan.email)}</div>
+        <div style="font-size:14px;font-weight:600;color:var(--dash-text);">${escHtml((fan.email||'').split('@')[0])}</div><!-- C14 #23 -->
         <div style="font-size:11px;color:var(--dash-t3);margin-top:2px;">Joined ${new Date(fan.ts).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})} · via ${src.toUpperCase()}</div>
         ${campaignCtx}
       </div>
@@ -4416,7 +4420,7 @@ function openFanDetailSheet(fan) {
       <button style="width:100%;padding:10px 14px;border-radius:var(--r-md);background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:var(--red);font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;" id="removeFanBtn" data-email="${escHtml(fan.email)}">Remove from list</button>
     </div>`;
 
-  openAdminSheet('👤', fan.email, body);
+  openAdminSheet('👤', (fan.email||'').split('@')[0], body);// C14 #23
 
   // C3 #28 / C10 #21 — two-step fan delete with 5s undo
   document.getElementById('removeFanBtn')?.addEventListener('click', function() {
@@ -4556,6 +4560,7 @@ function exportFans() {
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = 'able-fans.csv';
   a.click();
+  showToast('Fan list downloaded.', 'green');// C14 #33
 }
 
 // C3 #30 — JSON export for artists importing into other tools

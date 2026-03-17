@@ -11442,9 +11442,7 @@
           shareBtn.addEventListener('click', () => {
             const url = window.location.href.split('?')[0]
             navigator.clipboard.writeText(url).then(() => {
-              const orig = shareBtn.textContent
-              shareBtn.textContent = 'Copied ✓'
-              setTimeout(() => { shareBtn.textContent = orig }, 2000)
+              showToast('Link copied — share it everywhere.', 'green')// C14 #31
             }).catch(() => {
               prompt('Copy your profile link:', url)
             })
