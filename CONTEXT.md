@@ -251,22 +251,26 @@ Override via `profile.stateOverride`. Gig mode: manual, 24hr, stored in `able_gi
 
 ---
 
-## Active build backlog (12 highest-leverage gaps)
+## Active build backlog (open gaps — in priority order)
 
-These are in priority order. Fix in sequence.
+Items confirmed done per STATUS.md are removed. Fix remaining in sequence.
 
-1. **Fan confirmation email → `?artist=slug&ref=email-confirm`** — 2 lines in Netlify function. Unlocks entire fan activation flow.
-2. **GDPR consent text on fan capture** — visible disclosure required before submit (Article 7)
-3. **First-fan moment in admin.html** — detect 0→1 fans, show: "Your first fan signed up. [email]. That email is yours."
-4. **`og:image` https:// check** — data: URI OG images produce no social share card
-5. **Copy audit** — grep for banned phrases across all 4 active pages (30 min)
-6. **Admin campaign mode descriptions** — one plain sentence per mode under the arc
-7. **Near me location capture** — currently hardcoded to London (trust leak)
-8. **Resend domain verification** — manual task at resend.com/domains — blocks all email
-9. **Credits pre-work in admin.html** — release model + form field for confirmed/unconfirmed
-10. **Verify PWA icons on real devices** — Playwright screenshot is not enough
-11. **Profile completeness signal in admin** — show what's missing to new artists
-12. **Remove any remaining emoji from admin.html** — find + replace
+1. **Fan confirmation email → `?artist=slug&ref=email-confirm`** — add URL param in fan-confirmation.js. Unlocks fan activation flow. (Note: RESEND_API_KEY env var is a separate manual task for James at resend.com/domains)
+2. **GDPR consent text on fan capture** — visible disclosure required before submit (Article 7). `consent_ts` field added but front-end disclosure text may still be absent.
+3. **Near me location capture** — currently hardcoded to London in fan.html. Trust leak.
+4. **Verify PWA icons on real devices** — Playwright screenshot is not enough. Broken home screen icons destroy premium feel.
+5. **Profile completeness signal in admin** — show new artists what's missing (name, artwork, first CTA).
+6. **Remove any remaining emoji from admin.html** — find + replace across file.
+7. **og-default.jpg** — must exist at `https://ablemusic.netlify.app/og-default.jpg`. Create in Figma + deploy. (James's task — needs Figma access)
+
+**Already done (do not re-fix):**
+- `--dash-t3` #888888 → #767676 WCAG fix ✅ session 11
+- Hardcoded `#888` instances → `var(--dash-t3)` ✅ session 11
+- First-fan moment in admin.html ✅ session 11
+- og:image data: URI fix ✅ session 13
+- Copy banned phrase audit ✅ sessions 4 + 13
+- Campaign mode descriptions (`MODE_DESCS` object) ✅ session 11
+- Credits handle field in admin ✅ session 11
 
 ---
 

@@ -50,9 +50,9 @@ The relationship between artist and fan belongs to them. Not to a platform. Ever
 
 | File | Role | State |
 |---|---|---|
-| `able-v6.html` | Artist public profile — the fan-facing page | **Checkpoint 13 complete** |
-| `able-v3.html` | Earlier working version — kept as reference | Semi-active |
-| `able-v7.html` | Recent iteration (modified on current branch) | Check git log |
+| `able-v7.html` | Artist public profile — the fan-facing page | **ACTIVE — V8 build** |
+| `able-v6.html` | Superseded by v7 — do not edit | Legacy reference only |
+| `able-v3.html` | Superseded by v7 — do not edit | Legacy reference only |
 | `admin.html` | Artist dashboard | Active |
 | `start.html` | Onboarding wizard | Active |
 | `landing.html` | Marketing landing page | Active |
