@@ -4126,7 +4126,7 @@ function renderFanList(filter) {
     const matchFilter = _activeFanFilter === 'all'
       || src === _activeFanFilter
       || (_activeFanFilter === 'starred' && (f.isStarred || legacyStarredForFilter.includes(f.email)));
-    const matchSearch = !search || (f.email || '').toLowerCase().includes(search) || (f.campaignName || '').toLowerCase().includes(search); // C4 #7
+    const matchSearch = !search || (f.email || '').toLowerCase().includes(search) || (f.campaignName || '').toLowerCase().includes(search) || (f.note || '').toLowerCase().includes(search); // C4 #7, C15 #31
     return matchFilter && matchSearch && f.confirmed !== false;
   });
 

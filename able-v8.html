@@ -6704,7 +6704,7 @@
 
     const WM_TYPE_COLOR = {
       release:        'var(--color-accent)',
-      show:           '#e8715a',
+      show:           'var(--color-accent)',// C15 #17 — use artist accent for shows
       on_sale:        '#f4b942',
       merch_drop:     '#2db8b0',
       early_access:   '#d4a84b',
@@ -7210,14 +7210,20 @@
       let today = isoDate(new Date())
       let in12mo = isoDate(new Date(Date.now() + 365 * 86400000))
       let hasUpcoming = wmAllMoments.some(function(m) { return m.date >= today && m.date <= in12mo })
+      // C15 #14 — hide section entirely for fans when no content in profile/live states
+      let _wState = computeState(profile)
+      let _isOwner = getIsOwner(profile)
+      if (!hasUpcoming && !_isOwner && (_wState === 'profile' || _wState === 'live')) {
+        section.hidden = true
+        return
+      }
       section.hidden = false
       if (!hasUpcoming) {
         renderWorldMapGrid(wmYear, wmMonth, [], null, null)
         let footer = document.getElementById('wm-footer')
         if (footer) {
           footer.hidden = false
-          let isOwner = getIsOwner(profile)
-          footer.innerHTML = isOwner
+          footer.innerHTML = _isOwner
             ? '<a class="wm-footer-link" href="admin.html">Add shows and moments to your world →</a>'
             : '<span style="font-size:var(--text-sm);color:var(--color-text-3);font-style:italic;">Nothing announced yet. Check back.</span>'
         }
@@ -8073,6 +8079,12 @@
         const profile = getProfile()
         showInitialsFallback(profile.name)
       }
+      // C15 #1 — srcset for responsive images (Unsplash supports ?w= params)
+      if (src && src.includes('images.unsplash.com')) {
+        const base = src.split('?')[0]
+        img.srcset = `${base}?w=390&q=75&fm=webp&auto=format 390w, ${base}?w=768&q=75&fm=webp&auto=format 768w, ${base}?w=1200&q=80&fm=webp&auto=format 1200w`
+        img.sizes = '100vw'
+      }
       img.src = src
     }
 
@@ -8287,9 +8299,9 @@
           let mDate = new Date(featured4.date + 'T00:00:00')
           let today4 = new Date(); today4.setHours(0,0,0,0)
           let diff4 = Math.round((mDate - today4) / 86400000)
-          let timing4 = diff4 === 0 ? 'tonight' : diff4 === 1 ? 'tomorrow' : (function() {
+          let timing4 = diff4 === 0 ? 'Tonight' : diff4 === 1 ? 'Tomorrow' : (function() {// C15 #15
             let days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
-            return diff4 <= 6 ? days[mDate.getDay()] : 'soon'
+            return diff4 <= 6 ? days[mDate.getDay()] : `in ${diff4} days`
           })()
           chipCustomText = tLabel + ' ' + timing4
         }
@@ -9037,6 +9049,11 @@
           // --- END CAMPAIGN CONTEXT ---
           try {
             const fans = (() => { const f = safeLS('able_fans', []); return Array.isArray(f) ? f : []; })()
+            // C15 #32 — dedup by email (normalised lowercase) to prevent double-entries
+            const _emailLower = email.toLowerCase()
+            if (fans.some(f => (f.email||'').toLowerCase() === _emailLower && !f.deleted_at)) {
+              // Already on list — skip push, still show success to user (idempotent UX)
+            } else {
             fans.push({
               id: crypto.randomUUID(),
               email,
@@ -9070,6 +9087,7 @@
               deviceType: window.innerWidth < 768 ? 'mobile' : 'desktop', // C8 #4
             })
             setLS('able_fans', fans)
+            } // end dedup else — C15 #32
             sessionStorage.setItem('able_this_fan_email', email)
             try { sessionStorage.setItem('able_last_signup_' + email.toLowerCase().trim(), String(Date.now())) } catch(_) {} // C4 #51
           } catch (_) {}
@@ -12294,12 +12312,17 @@
               const banner = document.createElement('div');
               banner.id = 'pwaInstallBanner';
               banner.style.cssText = 'position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 80px);left:50%;transform:translateX(-50%);background:rgba(18,21,42,0.96);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:10px 16px;display:flex;align-items:center;gap:12px;font-size:13px;font-family:DM Sans,sans-serif;color:#fff;z-index:500;max-width:320px;backdrop-filter:blur(12px);';
-              banner.innerHTML = '<span style="flex:1">Add to home screen →</span><button style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:18px;padding:0;" aria-label="Dismiss" onclick="localStorage.setItem(\'able_pwa_dismissed\',\'1\');this.closest(\'#pwaInstallBanner\').remove()">×</button>';
+              // C15 #42 — install prompt copy
+              banner.innerHTML = '<span style="flex:1">Add to home screen \u2014 opens like an app.</span><button style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:18px;padding:0;" aria-label="Dismiss" onclick="localStorage.setItem(\'able_pwa_dismissed\',\'1\');this.closest(\'#pwaInstallBanner\').remove()">×</button>';
               banner.querySelector('span').addEventListener('click', () => {
                 if (_deferredPrompt) {
                   _deferredPrompt.prompt();
                   _deferredPrompt.userChoice.then(r => {
-                    if (r.outcome === 'accepted') localStorage.setItem('able_pwa_installed', '1');
+                    if (r.outcome === 'accepted') {
+                      localStorage.setItem('able_pwa_installed', '1');
+                      // C15 #49 — track install
+                      try { const _c = JSON.parse(localStorage.getItem('able_clicks')||'[]'); _c.push({label:'pwa-install',type:'pwa',ts:Date.now()}); localStorage.setItem('able_clicks',JSON.stringify(_c)); } catch(_) {}
+                    }
                     banner.remove();
                     _deferredPrompt = null;
                   });
