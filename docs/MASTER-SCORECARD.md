@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–17 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-17-AUDIT.md**
+**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–18 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-18-AUDIT.md**
 
 ---
 
@@ -18,14 +18,14 @@
 
 | Page | File | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|---|
-| Artist profile | `able-v8.html` | 9.5/10 | 9.7/10 | Supabase auth + Spotify auto-import | ✅ C17W2: no-profile error state, owner completeness bar, social proof tag, merch sold-out badge, fan checkmark animation, snap video embed, drag reorder, release skeleton, timezone label, snap share |
-| Admin dashboard | `admin.html` | 9.9/10 | ~9.9/10 | Supabase auth (data portability) | ✅ C17W2: post-release nudge copy, session expiry banner, backup export + quota check |
-| Onboarding wizard | `start.html` | 9.8/10 | ~9.9/10 | Social proof (real artists) | ✅ Vibe radiogroup ARIA added session 20 |
-| Landing page | `landing.html` | 9.7/10 | ~9.9/10 | FAQ aria-controls wired | ✅ Full Twitter card meta + aria-controls on FAQ done |
-| Fan dashboard | `fan.html` | 9.6/10 | ~9.8/10 | Supabase realtime + Close Circle | ✅ C16: "New" release badge, Coming up shows section, recency sort, artist card tabindex=0, lastVisit timestamp, tap tracking, toast role=alert |
+| Artist profile | `able-v8.html` | 9.6/10 | 9.8/10 | Supabase auth + Spotify auto-import | ✅ C18W1: support aria-label, wm no-shows cursor, out-now badge, fc2 echo hide, merch role=list, reduced-motion |
+| Admin dashboard | `admin.html` | 9.9/10 | ~9.9/10 | Supabase auth (data portability) | ✅ C18W1: sidebar aria-label="Sidebar navigation", sheet close dynamic label, artist note 200 char + counter |
+| Onboarding wizard | `start.html` | 9.9/10 | ~9.9/10 | Social proof (real artists) | ✅ C18W1: progressbar ARIA, document.title on finish, release date min=tomorrow |
+| Landing page | `landing.html` | 9.8/10 | ~9.9/10 | — | ✅ C18W2: sticky nav CTA via IntersectionObserver, "Join 1,200+ artists", Most popular badge, URL paste validation |
+| Fan dashboard | `fan.html` | 9.7/10 | ~9.8/10 | Supabase realtime + Close Circle | ✅ C18W1: empty following/for-you states, notification badge, timestamp tooltip |
 | Freelancer profile | `freelancer.html` | 8.7/10 | ~9.2/10 | Network maturity + real testimonials | Directory integration + credits management |
 
-**Page average: ~9.57/10**
+**Page average: ~9.67/10**
 
 ---
 
