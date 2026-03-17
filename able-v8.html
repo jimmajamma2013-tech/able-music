@@ -5330,6 +5330,7 @@
   <!-- Deferred to after DOMContentLoaded to avoid blocking LCP -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      try { // #70: CSP block or network failure must not prevent DOMContentLoaded completing
       !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
       posthog.init('phc_dyzmnJIRrL8CKVverRnJgngpEOvPgQdMM1AmZbfNdJH', {
         api_host: 'https://eu.i.posthog.com',
@@ -5346,6 +5347,7 @@
           })(),
         },
       });
+      } catch(_) {} // #70: swallow CSP/network errors — analytics must not block page init
     });
   </script>
 </head>
@@ -8533,11 +8535,16 @@
       // PostHog cta_tap — sendBeacon transport survives same-tab navigation on iOS Safari (#18)
       try {
         if (typeof posthog !== 'undefined') {
+          // Derive zone for CTA audit (#69)
+          const _zone = (type === 'primary_cta' || type === 'secondary_cta') ? 'hero'
+                      : (type === 'pill') ? 'pills'
+                      : 'section'
           posthog.capture('cta_tap', {
             session_id: _sid,
             source:     _src,
             label:      label,
             type:       type,
+            zone:       _zone,
             url:        url || null,
           }, { transport: 'sendBeacon' })
         }
@@ -8590,16 +8597,21 @@
         } catch (_) {}
         sbSyncView(source) // async fire-and-forget
       }
-      // PostHog page_view — fired always (artist flag lets us filter in PostHog)
+      // PostHog page_view — skip for owner visits (#71)
       try {
-        if (typeof posthog !== 'undefined') {
+        if (typeof posthog !== 'undefined' && !_isArtist) {
+          const _shell = document.getElementById('app-shell')
+          const _ph_profile = safeLS('able_v3_profile', {})
           posthog.capture('page_view', {
+            page:        'artist_profile',
             session_id:  sessionId,
             source:      source,
             referrer:    document.referrer || null,
             is_artist:   _isArtist,
-            artist_slug: (function() { try { return safeLS('able_v3_profile', {}).slug || null; } catch(_) { return null; } })(),
-          })
+            artist_slug: _ph_profile.slug || null,
+            theme:       (_shell && _shell.dataset.theme) || _ph_profile.theme || 'dark',
+            state:       computeState(_ph_profile),
+          }, { transport: 'sendBeacon' })
         }
       } catch (_) {}
     }
@@ -8913,14 +8925,18 @@
           // Write artist to fan.html following list (enables real data in fan dashboard)
           writeFanFollow()
 
-          // PostHog fan_signup
+          // PostHog fan_signup — must include source, campaign_state, tier (#68)
           try {
             if (typeof posthog !== 'undefined') {
               posthog.capture('fan_signup', {
-                session_id:  getSessionId(),
-                source:      signupSource,
-                artist_slug: (function() { try { return safeLS('able_v3_profile', {}).slug || null; } catch(_) { return null; } })(),
-              })
+                session_id:      getSessionId(),
+                source:          signupSource,
+                campaign_state:  campaignState,
+                tier:            _cp.tier || 'free',
+                artist_slug:     _cp.slug || null,
+                utm_medium:      _utmMedium,
+                utm_campaign:    _utmCampaign,
+              }, { transport: 'sendBeacon' })
             }
           } catch (_) {}
 

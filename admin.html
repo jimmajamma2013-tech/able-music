@@ -4665,9 +4665,9 @@ function evaluateNudge() {
       return null;
     },
     () => {
-      // P0.2 artist-success: day-0 bio nudge (highest priority on first visit)
+      // P0.2 artist-success: day-0 bio nudge (highest priority on first visit) — #64: only fires on first ever visit
       const visits = safeLS('admin_visit_dates', []);
-      if (visits.length <= 1 && !dismissed.includes('bio-nudge')) {
+      if (visits.length === 1 && !dismissed.includes('bio-nudge')) {
         const profile = safeLS('able_v3_profile', {});
         const name = profile.name || 'artist';
         const handle = (name.toLowerCase().replace(/[^a-z0-9]+/g, '-')) || 'you';
@@ -5697,6 +5697,17 @@ function renderSnapCardsList() {
   const cards = (data.snapCards || []).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0))
   if (empty) empty.style.display = cards.length ? 'none' : 'block'
   if (addBtn) addBtn.style.display = cards.length >= 12 ? 'none' : ''
+  // #62: disable add buttons when free tier has reached 1-card limit
+  const _freeLocked = cards.length >= 1 && !checkTierGate('snap-cards')
+  const _dcAction = document.querySelector('#page-snaps .dc-action')
+  if (_dcAction) {
+    _dcAction.disabled = _freeLocked
+    _dcAction.title = _freeLocked ? 'Upgrade to Artist plan for unlimited cards' : ''
+  }
+  if (addBtn) {
+    addBtn.disabled = _freeLocked
+    addBtn.title = _freeLocked ? 'Upgrade to Artist plan for unlimited cards' : ''
+  }
 
   list.innerHTML = cards.map((card, i) => {
     const isPublished = card.published !== false
@@ -7402,14 +7413,15 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('adminCtaSecLabel')     && ctaS.label) document.getElementById('adminCtaSecLabel').value     = ctaS.label;
   if (document.getElementById('adminCtaSecUrl')       && ctaS.url)   document.getElementById('adminCtaSecUrl').value       = ctaS.url;
 
-  // Lifecycle stage — new / gig / active — controls section prominence
+  // Lifecycle stage — gig / new / active — controls section prominence (#65)
   (function applyLifecycleStage() {
     const now = Date.now();
     const gigExpires = parseInt(localStorage.getItem('able_gig_expires') || '0');
-    const everVisited = !!localStorage.getItem('admin_ever_visited');
+    const frcDismissed = safeLS('able_dismissed_nudges', []).includes('first-run-checklist')
+                      || localStorage.getItem('able_frc_dismissed') === '1';
     let stage = 'active';
-    if (!everVisited) stage = 'new';
-    else if (gigExpires > now) stage = 'gig';
+    if (gigExpires > now) stage = 'gig';
+    else if (!frcDismissed) stage = 'new';
     const homeEl = document.getElementById('page-home');
     if (homeEl) homeEl.dataset.stage = stage;
   })();
