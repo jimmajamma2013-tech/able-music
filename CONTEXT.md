@@ -24,7 +24,7 @@ Codebase map: `PROJECT_INDEX.md` (section IDs, JS functions, localStorage schema
 
 | File | What it is |
 |---|---|
-| `able-v7.html` | Artist public profile — the fan-facing page |
+| `able-v8.html` | Artist public profile — the fan-facing page |
 | `admin.html` | Artist dashboard — where artists manage everything |
 | `start.html` | Onboarding wizard — new artist setup |
 | `landing.html` | Marketing landing page — ablemusic.co homepage |
@@ -41,7 +41,7 @@ Codebase map: `PROJECT_INDEX.md` (section IDs, JS functions, localStorage schema
 | `design-references/*` | Static research archive |
 | `mockups/*` | Static mockups |
 | `screenshots/*` | Playwright audit output — ephemeral, never reference in code |
-| `able-v3.html` / `able-v6.html` | Superseded — leave at root, never edit |
+| `able-v3.html` / `able-v6.html` / `able-v7.html` | Superseded — now in `_archive/`, never edit |
 
 ---
 
@@ -61,7 +61,7 @@ Supersede all v6 surface docs for build decisions. When V8 is silent, fall back 
 **Page build specs:**
 | Page | Build spec | Score |
 |---|---|---|
-| `able-v7.html` | `docs/pages/profile/DESIGN-SPEC.md` | 9.7/10 |
+| `able-v8.html` | `docs/pages/profile/DESIGN-SPEC.md` | 9.7/10 |
 | `admin.html` | `docs/pages/admin/DESIGN-SPEC.md` | 9.7/10 |
 | `start.html` | `docs/pages/onboarding/DESIGN-SPEC.md` | 9.9/10 |
 | `landing.html` | `docs/pages/landing/DESIGN-SPEC.md` | 9.65/10 |
@@ -180,7 +180,7 @@ Always show as suggestion, never auto-apply. 3 variants when possible.
 
 ## Design tokens (commit these to memory)
 
-### able-v7.html (artist profile)
+### able-v8.html (artist profile)
 ```css
 --color-bg:     #0d0e1a   /* Midnight Navy */
 --color-card:   #12152a
@@ -335,7 +335,7 @@ Market: 500k artists actively managing a fanbase globally. UK TAM alone: £945k�
 | `micro-interactions` | Any animation work — ABLE easing curves |
 | `mobile-design-philosophy` | Verify 44px targets, 375px layout, tap feedback |
 | `aria-implementation` | WCAG 2.2 AA — run before shipping any page |
-| `screenshot` | iPhone-width screenshots of able-v7.html and admin.html |
+| `screenshot` | iPhone-width screenshots of able-v8.html and admin.html |
 | `sync-tokens` | Audit CSS properties against design system spec |
 | `design-review` | 10-point quality check — run after UI changes |
 | `check-themes` | Cycle all 4 themes with screenshots |
@@ -441,7 +441,7 @@ From `docs/GROWTH_STRATEGY.md`. Producer seeding is the engine.
 
 From `docs/BUILD-READY-INDEX.md`. These remain open:
 
-1. `able-v7.html` — `<meta name="description">` has no `id` → add `id="meta-description"`
+1. `able-v8.html` — `<meta name="description">` has no `id` → add `id="meta-description"`
 2. `admin.html` — `able_profile` / `able_v3_profile` key conflict → `migrateWizardKey()` in `initAdmin()` DOMContentLoaded
 3. All files — focus ring uses flat outline → `box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--acc)`
 

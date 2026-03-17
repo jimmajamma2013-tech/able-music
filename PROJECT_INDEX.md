@@ -1,13 +1,13 @@
 # ABLE — Project Index
-**Machine-readable codebase map. Updated: 2026-03-16.**
+**Machine-readable codebase map. Updated: 2026-03-17.**
 *Keep under 300 lines. Use tables. Accuracy over completeness.*
 
 ---
 
 ## Active HTML files
 
-### `able-v7.html` — Artist public profile (fan-facing)
-**Lines:** 11,404 | **Status:** Active | **Spec:** `docs/pages/profile/DESIGN-SPEC.md`
+### `able-v8.html` — Artist public profile (fan-facing)
+**Lines:** 11,616 | **Status:** Active | **Spec:** `docs/pages/profile/DESIGN-SPEC.md`
 
 | Section | ID | Notes |
 |---|---|---|
@@ -35,7 +35,7 @@
 | Edit panel | `#edit-panel` | Owner-only side drawer |
 | App shell | `#app-shell` | `data-theme`, `data-vibe`, `data-feel` attrs |
 
-**Key JS functions** (all inside main `<script>` block, ~L5799+):
+**Key JS functions** (all inside main `<script>` block, ~L6000+):
 
 | Function | Purpose |
 |---|---|
@@ -129,13 +129,13 @@ Steps: Pre-0 (Spotify/Linktree import) → 1 (Name + vibe) → 2 (Moment/CTA) �
 
 Sections: Hero · Interactive proof demo · Feature grid · Pricing · FAQ · Footer
 
-**No localStorage access.** Links to `start.html`, `able-v7.html`.
+**No localStorage access.** Links to `start.html`, `able-v8.html`.
 
 ---
 
 ## Design system tokens
 
-### able-v7.html (artist profile)
+### able-v8.html (artist profile)
 
 | Token | Value | Notes |
 |---|---|---|
@@ -189,9 +189,9 @@ Sections: Hero · Interactive proof demo · Feature grid · Pricing · FAQ · Fo
 | From | To | Via | Data |
 |---|---|---|---|
 | `start.html` | `admin.html` | `able_v3_profile` | Full profile on wizard complete |
-| `admin.html` | `able-v7.html` | `able_v3_profile` + `able_shows` etc. | All profile + content |
-| `able-v7.html` | `admin.html` | `able_fans` · `able_clicks` · `able_views` | Fan sign-ups, CTA taps, views |
-| `able-v7.html` | `fan.html` | `fan_following` (seeded by `writeFanFollow()`) | Fan follows artist on sign-up |
+| `admin.html` | `able-v8.html` | `able_v3_profile` + `able_shows` etc. | All profile + content |
+| `able-v8.html` | `admin.html` | `able_fans` · `able_clicks` · `able_views` | Fan sign-ups, CTA taps, views |
+| `able-v8.html` | `fan.html` | `fan_following` (seeded by `writeFanFollow()`) | Fan follows artist on sign-up |
 | `netlify/functions/` | `admin.html` / `start.html` | HTTP fetch | Spotify import, fan email, AI copy |
 
 ---
