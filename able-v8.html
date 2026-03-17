@@ -8433,12 +8433,15 @@
         }, { onConflict: 'profile_id,email', ignoreDuplicates: true })
       } catch (_) {}
 
-      // Send confirmation email (fire-and-forget)
+      // Send confirmation email — C4 #46: AbortController 8s timeout
       try {
         let profile = safeLS('able_v3_profile', {})
+        const _ctrl = new AbortController()
+        const _timer = setTimeout(() => _ctrl.abort(), 8000)
         fetch('/.netlify/functions/fan-confirmation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          signal: _ctrl.signal,
           body: JSON.stringify({
             fanEmail:      email,
             artistName:    profile.name    || '',
@@ -8447,7 +8450,13 @@
             accentHex:     profile.accent  || '#f4b942',
             releaseTitle:  profile.release?.title || profile.releaseName || profile.releaseTitle || '',
           }),
-        }).catch(function() {}) // never throw
+        }).then(function(r) {
+          clearTimeout(_timer)
+          if (r.status === 404) console.warn('[ABLE] fan-confirmation function not deployed — email skipped')
+        }).catch(function(err) {
+          clearTimeout(_timer)
+          if (err && err.name === 'AbortError') console.warn('[ABLE] fan-confirmation timed out after 8s')
+        }) // never throw
       } catch(_) {}
     }
 
@@ -8544,6 +8553,7 @@
       try {
         let clicks = safeLS('able_clicks', [])
         clicks = rotateEvents('able_clicks', clicks, 180) // 180-day retention
+        if (clicks.length > 500) clicks = clicks.slice(-400) // C4 #54 — count cap 500, prune to 400
         clicks.push({
           id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2),
           label,
@@ -8616,6 +8626,7 @@
         try {
           let views = safeLS('able_views', [])
           views = rotateEvents('able_views', views, 90) // 90-day retention
+          if (views.length > 500) views = views.slice(-400) // C4 #53 — count cap 500, prune to 400
           // Session dedup — one view per tab session
           if (!views.some(v => v.sessionId === sessionId)) {
             views.push({ ts: Date.now(), source, sessionId })
@@ -8859,6 +8870,10 @@
             }
           }
 
+          // C4 #51 — rate-limit: same email cannot be submitted within 60s
+          const _spamKey = 'able_last_signup_' + (email || '').toLowerCase().trim()
+          try { const _last = parseInt(sessionStorage.getItem(_spamKey) || '0'); if (_last && Date.now() - _last < 60000) { if (errorEl) { errorEl.textContent = "You're already on the list."; errorEl.hidden = false; } return; } } catch(_) {}
+
           // Validate
           const _validationMsg = !email.trim()
             ? "Drop your email here and I'll keep you close."
@@ -8959,6 +8974,7 @@
             })
             setLS('able_fans', fans)
             sessionStorage.setItem('able_this_fan_email', email)
+            try { sessionStorage.setItem('able_last_signup_' + email.toLowerCase().trim(), String(Date.now())) } catch(_) {} // C4 #51
           } catch (_) {}
 
           // Write artist to fan.html following list (enables real data in fan dashboard)
@@ -9147,12 +9163,15 @@
           } catch (_) {}
           writeFanFollow() // seed fan.html following + feed
           sbSyncFanSignup(email, signup2Source, campaignState2) // async fire-and-forget
-          // Send confirmation email — same as form 1 (fire-and-forget)
+          // Send confirmation email — C4 #46: AbortController 8s timeout
           try {
             let _p2conf = safeLS('able_v3_profile', {})
+            const _ctrl2 = new AbortController()
+            const _timer2 = setTimeout(() => _ctrl2.abort(), 8000)
             fetch('/.netlify/functions/fan-confirmation', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
+              signal: _ctrl2.signal,
               body: JSON.stringify({
                 fanEmail:      email,
                 artistName:    _p2conf.name    || '',
@@ -9161,7 +9180,13 @@
                 accentHex:     _p2conf.accent  || '#f4b942',
                 releaseTitle:  _p2conf.release?.title || _p2conf.releaseName || '',
               }),
-            }).catch(function() {})
+            }).then(function(r) {
+              clearTimeout(_timer2)
+              if (r.status === 404) console.warn('[ABLE] fan-confirmation function not deployed')
+            }).catch(function(err) {
+              clearTimeout(_timer2)
+              if (err && err.name === 'AbortError') console.warn('[ABLE] fan-confirmation timed out')
+            })
           } catch(_) {}
           form2.hidden = true
           // Show brief confirmation
