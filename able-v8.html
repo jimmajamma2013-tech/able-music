@@ -8588,10 +8588,14 @@
 
     function isOwnerVisit() {
       // Suppress analytics when the artist is viewing their own page
+      // Three signals: ?owner=true URL param, artistId match, or local profile exists (C2 #8)
       try {
+        if (new URLSearchParams(location.search).get('owner') === 'true') return true
         const artistId = localStorage.getItem('able_artist_id')
         const profileId = safeLS('able_v3_profile', {}).artistId
-        return !!(artistId && profileId && artistId === profileId)
+        if (artistId && profileId && artistId === profileId) return true
+        // Fallback: local profile means this is likely the artist's own device
+        return !!localStorage.getItem('able_v3_profile')
       } catch { return false }
     }
 
@@ -8917,7 +8921,7 @@
           }
           // --- END CAMPAIGN CONTEXT ---
           try {
-            const fans = safeLS('able_fans', [])
+            const fans = (() => { const f = safeLS('able_fans', []); return Array.isArray(f) ? f : []; })()
             fans.push({
               id: crypto.randomUUID(),
               email,
@@ -9100,7 +9104,7 @@
           }
           // --- END CAMPAIGN CONTEXT ---
           try {
-            const fans = safeLS('able_fans', [])
+            const fans = (() => { const f = safeLS('able_fans', []); return Array.isArray(f) ? f : []; })()
             fans.push({
               id: crypto.randomUUID(),
               email,

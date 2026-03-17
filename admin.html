@@ -2554,7 +2554,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <canvas class="sb-qr-canvas" id="sbQrCanvas" aria-label="QR code for your live page"></canvas>
       <button class="sb-qr-download" onclick="downloadSbQR()" aria-label="Download QR code as PNG">Download QR</button>
     </div>
-    <a class="sb-view-btn" href="able-v8.html" target="_blank" id="sbViewLiveBtn">
+    <a class="sb-view-btn" href="able-v8.html?owner=true" target="_blank" id="sbViewLiveBtn">
       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><path d="M1 7a6 6 0 1012 0A6 6 0 001 7z"/><path d="M7 4v3l2 2"/></svg>
       View live page
     </a>
@@ -2569,12 +2569,12 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
     <h1 class="topbar-title" id="topbarTitle">Overview</h1>
     <div class="topbar-actions">
       <a class="topbar-edit-cta" href="/able-v8.html?edit=1" id="topbarEditCta">Edit page →</a>
-      <span class="live-chip" id="liveChip" onclick="window.open('able-v8.html','_blank')" title="View your live page">
+      <span class="live-chip" id="liveChip" onclick="window.open('able-v8.html?owner=true','_blank')" title="View your live page">
         <span class="live-dot"></span>
         Live
       </span>
       <span class="tier-badge" onclick="showPage('settings')" title="Upgrade plan">✦ Free</span>
-      <a class="tb-btn tb-btn-acc" href="able-v8.html" target="_blank" style="text-decoration:none;" id="topbarViewBtn">See your page →</a>
+      <a class="tb-btn tb-btn-acc" href="able-v8.html?owner=true" target="_blank" style="text-decoration:none;" id="topbarViewBtn">See your page →</a>
     </div>
   </div>
 
@@ -7403,13 +7403,13 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sbName').textContent = name;
   document.getElementById('sbUrl').textContent = `ablemusic.co/${handle}`;
   const tvb = document.getElementById('topbarViewBtn');
-  if (tvb) tvb.href = `able-v8.html?handle=${encodeURIComponent(handle)}`;
+  if (tvb) tvb.href = `able-v8.html?handle=${encodeURIComponent(handle)}&owner=true`;
   const lc = document.getElementById('liveChip');
-  if (lc) lc.onclick = () => window.open(`able-v8.html?handle=${encodeURIComponent(handle)}`, '_blank');
+  if (lc) lc.onclick = () => window.open(`able-v8.html?handle=${encodeURIComponent(handle)}&owner=true`, '_blank');
   const qaLive = document.getElementById('qaViewLiveBtn');
-  if (qaLive) qaLive.href = `able-v8.html?handle=${encodeURIComponent(handle)}`;
+  if (qaLive) qaLive.href = `able-v8.html?handle=${encodeURIComponent(handle)}&owner=true`;
   const sbLive = document.getElementById('sbViewLiveBtn');
-  if (sbLive) sbLive.href = `able-v8.html?handle=${encodeURIComponent(handle)}`;
+  if (sbLive) sbLive.href = `able-v8.html?handle=${encodeURIComponent(handle)}&owner=true`;
 
   // Settings page
   if (document.getElementById('settingsSlug')) document.getElementById('settingsSlug').value = handle;
