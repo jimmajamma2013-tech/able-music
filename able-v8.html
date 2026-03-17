@@ -6603,7 +6603,14 @@
       }
       // Manual override — only allow known valid values (G5 #17)
       if (profile.stateOverride && profile.stateOverride !== 'auto') {
-        if (VALID_STATE_OVERRIDES.has(profile.stateOverride)) return profile.stateOverride
+        if (VALID_STATE_OVERRIDES.has(profile.stateOverride)) {
+          // C12 #70 — post-live auto-expire: if stateOverride='live' but 14+ days after release, return profile
+          if (profile.stateOverride === 'live' && profile.releaseDate) {
+            const _rms = new Date(profile.releaseDate).getTime()
+            if (!isNaN(_rms) && now >= _rms + 14 * 86400000) return 'profile'
+          }
+          return profile.stateOverride
+        }
         // Unknown override — fall through to date-based logic
       }
       // Release-based states
@@ -8244,7 +8251,15 @@
       // Runs before applyStateChip so it can override 'profile' state with a near-future chip
       let chipState = state
       let chipCustomText = undefined
-      if (state === 'gig') {
+      if (state === 'pre-release' && profile.releaseDate) {
+        // C12 #69 — chip reads "Dropping [date]" e.g. "Dropping 21 Apr"
+        try {
+          const _rd = new Date(profile.releaseDate + 'T00:00:00')
+          if (!isNaN(_rd)) {
+            chipCustomText = 'Dropping ' + _rd.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+          }
+        } catch (_) {}
+      } else if (state === 'gig') {
         // Enrich gig chip with venue + set time
         if (typeof gigChipEvent !== 'undefined' && gigChipEvent) {
           let timeStr = gigChipEvent.setTime || gigChipEvent.time || ''
@@ -9028,7 +9043,7 @@
               optIn: true,
               consent_ts: new Date().toISOString(),
               consent_source: 'profile-signup-' + (signupSource || 'direct'),
-              consentVersion: '2026-03-16',
+              consentVersion: new Date().toISOString().slice(0,10), // C12 #57
               consentSource: 'profile-signup-' + (signupSource || 'direct'),
               // GDPR evidence: exact notice text shown at time of consent (I1)
               consentText: 'By signing up, the artist can contact you about their music. They own your contact details \u2014 ABLE stores them on their behalf.',
@@ -9056,7 +9071,7 @@
                 source:          signupSource,
                 campaign_state:  campaignState,
                 tier:            _cp.tier || 'free',
-                consent_version: '2026-03-16', // C3 #32
+                consent_version: new Date().toISOString().slice(0,10), // C12 #57
                 campaign_name:   _campaignName, // C3 #32
                 artist_slug:     _cp.slug || null,
                 utm_medium:      _utmMedium,
@@ -9230,7 +9245,7 @@
               optIn: true,
               consent_ts: new Date().toISOString(),
               consent_source: 'profile-signup-' + (signup2Source || 'direct'),
-              consentVersion: '2026-03-16',
+              consentVersion: new Date().toISOString().slice(0,10), // C12 #57
               consentSource: 'profile-signup-' + (signup2Source || 'direct'),
               consentText: 'By signing up, the artist can contact you about their music. They own your contact details \u2014 ABLE stores them on their behalf.',
               unsubscribeToken: crypto.randomUUID(),

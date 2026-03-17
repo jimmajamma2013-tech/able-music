@@ -1634,7 +1634,9 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       border-radius: var(--r-md);
       cursor: pointer;
       margin-bottom: 4px;
+      transition: background var(--dur-fast);
     }
+    .fan-list-row:hover { background: var(--dash-card-hover, rgba(255,255,255,0.06)); } /* C12 #14 */
     .fan-avatar {
       width: 36px;
       height: 36px;
@@ -3941,6 +3943,7 @@ function getArtistId() {
 
 async function syncProfile(data) {
   if (!sb) return;
+  if (!data.handle) return; // C12 #22 — skip sync if no handle (no Supabase row can be keyed)
   // able_shows is a separate localStorage key — include it in the upsert
   const shows = safeLS('able_shows', []);
   try {
@@ -4466,14 +4469,21 @@ function exportFans() {
     return;
   }
   const legacyStarred = safeLS('able_starred_fans', []);
-  const real = safeLS('able_fans', []).filter(f => f.confirmed !== false);
+  const real = safeLS('able_fans', []).filter(f => f.confirmed !== false && !f.deleted_at);
   if (!real.length) { showToast('No fans yet — share your page to see who shows up.', 'amber'); return; }
-  const csvRows = [['email','signup_date','source','campaign_name','campaign_state','consent_timestamp','consent_version','level','starred','opted_in','confirmed']];
+  // C12 #3 — starred fans sort first in CSV
+  real.sort((a, b) => {
+    const aS = !!(a.isStarred || legacyStarred.includes(a.email));
+    const bS = !!(b.isStarred || legacyStarred.includes(b.email));
+    return bS - aS;
+  });
+  const csvRows = [['email','signup_date','joined_at','source','campaign_name','campaign_state','consent_timestamp','consent_version','level','starred','opted_in','confirmed']]; // C12 #9
   real.forEach(f => {
     const isStarred = !!(f.isStarred || legacyStarred.includes(f.email));
     csvRows.push([
       f.email || '',
       f.ts ? new Date(f.ts).toISOString() : '',   // full ISO 8601 (I3 #11)
+      f.joinedAt || (f.ts ? new Date(f.ts).toISOString() : ''), // C12 #9
       normaliseSource(f.source),
       f.campaignName || '',                        // C3 #7 — ABLE-native campaign name
       f.campaignState || 'profile',
@@ -8899,6 +8909,7 @@ function setAccent(hex) {
   if (!profile.identity) profile.identity = {};
   profile.identity.accent = hex;
   profile.accent = hex; // canonical path — able-v8.html reads profile.accent
+  profile.updatedAt = new Date().toISOString(); // C12 #17
   setLS(V3_KEY, profile);
 
   const hexLabel = document.getElementById('accentHexLabel');
