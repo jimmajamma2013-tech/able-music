@@ -3562,9 +3562,35 @@ async function syncFans(fans) {
       email:      f.email,
       source:     f.source || 'direct',
       ts:         f.ts || Date.now(),
-      created_at: f.ts || Date.now(),
     }));
     await sb.from('fans').upsert(rows, { onConflict: 'profile_id,email', ignoreDuplicates: true });
+  } catch(e) {}
+}
+
+async function loadFansFromSupabase() {
+  if (!sb) return;
+  try {
+    const profile_id = getArtistId();
+    const { data, error } = await sb.from('fans')
+      .select('email,source,ts,double_opted_in')
+      .eq('profile_id', profile_id)
+      .order('ts', { ascending: false })
+      .limit(2000);
+    if (error || !data?.length) return;
+    // Merge Supabase fans into localStorage (dedupe by email)
+    const local = safeLS('able_fans', []);
+    const emailSet = new Set(local.map(f => f.email));
+    const incoming = data.filter(f => !emailSet.has(f.email)).map(f => ({
+      email:     f.email,
+      source:    f.source || 'direct',
+      ts:        f.ts || Date.now(),
+      confirmed: f.double_opted_in || false,
+    }));
+    if (incoming.length) {
+      setLS('able_fans', [...local, ...incoming]);
+      renderFanList();
+      renderFanBody();
+    }
   } catch(e) {}
 }
 
@@ -6850,9 +6876,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
   renderFanList();
   renderFanSupportPacksSummary();
-  // Sync any fans in localStorage to Supabase (fire-and-forget)
-  const _storedFans = JSON.parse(localStorage.getItem(FANS_KEY) || '[]');
-  if (_storedFans.length) syncFans(_storedFans);
+  // Sync profile to Supabase, then sync fans (profile must exist first — FK constraint)
+  syncProfile(v3data).then(() => {
+    const _storedFans = safeLS(FANS_KEY, []);
+    if (_storedFans.length) syncFans(_storedFans);
+    loadFansFromSupabase(); // pull any fans from Supabase not yet in localStorage
+  }).catch(() => {});
   initCampaignHQ();
   checkAutoGig();
   setInterval(checkAutoGig, 60000); // re-check every minute for real-time activation
