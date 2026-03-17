@@ -36,6 +36,7 @@
   <meta name="twitter:description" id="tw-description" content="Music, events, and more — direct from the artist.">
   <meta name="twitter:image"       id="tw-image"       content="https://ablemusic.co/og-default.jpg">
   <meta name="twitter:site"        content="@ablefm">
+  <link rel="canonical" id="canonical-url" href="https://ablemusic.co/">
 
   <!-- PWA -->
   <link rel="manifest" href="/manifest.json">
@@ -10495,6 +10496,8 @@
       setMeta('tw-image',       ogImage)
       setMeta('meta-description', desc)
       document.title = `${name} — ABLE`
+      const canonEl = document.getElementById('canonical-url')
+      if (canonEl) canonEl.setAttribute('href', url)
 
       // JSON-LD: MusicGroup + upcoming Event entries
       const schema = {
