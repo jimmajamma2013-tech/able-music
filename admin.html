@@ -584,7 +584,7 @@ body::before {
   white-space:nowrap; flex-shrink:0;
 }
 .rel-status-current { background:rgba(var(--green-rgb),.15); color:var(--green); }
-.rel-status-upcoming { background:rgba(var(--acc-rgb),.15); color:var(--dash-amber); }
+.rel-status-upcoming { background:rgba(var(--acc-rgb),.15); color:var(--dash-link); }
 .rel-status-prev     { background:rgba(255,255,255,.06); color:var(--t3,#767676); }
 .admin-track-row {
   display:flex; align-items:center; gap:6px; padding:5px 0;
@@ -850,7 +850,7 @@ body::before {
   line-height: 1.2;
 }
 
-.arc-node.active .arc-label { color: var(--dash-amber); }
+.arc-node.active .arc-label { color: var(--dash-link); }
 .arc-node.done .arc-label { color: var(--dash-t3); }
 
 /* Gig mode toggle strip */
@@ -1386,7 +1386,7 @@ body::before {
       font-weight: 700;
     }
     .stat-strip-item.accent strong {
-      color: var(--dash-amber);
+      color: var(--dash-link); /* dash-link: 5:1 on dash-card — AA compliant (C5) */
     }
     /* Email value indicator */
     .fan-email-value {
@@ -1441,7 +1441,7 @@ body::before {
       display: none;
     }
     .fan-cap-nudge a {
-      color: var(--dash-amber);
+      color: var(--dash-link); /* dash-link: 5:1 on dash-card — AA compliant (C5) */
       font-weight: 700;
       text-decoration: none;
     }
