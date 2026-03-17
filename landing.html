@@ -194,8 +194,12 @@
       font-size: 13px; font-weight: 700; background: var(--accent); color: var(--bg-deep);
       padding: 8px 18px; border-radius: var(--r-sm); display: flex; align-items: center; gap: 7px;
       box-shadow: 0 1px 8px rgba(var(--accent-rgb),0.22);
-      transition: opacity var(--dur-fast), transform 0.2s var(--spring);
+      /* C18 #15 — hidden until hero CTA scrolls out */
+      opacity: 0; pointer-events: none; transform: translateY(-4px);
+      transition: opacity 300ms ease, transform 300ms ease;
     }
+    /* C18 #15 — visible once hero is past */
+    .nav--hero-past .nav__cta { opacity: 1; pointer-events: auto; transform: none; }
     .nav__cta:hover { opacity: 0.88; transform: scale(1.03); }
     .nav__cta-dot {
       width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0;
@@ -1908,6 +1912,17 @@
 
     // Fallback: reveal anything still hidden after 1.5s (e.g. if IO never fires)
     setTimeout(() => { fadeEls.forEach(el => el.classList.add('in')); }, 1500);
+
+    // C18 #15 — sticky nav CTA: fades in once hero CTA scrolls out of view
+    ;(function() {
+      const heroCta = document.querySelector('.hero__actions');
+      const nav = document.querySelector('nav.nav');
+      if (!heroCta || !nav) return;
+      const heroObs = new IntersectionObserver(function(entries) {
+        nav.classList.toggle('nav--hero-past', !entries[0].isIntersecting);
+      }, { threshold: 0 });
+      heroObs.observe(heroCta);
+    })();
 
     // Interactive phone demo
     (function() {

@@ -3012,7 +3012,8 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
           </div>
 
           <div class="yw-form-label" style="margin-top:10px;">Link <span style="opacity:.5;font-weight:400;">(optional)</span></div>
-          <input class="yw-form-input" type="url" id="ywCtaUrl" aria-label="Update link URL" placeholder="https://…">
+          <input class="yw-form-input" type="url" id="ywCtaUrl" aria-label="Update link URL" placeholder="https://…" oninput="ywValidateUrl(this)">
+          <p id="ywCtaUrlError" style="font-size:11px;color:#f05252;margin-top:3px;display:none;" role="alert">Doesn't look like a URL — try starting with https://</p>
           <input class="yw-form-input" type="text" id="ywCtaLabel" aria-label="Update link label" placeholder="Button label" style="margin-top:6px;" hidden>
 
           <div class="yw-form-label" style="margin-top:10px;display:flex;justify-content:space-between;align-items:baseline;">
@@ -7541,6 +7542,21 @@ function ywInit(profile) {
     setLS(V3_KEY, p)
     syncProfile(p)
   })
+}
+
+// C18 #27 — inline URL validation on paste/input for world map CTA link
+function ywValidateUrl(input) {
+  const errEl = document.getElementById('ywCtaUrlError')
+  if (!errEl) return
+  const val = input.value.trim()
+  if (!val) { errEl.style.display = 'none'; return }
+  try {
+    const u = new URL(val)
+    const ok = u.protocol === 'https:' || u.protocol === 'http:'
+    errEl.style.display = ok ? 'none' : 'block'
+  } catch (_) {
+    errEl.style.display = 'block'
+  }
 }
 
 function ywToggleAddForm(open) {
