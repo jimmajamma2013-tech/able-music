@@ -328,7 +328,7 @@ body::before {
 .field-input {
   width:100%; padding:10px 13px; border-radius:var(--r-md);
   background:var(--dash-field); border:1.5px solid var(--dash-border);
-  color:var(--dash-text); font-size:13px; font-family:var(--font);
+  color:var(--dash-text); font-size:16px; font-family:var(--font);
   transition:border-color .16s; outline:none;
 }
 .field-input:focus { border-color:var(--acc); box-shadow: 0 0 0 3px rgba(var(--acc-rgb), 0.18); }
@@ -699,7 +699,7 @@ body::before {
 .chq-release-title {
   width:100%; padding:10px 13px; border-radius:var(--r-md);
   background:var(--dash-field); border:1.5px solid var(--dash-border);
-  color:var(--dash-text); font-size:13px; font-family:var(--font);
+  color:var(--dash-text); font-size:16px; font-family:var(--font);
   transition:border-color .16s; outline:none;
 }
 .chq-release-title:focus { border-color:var(--acc); box-shadow: 0 0 0 3px rgba(var(--acc-rgb), 0.18); outline: none; }
@@ -3052,7 +3052,7 @@ body::before {
               <div style="flex:1;min-width:160px;">
                 <div class="field-label" style="margin-bottom:6px;">Section heading <span style="font-weight:400;opacity:.6;">(optional)</span></div>
                 <input class="field-input" id="recsHeadingInput" type="text" placeholder="Worth knowing" maxlength="40"
-                  oninput="saveRecsHeading(this.value)" style="font-size:12px;">
+                  oninput="saveRecsHeading(this.value)">
               </div>
             </div>
 
@@ -3067,11 +3067,11 @@ body::before {
                 <button class="recs-type-btn" data-type="professional" onclick="setRecsAddType('professional')">Professional</button>
               </div>
               <div style="display:flex;flex-direction:column;gap:8px;">
-                <input class="field-input" id="recsAddName" type="text" placeholder="Name" maxlength="60" style="font-size:13px;">
-                <input class="field-input" id="recsAddHandle" type="text" placeholder="ABLE handle (optional — links to their profile)" maxlength="60" style="font-size:13px;">
-                <input class="field-input" id="recsAddRole" type="text" placeholder="Role (e.g. Production, Mixing)" maxlength="40" style="font-size:13px;display:none;">
-                <input class="field-input" id="recsAddGenre" type="text" placeholder="Genre / description (optional)" maxlength="40" style="font-size:13px;">
-                <input class="field-input" id="recsAddContext" type="text" placeholder="One line about them (optional)" maxlength="60" style="font-size:13px;">
+                <input class="field-input" id="recsAddName" type="text" placeholder="Name" maxlength="60">
+                <input class="field-input" id="recsAddHandle" type="text" placeholder="ABLE handle (optional — links to their profile)" maxlength="60">
+                <input class="field-input" id="recsAddRole" type="text" placeholder="Role (e.g. Production, Mixing)" maxlength="40" style="display:none;">
+                <input class="field-input" id="recsAddGenre" type="text" placeholder="Genre / description (optional)" maxlength="40">
+                <input class="field-input" id="recsAddContext" type="text" placeholder="One line about them (optional)" maxlength="60">
                 <button class="ci-btn ci-btn-connect" onclick="addRecsItem()" style="align-self:flex-start;padding:8px 16px;">Add \u2192</button>
               </div>
             </div>
@@ -4033,7 +4033,7 @@ function openFanDetailSheet(fan) {
     </div>
     <div style="margin-bottom:16px;">
       <div class="field-label" style="margin-bottom:6px;">Note <span style="font-weight:400;opacity:.5;">(only you see this)</span></div>
-      <textarea class="field-input" id="fanNoteInput" rows="3" maxlength="280" placeholder="Something only you'd know about this person." style="resize:none;font-size:13px;">${escHtml(fan.note || '')}</textarea>
+      <textarea class="field-input" id="fanNoteInput" rows="3" maxlength="280" placeholder="Something only you'd know about this person." style="resize:none;font-size:16px;">${escHtml(fan.note || '')}</textarea>
       <div style="font-size:10px;color:var(--dash-t3);text-align:right;margin-top:2px;" id="fanNoteCount">${(fan.note||'').length}/280</div>
     </div>
     <div style="display:flex;flex-direction:column;gap:8px;">
@@ -5151,7 +5151,7 @@ function renderAdminMusic() {
               <input class="field-input" value="${escHtml(t.title)}" oninput="updateTrack('${rel.id}',${ti},'title',this.value)" placeholder="Track title" style="flex:1;min-width:80px;">
               <input class="field-input" value="${escHtml(t.duration||'')}" oninput="updateTrack('${rel.id}',${ti},'duration',this.value)" placeholder="3:42" style="width:52px;">
               <button class="snap-btn del" onclick="removeTrack('${rel.id}',${ti})" title="Remove">×</button>
-              <input class="field-input" type="url" value="${escHtml(t.streamUrl||'')}" oninput="updateTrack('${rel.id}',${ti},'streamUrl',this.value)" placeholder="Individual stream link (optional)" style="flex:1 1 100%;margin-left:28px;font-size:11px;">
+              <input class="field-input" type="url" value="${escHtml(t.streamUrl||'')}" oninput="updateTrack('${rel.id}',${ti},'streamUrl',this.value)" placeholder="Individual stream link (optional)" style="flex:1 1 100%;margin-left:28px;">
             </div>`).join('')}
         </div>
         <button class="dc-action" style="margin-top:6px;" onclick="addTrack('${rel.id}')">+ Add track</button>
@@ -5162,7 +5162,7 @@ function renderAdminMusic() {
               <input class="field-input" value="${escHtml(c.name||'')}" oninput="updateCredit('${rel.id}',${ci},'name',this.value)" placeholder="Name" style="flex:1;min-width:80px;">
               <input class="field-input" value="${escHtml(c.role||'')}" oninput="updateCredit('${rel.id}',${ci},'role',this.value)" placeholder="Role (e.g. Mixed by)" style="flex:1;min-width:80px;">
               <button class="snap-btn del" onclick="removeCredit('${rel.id}',${ci})" title="Remove">×</button>
-              <input class="field-input" value="${escHtml(c.handle||'')}" oninput="updateCredit('${rel.id}',${ci},'handle',this.value)" placeholder="ABLE handle (optional — links to their profile)" style="flex:1 1 100%;font-size:11px;color:var(--t2);">
+              <input class="field-input" value="${escHtml(c.handle||'')}" oninput="updateCredit('${rel.id}',${ci},'handle',this.value)" placeholder="ABLE handle (optional — links to their profile)" style="flex:1 1 100%;color:var(--t2);">
             </div>`).join('')}
         </div>
         <button class="dc-action" style="margin-top:6px;" onclick="addCredit('${rel.id}')">+ Add credit</button>
