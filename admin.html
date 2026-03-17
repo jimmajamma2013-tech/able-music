@@ -2769,7 +2769,7 @@ body::before {
           <button class="yw-add-btn" id="yw-add-btn">+ Add moment</button>
         </div>
         <div class="yw-moment-list" id="yw-moment-list">
-          <div class="yw-empty">No upcoming moments yet. Add your first.</div>
+          <div class="yw-empty">No upcoming shows. Add one in the <button class="yw-empty-link" onclick="showPage('events')">Events</button> page and it appears here automatically.</div>
         </div>
 
         <!-- ADD MOMENT FORM (inline, hidden by default) -->
@@ -6642,7 +6642,7 @@ function ywRenderMomentList(profile) {
   let upcoming = moments.filter(function(m) { return m.date >= today }).sort(function(a,b) { return a.date.localeCompare(b.date) })
 
   if (!upcoming.length) {
-    list.innerHTML = '<div class="yw-empty">No upcoming moments yet. Add shows in the <button class="yw-empty-link" onclick="showPage(\'events\')">Events</button> page, or add a moment here.</div>'
+    list.innerHTML = '<div class="yw-empty">No upcoming shows. Add one in the <button class="yw-empty-link" onclick="showPage(\'events\')">Events</button> page and it appears here automatically.</div>'
     return
   }
 
