@@ -107,6 +107,14 @@
       /* Structural letter spacing (B9) */
       --ls-wide:  0.1em;
       --ls-xwide: 0.14em;
+
+      /* Demo phone accent — terracotta/salmon used in hero phone demo (C9) */
+      --dp-accent: var(--dp-accent);
+      --dp-accent-rgb: 200,104,88;
+
+      /* Brand colours used in demo phone (read-only — never rebrand these) */
+      --brand-spotify: var(--brand-spotify);
+      --brand-youtube: var(--brand-youtube);
     }
     [hidden] { display: none !important; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
@@ -377,7 +385,7 @@
       position: absolute;
       bottom: -28px; left: 50%; transform: translateX(-50%);
       width: 220px; height: 120px;
-      background: radial-gradient(ellipse at 50% 100%, rgba(200,104,88,0.28) 0%, transparent 70%);
+      background: radial-gradient(ellipse at 50% 100%, rgba(var(--dp-accent-rgb),0.28) 0%, transparent 70%);
       pointer-events: none;
       filter: blur(18px);
     }
@@ -477,9 +485,9 @@
     .dp-cta1 {
       flex: 1; font-size: 9.5px; font-weight: 700;
       padding: 7px 6px; border-radius: 9px;
-      background: #c86858; color: #fff; border: none;
+      background: var(--dp-accent); color: #fff; border: none;
       text-align: center; font-family: var(--font);
-      box-shadow: 0 2px 8px rgba(200,104,88,0.32);
+      box-shadow: 0 2px 8px rgba(var(--dp-accent-rgb),0.32);
       cursor: pointer;
     }
     .dp-cta2 {
@@ -512,7 +520,7 @@
       white-space: nowrap;
     }
     .dp-pill-more {
-      color: #c86858; border-color: rgba(200,104,88,0.22);
+      color: var(--dp-accent); border-color: rgba(var(--dp-accent-rgb),0.22);
     }
 
     /* ── SPOTIFY EMBED MOCKUP ────────────────────────────────── */
@@ -529,7 +537,7 @@
     }
     .dp-sp-art {
       width: 34px; height: 34px; border-radius: var(--r-xs); flex-shrink: 0;
-      background: linear-gradient(135deg, #c86858 0%, #5a1e14 100%);
+      background: linear-gradient(135deg, var(--dp-accent) 0%, #5a1e14 100%);
     }
     .dp-sp-meta { flex: 1; min-width: 0; }
     .dp-sp-track {
@@ -543,7 +551,7 @@
     #demoPhone[data-theme="light"] .dp-sp-artist { color: rgba(28,26,20,0.5); }
     .dp-sp-badge {
       font-size: 6px; font-weight: 800; letter-spacing: 0.08em;
-      color: #1DB954; align-self: flex-start; margin-top: 1px;
+      color: var(--brand-spotify); align-self: flex-start; margin-top: 1px;
     }
     .dp-sp-prog { padding: 0 10px 8px; }
     .dp-sp-bar {
@@ -552,7 +560,7 @@
     }
     #demoPhone[data-theme="light"] .dp-sp-bar { background: rgba(0,0,0,0.14); }
     .dp-sp-fill {
-      width: 42%; height: 100%; background: #1DB954; border-radius: 2px;
+      width: 42%; height: 100%; background: var(--brand-spotify); border-radius: 2px;
     }
     .dp-sp-times {
       display: flex; justify-content: space-between;
@@ -566,7 +574,7 @@
     .dp-sp-btn { font-size: 10px; color: rgba(255,255,255,0.55); cursor: default; }
     #demoPhone[data-theme="light"] .dp-sp-btn { color: rgba(0,0,0,0.5); }
     .dp-sp-play {
-      width: 22px; height: 22px; border-radius: 50%; background: #1DB954;
+      width: 22px; height: 22px; border-radius: 50%; background: var(--brand-spotify);
       display: flex; align-items: center; justify-content: center;
     }
     .dp-sp-play::after {
@@ -589,7 +597,7 @@
       display: flex; align-items: center; justify-content: center;
     }
     .dp-yt-play {
-      width: 28px; height: 20px; background: #FF0000; border-radius: 5px;
+      width: 28px; height: 20px; background: var(--brand-youtube); border-radius: 5px;
       display: flex; align-items: center; justify-content: center;
     }
     .dp-yt-play::after {
@@ -624,7 +632,7 @@
     .dp-ev-date { text-align: center; flex-shrink: 0; }
     .dp-ev-mon {
       font-size: 6px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-      color: #c86858; display: block;
+      color: var(--dp-accent); display: block;
     }
     .dp-ev-day {
       font-size: 16px; font-weight: 800; line-height: 1;
@@ -637,7 +645,7 @@
       font-size: 7px; color: var(--dp-text2, rgba(228,223,210,0.55)); margin: 1px 0 0;
     }
     .dp-ev-ticket {
-      background: #c86858; color: #fff;
+      background: var(--dp-accent); color: #fff;
       font-size: 7px; font-weight: 800; letter-spacing: 0.1em;
       text-transform: uppercase; text-align: center;
       padding: 8px; cursor: default;
@@ -693,12 +701,12 @@
       align-items: center; gap: 2px;
     }
     .dp-tab-icon { font-size: 13px; line-height: 1; color: var(--dp-text2, rgba(228,223,210,0.55)); }
-    .dp-tab-icon.active { color: #c86858; }
+    .dp-tab-icon.active { color: var(--dp-accent); }
     .dp-tab-label {
       font-size: 6.5px; font-weight: 600;
       color: var(--dp-text2, rgba(228,223,210,0.55)); opacity: 0.5;
     }
-    .dp-tab-label.active { color: #c86858; opacity: 1; }
+    .dp-tab-label.active { color: var(--dp-accent); opacity: 1; }
 
     /* Theme CSS custom props */
     #demoPhone[data-theme="dark"]     { --dp-bg:#0d0e1a; --dp-surface:#131628; --dp-text:#e4dfd2; --dp-text2:rgba(228,223,210,.55); --dp-border:rgba(255,252,240,.07); --dp-tab:#0a0b14; }
@@ -1104,7 +1112,7 @@
 
     /* proof-action: CTA row ambient glow */
     #demoPhone.proof-action .dp-ctas {
-      background: rgba(200,104,88,0.06);
+      background: rgba(var(--dp-accent-rgb),0.06);
       border-radius: var(--r-md);
     }
     /* proof-action: CTA pulsing opacity (opacity/transform only — no box-shadow animation) */
