@@ -65,7 +65,7 @@ exports.handler = async function (event) {
     return respond(400, { error: 'Invalid JSON body' });
   }
 
-  const { fanEmail, artistName, artistSlug, campaignState, accentHex, releaseTitle } = body;
+  const { fanEmail, artistName, artistSlug, campaignState, accentHex, releaseTitle, releaseDate } = body; // C13 #29
 
   // ── Input validation (H5) ─────────────────────────────────────────────────
   const VALID_STATES = new Set(['profile', 'pre-release', 'live', 'gig']);
@@ -105,9 +105,13 @@ exports.handler = async function (event) {
 
   if (state === 'pre-release') {
     const title = releaseTitle ? `"${releaseTitle}"` : 'something new';
+    // C13 #29 — include drop date in PS if available
+    const _rdStr = releaseDate && typeof releaseDate === 'string' && /^\d{4}-\d{2}-\d{2}/.test(releaseDate)
+      ? new Date(releaseDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })
+      : null;
     subject     = `${name} noted you down`;
     headingLine = `${name} is working on ${title}.`;
-    bodyLine    = `You asked to be the first to know. You will be.`;
+    bodyLine    = `You asked to be the first to know. You will be.${_rdStr ? ` P.S. It drops ${_rdStr}.` : ''}`;
   } else if (state === 'live') {
     const title = releaseTitle ? `"${releaseTitle}"` : 'the release';
     subject     = `${name} noted you down`;

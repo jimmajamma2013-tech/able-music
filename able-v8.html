@@ -8497,6 +8497,7 @@
             campaignState: (typeof computeState === 'function' ? computeState(profile) : profile.stateOverride) || 'profile',
             accentHex:     profile.accent  || '#f4b942',
             releaseTitle:  profile.release?.title || profile.releaseName || profile.releaseTitle || '',
+            releaseDate:   profile.releaseDate || '', // C13 #29
           }),
         }).then(function(r) {
           clearTimeout(_timer)
@@ -9294,6 +9295,7 @@
                 campaignState: campaignState2  || 'profile',
                 accentHex:     _p2conf.accent  || '#f4b942',
                 releaseTitle:  _p2conf.release?.title || _p2conf.releaseName || '',
+                releaseDate:   _p2conf.releaseDate || '', // C13 #29
               }),
             }).then(function(r) {
               clearTimeout(_timer2)
