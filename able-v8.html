@@ -1270,6 +1270,36 @@
       padding-top: 2px;
     }
 
+    /* === TONIGHT NOTE (gig state) =============================== */
+    .tonight-note {
+      font-size: var(--text-base);
+      color: var(--color-text-2);
+      font-style: italic;
+      border-left: 2px solid rgba(var(--color-accent-rgb), 0.4);
+      padding-left: var(--sp-4);
+      margin: 0 0 var(--sp-6) 0;
+      line-height: var(--lh-body);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tonight-note { border-left-width: 1px; }
+    }
+
+    /* === RELEASE NOTE (pre-release state) ======================= */
+    .release-note {
+      font-size: var(--text-base);
+      color: var(--color-text-2);
+      text-align: center;
+      margin: var(--sp-4) 0 0;
+      line-height: var(--lh-body);
+    }
+
+    /* === FINAL 24H PRE-RELEASE INTENSIFICATION ================== */
+    [data-prerelease="final"] .countdown__num {
+      font-size: clamp(56px, 16vw, 96px);
+      color: var(--color-accent);
+    }
+    [data-prerelease="final"] .hero-ambient { opacity: 0.28; }
+
     /* === HERO CTAs ============================================== */
     .hero-ctas {
       padding: var(--sp-4) var(--sp-5) var(--sp-5);
@@ -5173,6 +5203,13 @@
       border-radius: var(--r-lg);
       overflow: hidden;
     }
+    /* Generic embed-container backing: backdrop-filter doesn't propagate into
+       iframes so we need an explicit background behind any .embed-container */
+    [data-theme="glass"] .embed-container {
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+    }
   </style>
 
   <!-- PostHog analytics — EU Cloud, manual events only, privacy-first -->
@@ -5360,6 +5397,12 @@
           <span class="countdown__label">Secs</span>
         </div>
       </div>
+
+      <!-- Tonight note: artist-written blockquote shown in gig state -->
+      <blockquote class="tonight-note" id="tonight-note" hidden aria-label="Tonight's note"></blockquote>
+
+      <!-- Release note: artist-written note shown in pre-release state -->
+      <p class="release-note" id="release-note" hidden></p>
 
       <!-- ======================================================
            HERO CTAs (max 2)
@@ -5967,6 +6010,31 @@
       }
       if (contrast !== 0) shell.style.setProperty('--accent-opacity-delta', `${contrast}`)
     }
+
+    // === CTA DEFAULTS (state × vibe) ==============================
+    // Used only when the artist hasn't set a custom label.
+    // Artist-set labels always win; these fill the gap.
+
+    const STATE_CTA_DEFAULTS = {
+      'pre-release': { primary: 'Pre-save',  secondary: 'My music' },
+      'live':        { primary: 'Stream now', secondary: 'Stay close' },
+      'gig':         { primary: 'Get tickets', secondary: "Can't make it? Stay close" },
+      'post-gig':    { primary: 'Stay close', secondary: null },
+    }
+
+    const VIBE_CTA_DEFAULTS = {
+      electronic: { primary: 'Listen',    secondary: 'Stay close' },
+      hiphop:     { primary: 'My music',  secondary: 'Stay close' },
+      rnb:        { primary: 'Listen',    secondary: 'Stay close' },
+      indie:      { primary: 'My music',  secondary: 'Stay close' },
+      pop:        { primary: 'Listen',    secondary: 'Stay close' },
+      rock:       { primary: 'My music',  secondary: 'Stay close' },
+      folk:       { primary: 'Listen',    secondary: 'Stay close' },
+      acoustic:   { primary: 'Listen',    secondary: 'Stay close' },
+    }
+
+    // Demo primary label — used to detect "artist hasn't customised yet"
+    const DEMO_CTA_PRIMARY_LABEL = 'Stream Echo Chamber'
 
     // === PROFILE =================================================
 
@@ -7989,6 +8057,41 @@
         flash.addEventListener('animationend', () => flash.remove(), { once: true })
       }
 
+      // Tonight note (gig state — artist-written blockquote)
+      const tonightNoteEl = document.getElementById('tonight-note')
+      if (tonightNoteEl) {
+        if (state === 'gig' && profile.gigNote) {
+          tonightNoteEl.textContent = profile.gigNote
+          tonightNoteEl.setAttribute('aria-label', `Tonight's note from ${escHtml(profile.name || 'the artist')}`)
+          tonightNoteEl.hidden = false
+        } else {
+          tonightNoteEl.hidden = true
+        }
+      }
+
+      // Release note (pre-release state — artist-written paragraph)
+      const releaseNoteEl = document.getElementById('release-note')
+      if (releaseNoteEl) {
+        if (state === 'pre-release' && profile.releaseNote) {
+          releaseNoteEl.textContent = profile.releaseNote
+          releaseNoteEl.hidden = false
+        } else {
+          releaseNoteEl.hidden = true
+        }
+      }
+
+      // Final 24h shift: stamp data-prerelease="final" for CSS intensification
+      if (state === 'pre-release' && profile.releaseDate) {
+        const hoursLeft = (new Date(profile.releaseDate).getTime() - Date.now()) / 3600000
+        if (hoursLeft < 24) {
+          document.documentElement.setAttribute('data-prerelease', 'final')
+        } else {
+          document.documentElement.removeAttribute('data-prerelease')
+        }
+      } else {
+        document.documentElement.removeAttribute('data-prerelease')
+      }
+
       // State-specific content
       stopCountdown()
 
@@ -8009,18 +8112,35 @@
       const primary   = profile.ctaPrimary   || (profile.ctas && profile.ctas[0]) || null
       const secondary = profile.ctaSecondary || (profile.ctas && profile.ctas[1]) || null
 
-      if (primary && primary.url && isSafeUrl(primary.url)) {
-        ctaPrimary.textContent = primary.label || 'Stream now'
-        ctaPrimary.href = primary.url
-        ctaPrimary.hidden = false
-        ctaPrimary.onclick = () => trackClick(primary.label, 'primary_cta')
+      // Resolve default CTA labels: state defaults > vibe defaults > hardcoded fallback
+      // Artist's own label always wins — but empty or demo placeholder triggers defaults.
+      const stateDefs = STATE_CTA_DEFAULTS[state] || {}
+      const vibeDefs  = VIBE_CTA_DEFAULTS[profile.vibe || 'indie'] || {}
+
+      function resolveCtaLabel(artistLabel, stateDefault, vibeDefault, hardFallback) {
+        const isCustom = artistLabel && artistLabel.trim() && artistLabel !== DEMO_CTA_PRIMARY_LABEL
+        if (isCustom) return artistLabel
+        if (stateDefault !== undefined && stateDefault !== null) return stateDefault
+        if (vibeDefault)  return vibeDefault
+        return hardFallback
       }
 
-      if (secondary && secondary.url && isSafeUrl(secondary.url)) {
-        ctaSecondary.textContent = secondary.label || 'Get tickets'
+      if (primary && primary.url && isSafeUrl(primary.url)) {
+        const label = resolveCtaLabel(primary.label, stateDefs.primary, vibeDefs.primary, 'My music')
+        ctaPrimary.textContent = label
+        ctaPrimary.href = primary.url
+        ctaPrimary.hidden = false
+        ctaPrimary.onclick = () => trackClick(label, 'primary_cta')
+      }
+
+      // Secondary: if state default is explicitly null → hide secondary entirely
+      const secStateDefault = Object.prototype.hasOwnProperty.call(stateDefs, 'secondary') ? stateDefs.secondary : undefined
+      if (secondary && secondary.url && isSafeUrl(secondary.url) && secStateDefault !== null) {
+        const label = resolveCtaLabel(secondary.label, secStateDefault, vibeDefs.secondary, 'Stay close')
+        ctaSecondary.textContent = label
         ctaSecondary.href = secondary.url
         ctaSecondary.hidden = false
-        ctaSecondary.onclick = () => trackClick(secondary.label, 'secondary_cta')
+        ctaSecondary.onclick = () => trackClick(label, 'secondary_cta')
       }
 
       // Update CTA text colour based on accent luminance
@@ -10468,9 +10588,11 @@
       const shell = document.getElementById('app-shell')
       const profile = getProfile()
 
-      // Apply theme
-      const theme = profile.theme || 'dark'
-      shell.dataset.theme = theme
+      // Apply theme — glass needs artwork to work; fall back to dark if none present
+      let effectiveTheme = profile.theme || 'dark'
+      const hasArtwork = !!(profile.topCard?.artworkUrl || profile.backgroundImageUrl || profile.backgroundUrl)
+      if (effectiveTheme === 'glass' && !hasArtwork) effectiveTheme = 'dark'
+      shell.dataset.theme = effectiveTheme
 
       // Apply background system (image, preset, or glass-auto)
       applyBackground(profile, shell)
