@@ -307,6 +307,17 @@ CREATE TABLE fans (
   unsubscribed_at TIMESTAMPTZ,  -- soft delete / opt-out
   deleted_at      TIMESTAMPTZ,  -- GDPR right to erasure
 
+  -- GDPR consent evidence (I1) — must be populated at sign-up
+  consent_ts      TIMESTAMPTZ NOT NULL DEFAULT now(),  -- ISO timestamp of consent
+  consent_text    TEXT NOT NULL,    -- exact notice text shown at time of consent
+  consent_version TEXT NOT NULL,    -- policy version string (e.g. '2026-03-16')
+  consent_method  TEXT NOT NULL DEFAULT 'email_field',
+  jurisdiction    TEXT NOT NULL DEFAULT 'GDPR',
+
+  -- Unsubscribe (I4) — token issued at sign-up for one-click email links
+  unsubscribe_token UUID NOT NULL DEFAULT gen_random_uuid(),
+  UNIQUE (unsubscribe_token),
+
   -- Location (optional, from fan.html)
   city            TEXT,
   country         TEXT,
@@ -718,11 +729,14 @@ While data lives in localStorage, any JavaScript loaded on the same origin can r
 Every fan sign-up must record:
 ```javascript
 {
-  email:         'fan@example.com',
-  ts:            1742000000000,     // Unix ms
-  source:        'ig',
-  optIn:         true,              // artist marketing consent — checked at sign-up
-  // future: consentVersion: '2026-03-15' — for consent policy versioning
+  email:            'fan@example.com',
+  ts:               1742000000000,         // Unix ms
+  source:           'ig',
+  optIn:            true,                  // artist marketing consent
+  consentVersion:   '2026-03-16',          // policy version string
+  consentText:      'By signing up, the artist can contact you...',  // exact notice
+  consent_ts:       '2026-03-17T12:00:00.000Z', // ISO timestamp of consent
+  unsubscribeToken: 'uuid-v4',             // for one-click unsubscribe links
 }
 ```
 

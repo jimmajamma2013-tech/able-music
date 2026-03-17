@@ -8727,6 +8727,10 @@
               consent_source: 'profile-signup-' + (signupSource || 'direct'),
               consentVersion: '2026-03-16',
               consentSource: 'profile-signup-' + (signupSource || 'direct'),
+              // GDPR evidence: exact notice text shown at time of consent (I1)
+              consentText: 'By signing up, the artist can contact you about their music. They own your contact details \u2014 ABLE stores them on their behalf.',
+              // Unsubscribe token for one-click email unsubscribe links (I4)
+              unsubscribeToken: crypto.randomUUID(),
               confirmed: false,
               double_opted_in: false,
               level: 'listener',
@@ -8894,6 +8898,8 @@
               consent_source: 'profile-signup-' + (signup2Source || 'direct'),
               consentVersion: '2026-03-16',
               consentSource: 'profile-signup-' + (signup2Source || 'direct'),
+              consentText: 'By signing up, the artist can contact you about their music. They own your contact details \u2014 ABLE stores them on their behalf.',
+              unsubscribeToken: crypto.randomUUID(),
               confirmed: false,
               double_opted_in: false,
               level: 'listener',
