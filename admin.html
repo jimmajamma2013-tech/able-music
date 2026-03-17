@@ -8390,8 +8390,25 @@ function closeAdminSheet() {
 }
 
 document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape' && !document.getElementById('adminSheet').hidden) {
-    closeAdminSheet();
+  const sheet = document.getElementById('adminSheet');
+  if (sheet && !sheet.hidden) {
+    if (e.key === 'Escape') {
+      closeAdminSheet();
+      return;
+    }
+    // Focus trap: cycle Tab within modal (#P9-17)
+    if (e.key === 'Tab') {
+      const focusable = Array.from(sheet.querySelectorAll(
+        'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
+      )).filter(el => !el.hidden && el.offsetParent !== null);
+      if (focusable.length === 0) { e.preventDefault(); return; }
+      const first = focusable[0], last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault(); last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first.focus();
+      }
+    }
   }
 });
 
