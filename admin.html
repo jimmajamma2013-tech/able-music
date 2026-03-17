@@ -580,6 +580,11 @@ body::before {
 .milestone-card:not([hidden]) {
   animation: milestoneEnter 0.35s var(--ease) both;
 }
+
+/* P1.4 — "It's working" entrance animation */
+#itsWorkingCard {
+  animation: milestoneEnter 0.3s var(--ease-decel) both;
+}
 .milestone-icon { font-size:18px; flex-shrink:0; color:var(--acc); }
 .milestone-text { flex:1; font-size:13px; font-weight:500; color:var(--dash-text); }
 .milestone-dismiss { background:none; border:none; color:var(--dash-t3); font-size:18px; cursor:pointer; padding:0 4px; font-family:var(--font); }
@@ -7271,7 +7276,7 @@ function copyPageUrl() {
     const btn = document.getElementById('settingsCopyBtn');
     if (!btn) return;
     const orig = btn.innerHTML;
-    btn.textContent = 'Copied!';
+    btn.textContent = 'Copied.';
     btn.style.transition = 'background 0ms';
     btn.style.background = 'var(--acc)';
     btn.style.color = '#0a0b0f';
@@ -7293,7 +7298,7 @@ function copyUtmUrl(source) {
     const btn = document.getElementById(btnId);
     if (!btn) return;
     const orig = btn.innerHTML;
-    btn.textContent = 'Copied!';
+    btn.textContent = 'Copied.';
     btn.style.transition = 'background 0ms';
     btn.style.background = 'var(--acc)';
     btn.style.color = '#0a0b0f';
