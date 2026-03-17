@@ -11714,7 +11714,12 @@
     // Service Worker registration
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => {
+            // J3 #2: force SW update check on every page load
+            reg.update();
+          })
+          .catch(() => {});
       });
     }
   </script>

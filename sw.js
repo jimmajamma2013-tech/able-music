@@ -8,7 +8,7 @@
  * Bump CACHE_VERSION to invalidate all caches on deploy.
  */
 
-const CACHE_VERSION = 'able-v3';
+const CACHE_VERSION = 'able-v4'; // bumped 2026-03-17 — Wave 1 audit fixes
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE   = `${CACHE_VERSION}-pages`;
 

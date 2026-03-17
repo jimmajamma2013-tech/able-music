@@ -1999,10 +1999,12 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(function(err) {
-        // Log unexpected failures for debugging (not shown to user)
-        if (err && err.name !== 'SecurityError') console.warn('[SW]', err.message);
-      });
+      navigator.serviceWorker.register('/sw.js')
+        .then(function(reg) { reg.update(); })
+        .catch(function(err) {
+          // Log unexpected failures for debugging (not shown to user)
+          if (err && err.name !== 'SecurityError') console.warn('[SW]', err.message);
+        });
     }
   </script>
 
