@@ -555,6 +555,17 @@ body::before {
 .ai-body strong { color:var(--dash-text); font-weight:600; }
 .ai-time { font-size:10px; color:var(--dash-t3); }
 
+/* ── MILESTONE CARD ── */
+.milestone-card {
+  display:flex; align-items:center; gap:12px;
+  padding:14px 16px; border-radius:12px; margin-bottom:16px;
+  background:rgba(var(--acc-rgb),0.08); border:1px solid rgba(var(--acc-rgb),0.2);
+  transition:opacity 0.4s;
+}
+.milestone-icon { font-size:18px; flex-shrink:0; color:var(--acc); }
+.milestone-text { flex:1; font-size:13px; font-weight:500; color:var(--dash-text); }
+.milestone-dismiss { background:none; border:none; color:var(--dash-t3); font-size:18px; cursor:pointer; padding:0 4px; font-family:var(--font); }
+
 /* ── PAGE HEADER ── */
 .page-header { margin-bottom:24px; }
 #page-home .page-header { margin-bottom:14px; }
@@ -1397,10 +1408,22 @@ body::before {
       text-align: right;
     }
     .export-btn {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--dash-t2);
-      text-decoration: none;
+      display:inline-flex; align-items:center; gap:6px;
+      padding:10px 18px; border-radius:100px; font-size:12px; font-weight:600;
+      color:var(--acc); background:rgba(var(--acc-rgb),0.08);
+      border:1px solid rgba(var(--acc-rgb),0.2);
+      cursor:pointer; font-family:var(--font); transition:background .14s;
+      text-decoration:none;
+    }
+    .export-btn:hover { background:rgba(var(--acc-rgb),0.14); }
+    .fan-new-badge {
+      display:inline-block; padding:2px 7px; border-radius:100px;
+      background:rgba(var(--acc-rgb),0.12); color:var(--acc);
+      font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+      vertical-align:middle; margin-left:4px;
+    }
+    .fan-ownership-note {
+      font-size:11px; color:var(--dash-t3); text-align:center; padding:16px 0 4px;
     }
     .source-breakdown {
       padding: 16px;
@@ -2433,6 +2456,13 @@ body::before {
       </div>
     </div>
 
+    <!-- Milestone moment card — shown once per milestone, auto-dismisses 4s -->
+    <div id="milestoneCard" class="milestone-card" hidden>
+      <span class="milestone-icon">✦</span>
+      <p class="milestone-text" id="milestoneText"></p>
+      <button class="milestone-dismiss" onclick="this.closest('#milestoneCard').hidden=true" aria-label="Dismiss">×</button>
+    </div>
+
     <!-- Stats row — secondary, below Campaign HQ -->
     <div class="stats-row">
       <div class="stat-card">
@@ -3297,6 +3327,8 @@ body::before {
       <a class="export-btn" id="fansExportBtn" href="#" download="fans.csv">Export CSV →</a>
     </div>
 
+    <p class="fan-ownership-note">These emails are yours. Not ABLE's. Not anyone else's.</p>
+
     <div class="source-breakdown" id="sourceBreakdown">
       <div class="breakdown-title">Where fans found you</div>
       <div id="sourceBreakdownBars"></div>
@@ -3559,12 +3591,46 @@ const LEVEL_STYLES = {
   listener:  { label:'Listener',  bg:'rgba(255,255,255,.04)',      color:'var(--t3)' },
 };
 
+// ── MILESTONE MOMENTS ──
+const MILESTONES = [1, 10, 50, 100, 250, 500, 1000];
+const MILESTONE_COPY = {
+  1:    'Your first fan. This is how every list starts.',
+  10:   '10 fans. 10 people who said yes.',
+  50:   '50 fans. 50 people your music reached directly.',
+  100:  '100 fans. This is the free tier limit — and it means 100 people found you on their own.',
+  250:  '250 fans. Word is getting around.',
+  500:  '500 fans. Half a thousand people chose to stay close.',
+  1000: '1,000 fans. This is real.',
+};
+
+function checkAndShowMilestone(fans) {
+  const count = fans.length;
+  const reached = MILESTONES.filter(m => m <= count);
+  if (!reached.length) return;
+  const highest = reached[reached.length - 1];
+  const key = `milestone_${highest}_shown`;
+  if (localStorage.getItem(key)) return;
+  localStorage.setItem(key, '1');
+
+  const card = document.getElementById('milestoneCard');
+  if (!card) return;
+  const txt = document.getElementById('milestoneText');
+  if (txt) txt.textContent = MILESTONE_COPY[highest] || `${highest} fans.`;
+  card.hidden = false;
+  setTimeout(() => {
+    card.style.opacity = '0';
+    card.style.transition = 'opacity 0.4s';
+    setTimeout(() => { card.hidden = true; card.style.opacity = ''; }, 400);
+  }, 4000);
+}
+
 // ── FAN LIST PAGE ──
 let _activeFanFilter = 'all';
 
 function renderFanList(filter) {
   if (filter !== undefined) _activeFanFilter = filter;
   const allFans = safeLS('able_fans', []);
+  checkAndShowMilestone(allFans);
   const search = (document.getElementById('fansSearch')?.value || '').toLowerCase();
   const legacyStarredForFilter = safeLS('able_starred_fans', []);
   const filtered = allFans.filter(f => {
@@ -3627,13 +3693,15 @@ function renderFanList(filter) {
     const colour = avatarColours[initial.charCodeAt(0) % avatarColours.length];
     const isStarred = !!(f.isStarred || legacyStarred.includes(f.email));
     const isUnconfirmed = f.confirmed === false;
+    const isNew = (Date.now() - (f.ts || 0)) < 86400000;
+    const newBadge = isNew ? '<span class="fan-new-badge">new</span>' : '';
     const avatarHtml = isUnconfirmed
       ? `<div class="fan-avatar fan-avatar--unconfirmed" title="Awaiting confirmation">○</div>`
       : `<div class="fan-avatar" style="background:${colour}">${escHtml(initial)}</div>`;
     return `<div class="fan-list-row" data-email="${escHtml(f.email)}">
       ${avatarHtml}
       <div class="fan-row-info">
-        <div class="fan-row-email">${escHtml(f.email)}${isUnconfirmed ? ' <span class="unconfirmed-label">pending</span>' : ''}</div>
+        <div class="fan-row-email">${escHtml(f.email)}${isUnconfirmed ? ' <span class="unconfirmed-label">pending</span>' : ''}${newBadge}</div>
         <div class="fan-row-meta">${relTime(f.ts)}</div>
       </div>
       <span class="source-badge ${src}">${src.toUpperCase()}</span>
@@ -7639,13 +7707,20 @@ function updateFrcProgress() {
   if (bar) bar.style.width = (done / total * 100) + '%';
   if (lbl) lbl.textContent = done + ' of ' + total + ' done';
   if (done >= total) {
-    // Brief accent flash on the strip, then auto-dismiss
+    // Brief accent flash on the strip, then show completion message and fade
     const fill = document.getElementById('frcProgress');
     if (fill) { fill.style.background = 'var(--dash-green)'; }
     setTimeout(() => {
       localStorage.setItem('able_frc_dismissed', '1');
-      const frc = document.getElementById('firstRunCard');
-      if (frc) { frc.style.opacity = '0'; frc.style.transition = 'opacity .4s'; setTimeout(() => frc.hidden = true, 400); }
+      const frcCard = document.getElementById('firstRunCard');
+      if (frcCard) {
+        frcCard.innerHTML = `<div style="text-align:center;padding:20px 16px;color:var(--acc);font-size:13px;font-weight:600;">Your page is ready. This is where your fans start.</div>`;
+        setTimeout(() => {
+          frcCard.style.opacity = '0';
+          frcCard.style.transition = 'opacity 0.4s';
+          setTimeout(() => { frcCard.style.display = 'none'; }, 400);
+        }, 2200);
+      }
     }, 1400);
   }
 }
