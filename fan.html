@@ -1663,6 +1663,8 @@
         </div>
       `
       el.addEventListener('click', () => {
+        // C16 #4 — track artist card tap
+        try { const _c=safeGet('able_clicks',[]); _c.push({label:'artist-card',type:'navigation',ts:Date.now()}); safeSet('able_clicks',_c); } catch(_) {}
         const slug = artist.id || artist.slug || ''
         const dest = item.url || (slug ? `https://ablemusic.co/${encodeURIComponent(slug)}?src=fan-dashboard` : null)// C14 #39
         if (dest) window.open(dest, '_blank', 'noopener')
@@ -1726,6 +1728,7 @@
     el.className = 'artist-card'
     el.style.animationDelay = `${idx * 40}ms`
     el.setAttribute('role', 'article')
+    el.setAttribute('tabindex', '0') // C16 #10 — keyboard-focusable
 
     const reasonHtml = opts.reason
       ? `<p class="artist-card__reason">${escHtml(opts.reason)}</p>`
@@ -2361,6 +2364,8 @@
   // === INIT =================================================
 
   function init() {
+    // C16 #5 — record last visit timestamp for "New" badge calculation
+    try { localStorage.setItem('fan_last_visit', Date.now()); } catch (_) {}
     initArrival()
     renderFollowing()
     renderSubGreeting()

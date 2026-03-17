@@ -44,6 +44,8 @@
   <meta name="twitter:description" id="tw-description" content="Music, events, and more — direct from the artist.">
   <meta name="twitter:image"       id="tw-image"       content="https://ablemusic.co/og-default.jpg">
   <meta name="twitter:site"        content="@ablefm">
+  <meta name="twitter:label1"      content="Artist">
+  <meta name="twitter:data1"       id="tw-data1"      content="Independent artist on ABLE">
 
   <!-- PWA -->
   <link rel="manifest" href="/manifest.json">
@@ -5620,6 +5622,7 @@
                    autocorrect="off" spellcheck="false"
                    enterkeyhint="go"
                    placeholder="your@email.com"
+                   aria-label="Your email address"
                    aria-required="true"
                    aria-describedby="fan-error fan-trust fan-consent">
             <button class="fan-capture__btn btn-primary pressable" type="submit"
@@ -6086,8 +6089,8 @@
       const toast = document.createElement('div')
       toast.id = 'ableToast'
       toast.className = 'able-toast able-toast--' + tone
-      toast.setAttribute('role', 'status')
-      toast.setAttribute('aria-live', 'polite')
+      toast.setAttribute('role', 'alert') // C16 #24 — assertive announcement for screen readers
+      toast.setAttribute('aria-live', 'assertive')
       // H1 — use DOM APIs (not innerHTML) so message is never treated as HTML (XSS fix)
       const dot = document.createElement('span'); dot.className = 'toast-dot'
       const msg = document.createElement('span'); msg.className = 'toast-message'; msg.textContent = message
@@ -7919,7 +7922,7 @@
       a.href = isSafeUrl(platform.url) ? platform.url : '#'
       a.target = '_blank'
       a.rel = 'noopener noreferrer'
-      a.setAttribute('aria-label', platform.label || platform.name)
+      a.setAttribute('aria-label', (platform.label || platform.name) + ', opens in new tab') // C16 #30
 
       const brandColor = getPlatformBrandColor(platform.type, platform.url)
 
@@ -11134,6 +11137,7 @@
       setMeta('tw-title',       name)
       setMeta('tw-description', desc)
       setMeta('tw-image',       ogImage)
+      setMeta('tw-data1',       name) // C16 #35 — artist name in twitter:data1
       setMeta('meta-description', desc)
       document.title = `${name} — Music, shows & more | ABLE`
 
