@@ -8,7 +8,7 @@
 const { test, expect } = require('@playwright/test');
 
 const PAGES = [
-  { name: 'profile',  path: '/able-v7.html' },
+  { name: 'profile',  path: '/able-v8.html' },
   { name: 'admin',    path: '/admin.html' },
   { name: 'start',    path: '/start.html' },
   { name: 'landing',  path: '/landing.html' },
@@ -43,7 +43,7 @@ for (const { name, path } of PAGES) {
 // 1.2 — Four themes render correctly on artist profile (no white-on-white)
 // ---------------------------------------------------------------------------
 test('profile: all 4 themes apply without invisible text', async ({ page }) => {
-  await page.goto('/able-v7.html');
+  await page.goto('/able-v8.html');
   const themes = ['dark', 'light', 'glass', 'contrast'];
   for (const theme of themes) {
     await page.evaluate(t => {
@@ -66,7 +66,7 @@ test('profile: fan sign-up writes email to localStorage', async ({ page }) => {
       name: 'Test Artist', accent: '#e05242', slug: 'test-artist',
     }));
   });
-  await page.goto('/able-v7.html');
+  await page.goto('/able-v8.html');
 
   // Switch to Fan view — profile load triggers owner edit mode which intercepts clicks
   await page.evaluate(() => {

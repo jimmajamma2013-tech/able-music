@@ -34,7 +34,7 @@ const BANNED_PHRASES = [
  * not user-facing copy, and token names are exempt from the banned list.
  */
 const ACTIVE_FILES = [
-  '/able-v7.html',
+  '/able-v8.html',
   '/admin.html',
   '/start.html',
   '/landing.html',

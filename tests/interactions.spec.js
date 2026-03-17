@@ -16,7 +16,7 @@ test('profile: CTA button scales down on pointerdown', async ({ page }) => {
       name: 'Test Artist', accent: '#e05242',
     }));
   });
-  await page.goto('/able-v7.html');
+  await page.goto('/able-v8.html');
 
   // Switch to fan view so edit-mode interceptors don't block
   await page.evaluate(() => {
@@ -54,7 +54,7 @@ test('profile: tab indicator moves when second tab is clicked', async ({ page })
       name: 'Test', accent: '#e05242',
     }));
   });
-  await page.goto('/able-v7.html');
+  await page.goto('/able-v8.html');
 
   const tabs = page.locator('.tab-btn, [role="tab"]');
   if (await tabs.count() < 2) return;
@@ -84,7 +84,7 @@ test('profile: countdown renders when stateOverride is "pre"', async ({ page }) 
     }));
   }, futureDate);
 
-  await page.goto('/able-v7.html');
+  await page.goto('/able-v8.html');
   const countdown = page.locator('.countdown, [class*="countdown"]').first();
   if (await countdown.count() > 0) {
     await expect(countdown).toBeVisible({ timeout: 5000 });
@@ -101,7 +101,7 @@ test('profile: sticky artist bar becomes visible after scrolling past hero', asy
       name: 'Test Artist', accent: '#e05242',
     }));
   });
-  await page.goto('/able-v7.html');
+  await page.goto('/able-v8.html');
 
   // Scroll well past the hero
   const scrollHeight = await page.evaluate(() => document.documentElement.scrollHeight);

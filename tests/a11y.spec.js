@@ -7,7 +7,7 @@
 const { test, expect } = require('@playwright/test');
 
 const PAGES = [
-  { name: 'profile',  path: '/able-v7.html' },
+  { name: 'profile',  path: '/able-v8.html' },
   { name: 'admin',    path: '/admin.html' },
   { name: 'start',    path: '/start.html' },
   { name: 'landing',  path: '/landing.html' },
@@ -65,7 +65,7 @@ test('profile: focus ring visible on interactive elements', async ({ page }) => 
       name: 'Test', accent: '#e05242',
     }));
   });
-  await page.goto('/able-v7.html');
+  await page.goto('/able-v8.html');
 
   // Tab to first focusable element after skip link
   await page.keyboard.press('Tab');
@@ -96,7 +96,7 @@ test('profile: interactive elements meet 44px minimum tap target at 375px', asyn
       name: 'Test', accent: '#e05242',
     }));
   });
-  await page.goto('/able-v7.html');
+  await page.goto('/able-v8.html');
 
   const violations = await page.evaluate(() => {
     const interactives = document.querySelectorAll(
@@ -147,7 +147,7 @@ test('profile: prefers-reduced-motion reduces animation durations to near-zero',
       name: 'Test', accent: '#e05242',
     }));
   });
-  await page.goto('/able-v7.html');
+  await page.goto('/able-v8.html');
 
   // Find any animated element and check its computed duration
   const result = await page.evaluate(() => {
@@ -179,7 +179,7 @@ test('profile: prefers-reduced-motion reduces animation durations to near-zero',
 // 4.6 — Skip link is the first focusable element
 // ---------------------------------------------------------------------------
 test('profile: skip-to-content link is first focusable element', async ({ page }) => {
-  await page.goto('/able-v7.html');
+  await page.goto('/able-v8.html');
   await page.keyboard.press('Tab');
   const firstFocused = await page.evaluate(() => {
     const el = document.activeElement;
