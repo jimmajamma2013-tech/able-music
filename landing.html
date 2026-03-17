@@ -1839,6 +1839,10 @@
   </footer>
 
   <script>
+    // Global error handlers (H9 #1-2)
+    window.addEventListener('unhandledrejection', function(e) { console.error('[ABLE] Unhandled rejection:', e.reason); });
+    window.onerror = function(msg, src, line, col, err) { console.error('[ABLE] Global error:', msg, err); };
+
     // FAQ — event delegation (no inline handlers)
     document.addEventListener('DOMContentLoaded', function() {
       const faqList = document.getElementById('faqList');

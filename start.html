@@ -1573,6 +1573,10 @@ const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null
    localStorage written only on the Done screen.
    ═══════════════════════════════════════════════════════════ */
 
+/* ── GLOBAL ERROR HANDLERS (H9 #1-2) ── */
+window.addEventListener('unhandledrejection', function(e) { console.error('[ABLE] Unhandled rejection:', e.reason); });
+window.onerror = function(msg, src, line, col, err) { console.error('[ABLE] Global error:', msg, err); };
+
 /* ── SAFE STORAGE ── */
 function safeLS(key, fallback) {
   try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
