@@ -1131,8 +1131,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 </div>
 
 <div class="view-toggle">
-  <button class="vt-btn on" id="vtForm" onclick="setView('form')">Setup</button>
-  <button class="vt-btn" id="vtPreview" onclick="setView('preview')">See your page →</button>
+  <button type="button" class="vt-btn on" id="vtForm" onclick="setView('form')">Setup</button>
+  <button type="button" class="vt-btn" id="vtPreview" onclick="setView('preview')">See your page →</button>
 </div>
 
 <main class="layout" data-view="form" id="layout">
@@ -1174,10 +1174,10 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
         </div>
 
         <div class="step-nav" style="flex-direction:column;gap:10px;">
-          <button class="btn-next" id="spotifyImportBtn" onclick="doSpotifyImport()">
+          <button type="button" class="btn-next" id="spotifyImportBtn" onclick="doSpotifyImport()">
             Find me on Spotify →
           </button>
-          <button class="btn-skip" onclick="goToStep('step1')">
+          <button type="button" class="btn-skip" onclick="goToStep('step1')">
             I'm not on Spotify →
           </button>
         </div>
@@ -1207,10 +1207,10 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
         </div>
 
         <div class="step-nav" style="flex-direction:column;gap:10px;margin-top:20px;">
-          <button class="btn-next" id="ltImportBtn" onclick="doLinktreeImport()">
+          <button type="button" class="btn-next" id="ltImportBtn" onclick="doLinktreeImport()">
             Import my links →
           </button>
-          <button class="btn-skip" onclick="goToStep('step1')">
+          <button type="button" class="btn-skip" onclick="goToStep('step1')">
             I'll add links manually →
           </button>
         </div>
@@ -1229,37 +1229,37 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       <div class="moment-grid" id="v2MomentGrid">
         <button class="moment-card" data-mode="profile" type="button" onclick="v2SelectMoment('profile',this)">
           <span class="moment-card__icon">✦</span>
-          <div>
+          <span class="moment-card__body">
             <span class="moment-card__label">Just existing</span>
             <span class="moment-card__desc">Your full profile — music, links, who you are.</span>
-          </div>
+          </span>
         </button>
         <button class="moment-card" data-mode="pre-release" type="button" onclick="v2SelectMoment('pre-release',this)">
           <span class="moment-card__icon">⏳</span>
-          <div>
+          <span class="moment-card__body">
             <span class="moment-card__label">Something's coming</span>
             <span class="moment-card__desc">Countdown to your release. Fans can pre-save.</span>
-          </div>
+          </span>
         </button>
         <button class="moment-card" data-mode="live" type="button" onclick="v2SelectMoment('live',this)">
           <span class="moment-card__icon">▶</span>
-          <div>
+          <span class="moment-card__body">
             <span class="moment-card__label">Just dropped</span>
             <span class="moment-card__desc">Stream links front and centre. Music plays on your page.</span>
-          </div>
+          </span>
         </button>
         <button class="moment-card" data-mode="gig" type="button" onclick="v2SelectMoment('gig',this)">
           <span class="moment-card__icon">🎤</span>
-          <div>
+          <span class="moment-card__body">
             <span class="moment-card__label">Playing tonight</span>
             <span class="moment-card__desc">Tickets jump to the front. Fans know what to do.</span>
-          </div>
+          </span>
         </button>
       </div>
 
       <div class="step-nav">
-        <button class="btn-back" onclick="goToStep('stepA')">← Back</button>
-        <button class="btn-next" id="v2MomentNext" onclick="tryStep1()" disabled>Next →</button>
+        <button type="button" class="btn-back" onclick="goToStep('stepA')">← Back</button>
+        <button type="button" class="btn-next" id="v2MomentNext" onclick="tryStep1()" disabled>Next →</button>
       </div>
     </div>
 
@@ -1313,8 +1313,8 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
       </div>
 
       <div class="step-nav">
-        <button class="btn-back" onclick="goToStep('step1')">← Back</button>
-        <button class="btn-next" onclick="tryStep2()">Next →</button>
+        <button type="button" class="btn-back" onclick="goToStep('step1')">← Back</button>
+        <button type="button" class="btn-next" onclick="tryStep2()">Next →</button>
       </div>
     </div>
 
@@ -1338,13 +1338,13 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
 
       <div id="step3Form">
         <div class="step-nav" style="flex-direction:column;gap:10px;">
-          <button class="btn-next" style="background:#f4b942;color:#121a24;width:100%;padding:14px;font-size:15px;" onclick="tryStep3()">
+          <button type="button" class="btn-next" style="background:#f4b942;color:#121a24;width:100%;padding:14px;font-size:15px;" onclick="tryStep3()">
             Make it real →
           </button>
           <p style="font-size:11px;color:var(--t3);text-align:center;margin:0;">Magic link — no password needed.</p>
         </div>
         <div class="step-nav" style="margin-top:8px;">
-          <button class="btn-back" onclick="goToStep('step2')">← Back</button>
+          <button type="button" class="btn-back" onclick="goToStep('step2')">← Back</button>
         </div>
       </div>
 
@@ -1356,7 +1356,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
           <p style="font-size:12px;color:var(--t3);margin:0;">Click it and you'll see your page.</p>
         </div>
         <p style="font-size:11px;color:var(--t3);text-align:center;margin:16px 0 8px;">Can't find it? Try your spam folder, or search for "ablemusic.co".</p>
-        <button class="auth-skip" onclick="goToStep('stepDone')">Continue without signing in →</button>
+        <button type="button" class="auth-skip" onclick="goToStep('stepDone')">Continue without signing in →</button>
       </div>
     </div>
 
@@ -1376,11 +1376,11 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
         <div class="done-share" style="margin-top:16px;">
           <div class="done-share-lbl">Share to announce you're live →</div>
           <div class="done-share-row">
-            <button class="done-share-btn primary-share" id="v2ShareCardBtn" onclick="shareDay1Card()">
+            <button type="button" class="done-share-btn primary-share" id="v2ShareCardBtn" onclick="shareDay1Card()">
               <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><path d="M7 1L4 4h2v5h2V4h2L7 1zM2 11v1h10v-1H2z"/></svg>
               Share card
             </button>
-            <button class="done-share-btn" id="v2CopyBtn" onclick="v2CopyLink()">
+            <button type="button" class="done-share-btn" id="v2CopyBtn" onclick="v2CopyLink()">
               <svg viewBox="0 0 14 14" fill="currentColor" width="13" height="13"><rect x="1" y="4" width="9" height="9" rx="1.5"/><path d="M4 4V2.5A1.5 1.5 0 015.5 1h7A1.5 1.5 0 0114 2.5v7A1.5 1.5 0 0112.5 11H11" fill="currentColor"/></svg>
               Copy link
             </button>
@@ -1388,7 +1388,7 @@ textarea.field-input { resize:none; height:76px; line-height:1.5; }
         </div>
       </div>
 
-      <button class="done-preview-toggle" onclick="setView('preview')">See your page →</button>
+      <button type="button" class="done-preview-toggle" onclick="setView('preview')">See your page →</button>
 
       <div class="done-actions" style="margin-top:20px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;">
         <a id="doneViewPageBtn" href="/able-v7.html" class="done-open" style="display:inline-block;text-decoration:none;padding:13px 24px;border-radius:100px;font-size:14px;font-weight:600;background:var(--acc);color:#121a24;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(var(--acc-rgb),.3);transition:all .2s var(--spring);" target="_blank" rel="noopener">
