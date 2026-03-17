@@ -8380,7 +8380,7 @@
 
     const SB_URL = 'https://jgspraqrnjrerzhnnhtb.supabase.co'
     const SB_KEY = 'sb_publishable_pRmYph3-GYIeZEeKyY1_sg_5sOPkQp_'
-    const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null
+    let sb = null; try { sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null } catch(_) {} // C3 #43
 
     function getArtistId() {
       let id = localStorage.getItem('able_artist_id')

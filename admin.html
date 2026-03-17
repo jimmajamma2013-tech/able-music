@@ -3803,7 +3803,7 @@ window.onerror = function(msg, src, line, col, err) {
 /* ── SUPABASE ── */
 const SB_URL = 'https://jgspraqrnjrerzhnnhtb.supabase.co';
 const SB_KEY = 'sb_publishable_pRmYph3-GYIeZEeKyY1_sg_5sOPkQp_';
-const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null;
+let sb = null; try { sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null; } catch(_) { console.warn('[ABLE] Supabase init failed — localStorage fallback active'); } // C3 #43
 
 /* ── AUTH ── */
 if (sb) {
@@ -4595,6 +4595,12 @@ function setLS(key, val) {
   catch (e) {
     if (e.name === 'QuotaExceededError') {
       showToast('Your device is running low on storage. Export your fans as CSV to free space.', 'amber');
+      // C3 #45 — prune event logs to make room, then retry once
+      try {
+        const views = safeLS('able_views', []); if (views.length > 30) localStorage.setItem('able_views', JSON.stringify(views.slice(-30)));
+        const clicks = safeLS('able_clicks', []); if (clicks.length > 50) localStorage.setItem('able_clicks', JSON.stringify(clicks.slice(-50)));
+        localStorage.setItem(key, JSON.stringify(val)); // retry
+      } catch (_) {}
     } else if (e.name === 'SecurityError') {
       // Safari private mode — localStorage is quota-zero; degrade silently (#P10-40)
     } else {
