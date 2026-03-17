@@ -12,6 +12,9 @@
 4. `docs/pages/[page]/DESIGN-SPEC.md` — before editing that page
 5. Relevant system `SPEC.md` — before touching that system
 
+**Before any build session — 10-minute protocol** (`docs/process/BUILD-CONFIDENCE.md §11`):
+`git status` (clean tree) → read today's DESIGN-SPEC section → confirm localStorage key names → Playwright baseline screenshot → parse-check JS (`node -e "new Function(src)"`) → theme spot-check → 375px mobile check → banned-phrase scan on any copy changed
+
 Navigation: `docs/FILE-STRUCTURE.md` (full 347-doc map) · `docs/INDEX.md` (alphabetical)
 Codebase map: `PROJECT_INDEX.md` (section IDs, JS functions, localStorage schema)
 
@@ -269,6 +272,7 @@ Override via `profile.stateOverride`. Gig mode: manual, 24hr, stored in `able_gi
 | Email | Confirmation email is from the artist, not ABLE. ABLE appears in footer only |
 | Data architecture | Never rename localStorage keys. They are Supabase table names |
 | Fan capture | GDPR Article 7 consent text must be visible before submit — "Just the artist. No spam." is not compliant |
+| Dashboard fan value | Artists who see 12 email sign-ups vs 200 Instagram follows will churn unless the dashboard shows them why 12 emails outperforms 200 follows commercially. Make the value visible: "Your 12 fans reach like 400 followers — 4× more likely to buy tickets." (GPT review validated) |
 | OG cards | `og:image` must be an `https://` URL — data: URIs don't produce valid share cards |
 | PWA | Icons must be verified on real devices — broken home screen icons destroy premium feel |
 
@@ -435,14 +439,13 @@ From `docs/GROWTH_STRATEGY.md`. Producer seeding is the engine.
 
 ## P0 bug fixes — before any feature work
 
-From `docs/BUILD-READY-INDEX.md`. Fix these first, they take ~1 hour total:
+From `docs/BUILD-READY-INDEX.md`. These remain open:
 
-1. `admin.html` — `--dash-t3` is `#888888` (WCAG AA fail) → change to `#767676`
-2. `admin.html` — hardcoded `#888` fallback at L182, L184, L536, L617 → replace with `var(--dash-t3)`
-3. `able-v7.html` — `<meta name="description">` has no `id` → add `id="meta-description"`
-4. `able-v7.html` — `og:image` broken for data:/blob: URIs → skip setting when not an https:// URL
-5. `admin.html` — `able_profile` / `able_v3_profile` key conflict → migrate on load in `initAdmin()`
-6. All files — focus ring uses flat outline → implement `box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--acc)`
+1. `able-v7.html` — `<meta name="description">` has no `id` → add `id="meta-description"`
+2. `admin.html` — `able_profile` / `able_v3_profile` key conflict → `migrateWizardKey()` in `initAdmin()` DOMContentLoaded
+3. All files — focus ring uses flat outline → `box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--acc)`
+
+Done: `--dash-t3` #888888 → #767676 ✅, hardcoded `#888` → `var(--dash-t3)` ✅, og:image data: URI fix ✅
 
 ---
 
@@ -464,7 +467,18 @@ These specs are complete and referenced here so agents know they exist — but b
 
 **V1 showcase equivalent:** The campaign state machine (profile/pre-release/live/gig) already drives profile section emphasis. This is functionally equivalent to showcase mode for V1 artists.
 
-**Never building (ever):** Open CSS editor · arbitrary font upload · unlimited colour palette · AI-generated layouts · artist rating/review system · fan direct messages · fan gamification/leaderboards · pay-per-post fan content · "going viral" anywhere in copy · Rooms/Stage Can community features · Story Mode video assembly
+**Never building (ever) — technical:** Open CSS editor · arbitrary font upload · unlimited colour palette · AI-generated layouts · artist rating/review system · fan direct messages · pay-per-post fan content · "going viral" anywhere in copy · Rooms/Stage Can community features · Story Mode video assembly
+
+**Never building (ever) — philosophical** (from `docs/systems/transcendence/NEVER-SHIP.md`):
+- **Push notifications** — ABLE doesn't interrupt. It waits. Entering the attention economy is not winnable.
+- **Social feed + engagement metrics** — no likes, no reactions. The moment it's added, it becomes a platform.
+- **Algorithmic discovery** — discovery via credits and referrals only. Never "suggested for you."
+- **Gamification** — no badges, no streaks. "100 people asked to hear from you" not "🏆 Superfan Collector."
+- **Public feed of all ABLE artists** — directory is opt-in search, never a scroll feed.
+- **Analytics that make artists anxious** — no bounce rate, no time on page, no heatmaps. Show only: sign-ups, CTA clicks, visits, source.
+- **Template marketplace** — identity derives from who the artist is, not a shelf of pre-designed options.
+- **Revenue cut on fan support** — 0% always. Subscription model only. Beacons takes 9%, we take nothing.
+- **Onboarding with more fields than needed** — defend the 3-step wizard aggressively. Never 5 steps.
 
 ---
 
