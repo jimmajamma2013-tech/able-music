@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
   <meta name="theme-color" content="#0d0e1a">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data: blob:; media-src *; frame-src 'self' about: https://open.spotify.com https://w.soundcloud.com https://www.youtube.com https://bandcamp.com https://embed.music.apple.com; connect-src 'self' https:;">
@@ -425,6 +425,8 @@
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
     }
+    /* iOS Safari zooms viewport on any input with font-size < 16px — defensive backstop (E5) */
+    input, textarea, select { font-size: max(16px, 1rem); }
 
     html {
       height: 100%;
@@ -5538,7 +5540,7 @@
               <span class="fan-submit-check" hidden>✓</span>
             </button>
           </div>
-          <p class="fan-capture__error" id="fan-error" role="alert" aria-live="polite" hidden></p>
+          <p class="fan-capture__error" id="fan-error" role="alert" aria-live="assertive" hidden></p>
         </form>
         <p class="fan-capture__trust" id="fan-trust">Your email goes to <span id="fan-artist-name">the artist</span> — not to ABLE. Unsubscribe any time.</p>
         <p class="fan-capture__gdpr" id="fan-consent">By signing up, <span id="consent-artist">the artist</span> can contact you about their music. They own your contact details — ABLE stores them on their behalf. <a href="/privacy.html" target="_blank" rel="noopener" class="fan-capture__gdpr-link">Privacy policy</a>.</p>
@@ -5761,11 +5763,12 @@
                    enterkeyhint="go"
                    placeholder="your@email.com"
                    aria-required="true"
-                   aria-describedby="fan-trust-2">
+                   aria-describedby="fan-error-2 fan-trust-2">
             <button class="fan-capture__btn btn-primary pressable" type="submit">
               <span>I'm in</span>
             </button>
           </div>
+          <p class="fan-capture__error" id="fan-error-2" role="alert" aria-live="assertive" hidden></p>
         </form>
         <p class="fan-capture__trust" id="fan-trust-2">Your email goes to the artist — not to ABLE. Unsubscribe any time.</p>
         <p class="fan-capture__gdpr" id="fan-consent-2">By signing up, <span id="consent-artist-2">the artist</span> can contact you about their music. They own your contact details — ABLE stores them on their behalf. <a href="/privacy.html" target="_blank" rel="noopener">Privacy policy</a>.</p>

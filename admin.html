@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data: blob:; frame-src https://open.spotify.com https://w.soundcloud.com https://www.youtube.com; connect-src 'self' https:;">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="robots" content="noindex,nofollow">
@@ -152,6 +152,8 @@
 .skip-link { position:absolute; top:-100%; left:8px; z-index:9999; background:var(--dash-card); color:var(--dash-text); padding:8px 16px; border-radius:var(--r-sm); font-size:13px; font-weight:600; border:2px solid var(--acc); text-decoration:none; transition:top 0.15s; }
 .skip-link:focus-visible { top:8px; box-shadow:none; }
 *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+/* iOS Safari zooms viewport on any input with font-size < 16px — defensive backstop (E5) */
+input, textarea, select { font-size: max(16px, 1rem); }
 html { font-size:16px; }
 /* ── FOCUS VISIBILITY (WCAG 2.2 AA) ── */
 *:focus:not(:focus-visible) { outline: none; }
@@ -423,6 +425,8 @@ body::before {
   background:rgba(var(--acc-rgb),.12); color:var(--acc-t);
   transition:background var(--dur-fast), opacity var(--dur-fast);
 }
+/* Global disabled state (F6 #7,#10) */
+button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
 .ai-trigger:hover { background:rgba(var(--acc-rgb),.22); }
 .ai-trigger:disabled { opacity:.45; cursor:not-allowed; }
 .ai-trigger__icon { font-size:12px; }
@@ -1414,7 +1418,7 @@ body::before {
       background: var(--dash-field);
       border: 1px solid var(--dash-border);
       color: var(--dash-text);
-      font-size: 14px;
+      font-size: 16px; /* iOS: must be ≥16px to prevent viewport zoom (E5) */
       font-family: var(--font);
       box-sizing: border-box;
     }
@@ -2056,7 +2060,7 @@ body::before {
       transition: color var(--dur-fast), border-color var(--dur-fast);
     }
     .section-order-btn:hover { color: #fff; border-color: rgba(255,255,255,.25); }
-    .section-order-btn:disabled { opacity: .2; cursor: default; }
+    .section-order-btn:disabled { opacity: .2; cursor: not-allowed; }
 
 /* ── PROFILE IDENTITY CARD ── */
 .feel-picker {
@@ -2602,7 +2606,7 @@ body::before {
             <span class="tooltip-bubble">Switch what your page is focused on right now — building up to a release, going live on drop day, pushing tickets for a show, or just your regular profile.</span>
           </span>
         </div>
-        <span class="chq-state-pill profile" id="chqStatePill">Profile</span>
+        <span class="chq-state-pill profile" id="chqStatePill" role="status" aria-live="polite">Profile</span>
       </div>
       <div class="chq-body">
         <!-- Top card preview — what fans see right now -->

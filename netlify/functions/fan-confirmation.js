@@ -53,17 +53,34 @@ exports.handler = async function (event) {
 
   const { fanEmail, artistName, artistSlug, campaignState, accentHex, releaseTitle } = body;
 
-  if (!fanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fanEmail)) {
-    return json(400, { error: 'fanEmail required' });
-  }
-  if (!artistName) {
-    return json(400, { error: 'artistName required' });
-  }
+  // ── Input validation (H5) ─────────────────────────────────────────────────
+  const VALID_STATES = new Set(['profile', 'pre-release', 'live', 'gig']);
 
-  const accent      = accentHex || '#f4b942';
-  const name        = artistName;
+  // Type guards
+  if (typeof fanEmail !== 'string')   return json(400, { error: 'fanEmail must be a string' });
+  if (typeof artistName !== 'string') return json(400, { error: 'artistName must be a string' });
+  if (artistSlug   !== undefined && typeof artistSlug   !== 'string') return json(400, { error: 'artistSlug must be a string' });
+  if (accentHex    !== undefined && typeof accentHex    !== 'string') return json(400, { error: 'accentHex must be a string' });
+  if (releaseTitle !== undefined && typeof releaseTitle !== 'string') return json(400, { error: 'releaseTitle must be a string' });
+
+  // fanEmail: RFC-compliant length checks + no control chars
+  if (!fanEmail || fanEmail.length < 6 || fanEmail.length > 254) return json(400, { error: 'fanEmail invalid length' });
+  if (/[\x00-\x1F\x7F\n\r]/.test(fanEmail))                     return json(400, { error: 'fanEmail contains invalid characters' });
+  if (!/^[^\s@]{1,64}@[^\s@]{1,255}$/.test(fanEmail))           return json(400, { error: 'fanEmail invalid format' });
+
+  // artistName: trim + length
+  const trimmedName = artistName.trim();
+  if (!trimmedName || trimmedName.length > 100) return json(400, { error: 'artistName invalid' });
+
+  // Optional field validation
+  if (artistSlug && !/^[a-z0-9-]{1,60}$/.test(artistSlug))        return json(400, { error: 'artistSlug invalid format' });
+  if (accentHex  && !/^#[0-9a-fA-F]{6}$/.test(accentHex))         return json(400, { error: 'accentHex invalid format' });
+  if (releaseTitle && releaseTitle.length > 200)                   return json(400, { error: 'releaseTitle too long' });
+
+  const accent      = (accentHex && /^#[0-9a-fA-F]{6}$/.test(accentHex)) ? accentHex : '#f4b942';
+  const name        = trimmedName;
   const slug        = artistSlug || '';
-  const state       = campaignState || 'profile';
+  const state       = VALID_STATES.has(campaignState) ? campaignState : 'profile';
   const profile     = slug ? `${baseUrl}/${slug}` : baseUrl;
   const fanDashboard = slug
     ? `${baseUrl}/fan.html?artist=${encodeURIComponent(slug)}&ref=email-confirm`
