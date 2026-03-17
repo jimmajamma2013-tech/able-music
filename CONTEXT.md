@@ -470,10 +470,12 @@ These specs are complete and referenced here so agents know they exist — but b
 
 ## Strategic reference docs (read when relevant, not every session)
 
-- `docs/USER-STORIES.md` — 48 user stories, 23 built, 13 partial, 12 Phase 2
+- `docs/USER-STORIES.md` — 48 user stories with build status per story — **check before claiming a feature is "done"**
+- `docs/EXECUTION_RISK.md` — top 5 risks ranked by score with kill signals — **read before any architectural decision**
+- `docs/VOICE-BIBLE.md` — 1-page voice guide — **read before writing any copy** (full reference: `docs/systems/copy/SPEC.md`)
 - `docs/GROWTH_STRATEGY.md` — full channel strategy with weekly timeline
-- `docs/MARKET_SIZING.md` — TAM/SAM/SOM, £2M ARR exit target, acquirer profiles
-- `docs/EXECUTION_RISK.md` — top 5 risks with kill signals
+- `docs/MARKET_SIZING.md` — full methodology, TAM/SAM/SOM, £2M ARR exit target, acquirer profiles
+- `docs/systems/market-size/ANALYSIS.md` — investor-ready summary numbers (use in conversations; updated 2026-03-16)
 - `docs/MARKET_VALIDATION.md` — 5-question interview script, NPS rules, pivot criteria
 - `docs/DECISION-LOG.md` — full history of every locked decision with reasoning
 - `docs/COMPONENT-LIBRARY.md` — reusable UI components with exact HTML/CSS
