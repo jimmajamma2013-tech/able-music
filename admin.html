@@ -7996,6 +7996,19 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
   const v3data = safeLS(V3_KEY, {});
   const wizData = {}; // legacy key already migrated above
 
+  // C16 #12 — detect data corruption: raw string exists but parsed to empty {}
+  ;(function() {
+    const _raw = localStorage.getItem(V3_KEY);
+    if (_raw && Object.keys(v3data).length === 0) {
+      // JSON parse failed — safeLS returned fallback {}
+      const _corruptBanner = document.createElement('div');
+      _corruptBanner.role = 'alert';
+      _corruptBanner.style.cssText = 'background:var(--red,#e05242);color:#fff;text-align:center;padding:12px 16px;font-size:13px;font-weight:600;position:sticky;top:0;z-index:600;';
+      _corruptBanner.innerHTML = 'Something went wrong loading your profile. <button onclick="(function(){localStorage.removeItem(\''+V3_KEY+'\');location.reload();})()" style="background:rgba(0,0,0,.2);color:#fff;border:none;border-radius:4px;padding:4px 10px;margin-left:8px;cursor:pointer;font-size:12px;font-weight:600;">Clear and restart</button>';
+      document.body.prepend(_corruptBanner);
+    }
+  })();
+
   // P1-W3 #45 / C4 #38 — setup prompt when key profile fields are missing
   (function() {
     const _missing = [];
