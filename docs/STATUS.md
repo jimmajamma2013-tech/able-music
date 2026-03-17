@@ -239,12 +239,32 @@
 
 - **Deployment gap**: `ablemusic.netlify.app` deploys from `main`. All V8 work is on `v2-simplified`. Merge to main requires James's explicit sign-off (CLAUDE.md rule). Draft deploys available via `netlify deploy` (session 12 draft: `69b8581493b06a12c83eb87a--ablemusic.netlify.app`).
 - **Supabase views table missing**: `injectSEO()` / view tracking calls `/rest/v1/views` which 404s — Supabase table not created yet. Falls back to localStorage silently. Create `views` table when wiring Supabase backend.
-- **og-default.jpg**: `injectSEO()` falls back to `https://ablemusic.netlify.app/og-default.jpg` — this file must exist at that URL or social share cards will be blank. Not yet verified as deployed. Create/deploy before first artist.
+- ~~**og-default.jpg**~~: ✅ File exists at `/og-default.jpg` locally (17KB, Gemini-generated). FALLBACK_OG + meta tags corrected to point to `og-default.jpg`. Deploy to ablemusic.co as part of main branch merge.
 - **RESEND_API_KEY**: Not set in Netlify env. fan-confirmation.js will silently skip sending. Manual task — James only at resend.com/domains + netlify.com.
 - **No service worker**: PWA is installable (manifest.json + icons exist) but not offline-capable. fan.html home screen promise is half-kept.
 - ~~**noindex missing**~~: ✅ Both admin.html and fan.html already have `<meta name="robots" content="noindex,nofollow">`.
 - ~~**Campaign mode per-mode explanations**~~: ✅ `MODE_DESCS` object + `#chqModeDesc` wired — mode description updates on every arc state change.
 - ~~**"Preview your page →" link**~~: ✅ `topbarViewBtn` wired — `href` updated with artist handle in `renderProfile()`.
+
+---
+
+## Last session summary (session 17 — PATH-TO-10 sweep + quality fixes)
+
+Key changes:
+- **artist-welcome.js** — new Netlify function (Resend, under-60-word email). Wired from `start.html` `initDone()` — fire-and-forget on wizard completion
+- **admin.html → able-v7.html links** — all 5 `able-v8.html` refs corrected to `able-v7.html` (topbar edit CTA, live chip, topbar view button, JS dynamic href)
+- **admin mobile nav** — expanded from 4→5 tabs: Today/Fans/Page/Updates/Stats. Fans promoted to primary tab
+- **Lifecycle stage system** — `data-stage` attr on `#page-home` (new/gig/active). CSS accent cues per stage
+- **Days-active streak stat** — 4th stat card now shows consecutive admin visit streak (from `admin_visit_dates`). Replaces duplicate click-rate card
+- **Release type left-border** — `data-release-type` attr on release cards; CSS rules colour left border by type (album=accent/ep=purple/single=green/mixtape=amber). Fully tokenised
+- **landing.html feat-table** — reordered so "You own the emails. Forever." is closing row per competitive spec P0.2
+- **OG image** — `og-default.jpg` exists locally. FALLBACK_OG constant + 2 static meta tags corrected from `og-fallback.jpg` → `og-default.jpg`
+
+**Open after session 17:**
+- Deploy v2-simplified → main (James sign-off required)
+- RESEND_API_KEY in Netlify env (James)
+- Supabase `views` table creation (when wiring backend)
+- og-default.jpg deployment verification post-merge
 
 ---
 
