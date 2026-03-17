@@ -3663,6 +3663,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
 
     <div class="fans-export-row">
       <button class="export-btn" id="fansExportBtn" onclick="exportFans()" type="button">Export CSV →</button>
+      <button class="export-btn" id="fansExportJsonBtn" onclick="exportFansJson()" type="button" style="margin-left:8px;">Export JSON →</button><!-- C3 #30 -->
     </div>
 
     <p class="fan-ownership-note">These emails are yours. Not ABLE's. Not anyone else's.</p>
@@ -4279,12 +4280,21 @@ function openFanDetailSheet(fan) {
 
   openAdminSheet('👤', fan.email, body);
 
-  document.getElementById('removeFanBtn')?.addEventListener('click', () => {
-    if (!confirm('Remove ' + fan.email + ' from your list?')) return;
+  // C3 #28 — two-step fan delete (no browser confirm())
+  document.getElementById('removeFanBtn')?.addEventListener('click', function() {
+    if (!this.dataset.confirming) {
+      this.dataset.confirming = '1';
+      this.textContent = 'Really remove? This can\'t be undone.';
+      this.style.background = 'rgba(220,38,38,.18)';
+      this.style.borderColor = 'rgba(220,38,38,.5)';
+      setTimeout(() => { if (this.dataset.confirming) { delete this.dataset.confirming; this.textContent = 'Remove from list'; this.style.background = ''; this.style.borderColor = ''; } }, 4000);
+      return;
+    }
     const fans = safeLS('able_fans', []);
     setLS('able_fans', fans.filter(f => f.email !== fan.email));
     closeAdminSheet();
     renderFanList();
+    updateCompletenessBar();
   });
 
   // Level chip wiring
@@ -4371,6 +4381,19 @@ function exportFans() {
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = 'able-fans.csv';
   a.click();
+}
+
+// C3 #30 — JSON export for artists importing into other tools
+function exportFansJson() {
+  const fans = safeLS('able_fans', []).filter(f => f.confirmed !== false);
+  if (!fans.length) { showToast('No fans yet — share your page to see who shows up.', 'amber'); return; }
+  const blob = new Blob([JSON.stringify(fans, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'able-fans.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
 }
 
 function showPage(id) {
