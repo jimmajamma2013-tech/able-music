@@ -5858,7 +5858,7 @@
       <footer class="profile-footer" id="profile-footer">
         <a class="footer-able-link" id="footer-able"
            href="https://ablemusic.co" target="_blank" rel="noopener noreferrer" hidden>
-          ✦ ABLE · Your page is free →
+          <span aria-hidden="true">✦ </span>ABLE · Your page is free →
         </a>
         <p class="footer-export" id="footer-export" hidden>
           Your list. <button class="footer-export-btn pressable" id="footer-export-btn">Export any time.</button>
@@ -11218,7 +11218,7 @@
           <div class="ep-field">
             <label class="ep-label" for="ep-bio">Bio</label>
             <textarea class="ep-input" id="ep-bio" rows="3" placeholder="A few lines about you and your music">${escHtml(p.bio||'')}</textarea>
-            <button class="ep-ai-btn" type="button" id="ep-bio-ai-btn">✦ Suggest a bio</button>
+            <button class="ep-ai-btn" type="button" id="ep-bio-ai-btn"><span aria-hidden="true">✦ </span>Suggest a bio</button>
             <div class="ep-ai-draft loading" id="ep-bio-ai-draft">Generating…</div>
             <button class="ep-ai-use" id="ep-bio-ai-use" disabled>Use this →</button>
           </div>
