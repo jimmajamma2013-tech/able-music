@@ -6228,11 +6228,13 @@ function loadRealStats() {
   if (clickLabelEl) clickLabelEl.textContent = clickLabelMap[effState] || 'Link taps';
 
   // Home stats
+  const isDay1 = viewsTotal === 0;
   animateCount('statViews',  viewsTotal  || '—');
-  set('statViewsDelta', trendStr(viewsWeek, viewsPrev));
-  cls('statViewsDelta', viewsWeek || viewsPrev ? trendCls(viewsWeek, viewsPrev) : '');
+  set('statViewsDelta', isDay1 ? 'Day 1 ✦' : trendStr(viewsWeek, viewsPrev));
+  if (isDay1) { const dEl = document.getElementById('statViewsDelta'); if (dEl) dEl.style.color = 'var(--acc,#f4b942)'; }
+  cls('statViewsDelta', (!isDay1 && (viewsWeek || viewsPrev)) ? trendCls(viewsWeek, viewsPrev) : '');
   animateCount('statClicks', clicksTotal || '—');
-  set('statClickRate',  ctr !== '—' ? ctr + ' click rate' : 'No clicks yet');
+  set('statClickRate',  ctr !== '—' ? ctr + ' click rate' : (isDay1 ? 'Share your link to see taps' : 'No clicks yet'));
   animateCount('statFans',   fansTotal   || '—');
   set('statFansDelta',  trendStr(fansWeek, fansPrev));
   cls('statFansDelta', fansWeek || fansPrev ? trendCls(fansWeek, fansPrev) : '');
