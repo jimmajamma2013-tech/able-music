@@ -4543,9 +4543,19 @@ function showToast(message, tone, options) {
   toast.className = 'able-toast able-toast--' + tone;
   toast.setAttribute('role', 'status');
   toast.setAttribute('aria-live', 'polite');
-  toast.innerHTML = '<span class="toast-dot"></span><span class="toast-message">' + message + '</span>' +
-    (options.action ? '<a class="toast-action" href="' + options.action.href + '">' + options.action.label + '</a>' : '') +
-    '<button class="toast-close" onclick="document.getElementById(\'ableToast\').remove()" aria-label="Dismiss">✕</button>';
+  // H1 — use DOM APIs (not innerHTML) so message is never treated as HTML (XSS fix)
+  const dot = document.createElement('span'); dot.className = 'toast-dot';
+  const msg = document.createElement('span'); msg.className = 'toast-message'; msg.textContent = message;
+  const close = document.createElement('button'); close.className = 'toast-close';
+  close.setAttribute('aria-label', 'Dismiss'); close.textContent = '✕';
+  close.onclick = function() { const t = document.getElementById('ableToast'); if (t) t.remove(); };
+  toast.appendChild(dot); toast.appendChild(msg);
+  if (options.action) {
+    const a = document.createElement('a'); a.className = 'toast-action';
+    a.href = options.action.href; a.textContent = options.action.label;
+    toast.appendChild(a);
+  }
+  toast.appendChild(close);
   document.body.appendChild(toast);
   if (tone === 'green') setTimeout(function() { const t = document.getElementById('ableToast'); if (t) t.remove(); }, 5000);
 }
