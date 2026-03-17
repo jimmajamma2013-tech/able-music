@@ -10760,8 +10760,18 @@
       const shell = document.getElementById('app-shell')
       const profile = getProfile()
 
-      // Apply theme — glass needs artwork to work; fall back to dark if none present
-      let effectiveTheme = profile.theme || 'dark'
+      // Apply theme — priority: artist's stored choice → system preference → dark default (C10)
+      // Glass requires artwork; contrast respects prefers-contrast:more
+      let effectiveTheme = profile.theme
+      if (!effectiveTheme) {
+        if (window.matchMedia('(prefers-contrast: more)').matches) {
+          effectiveTheme = 'contrast'
+        } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+          effectiveTheme = 'light'
+        } else {
+          effectiveTheme = 'dark'
+        }
+      }
       const hasArtwork = !!(profile.topCard?.artworkUrl || profile.backgroundImageUrl || profile.backgroundUrl)
       if (effectiveTheme === 'glass' && !hasArtwork) effectiveTheme = 'dark'
       shell.dataset.theme = effectiveTheme

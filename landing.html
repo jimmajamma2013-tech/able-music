@@ -157,11 +157,13 @@
     .fade-up:nth-child(5) { transition-delay: 0.32s; }
     .fade-up:nth-child(6) { transition-delay: 0.40s; }
     @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration:        0.01ms !important;
+        animation-iteration-count: 1      !important;
+        transition-duration:       0.01ms !important;
+        scroll-behavior:           auto   !important;
+      }
       .js .fade-up { opacity: 1; transform: none; transition: none; }
-      .nav__cta-dot,
-      .dp-waveform,
-      .marquee-inner,
-      .hero__cta-wrap { animation: none !important; }
       .marquee-inner { animation: none !important; transform: none; }
     }
 
