@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–15 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-15-AUDIT.md**
+**Updated: 2026-03-17 | Sessions 11–20 + Cycles 1–16 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-16-AUDIT.md**
 
 ---
 
@@ -22,7 +22,7 @@
 | Admin dashboard | `admin.html` | 9.8/10 | ~9.9/10 | Supabase auth (data portability) | ✅ C15: fan cap nudge at 90, starred row accent, relTime "Yesterday", level chip aria-pressed, CSV filename |
 | Onboarding wizard | `start.html` | 9.8/10 | ~9.9/10 | Social proof (real artists) | ✅ Vibe radiogroup ARIA added session 20 |
 | Landing page | `landing.html` | 9.7/10 | ~9.9/10 | FAQ aria-controls wired | ✅ Full Twitter card meta + aria-controls on FAQ done |
-| Fan dashboard | `fan.html` | 9.4/10 | ~9.8/10 | Supabase realtime + Close Circle | ✅ C14: loading skeleton 2 ghost cards, empty state "Discover artists you'll love.", following count in tab, artist cards link to ablemusic.co/{slug} |
+| Fan dashboard | `fan.html` | 9.5/10 | ~9.8/10 | Supabase realtime + Close Circle | ✅ C16: artist card tabindex=0, lastVisit timestamp, tap tracking, toast role=alert |
 | Freelancer profile | `freelancer.html` | 8.7/10 | ~9.2/10 | Network maturity + real testimonials | Directory integration + credits management |
 
 **Page average: ~9.45/10**
@@ -43,7 +43,7 @@
 | Page state system | 9.0/10 | 9.3/10 | Post-release nudge flow remaining | ✅ C11: contextual state-change toasts, gig mode 30-min expiry warning, release date null guard |
 | Data architecture | 9.0/10 | 9.3/10 | Multi-artist isolation; Supabase fan sync not wired | ✅ C12: syncProfile handle guard, schemaVersion bump, consentVersion dynamic, form-2 ts/campaignState, release id, merch id |
 | Analytics | 9.3/10 | 9.5/10 | View source breakdown (fans vs views) Wave 2 | ✅ C11: campaign breakdown excludes deleted fans; profile_complete PostHog event; views dedup+owner exclusion verified |
-| SEO / OG | 9.4/10 | 9.5/10 | Static OG image needs production deploy | ✅ C14: MusicAlbum schema, sameAs from platform URLs, OpenSearch link, og:locale en_GB, JSON-LD eventStatus |
+| SEO / OG | 9.5/10 | 9.6/10 | Sitemap dynamic artist profile entries (Supabase) | ✅ C16: WebApplication JSON-LD landing+start, BreadcrumbList, twitter:label1, og:image:alt landing, sitemap lastmod+start.html |
 | oEmbed proxy | 9.3/10 | 9.5/10 | ✅ SSRF fixed — `isSafeMediaUrl()` uses `new URL().hostname` + ALLOWED_HOSTS Set | ✅ C14: Vimeo embed, Bandcamp embed (numeric ID), SoundCloud verified, embed error fallback added |
 | Coding strategy | 9.4/10 | 10/10 | CSP `unsafe-inline` accepted risk | ✅ C13: reduced-motion media query added for gold-blur transition in admin; parse checks every edit |
 | UI system | 9.2/10 | 9.5/10 | Component library unbuilt | ✅ C11: toast slide-in (translateX keyframe), sheet ease-decel, completeness 400ms, wm-cell hover scale, snap card enter animation, haptic vibrate |
@@ -75,7 +75,7 @@
 |---|---|---|---|---|
 | Legal compliance | 8.5/10 | 9.5/10 | ICO registration research pending; PECR clarity pending | ✅ GDPR Article 13 `privacy.html` written; GDPR consent on fan sign-up; unsubscribe in email; fan deletion per-row; `privacy@ablemusic.co` |
 | Security | 8.5/10 | 9.5/10 | CSP `unsafe-inline` (accepted risk — no build pipeline) | ✅ URL scheme validation (`isSafeAdminUrl()`); CORS restricted; security headers complete in netlify.toml; no console.log/debugger; SSRF fixed |
-| Accessibility (WCAG 2.2 AA) | 9.0/10 | 9.2/10 | VoiceOver on real iPhone still untested | ✅ C13: fan row Space key nav, admin reduced-motion, platform pill aria verified, skip-link verified, focus trap verified, contrast 4.98:1 |
+| Accessibility (WCAG 2.2 AA) | 9.2/10 | 9.3/10 | VoiceOver on real iPhone still untested | ✅ C16: fan form aria-label, toast role=alert, platform pills "opens in new tab", level chip aria-pressed, wm-panel focus trap + Escape ✓ |
 | Freelancer auth | pre-launch | — | Discord OAuth fallback unspecced | Quality gate: 5 questions must be "yes" before launch |
 
 ### AI & automation
@@ -92,7 +92,7 @@
 | System | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|
 | Brand identity | 8.0/10 | 9.0/10 | og-default.jpg not yet deployed to production | ✅ favicon.svg; og-default.jpg generated and committed |
-| Copy system | 9.4/10 | 9.5/10 | CHQ state label copy final polish | ✅ C14: fan detail heading email.split('@')[0], export toast "Fan list downloaded.", unsubscribe toast "You've left [artist]'s list.", share toast "Link copied — share it everywhere.", start.html "Set up your page →", landing eyebrow "Artist Before Label" |
+| Copy system | 9.5/10 | 9.6/10 | Email broadcast subject copy (Supabase) | ✅ C16: snap card empty "Add a card to share something that matters.", export gate "Export your full fan list. See where they came from.", gig expire "Gig mode off. Hope it went well." ✓ |
 | Explainers | 5.5/10 | 9.0/10 | Close Circle orientation card missing | Screen 6 context line: "you get their email — that's yours" |
 | Social media | 9.1/10 | — | Week 2+ content calendar less specific | None blocking |
 | Instagram strategy | 9.6/10 | — | Content bank not written | None blocking day-1 execution |
@@ -118,7 +118,7 @@
 |---|---|---|---|---|
 | Filing system | 9.2/10 | — | 6 non-standard SPEC.md names | Verify profile DESIGN-SPEC.md authority chain |
 | QA testing | 9.0/10 spec | — | No Playwright tests for sessions 15–20 features | 6-gate manual smoke check before first artist |
-| Error states | 6.0/10 | 9.0/10 | ✅ `safeLS()`/`setLS()` global; `SecurityError` guard | Error UI states remaining |
+| Error states | 7.5/10 | 9.0/10 | Offline fallback page; session expiry notice | ✅ C16: admin corruption banner with clear-and-restart, offline banner verified, quota toast verified |
 | Master review | 7.5/10 | — | One review not a track record | Schedule recurring master review monthly |
 | Hardware / software | 9.5/10 | — | Open WebUI not fully tested | Ergonomics + security setup |
 | Coding strategy | 9.2/10 | 10/10 | `prefers-reduced-motion` admin audit | ✅ All JS parse-checked every session |
