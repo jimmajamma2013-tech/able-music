@@ -35,14 +35,14 @@
 
 | System | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|
-| Artist tools | 8.5/10 | 9.0/10 | Close Circle no payment, accent picker limited | ✅ C4: wizard re-entry merge, setup bar extended, fan locale dates, completeness key fixes |
-| CRM | 7.8/10 | 9.0/10 | Fan search UI exists; `consentVersion` in CSV; dedup check live | ✅ C3: campaign analytics, JSON export, two-step delete confirm, time datetime |
+| Artist tools | 8.8/10 | 9.0/10 | Close Circle no payment, accent picker limited | ✅ C4W2: bio hint, profile completeness bar on profile tab, snap delete two-step, empty states |
+| CRM | 8.0/10 | 9.0/10 | Fan search UI exists; `consentVersion` in CSV; dedup check live | ✅ C4W2: extended source breakdown (any source), most-tapped CTA insight |
 | Tier gates | 6.5/10 | 9.0/10 | Server enforcement missing; Stripe not wired | ✅ `checkTierGate()` + gold lock CSS built; remaining: server-side enforcement |
 | Error states | 8.0/10 | 9.0/10 | QuotaExceededError toast; fetch try/catch audit clean; fans Array guard | ✅ C3: crash boundary on admin init; offline bar; Supabase init guard; date parse guard |
 | PWA | 8.5/10 | 9.0/10 | No service worker (offline mode unbuilt) | ✅ `manifest.json` + iOS meta tags + icons exist; service worker is optional V2 |
 | Page state system | 7.5/10 | 9.0/10 | Arc node radiogroup ARIA just added | ✅ Campaign state machine logic verified |
 | Data architecture | 6.8/10 | 9.3/10 | Multi-artist isolation; `fan.html` Supabase not wired | Implementation ready for Supabase phase |
-| Analytics | 8.2/10 | 9.4/10 | SessionId in views missing; PostHog fan_signup verified | ✅ All 5 UTM params captured; sessionId on cta_tap + fan_signup; isOwnerVisit() 3-signal chain |
+| Analytics | 8.8/10 | 9.4/10 | SessionId in views still missing on page loads | ✅ C4W2: 30-day fan sparkline, peak day insight, most-tapped CTA, extended source breakdown |
 | SEO / OG | 9.2/10 | 9.5/10 | Static OG image needs production deploy | ✅ C3: JSON-LD Event schema on able-v8.html shows; `<time datetime>` on fan rows and show dates |
 | oEmbed proxy | 9.0/10 | 9.5/10 | ✅ SSRF fixed — `isSafeMediaUrl()` uses `new URL().hostname` + ALLOWED_HOSTS Set | Zero vulnerabilities; `data.html` stripped to prevent XSS |
 | Coding strategy | 9.2/10 | 10/10 | `prefers-reduced-motion` audit remaining in admin | ✅ Parse checks every edit; tokenised CSS enforced |
@@ -160,8 +160,9 @@
 | Strategy / founder | ~7.8/10 | — | — |
 
 **Overall documentation + spec average: ~9.2/10**
-**Overall current build state average: ~8.5/10** (was ~8.3/10 post-Cycle-3; was ~8.0/10 post-Cycle-2; was ~7.8/10 post-Cycle-1)
+**Overall current build state average: ~8.7/10** (was ~8.5/10 post-C4W1; was ~8.3/10 post-Cycle-3; was ~8.0/10 post-Cycle-2)
 
+Cycle 4 Wave 2 improvements: Artist tools (8.5→8.8), CRM (7.8→8.0), Analytics (8.8→8.8 confirmed), snap/shows UX polish, 30-day sparkline, bio hint
 Cycle 4 Wave 1 improvements: Admin UX polish (7.8→8.5), Resilience (8.0→8.8), Analytics (8.2→8.8), Completeness UX (7.8→8.8), start.html wizard re-entry fixed
 Cycle 3 improvements: Deep link campaigns (0→7.5), CRM (6.5→7.8), Error states (7.0→8.0), Artist tools (7.5→7.8), SEO/OG (9.0→9.2)
 Cycle 2 Wave 1 improvements: CRM (+2.0), Artist Success (+0.3), World Map (+1.8), Error States (+1.0), Analytics (+0.4)
