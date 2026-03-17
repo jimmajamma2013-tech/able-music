@@ -2616,7 +2616,9 @@ body::before {
             <div class="gig-label">Gig tonight</div>
             <div class="gig-hint" id="gigHint">Flip this on show day — puts tickets front and centre. Auto-expires in 24 hrs.</div>
           </div>
-          <button class="gig-toggle" id="gigToggle" aria-label="Toggle gig mode"></button>
+          <button class="gig-toggle" id="gigToggle" type="button"
+                  role="switch" aria-checked="false"
+                  aria-label="Gig mode"></button>
         </div>
         <div class="gig-countdown" id="gigCountdown"><div class="gig-countdown-fill" id="gigCountdownFill"></div></div>
         <div class="gig-countdown-label" id="gigCountdownLabel"></div>
@@ -4950,10 +4952,12 @@ function toggleGigHQ() {
   setGigActive(!isActive);
 }
 function setGigActive(on, source) {
-  const strip = document.getElementById('gigStrip');
-  const hint  = document.getElementById('gigHint');
+  const strip  = document.getElementById('gigStrip');
+  const hint   = document.getElementById('gigHint');
+  const toggle = document.getElementById('gigToggle');
   if (!strip) return;
   strip.classList.toggle('active', on);
+  if (toggle) toggle.setAttribute('aria-checked', on ? 'true' : 'false');
   if (on) {
     // §9.1 moment 3 — show gig mode nudge on first activation this session
     const gigNudge = document.getElementById('gigModeNudge');
@@ -8176,17 +8180,31 @@ function selectFeel(btn) {
 }
 
 /* ── ADMIN BOTTOM SHEET ── */
+let _sheetTrigger = null;  // element to restore focus to on close
+
 function openAdminSheet(icon, title, bodyHTML) {
+  _sheetTrigger = document.activeElement;
   document.getElementById('adminSheetIcon').textContent = icon;
   document.getElementById('adminSheetTitle').textContent = title;
   document.getElementById('adminSheetBody').innerHTML = bodyHTML;
-  document.getElementById('adminSheet').hidden = false;
+  const sheet = document.getElementById('adminSheet');
+  sheet.hidden = false;
   document.getElementById('adminSheetBackdrop').hidden = false;
+  // Move focus into dialog — first focusable element, or the sheet itself
+  requestAnimationFrame(() => {
+    const first = sheet.querySelector('input,button,select,textarea,[tabindex]:not([tabindex="-1"])');
+    (first || sheet).focus();
+  });
 }
 
 function closeAdminSheet() {
   document.getElementById('adminSheet').hidden = true;
   document.getElementById('adminSheetBackdrop').hidden = true;
+  // Restore focus to the element that opened the sheet
+  if (_sheetTrigger && typeof _sheetTrigger.focus === 'function') {
+    _sheetTrigger.focus();
+    _sheetTrigger = null;
+  }
 }
 
 document.addEventListener('keydown', function(e) {
