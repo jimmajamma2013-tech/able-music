@@ -1969,7 +1969,7 @@
     }
 
     .fan-capture__gdpr {
-      font-size: var(--text-xs);
+      font-size: 12px; /* I1 #13 — GDPR consent text minimum 12px for legal clarity */
       color: var(--color-text-2);
       line-height: 1.5;
       margin-top: var(--sp-3);
@@ -5605,6 +5605,18 @@
       } catch(_) {} // #70: swallow CSP/network errors — analytics must not block page init
     });
   </script>
+  <!-- H7 #62-63 — sync accent colour before first paint — prevents default-to-accent flash -->
+  <script>
+    (function() {
+      try {
+        var _p = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+        var _accent = _p.accent;
+        if (_accent && /^#[0-9a-fA-F]{3,6}$/.test(_accent)) {
+          document.documentElement.style.setProperty('--color-accent', _accent);
+        }
+      } catch (_) {}
+    })();
+  </script>
 </head>
 <body>
 
@@ -6570,7 +6582,7 @@
           platform: 'Spotify',
           displayStyle: 'able-player',
           releaseDate: '2025-11-20',
-          artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=430&q=75',
+          artworkUrl: 'https://images.unsplash.com/photo-1511735111819-9a3efd16269d?w=430&q=75&fm=webp&auto=format',
           streamUrl: 'https://open.spotify.com/track/4iV5W9uYEdYUVa79Axb7Rh',
           artist: 'LUNA',
           credits: [
@@ -6582,7 +6594,7 @@
           type: 'Video',
           platform: 'YouTube',
           releaseDate: '2025-09-01',
-          artworkUrl: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=430&q=75',
+          artworkUrl: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=430&q=75&fm=webp&auto=format',
           // Real YouTube video — Rick Astley Never Gonna Give You Up (safe placeholder)
           streamUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
           credits: [
