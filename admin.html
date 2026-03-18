@@ -3967,6 +3967,17 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <div class="page-sub">Credits, rate card, and booking enquiries — your professional layer on ABLE.</div>
     </div>
 
+    <!-- C23 #14 — Profile view count this week -->
+    <div class="dash-card" style="margin-bottom:20px;">
+      <div class="dc-body" style="display:flex;align-items:center;gap:14px;padding:14px 16px;">
+        <div id="flViewCountNum" style="font-size:28px;font-weight:700;color:var(--text);line-height:1;flex-shrink:0;">—</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);">Profile views this week</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:2px;">Counted when your profile link is visited</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Credits management -->
     <div class="dash-card" style="margin-bottom:20px;">
       <div class="dc-head">
@@ -6747,6 +6758,15 @@ const FL_KEY = 'able_freelancer_profile';
 
 function renderFreelancerAdmin() {
   const fl = safeLS(FL_KEY, {});
+
+  // C23 #14 — profile view count this week
+  const _viewNumEl = document.getElementById('flViewCountNum');
+  if (_viewNumEl) {
+    const _views = safeLS('able_fl_views', []);
+    const _weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const _weekCount = _views.filter(function(v) { return (v.ts || 0) > _weekAgo; }).length;
+    _viewNumEl.textContent = String(_weekCount);
+  }
 
   // Credits list
   const _credList = document.getElementById('freelancerCreditsList');
