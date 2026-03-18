@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build your professional profile — ABLE</title>
+  <meta name="description" content="Set up your professional profile on ABLE. Add your credits, rate card, and go live in minutes.">
+  <!-- OG — C22 #15 -->
+  <meta property="og:title" content="Build your professional profile on ABLE">
+  <meta property="og:description" content="Your credits. Your rate. Your presence on the platform artists trust.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/og-default.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Barlow+Condensed:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0d0e1a;
+      --card:     #12152a;
+      --border:   rgba(255,255,255,0.08);
+      --text:     #f0ede8;
+      --t2:       rgba(240,237,232,0.65);
+      --t3:       rgba(240,237,232,0.38);
+      --acc:      #e05242;
+      --ok:       #4ade80;
+      --font:     'DM Sans', system-ui, sans-serif;
+      --font-d:   'Barlow Condensed', sans-serif;
+      --r:        12px;
+      --dur:      220ms;
+      --ease:     cubic-bezier(0.25,0.46,0.45,0.94);
+      --spring:   cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Layout ── */
+    .shell {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 16px 64px;
+    }
+
+    .header {
+      width: 100%;
+      max-width: 480px;
+      padding: 32px 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: var(--font-d);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .step-indicator {
+      font-size: 12px;
+      color: var(--t3);
+      letter-spacing: 0.06em;
+      font-weight: 500;
+    }
+
+    .content {
+      width: 100%;
+      max-width: 480px;
+      flex: 1;
+    }
+
+    /* ── Progress bar ── */
+    .progress-bar {
+      width: 100%;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--acc);
+      border-radius: 2px;
+      transition: width var(--dur) var(--ease);
+    }
+
+    /* ── Step panel ── */
+    .step-panel {
+      display: none;
+    }
+    .step-panel.active {
+      display: block;
+      animation: fadeUp var(--dur) var(--ease);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-title {
+      font-family: var(--font-d);
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .step-sub {
+      font-size: 14px;
+      color: var(--t2);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    /* ── Role grid ── */
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .role-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 16px;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      cursor: pointer;
+      transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease), transform 120ms var(--spring);
+      text-align: left;
+      min-height: 80px;
+    }
+
+    .role-btn:active { transform: scale(0.97); }
+
+    .role-btn.selected {
+      border-color: var(--acc);
+      background: rgba(224,82,66,0.12);
+    }
+
+    .role-btn__icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .role-btn__label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ── Form inputs ── */
+    .field {
+      margin-bottom: 20px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--t3);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 15px;
+      padding: 13px 14px;
+      outline: none;
+      transition: border-color var(--dur) var(--ease);
+      resize: none;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: var(--acc);
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder { color: var(--t3); }
+
+    .field select option { background: var(--card); }
+
+    .char-count {
+      font-size: 11px;
+      color: var(--t3);
+      text-align: right;
+      margin-top: 4px;
+    }
+
+    .char-count.warn { color: var(--acc); }
+
+    /* ── Credits list ── */
+    .credits-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .credit-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .credit-card__info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .credit-card__title {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .credit-card__sub {
+      font-size: 12px;
+      color: var(--t2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .credit-remove {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: none;
+      color: var(--t3);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+      min-width: 44px;
+      min-height: 44px;
+    }
+    .credit-remove:hover { background: rgba(224,82,66,0.15); color: var(--acc); }
+
+    .add-credit-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: var(--card);
+      border: 1.5px dashed var(--border);
+      border-radius: var(--r);
+      padding: 16px;
+      margin-bottom: 8px;
+    }
+
+    .add-credit-row .field { margin-bottom: 0; }
+
+    .add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 16px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      color: var(--t2);
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease), transform 120ms var(--spring);
+      min-height: 44px;
+    }
+    .add-btn:hover { border-color: var(--acc); color: var(--text); }
+    .add-btn:active { transform: scale(0.98); }
+    .add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Availability chips ── */
+    .avail-chips {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .avail-chip {
+      padding: 9px 18px;
+      border-radius: 40px;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      color: var(--t2);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease), background var(--dur) var(--ease);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+
+    .avail-chip.selected {
+      border-color: var(--acc);
+      background: rgba(224,82,66,0.12);
+      color: var(--text);
+    }
+
+    /* ── Preview ── */
+    .preview-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .preview-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .preview-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(224,82,66,0.2);
+      color: var(--acc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-d);
+      font-size: 22px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .preview-identity { min-width: 0; }
+
+    .preview-name {
+      font-family: var(--font-d);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .preview-role {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--acc);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .preview-body { padding: 16px 20px; }
+
+    .preview-bio {
+      font-size: 14px;
+      color: var(--t2);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .preview-credits-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .preview-credit-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .preview-credit-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--acc);
+      flex-shrink: 0;
+    }
+
+    .preview-credit-text { color: var(--t2); }
+
+    .preview-rate {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--t2);
+    }
+
+    .preview-rate strong { color: var(--text); font-size: 14px; }
+
+    .preview-avail-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 40px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+
+    .preview-avail-chip.open    { background: rgba(74,222,128,0.12); color: #4ade80; }
+    .preview-avail-chip.limited { background: rgba(244,185,66,0.12); color: #f4b942; }
+    .preview-avail-chip.closed  { background: rgba(255,255,255,0.06); color: var(--t3); }
+
+    /* ── Navigation buttons ── */
+    .nav-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .btn-back {
+      flex: 0 0 auto;
+      padding: 14px 20px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      color: var(--t2);
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease), transform 120ms var(--spring);
+      min-height: 52px;
+      min-width: 52px;
+    }
+    .btn-back:hover { border-color: var(--text); color: var(--text); }
+    .btn-back:active { transform: scale(0.97); }
+    .btn-back[hidden] { display: none; }
+
+    .btn-next {
+      flex: 1;
+      padding: 14px 24px;
+      background: var(--acc);
+      border: none;
+      border-radius: var(--r);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity var(--dur) var(--ease), transform 120ms var(--spring);
+      min-height: 52px;
+    }
+    .btn-next:hover { opacity: 0.88; }
+    .btn-next:active { transform: scale(0.98); }
+    .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Skip link ── */
+    .skip-link {
+      display: block;
+      text-align: center;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--t3);
+      text-decoration: none;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: var(--font);
+      padding: 4px;
+    }
+    .skip-link:hover { color: var(--t2); }
+
+    /* ── Error message ── */
+    .step-error {
+      font-size: 13px;
+      color: var(--acc);
+      margin-top: -12px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .step-error.visible { display: block; }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 24px 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+  <header class="header">
+    <a href="/" class="logo" aria-label="ABLE home">ABLE</a>
+    <span class="step-indicator" id="stepIndicator" aria-live="polite">Step 1 of 4</span>
+  </header>
+
+  <main class="content" id="main">
+    <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="4" aria-valuenow="1" aria-label="Onboarding progress" id="progressBar">
+      <div class="progress-fill" id="progressFill" style="width:25%"></div>
+    </div>
+
+    <!-- ── Step 1: Role ── -->
+    <section class="step-panel active" id="step1" aria-labelledby="step1-title">
+      <h1 class="step-title" id="step1-title">What do you do?</h1>
+      <p class="step-sub">Pick the role that fits best. You can describe it further once you're set up.</p>
+
+      <div class="role-grid" role="listbox" aria-label="Select your primary role" id="roleGrid">
+        <button class="role-btn" role="option" aria-selected="false" data-role="Producer" type="button">
+          <span class="role-btn__icon" aria-hidden="true">🎛️</span>
+          <span class="role-btn__label">Producer</span>
+        </button>
+        <button class="role-btn" role="option" aria-selected="false" data-role="Mixer" type="button">
+          <span class="role-btn__icon" aria-hidden="true">🎚️</span>
+          <span class="role-btn__label">Mixer</span>
+        </button>
+        <button class="role-btn" role="option" aria-selected="false" data-role="Mastering" type="button">
+          <span class="role-btn__icon" aria-hidden="true">💿</span>
+          <span class="role-btn__label">Mastering</span>
+        </button>
+        <button class="role-btn" role="option" aria-selected="false" data-role="Video" type="button">
+          <span class="role-btn__icon" aria-hidden="true">🎬</span>
+          <span class="role-btn__label">Director / Video</span>
+        </button>
+        <button class="role-btn" role="option" aria-selected="false" data-role="Photography" type="button">
+          <span class="role-btn__icon" aria-hidden="true">📷</span>
+          <span class="role-btn__label">Photography</span>
+        </button>
+        <button class="role-btn" role="option" aria-selected="false" data-role="Other" type="button">
+          <span class="role-btn__icon" aria-hidden="true">✦</span>
+          <span class="role-btn__label">Other</span>
+        </button>
+      </div>
+
+      <p class="step-error" id="roleError">Pick a role to continue.</p>
+
+      <div class="nav-row">
+        <button class="btn-back" id="backBtn1" type="button" hidden aria-label="Go back">←</button>
+        <button class="btn-next" id="nextBtn1" type="button">Next</button>
+      </div>
+    </section>
+
+    <!-- ── Step 2: Credits ── -->
+    <section class="step-panel" id="step2" aria-labelledby="step2-title">
+      <h1 class="step-title" id="step2-title">Your credits.</h1>
+      <p class="step-sub">Add releases you've worked on. Credits pending artist confirmation show as plain text — confirmed credits become live links. That asymmetry is the point.</p>
+
+      <div class="credits-list" id="creditsList" aria-label="Credits added" aria-live="polite"></div>
+
+      <div class="add-credit-row" id="addCreditRow">
+        <div class="field">
+          <label for="creditTitle">Release title</label>
+          <input type="text" id="creditTitle" placeholder="e.g. Night Drive EP" maxlength="100" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="creditArtist">Artist name</label>
+          <input type="text" id="creditArtist" placeholder="e.g. Drift" maxlength="80" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="creditRole">Your role</label>
+          <input type="text" id="creditRole" placeholder="e.g. Production, Mixing, Director" maxlength="60" autocomplete="off">
+        </div>
+        <button class="add-btn" id="addCreditBtn" type="button" aria-label="Add this credit">+ Add credit</button>
+      </div>
+
+      <p class="step-error" id="creditError">Fill in all three fields to add a credit.</p>
+
+      <div class="nav-row">
+        <button class="btn-back" id="backBtn2" type="button" aria-label="Go back to step 1">←</button>
+        <button class="btn-next" id="nextBtn2" type="button">Next</button>
+      </div>
+      <button class="skip-link" type="button" id="skipCredits">Skip for now — add credits later</button>
+    </section>
+
+    <!-- ── Step 3: Rate card + bio ── -->
+    <section class="step-panel" id="step3" aria-labelledby="step3-title">
+      <h1 class="step-title" id="step3-title">How you work.</h1>
+      <p class="step-sub">A few lines about your process and how people can reach you. Rates are optional — "Enquire for rates" is a valid answer.</p>
+
+      <div class="field">
+        <label for="bioInput">One line about you <span style="color:var(--t3);font-weight:400;text-transform:none;letter-spacing:0;">(max 200 chars)</span></label>
+        <textarea id="bioInput" rows="3" maxlength="200" placeholder="I make space in music. Production that puts the song first."></textarea>
+        <div class="char-count" id="bioCount">0 / 200</div>
+      </div>
+
+      <div class="field">
+        <label for="rateInput">Rate card <span style="color:var(--t3);font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+        <textarea id="rateInput" rows="2" maxlength="300" placeholder="Production — from £300/track. Mixing — from £150/stem.&#10;Leave blank to show 'Enquire for rates'."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Availability</label>
+      </div>
+      <div class="avail-chips" role="listbox" aria-label="Availability" id="availChips">
+        <button class="avail-chip selected" role="option" aria-selected="true" data-avail="open" type="button">Open to work</button>
+        <button class="avail-chip" role="option" aria-selected="false" data-avail="limited" type="button">Limited slots</button>
+        <button class="avail-chip" role="option" aria-selected="false" data-avail="closed" type="button">Not available</button>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back" id="backBtn3" type="button" aria-label="Go back to step 2">←</button>
+        <button class="btn-next" id="nextBtn3" type="button">Preview →</button>
+      </div>
+    </section>
+
+    <!-- ── Step 4: Preview + Go live ── -->
+    <section class="step-panel" id="step4" aria-labelledby="step4-title">
+      <h1 class="step-title" id="step4-title">This is you.</h1>
+      <p class="step-sub">Here's what people will see. You can edit everything from your dashboard once you're live.</p>
+
+      <div class="preview-card" id="previewCard" aria-label="Profile preview">
+        <div class="preview-header">
+          <div class="preview-avatar" id="previewAvatar"></div>
+          <div class="preview-identity">
+            <div class="preview-name" id="previewName">Professional</div>
+            <div class="preview-role" id="previewRoleDisplay"></div>
+          </div>
+        </div>
+        <div class="preview-body">
+          <div id="previewAvailWrap"></div>
+          <p class="preview-bio" id="previewBio"></p>
+          <div class="preview-credits-list" id="previewCreditsList"></div>
+          <div class="preview-rate" id="previewRate"></div>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back" id="backBtn4" type="button" aria-label="Go back to step 3">←</button>
+        <button class="btn-next" id="goLiveBtn" type="button">Go live →</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Build your professional profile on ABLE",
+  "description": "Set up your professional profile on ABLE Music. Add your credits, rate card, and go live in minutes.",
+  "url": "https://ablemusic.co/freelancer-start.html"
+}
+</script>
+
+<script>
+  (function() {
+    'use strict';
+
+    const FL_KEY = 'able_freelancer_profile';
+
+    // ── Persistent draft state ──
+    const draft = {
+      role:         '',
+      credits:      [],
+      bio:          '',
+      rateCard:     '',
+      availability: 'open',
+    };
+
+    let currentStep = 1;
+    const TOTAL_STEPS = 4;
+
+    function safeLS(key, fallback) {
+      try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+      catch(_) { return fallback; }
+    }
+
+    function setLS(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch(_) {}
+    }
+
+    function escHtml(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+    }
+
+    // ── Progress ──
+    function updateProgress(step) {
+      const pct = Math.round((step / TOTAL_STEPS) * 100);
+      const fill = document.getElementById('progressFill');
+      const bar = document.getElementById('progressBar');
+      const ind = document.getElementById('stepIndicator');
+      if (fill) fill.style.width = pct + '%';
+      if (bar) { bar.setAttribute('aria-valuenow', step); }
+      if (ind) ind.textContent = 'Step ' + step + ' of ' + TOTAL_STEPS;
+    }
+
+    function showStep(n) {
+      document.querySelectorAll('.step-panel').forEach(function(p) { p.classList.remove('active'); });
+      const panel = document.getElementById('step' + n);
+      if (panel) {
+        panel.classList.add('active');
+        // Focus first interactive element
+        const first = panel.querySelector('button, input, textarea, select');
+        if (first) { setTimeout(function() { first.focus(); }, 50); }
+      }
+      currentStep = n;
+      updateProgress(n);
+    }
+
+    // ── Step 1: Role ──
+    const roleGrid = document.getElementById('roleGrid');
+    const roleError = document.getElementById('roleError');
+
+    if (roleGrid) {
+      roleGrid.querySelectorAll('.role-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          roleGrid.querySelectorAll('.role-btn').forEach(function(b) {
+            b.classList.remove('selected');
+            b.setAttribute('aria-selected', 'false');
+          });
+          this.classList.add('selected');
+          this.setAttribute('aria-selected', 'true');
+          draft.role = this.dataset.role || '';
+          if (roleError) roleError.classList.remove('visible');
+        });
+      });
+    }
+
+    const nextBtn1 = document.getElementById('nextBtn1');
+    if (nextBtn1) {
+      nextBtn1.addEventListener('click', function() {
+        if (!draft.role) {
+          if (roleError) roleError.classList.add('visible');
+          return;
+        }
+        showStep(2);
+      });
+    }
+
+    // ── Step 2: Credits ──
+    const creditsList = document.getElementById('creditsList');
+    const addCreditBtn = document.getElementById('addCreditBtn');
+    const creditError = document.getElementById('creditError');
+
+    function renderCreditsList() {
+      if (!creditsList) return;
+      if (draft.credits.length === 0) {
+        creditsList.innerHTML = '';
+        return;
+      }
+      creditsList.innerHTML = draft.credits.map(function(c, i) {
+        return '<div class="credit-card">' +
+          '<div class="credit-card__info">' +
+            '<div class="credit-card__title">' + escHtml(c.releaseTitle) + '</div>' +
+            '<div class="credit-card__sub">' + escHtml(c.artistName) + ' · ' + escHtml(c.role) + '</div>' +
+          '</div>' +
+          '<button class="credit-remove" type="button" data-idx="' + i + '" aria-label="Remove ' + escHtml(c.releaseTitle) + '">✕</button>' +
+        '</div>';
+      }).join('');
+
+      creditsList.querySelectorAll('.credit-remove').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          const idx = parseInt(this.dataset.idx, 10);
+          draft.credits.splice(idx, 1);
+          renderCreditsList();
+          updateAddCreditVisibility();
+        });
+      });
+    }
+
+    function updateAddCreditVisibility() {
+      const addRow = document.getElementById('addCreditRow');
+      const addBtn = document.getElementById('addCreditBtn');
+      const MAX_CREDITS = 5;
+      if (addRow) addRow.style.display = draft.credits.length >= MAX_CREDITS ? 'none' : '';
+      if (addBtn) addBtn.disabled = draft.credits.length >= MAX_CREDITS;
+    }
+
+    if (addCreditBtn) {
+      addCreditBtn.addEventListener('click', function() {
+        const titleEl  = document.getElementById('creditTitle');
+        const artistEl = document.getElementById('creditArtist');
+        const roleEl   = document.getElementById('creditRole');
+
+        const title  = (titleEl  ? titleEl.value.trim()  : '');
+        const artist = (artistEl ? artistEl.value.trim() : '');
+        const role   = (roleEl   ? roleEl.value.trim()   : '');
+
+        if (!title || !artist || !role) {
+          if (creditError) creditError.classList.add('visible');
+          return;
+        }
+        if (creditError) creditError.classList.remove('visible');
+
+        draft.credits.push({ releaseTitle: title, artistName: artist, role: role, confirmed: false });
+        if (titleEl)  titleEl.value  = '';
+        if (artistEl) artistEl.value = '';
+        if (roleEl)   roleEl.value   = '';
+        if (titleEl)  titleEl.focus();
+
+        renderCreditsList();
+        updateAddCreditVisibility();
+      });
+    }
+
+    // Allow Enter in credit fields to trigger add
+    ['creditTitle', 'creditArtist', 'creditRole'].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') { e.preventDefault(); if (addCreditBtn) addCreditBtn.click(); }
+        });
+        el.addEventListener('input', function() {
+          if (creditError) creditError.classList.remove('visible');
+        });
+      }
+    });
+
+    const nextBtn2 = document.getElementById('nextBtn2');
+    if (nextBtn2) {
+      nextBtn2.addEventListener('click', function() { showStep(3); });
+    }
+
+    const backBtn2 = document.getElementById('backBtn2');
+    if (backBtn2) {
+      backBtn2.addEventListener('click', function() { showStep(1); });
+    }
+
+    const skipCredits = document.getElementById('skipCredits');
+    if (skipCredits) {
+      skipCredits.addEventListener('click', function() { showStep(3); });
+    }
+
+    // ── Step 3: Bio, rate card, availability ──
+    const bioInput = document.getElementById('bioInput');
+    const bioCount = document.getElementById('bioCount');
+    if (bioInput && bioCount) {
+      bioInput.addEventListener('input', function() {
+        const len = this.value.length;
+        draft.bio = this.value;
+        bioCount.textContent = len + ' / 200';
+        bioCount.className = 'char-count' + (len >= 180 ? ' warn' : '');
+      });
+    }
+
+    const rateInput = document.getElementById('rateInput');
+    if (rateInput) {
+      rateInput.addEventListener('input', function() { draft.rateCard = this.value.trim(); });
+    }
+
+    const availChips = document.getElementById('availChips');
+    if (availChips) {
+      availChips.querySelectorAll('.avail-chip').forEach(function(chip) {
+        chip.addEventListener('click', function() {
+          availChips.querySelectorAll('.avail-chip').forEach(function(c) {
+            c.classList.remove('selected');
+            c.setAttribute('aria-selected', 'false');
+          });
+          this.classList.add('selected');
+          this.setAttribute('aria-selected', 'true');
+          draft.availability = this.dataset.avail || 'open';
+        });
+      });
+    }
+
+    const nextBtn3 = document.getElementById('nextBtn3');
+    if (nextBtn3) {
+      nextBtn3.addEventListener('click', function() {
+        if (bioInput)  draft.bio      = bioInput.value.trim();
+        if (rateInput) draft.rateCard = rateInput.value.trim();
+        renderPreview();
+        showStep(4);
+      });
+    }
+
+    const backBtn3 = document.getElementById('backBtn3');
+    if (backBtn3) {
+      backBtn3.addEventListener('click', function() { showStep(2); });
+    }
+
+    // ── Step 4: Preview ──
+    function renderPreview() {
+      // Avatar
+      const avatarEl = document.getElementById('previewAvatar');
+      if (avatarEl) {
+        const initial = (draft.role || 'P')[0].toUpperCase();
+        avatarEl.textContent = initial;
+      }
+
+      const nameEl = document.getElementById('previewName');
+      if (nameEl) {
+        // Pull stored name from able_v3_profile if available
+        const artistProfile = safeLS('able_v3_profile', {});
+        nameEl.textContent = artistProfile.name || 'Your Name';
+      }
+
+      const roleDisplayEl = document.getElementById('previewRoleDisplay');
+      if (roleDisplayEl) roleDisplayEl.textContent = (draft.role || '').toUpperCase();
+
+      // Availability
+      const availWrap = document.getElementById('previewAvailWrap');
+      if (availWrap) {
+        const availLabels = { open: 'Open to work', limited: 'Limited slots', closed: 'Not available' };
+        const label = availLabels[draft.availability] || 'Open to work';
+        availWrap.innerHTML = '<div class="preview-avail-chip ' + escHtml(draft.availability) + '">' +
+          '<span>●</span> ' + escHtml(label) + '</div>';
+      }
+
+      // Bio
+      const bioEl = document.getElementById('previewBio');
+      if (bioEl) {
+        bioEl.textContent = draft.bio || 'No bio added yet.';
+        bioEl.style.opacity = draft.bio ? '' : '0.4';
+      }
+
+      // Credits
+      const creditsListEl = document.getElementById('previewCreditsList');
+      if (creditsListEl) {
+        if (draft.credits.length === 0) {
+          creditsListEl.innerHTML = '';
+        } else {
+          creditsListEl.innerHTML = draft.credits.map(function(c) {
+            return '<div class="preview-credit-item">' +
+              '<div class="preview-credit-dot"></div>' +
+              '<div class="preview-credit-text">' + escHtml(c.releaseTitle) + ' · ' + escHtml(c.artistName) + ' (' + escHtml(c.role) + ')</div>' +
+            '</div>';
+          }).join('');
+        }
+      }
+
+      // Rate
+      const rateEl = document.getElementById('previewRate');
+      if (rateEl) {
+        if (draft.rateCard) {
+          rateEl.innerHTML = '<strong>Rates</strong><br>' + escHtml(draft.rateCard).replace(/\n/g, '<br>');
+          rateEl.style.display = '';
+        } else {
+          rateEl.innerHTML = '<em style="color:var(--t3)">Enquire for rates</em>';
+          rateEl.style.display = '';
+        }
+      }
+    }
+
+    const backBtn4 = document.getElementById('backBtn4');
+    if (backBtn4) {
+      backBtn4.addEventListener('click', function() { showStep(3); });
+    }
+
+    // ── Go live ──
+    const goLiveBtn = document.getElementById('goLiveBtn');
+    if (goLiveBtn) {
+      goLiveBtn.addEventListener('click', function() {
+        goLiveBtn.disabled = true;
+        goLiveBtn.textContent = 'Saving…';
+
+        // Merge into existing able_freelancer_profile
+        const existing = safeLS(FL_KEY, {});
+        const merged = Object.assign({}, existing, {
+          role:         draft.role,
+          credits:      draft.credits,
+          bio:          draft.bio,
+          rateCard:     draft.rateCard || 'Enquire for rates',
+          availability: draft.availability,
+          setupComplete: true,
+          setupTs:      Date.now(),
+        });
+
+        // Also enable freelancer layer in artist profile
+        const artistProfile = safeLS('able_v3_profile', {});
+        if (artistProfile && Object.keys(artistProfile).length > 0) {
+          artistProfile.freelancerEnabled = true;
+          setLS('able_v3_profile', artistProfile);
+        }
+
+        setLS(FL_KEY, merged);
+
+        setTimeout(function() {
+          window.location.href = 'freelancer.html';
+        }, 400);
+      });
+    }
+
+    // ── Init ──
+    renderCreditsList();
+    updateAddCreditVisibility();
+    updateProgress(1);
+
+    // Pre-fill from existing draft if returning
+    const existingFL = safeLS(FL_KEY, null);
+    if (existingFL && existingFL.role) {
+      draft.role = existingFL.role;
+      draft.credits = Array.isArray(existingFL.credits) ? existingFL.credits : [];
+      draft.bio = existingFL.bio || '';
+      draft.rateCard = existingFL.rateCard || '';
+      draft.availability = existingFL.availability || 'open';
+
+      // Restore role selection
+      if (roleGrid) {
+        const matchBtn = roleGrid.querySelector('[data-role="' + draft.role + '"]');
+        if (matchBtn) {
+          matchBtn.classList.add('selected');
+          matchBtn.setAttribute('aria-selected', 'true');
+        }
+      }
+
+      // Restore bio/rate
+      if (bioInput) bioInput.value = draft.bio;
+      if (rateInput) rateInput.value = draft.rateCard !== 'Enquire for rates' ? draft.rateCard : '';
+      if (bioCount) { bioCount.textContent = draft.bio.length + ' / 200'; }
+
+      // Restore availability chip
+      if (availChips) {
+        availChips.querySelectorAll('.avail-chip').forEach(function(c) {
+          const isSelected = c.dataset.avail === draft.availability;
+          c.classList.toggle('selected', isSelected);
+          c.setAttribute('aria-selected', String(isSelected));
+        });
+      }
+
+      renderCreditsList();
+      updateAddCreditVisibility();
+    }
+
+  })();
+</script>
+</body>
+</html>
