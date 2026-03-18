@@ -6741,7 +6741,8 @@ function renderFreelancerAdmin() {
   // Enquiries
   const _enqEl = document.getElementById('freelancerEnquiriesList');
   if (_enqEl) {
-    const enqs = fl.enquiries || [];
+    // C22 #18 — merge enquiries from both storage keys (fl.enquiries legacy + able_fl_enquiries from freelancer.html sheet)
+    const enqs = [...(fl.enquiries || []), ...safeLS('able_fl_enquiries', [])].sort((a,b) => (b.ts||0) - (a.ts||0));
     if (!enqs.length) {
       _enqEl.innerHTML = '<div style="font-size:13px;color:var(--t3);">Enquiries from your profile appear here. Share your ABLE link to start receiving them.</div>';
     } else {
