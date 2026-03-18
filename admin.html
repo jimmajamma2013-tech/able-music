@@ -641,6 +641,8 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
   padding:5px 10px; border-radius:var(--r-sm); font-size:11px; font-weight:500;
   border:1px solid var(--border); background:none; color:var(--t2);
   cursor:pointer; font-family:var(--font);
+  /* E1 — 44px minimum tap target */
+  display:inline-flex; align-items:center; justify-content:center; min-height:44px;
   transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
 }
 .snap-btn:hover { border-color:var(--bm); color:var(--text); }
@@ -738,7 +740,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
 }
 .milestone-icon { font-size:18px; flex-shrink:0; color:var(--acc-t); }
 .milestone-text { flex:1; font-size:13px; font-weight:500; color:var(--dash-text); }
-.milestone-dismiss { background:none; border:none; color:var(--dash-t3); font-size:18px; cursor:pointer; padding:0 4px; font-family:var(--font); }
+.milestone-dismiss { background:none; border:none; color:var(--dash-t3); font-size:18px; cursor:pointer; padding:0; font-family:var(--font); min-width:44px; min-height:44px; display:flex; align-items:center; justify-content:center; } /* E1 — 44px tap target */
 
 /* ── PAGE HEADER ── */
 .page-header { margin-bottom:24px; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
@@ -1166,9 +1168,11 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
 }
 .upgrade-bar-btn:hover { transform:translateY(-1px); }
 .upgrade-bar-dismiss {
-  background:none; border:none; cursor:pointer; padding:4px;
+  background:none; border:none; cursor:pointer; padding:0;
   color:var(--dash-t3); font-size:16px; line-height:1; flex-shrink:0;
   transition:color var(--dur-fast); margin-left:4px;
+  /* E1 — 44px tap target */
+  min-width:44px; min-height:44px; display:flex; align-items:center; justify-content:center;
 }
 .upgrade-bar-dismiss:hover { color:var(--dash-text); }
 
@@ -2212,7 +2216,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       transition: color var(--dur-fast), border-color var(--dur-fast);
     }
     .section-order-btn:hover { color: #fff; border-color: rgba(255,255,255,.25); }
-    .section-order-btn:disabled { opacity: .2; cursor: not-allowed; }
+    .section-order-btn:disabled { opacity: .4; cursor: not-allowed; } /* F6 #72 — min 40% opacity on disabled states */
 
 /* ── PROFILE IDENTITY CARD ── */
 .feel-picker {
@@ -2775,7 +2779,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;" id="itsWorkingCopy">It's working.</div>
         <div style="font-size:11px;color:var(--t2);line-height:1.45;">People are tapping your links. See the full picture in <button style="background:none;border:none;padding:0;font-size:11px;font-weight:600;color:var(--acc);cursor:pointer;font-family:var(--font);" onclick="showPage('analytics')">Analytics →</button></div>
       </div>
-      <button style="background:none;border:none;padding:0;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;flex-shrink:0;" onclick="this.closest('#itsWorkingCard').style.display='none';sessionStorage.setItem('_itsWorkingDismissed','1');" aria-label="Dismiss">×</button>
+      <button style="background:none;border:none;padding:0;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;flex-shrink:0;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;" onclick="this.closest('#itsWorkingCard').style.display='none';sessionStorage.setItem('_itsWorkingDismissed','1');" aria-label="Dismiss">×</button>
     </div>
 
     <!-- §9.1 moment: first fan — shown once when able_fans goes from 0→1 -->
@@ -2951,7 +2955,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;">You're in launch mode.</div>
         <div style="font-size:11px;color:var(--t2);line-height:1.5;">Artist plan gives you the full pre-release toolkit — email your list on drop day, see who pre-saved, and control exactly when fans hear it.</div>
       </div>
-      <button style="background:none;border:none;padding:0;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;flex-shrink:0;" onclick="this.closest('#preReleaseNudge').style.display='none';sessionStorage.setItem('_preReleaseNudgeDismissed','1');" aria-label="Dismiss">×</button>
+      <button style="background:none;border:none;padding:0;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;flex-shrink:0;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;" onclick="this.closest('#preReleaseNudge').style.display='none';sessionStorage.setItem('_preReleaseNudgeDismissed','1');" aria-label="Dismiss">×</button>
     </div>
 
     <!-- §9.1 moment 3 — gig mode trial nudge: appears when gig is first activated this session -->
@@ -2960,7 +2964,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;">Tonight's the night.</div>
         <div style="font-size:11px;color:var(--t2);line-height:1.5;">Artist plan lets you email your list tonight — your fans hear about gigs before anyone else does.</div>
       </div>
-      <button style="background:none;border:none;padding:0;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;flex-shrink:0;" onclick="this.closest('#gigModeNudge').style.display='none';sessionStorage.setItem('_gigModeNudgeDismissed','1');" aria-label="Dismiss">×</button>
+      <button style="background:none;border:none;padding:0;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;flex-shrink:0;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;" onclick="this.closest('#gigModeNudge').style.display='none';sessionStorage.setItem('_gigModeNudgeDismissed','1');" aria-label="Dismiss">×</button>
     </div>
 
       <!-- NUDGE CARD -->
