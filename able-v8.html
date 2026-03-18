@@ -1385,6 +1385,20 @@
     }
     [data-prerelease="final"] .hero-ambient { opacity: 0.28; }
 
+    /* C23 #33 — < 48h: show human label below digits */
+    .countdown[data-sub48h]::before {
+      content: attr(data-sub48h);
+      display: block;
+      width: 100%;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      opacity: 0.7;
+      margin-bottom: 4px;
+    }
     /* C17 #28 — < 1h humanised countdown ("Less than an hour") */
     .countdown[data-final-hour] .countdown__unit,
     .countdown[data-final-hour] .countdown__sep { display: none; }
@@ -2103,6 +2117,14 @@
       display: block;
       background: var(--color-surface);
       transition: transform var(--dur-slow) var(--ease-decel);
+    }
+    /* C23 #35 — music note placeholder when artwork missing */
+    .release-card__artwork--placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-2);
+      aspect-ratio: 1;
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -8277,9 +8299,20 @@
           el.setAttribute('data-final-hour', 'true')
           el.setAttribute('data-humanized-label', label)
           el.setAttribute('aria-label', label + ' until release')
+          el.removeAttribute('data-sub48h')
+        } else if (d === 0 || d === 1) {
+          // C23 #33 — < 48h: show "X days Y hours" aria-label and sub-label
+          const totalHours = d * 24 + h
+          const hoursLabel = totalHours === 1 ? '1 hour' : totalHours + ' hours'
+          const minsLabel = m > 0 ? ' ' + m + (m === 1 ? ' min' : ' mins') : ''
+          el.setAttribute('aria-label', hoursLabel + minsLabel + ' until release')
+          el.setAttribute('data-sub48h', hoursLabel + minsLabel)
+          el.removeAttribute('data-final-hour')
+          el.removeAttribute('data-humanized-label')
         } else {
           el.removeAttribute('data-final-hour')
           el.removeAttribute('data-humanized-label')
+          el.removeAttribute('data-sub48h')
           el.setAttribute('aria-label', 'Time until release')
         }
 
@@ -9159,6 +9192,15 @@
       const nameEl = document.getElementById('fan-artist-name')
       if (nameEl && profile.name) nameEl.textContent = profile.name
 
+      // C23 #37 — personalised aria-label on email inputs
+      if (profile.name) {
+        const _ariaLbl = `Your email — ${profile.name} will keep your details safe`
+        const _ei1 = document.getElementById('fan-email')
+        const _ei2 = document.getElementById('fan-email-2')
+        if (_ei1) _ei1.setAttribute('aria-label', _ariaLbl)
+        if (_ei2) _ei2.setAttribute('aria-label', _ariaLbl)
+      }
+
       // Apply state-driven copy variant
       const state = computeState(profile)
       const baseVariant = CAPTURE_VARIANTS[state] || CAPTURE_VARIANTS['profile']
@@ -9994,7 +10036,7 @@
                       width="300" height="300"
                       onload="this.previousElementSibling&&(this.previousElementSibling.style.display='none')"
                       onerror="this.previousElementSibling&&(this.previousElementSibling.style.display='none')">`
-              : `<div class="release-card__artwork" aria-hidden="true" style="aspect-ratio:1;background:var(--color-surface)"></div>`
+              : `<div class="release-card__artwork release-card__artwork--placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" width="40" height="40" style="opacity:.3"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3z"/></svg></div>`
             }
             ${embedUrl ? `<button class="release-card__play-overlay pressable" aria-label="Play ${escHtml(rel.title || 'release')} inline">
               <svg viewBox="0 0 24 24" fill="white" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
