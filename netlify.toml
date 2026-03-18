@@ -145,15 +145,15 @@
   to     = "/offline.html"
   status = 200
 
-# 404 fallback — also used as offline page by service worker
-[[redirects]]
-  from   = "/*"
-  to     = "/offline.html"
-  status = 404
-
 # Friendly artist profile URLs: ablemusic.co/artistname → able-v8.html
-# (once dynamic routing is in place via Supabase edge functions)
+# Must come BEFORE the /* 404 catch-all — Netlify first-match-wins (J5 #14)
 [[redirects]]
   from   = "/:slug"
   to     = "/able-v8.html"
   status = 200
+
+# 404 fallback — must be last; any unmatched path → offline page
+[[redirects]]
+  from   = "/*"
+  to     = "/offline.html"
+  status = 404
