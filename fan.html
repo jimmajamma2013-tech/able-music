@@ -1088,6 +1088,8 @@
     .filter-pill:focus-visible,
     .follow-btn:focus-visible,
     .ticket-btn:focus-visible { border-radius: var(--r-pill); }
+    /* C23 #28 — artist card focus ring at correct border-radius */
+    .artist-card:focus-visible { outline-offset: 2px; border-radius: var(--r-md); }
 
     /* === BLOOM ANIMATION ====================================== */
     @keyframes bloom-in {
@@ -1354,6 +1356,23 @@
 
   </div><!-- /scroll-area -->
   </main><!-- /fan-main -->
+
+  <!-- C23 #5 — Artists panel -->
+  <main id="fan-artists-panel" style="display:none;padding:0 var(--sp-5) 100px;overflow-y:auto;-webkit-overflow-scrolling:touch;" aria-label="Artists you follow">
+    <h1 style="font-family:var(--font-display,'Barlow Condensed'),sans-serif;font-size:28px;font-weight:700;letter-spacing:0.01em;padding:20px 0 16px;">Artists</h1>
+    <div id="artists-panel-grid" style="display:flex;flex-direction:column;gap:12px;"></div>
+    <div id="artists-panel-empty" style="display:none;text-align:center;padding:48px 0 24px;color:var(--color-text-3,#666);">
+      <p style="font-size:32px;margin-bottom:8px;">🎵</p>
+      <p style="font-size:15px;font-weight:600;margin-bottom:4px;">No artists yet.</p>
+      <p style="font-size:13px;">Follow artists from their pages and they'll appear here.</p>
+    </div>
+  </main>
+
+  <!-- C23 #6 — Me panel (fan self-view) -->
+  <main id="fan-me-panel" style="display:none;padding:0 var(--sp-5) 100px;overflow-y:auto;-webkit-overflow-scrolling:touch;" aria-label="Your profile">
+    <h1 style="font-family:var(--font-display,'Barlow Condensed'),sans-serif;font-size:28px;font-weight:700;letter-spacing:0.01em;padding:20px 0 16px;">You.</h1>
+    <div id="me-panel-content"></div>
+  </main>
 
   <!-- Fan clip player modal (single clip, no swipe nav per spec §5) -->
   <div id="fanClipModal" class="fan-clip-modal" role="dialog" aria-modal="true" aria-label="Clip player">
@@ -1808,12 +1827,16 @@
           <span class="feed-item__time" aria-hidden="true" title="${new Date(item.age).toLocaleString('en-GB', {dateStyle:'long',timeStyle:'short'})}">${formatAge(item.age)}</span>
         </div>
       `
-      el.addEventListener('click', () => {
-        // C16 #4 — track artist card tap
+      function _openFeedItem() {
         try { const _c=safeGet('able_clicks',[]); _c.push({label:'artist-card',type:'navigation',ts:Date.now()}); safeSet('able_clicks',_c); } catch(_) {}
         const slug = artist.id || artist.slug || ''
-        const dest = item.url || (slug ? `https://ablemusic.co/${encodeURIComponent(slug)}?src=fan-dashboard` : null)// C14 #39
+        const dest = item.url || (slug ? `https://ablemusic.co/${encodeURIComponent(slug)}?src=fan-dashboard` : null)
         if (dest) window.open(dest, '_blank', 'noopener')
+      }
+      el.addEventListener('click', _openFeedItem)
+      // C23 #25 — keyboard activation
+      el.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); _openFeedItem(); }
       })
       return el
     }
@@ -2608,6 +2631,126 @@
 
   // === INIT =================================================
 
+  // === BOTTOM NAV PANELS (C23 #5, #6) =======================
+
+  function initBottomNav() {
+    const tbTabs = document.querySelectorAll('.tb-tab')
+    const mainFeed    = document.getElementById('fan-main')
+    const mainArtists = document.getElementById('fan-artists-panel')
+    const mainMe      = document.getElementById('fan-me-panel')
+
+    const panels = { feed: mainFeed, artists: mainArtists, profile: mainMe }
+
+    tbTabs.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const target = this.dataset.panel
+        tbTabs.forEach(function(b) { b.classList.remove('active') })
+        this.classList.add('active')
+
+        Object.values(panels).forEach(function(p) { if (p) p.style.display = 'none'; })
+        if (panels[target]) panels[target].style.display = ''
+
+        if (target === 'artists') renderArtistsPanel()
+        if (target === 'profile') renderMePanel()
+      })
+    })
+  }
+
+  // C23 #5 — Artists panel: grid of followed artist cards
+  function renderArtistsPanel() {
+    const grid = document.getElementById('artists-panel-grid')
+    const empty = document.getElementById('artists-panel-empty')
+    if (!grid) return
+    const followed = getFollowed()
+    if (!followed.length) {
+      grid.innerHTML = ''
+      if (empty) empty.style.display = ''
+      return
+    }
+    if (empty) empty.style.display = 'none'
+
+    followedIds = getFollowedIds()
+    grid.innerHTML = ''
+    followed.forEach(function(artist, idx) {
+      const card = buildArtistCard(artist, idx, {})
+      card.setAttribute('aria-label', artist.name + ' — tap to visit their page')
+      // C23 #3 — close circle badge
+      if (artist.closeCircle) {
+        const badge = document.createElement('span')
+        badge.textContent = 'Close circle'
+        badge.style.cssText = 'display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.04em;background:rgba(244,185,66,0.15);color:#f4b942;margin-left:4px;'
+        badge.setAttribute('aria-label', 'Close circle fan')
+        const nameRow = card.querySelector('.artist-card__info > div')
+        if (nameRow) nameRow.appendChild(badge)
+      }
+      // Notification indicator
+      if (artist.notifications) {
+        const notifDot = document.createElement('span')
+        notifDot.style.cssText = 'display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-left:6px;flex-shrink:0;'
+        notifDot.setAttribute('aria-label', 'Notifications on')
+        const nameRow = card.querySelector('.artist-card__info > div')
+        if (nameRow) nameRow.appendChild(notifDot)
+      }
+      // Tap to visit artist page
+      function _visitArtistPage() {
+        const slug = artist.id || artist.slug || ''
+        if (slug) window.open('https://ablemusic.co/' + encodeURIComponent(slug) + '?src=fan-artists-panel', '_blank', 'noopener')
+      }
+      card.addEventListener('click', function(e) {
+        if (e.target.classList.contains('follow-btn') || e.target.closest('.follow-btn')) return
+        _visitArtistPage()
+      })
+      // C23 #25 — keyboard nav: Enter/Space activates card
+      card.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          if (e.target.classList.contains('follow-btn') || e.target.closest('.follow-btn')) return
+          _visitArtistPage()
+        }
+      })
+      grid.appendChild(card)
+    })
+  }
+
+  // C23 #6 — Me panel: fan self-view
+  function renderMePanel() {
+    const container = document.getElementById('me-panel-content')
+    if (!container) return
+
+    const followed = getFollowed()
+    const fanEmail = (function() {
+      try { return sessionStorage.getItem('able_this_fan_email') || '' } catch(_) { return '' }
+    })()
+    const notifOn = followed.filter(function(a) { return a.notifications; }).length
+    const sinceDate = (function() {
+      try {
+        const all = JSON.parse(localStorage.getItem('able_fans') || '[]')
+        const mine = all.find(function(f) { return fanEmail && f.email && f.email.toLowerCase() === fanEmail.toLowerCase(); })
+        if (mine && mine.joinedAt) return new Date(mine.joinedAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
+        return null
+      } catch(_) { return null }
+    })()
+
+    const rows = [
+      fanEmail ? { label: 'Your email', value: escHtml(fanEmail) } : null,
+      { label: 'Following', value: followed.length + ' artist' + (followed.length !== 1 ? 's' : '') },
+      { label: 'Notifications', value: notifOn > 0 ? 'On for ' + notifOn + ' artist' + (notifOn !== 1 ? 's' : '') : 'Off' },
+      sinceDate ? { label: 'ABLE since', value: escHtml(sinceDate) } : null,
+    ].filter(Boolean)
+
+    container.innerHTML = '<div style="background:var(--color-card,#12152a);border-radius:14px;overflow:hidden;margin-bottom:20px;">' +
+      rows.map(function(r, i) {
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:13px 16px;' +
+          (i > 0 ? 'border-top:1px solid rgba(255,255,255,0.06);' : '') + '">' +
+          '<span style="font-size:13px;color:var(--color-text-3,#666);">' + escHtml(r.label) + '</span>' +
+          '<span style="font-size:13px;font-weight:600;">' + r.value + '</span>' +
+        '</div>'
+      }).join('') +
+    '</div>' +
+    '<button onclick="(function(){try{localStorage.removeItem(\'fan_notif_dismissed\');showToast && showToast(\'Notification preference reset.\');}catch(_){}})()" style="width:100%;padding:12px;background:transparent;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;color:var(--color-text-3,#666);font-size:13px;font-family:var(--font);cursor:pointer;min-height:44px;margin-bottom:12px;">Manage notification preferences</button>' +
+    '<button onclick="(function(){if(confirm(\'Unfollow all artists and clear your data?\')){\n try{localStorage.removeItem(\'able_fan_following\');localStorage.removeItem(\'able_fan_feed\');\n window.location.reload();}catch(_){}}})()" style="width:100%;padding:12px;background:transparent;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;color:rgba(255,80,80,0.6);font-size:13px;font-family:var(--font);cursor:pointer;min-height:44px;">Clear all data</button>'
+  }
+
   // C22 #21 — Supabase realtime: subscribe to profile changes for followed artists
   function initSupabaseRealtime() {
     try {
@@ -2670,6 +2813,7 @@
     initContentTabs()
     initDiscoverFilters()
     _initFanClipPlayer()
+    initBottomNav()
     // Supabase realtime — deferred to avoid blocking initial render
     setTimeout(initSupabaseRealtime, 1500)
   }
