@@ -3795,8 +3795,9 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
                 <div id="hourHeatmapEmpty" style="font-size:11px;color:var(--t3);display:none;text-align:center;padding:10px 0;">No click data yet.</div>
                 <div id="hourHeatmapTooltip" role="tooltip" style="display:none;position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:10px;font-weight:600;color:var(--text);white-space:nowrap;pointer-events:none;z-index:10;"></div>
               </div>
-              <div style="display:flex;justify-content:space-between;margin-top:3px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:3px;">
                 <span style="font-size:9px;color:var(--t3);">12am</span>
+                <span id="hourHeatmapPeak" style="font-size:9px;font-weight:600;color:var(--acc);display:none;"></span>
                 <span style="font-size:9px;color:var(--t3);">12pm</span>
                 <span style="font-size:9px;color:var(--t3);">11pm</span>
               </div>
@@ -7510,6 +7511,15 @@ function updateGatePreviewData() {
           _hhCanvas.addEventListener('mousemove', _showHHTip);
           _hhCanvas.addEventListener('mouseleave', function() { clearTimeout(_hhTipTimeout); _hhTip.style.display = 'none'; });
         }
+
+        // C23 #41 — peak hour annotation
+        const _peakLabelEl = document.getElementById('hourHeatmapPeak');
+        if (_peakLabelEl && _hhMax > 0) {
+          const _peakIdx = _hourBuckets.indexOf(_hhMax);
+          const _peakLabel = _peakIdx === 0 ? '12am' : _peakIdx < 12 ? _peakIdx + 'am' : _peakIdx === 12 ? '12pm' : (_peakIdx - 12) + 'pm';
+          _peakLabelEl.textContent = 'Peak: ' + _peakLabel;
+          _peakLabelEl.style.display = '';
+        }
       }
     }
   }
@@ -7551,12 +7561,12 @@ function exportAnalyticsCSV() {
   try {
     const _clicks = safeLS(CLICKS_KEY, []);
     const _views  = safeLS(VIEWS_KEY,  []);
-    const _rows   = [['type','label','ts','source','zone','state']];
+    const _rows   = [['type','label','ts','source','zone','state','utm_medium','utm_campaign','double_opted_in']];
     _views.forEach(function(v) {
-      _rows.push(['view','page-view', v.ts||'', v.source||'direct', 'page', v.state||'profile']);
+      _rows.push(['view','page-view', v.ts||'', v.source||'direct', 'page', v.state||'profile', '', '', '']);
     });
     _clicks.forEach(function(c) {
-      _rows.push(['click', c.label||'', c.ts||'', c.source||'direct', c.type||'', c.state||'profile']);
+      _rows.push(['click', c.label||'', c.ts||'', c.source||'direct', c.type||'', c.state||'profile', c.utm_medium||'', c.utm_campaign||'', '']);
     });
     const _csv = _rows.map(function(r) {
       return r.map(function(cell) { return '"' + String(cell).replace(/"/g,'""') + '"'; }).join(',');

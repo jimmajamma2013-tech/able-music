@@ -422,10 +422,13 @@
   </style>
 </head>
 <body>
+<!-- C23 #27 — skip link -->
+<a href="#fl-content" class="sr-only" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">Skip to main content</a>
+
 <div class="shell">
 
   <!-- ── Identity header ── -->
-  <div class="identity">
+  <div class="identity" role="banner">
     <div class="identity__avatar" id="proAvatar" aria-hidden="true">A</div>
     <div class="identity__role" id="proRole">Producer</div>
     <h1 class="identity__name" id="proName">Your name</h1>
@@ -439,15 +442,15 @@
     <span class="trust-badge" id="trustPendingBadge" hidden></span>
   </div>
 
-  <div class="content">
+  <div class="content" id="fl-content" role="main">
 
     <!-- ── Credits ── -->
     <div class="section">
       <div class="section__heading">Work</div>
-      <div class="credits-list" id="creditsList">
+      <div class="credits-list" id="creditsList" role="list" aria-label="Release credits">
         <p class="credits-empty" id="creditsEmpty">Credits pending — <span id="creditsEmptyName">this professional</span> is building their record on ABLE.</p>
       </div>
-      <button class="credits-show-more" id="creditsShowMore" hidden>Show more credits ↓</button>
+      <button class="credits-show-more" id="creditsShowMore" hidden aria-expanded="false">Show more credits ↓</button>
     </div>
 
     <!-- ── Portfolio ── -->
@@ -485,13 +488,16 @@
 <div class="enquiry-sheet-backdrop" id="enquiryBackdrop" role="presentation"></div>
 <div class="enquiry-sheet" id="enquirySheet" role="dialog" aria-modal="true" aria-labelledby="enquirySheetTitle" hidden>
   <div class="enquiry-sheet__drag" aria-hidden="true"></div>
-  <div class="enquiry-sheet__title" id="enquirySheetTitle">Send an enquiry</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <div class="enquiry-sheet__title" id="enquirySheetTitle">Send an enquiry</div>
+    <button id="enquiryClose" type="button" aria-label="Close enquiry form" onclick="document.getElementById('enquirySheet').hidden=true;document.getElementById('enquiryBackdrop').style.display='none';document.getElementById('enquiryBtn').focus();" style="background:none;border:none;color:var(--color-text-3);font-size:20px;cursor:pointer;padding:4px 8px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;">✕</button>
+  </div>
   <p class="enquiry-sheet__sub">No noise. Just enough context to have a real conversation.</p>
-  <input class="enquiry-field" id="enqType" type="text" placeholder="What are you working on? (project type)" maxlength="80">
-  <input class="enquiry-field" id="enqArtist" type="text" placeholder="Your artist / project name" maxlength="80">
-  <input class="enquiry-field" id="enqBudget" type="text" placeholder="Estimated budget (or 'flexible')" maxlength="60">
-  <textarea class="enquiry-field" id="enqMessage" rows="3" placeholder="Anything else worth knowing?" maxlength="400"></textarea>
-  <div class="enquiry-sent" id="enquirySent" hidden>Sent. <span id="proNameShort">They</span> will be in touch.</div>
+  <input class="enquiry-field" id="enqType" type="text" placeholder="What are you working on? (project type)" maxlength="80" aria-label="Project type — what are you working on?">
+  <input class="enquiry-field" id="enqArtist" type="text" placeholder="Your artist / project name" maxlength="80" aria-label="Your artist or project name">
+  <input class="enquiry-field" id="enqBudget" type="text" placeholder="Estimated budget (or 'flexible')" maxlength="60" aria-label="Estimated budget">
+  <textarea class="enquiry-field" id="enqMessage" rows="3" placeholder="Anything else worth knowing?" maxlength="400" aria-label="Additional context — anything else worth knowing?"></textarea>
+  <div class="enquiry-sent" id="enquirySent" role="status" aria-live="polite" hidden>Sent. <span id="proNameShort">They</span> will be in touch.</div>
   <button class="enquiry-submit" id="enquirySubmit" type="button">Send →</button>
 </div>
 
