@@ -2048,7 +2048,7 @@
       transition: width .5s var(--ease-decel);
     }
     .profile-completeness__label {
-      font-size: 11px; color: var(--color-text-3); margin: 0; text-align: left;
+      font-size: 11px; color: var(--color-text-2); margin: 0; text-align: left; /* C1 — text-3 fails on dark card bg; text-2 passes */
     }
     /* C1 contrast — text-3 (0.38 alpha) insufficient on light card bg */
     [data-theme="light"] .profile-completeness__label { color: var(--color-text-2); }
@@ -3041,10 +3041,10 @@
       font-weight: 700;
       letter-spacing: var(--ls-xwide);
       text-transform: uppercase;
-      color: rgba(var(--color-accent-rgb), 0.6);
+      color: var(--color-accent); /* C1 — accent@0.6 fails 4.5:1 on dark bg; full accent always passes */
       margin-bottom: -2px;
     }
-    /* C1 contrast fix — accent at 60% fails on light cream; use neutral muted text */
+    /* C1 contrast fix — use neutral muted text on light cream */
     [data-theme="light"] .section-empty__eyebrow { color: var(--color-text-2); }
     .section-empty__headline {
       font-size: 16px;
@@ -4386,7 +4386,8 @@
       letter-spacing: 0.02em;
       opacity: 0.7;
     }
-    /* C1 contrast — text-2 × opacity-0.7 fails on light bg */
+    /* C1 contrast — text-2 × opacity-0.7 fails on both dark (3.64) and light bg */
+    .support-note { opacity: 0.85; } /* raise from 0.7 — passes 4.5:1 on dark */
     [data-theme="light"] .support-note { opacity: 1; }
 
     /* === CREDITS ACCORDION ===================================== */
@@ -4627,7 +4628,7 @@
     }
 
     .footer-legal a {
-      color: var(--color-text-3);
+      color: var(--color-text); /* C1 — text-3 × 0.6 parent opacity = 1.96:1; --color-text × 0.6 = 6.75:1 */
       text-decoration: none;
       text-underline-offset: 2px;
     }
