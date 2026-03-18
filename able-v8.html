@@ -5548,7 +5548,7 @@
     /* === TOAST (error / network status) ======================== */
     @keyframes toastSlideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     .able-toast {
-      position: fixed; top: env(safe-area-inset-top, 0); right: 0; left: 0; z-index: 9999;
+      position: fixed; top: env(safe-area-inset-top, 0); right: 0; left: 0; z-index: var(--z-toast);
       padding: 10px 16px; display: flex; align-items: center; gap: 8px;
       font-size: 13px; font-family: 'DM Sans', sans-serif;
       animation: toastSlideIn 200ms var(--ease-decel) both; /* C11 #52 */
@@ -5700,7 +5700,7 @@
 
   <!-- C17 #33 — No-profile error state (shown when localStorage has no artist data) -->
   <div id="no-profile-state" hidden aria-live="polite" style="
-    position:fixed;inset:0;z-index:9999;
+    position:fixed;inset:0;z-index:var(--z-toast);
     background:var(--color-bg,#0d0e1a);
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     padding:32px;text-align:center;font-family:var(--font,'DM Sans',sans-serif);">
