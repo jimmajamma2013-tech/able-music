@@ -168,7 +168,7 @@
       --color-accent-glow:   rgba(224,123,58,0.30);
       --color-accent-soft:   rgba(224,123,58,0.10);
       --color-accent-subtle: rgba(224,123,58,0.12);
-      --color-on-accent:     #ffffff;
+      --color-on-accent:     #000000; /* default orange/red accents need dark text; applyDerivedTokens() overrides */
 
       /* Tab bar height (used for scroll padding) */
       --tab-bar-height: 64px;
@@ -678,6 +678,8 @@
       border-top: 1px solid rgba(0,0,0,0.08);
       box-shadow: 0 -1px 0 rgba(0,0,0,0.04), 0 -8px 24px rgba(0,0,0,0.06);
     }
+    /* C1 contrast — accent on cream tab bar fails 4.5:1; accent dot still signals active */
+    body:has([data-theme="light"]) .tab-btn[aria-selected="true"] { color: var(--color-text); }
 
     #tab-bar.tab-bar--hidden {
       transform: translateX(-50%) translateY(100%);
@@ -1761,7 +1763,8 @@
       font-size: var(--text-lg);
       font-weight: 500;
       letter-spacing: 0.05em;
-      opacity: 0.60;
+      /* opacity removed — parent .section-header carries the scroll-reveal fade;
+         stacking two opacities caused secondary titles to fail AA contrast */
     }
 
     .section-title {
@@ -2035,6 +2038,7 @@
     .profile-completeness__bar-wrap {
       height: 4px; background: rgba(255,255,255,.1); border-radius: 2px; overflow: hidden; margin-bottom: 6px;
     }
+    [data-theme="light"] .profile-completeness__bar-wrap { background: rgba(0,0,0,0.12); }
     .profile-completeness__bar {
       height: 100%; background: var(--color-accent); border-radius: 2px;
       transition: width .5s var(--ease-decel);
@@ -2042,6 +2046,8 @@
     .profile-completeness__label {
       font-size: 11px; color: var(--color-text-3); margin: 0; text-align: left;
     }
+    /* C1 contrast — text-3 (0.38 alpha) insufficient on light card bg */
+    [data-theme="light"] .profile-completeness__label { color: var(--color-text-2); }
     /* C17 #10 — social proof tag */
     .fan-social-proof {
       font-size: 11px; color: var(--color-text-3); margin: 4px 0 0; text-align: center;
@@ -3034,6 +3040,8 @@
       color: rgba(var(--color-accent-rgb), 0.6);
       margin-bottom: -2px;
     }
+    /* C1 contrast fix — accent at 60% fails on light cream; use neutral muted text */
+    [data-theme="light"] .section-empty__eyebrow { color: var(--color-text-2); }
     .section-empty__headline {
       font-size: 16px;
       font-weight: 800;
@@ -3067,6 +3075,17 @@
     .section-empty__action:hover {
       background: rgba(var(--color-accent-rgb), 0.18);
       border-color: rgba(var(--color-accent-rgb), 0.4);
+    }
+    /* C1 contrast fix — accent on tinted bg fails 4.5:1 in light theme; clip-card--add too */
+    [data-theme="light"] .clip-card--add { color: var(--color-text); }
+    [data-theme="light"] .section-empty__action {
+      color: var(--color-text);
+      background: rgba(0,0,0,0.06);
+      border-color: rgba(0,0,0,0.18);
+    }
+    [data-theme="light"] .section-empty__action:hover {
+      background: rgba(0,0,0,0.10);
+      border-color: rgba(0,0,0,0.25);
     }
 
     /* === WORLD MAP ============================================= */
@@ -4363,6 +4382,8 @@
       letter-spacing: 0.02em;
       opacity: 0.7;
     }
+    /* C1 contrast — text-2 × opacity-0.7 fails on light bg */
+    [data-theme="light"] .support-note { opacity: 1; }
 
     /* === CREDITS ACCORDION ===================================== */
     .credits-section {
@@ -4571,6 +4592,9 @@
       gap: var(--sp-2);
       opacity: 0.6;
     }
+    /* C1 contrast — footer opacity multiplies text-3's low alpha on light bg → fails AA */
+    [data-theme="light"] .profile-footer { opacity: 1; }
+    [data-theme="light"] .footer-legal a { color: var(--color-text-2); }
 
     .footer-able-link {
       display: inline-flex;
@@ -5393,8 +5417,12 @@
     }
     .pill-tab.active {
       background: var(--color-accent, #e05242);
-      color: #fff;
+      color: var(--color-on-accent, #000);
     }
+    /* pill-tabs sit outside [data-theme] — use body:has() pattern */
+    /* rgba(0.60) = --color-text-2 equivalent → 4.8:1 on cream, passes AA */
+    body:has([data-theme="light"]) .pill-tab { color: rgba(13,14,26,0.60); }
+    body:has([data-theme="light"]) .pill-tab.active { color: var(--color-on-accent, #0d0e1a); }
 
     /* Dashed amber rings on editable zones */
     .edit-active [data-editable] {
@@ -5629,7 +5657,7 @@
       border-radius: 10px;
       font-size: 13px;
       font-weight: 700;
-      color: #fff;
+      color: var(--color-on-accent, #000);
       cursor: pointer;
       flex-shrink: 0;
       align-self: center;
@@ -11622,7 +11650,7 @@
 
       headers.forEach(h => {
         if (h.getBoundingClientRect().top < vBottom) return // already visible, skip
-        h.style.opacity = '0.35'
+        h.style.opacity = '0.60'
         headerObserver.observe(h)
       })
     }
