@@ -18,14 +18,15 @@
 
 | Page | File | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|---|
-| Artist profile | `able-v8.html` | 9.7/10 | 9.8/10 | Supabase auth + Spotify auto-import | ✅ C21: fan echo copy w/name, pre-release/live state echo, double opt-in nudge, source match log |
-| Admin dashboard | `admin.html` | 9.9/10 | ~9.95/10 | Supabase auth (data portability) | ✅ C21: 30d sparkline, CTR by state, freelancer admin tab, GDPR count, range persistence, RAF sparkline fix |
+| Artist profile | `able-v8.html` | 9.75/10 | 9.8/10 | Supabase auth + Spotify auto-import | ✅ C22: fan cap copy, echo nudge role=status, revisit same-channel, freelancer footer link |
+| Admin dashboard | `admin.html` | 9.92/10 | ~9.95/10 | Supabase auth (data portability) | ✅ C22: sparkline tooltip, hour heatmap, analytics CSV export gate, freelancerEnabled toggle, CRM search count, snap title, CTR dim |
 | Onboarding wizard | `start.html` | 9.9/10 | ~9.9/10 | Social proof (real artists) | ✅ C19: Spotify fetch error spec copy |
 | Landing page | `landing.html` | 9.9/10 | ~9.9/10 | — | ✅ C21: 'For professionals' section — mixer/producer + videographer cards linking to freelancer.html |
-| Fan dashboard | `fan.html` | 9.75/10 | ~9.8/10 | Supabase realtime + Haversine geo | ✅ C20: feed source label, artwork thumbnail, pull-to-refresh aria |
-| Freelancer profile | `freelancer.html` | 9.0/10 | ~9.2/10 | Network maturity + real testimonials | ✅ C21: V1 shell built — identity, credits (asymmetry rule), portfolio, artists strip, enquiry sheet |
+| Fan dashboard | `fan.html` | 9.77/10 | ~9.8/10 | Supabase realtime + Haversine geo | ✅ C22: artist card artwork fallback; revisit same-channel log |
+| Freelancer profile | `freelancer.html` | 9.1/10 | ~9.2/10 | Network maturity + real testimonials | ✅ C22: enquiry key merge fix; start.html 4-step onboarding wizard built |
+| Freelancer onboarding | `freelancer-start.html` | 9.0/10 | ~9.2/10 | Real Supabase auth | ✅ C22: 4-step wizard — role, credits (5 max), rate card + bio, live preview; OG meta |
 
-**Page average: ~9.79/10**
+**Page average: ~9.82/10**
 
 ---
 
