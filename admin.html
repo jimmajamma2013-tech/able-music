@@ -5846,9 +5846,9 @@ function tickGigCountdown(exp) {
     const hrs = Math.floor(remaining / 3600000);
     const mins = Math.floor((remaining % 3600000) / 60000);
     const secs = Math.floor((remaining % 60000) / 1000);
-    // C17 #24 — "Gig mode · Xh Xm remaining"
+    // C17 #24 — "Gig mode · Xh Xm remaining" / C21 #26 — verbose when < 4h
     if (label) label.textContent = remaining > 0
-      ? `Gig mode · ${hrs > 0 ? `${hrs}h ${mins}m` : mins > 0 ? `${mins}m ${secs}s` : `${secs}s`} remaining`
+      ? `Gig mode · ${hrs >= 4 ? `${hrs}h ${mins}m` : hrs > 0 ? `${hrs} hour${hrs!==1?'s':''} ${mins} min${mins!==1?'s':''}` : mins > 0 ? `${mins}m ${secs}s` : `${secs}s`} remaining`
       : 'Gig mode · expired';
     if (remaining <= 0) {
       clearGigCountdown();

@@ -5836,6 +5836,8 @@
         <div class="fan-capture__echo" id="fan-echo" aria-live="polite" aria-atomic="true" hidden>
           <p class="fan-capture__echo-text" id="fan-echo-text"></p>
           <p class="fan-capture__echo-confirm">You're in. I'll keep you close.</p>
+          <!-- C21 #12 — double opt-in nudge: shown 30s after sign-up -->
+          <p id="fan-optin-nudge" hidden style="font-size:12px;opacity:0.7;margin-top:4px;">Check your inbox to confirm.</p>
         </div>
         <!-- Owner view: shown instead of fan form when artist visits their own page (#26) -->
         <div class="fan-capture__owner" id="fan-capture-owner" hidden>
@@ -9542,6 +9544,11 @@
               // Also hide secondary form
               const fc2form = document.getElementById('fan-form-2')
               if (fc2form) fc2form.hidden = true
+              // C21 #12 — double opt-in nudge after 30s
+              setTimeout(() => {
+                const _nudge = document.getElementById('fan-optin-nudge')
+                if (_nudge) _nudge.hidden = false
+              }, 30000)
             }, 600)
           }, 800)
         })
