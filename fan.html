@@ -1969,6 +1969,21 @@
       ? `<span class="artist-card__active" aria-label="Active recently" title="Active recently"></span>`
       : ''
 
+    // C23 #2 — first-10 badge: check if current fan email is in first 10 sign-ups (same browser)
+    const first10Html = (function() {
+      try {
+        const _fanEmail = sessionStorage.getItem('able_this_fan_email') || ''
+        if (!_fanEmail) return ''
+        const _fans = JSON.parse(localStorage.getItem('able_fans') || '[]')
+        const _sorted = _fans.slice().sort(function(a, b) { return (a.ts || 0) - (b.ts || 0); })
+        const _rank = _sorted.findIndex(function(f) { return f.email && f.email.toLowerCase() === _fanEmail.toLowerCase(); })
+        if (_rank >= 0 && _rank < 10) {
+          return `<span style="font-size:10px;font-weight:700;letter-spacing:0.05em;padding:1px 7px;border-radius:20px;background:rgba(var(--acc-rgb,224,82,66),0.15);color:var(--color-accent,#e05242);text-transform:uppercase;flex-shrink:0;" aria-label="You were among the first 10 fans">First 10</span>`
+        }
+        return ''
+      } catch(_) { return '' }
+    })()
+
     el.innerHTML = `
       <div class="artist-card__accent-strip" style="background:${artist.accent}"></div>
       <div class="artist-card__avatar" style="background:rgba(${rgb},0.22);color:#f0ede8;overflow:hidden;">
@@ -1978,6 +1993,7 @@
         <div style="display:flex;align-items:center;gap:6px">
           <p class="artist-card__name">${escHtml(artist.name)}</p>
           ${activeHtml}
+          ${first10Html}
         </div>
         <div class="artist-card__meta">
           <span class="artist-card__genre">${escHtml(artist.genre)}</span>
@@ -2731,11 +2747,29 @@
       } catch(_) { return null }
     })()
 
+    // C23 #7 — compute revisit streak from fan_visit_dates
+    const streakCount = (function() {
+      try {
+        const _dates = JSON.parse(localStorage.getItem('fan_visit_dates') || '[]')
+        if (_dates.length < 2) return 0
+        const _unique = _dates.filter(function(d, i, a) { return a.indexOf(d) === i }).sort()
+        let _streak = 1
+        for (let _i = _unique.length - 1; _i > 0; _i--) {
+          const _cur  = new Date(_unique[_i])
+          const _prev = new Date(_unique[_i - 1])
+          const _diff = (_cur - _prev) / 86400000
+          if (_diff === 1) { _streak++; } else { break; }
+        }
+        return _streak >= 2 ? _streak : 0
+      } catch(_) { return 0 }
+    })()
+
     const rows = [
       fanEmail ? { label: 'Your email', value: escHtml(fanEmail) } : null,
       { label: 'Following', value: followed.length + ' artist' + (followed.length !== 1 ? 's' : '') },
       { label: 'Notifications', value: notifOn > 0 ? 'On for ' + notifOn + ' artist' + (notifOn !== 1 ? 's' : '') : 'Off' },
       sinceDate ? { label: 'ABLE since', value: escHtml(sinceDate) } : null,
+      streakCount >= 2 ? { label: 'Streak', value: streakCount + ' days in a row' } : null,
     ].filter(Boolean)
 
     container.innerHTML = '<div style="background:var(--color-card,#12152a);border-radius:14px;overflow:hidden;margin-bottom:20px;">' +
@@ -2807,6 +2841,15 @@
     try { _prevLastVisit = parseInt(localStorage.getItem('fan_last_visit') || '0', 10) || 0; } catch (_) {}
     // C16 #5 — record last visit timestamp for "New" badge calculation
     try { localStorage.setItem('fan_last_visit', Date.now()); } catch (_) {}
+    // C23 #7 — track unique visit dates for streak calculation
+    try {
+      const _today = new Date().toISOString().slice(0, 10)
+      const _dates = JSON.parse(localStorage.getItem('fan_visit_dates') || '[]')
+      if (_dates[_dates.length - 1] !== _today) {
+        _dates.push(_today)
+        localStorage.setItem('fan_visit_dates', JSON.stringify(_dates.slice(-60)))
+      }
+    } catch (_) {}
     initArrival()
     renderFollowing()
     renderSubGreeting()
