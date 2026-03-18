@@ -66,7 +66,10 @@
     (function() {
       try {
         const p = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
-        const t = p.theme;
+        // C10: resolution order — (1) localStorage → (2) prefers-contrast/color-scheme → (3) dark default
+        let t = p.theme;
+        if (!t && window.matchMedia('(prefers-contrast: more)').matches) t = 'contrast';
+        if (!t && window.matchMedia('(prefers-color-scheme: light)').matches) t = 'light';
         if (t === 'light' || t === 'glass' || t === 'contrast') {
           document.documentElement.dataset.themeInit = t;
         }
@@ -9746,7 +9749,7 @@
                 if (echoText) {
                   // C12 #56 — contextual echo for pre-release / live state
                   const _echoState = computeState(profile)
-                  let _echoMsg = profile.name ? `Check your inbox. ${profile.name} will reach out directly.` : `I'll reach out when something's worth saying.` // C21 #11
+                  let _echoMsg = `Check your inbox. I'll reach out directly.` // D3 #3 — first-person artist voice
                   if (profile.releaseTitle) {
                     if (_echoState === 'pre-release') {
                       const _echoDate = profile.releaseDate ? new Date(profile.releaseDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : null
