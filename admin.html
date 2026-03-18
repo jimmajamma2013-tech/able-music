@@ -9584,7 +9584,7 @@ function _callAiCopy(payload, containerId, btnId, onUse) {
   .catch(function(err) {
     let container = document.getElementById(containerId);
     if (container) {
-      container.innerHTML = '<div style="font-size:12px;color:var(--red);padding:4px 0;">' + (err.message || 'Could not reach AI. Check your connection.') + '</div>';
+      container.innerHTML = '<div style="font-size:12px;color:var(--red);padding:4px 0;">' + escHtml(err.message || 'Could not reach AI. Check your connection.') + '</div>'; // H1 — escape API error message before innerHTML
       container.classList.add('show');
     }
     if (btn) { btn.disabled = false; btn.innerHTML = '<span class="ai-trigger__icon" aria-hidden="true">✦</span>Try again'; }
