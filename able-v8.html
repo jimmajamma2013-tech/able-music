@@ -10218,6 +10218,31 @@
               }
             })
           }
+        } else if (isSpotify && safeEmbedUrl && displayStyle !== 'able-player') {
+          // C23 #34 — Spotify embed fallback: if offline or iframe stalls, show stream link
+          const _spWrap = card.querySelector('.release-card__spotify-embed')
+          const _spIframe = _spWrap ? _spWrap.querySelector('iframe') : null
+          if (_spIframe && safeStreamUrl) {
+            function _showSpotifyFallback() {
+              if (_spWrap.dataset.fbShown) return
+              _spWrap.dataset.fbShown = '1'
+              const _fb = document.createElement('a')
+              _fb.className = 'release-card__ext pressable js-stream-track'
+              _fb.href = streamUrl
+              _fb.target = '_blank'
+              _fb.rel = 'noopener noreferrer'
+              _fb.textContent = 'Play on Spotify ↗'
+              _spWrap.appendChild(_fb)
+              _spIframe.hidden = true
+            }
+            if (!navigator.onLine) {
+              _showSpotifyFallback()
+            } else {
+              const _spTimeout = setTimeout(_showSpotifyFallback, 8000)
+              _spIframe.addEventListener('load', function() { clearTimeout(_spTimeout) }, { once: true })
+              _spIframe.addEventListener('error', function() { clearTimeout(_spTimeout); _showSpotifyFallback() }, { once: true })
+            }
+          }
         } else if (embedUrl && !isSpotify) {
           // SoundCloud / Mixcloud / generic embed
           const overlay  = card.querySelector('.release-card__play-overlay')
