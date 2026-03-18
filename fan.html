@@ -1186,6 +1186,8 @@
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
         })(window, document, "clarity", "script", "vwbqr4zdzn");
     </script>
+  <!-- C22 #21 — Supabase realtime for fan feed -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 </head>
 <body>
 
@@ -1280,6 +1282,8 @@
         </div>
       </div>
       <div id="prerelease-strips-container"></div>
+      <!-- C22 #21 — realtime update banner -->
+      <div id="rt-update-banner" role="status" aria-live="polite" style="display:none;font-size:13px;color:var(--ok,#4ade80);background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:8px;padding:8px 14px;margin-bottom:12px;text-align:center;"></div>
       <div class="feed-section feed-section--today">
         <h2 class="feed-date-label">Today</h2>
         <div class="feed-items" id="feed-today"></div>
@@ -2604,6 +2608,57 @@
 
   // === INIT =================================================
 
+  // C22 #21 — Supabase realtime: subscribe to profile changes for followed artists
+  function initSupabaseRealtime() {
+    try {
+      const SB_URL = 'https://jgspraqrnjrerzhnnhtb.supabase.co'
+      const SB_KEY = 'sb_publishable_pRmYph3-GYIeZEeKyY1_sg_5sOPkQp_'
+      if (!window.supabase) return
+      const _sb = window.supabase.createClient(SB_URL, SB_KEY)
+      const _followed = getFollowed()
+      if (!_followed.length) return
+
+      // Subscribe to any profile update for followed artists
+      const _slugs = _followed.map(function(a) { return a.id || a.slug || '' }).filter(Boolean)
+      if (!_slugs.length) return
+
+      _sb.channel('fan-feed-realtime')
+        .on('postgres_changes', {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles',
+          filter: 'slug=in.(' + _slugs.join(',') + ')'
+        }, function(payload) {
+          try {
+            const _updated = payload.new || {}
+            const _artistName = _updated.name || 'an artist you follow'
+            // Inject a realtime feed item into able_fan_feed
+            const _feed = safeGet('able_fan_feed', [])
+            _feed.unshift({
+              artistId:  _updated.slug || payload.old && payload.old.slug || '',
+              type:      'update',
+              title:     'Updated their page',
+              sub:       _updated.release && _updated.release.title ? 'New release: ' + _updated.release.title : '',
+              age:       Date.now(),
+              source:    'realtime',
+            })
+            try { localStorage.setItem('able_fan_feed', JSON.stringify(_feed.slice(0, 50))); } catch(_) {}
+            // Show banner
+            const _banner = document.getElementById('rt-update-banner')
+            if (_banner) {
+              _banner.textContent = _artistName + ' just updated their page.'
+              _banner.style.display = ''
+              _banner.setAttribute('aria-live', 'assertive')
+              setTimeout(function() { _banner.style.display = 'none'; }, 5000)
+            }
+            // Re-render feed without full page reload
+            renderFollowing()
+          } catch(_) {}
+        })
+        .subscribe()
+    } catch(_) {}
+  }
+
   function init() {
     // C16 #1 — read previous visit before overwriting (so "New" badge can fire on this visit)
     try { _prevLastVisit = parseInt(localStorage.getItem('fan_last_visit') || '0', 10) || 0; } catch (_) {}
@@ -2615,6 +2670,8 @@
     initContentTabs()
     initDiscoverFilters()
     _initFanClipPlayer()
+    // Supabase realtime — deferred to avoid blocking initial render
+    setTimeout(initSupabaseRealtime, 1500)
   }
 
   if (document.readyState === 'loading') {
