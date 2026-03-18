@@ -311,6 +311,9 @@
       color: var(--color-text-2);
     }
 
+    .rate-line { padding: 5px 0; }
+    .rate-line--sep { border-bottom: 1px solid var(--color-border); }
+    .rate-expiry-warn { font-size: 11px; color: var(--color-text-3); margin-top: 8px; }
     .rate-card {
       font-size: 13px;
       color: var(--color-text-3);
@@ -495,6 +498,7 @@
   <p class="enquiry-sheet__sub">No noise. Just enough context to have a real conversation.</p>
   <input class="enquiry-field" id="enqType" type="text" placeholder="What are you working on? (project type)" maxlength="80" aria-label="Project type — what are you working on?">
   <input class="enquiry-field" id="enqArtist" type="text" placeholder="Your artist / project name" maxlength="80" aria-label="Your artist or project name">
+  <input class="enquiry-field" id="enqEmail" type="email" placeholder="Your email address" maxlength="120" autocomplete="email" aria-label="Your email address">
   <input class="enquiry-field" id="enqBudget" type="text" placeholder="Estimated budget (or 'flexible')" maxlength="60" aria-label="Estimated budget">
   <textarea class="enquiry-field" id="enqMessage" rows="3" placeholder="Anything else worth knowing?" maxlength="400" aria-label="Additional context — anything else worth knowing?"></textarea>
   <div class="enquiry-sent" id="enquirySent" role="status" aria-live="polite" hidden>Sent. <span id="proNameShort">They</span> will be in touch.</div>
@@ -524,7 +528,20 @@
   }
 
   function init() {
-    const profile = safeLS(FL_KEY, null);
+    // C23 #12/#13 — read ?handle param; look up able_freelancer_profiles[handle]
+    const _urlHandle = new URLSearchParams(window.location.search).get('handle');
+    let profile = null;
+    if (_urlHandle) {
+      const _profiles = safeLS('able_freelancer_profiles', {});
+      profile = _profiles[_urlHandle] || null;
+      // Fall back to current user's own profile if handles match
+      if (!profile) {
+        const _own = safeLS(FL_KEY, null);
+        if (_own && (_own.handle === _urlHandle || _own.name === _urlHandle)) profile = _own;
+      }
+    } else {
+      profile = safeLS(FL_KEY, null);
+    }
 
     // Demo data for preview — replace with real profile when Supabase auth lands
     const p = profile || {
@@ -715,10 +732,35 @@
     if (labelEl) labelEl.textContent = avail.label;
     if (btnEl && avail.disabled) { btnEl.disabled = true; btnEl.textContent = 'Not available right now'; }
 
-    // Rate card
+    // Rate card — C23 #18 line-item formatting, #11 auto-expiry warning
     const rateEl = document.getElementById('rateCard');
-    if (rateEl && p.rateCard) { rateEl.textContent = p.rateCard; rateEl.hidden = false; }
-    else if (rateEl && !p.rateCard) { rateEl.textContent = 'Enquire for rates.'; rateEl.hidden = false; }
+    if (rateEl) {
+      rateEl.hidden = false;
+      if (p.rateCard) {
+        // Split by newline, render each as its own line
+        const lines = p.rateCard.split('\n').map(s => s.trim()).filter(Boolean);
+        if (lines.length > 1) {
+          rateEl.innerHTML = lines.map((line, i) =>
+            `<div class="rate-line${i < lines.length - 1 ? ' rate-line--sep' : ''}">${escHtml(line)}</div>`
+          ).join('');
+        } else {
+          rateEl.textContent = p.rateCard;
+        }
+        // C23 #11 — auto-expiry warning: flag if rateCard hasn't been updated in > 90 days
+        if (p.rateCardUpdatedAt) {
+          const _daysSince = (Date.now() - p.rateCardUpdatedAt) / (1000 * 60 * 60 * 24);
+          if (_daysSince > 90) {
+            const _months = Math.round(_daysSince / 30);
+            const _warn = document.createElement('div');
+            _warn.className = 'rate-expiry-warn';
+            _warn.textContent = `Last updated ${_months} month${_months !== 1 ? 's' : ''} ago`;
+            rateEl.appendChild(_warn);
+          }
+        }
+      } else {
+        rateEl.textContent = 'Enquire for rates.';
+      }
+    }
 
     // Enquiry sheet
     if (btnEl && !avail.disabled) {
@@ -760,6 +802,7 @@
   document.getElementById('enquirySubmit')?.addEventListener('click', function() {
     const type    = document.getElementById('enqType')?.value.trim();
     const artist  = document.getElementById('enqArtist')?.value.trim();
+    const email   = document.getElementById('enqEmail')?.value.trim();
     const budget  = document.getElementById('enqBudget')?.value.trim();
     const message = document.getElementById('enqMessage')?.value.trim();
     if (!type || !artist) {
@@ -769,7 +812,7 @@
     // Store enquiry locally (Netlify function / Supabase in V1.5)
     try {
       const enquiries = JSON.parse(localStorage.getItem('able_fl_enquiries') || '[]');
-      enquiries.push({ type, artist, budget, message, ts: Date.now() });
+      enquiries.push({ type, artist, email, budget, message, ts: Date.now() });
       localStorage.setItem('able_fl_enquiries', JSON.stringify(enquiries));
     } catch(_) {}
     // Show sent state

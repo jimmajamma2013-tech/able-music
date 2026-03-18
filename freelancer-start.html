@@ -631,6 +631,12 @@
       <h1 class="step-title" id="step3-title">How you work.</h1>
       <p class="step-sub">A few lines about your process and how people can reach you. Rates are optional — "Enquire for rates" is a valid answer.</p>
 
+      <!-- C23 #19 — name input, shown only when able_v3_profile.name not set -->
+      <div class="field" id="nameFieldWrap" hidden>
+        <label for="nameInput">Your name</label>
+        <input id="nameInput" type="text" maxlength="60" placeholder="e.g. Maya Beats" autocomplete="name">
+      </div>
+
       <div class="field">
         <label for="bioInput">One line about you <span style="color:var(--t3);font-weight:400;text-transform:none;letter-spacing:0;">(max 200 chars)</span></label>
         <textarea id="bioInput" rows="3" maxlength="200" placeholder="I make space in music. Production that puts the song first."></textarea>
@@ -710,6 +716,7 @@
       bio:          '',
       rateCard:     '',
       availability: 'open',
+      name:         '',
     };
 
     let currentStep = 1;
@@ -934,9 +941,9 @@
 
       const nameEl = document.getElementById('previewName');
       if (nameEl) {
-        // Pull stored name from able_v3_profile if available
+        // C23 #15 — use draft.name if provided, else pull from able_v3_profile
         const artistProfile = safeLS('able_v3_profile', {});
-        nameEl.textContent = artistProfile.name || 'Your Name';
+        nameEl.textContent = draft.name || artistProfile.name || 'Your Name';
       }
 
       const roleDisplayEl = document.getElementById('previewRoleDisplay');
@@ -998,22 +1005,32 @@
         goLiveBtn.disabled = true;
         goLiveBtn.textContent = 'Saving…';
 
+        // C23 #19 — capture name input if shown
+        const _nameInp = document.getElementById('nameInput');
+        if (_nameInp && !(_nameInp.closest('[hidden]'))) {
+          draft.name = _nameInp.value.trim() || draft.name;
+        }
+
         // Merge into existing able_freelancer_profile
         const existing = safeLS(FL_KEY, {});
+        const _now = Date.now();
         const merged = Object.assign({}, existing, {
-          role:         draft.role,
-          credits:      draft.credits,
-          bio:          draft.bio,
-          rateCard:     draft.rateCard || 'Enquire for rates',
-          availability: draft.availability,
-          setupComplete: true,
-          setupTs:      Date.now(),
+          role:              draft.role,
+          credits:           draft.credits,
+          bio:               draft.bio,
+          rateCard:          draft.rateCard || 'Enquire for rates',
+          rateCardUpdatedAt: draft.rateCard ? _now : (existing.rateCardUpdatedAt || null),
+          availability:      draft.availability,
+          setupComplete:     true,
+          setupTs:           _now,
         });
+        if (draft.name) merged.name = draft.name;
 
         // Also enable freelancer layer in artist profile
         const artistProfile = safeLS('able_v3_profile', {});
         if (artistProfile && Object.keys(artistProfile).length > 0) {
           artistProfile.freelancerEnabled = true;
+          if (draft.name && !artistProfile.name) artistProfile.name = draft.name;
           setLS('able_v3_profile', artistProfile);
         }
 
@@ -1023,6 +1040,20 @@
           window.location.href = 'freelancer.html';
         }, 400);
       });
+    }
+
+    // ── Name input wiring (C23 #19) ──
+    const nameInput = document.getElementById('nameInput');
+    const nameFieldWrap = document.getElementById('nameFieldWrap');
+    // Show name field only when artist profile has no name
+    const _artistProfileForName = safeLS('able_v3_profile', {});
+    if (nameFieldWrap && !_artistProfileForName.name) {
+      nameFieldWrap.hidden = false;
+    }
+    if (nameInput) {
+      nameInput.addEventListener('input', function() { draft.name = this.value.trim(); });
+      // Pre-fill from existing draft
+      if (draft.name) nameInput.value = draft.name;
     }
 
     // ── Init ──
@@ -1038,6 +1069,7 @@
       draft.bio = existingFL.bio || '';
       draft.rateCard = existingFL.rateCard || '';
       draft.availability = existingFL.availability || 'open';
+      draft.name = existingFL.name || '';
 
       // Restore role selection
       if (roleGrid) {
@@ -1048,9 +1080,10 @@
         }
       }
 
-      // Restore bio/rate
+      // Restore bio/rate/name
       if (bioInput) bioInput.value = draft.bio;
       if (rateInput) rateInput.value = draft.rateCard !== 'Enquire for rates' ? draft.rateCard : '';
+      if (nameInput && draft.name) nameInput.value = draft.name;
       if (bioCount) { bioCount.textContent = draft.bio.length + ' / 200'; }
 
       // Restore availability chip
