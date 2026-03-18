@@ -994,6 +994,9 @@
       margin-top: 2px;
     }
 
+    /* C22 #22 — geo distance inline */
+    .show-geo-dist { color: var(--platform-accent); font-weight: 500; }
+
     .show-item__following-badge {
       font-size: 9px;
       font-weight: 600;
@@ -1437,10 +1440,10 @@
   ]
 
   const DEMO_NEAR = [
-    { artistId: 'nova-reign',  artist: 'Nova Reign',  venue: 'Fabric',      city: 'London',  day: '15', month: 'Mar', time: '11pm', followed: true,  accent: '#06b6d4' },
-    { artistId: 'margot-veil', artist: 'Margot Veil', venue: 'The Lexington', city: 'London', day: '19', month: 'Mar', time: '8pm',  followed: false, accent: '#7ec88a' },
-    { artistId: 'luna-waves',  artist: 'Luna Waves',  venue: 'Jazz Cafe',   city: 'London',  day: '22', month: 'Mar', time: '9pm',  followed: true,  accent: '#e06b7a' },
-    { artistId: 'tendai',      artist: 'Tendai',      venue: 'Village Underground', city: 'London', day: '28', month: 'Mar', time: '9pm', followed: false, accent: '#e06b7a' },
+    { artistId: 'nova-reign',  artist: 'Nova Reign',  venue: 'Fabric',      city: 'London',  day: '15', month: 'Mar', time: '11pm', followed: true,  accent: '#06b6d4', venueLat: 51.5196, venueLng: -0.1019 },
+    { artistId: 'margot-veil', artist: 'Margot Veil', venue: 'The Lexington', city: 'London', day: '19', month: 'Mar', time: '8pm',  followed: false, accent: '#7ec88a', venueLat: 51.5464, venueLng: -0.1059 },
+    { artistId: 'luna-waves',  artist: 'Luna Waves',  venue: 'Jazz Cafe',   city: 'London',  day: '22', month: 'Mar', time: '9pm',  followed: true,  accent: '#e06b7a', venueLat: 51.5390, venueLng: -0.1426 },
+    { artistId: 'tendai',      artist: 'Tendai',      venue: 'Village Underground', city: 'London', day: '28', month: 'Mar', time: '9pm', followed: false, accent: '#e06b7a', venueLat: 51.5289, venueLng: -0.0756 },
   ]
 
   // C16 #2 — Upcoming shows from followed artists (demo data, next 30 days)
@@ -1449,6 +1452,49 @@
     { artistId: 'nova-reign', artist: 'Nova Reign',  venue: 'Fabric',          city: 'London',    day: '28', month: 'Mar', doorsTime: '11pm', ticketUrl: '#', accent: '#06b6d4' },
     { artistId: 'drift',      artist: 'Drift',       venue: 'EartH Hackney',   city: 'London',    day: '4',  month: 'Apr', doorsTime: '8pm',  ticketUrl: '#', accent: '#f4b942' },
   ]
+
+  // === GEO UTILITIES (C22 #22) ===============================
+
+  // Haversine: returns distance in km between two lat/lng points
+  function haversineKm(lat1, lng1, lat2, lng2) {
+    const R = 6371
+    const dLat = (lat2 - lat1) * Math.PI / 180
+    const dLng = (lng2 - lng1) * Math.PI / 180
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLng/2) * Math.sin(dLng/2)
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+  }
+
+  function formatDistance(km) {
+    if (km < 1) return Math.round(km * 1000) + 'm away'
+    if (km < 10) return '~' + km.toFixed(1) + 'km away'
+    return '~' + Math.round(km) + 'km away'
+  }
+
+  // fan_location_geo: { lat, lng, ts } — cached for 24h
+  function getFanGeo() {
+    try {
+      const cached = JSON.parse(localStorage.getItem('fan_location_geo') || 'null')
+      if (cached && cached.ts && Date.now() - cached.ts < 86400000) return cached
+    } catch(_) {}
+    return null
+  }
+
+  function requestFanGeo(onSuccess) {
+    if (!navigator.geolocation) return
+    const cached = getFanGeo()
+    if (cached) { onSuccess(cached); return }
+    navigator.geolocation.getCurrentPosition(
+      function(pos) {
+        const geo = { lat: pos.coords.latitude, lng: pos.coords.longitude, ts: Date.now() }
+        try { localStorage.setItem('fan_location_geo', JSON.stringify(geo)) } catch(_) {}
+        onSuccess(geo)
+      },
+      function() {}, // silently ignore denial
+      { timeout: 8000, maximumAge: 3600000 }
+    )
+  }
 
   // === UTILITIES ============================================
 
@@ -1648,6 +1694,53 @@
       renderEmptyFollowingState()
       return
     }
+
+    // C22 #27 — fan notification opt-in nudge
+    ;(function() {
+      try {
+        const _notifNudgeId = 'fan-notif-nudge'
+        let _nudge = document.getElementById(_notifNudgeId)
+        const _hasNotif = followed.some(function(a) { return a.notifications; })
+        const _dismissed = localStorage.getItem('fan_notif_dismissed') === '1'
+        if (_hasNotif || followed.length === 0 || _dismissed) {
+          if (_nudge) _nudge.remove()
+          return
+        }
+        const _firstName = followed[0] && followed[0].name ? followed[0].name.split(' ')[0] : null
+        const _nudgeLabel = followed.length === 1 && _firstName
+          ? 'Get notified when ' + _firstName + ' posts?'
+          : 'Get notified when your artists post?'
+        if (!_nudge) {
+          _nudge = document.createElement('div')
+          _nudge.id = _notifNudgeId
+          _nudge.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:11px 14px;margin-bottom:16px;'
+          _nudge.innerHTML = '<span style="font-size:13px;color:var(--t2,#aaa);flex:1;">' + escHtml(_nudgeLabel) + '</span>' +
+            '<button id="fan-notif-yes" style="flex-shrink:0;background:var(--platform-accent,#e05242);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);min-height:36px;" aria-label="Enable notifications">Notify me</button>' +
+            '<button id="fan-notif-dismiss" style="flex-shrink:0;background:transparent;border:none;color:var(--t3,#555);font-size:18px;cursor:pointer;padding:2px 6px;line-height:1;min-width:32px;min-height:36px;" aria-label="Dismiss notification prompt">✕</button>'
+          const _container4 = document.getElementById('prerelease-strips-container')
+          if (_container4) _container4.insertAdjacentElement('afterend', _nudge)
+        } else {
+          _nudge.querySelector('span').textContent = _nudgeLabel
+        }
+        const _yesBtn = document.getElementById('fan-notif-yes')
+        if (_yesBtn) {
+          _yesBtn.onclick = function() {
+            const _all = getFollowed()
+            _all.forEach(function(a) { a.notifications = true; })
+            try { localStorage.setItem('able_fan_following', JSON.stringify(_all)); } catch(_) {}
+            _nudge.innerHTML = '<span style="font-size:13px;color:var(--ok,#4ade80);">✓ You\'ll be notified when your artists post.</span>'
+            setTimeout(function() { if (_nudge) _nudge.remove(); }, 2500)
+          }
+        }
+        const _dismissBtn = document.getElementById('fan-notif-dismiss')
+        if (_dismissBtn) {
+          _dismissBtn.onclick = function() {
+            try { localStorage.setItem('fan_notif_dismissed', '1'); } catch(_) {}
+            if (_nudge) _nudge.remove()
+          }
+        }
+      } catch(_) {}
+    })()
 
     function buildItem(item, idx) {
       const artist = followedMap[item.artistId] || { name: item.artistId, accent: '#555', genre: '' }
@@ -2097,8 +2190,18 @@
     const container = document.getElementById('near-content')
     const followedIds = getFollowedIds()
 
-    const thisWeek   = DEMO_NEAR.filter(s => parseInt(s.day) <= 20)
-    const laterItems = DEMO_NEAR.filter(s => parseInt(s.day) > 20)
+    // C22 #22 — annotate shows with distance from fan if geo available
+    const _cachedGeo = getFanGeo()
+    const _showsWithDist = DEMO_NEAR.map(function(s) {
+      if (_cachedGeo && s.venueLat && s.venueLng) {
+        const km = haversineKm(_cachedGeo.lat, _cachedGeo.lng, s.venueLat, s.venueLng)
+        return Object.assign({}, s, { _distStr: formatDistance(km) })
+      }
+      return s
+    })
+
+    const thisWeek   = _showsWithDist.filter(s => parseInt(s.day) <= 20)
+    const laterItems = _showsWithDist.filter(s => parseInt(s.day) > 20)
 
     function buildGroup(label, items) {
       if (!items.length) return
@@ -2123,7 +2226,7 @@
           <div class="show-item__info">
             <p class="show-item__artist">${escHtml(show.artist)}</p>
             <p class="show-item__venue">${escHtml(show.venue)}</p>
-            <p class="show-item__city">${escHtml(show.city)} · ${escHtml(show.time)}</p>
+            <p class="show-item__city">${escHtml(show.city)} · ${escHtml(show.time)}${show._distStr ? ' · <span class="show-geo-dist">' + escHtml(show._distStr) + '</span>' : ''}</p>
           </div>
           ${isFollowed ? `<span class="show-item__following-badge">Following</span>` : `<button class="ticket-btn">Tickets</button>`}
         `
@@ -2136,6 +2239,14 @@
 
     buildGroup('This week', thisWeek)
     buildGroup('Coming up', laterItems)
+
+    // C22 #22 — if no cached geo, request it silently; re-render when available
+    if (!_cachedGeo) {
+      requestFanGeo(function() {
+        container.removeAttribute('data-rendered')
+        renderNearMe()
+      })
+    }
 
     if (!DEMO_NEAR.length) {
       container.innerHTML = `
