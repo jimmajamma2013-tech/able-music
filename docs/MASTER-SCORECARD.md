@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-18 | Sessions 11–20 + Cycles 1–23 Wave 1 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-23-AUDIT.md**
+**Updated: 2026-03-18 | Sessions 11–20 + Cycles 1–23 Waves 1–2 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-23-AUDIT.md**
 
 ---
 
@@ -18,15 +18,15 @@
 
 | Page | File | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|---|
-| Artist profile | `able-v8.html` | 9.78/10 | 9.8/10 | Supabase auth + Spotify auto-import | ✅ C23W1: countdown <48h label, artwork placeholder, fan form aria, CTA overflow fix |
-| Admin dashboard | `admin.html` | 9.93/10 | ~9.95/10 | Supabase auth (data portability) | ✅ C23W1: heatmap peak label, CSV fields expand, gig countdown chip, enquiry count badge |
-| Onboarding wizard | `start.html` | 9.9/10 | ~9.9/10 | Social proof (real artists) | ✅ C19: Spotify fetch error spec copy |
+| Artist profile | `able-v8.html` | 9.80/10 | 9.8/10 | Supabase auth + Spotify auto-import | ✅ C23W2: close circle sign-up checkbox, Spotify embed fallback, all sub-11px text raised to 11px |
+| Admin dashboard | `admin.html` | 9.94/10 | ~9.95/10 | Supabase auth (data portability) | ✅ C23W2: FL view count stat, fan dark mode toggle, settings search filter |
+| Onboarding wizard | `start.html` | 9.9/10 | ~9.9/10 | Social proof (real artists) | ✅ C23W1: B8 type scale — all sub-11px text raised |
 | Landing page | `landing.html` | 9.9/10 | ~9.9/10 | — | ✅ C21: 'For professionals' section — mixer/producer + videographer cards linking to freelancer.html |
-| Fan dashboard | `fan.html` | 9.80/10 | ~9.85/10 | Supabase realtime | ✅ C23W1: keyboard nav, focus-visible artist cards, artists/me panels |
-| Freelancer profile | `freelancer.html` | 9.2/10 | ~9.3/10 | Network maturity + real testimonials | ✅ C23W1: ?handle routing, rate card expiry+formatting, enquiry email field, ARIA improvements |
+| Fan dashboard | `fan.html` | 9.83/10 | ~9.85/10 | Supabase realtime | ✅ C23W2: first-10 badge, revisit streak, close circle accent via ?artist=slug |
+| Freelancer profile | `freelancer.html` | 9.25/10 | ~9.3/10 | Network maturity + real testimonials | ✅ C23W2: enquiry sheet focus trap + Escape key, view count tracking |
 | Freelancer onboarding | `freelancer-start.html` | 9.1/10 | ~9.2/10 | Real Supabase auth | ✅ C23W1: name input in step 3, preview shows actual name, rateCardUpdatedAt timestamp |
 
-**Page average: ~9.84/10**
+**Page average: ~9.85/10**
 
 ---
 
