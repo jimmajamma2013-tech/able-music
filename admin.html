@@ -2651,6 +2651,12 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       Fans
     </button>
 
+    <!-- C21 #37 — freelancer tab, shown only when profile.freelancerEnabled === true -->
+    <button class="sb-item" id="sbFreelancerTab" onclick="showPage('freelancer')" hidden>
+      <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 1a3.5 3.5 0 100 7 3.5 3.5 0 000-7zm-5 9.5C3 8.6 5.2 7 8 7s5 1.6 5 3.5V11H3v-.5zM11 12h1v3h-1zM4 12h1v3H4z"/></svg>
+      Professional
+    </button>
+
     <div class="sb-divider"></div>
     <div class="sb-section">Settings</div>
 
@@ -3723,12 +3729,22 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       </div>
     </div>
 
-    <!-- C20 #5 — 7-day sparkline of page views -->
+    <!-- C20 #5 / C21 #42 — sparkline of page views (7d or 30d) -->
     <div class="dash-card" style="margin-bottom:24px;" id="sparklineCard">
-      <div class="dc-head"><div class="dc-title">Views this week</div></div>
+      <div class="dc-head"><div class="dc-title" id="sparklineCardTitle">Views this week</div></div>
       <div class="dc-body">
         <canvas id="viewsSparkline" height="48" style="width:100%;display:block;" aria-label="Daily page views over the last 7 days"></canvas>
         <div id="viewsSparklineEmpty" style="font-size:12px;color:var(--t3);display:none;">No views recorded yet.</div>
+      </div>
+    </div>
+
+    <!-- C21 #43 — CTR by page state -->
+    <div class="dash-card" style="margin-bottom:24px;" id="ctrByStateCard">
+      <div class="dc-head"><div class="dc-title">Click rate by page state</div></div>
+      <div class="dc-body">
+        <div id="ctrByStateList" style="display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:12px;color:var(--t3);">No data yet.</div>
+        </div>
       </div>
     </div>
 
@@ -3910,6 +3926,82 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         <div class="glo-title">Email broadcasts</div>
         <div class="glo-sub" id="broadcastGloSub">Send directly to your fans' inboxes. 47% avg open rate — 10× better than social reach.</div>
         <button class="glo-btn" onclick="(function(){try{const _c=safeLS('able_clicks',[]);_c.push({label:'upgrade-cta',type:'upgrade',ts:Date.now()});setLS('able_clicks',_c);}catch(_){}showToast('Billing coming soon — currently in early access.');})()">Move to Artist Pro — £19/mo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FREELANCER ADMIN PAGE — C21 #37 ── -->
+  <div class="page" id="page-freelancer">
+    <div class="page-header">
+      <div class="page-title">Professional</div>
+      <div class="page-sub">Credits, rate card, and booking enquiries — your professional layer on ABLE.</div>
+    </div>
+
+    <!-- Credits management -->
+    <div class="dash-card" style="margin-bottom:20px;">
+      <div class="dc-head">
+        <div class="dc-title">Credits</div>
+        <button class="dc-action" onclick="addFreelancerCredit()">+ Add credit</button>
+      </div>
+      <div class="dc-body">
+        <div id="freelancerCreditsList" style="display:flex;flex-direction:column;gap:12px;">
+          <div style="font-size:13px;color:var(--t3);">No credits yet. Credits confirmed by artists appear here automatically.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rate card -->
+    <div class="dash-card" style="margin-bottom:20px;">
+      <div class="dc-head">
+        <div class="dc-title">Rate card</div>
+      </div>
+      <div class="dc-body" style="display:flex;flex-direction:column;gap:14px;">
+        <div class="field-row" style="margin:0;">
+          <div class="field-label">Role / speciality</div>
+          <select class="field-input" id="flRoleType">
+            <option value="mixing">Mixing</option>
+            <option value="production">Production</option>
+            <option value="mastering">Mastering</option>
+            <option value="video">Video direction</option>
+            <option value="photography">Photography</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="field-row" style="margin:0;">
+          <div class="field-label">Rate</div>
+          <input class="field-input" id="flRate" type="text" placeholder="e.g. £350/project or From £200">
+        </div>
+        <div class="field-row" style="margin:0;">
+          <div class="field-label">Availability</div>
+          <div style="display:flex;gap:8px;">
+            <button class="filter-pill-adm active" id="flAvailBtn" onclick="setFreelancerAvail('available',this)">Available</button>
+            <button class="filter-pill-adm" id="flBookedBtn" onclick="setFreelancerAvail('booked',this)">Booked</button>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;">
+          <button class="ci-btn ci-btn-connect" onclick="saveFreelancerRateCard()">Save rate card</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enquiries -->
+    <div class="dash-card" style="margin-bottom:20px;">
+      <div class="dc-head">
+        <div class="dc-title">Booking enquiries</div>
+      </div>
+      <div class="dc-body">
+        <div id="freelancerEnquiriesList">
+          <div style="font-size:13px;color:var(--t3);">Enquiries from your profile appear here. Share your ABLE link to start receiving them.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile link -->
+    <div class="dash-card" style="margin-bottom:20px;">
+      <div class="dc-head"><div class="dc-title">Your professional profile</div></div>
+      <div class="dc-body" style="display:flex;flex-direction:column;gap:10px;">
+        <p style="font-size:13px;color:var(--t2);margin:0;">Share this link so clients and artists can find your credits, rate card, and portfolio.</p>
+        <a id="flProfileLink" href="freelancer.html" target="_blank" style="font-size:13px;font-weight:600;color:var(--acc);text-decoration:none;">View your professional page →</a>
       </div>
     </div>
   </div>
@@ -4168,6 +4260,7 @@ const PAGE_TITLES = {
   events:'Events', merch:'Merch', support:'Support',
   snaps:'Updates', connect:'Streaming links', settings:'Settings',
   analytics:'Analytics', fans:'Fans', broadcast:'Send to fans',
+  freelancer:'Professional', // C21 #37
 };
 
 /* ── FAN TABLE ── */
@@ -4769,6 +4862,7 @@ function showPage(id) {
   if (id === 'clips')     renderClipsAdminList();
   if (id === 'connect')   renderRecsList();
   if (id === 'analytics') { loadRealStats(); loadActivityFeed(); updateGatePreviewData(); requestAnimationFrame(() => loadRealStats()); } // C21 #47 — second RAF draw ensures sparkline canvas width is known
+  if (id === 'freelancer') renderFreelancerAdmin(); // C21 #37
   if (id === 'fans') {
     _activeFanFilter = 'all';
     document.querySelectorAll('#fansFilterPills .filter-pill').forEach(p => {
@@ -6576,6 +6670,94 @@ function moveSnapCard(id, dir) {
   renderSnapCardsList()
 }
 
+/* ── FREELANCER ADMIN — C21 #37 ── */
+
+const FL_KEY = 'able_freelancer_profile';
+
+function renderFreelancerAdmin() {
+  const fl = safeLS(FL_KEY, {});
+
+  // Credits list
+  const _credList = document.getElementById('freelancerCreditsList');
+  if (_credList) {
+    const credits = fl.credits || [];
+    if (!credits.length) {
+      _credList.innerHTML = '<div style="font-size:13px;color:var(--t3);">No credits yet. Credits confirmed by artists appear here automatically.</div>';
+    } else {
+      _credList.innerHTML = credits.map((c, i) => {
+        const _conf = c.confirmed;
+        return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:600;color:var(--text);${!_conf?'opacity:.7;font-style:italic;':''}">${escHtml(c.releaseTitle||'Untitled release')}</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:2px;">${escHtml(c.role||'')}${c.artistName?` · ${escHtml(c.artistName)}`:''}${_conf?' · <span style="color:#4caf50;">&#10003; Confirmed</span>':' · awaiting confirmation'}</div>
+          </div>
+          <button class="snap-btn del" onclick="removeFreelancerCredit(${i})" title="Remove" aria-label="Remove credit">&times;</button>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // Rate card fields
+  const _role = (fl.rateCard||{}).role || 'mixing';
+  const _rate = (fl.rateCard||{}).rate || '';
+  const _avail = (fl.rateCard||{}).availability || 'available';
+  const _roleEl = document.getElementById('flRoleType');
+  const _rateEl = document.getElementById('flRate');
+  if (_roleEl) _roleEl.value = _role;
+  if (_rateEl) _rateEl.value = _rate;
+  const _ab = document.getElementById('flAvailBtn');
+  const _bb = document.getElementById('flBookedBtn');
+  if (_ab) _ab.classList.toggle('active', _avail === 'available');
+  if (_bb) _bb.classList.toggle('active', _avail === 'booked');
+
+  // Enquiries
+  const _enqEl = document.getElementById('freelancerEnquiriesList');
+  if (_enqEl) {
+    const enqs = fl.enquiries || [];
+    if (!enqs.length) {
+      _enqEl.innerHTML = '<div style="font-size:13px;color:var(--t3);">Enquiries from your profile appear here. Share your ABLE link to start receiving them.</div>';
+    } else {
+      _enqEl.innerHTML = enqs.map(e => `<div style="padding:10px 0;border-bottom:1px solid var(--border);"><div style="font-size:12px;font-weight:600;color:var(--text);">${escHtml(e.projectType||'Enquiry')} · ${escHtml(e.artistName||'')}</div><div style="font-size:12px;color:var(--t3);margin-top:2px;">${escHtml((e.message||'').slice(0,120))}</div></div>`).join('');
+    }
+  }
+}
+
+function addFreelancerCredit() {
+  const title = prompt('Release title (or project name):');
+  if (!title) return;
+  const role = prompt('Your role (e.g. Mixed by, Produced by):') || 'Mixed by';
+  const fl = safeLS(FL_KEY, {});
+  fl.credits = fl.credits || [];
+  fl.credits.push({ releaseTitle: title, role, confirmed: false, ts: Date.now() });
+  setLS(FL_KEY, fl);
+  renderFreelancerAdmin();
+  showToast('Credit added. Share your page so the artist can confirm it.');
+}
+
+function removeFreelancerCredit(idx) {
+  const fl = safeLS(FL_KEY, {});
+  fl.credits = (fl.credits || []).filter((_, i) => i !== idx);
+  setLS(FL_KEY, fl);
+  renderFreelancerAdmin();
+  showToast('Credit removed.');
+}
+
+function setFreelancerAvail(val, btn) {
+  document.querySelectorAll('#flAvailBtn,#flBookedBtn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+function saveFreelancerRateCard() {
+  const fl = safeLS(FL_KEY, {});
+  fl.rateCard = {
+    role: document.getElementById('flRoleType') ? document.getElementById('flRoleType').value : 'mixing',
+    rate: document.getElementById('flRate') ? document.getElementById('flRate').value : '',
+    availability: (document.getElementById('flAvailBtn') && document.getElementById('flAvailBtn').classList.contains('active')) ? 'available' : 'booked',
+  };
+  setLS(FL_KEY, fl);
+  showToast('Rate card updated.');
+}
+
 /* ── CLIPS ADMIN ── */
 
 const CLIPS_KEY = 'able_clips'
@@ -7403,17 +7585,21 @@ function _loadRealStatsImpl() {
   const _sparkCanvas = document.getElementById('viewsSparkline');
   const _sparkEmpty  = document.getElementById('viewsSparklineEmpty');
   if (_sparkCanvas) {
-    const _days7 = Array.from({length:7},(_,i) => {
-      const d = new Date(); d.setDate(d.getDate() - (6-i));
+    // C21 #42 — support 30-day view; fall back to 7 when range=all
+    const _sparkDays = _analyticsRangeDays === 30 ? 30 : 7;
+    const _sparkTitleEl = document.getElementById('sparklineCardTitle');
+    if (_sparkTitleEl) _sparkTitleEl.textContent = _sparkDays === 30 ? 'Views this month' : 'Views this week';
+    const _daysArr = Array.from({length:_sparkDays},(_,i) => {
+      const d = new Date(); d.setDate(d.getDate() - (_sparkDays-1-i));
       return d.toISOString().slice(0,10);
     });
     const _dayCounts = {};
-    _days7.forEach(d => { _dayCounts[d]=0; });
+    _daysArr.forEach(d => { _dayCounts[d]=0; });
     views.forEach(v => {
       const d = v.ts ? new Date(v.ts).toISOString().slice(0,10) : null;
       if (d && _dayCounts[d] !== undefined) _dayCounts[d]++;
     });
-    const _vals = _days7.map(d => _dayCounts[d]);
+    const _vals = _daysArr.map(d => _dayCounts[d]);
     const _max  = Math.max(..._vals, 1);
     if (_vals.every(v=>v===0)) {
       _sparkCanvas.style.display='none';
@@ -7425,14 +7611,14 @@ function _loadRealStatsImpl() {
         const W = _sparkCanvas.offsetWidth || _sparkCanvas.parentElement?.offsetWidth || 300;
         _sparkCanvas.width = W;
         _sparkCanvas.height = 48;
-        const pad=2, barW=Math.floor((W - pad*(7+1))/7);
+        const pad=2, barW=Math.max(2, Math.floor((W - pad*(_sparkDays+1))/_sparkDays));
         ctx.clearRect(0,0,W,48);
         const _acc = getComputedStyle(document.documentElement).getPropertyValue('--acc').trim() || '#f4b942';
         _vals.forEach((v,i) => {
           const h = Math.max(4, Math.round((v/_max)*40));
           const x = pad + i*(barW+pad);
           const y = 48-h;
-          ctx.fillStyle = i===6 ? _acc : (_acc+'99');
+          ctx.fillStyle = i===_sparkDays-1 ? _acc : (_acc+'99');
           ctx.beginPath();
           ctx.roundRect(x, y, barW, h, 2);
           ctx.fill();
@@ -7453,6 +7639,25 @@ function _loadRealStatsImpl() {
         _tchEl.style.display = '';
         _tchEl.textContent = `${_topL[1]} ${_topL[1]===1?'person':'people'} tapped ${escHtml(_topL[0])}.`;
       }
+    }
+  }
+
+  // C21 #43 — CTR by page state
+  const _ctrStateEl = document.getElementById('ctrByStateList');
+  if (_ctrStateEl) {
+    const _stateCounts = {}; // { state: { views: 0, clicks: 0 } }
+    views.forEach(v => { const s = v.state || 'profile'; if (!_stateCounts[s]) _stateCounts[s]={views:0,clicks:0}; _stateCounts[s].views++; });
+    clicks.filter(c => !c.admin).forEach(c => { const s = c.state || 'profile'; if (!_stateCounts[s]) _stateCounts[s]={views:0,clicks:0}; _stateCounts[s].clicks++; });
+    const _stateEntries = Object.entries(_stateCounts).filter(([,d]) => d.views > 0);
+    if (_stateEntries.length > 0) {
+      const _stateLabel = { 'pre-release':'Pre-release', 'live':'Live', 'gig':'Gig night', 'profile':'Profile' };
+      _ctrStateEl.innerHTML = _stateEntries.map(([s,d]) => {
+        const _pct = d.views > 0 ? ((d.clicks/d.views)*100).toFixed(1) : '0.0';
+        const _bar = Math.min(100, parseFloat(_pct));
+        return `<div style="display:flex;flex-direction:column;gap:4px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12px;color:var(--t2);">${escHtml(_stateLabel[s]||s)}</span><span style="font-size:12px;font-weight:600;color:var(--text);">${_pct}%</span></div><div style="height:5px;background:var(--border);border-radius:var(--r-pill);overflow:hidden;"><div style="height:100%;width:${_bar}%;background:var(--acc);border-radius:var(--r-pill);opacity:.85;"></div></div></div>`;
+      }).join('');
+    } else {
+      _ctrStateEl.innerHTML = '<div style="font-size:12px;color:var(--t3);">No data yet.</div>';
     }
   }
 
@@ -8542,6 +8747,12 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
   hydratePlatformFields(v3data);
   renderQR();
   renderSbQR();
+
+  // C21 #37 — show Professional tab when freelancerEnabled
+  ;(function() {
+    const _flTab = document.getElementById('sbFreelancerTab');
+    if (_flTab && safeLS(V3_KEY, {}).freelancerEnabled) _flTab.hidden = false;
+  })();
 
   // Refresh activity every 30s (catches clicks from profile in another tab)
   // Skip when tab is hidden to avoid wasted work on mobile
