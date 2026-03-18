@@ -4581,6 +4581,19 @@
 
     .footer-legal a:hover { text-decoration: underline; }
 
+    /* C22 #17 — freelancer "also a professional" link */
+    .footer-pro-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color var(--dur-fast) var(--ease-standard);
+    }
+    .footer-pro-link:hover { color: var(--color-text-2); }
+
     .footer-export-btn {
       background: none;
       border: none;
@@ -6104,6 +6117,7 @@
         <p class="footer-export" id="footer-export" hidden>
           Your list. <button class="footer-export-btn pressable" id="footer-export-btn">Export any time.</button>
         </p>
+        <a class="footer-pro-link" id="footer-pro-link" href="freelancer.html" hidden>Also a professional on ABLE →</a>
         <p class="footer-legal" id="footer-legal">
           <a href="/privacy" rel="noopener">Privacy</a> · <a href="/terms" rel="noopener">Terms</a>
         </p>
@@ -11297,6 +11311,12 @@
       if (footerExport) {
         const fans = safeLS('able_fans', [])
         footerExport.hidden = fans.length === 0
+      }
+
+      // C22 #17 — "Also a professional on ABLE" — show when freelancerEnabled
+      const footerProLink = document.getElementById('footer-pro-link')
+      if (footerProLink && profile.freelancerEnabled) {
+        footerProLink.hidden = false
       }
     }
 

@@ -740,7 +740,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
 .milestone-dismiss { background:none; border:none; color:var(--dash-t3); font-size:18px; cursor:pointer; padding:0 4px; font-family:var(--font); }
 
 /* ── PAGE HEADER ── */
-.page-header { margin-bottom:24px; }
+.page-header { margin-bottom:24px; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
 #page-home .page-header { margin-bottom:14px; }
 .page-title { font-family:var(--font); font-size:22px; font-weight:700; color:var(--dash-text); margin-bottom:4px; }
 #homeGreeting { font-family:var(--font); font-size:22px; letter-spacing:0; }
@@ -3669,8 +3669,16 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
   <!-- ── ANALYTICS PAGE ── -->
   <div class="page" id="page-analytics">
     <div class="page-header">
-      <div class="page-title">Analytics</div>
-      <div class="page-sub">How fans are finding and using your page.</div>
+      <div>
+        <div class="page-title">Analytics</div>
+        <div class="page-sub">How fans are finding and using your page.</div>
+      </div>
+      <!-- C22 #32 — CSV export (Artist Pro gate) -->
+      <button id="analyticsExportBtn" type="button" onclick="exportAnalyticsCSV()"
+              style="display:none;flex-shrink:0;padding:7px 14px;background:transparent;border:1.5px solid var(--dash-border);border-radius:var(--r-md);color:var(--t2);font-size:12px;font-weight:600;font-family:var(--font);cursor:pointer;min-height:36px;transition:border-color 180ms,color 180ms;"
+              onmouseover="this.style.borderColor='var(--acc)';this.style.color='var(--text)'"
+              onmouseout="this.style.borderColor='var(--dash-border)';this.style.color='var(--t2)'"
+              aria-label="Export analytics as CSV">↓ Export CSV</button>
     </div>
     <!-- C17 #41 — date range filter pills -->
     <div style="display:flex;gap:6px;margin-bottom:16px;" role="group" aria-label="Analytics date range">
@@ -3733,7 +3741,11 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
     <div class="dash-card" style="margin-bottom:24px;" id="sparklineCard">
       <div class="dc-head"><div class="dc-title" id="sparklineCardTitle">Views this week</div></div>
       <div class="dc-body">
-        <canvas id="viewsSparkline" height="48" style="width:100%;display:block;" aria-label="Daily page views over the last 7 days"></canvas>
+        <div style="position:relative;">
+          <canvas id="viewsSparkline" height="48" style="width:100%;display:block;" aria-label="Daily page views over the last 7 days"></canvas>
+          <!-- C22 #31 — sparkline tap tooltip -->
+          <div id="sparklineTooltip" role="tooltip" style="display:none;position:absolute;top:-32px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;pointer-events:none;z-index:10;"></div>
+        </div>
         <div id="viewsSparklineEmpty" style="font-size:12px;color:var(--t3);display:none;">No views recorded yet.</div>
       </div>
     </div>
@@ -4888,7 +4900,15 @@ function showPage(id) {
   if (id === 'snaps')     renderSnapCardsList();
   if (id === 'clips')     renderClipsAdminList();
   if (id === 'connect')   renderRecsList();
-  if (id === 'analytics') { loadRealStats(); loadActivityFeed(); updateGatePreviewData(); requestAnimationFrame(() => loadRealStats()); } // C21 #47 — second RAF draw ensures sparkline canvas width is known
+  if (id === 'analytics') {
+    loadRealStats(); loadActivityFeed(); updateGatePreviewData(); requestAnimationFrame(() => loadRealStats()); // C21 #47
+    // C22 #32 — show export button for Pro tier
+    const _expBtn = document.getElementById('analyticsExportBtn');
+    if (_expBtn) {
+      const _t = safeLS('able_v3_profile', {}).tier || 'free';
+      _expBtn.style.display = (_t === 'artist-pro' || _t === 'label') ? '' : 'none';
+    }
+  }
   if (id === 'freelancer') renderFreelancerAdmin(); // C21 #37
   if (id === 'fans') {
     _activeFanFilter = 'all';
@@ -7448,6 +7468,37 @@ function loadRealStats() {
     });
   }
 }
+// C22 #32 — Analytics CSV export (Artist Pro gate)
+function exportAnalyticsCSV() {
+  const _tier = safeLS('able_v3_profile', {}).tier || 'free';
+  if (_tier !== 'artist-pro' && _tier !== 'label') {
+    showToast('Analytics export is an Artist Pro feature. Upgrade to unlock.');
+    return;
+  }
+  try {
+    const _clicks = safeLS(CLICKS_KEY, []);
+    const _views  = safeLS(VIEWS_KEY,  []);
+    const _rows   = [['type','label','ts','source','zone','state']];
+    _views.forEach(function(v) {
+      _rows.push(['view','page-view', v.ts||'', v.source||'direct', 'page', v.state||'profile']);
+    });
+    _clicks.forEach(function(c) {
+      _rows.push(['click', c.label||'', c.ts||'', c.source||'direct', c.type||'', c.state||'profile']);
+    });
+    const _csv = _rows.map(function(r) {
+      return r.map(function(cell) { return '"' + String(cell).replace(/"/g,'""') + '"'; }).join(',');
+    }).join('\n');
+    const _blob = new Blob([_csv], { type: 'text/csv;charset=utf-8;' });
+    const _url = URL.createObjectURL(_blob);
+    const _a = document.createElement('a');
+    _a.href = _url;
+    _a.download = 'able-analytics-' + new Date().toISOString().slice(0,10) + '.csv';
+    _a.click();
+    URL.revokeObjectURL(_url);
+    showToast('Analytics exported.');
+  } catch(_) { showToast('Export failed. Try again.'); }
+}
+
 function _loadRealStatsImpl() {
   const views  = safeLS(VIEWS_KEY,  []);
   const clicks = safeLS(CLICKS_KEY, []);
@@ -7671,6 +7722,35 @@ function _loadRealStatsImpl() {
           ctx.roundRect(x, y, barW, h, 2);
           ctx.fill();
         });
+
+        // C22 #31 — sparkline tooltip on tap/mouseover
+        const _sparkTip = document.getElementById('sparklineTooltip');
+        if (_sparkTip) {
+          let _tipTimeout = null;
+          function _showSparkTip(evt) {
+            const rect = _sparkCanvas.getBoundingClientRect();
+            const clientX = evt.clientX ?? (evt.touches && evt.touches[0] ? evt.touches[0].clientX : null);
+            if (clientX == null) return;
+            const xRel = clientX - rect.left;
+            const idx = Math.floor(xRel / (barW + pad));
+            if (idx < 0 || idx >= _sparkDays) { _sparkTip.style.display = 'none'; return; }
+            const _dayStr = _daysArr[idx];
+            const _count = _vals[idx] || 0;
+            const _label = new Date(_dayStr + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+            _sparkTip.textContent = _count === 1 ? '1 view on ' + _label : _count + ' views on ' + _label;
+            const barCentreX = pad + idx * (barW + pad) + barW / 2;
+            const pct = (barCentreX / W) * 100;
+            _sparkTip.style.left = Math.min(Math.max(pct, 10), 90) + '%';
+            _sparkTip.style.display = '';
+            clearTimeout(_tipTimeout);
+            _tipTimeout = setTimeout(function() { _sparkTip.style.display = 'none'; }, 2000);
+          }
+          _sparkCanvas.style.cursor = 'pointer';
+          _sparkCanvas.addEventListener('click', _showSparkTip);
+          _sparkCanvas.addEventListener('touchstart', function(e) { e.preventDefault(); _showSparkTip(e); }, { passive: false });
+          _sparkCanvas.addEventListener('mousemove', _showSparkTip);
+          _sparkCanvas.addEventListener('mouseleave', function() { clearTimeout(_tipTimeout); _sparkTip.style.display = 'none'; });
+        }
       }
     }
   }
