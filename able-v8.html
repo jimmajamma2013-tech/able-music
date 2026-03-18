@@ -7473,6 +7473,7 @@
           let p = safeLS('able_v3_profile', {})
           p.supporterSince = Date.now()
           setLS('able_v3_profile', p)
+          trackClick('close-circle-join', 'fan', 'close-circle') // C20 #6/#7
           submitEl.textContent = 'Welcome to the close circle'
           submitEl.disabled = true
           setTimeout(function() {
@@ -9999,9 +10000,9 @@
             const safeUrl    = !safeHandle && c.url && isSafeUrl(c.url) ? escHtml(c.url) : null
             let nameEl
             if (safeHandle) {
-              nameEl = `<a class="release-credits__name" href="/${safeHandle}">${safeName}</a>`
+              nameEl = `<a class="release-credits__name" href="/${safeHandle}" onclick="trackClick('${safeName}','credit','credits-section')">${safeName}</a>` // C20 #6
             } else if (safeUrl) {
-              nameEl = `<a class="release-credits__name" href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeName}</a>`
+              nameEl = `<a class="release-credits__name" href="${safeUrl}" target="_blank" rel="noopener noreferrer" onclick="trackClick('${safeName}','credit','credits-section')">${safeName}</a>` // C20 #6
             } else {
               nameEl = `<span class="release-credits__name">${safeName}</span>`
             }

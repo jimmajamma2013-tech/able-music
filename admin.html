@@ -3700,6 +3700,16 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         </div>
       </div>
     </div>
+    <!-- C20 #1 — free-tier source breakdown: top 5 sources by fan sign-up count -->
+    <div class="dash-card" style="margin-bottom:24px;" id="sourceBreakdownCard">
+      <div class="dc-head"><div class="dc-title">Where fans found you</div></div>
+      <div class="dc-body">
+        <div id="sourceBreakdownList" style="display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:12px;color:var(--t3);">Sign up data will appear here once fans join.</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Pro: source heatmap locked -->
     <div class="gold-lock" data-tier="artist-pro" data-feature="advanced-analytics">
       <div class="dash-card gold-blur" tabindex="-1" aria-hidden="true">
@@ -3748,7 +3758,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
   <!-- ── FANS / CRM PAGE ── -->
   <div class="page" id="page-fans">
     <div class="page-header">
-      <div class="page-title">Fans</div>
+      <div class="page-title">Your fans</div>
       <div class="page-sub">The people who showed up. Your list, your relationship — no algorithm in the way.</div>
     </div>
 
@@ -5673,8 +5683,7 @@ function copyGigLink() {
   const url = handle
     ? `https://ablemusic.co/${handle}?utm_source=tonight`
     : `${location.origin}/able-v8.html?utm_source=tonight`;
-  // C9 #45 — log gig share click to able_clicks
-  try { const _c45c=safeLS('able_clicks',[]); _c45c.push({label:'share-link',type:'share',ts:Date.now()}); setLS('able_clicks',_c45c); } catch(_) {}
+  adminTrackClick('gig-share', 'share', 'gig') // C20 #10 — use adminTrackClick (was raw push)
   navigator.clipboard.writeText(url).then(() => {
     const btn = document.getElementById('gigShareBtn');
     if (btn) { btn.textContent = '✓ Link copied'; setTimeout(() => { btn.textContent = 'Share tonight\'s link →'; }, 2000); }
@@ -6519,7 +6528,7 @@ function saveSnapCard(id) {
   setLS(V3_KEY, data)
   syncProfile(data)
   renderSnapCardsList()
-  showToast('Saved.')
+  showToast('Updated.') // C20 #33
 }
 
 function moveSnapCard(id, dir) {
@@ -6734,7 +6743,7 @@ function saveClipEdit(id) {
   setLS(CLIPS_KEY, updated)
   openClipEditForm(id)
   renderClipsAdminList()
-  showToast('Saved.')
+  showToast('Updated.') // C20 #33
 }
 
 function toggleClipPublished(id) {
@@ -6923,7 +6932,7 @@ function saveMerchShopUrl() {
   const updated = { ...data, merch };
   setLS(V3_KEY, updated);
   syncProfile(updated);
-  showToast('Saved.');
+  showToast('Updated.'); // C20 #33
 }
 
 function addMerchItem() {
@@ -7100,7 +7109,7 @@ function saveSupportMeta() {
   const updated = { ...data, support };
   setLS(V3_KEY, updated);
   syncProfile(updated);
-  showToast('Saved.');
+  showToast('Updated.'); // C20 #33
 }
 
 function updateSupportField(id, field, value) {
@@ -7129,7 +7138,7 @@ function saveCloseCircle() {
   syncProfile(data);
   const notice = document.getElementById('ccStripeNotice');
   if (notice) notice.style.display = enabled ? 'block' : 'none';
-  showToast('Saved.');
+  showToast('Updated.'); // C20 #33
 }
 
 /* ── GATE PREVIEW REAL DATA (C12 #31) ── */
@@ -7323,6 +7332,21 @@ function _loadRealStatsImpl() {
     if (topSrc) {
       set('fanStatTopSource', topSrc[0]);
       set('fanStatTopSourceCount', topSrc[1] + ' fan' + (topSrc[1] !== 1 ? 's' : ''));
+    }
+
+    // C20 #1 — top 5 sources breakdown in analytics page
+    const _breakdown = document.getElementById('sourceBreakdownList');
+    if (_breakdown) {
+      const _top5 = Object.entries(srcCounts).sort((a,b) => b[1]-a[1]).slice(0,5);
+      const _total = _top5.reduce((s,[,n]) => s+n, 0)
+      _breakdown.innerHTML = _top5.map(([src, count]) => {
+        const pct = _total > 0 ? Math.round((count/_total)*100) : 0
+        return `<div style="display:flex;align-items:center;gap:10px;">
+          <div style="font-size:12px;color:var(--t2);width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(src)}</div>
+          <div style="flex:1;height:6px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;"><div style="height:100%;width:${pct}%;background:var(--acc);border-radius:var(--r-pill);"></div></div>
+          <div style="font-size:11px;color:var(--t2);width:24px;text-align:right;">${count}</div>
+        </div>`
+      }).join('')
     }
   }
 

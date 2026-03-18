@@ -1255,7 +1255,7 @@
   </div>
 
   <!-- Scroll area -->
-  <div class="scroll-area">
+  <div class="scroll-area" aria-label="Pull down to refresh">
 
     <!-- === FOLLOWING VIEW ==================================== -->
     <div class="view active" id="view-following" role="tabpanel" aria-labelledby="tab-following">
@@ -1698,13 +1698,12 @@
       el.className = 'feed-item pressable'
       el.setAttribute('aria-label', `${artist.name} — ${item.title}, ${typeBadgeLabel(item.type)}${_isNew ? ', new since your last visit' : ''}`)
       el.innerHTML = `
-        <div class="feed-item__art" style="background:rgba(${rgb},0.22);color:#f0ede8">
-          ${getInitials(artist.name)}
-        </div>
+        ${item.artworkUrl ? `<img class="feed-item__art" src="${escHtml(item.artworkUrl)}" alt="" loading="lazy" style="object-fit:cover;border-radius:6px;">` : `<div class="feed-item__art" style="background:rgba(${rgb},0.22);color:#f0ede8">${getInitials(artist.name)}</div>`}
         <div class="feed-item__info">
           <p class="feed-item__artist">${escHtml(artist.name)}</p>
           <p class="feed-item__title">${escHtml(item.title)}</p>
           <p class="feed-item__sub">${escHtml(item.sub || '')}</p>
+          ${item.source ? `<p class="feed-item__source" style="font-size:10px;color:var(--t3,#888);margin:2px 0 0;">via ${escHtml(item.source)}</p>` : ''}
         </div>
         <div class="feed-item__meta">
           ${_newBadge}
