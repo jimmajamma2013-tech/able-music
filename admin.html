@@ -3679,6 +3679,9 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <div class="stat-card"><div class="stat-label">Fans joined</div><div class="stat-value skel" id="aStatFans" aria-hidden="true"> </div><div class="stat-delta skel" id="aStatFansD" aria-hidden="true"> </div></div>
       <div class="stat-card"><div class="stat-label">Click rate</div><div class="stat-value skel" id="aStatRate" aria-hidden="true"> </div><div class="stat-delta" id="aStatRateDelta"> </div></div>
     </div>
+    <!-- C21 #44 — top-clicked label highlight -->
+    <div id="topClickHighlight" style="display:none;font-size:13px;color:var(--dash-text);background:rgba(255,255,255,.04);border-radius:var(--r-md);padding:10px 14px;margin-bottom:16px;"></div>
+
     <!-- C4 #17 — 30-day fan sign-up sparkline -->
     <div class="dash-card" style="margin-bottom:24px;" id="fanSparklineCard" hidden>
       <div class="dc-head">
@@ -3809,6 +3812,8 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <span class="stat-strip-item"><strong id="fansTotalCount">0</strong> total</span>
       <span class="stat-strip-item accent"><strong id="fansWeekCount">0</strong> this week</span>
       <span class="stat-strip-item"><strong id="fansSocialPct">0%</strong> from social</span>
+      <span class="stat-strip-item" id="fansConfirmedStrip" hidden><strong id="fansConfirmedCount">0</strong> confirmed</span>
+      <span class="stat-strip-item" id="fanGrowthRate" style="color:var(--dash-green);font-size:11px;"></span>
     </div>
 
     <!-- Fan count progress bar — always visible from fan 1, upgrades at 100 -->
@@ -4228,7 +4233,8 @@ function renderFanList(filter) {
   const legacyStarredForFilter = safeLS('able_starred_fans', []);
   const filtered = allFans.filter(f => {
     const src = normaliseSource(f.source);
-    const matchFilter = _activeFanFilter === 'all'
+    const matchFilter = search // C21 #30 — when searching, match across all fans regardless of active filter
+      || _activeFanFilter === 'all'
       || src === _activeFanFilter
       || (_activeFanFilter === 'starred' && (f.isStarred || legacyStarredForFilter.includes(f.email)));
     const matchSearch = !search || (f.email || '').toLowerCase().includes(search) || (f.campaignName || '').toLowerCase().includes(search) || (f.note || '').toLowerCase().includes(search); // C4 #7, C15 #31
@@ -4266,6 +4272,11 @@ function renderFanList(filter) {
   if (totalEl) totalEl.textContent = total;
   if (weekEl) weekEl.textContent = thisWeek;
   if (pctEl) pctEl.textContent = total > 0 ? Math.round(socialCount / total * 100) + '%' : '0%';
+  // C21 #13 — GDPR confirmed count strip
+  const _doubleOptIn = allFans.filter(f => f.double_opted_in && !f.deleted_at).length;
+  const _confirmedStrip = document.getElementById('fansConfirmedStrip');
+  const _confirmedCount = document.getElementById('fansConfirmedCount');
+  if (_confirmedStrip && _doubleOptIn > 0) { _confirmedStrip.hidden = false; if (_confirmedCount) _confirmedCount.textContent = _doubleOptIn; }
   // C10 #17 — dynamic aria-label on fans nav tab
   const _mnFans = document.getElementById('mn-fans');
   if (_mnFans) _mnFans.setAttribute('aria-label', total > 0 ? `Fans — ${total} total` : 'Fans');
@@ -4352,7 +4363,7 @@ function renderFanList(filter) {
     </div>`;
   }).join('') || (search
     ? `<div class="empty-state" style="padding:28px 16px;text-align:center;color:var(--dash-t3);font-size:13px;">No fans match <strong>${escHtml(search)}</strong>.</div>` // C10 #18
-    : '<div class="empty-state" style="padding:28px 16px;text-align:center;color:var(--dash-t3);font-size:13px;">When fans sign up on your page, they\'ll appear here. Your list. Your relationship. No algorithm in the way.</div>');
+    : (function() { const _pn = (safeLS(V3_KEY,{}).name||'').trim(); return `<div class="empty-state" style="padding:28px 16px;text-align:center;color:var(--dash-t3);font-size:13px;">${_pn ? `No one on ${escHtml(_pn)}'s list yet.` : 'No fans yet.'} Share your page — the first sign-up is when it becomes real.</div>`; })());
 
   // Source breakdown
   renderSourceBreakdown(confirmed);
@@ -4757,7 +4768,7 @@ function showPage(id) {
   if (id === 'snaps')     renderSnapCardsList();
   if (id === 'clips')     renderClipsAdminList();
   if (id === 'connect')   renderRecsList();
-  if (id === 'analytics') { loadRealStats(); loadActivityFeed(); updateGatePreviewData(); }
+  if (id === 'analytics') { loadRealStats(); loadActivityFeed(); updateGatePreviewData(); requestAnimationFrame(() => loadRealStats()); } // C21 #47 — second RAF draw ensures sparkline canvas width is known
   if (id === 'fans') {
     _activeFanFilter = 'all';
     document.querySelectorAll('#fansFilterPills .filter-pill').forEach(p => {
@@ -7186,9 +7197,10 @@ function updateGatePreviewData() {
 
 /* ── REAL STATS FROM LOCALSTORAGE ── */
 // C17 #41 — analytics date range (days; 0 = all time)
-let _analyticsRangeDays = 7;
+let _analyticsRangeDays = parseInt(sessionStorage.getItem('_a_range')||'7',10); // C21 #25 — restore on tab switch
 function setAnalyticsRange(days, btn) {
   _analyticsRangeDays = days;
+  try { sessionStorage.setItem('_a_range', String(days)); } catch(_) {} // C21 #25
   document.querySelectorAll('.filter-pill-adm').forEach(p => {
     const isActive = p === btn;
     p.classList.toggle('active', isActive);
@@ -7372,9 +7384,9 @@ function _loadRealStatsImpl() {
   // C20 #3 — CTA clicks by type breakdown
   const _clickTypeEl = document.getElementById('clickTypeList');
   if (_clickTypeEl && clicks.length > 0) {
-    const TYPE_LABEL = { primary_cta:'Primary CTA', secondary_cta:'Secondary CTA', platform:'Platform links', merch:'Merch', ticket:'Tickets', fan:'Fan sign-ups', share:'Shares', admin:'Admin actions' };
+    const TYPE_LABEL = { primary_cta:'Primary CTA', secondary_cta:'Secondary CTA', platform:'Platform links', merch:'Merch', ticket:'Tickets', fan:'Fan sign-ups', share:'Shares' };
     const typeCounts = {};
-    clicks.forEach(c => { const t = c.type || 'other'; typeCounts[t] = (typeCounts[t]||0)+1; });
+    clicks.forEach(c => { if (c.admin) return; const t = c.type || 'other'; typeCounts[t] = (typeCounts[t]||0)+1; }); // C21 #23 — exclude admin actions
     const typeTop = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
     const typeTotal = typeTop.reduce((s,[,n])=>s+n,0);
     _clickTypeEl.innerHTML = typeTop.map(([type, count]) => {
@@ -7426,6 +7438,51 @@ function _loadRealStatsImpl() {
           ctx.fill();
         });
       }
+    }
+  }
+
+  // C21 #44 — top-clicked label highlight
+  const _tchEl = document.getElementById('topClickHighlight');
+  if (_tchEl) {
+    const _nonAdminClicks = clicks.filter(c => !c.admin);
+    if (_nonAdminClicks.length > 0) {
+      const _lc = {};
+      _nonAdminClicks.forEach(c => { _lc[c.label] = (_lc[c.label]||0)+1; });
+      const _topL = Object.entries(_lc).sort((a,b)=>b[1]-a[1])[0];
+      if (_topL) {
+        _tchEl.style.display = '';
+        _tchEl.textContent = `${_topL[1]} ${_topL[1]===1?'person':'people'} tapped ${escHtml(_topL[0])}.`;
+      }
+    }
+  }
+
+  // C21 #50 — views/day average below sparkline
+  const _vdaEl = document.getElementById('viewsSparkline');
+  if (_vdaEl && viewsTotal > 0) {
+    const _daysActive = (function() {
+      const _vd = [...new Set(views.map(v => v.ts ? new Date(v.ts).toISOString().slice(0,10) : null).filter(Boolean))];
+      return Math.max(_vd.length, 1);
+    })();
+    const _avgEl = _vdaEl.parentElement;
+    if (_avgEl && !document.getElementById('viewsAvgDay')) {
+      const _avg = document.createElement('div');
+      _avg.id = 'viewsAvgDay';
+      _avg.style.cssText = 'font-size:11px;color:var(--t3);margin-top:6px;';
+      _avg.textContent = `avg ${Math.round(viewsTotal/_daysActive)} views/day`;
+      _avgEl.appendChild(_avg);
+    } else if (document.getElementById('viewsAvgDay')) {
+      document.getElementById('viewsAvgDay').textContent = `avg ${Math.round(viewsTotal/_daysActive)} views/day`;
+    }
+  }
+
+  // C21 #49 — fan growth rate (vs last month)
+  const _fgrEl = document.getElementById('fanGrowthRate');
+  if (_fgrEl && fansTotal > 0) {
+    const _monthAgo = now - 30*86400000;
+    const _fansMonthAgo = fans.filter(f => (f.ts||0) < _monthAgo).length;
+    if (_fansMonthAgo > 0) {
+      const _growthPct = Math.round(((fansTotal - _fansMonthAgo) / _fansMonthAgo) * 100);
+      _fgrEl.textContent = _growthPct > 0 ? `↑ ${_growthPct}% vs last month` : _growthPct < 0 ? `↓ ${Math.abs(_growthPct)}% vs last month` : 'Same as last month';
     }
   }
 
@@ -8489,6 +8546,11 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
   // Refresh activity every 30s (catches clicks from profile in another tab)
   // Skip when tab is hidden to avoid wasted work on mobile
   setInterval(() => { if (!document.hidden) { loadRealStats(); loadActivityFeed(); } }, 30000);
+  // C21 #21 — sparkline canvas redraws on window resize (debounced)
+  ;(function() {
+    let _rsz;
+    window.addEventListener('resize', () => { clearTimeout(_rsz); _rsz = setTimeout(() => { if (!document.hidden) loadRealStats(); }, 250); });
+  })();
 
   // Wire profile page Save button
   wireProfileSave();

@@ -9199,11 +9199,15 @@
             // C12 #56 — contextual echo for returning visitor
             const _rvState = computeState(profile)
             let _rvMsg = `We've got you — ${myEmail} is on ${artistName}'s list.`
-            if ((_rvState === 'pre-release' || _rvState === 'live') && profile.releaseTitle) {
-              const _rvDate = profile.releaseDate ? new Date(profile.releaseDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : null
-              _rvMsg = _rvDate
-                ? `You're in. ${profile.releaseTitle} drops ${_rvDate}. First to know.`
-                : `You're in. ${profile.releaseTitle} is coming. First to know.`
+            if (profile.releaseTitle) {
+              if (_rvState === 'pre-release') {
+                const _rvDate = profile.releaseDate ? new Date(profile.releaseDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : null
+                _rvMsg = _rvDate
+                  ? `You're in. ${profile.releaseTitle} drops ${_rvDate}. First to know.`
+                  : `${profile.releaseTitle} is coming. You'll hear first.` // C21 #15
+              } else if (_rvState === 'live') {
+                _rvMsg = `${profile.releaseTitle} is out now. You heard it first.` // C21 #16
+              }
             }
             echoText.textContent = _rvMsg
           }
@@ -9483,6 +9487,12 @@
 
           // C19 #12 — fan sign-up click event fires immediately after successful sign-up
           trackClick('fan-signup', 'fan', 'capture')
+          // C21 #41 — returning same-channel flag: did fan come back via same source as sign-up?
+          try {
+            const _prevSrc = localStorage.getItem('_able_prior_src')
+            if (_prevSrc && _prevSrc === signupSource) trackClick('returning-same-channel', 'analytics', 'capture')
+            localStorage.setItem('_able_prior_src', signupSource || 'direct')
+          } catch(_) {}
 
           setTimeout(() => {
             // Switch to checkmark
@@ -9515,12 +9525,16 @@
                 if (echoText) {
                   // C12 #56 — contextual echo for pre-release / live state
                   const _echoState = computeState(profile)
-                  let _echoMsg = `I'll reach out when something's worth saying.`
-                  if ((_echoState === 'pre-release' || _echoState === 'live') && profile.releaseTitle) {
-                    const _echoDate = profile.releaseDate ? new Date(profile.releaseDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : null
-                    _echoMsg = _echoDate
-                      ? `You're in. ${profile.releaseTitle} drops ${_echoDate}. First to know.`
-                      : `You're in. ${profile.releaseTitle} is coming. First to know.`
+                  let _echoMsg = profile.name ? `Check your inbox. ${profile.name} will reach out directly.` : `I'll reach out when something's worth saying.` // C21 #11
+                  if (profile.releaseTitle) {
+                    if (_echoState === 'pre-release') {
+                      const _echoDate = profile.releaseDate ? new Date(profile.releaseDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : null
+                      _echoMsg = _echoDate
+                        ? `You're in. ${profile.releaseTitle} drops ${_echoDate}. First to know.`
+                        : `${profile.releaseTitle} is coming. You'll hear first.` // C21 #15
+                    } else if (_echoState === 'live') {
+                      _echoMsg = `${profile.releaseTitle} is out now. You heard it first.` // C21 #16
+                    }
                   }
                   echoText.textContent = _echoMsg
                 }
