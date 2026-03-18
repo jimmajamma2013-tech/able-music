@@ -38,6 +38,9 @@ exports.handler = async function(event) {
   if (!artistName) {
     return json(400, { error: 'artistName is required', code: 'BAD_REQUEST' });
   }
+  if (artistName.length > 200) {
+    return json(400, { error: 'artistName too long', code: 'BAD_REQUEST' });
+  }
 
   const apiKey = process.env.TICKETMASTER_API_KEY;
   if (!apiKey) {

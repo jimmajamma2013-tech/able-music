@@ -56,6 +56,8 @@ exports.handler = async function (event) {
     rawUrl = event.queryStringParameters?.url;
   }
   if (!rawUrl) return json(400, { error: 'url param required' });
+  if (typeof rawUrl !== 'string') return json(400, { error: 'url must be a string' });
+  if (rawUrl.length > 2048) return json(400, { error: 'url too long' });
 
   let mediaUrl;
   try {

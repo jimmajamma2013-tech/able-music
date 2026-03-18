@@ -29,6 +29,9 @@ exports.handler = async function (event) {
   if (!url) {
     return json(400, { error: 'url param required' });
   }
+  if (typeof url !== 'string' || url.length > 500) {
+    return json(400, { error: 'url invalid' });
+  }
 
   // ── 1. Extract Spotify artist ID ──────────────────────────────────────
   const artistId = extractSpotifyArtistId(url);
