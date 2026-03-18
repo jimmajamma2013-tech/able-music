@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-18 | Sessions 11–20 + Cycles 1–23 Waves 1–2 + Audit Waves 1–4 (C/D/G/H/I dims + admin.html axe) | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-23-AUDIT.md + axe verified**
+**Updated: 2026-03-18 | Sessions 11–20 + Cycles 1–23 Waves 1–2 + Audit Waves 1–5 (C/D/G/H/I/J dims + admin.html axe + J9 cold start) | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-23-AUDIT.md + axe verified**
 
 ---
 
@@ -19,14 +19,14 @@
 | Page | File | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|---|
 | Artist profile | `able-v8.html` | 9.88/10 | 9.90/10 | Supabase auth + Spotify auto-import | ✅ C1: 40 axe violations → 0 (contrast + ARIA); D2/D8 copy; G10 banner; G8 guard |
-| Admin dashboard | `admin.html` | 9.96/10 | ~9.96/10 | Supabase auth (data portability) | ✅ A1: 6 axe violations → 0 (contrast + landmark regions); luminance-adaptive btn text |
+| Admin dashboard | `admin.html` | 9.97/10 | ~9.97/10 | Supabase auth (data portability) | ✅ J9: setup-prompt-bar full-width fix (body flex-row → inject into #main column); J5 netlify.toml /:slug before /* catch-all |
 | Onboarding wizard | `start.html` | 9.9/10 | ~9.9/10 | Social proof (real artists) | ✅ C23W1: B8 type scale — all sub-11px text raised |
 | Landing page | `landing.html` | 9.9/10 | ~9.9/10 | — | ✅ C21: 'For professionals' section — mixer/producer + videographer cards linking to freelancer.html |
 | Fan dashboard | `fan.html` | 9.83/10 | ~9.85/10 | Supabase realtime | ✅ C23W2: first-10 badge, revisit streak, close circle accent via ?artist=slug |
 | Freelancer profile | `freelancer.html` | 9.25/10 | ~9.3/10 | Network maturity + real testimonials | ✅ C23W2: enquiry sheet focus trap + Escape key, view count tracking |
 | Freelancer onboarding | `freelancer-start.html` | 9.1/10 | ~9.2/10 | Real Supabase auth | ✅ C23W1: name input in step 3, preview shows actual name, rateCardUpdatedAt timestamp |
 
-**Page average: ~9.89/10**
+**Page average: ~9.90/10**
 
 ---
 
