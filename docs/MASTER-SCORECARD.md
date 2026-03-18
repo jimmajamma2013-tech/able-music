@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-18 | Sessions 11–20 + Cycles 1–23 Waves 1–2 | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-23-AUDIT.md**
+**Updated: 2026-03-18 | Sessions 11–20 + Cycles 1–23 Waves 1–2 + Audit Wave 1 batch | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-23-AUDIT.md**
 
 ---
 
@@ -18,7 +18,7 @@
 
 | Page | File | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|---|
-| Artist profile | `able-v8.html` | 9.80/10 | 9.8/10 | Supabase auth + Spotify auto-import | ✅ C23W2: close circle sign-up checkbox, Spotify embed fallback, all sub-11px text raised to 11px |
+| Artist profile | `able-v8.html` | 9.83/10 | 9.85/10 | Supabase auth + Spotify auto-import | ✅ AuditW1: first-visit artist banner (G10), trackClick label guard (G8), pre-paint accent sync (H7), GDPR 12px (I1), Unsplash WebP |
 | Admin dashboard | `admin.html` | 9.94/10 | ~9.95/10 | Supabase auth (data portability) | ✅ C23W2: FL view count stat, fan dark mode toggle, settings search filter |
 | Onboarding wizard | `start.html` | 9.9/10 | ~9.9/10 | Social proof (real artists) | ✅ C23W1: B8 type scale — all sub-11px text raised |
 | Landing page | `landing.html` | 9.9/10 | ~9.9/10 | — | ✅ C21: 'For professionals' section — mixer/producer + videographer cards linking to freelancer.html |
@@ -26,7 +26,7 @@
 | Freelancer profile | `freelancer.html` | 9.25/10 | ~9.3/10 | Network maturity + real testimonials | ✅ C23W2: enquiry sheet focus trap + Escape key, view count tracking |
 | Freelancer onboarding | `freelancer-start.html` | 9.1/10 | ~9.2/10 | Real Supabase auth | ✅ C23W1: name input in step 3, preview shows actual name, rateCardUpdatedAt timestamp |
 
-**Page average: ~9.85/10**
+**Page average: ~9.86/10**
 
 ---
 
