@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" id="meta-theme" content="#0d0e1a">
+  <title id="page-title">ABLE — Professional</title>
+  <meta name="description" id="page-desc" content="A professional on ABLE Music.">
+  <!-- OG -->
+  <meta property="og:title" id="og-title" content="ABLE — Professional">
+  <meta property="og:description" id="og-desc" content="A professional on ABLE Music.">
+  <meta property="og:type" content="profile">
+  <meta property="og:image" content="/og-default.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Barlow+Condensed:wght@700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Barlow+Condensed:wght@700&display=swap">
+  <style>
+    /* ── Design tokens — same architecture as able-v8.html ── */
+    :root {
+      --color-bg:        #0d0e1a;
+      --color-card:      #12152a;
+      --color-accent:    #e05242; /* professional-set, same CSS var */
+      --color-text:      #e8e9f0;
+      --color-text-2:    rgba(232,233,240,0.65);
+      --color-text-3:    rgba(232,233,240,0.38);
+      --color-border:    rgba(255,255,255,0.08);
+      --font:            'DM Sans', system-ui, sans-serif;
+      --font-d:          'Barlow Condensed', system-ui, sans-serif;
+      --r-sm:            8px;
+      --r-md:            12px;
+      --r-lg:            16px;
+      --r-pill:          999px;
+      --dur-fast:        150ms;
+      --dur-base:        260ms;
+      --ease-spring:     cubic-bezier(0.34,1.56,0.64,1);
+      --ease-decel:      cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    [data-theme="light"] {
+      --color-bg:     #f0ede8;
+      --color-card:   #ffffff;
+      --color-text:   #1a1a2e;
+      --color-text-2: rgba(26,26,46,0.6);
+      --color-text-3: rgba(26,26,46,0.35);
+      --color-border: rgba(0,0,0,0.09);
+    }
+
+    /* ── Reset ── */
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ── Base ── */
+    html, body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100dvh;
+    }
+    body { max-width: 480px; margin: 0 auto; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
+
+    /* ── Shell ── */
+    .shell { display: flex; flex-direction: column; min-height: 100dvh; }
+    .content { flex: 1; padding: 0 20px 48px; }
+
+    /* ── Identity header ── */
+    .identity {
+      padding: 48px 20px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+    }
+    .identity__avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 600;
+      font-family: var(--font-d);
+      margin-bottom: 16px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .identity__avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .identity__role {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: 6px;
+    }
+    .identity__name {
+      font-family: var(--font-d);
+      font-size: clamp(28px, 8vw, 38px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: 0.01em;
+      color: var(--color-text);
+      margin-bottom: 6px;
+    }
+    .identity__location {
+      font-size: 12px;
+      color: var(--color-text-3);
+      margin-bottom: 10px;
+    }
+    .identity__bio {
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--color-text-2);
+      max-width: 380px;
+    }
+
+    /* ── Trust signal ── */
+    .trust-strip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 20px;
+      margin-bottom: 28px;
+    }
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-3);
+      background: rgba(255,255,255,0.05);
+      border-radius: var(--r-pill);
+      padding: 4px 10px;
+    }
+    .trust-badge--confirmed { color: var(--color-accent); background: rgba(224,82,66,0.12); }
+
+    /* ── Section ── */
+    .section { margin-bottom: 40px; }
+    .section__heading {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-3);
+      margin-bottom: 14px;
+    }
+
+    /* ── Credits ── */
+    .credits-list { display: flex; flex-direction: column; gap: 2px; }
+    .credit-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .credit-row:last-child { border-bottom: none; }
+    .credit-row__confirm { color: var(--color-accent); font-size: 12px; flex-shrink: 0; }
+    .credit-row__body { flex: 1; min-width: 0; }
+    .credit-row__artist {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .credit-row__artist a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .credit-row__artist a:hover { color: var(--color-accent); }
+    .credit-row__release {
+      font-size: 12px;
+      color: var(--color-text-2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .credit-row__role {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-3);
+      background: rgba(255,255,255,0.06);
+      border-radius: var(--r-pill);
+      padding: 2px 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .credit-row--pending { opacity: 0.65; }
+    .credit-row--pending .credit-row__release::after { content: ' — awaiting confirmation'; font-style: italic; }
+    .credits-empty {
+      font-size: 14px;
+      color: var(--color-text-3);
+      padding: 8px 0;
+    }
+    .credits-show-more {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-accent);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 0;
+      font-family: var(--font);
+      min-height: 44px;
+    }
+    .credits-show-more:hover { opacity: 0.75; }
+
+    /* ── Portfolio ── */
+    .portfolio-list { display: flex; flex-direction: column; gap: 12px; }
+    .portfolio-item {
+      background: var(--color-card);
+      border-radius: var(--r-md);
+      overflow: hidden;
+    }
+    .portfolio-item__embed {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: none;
+      display: block;
+    }
+    .portfolio-item__label {
+      font-size: 13px;
+      color: var(--color-text-2);
+      padding: 10px 14px;
+    }
+    .portfolio-empty {
+      font-size: 14px;
+      color: var(--color-text-3);
+      padding: 8px 0;
+    }
+
+    /* ── Artists strip ── */
+    .artists-strip {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .artists-strip::-webkit-scrollbar { display: none; }
+    .artist-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .artist-chip__avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-text);
+      overflow: hidden;
+    }
+    .artist-chip__avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .artist-chip__name {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--color-text-2);
+      white-space: nowrap;
+      max-width: 56px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+    }
+
+    /* ── Availability + Enquiry ── */
+    .availability {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .avail-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #34c759;
+      flex-shrink: 0;
+    }
+    .avail-dot--limited { background: #f4b942; }
+    .avail-dot--closed  { background: #6b7280; }
+    .avail-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-2);
+    }
+
+    .rate-card {
+      font-size: 13px;
+      color: var(--color-text-3);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .enquiry-btn {
+      display: block;
+      width: 100%;
+      min-height: 52px;
+      background: var(--color-accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--r-md);
+      font-size: 15px;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: opacity var(--dur-fast) ease, transform var(--dur-fast) var(--ease-spring);
+    }
+    .enquiry-btn:active { opacity: 0.8; transform: scale(0.98); }
+    .enquiry-btn:disabled { opacity: 0.4; cursor: default; }
+
+    /* ── Enquiry sheet ── */
+    .enquiry-sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background: transparent;
+      z-index: 90;
+      display: none;
+    }
+    .enquiry-sheet-backdrop.open { background: rgba(0,0,0,0.5); display: block; }
+    .enquiry-sheet {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%) translateY(100%);
+      width: min(480px, 100%);
+      background: var(--color-card);
+      border-radius: var(--r-lg) var(--r-lg) 0 0;
+      z-index: 91;
+      padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+      transition: transform var(--dur-base) var(--ease-decel);
+    }
+    .enquiry-sheet.open { transform: translateX(-50%) translateY(0); }
+    .enquiry-sheet__drag {
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.12);
+      margin: 0 auto 20px;
+    }
+    .enquiry-sheet__title {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .enquiry-sheet__sub {
+      font-size: 13px;
+      color: var(--color-text-3);
+      margin-bottom: 20px;
+    }
+    .enquiry-field {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--color-border);
+      border-radius: var(--r-md);
+      color: var(--color-text);
+      font-family: var(--font);
+      font-size: 15px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      resize: none;
+      outline: none;
+      transition: border-color var(--dur-fast) ease;
+    }
+    .enquiry-field:focus { border-color: var(--color-accent); }
+    .enquiry-field::placeholder { color: var(--color-text-3); }
+    .enquiry-submit {
+      width: 100%;
+      min-height: 52px;
+      background: var(--color-accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--r-md);
+      font-size: 15px;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      margin-top: 6px;
+      transition: opacity var(--dur-fast);
+    }
+    .enquiry-submit:active { opacity: 0.8; }
+    .enquiry-sent { font-size: 15px; font-weight: 500; color: var(--color-text-2); text-align: center; padding: 12px 0; }
+
+    /* ── ABLE footer ── */
+    .page-footer {
+      text-align: center;
+      padding: 24px 20px 32px;
+      font-size: 11px;
+      color: var(--color-text-3);
+    }
+    .page-footer a {
+      color: var(--color-accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Identity header ── -->
+  <div class="identity">
+    <div class="identity__avatar" id="proAvatar" aria-hidden="true">A</div>
+    <div class="identity__role" id="proRole">Producer</div>
+    <h1 class="identity__name" id="proName">Your name</h1>
+    <div class="identity__location" id="proLocation" hidden></div>
+    <p class="identity__bio" id="proBio">Short bio goes here.</p>
+  </div>
+
+  <!-- Trust signal strip -->
+  <div class="trust-strip" id="trustStrip" hidden>
+    <span class="trust-badge trust-badge--confirmed" id="trustConfirmedBadge" hidden></span>
+    <span class="trust-badge" id="trustPendingBadge" hidden></span>
+  </div>
+
+  <div class="content">
+
+    <!-- ── Credits ── -->
+    <div class="section">
+      <div class="section__heading">Work</div>
+      <div class="credits-list" id="creditsList">
+        <p class="credits-empty" id="creditsEmpty">Credits pending — <span id="creditsEmptyName">this professional</span> is building their record on ABLE.</p>
+      </div>
+      <button class="credits-show-more" id="creditsShowMore" hidden>Show more credits ↓</button>
+    </div>
+
+    <!-- ── Portfolio ── -->
+    <div class="section" id="portfolioSection" hidden>
+      <div class="section__heading" id="portfolioHeading">Listen</div>
+      <div class="portfolio-list" id="portfolioList"></div>
+    </div>
+
+    <!-- ── Artists on ABLE ── -->
+    <div class="section" id="artistsSection" hidden>
+      <div class="section__heading">Artists they work with on ABLE</div>
+      <div class="artists-strip" id="artistsStrip"></div>
+    </div>
+
+    <!-- ── Availability + Enquiry ── -->
+    <div class="section">
+      <div class="availability" id="availabilityRow">
+        <div class="avail-dot" id="availDot"></div>
+        <span class="avail-label" id="availLabel">Open for new work</span>
+      </div>
+      <div class="rate-card" id="rateCard" hidden></div>
+      <button class="enquiry-btn" id="enquiryBtn" type="button">Send an enquiry</button>
+    </div>
+
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="page-footer">
+    Professional on <a href="/" rel="noopener">ABLE Music</a>
+  </footer>
+
+</div>
+
+<!-- ── Enquiry sheet ── -->
+<div class="enquiry-sheet-backdrop" id="enquiryBackdrop" role="presentation"></div>
+<div class="enquiry-sheet" id="enquirySheet" role="dialog" aria-modal="true" aria-labelledby="enquirySheetTitle" hidden>
+  <div class="enquiry-sheet__drag" aria-hidden="true"></div>
+  <div class="enquiry-sheet__title" id="enquirySheetTitle">Send an enquiry</div>
+  <p class="enquiry-sheet__sub">No noise. Just enough context to have a real conversation.</p>
+  <input class="enquiry-field" id="enqType" type="text" placeholder="What are you working on? (project type)" maxlength="80">
+  <input class="enquiry-field" id="enqArtist" type="text" placeholder="Your artist / project name" maxlength="80">
+  <input class="enquiry-field" id="enqBudget" type="text" placeholder="Estimated budget (or 'flexible')" maxlength="60">
+  <textarea class="enquiry-field" id="enqMessage" rows="3" placeholder="Anything else worth knowing?" maxlength="400"></textarea>
+  <div class="enquiry-sent" id="enquirySent" hidden>Sent. <span id="proNameShort">They</span> will be in touch.</div>
+  <button class="enquiry-submit" id="enquirySubmit" type="button">Send →</button>
+</div>
+
+<script>
+  /* ── ABLE Freelancer Profile — V1 shell ── */
+  /* Data source: localStorage able_freelancer_profile (mirrors V3 key model) */
+
+  const FL_KEY = 'able_freelancer_profile';
+  const CREDITS_VISIBLE = 5;
+
+  function safeLS(key, fallback) {
+    try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch(_) { return fallback; }
+  }
+
+  function escHtml(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+  }
+
+  function isSafeUrl(url) {
+    try {
+      const u = new URL(url);
+      return u.protocol === 'https:' || u.protocol === 'http:';
+    } catch(_) { return false; }
+  }
+
+  function init() {
+    const profile = safeLS(FL_KEY, null);
+
+    // Demo data for preview — replace with real profile when Supabase auth lands
+    const p = profile || {
+      name:         'Maya Beats',
+      role:         'Producer',
+      location:     'London',
+      bio:          'I produce for artists who care about the space between the notes.',
+      accent:       '#e05242',
+      avatarInitial:'M',
+      availability: 'open', // 'open' | 'limited' | 'closed'
+      rateCard:     'Production — from £300/track. Mixing — from £150/stem.',
+      credits: [
+        { artistName: 'Luna Vega', releaseTitle: 'Interlude EP', role: 'Production', handle: 'luna-vega', confirmed: true },
+        { artistName: 'Drift',     releaseTitle: 'Night Drive',  role: 'Co-Production', handle: null, confirmed: true },
+        { artistName: 'Sable',     releaseTitle: 'Untitled Demo', role: 'Production', handle: null, confirmed: false },
+      ],
+      portfolio: [
+        { embedUrl: null, label: 'Luna Vega — Interlude EP (produced)', type: 'audio' },
+      ],
+    };
+
+    // Apply accent
+    if (p.accent) document.documentElement.style.setProperty('--color-accent', p.accent);
+
+    // Identity
+    const avatarEl = document.getElementById('proAvatar');
+    const initial = (p.name||'?')[0].toUpperCase();
+    if (p.avatarUrl && isSafeUrl(p.avatarUrl)) {
+      const img = document.createElement('img');
+      img.src = p.avatarUrl;
+      img.alt = '';
+      avatarEl.textContent = '';
+      avatarEl.appendChild(img);
+    } else {
+      avatarEl.textContent = p.avatarInitial || initial;
+      avatarEl.style.background = p.accent ? `${p.accent}22` : 'rgba(255,255,255,0.08)';
+      avatarEl.style.color = p.accent || 'var(--color-text)';
+    }
+
+    const nameEl = document.getElementById('proName');
+    if (nameEl) nameEl.textContent = p.name || 'Professional';
+
+    const roleEl = document.getElementById('proRole');
+    if (roleEl) roleEl.textContent = (p.role||'').toUpperCase() || 'PROFESSIONAL';
+
+    const locEl = document.getElementById('proLocation');
+    if (locEl && p.location) { locEl.textContent = p.location; locEl.hidden = false; }
+
+    const bioEl = document.getElementById('proBio');
+    if (bioEl) bioEl.textContent = p.bio || '';
+
+    // Page meta
+    document.title = `${p.name || 'Professional'} — ABLE`;
+    document.getElementById('og-title').setAttribute('content', `${p.name || 'Professional'} on ABLE`);
+    document.getElementById('og-desc').setAttribute('content', p.bio || `${p.role || 'Professional'} on ABLE Music.`);
+
+    // Credits
+    const credits = Array.isArray(p.credits) ? p.credits : [];
+    const confirmed = credits.filter(c => c.confirmed);
+    const pending   = credits.filter(c => !c.confirmed);
+
+    // Trust strip
+    const trustStrip = document.getElementById('trustStrip');
+    const confirmedBadge = document.getElementById('trustConfirmedBadge');
+    const pendingBadge   = document.getElementById('trustPendingBadge');
+    if (confirmed.length > 0) {
+      confirmedBadge.textContent = `✓ ${confirmed.length} confirmed credit${confirmed.length !== 1 ? 's' : ''}`;
+      confirmedBadge.hidden = false;
+      trustStrip.hidden = false;
+    }
+    if (pending.length > 0 && confirmed.length === 0) {
+      pendingBadge.textContent = 'Credits awaiting confirmation';
+      pendingBadge.hidden = false;
+      trustStrip.hidden = false;
+    }
+
+    // Credits list
+    const listEl = document.getElementById('creditsList');
+    const emptyEl = document.getElementById('creditsEmpty');
+    const emptyNameEl = document.getElementById('creditsEmptyName');
+    const showMoreBtn = document.getElementById('creditsShowMore');
+
+    if (emptyNameEl && p.name) emptyNameEl.textContent = p.name;
+
+    const allVisible = [...confirmed, ...pending];
+    if (allVisible.length === 0) {
+      // empty state remains
+    } else {
+      if (emptyEl) emptyEl.hidden = true;
+      const visibleCredits = allVisible.slice(0, CREDITS_VISIBLE);
+      const hiddenCredits  = allVisible.slice(CREDITS_VISIBLE);
+
+      function renderCredit(c) {
+        const row = document.createElement('div');
+        row.className = `credit-row${c.confirmed ? '' : ' credit-row--pending'}`;
+        const artistHtml = (c.confirmed && c.handle)
+          ? `<a href="/${escHtml(c.handle)}" rel="noopener noreferrer">${escHtml(c.artistName||'')}</a>`
+          : escHtml(c.artistName||'');
+        row.innerHTML = `
+          ${c.confirmed ? '<span class="credit-row__confirm" aria-label="Confirmed">✓</span>' : ''}
+          <div class="credit-row__body">
+            <div class="credit-row__artist">${artistHtml}</div>
+            <div class="credit-row__release">${escHtml(c.releaseTitle||'')}</div>
+          </div>
+          <div class="credit-row__role">${escHtml(c.role||'')}</div>
+        `;
+        return row;
+      }
+
+      if (listEl) {
+        visibleCredits.forEach(c => listEl.appendChild(renderCredit(c)));
+        if (hiddenCredits.length > 0 && showMoreBtn) {
+          showMoreBtn.hidden = false;
+          showMoreBtn.addEventListener('click', () => {
+            hiddenCredits.forEach(c => listEl.insertBefore(renderCredit(c), showMoreBtn));
+            showMoreBtn.hidden = true;
+          });
+        }
+      }
+    }
+
+    // Artists on ABLE strip — built from confirmed credits with handles
+    const artistsWithHandles = confirmed.filter(c => c.handle);
+    const artistsSection = document.getElementById('artistsSection');
+    const artistsStrip   = document.getElementById('artistsStrip');
+    if (artistsWithHandles.length > 0 && artistsSection && artistsStrip) {
+      artistsSection.hidden = false;
+      artistsWithHandles.forEach(c => {
+        const chip = document.createElement('a');
+        chip.className = 'artist-chip';
+        chip.href = `/${escHtml(c.handle)}`;
+        chip.rel = 'noopener noreferrer';
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = 'artist-chip__avatar';
+        avatarDiv.textContent = (c.artistName||'?')[0].toUpperCase();
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'artist-chip__name';
+        nameDiv.textContent = c.artistName || '';
+        chip.appendChild(avatarDiv);
+        chip.appendChild(nameDiv);
+        artistsStrip.appendChild(chip);
+      });
+    }
+
+    // Portfolio
+    const portfolio = Array.isArray(p.portfolio) ? p.portfolio : [];
+    const portfolioSection = document.getElementById('portfolioSection');
+    const portfolioList    = document.getElementById('portfolioList');
+    const portfolioHeading = document.getElementById('portfolioHeading');
+    if (portfolio.length > 0 && portfolioSection && portfolioList) {
+      portfolioSection.hidden = false;
+      const hasVideo = portfolio.some(item => item.type === 'video');
+      if (portfolioHeading) portfolioHeading.textContent = hasVideo ? 'Watch' : 'Listen';
+      portfolio.slice(0,2).forEach(item => {
+        const wrap = document.createElement('div');
+        wrap.className = 'portfolio-item';
+        if (item.embedUrl && isSafeUrl(item.embedUrl)) {
+          const iframe = document.createElement('iframe');
+          iframe.className = 'portfolio-item__embed';
+          iframe.src = item.embedUrl;
+          iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+          iframe.loading = 'lazy';
+          iframe.title = item.label || 'Portfolio item';
+          wrap.appendChild(iframe);
+        }
+        if (item.label) {
+          const lbl = document.createElement('div');
+          lbl.className = 'portfolio-item__label';
+          lbl.textContent = item.label;
+          wrap.appendChild(lbl);
+        }
+        if (portfolioList) portfolioList.appendChild(wrap);
+      });
+    }
+
+    // Availability
+    const dotEl   = document.getElementById('availDot');
+    const labelEl = document.getElementById('availLabel');
+    const btnEl   = document.getElementById('enquiryBtn');
+    const availability = p.availability || 'open';
+    const availConfig = {
+      open:    { dot: '',           label: 'Open for new work',    btn: 'Send an enquiry', disabled: false },
+      limited: { dot: '--limited',  label: 'Limited availability', btn: 'Send an enquiry', disabled: false },
+      closed:  { dot: '--closed',   label: 'Not taking bookings',  btn: null, disabled: true },
+    };
+    const avail = availConfig[availability] || availConfig.open;
+    if (dotEl) dotEl.className = `avail-dot${avail.dot ? ' avail-dot' + avail.dot : ''}`;
+    if (labelEl) labelEl.textContent = avail.label;
+    if (btnEl && avail.disabled) { btnEl.disabled = true; btnEl.textContent = 'Not available right now'; }
+
+    // Rate card
+    const rateEl = document.getElementById('rateCard');
+    if (rateEl && p.rateCard) { rateEl.textContent = p.rateCard; rateEl.hidden = false; }
+    else if (rateEl && !p.rateCard) { rateEl.textContent = 'Enquire for rates.'; rateEl.hidden = false; }
+
+    // Enquiry sheet
+    if (btnEl && !avail.disabled) {
+      btnEl.addEventListener('click', openSheet);
+    }
+
+    // proNameShort
+    const proNameShort = document.getElementById('proNameShort');
+    if (proNameShort) proNameShort.textContent = (p.name||'').split(' ')[0] || 'They';
+  }
+
+  function openSheet() {
+    const backdrop = document.getElementById('enquiryBackdrop');
+    const sheet    = document.getElementById('enquirySheet');
+    if (!sheet) return;
+    sheet.hidden = false;
+    backdrop.style.display = 'block';
+    requestAnimationFrame(() => {
+      sheet.classList.add('open');
+      backdrop.classList.add('open');
+      document.getElementById('enqType')?.focus();
+    });
+    backdrop.addEventListener('click', closeSheet, { once: true });
+  }
+
+  function closeSheet() {
+    const backdrop = document.getElementById('enquiryBackdrop');
+    const sheet    = document.getElementById('enquirySheet');
+    if (!sheet) return;
+    sheet.classList.remove('open');
+    backdrop.classList.remove('open');
+    setTimeout(() => {
+      sheet.hidden = true;
+      backdrop.style.display = 'none';
+    }, 280);
+  }
+
+  // Enquiry submit (localStorage-first; Netlify function when deployed)
+  document.getElementById('enquirySubmit')?.addEventListener('click', function() {
+    const type    = document.getElementById('enqType')?.value.trim();
+    const artist  = document.getElementById('enqArtist')?.value.trim();
+    const budget  = document.getElementById('enqBudget')?.value.trim();
+    const message = document.getElementById('enqMessage')?.value.trim();
+    if (!type || !artist) {
+      document.getElementById('enqType')?.focus();
+      return;
+    }
+    // Store enquiry locally (Netlify function / Supabase in V1.5)
+    try {
+      const enquiries = JSON.parse(localStorage.getItem('able_fl_enquiries') || '[]');
+      enquiries.push({ type, artist, budget, message, ts: Date.now() });
+      localStorage.setItem('able_fl_enquiries', JSON.stringify(enquiries));
+    } catch(_) {}
+    // Show sent state
+    document.getElementById('enquirySubmit').hidden = true;
+    document.getElementById('enquirySent').hidden   = false;
+    setTimeout(closeSheet, 2400);
+  });
+
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+
+<!-- JSON-LD — Person schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Professional on ABLE",
+  "url": "https://ablemusic.co/professional",
+  "memberOf": {
+    "@type": "Organization",
+    "name": "ABLE Music",
+    "url": "https://ablemusic.co"
+  }
+}
+</script>
+</body>
+</html>
