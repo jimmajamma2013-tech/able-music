@@ -60,7 +60,30 @@
   <!-- Structured data (populated by JS after profile load) -->
   <script type="application/ld+json" id="structured-data">{}</script>
 
+  <!-- H7 #63/#67 — theme pre-init: read localStorage before first paint to prevent FOWT.
+       Sets data-theme on <html> immediately; renderProfile() will transfer it to #app-shell. -->
+  <script>
+    (function() {
+      try {
+        const p = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+        const t = p.theme;
+        if (t === 'light' || t === 'glass' || t === 'contrast') {
+          document.documentElement.dataset.themeInit = t;
+        }
+        const a = p.accent;
+        if (a && /^#[0-9a-fA-F]{6}$/.test(a)) {
+          document.documentElement.style.setProperty('--color-accent', a);
+        }
+      } catch (_) {}
+    })();
+  </script>
+
   <style>
+    /* H7 #63/#67 — pre-init background to prevent FOWT on non-dark themes */
+    html[data-theme-init="light"]    { background: #f0ede8; }
+    html[data-theme-init="contrast"] { background: #000000; }
+    html[data-theme-init="glass"]    { background: #0d0e1a; }
+
     /* ============================================================
        ABLE v6 — Checkpoint 1: Shell + Design System Tokens
        Authority: docs/v6/core/V6_BUILD_AUTHORITY.md
