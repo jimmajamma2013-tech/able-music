@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-18 | Sessions 11–20 + Cycles 1–23 Waves 1–2 + Audit Waves 1–6 (C/D/G/H/I/J dims + admin.html axe + J9 cold start + able-v8.html axe → 0) | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-23-AUDIT.md + axe verified**
+**Updated: 2026-03-18 | Sessions 11–20 + Cycles 1–23 Waves 1–2 + Audit Waves 1–7 (C/D/G/H/I/J dims + C10 FOWT prefers-contract/light + D3 first-person echo + D8 gate copy plan suffix) | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-23-AUDIT.md + axe verified**
 
 ---
 
@@ -18,15 +18,15 @@
 
 | Page | File | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|---|
-| Artist profile | `able-v8.html` | 9.89/10 | 9.90/10 | Supabase auth + Spotify auto-import | ✅ Wave 6: 10 axe contrast violations → 0 (opacity cascade fixes: footer-legal, support-note, section-empty__eyebrow, profile-completeness__label) |
-| Admin dashboard | `admin.html` | 9.98/10 | ~9.98/10 | Supabase auth (data portability) | ✅ Wave 6: axe → 0; C5 cream contrast (status/published/connected → dash-green-t, stat-delta → dash-link); A1 tokens; A4 icons 16px |
+| Artist profile | `able-v8.html` | 9.90/10 | 9.90/10 | Supabase auth + Spotify auto-import | ✅ Wave 7: C10 FOWT script now resolves prefers-contrast:more + prefers-color-scheme:light before dark fallback; D3 echo first-person |
+| Admin dashboard | `admin.html` | 9.99/10 | ~9.99/10 | Supabase auth (data portability) | ✅ Wave 7: D8 GATE_COPY artist-pro entries → "Artist Pro plan." suffix; axe 0 maintained |
 | Onboarding wizard | `start.html` | 9.9/10 | ~9.9/10 | Social proof (real artists) | ✅ C23W1: B8 type scale — all sub-11px text raised |
 | Landing page | `landing.html` | 9.9/10 | ~9.9/10 | — | ✅ C21: 'For professionals' section — mixer/producer + videographer cards linking to freelancer.html |
 | Fan dashboard | `fan.html` | 9.83/10 | ~9.85/10 | Supabase realtime | ✅ C23W2: first-10 badge, revisit streak, close circle accent via ?artist=slug |
 | Freelancer profile | `freelancer.html` | 9.25/10 | ~9.3/10 | Network maturity + real testimonials | ✅ C23W2: enquiry sheet focus trap + Escape key, view count tracking |
 | Freelancer onboarding | `freelancer-start.html` | 9.1/10 | ~9.2/10 | Real Supabase auth | ✅ C23W1: name input in step 3, preview shows actual name, rateCardUpdatedAt timestamp |
 
-**Page average: ~9.91/10**
+**Page average: ~9.92/10**
 
 ---
 
