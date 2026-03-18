@@ -1,5 +1,5 @@
 # ABLE — Master Scorecard
-**Updated: 2026-03-18 | Sessions 11–20 + Cycles 1–23 Waves 1–2 + Audit Waves 1–2 (D/G/H/I dims) | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-23-AUDIT.md**
+**Updated: 2026-03-18 | Sessions 11–20 + Cycles 1–23 Waves 1–2 + Audit Waves 1–3 (C/D/G/H/I dims) | Sources: All FINAL-REVIEW.md, PRE-LAUNCH-1000.md, CYCLE-2-AUDIT.md through CYCLE-23-AUDIT.md + axe verified**
 
 ---
 
@@ -18,7 +18,7 @@
 
 | Page | File | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|---|
-| Artist profile | `able-v8.html` | 9.85/10 | 9.87/10 | Supabase auth + Spotify auto-import | ✅ D2: CAPTURE_VARIANTS headings corrected (pre-release/live/gig), G10 first-visit banner, G8 label guard |
+| Artist profile | `able-v8.html` | 9.88/10 | 9.90/10 | Supabase auth + Spotify auto-import | ✅ C1: 40 axe violations → 0 (contrast + ARIA); D2/D8 copy; G10 banner; G8 guard |
 | Admin dashboard | `admin.html` | 9.95/10 | ~9.96/10 | Supabase auth (data portability) | ✅ D2: Campaign HQ pill 'Live'/'Out now', D8: Label plan. names standardised |
 | Onboarding wizard | `start.html` | 9.9/10 | ~9.9/10 | Social proof (real artists) | ✅ C23W1: B8 type scale — all sub-11px text raised |
 | Landing page | `landing.html` | 9.9/10 | ~9.9/10 | — | ✅ C21: 'For professionals' section — mixer/producer + videographer cards linking to freelancer.html |
@@ -26,7 +26,7 @@
 | Freelancer profile | `freelancer.html` | 9.25/10 | ~9.3/10 | Network maturity + real testimonials | ✅ C23W2: enquiry sheet focus trap + Escape key, view count tracking |
 | Freelancer onboarding | `freelancer-start.html` | 9.1/10 | ~9.2/10 | Real Supabase auth | ✅ C23W1: name input in step 3, preview shows actual name, rateCardUpdatedAt timestamp |
 
-**Page average: ~9.87/10**
+**Page average: ~9.88/10**
 
 ---
 
