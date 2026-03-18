@@ -2541,5 +2541,14 @@ if (!navigator.onLine) {
   });
 }
 </script>
+
+<!-- SERVICE WORKER (J3 #2) -->
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(reg) { reg.update(); }) // J3 #2 — force SW update check on every load
+      .catch(function() {});
+  }
+</script>
 </body>
 </html>

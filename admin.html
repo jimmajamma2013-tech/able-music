@@ -10340,6 +10340,17 @@ function frcOpenRelease() {
   <div class="admin-sheet-body" id="adminSheetBody"></div>
 </div>
 
+<!-- SERVICE WORKER (J3 #2) -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js')
+        .then(function(reg) { reg.update(); }) // J3 #2 — force SW update check on every load
+        .catch(function() {});
+    });
+  }
+</script>
+
 <!-- OFFLINE BAR (C3 #38) -->
 <div id="adminOfflineBar" role="status" aria-live="assertive" aria-atomic="true">You're offline — changes save locally.</div>
 
