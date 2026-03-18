@@ -3804,6 +3804,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
 
     <div class="fans-search">
       <input id="fansSearch" type="search" placeholder="Search by email or campaign…" aria-label="Search fans by email or campaign"><!-- C4 #6 -->
+      <div id="fansSearchCount" style="display:none;font-size:11px;color:var(--t3);margin-top:6px;"></div>
     </div>
 
     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;">
@@ -4062,6 +4063,21 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
         <div style="margin-top:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 12px;font-family:monospace;font-size:11px;color:var(--t2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="campaignUrlPreview">ablemusic.co/yourname?campaign=…</div>
         <div style="margin-top:8px;display:flex;gap:8px;">
           <button class="tb-btn tb-btn-ghost" onclick="copyCampaignUrl()" style="flex:1;justify-content:center;" id="copyCampaignBtn" disabled>Copy link</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- C22 #16/#39 — Professional layer toggle -->
+    <div class="dash-card" style="max-width:480px;margin-top:16px;">
+      <div class="dc-head"><div class="dc-title">Professional layer</div></div>
+      <div class="dc-body">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
+          <div style="flex:1;">
+            <div style="font-size:13px;color:var(--text);line-height:1.5;">Enable a professional profile for credits, rate card, and booking enquiries.</div>
+            <div style="font-size:12px;color:var(--t3);margin-top:4px;line-height:1.5;">Your artist page and professional page share the same ABLE URL. Clients find you through credits on artists you've worked with.</div>
+          </div>
+          <button id="freelancerToggleBtn" onclick="toggleFreelancerLayer()" aria-pressed="false"
+            style="flex-shrink:0;min-width:52px;height:28px;border-radius:14px;border:none;cursor:pointer;font-size:11px;font-weight:700;background:var(--border);color:var(--t3);transition:background .2s,color .2s;font-family:var(--font);">Off</button>
         </div>
       </div>
     </div>
@@ -4365,6 +4381,17 @@ function renderFanList(filter) {
   if (totalEl) totalEl.textContent = total;
   if (weekEl) weekEl.textContent = thisWeek;
   if (pctEl) pctEl.textContent = total > 0 ? Math.round(socialCount / total * 100) + '%' : '0%';
+  // C22 #38 — search result count below search input
+  const _srCountEl = document.getElementById('fansSearchCount');
+  if (_srCountEl) {
+    if (search) {
+      _srCountEl.style.display = '';
+      _srCountEl.textContent = filtered.length === 1 ? '1 fan matches' : `${filtered.length} fans match`;
+    } else {
+      _srCountEl.style.display = 'none';
+    }
+  }
+
   // C21 #13 — GDPR confirmed count strip
   const _doubleOptIn = allFans.filter(f => f.double_opted_in && !f.deleted_at).length;
   const _confirmedStrip = document.getElementById('fansConfirmedStrip');
@@ -6501,6 +6528,7 @@ function renderSnapCardsList() {
           </div>
         </div>
         <div class="snap-item-edit" id="snap-edit-${card.id}" hidden>
+          <div style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">Editing: ${escHtml(card.title||'(untitled)')}</div>
           <div class="field-row" style="margin:0;">
             <div class="field-label">Title / headline</div>
             <input class="field-input" id="sce-title-${card.id}" value="${escHtml(card.title||'')}" placeholder="What's the update?" maxlength="60"> <!-- C9 #38 -->
@@ -6745,6 +6773,22 @@ function removeFreelancerCredit(idx) {
 function setFreelancerAvail(val, btn) {
   document.querySelectorAll('#flAvailBtn,#flBookedBtn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
+}
+
+function toggleFreelancerLayer() {
+  const data = safeLS(V3_KEY, {});
+  data.freelancerEnabled = !data.freelancerEnabled;
+  setLS(V3_KEY, data);
+  const _btn = document.getElementById('freelancerToggleBtn');
+  const _tab = document.getElementById('sbFreelancerTab');
+  if (_btn) {
+    _btn.setAttribute('aria-pressed', data.freelancerEnabled ? 'true' : 'false');
+    _btn.textContent = data.freelancerEnabled ? 'On' : 'Off';
+    _btn.style.background = data.freelancerEnabled ? 'var(--acc)' : 'var(--border)';
+    _btn.style.color = data.freelancerEnabled ? '#000' : 'var(--t3)';
+  }
+  if (_tab) _tab.hidden = !data.freelancerEnabled;
+  showToast(data.freelancerEnabled ? 'Professional layer enabled. Professional tab added.' : 'Professional layer disabled.');
 }
 
 function saveFreelancerRateCard() {
@@ -7388,6 +7432,9 @@ function setAnalyticsRange(days, btn) {
     p.classList.toggle('active', isActive);
     p.setAttribute('aria-pressed', String(isActive));
   });
+  // C22 #37 — update sparkline aria-label with range
+  const _sc = document.getElementById('viewsSparkline');
+  if (_sc) _sc.setAttribute('aria-label', days === 30 ? 'Daily page views over the last 30 days' : days === 7 ? 'Daily page views over the last 7 days' : 'All-time daily page views');
   loadRealStats();
 }
 
@@ -7654,7 +7701,11 @@ function _loadRealStatsImpl() {
       _ctrStateEl.innerHTML = _stateEntries.map(([s,d]) => {
         const _pct = d.views > 0 ? ((d.clicks/d.views)*100).toFixed(1) : '0.0';
         const _bar = Math.min(100, parseFloat(_pct));
-        return `<div style="display:flex;flex-direction:column;gap:4px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12px;color:var(--t2);">${escHtml(_stateLabel[s]||s)}</span><span style="font-size:12px;font-weight:600;color:var(--text);">${_pct}%</span></div><div style="height:5px;background:var(--border);border-radius:var(--r-pill);overflow:hidden;"><div style="height:100%;width:${_bar}%;background:var(--acc);border-radius:var(--r-pill);opacity:.85;"></div></div></div>`;
+        // C22 #36 — hide bar entirely when clicks = 0 (0.0% — no interactions in this state)
+        const _barHtml = d.clicks > 0
+          ? `<div style="height:5px;background:var(--border);border-radius:var(--r-pill);overflow:hidden;"><div style="height:100%;width:${_bar}%;background:var(--acc);border-radius:var(--r-pill);opacity:.85;"></div></div>`
+          : `<div style="height:5px;background:var(--border);border-radius:var(--r-pill);overflow:hidden;opacity:.3;"></div>`;
+        return `<div style="display:flex;flex-direction:column;gap:4px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12px;color:var(--t2);">${escHtml(_stateLabel[s]||s)}</span><span style="font-size:12px;font-weight:600;color:${d.clicks>0?'var(--text)':'var(--t3)'};">${_pct}%</span></div>${_barHtml}</div>`;
       }).join('');
     } else {
       _ctrStateEl.innerHTML = '<div style="font-size:12px;color:var(--t3);">No data yet.</div>';
@@ -8748,10 +8799,18 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
   renderQR();
   renderSbQR();
 
-  // C21 #37 — show Professional tab when freelancerEnabled
+  // C21 #37 / C22 #16 — show Professional tab + hydrate settings toggle when freelancerEnabled
   ;(function() {
+    const _flEnabled = !!safeLS(V3_KEY, {}).freelancerEnabled;
     const _flTab = document.getElementById('sbFreelancerTab');
-    if (_flTab && safeLS(V3_KEY, {}).freelancerEnabled) _flTab.hidden = false;
+    if (_flTab) _flTab.hidden = !_flEnabled;
+    const _flBtn = document.getElementById('freelancerToggleBtn');
+    if (_flBtn) {
+      _flBtn.setAttribute('aria-pressed', _flEnabled ? 'true' : 'false');
+      _flBtn.textContent = _flEnabled ? 'On' : 'Off';
+      _flBtn.style.background = _flEnabled ? 'var(--acc)' : 'var(--border)';
+      _flBtn.style.color = _flEnabled ? '#000' : 'var(--t3)';
+    }
   })();
 
   // Refresh activity every 30s (catches clicks from profile in another tab)
