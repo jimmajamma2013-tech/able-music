@@ -58,7 +58,8 @@
   --dash-amber:     #f4b942;
   --dash-amber-rgb: 244,185,66;
   --dash-link:   #8c6200;  /* amber-on-light: ≥4.5:1 on --dash-card */
-  --dash-green:  #1e9650;
+  --dash-green:  #1e9650;  /* graphics: SVG strokes, fills — not for text on cream */
+  --dash-green-t: #0d7030; /* A1 #4 — text green, ≥4.5:1 on --dash-card (#f8f5f0) */
   --dash-red:    #c04030;
   --dash-text:   #1a1a2e;
   --dash-t2:     #555555;
@@ -325,14 +326,14 @@ body::before {
 .tb-btn:active { transform:scale(0.97); transition:transform 80ms ease-out; }
 .tb-btn-ghost { background:none; border:1.5px solid var(--dash-border); color:var(--dash-t2); }
 .tb-btn-ghost:hover { border-color:var(--dash-text); color:var(--dash-text); }
-.tb-btn-acc { background:var(--acc); border:none; color:var(--dash-text); box-shadow:0 3px 12px rgba(var(--acc-rgb),.3); }
+.tb-btn-acc { background:var(--acc); border:none; color:var(--btn-acc-text, var(--dash-text)); box-shadow:0 3px 12px rgba(var(--acc-rgb),.3); } /* A1 #3 — text colour set dynamically via luminance */
 .tb-btn-acc:hover { transform:translateY(-1px); box-shadow:0 5px 18px rgba(var(--acc-rgb),.4); filter:brightness(.92); } /* C6 #28 */
 /* Live chip — artist accent bridges admin → profile */
 .live-chip {
   display:inline-flex; align-items:center; gap:5px;
   padding:4px 10px; border-radius:var(--r-pill); font-size:11px; font-weight:600;
   background:rgba(var(--artist-accent-rgb, var(--acc-rgb)), 0.1);
-  color:var(--artist-accent, var(--acc));
+  color:#fff; /* A1 #2 — topbar is dark (#1a1a2e); accent text fails 4.5:1; white ≥15:1. Dot still signals accent. */
   border:1px solid rgba(var(--artist-accent-rgb, var(--acc-rgb)), 0.25);
   cursor:pointer; transition: background var(--dur-fast); font-family:var(--font), color var(--dur-fast); font-family:var(--font), border-color var(--dur-fast); font-family:var(--font), opacity var(--dur-fast); font-family:var(--font), transform var(--dur-fast); font-family:var(--font), box-shadow var(--dur-fast); font-family:var(--font);
 }
@@ -367,7 +368,7 @@ body::before {
 .stat-label { font-size:11px; font-weight:700; letter-spacing:var(--ls-xwide); text-transform:uppercase; color:var(--dash-t3); margin-bottom:6px; }
 .stat-value { font-size:32px; font-weight:700; font-family:var(--font-d); letter-spacing:.01em; color:var(--dash-text); }
 .stat-delta { font-size:11px; color:var(--dash-t3); margin-top:4px; }
-.stat-delta.up { color:var(--dash-green); }
+.stat-delta.up { color:var(--dash-green-t); } /* A1 #4 — use text-green token; --dash-green fails 4.5:1 on cream */
 .stat-delta.dn { color:var(--dash-red); }
 
 /* ── SKELETON SHIMMER ── */
@@ -1368,7 +1369,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
   margin-bottom:8px;
 }
 .completeness-bar-label { font-size:12px; font-weight:600; color:var(--dash-text); }
-.completeness-bar-pct { font-size:12px; font-weight:700; color:var(--acc); }
+.completeness-bar-pct { font-size:12px; font-weight:700; color:var(--dash-link); /* A1 #1 — artist accent via --acc fails on cream; --dash-link (#8c6200) ≥4.5:1 guaranteed */ }
 .completeness-track {
   height:5px; border-radius:var(--r-pill); background:rgba(0,0,0,.06); overflow:hidden;
 }
@@ -2568,7 +2569,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
     </script>
 </head>
 <body>
-<a class="skip-link" href="#main">Skip to main content</a>
+<header aria-label="Page utilities"><a class="skip-link" href="#main">Skip to main content</a></header>
 
 <!-- C17 #36 — session expiry banner (shown by onAuthStateChange when token expires) -->
 <div id="session-expiry-banner" hidden role="alert" aria-live="assertive" style="
@@ -3859,7 +3860,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <span class="stat-strip-item accent"><strong id="fansWeekCount">0</strong> this week</span>
       <span class="stat-strip-item"><strong id="fansSocialPct">0%</strong> from social</span>
       <span class="stat-strip-item" id="fansConfirmedStrip" hidden><strong id="fansConfirmedCount">0</strong> confirmed</span>
-      <span class="stat-strip-item" id="fanGrowthRate" style="color:var(--dash-green);font-size:11px;"></span>
+      <span class="stat-strip-item" id="fanGrowthRate" style="color:var(--dash-green-t);font-size:11px;"></span>
     </div>
 
     <!-- Fan count progress bar — always visible from fan 1, upgrades at 100 -->
@@ -4188,7 +4189,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
     Stats
   </button>
 </nav>
-<p class="admin-legal-footer"><a href="/privacy" rel="noopener">Privacy</a> · <a href="/terms" rel="noopener">Terms</a></p>
+<footer><p class="admin-legal-footer"><a href="/privacy" rel="noopener">Privacy</a> · <a href="/terms" rel="noopener">Terms</a></p></footer>
 
 <script>
 /* ── GLOBAL ERROR HANDLERS (H9 #1/#2) ── */
@@ -9023,6 +9024,12 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
     try {
       const rgb = accent.match(/\w\w/g).slice(0,3).map(h=>parseInt(h,16)).join(',');
       document.documentElement.style.setProperty('--acc-rgb', rgb);
+      // A1 #3 — compute text colour for .tb-btn-acc based on accent luminance
+      const [ar,ag,ab] = rgb.split(',').map(Number);
+      const toLinear = c => { const s=c/255; return s<=0.04045 ? s/12.92 : ((s+0.055)/1.055)**2.4; };
+      const L = 0.2126*toLinear(ar) + 0.7152*toLinear(ag) + 0.0722*toLinear(ab);
+      // Threshold 0.175: ensures ≥4.5:1 for both dark (#000) and light (#fff) text across all accents
+      document.documentElement.style.setProperty('--btn-acc-text', L > 0.175 ? '#000000' : '#ffffff');
     } catch(e) {}
     const accEl = document.getElementById('adminAccent');
     if (accEl) accEl.value = accent;
