@@ -9305,8 +9305,8 @@
           const _capErr2 = fc2.querySelector('.fan-capture__error')
           if (_fieldWrap1) _fieldWrap1.hidden = true
           if (_fieldWrap2) _fieldWrap2.hidden = true
-          if (_capErr1) { _capErr1.textContent = 'The list is full right now.'; _capErr1.hidden = false }
-          if (_capErr2) { _capErr2.textContent = 'The list is full right now.'; _capErr2.hidden = false }
+          if (_capErr1) { _capErr1.textContent = 'Sign-ups are paused right now. Check back soon.'; _capErr1.hidden = false }
+          if (_capErr2) { _capErr2.textContent = 'Sign-ups are paused right now. Check back soon.'; _capErr2.hidden = false }
         } else if (_activeFansNow.length >= 95) {
           // C7 #38 — near cap soft nudge: still captures, but shows supportive message below button
           const _btn1 = fc1.querySelector('.fan-capture__btn')
@@ -9349,7 +9349,7 @@
               if (emailInput) emailInput.hidden = true
               const _capMsgEl = document.getElementById('fan-error')
               if (_capMsgEl) {
-                _capMsgEl.textContent = "The list is full right now."
+                _capMsgEl.textContent = "Sign-ups are paused right now. Check back soon."
                 _capMsgEl.hidden = false
               }
               return
@@ -9608,7 +9608,7 @@
               if (emailInput) emailInput.hidden = true
               const _capEl2 = form2.querySelector('.fan-capture__echo-text') || document.createElement('p')
               _capEl2.className = 'fan-capture__echo-text'
-              _capEl2.textContent = "The list is full right now."
+              _capEl2.textContent = "Sign-ups are paused right now. Check back soon."
               form2.hidden = true
               form2.parentNode.appendChild(_capEl2)
               return
