@@ -1851,8 +1851,8 @@
 
     el.innerHTML = `
       <div class="artist-card__accent-strip" style="background:${artist.accent}"></div>
-      <div class="artist-card__avatar" style="background:rgba(${rgb},0.22);color:#f0ede8">
-        ${getInitials(artist.name)}
+      <div class="artist-card__avatar" style="background:rgba(${rgb},0.22);color:#f0ede8;overflow:hidden;">
+        ${artist.artworkUrl ? `<img src="${escHtml(artist.artworkUrl)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" loading="lazy" onerror="this.style.display='none'">` : getInitials(artist.name)}
       </div>
       <div class="artist-card__info">
         <div style="display:flex;align-items:center;gap:6px">

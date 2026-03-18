@@ -9018,6 +9018,13 @@
             setLS('able_views', views)
           }
         } catch (_) {}
+        // C22 #25 — revisit same-channel: returning fan visits via same source as signup
+        try {
+          const _priorSrc = localStorage.getItem('_able_prior_src')
+          if (_priorSrc && source && _priorSrc === source) {
+            trackClick('revisit-same-channel', 'analytics', 'page-load')
+          }
+        } catch (_) {}
         sbSyncView(source) // async fire-and-forget
       }
       // PostHog page_view — skip for owner visits (#71)
