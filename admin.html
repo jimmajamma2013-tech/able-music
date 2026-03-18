@@ -2655,6 +2655,8 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
     <button class="sb-item" id="sbFreelancerTab" onclick="showPage('freelancer')" hidden>
       <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 1a3.5 3.5 0 100 7 3.5 3.5 0 000-7zm-5 9.5C3 8.6 5.2 7 8 7s5 1.6 5 3.5V11H3v-.5zM11 12h1v3h-1zM4 12h1v3H4z"/></svg>
       Professional
+      <!-- C23 #49 — enquiry count badge -->
+      <span id="enqCountBadge" hidden style="margin-left:auto;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--acc);color:#000;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;" aria-label="new enquiries"></span>
     </button>
 
     <div class="sb-divider"></div>
@@ -2892,6 +2894,9 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <p class="milestone-text" id="milestoneText"></p>
       <button class="milestone-dismiss" onclick="this.closest('#milestoneCard').hidden=true" aria-label="Dismiss">×</button>
     </div>
+
+    <!-- C23 #46 — gig countdown chip, shown when gig is active -->
+    <div id="gigCountdownChip" hidden style="margin-bottom:10px;padding:5px 12px;border-radius:var(--r-pill);background:rgba(var(--gig-rgb),.12);border:1px solid rgba(var(--gig-rgb),.3);font-size:11px;font-weight:700;color:var(--gig);letter-spacing:0.05em;text-transform:uppercase;" aria-live="polite">Gig active</div>
 
     <!-- Stats row — secondary, below Campaign HQ -->
     <div class="stats-row">
@@ -4921,7 +4926,13 @@ function showPage(id) {
       _expBtn.style.display = (_t === 'artist-pro' || _t === 'label') ? '' : 'none';
     }
   }
-  if (id === 'freelancer') renderFreelancerAdmin(); // C21 #37
+  if (id === 'freelancer') {
+    renderFreelancerAdmin(); // C21 #37
+    // C23 #49 — mark enquiries as seen; clear badge
+    sessionStorage.setItem('fl_enquiries_seen', String(Date.now()));
+    const _badge = document.getElementById('enqCountBadge');
+    if (_badge) _badge.hidden = true;
+  }
   if (id === 'fans') {
     _activeFanFilter = 'all';
     document.querySelectorAll('#fansFilterPills .filter-pill').forEach(p => {
@@ -7716,6 +7727,22 @@ function _loadRealStatsImpl() {
     set('fanStatConfirmed', fanConfirmed + ' confirmed for emails');
   }
 
+  // C23 #46 — gig countdown badge: 'Gig in Xh Ym' chip on stats row when gig active
+  (function() {
+    const _gigExp = parseInt(localStorage.getItem(GIG_KEY) || '0', 10);
+    const _gigChip = document.getElementById('gigCountdownChip');
+    if (!_gigChip) return;
+    if (_gigExp > Date.now()) {
+      const _rem = _gigExp - Date.now();
+      const _h = Math.floor(_rem / 3600000);
+      const _m = Math.floor((_rem % 3600000) / 60000);
+      _gigChip.textContent = _h > 0 ? `Gig in ${_h}h ${_m}m` : `Gig in ${_m}m`;
+      _gigChip.hidden = false;
+    } else {
+      _gigChip.hidden = true;
+    }
+  })();
+
   // Top fan source — calculated from real sign-up data
   if (fansTotal > 0) {
     const srcCounts = {};
@@ -8974,6 +9001,22 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
       _flBtn.textContent = _flEnabled ? 'On' : 'Off';
       _flBtn.style.background = _flEnabled ? 'var(--acc)' : 'var(--border)';
       _flBtn.style.color = _flEnabled ? '#000' : 'var(--t3)';
+    }
+    // C23 #49 — enquiry count badge on Professional tab
+    if (_flEnabled) {
+      const _enquiries = safeLS('able_fl_enquiries', []);
+      const _lastSeen = parseInt(sessionStorage.getItem('fl_enquiries_seen') || '0', 10);
+      const _newCount = _enquiries.filter(function(e) { return (e.ts || 0) > _lastSeen; }).length;
+      const _badge = document.getElementById('enqCountBadge');
+      if (_badge) {
+        if (_newCount > 0) {
+          _badge.textContent = _newCount > 9 ? '9+' : String(_newCount);
+          _badge.setAttribute('aria-label', _newCount + ' new enquir' + (_newCount === 1 ? 'y' : 'ies'));
+          _badge.hidden = false;
+        } else {
+          _badge.hidden = true;
+        }
+      }
     }
   })();
 
