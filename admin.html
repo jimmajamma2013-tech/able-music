@@ -8901,12 +8901,14 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
     const _bar = document.createElement('div');
     _bar.id = 'setup-prompt-bar';
     _bar.setAttribute('role', 'status');
-    _bar.style.cssText = 'background:var(--acc);color:#000;text-align:center;padding:10px 16px;font-size:13px;font-weight:600;position:sticky;top:0;z-index:500;';
+    _bar.style.cssText = 'background:var(--acc);color:#000;text-align:center;padding:10px 16px;font-size:13px;font-weight:600;position:sticky;top:0;z-index:51;';
     const _desc = _missing.length === 1
       ? { name: 'Add your artist name.', bio: 'Add a bio so fans know who you are.', artwork: 'Add your artwork.' }[_missing[0]]
       : 'Complete your setup: add ' + _missing.slice(0,-1).join(', ') + ' and ' + _missing[_missing.length-1] + '.';
     _bar.innerHTML = _desc + ' <a href="start.html" style="color:#000;text-decoration:underline;font-weight:700;">Set it up now \u2192</a>';
-    document.body.prepend(_bar);
+    // Prepend inside #main so it's a column flex child — fills full width without z-index fighting body's row layout
+    const _main = document.getElementById('main');
+    if (_main) _main.prepend(_bar); else document.body.prepend(_bar);
   })();
 
   const name   = v3data.name   || wizData.name   || 'Your Artist Name';
