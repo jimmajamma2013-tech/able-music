@@ -6145,7 +6145,7 @@
            SNAP CARDS (horizontal scroll)
            ====================================================== -->
       <section class="snap-cards-section" id="snap-cards-section" aria-label="Updates" hidden data-editable="snap-cards">
-        <div class="snap-cards-track" id="snap-cards-track" role="list"></div>
+        <div class="snap-cards-track" id="snap-cards-track"></div>
       </section>
 
       <!-- ======================================================
@@ -6155,7 +6155,7 @@
         <header class="section-header">
           <h2 class="section-title" id="clips-heading">Clips</h2>
         </header>
-        <div class="clips-track" id="clips-track" role="list"></div>
+        <div class="clips-track" id="clips-track"></div>
         <!-- Owner empty state (shown when artist has no clips) -->
         <div class="clips-owner-empty" id="clips-owner-empty" hidden>
           <p>Got a clip? Studio footage, a live moment, anything. Drop it here.</p>
@@ -10009,7 +10009,7 @@
       const releases = profile.releases || []
       if (!releases.length) {
         if (getIsOwner(profile)) {
-          list.innerHTML = `<div class="section-empty">
+          list.innerHTML = `<div role="listitem" class="section-empty">
                <div class="section-empty__circle" aria-hidden="true">🎵</div>
                <p class="section-empty__eyebrow">Only you can see this</p>
                <p class="section-empty__headline">Add your music.</p>
@@ -11124,7 +11124,7 @@
       const items = merch.items || []
       if (!items.length) {
         if (getIsOwner(profile)) {
-          grid.innerHTML = `<div class="section-empty">
+          grid.innerHTML = `<div role="listitem" class="section-empty">
             <div class="section-empty__circle" aria-hidden="true">🛒</div>
             <p class="section-empty__eyebrow">Only you can see this</p>
             <p class="section-empty__headline">Add your merch.</p>
@@ -11416,11 +11416,11 @@
 
       if (!sorted.length) {
         if (getIsOwner(profile)) {
-          list.innerHTML = `<div class="section-empty">
+          list.innerHTML = `<li class="section-empty">
             <p class="section-empty__eyebrow">Only you can see this</p>
             <p class="section-empty__headline">Your world. Add the people around your music.</p>
             <a class="section-empty__action pressable" href="admin.html">Manage your page \u2192</a>
-          </div>`
+          </li>`
           section.hidden = false
         }
         return
