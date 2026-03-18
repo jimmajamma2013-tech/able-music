@@ -5867,6 +5867,11 @@
           </div>
           <p class="fan-capture__error" id="fan-error" role="alert" aria-live="assertive" hidden></p>
         </form>
+        <!-- C23 #31 — close circle opt-in checkbox, shown when profile.closeCircle.enabled -->
+        <label id="close-circle-opt" hidden style="display:flex;align-items:center;gap:10px;margin-top:10px;cursor:pointer;font-size:13px;color:rgba(240,237,232,0.65);line-height:1.4;">
+          <input type="checkbox" id="close-circle-check" style="width:18px;height:18px;accent-color:var(--color-accent);flex-shrink:0;cursor:pointer;" aria-label="Join the close circle">
+          <span id="close-circle-text">Join my close circle — direct updates, first access.</span>
+        </label>
         <p class="fan-capture__trust" id="fan-trust">Your email goes to <span id="fan-artist-name">the artist</span> — not to ABLE. Unsubscribe any time.</p>
         <p class="fan-capture__gdpr" id="fan-consent">By signing up, <span id="consent-artist">the artist</span> can contact you about their music. They own your contact details — ABLE stores them on their behalf. <a href="/privacy.html" target="_blank" rel="noopener" class="fan-capture__gdpr-link">Privacy policy</a>.</p>
         <!-- C17 #10 — social proof tag: shown when artist has ≥10 fans (JS-rendered) -->
@@ -9246,6 +9251,17 @@
       const consentArtistEl2 = document.getElementById('consent-artist-2')
       if (consentArtistEl2) consentArtistEl2.textContent = artistName
 
+      // C23 #31 — close circle checkbox: show when profile.closeCircle.enabled
+      const _ccOpt = document.getElementById('close-circle-opt')
+      if (_ccOpt) {
+        const _ccEnabled = !!(profile.closeCircle && profile.closeCircle.enabled)
+        _ccOpt.hidden = !_ccEnabled
+        if (_ccEnabled && profile.closeCircle.introText) {
+          const _ccText = document.getElementById('close-circle-text')
+          if (_ccText) _ccText.textContent = profile.closeCircle.introText.slice(0, 100)
+        }
+      }
+
       // Task 5.5 — apply artist-customised sub-copy when set
       const subEl = document.getElementById('fan-capture-sub')
       if (subEl && profile.fanCaptureSub) subEl.textContent = profile.fanCaptureSub
@@ -9520,7 +9536,7 @@
               unsubscribeToken: crypto.randomUUID(),
               confirmed: false,
               double_opted_in: false,
-              level: 'listener',
+              level: (function() { const _cc = document.getElementById('close-circle-check'); return (_cc && !_cc.closest('label').hidden && _cc.checked) ? 'close-circle' : 'listener'; })(),
               isStarred: false,
               deviceType: window.innerWidth < 768 ? 'mobile' : 'desktop', // C8 #4
             })

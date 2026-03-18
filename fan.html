@@ -2432,6 +2432,17 @@
         safeSet('fan_first_visit_artist', artistSlug)
         safeSet('fan_first_visit_ts', Date.now())
       }
+      // C23 #4 — inherit accent + theme from artist profile when visiting via ?artist=slug
+      ;(function() {
+        try {
+          // Same-browser: read from able_v3_profile if slug matches
+          const _profile = safeGet('able_v3_profile', {})
+          const _profileSlug = _profile.slug || _profile.handle || ''
+          const _accent = (_profileSlug === artistSlug && _profile.accent) ? _profile.accent
+            : (following.find(function(a) { return a.id === artistSlug || a.slug === artistSlug; }) || {}).accent || null
+          if (_accent) document.documentElement.style.setProperty('--color-accent', _accent)
+        } catch(_) {}
+      })()
       // Clean URL
       window.history.replaceState({}, '', 'fan.html')
     }
