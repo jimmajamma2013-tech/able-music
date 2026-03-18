@@ -2795,7 +2795,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
             <span class="tooltip-bubble">Switch what your page is focused on right now — building up to a release, going live on drop day, pushing tickets for a show, or just your regular profile.</span>
           </span>
         </div>
-        <span class="chq-state-pill profile" id="chqStatePill" role="status" aria-live="polite">Profile</span>
+        <span class="chq-state-pill profile" id="chqStatePill" role="status" aria-live="polite">Live</span>
       </div>
       <div class="chq-body">
         <!-- Top card preview — what fans see right now -->
@@ -5718,9 +5718,9 @@ function updateChqPill(state) {
   const pill = document.getElementById('chqStatePill');
   if (!pill) return;
   const MAP = {
-    'profile':     ['profile',  'Profile'],
+    'profile':     ['profile',  'Live'],      // D2 #10 — profile = your page is live
     'pre-release': ['pre',      'Pre-release'],
-    'live':        ['live',     '● Live'],
+    'live':        ['live',     '● Out now'], // D2 #26 — distinct from profile-state "Live"
     'gig':         ['gig',      '🔴 Gig tonight'],
     'gig-post':    ['gig',      '🔴 Gig wrapping up'],
   };
