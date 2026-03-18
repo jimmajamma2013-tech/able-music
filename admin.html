@@ -4054,6 +4054,13 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <div class="page-sub">Page URL, privacy, and account.</div>
     </div>
 
+    <!-- C23 #44 — Settings search -->
+    <div style="max-width:480px;margin-bottom:14px;">
+      <input id="settingsSearch" type="search" placeholder="Filter settings…" autocomplete="off"
+             style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 14px;font-size:14px;color:var(--text);font-family:var(--font);outline:none;"
+             oninput="filterSettings(this.value)" aria-label="Filter settings">
+    </div>
+
     <div class="dash-card" style="max-width:480px;">
       <div class="dc-head"><div class="dc-title">Your ABLE URL</div></div>
       <div class="dc-body">
@@ -4117,6 +4124,21 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
             <div style="font-size:12px;color:var(--t3);margin-top:4px;line-height:1.5;">Your artist page and professional page share the same ABLE URL. Clients find you through credits on artists you've worked with.</div>
           </div>
           <button id="freelancerToggleBtn" onclick="toggleFreelancerLayer()" aria-pressed="false"
+            style="flex-shrink:0;min-width:52px;height:28px;border-radius:14px;border:none;cursor:pointer;font-size:11px;font-weight:700;background:var(--border);color:var(--t3);transition:background .2s,color .2s;font-family:var(--font);">Off</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- C23 #43 — Fan form dark mode toggle -->
+    <div class="dash-card" style="max-width:480px;margin-top:16px;" data-settings-label="fan dark mode sign-up form colour scheme">
+      <div class="dc-head"><div class="dc-title">Fan sign-up form</div></div>
+      <div class="dc-body">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
+          <div style="flex:1;">
+            <div style="font-size:13px;color:var(--text);line-height:1.5;">Dark mode sign-up form</div>
+            <div style="font-size:12px;color:var(--t3);margin-top:4px;">Apply a dark colour scheme to the fan sign-up section on your profile.</div>
+          </div>
+          <button id="fanFormDarkBtn" onclick="toggleFanFormDark()" aria-pressed="false"
             style="flex-shrink:0;min-width:52px;height:28px;border-radius:14px;border:none;cursor:pointer;font-size:11px;font-weight:700;background:var(--border);color:var(--t3);transition:background .2s,color .2s;font-family:var(--font);">Off</button>
         </div>
       </div>
@@ -6839,6 +6861,33 @@ function setFreelancerAvail(val, btn) {
   if (btn) btn.classList.add('active');
 }
 
+// C23 #43 — Fan form dark mode toggle
+function toggleFanFormDark() {
+  const data = safeLS(V3_KEY, {});
+  data.fanFormDark = !data.fanFormDark;
+  setLS(V3_KEY, data);
+  const _btn = document.getElementById('fanFormDarkBtn');
+  if (_btn) {
+    _btn.setAttribute('aria-pressed', data.fanFormDark ? 'true' : 'false');
+    _btn.textContent = data.fanFormDark ? 'On' : 'Off';
+    _btn.style.background = data.fanFormDark ? 'var(--acc)' : 'var(--border)';
+    _btn.style.color = data.fanFormDark ? '#000' : 'var(--t3)';
+  }
+  showToast(data.fanFormDark ? 'Dark sign-up form enabled.' : 'Fan sign-up form back to default.');
+}
+
+// C23 #44 — Settings search/filter
+function filterSettings(query) {
+  const q = (query || '').toLowerCase().trim();
+  const page = document.getElementById('page-settings');
+  if (!page) return;
+  page.querySelectorAll('.dash-card').forEach(function(card) {
+    if (!q) { card.hidden = false; return; }
+    const text = (card.textContent || '').toLowerCase() + ' ' + (card.dataset.settingsLabel || '').toLowerCase();
+    card.hidden = !text.includes(q);
+  });
+}
+
 function toggleFreelancerLayer() {
   const data = safeLS(V3_KEY, {});
   data.freelancerEnabled = !data.freelancerEnabled;
@@ -9021,6 +9070,15 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
       _flBtn.textContent = _flEnabled ? 'On' : 'Off';
       _flBtn.style.background = _flEnabled ? 'var(--acc)' : 'var(--border)';
       _flBtn.style.color = _flEnabled ? '#000' : 'var(--t3)';
+    }
+    // C23 #43 — init fan form dark mode button
+    const _fanDark = !!safeLS(V3_KEY, {}).fanFormDark;
+    const _fanDarkBtn = document.getElementById('fanFormDarkBtn');
+    if (_fanDarkBtn) {
+      _fanDarkBtn.setAttribute('aria-pressed', _fanDark ? 'true' : 'false');
+      _fanDarkBtn.textContent = _fanDark ? 'On' : 'Off';
+      _fanDarkBtn.style.background = _fanDark ? 'var(--acc)' : 'var(--border)';
+      _fanDarkBtn.style.color = _fanDark ? '#000' : 'var(--t3)';
     }
     // C23 #49 — enquiry count badge on Professional tab
     if (_flEnabled) {
