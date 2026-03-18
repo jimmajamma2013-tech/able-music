@@ -1441,9 +1441,12 @@
       cursor: pointer;
       text-decoration: none;
       text-align: center;
+      /* C23 #40 — prevent text overflow at 375px narrow viewports */
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       /* §7.1: no box-shadow animation — use ::after opacity for glow */
       position: relative;
-      overflow: visible;
       transition: transform var(--dur-fast) var(--ease-spring);
     }
 
