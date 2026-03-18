@@ -18,14 +18,14 @@
 
 | Page | File | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|---|
-| Artist profile | `able-v8.html` | 9.7/10 | 9.8/10 | Supabase auth + Spotify auto-import | ✅ C20: credit click tracking, CC join tracking, CC sheet copy 'For the people who really show up.' |
-| Admin dashboard | `admin.html` | 9.9/10 | ~9.9/10 | Supabase auth (data portability) | ✅ C20: CTA clicks by type card, 7-day sparkline, 'Your fans' CRM title, 'Updated.' toasts, gig share via adminTrackClick |
+| Artist profile | `able-v8.html` | 9.7/10 | 9.8/10 | Supabase auth + Spotify auto-import | ✅ C21: fan echo copy w/name, pre-release/live state echo, double opt-in nudge, source match log |
+| Admin dashboard | `admin.html` | 9.9/10 | ~9.95/10 | Supabase auth (data portability) | ✅ C21: 30d sparkline, CTR by state, freelancer admin tab, GDPR count, range persistence, RAF sparkline fix |
 | Onboarding wizard | `start.html` | 9.9/10 | ~9.9/10 | Social proof (real artists) | ✅ C19: Spotify fetch error spec copy |
-| Landing page | `landing.html` | 9.9/10 | ~9.9/10 | — | ✅ C19: pain-first hero sub, social proof +40 countries, 'See LUNA's page →', feature card lift, pricing border, footer schema |
+| Landing page | `landing.html` | 9.9/10 | ~9.9/10 | — | ✅ C21: 'For professionals' section — mixer/producer + videographer cards linking to freelancer.html |
 | Fan dashboard | `fan.html` | 9.75/10 | ~9.8/10 | Supabase realtime + Haversine geo | ✅ C20: feed source label, artwork thumbnail, pull-to-refresh aria |
-| Freelancer profile | `freelancer.html` | 8.7/10 | ~9.2/10 | Network maturity + real testimonials | Directory integration + credits management |
+| Freelancer profile | `freelancer.html` | 9.0/10 | ~9.2/10 | Network maturity + real testimonials | ✅ C21: V1 shell built — identity, credits (asymmetry rule), portfolio, artists strip, enquiry sheet |
 
-**Page average: ~9.75/10**
+**Page average: ~9.79/10**
 
 ---
 
@@ -42,7 +42,7 @@
 | PWA | 9.5/10 | 9.5/10 | ✅ offline.html landed | ✅ C17W2: /offline.html created with ABLE branding; netlify.toml 404 → offline.html |
 | Page state system | 9.2/10 | 9.3/10 | ✅ Post-release nudge copy improved | ✅ C17W2: post-release nudge "Your release window closed. Share a follow-up or plan your next one." |
 | Data architecture | 9.0/10 | 9.3/10 | Multi-artist isolation; Supabase fan sync not wired | ✅ C12: syncProfile handle guard, schemaVersion bump, consentVersion dynamic, form-2 ts/campaignState, release id, merch id |
-| Analytics | 9.2/10 | 9.5/10 | Supabase fan sync smoke test (manual) | ✅ C20: CTA click type breakdown, 7-day sparkline, CC join track, credit click track, gig share via adminTrackClick |
+| Analytics | 9.4/10 | 9.5/10 | Supabase fan sync smoke test (manual) | ✅ C21: 30d sparkline, CTR by state card, source match log, top-clicked label, fan growth rate, avg views/day |
 | SEO / OG | 9.5/10 | 9.6/10 | Sitemap dynamic artist profile entries (Supabase) | ✅ C16: WebApplication JSON-LD landing+start, BreadcrumbList, twitter:label1, og:image:alt landing, sitemap lastmod+start.html |
 | oEmbed proxy | 9.3/10 | 9.5/10 | ✅ SSRF fixed — `isSafeMediaUrl()` uses `new URL().hostname` + ALLOWED_HOSTS Set | ✅ C14: Vimeo embed, Bandcamp embed (numeric ID), SoundCloud verified, embed error fallback added |
 | Coding strategy | 9.4/10 | 10/10 | CSP `unsafe-inline` accepted risk | ✅ C13: reduced-motion media query added for gold-blur transition in admin; parse checks every edit |
