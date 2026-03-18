@@ -9058,6 +9058,8 @@
     function trackClick(label, type, url) {
       // C19 #15 — suppress all events for owner/admin preview visits
       if (isOwnerVisit()) return
+      // G8 #16 — label must be a non-empty string — silently drop malformed events
+      if (!label || typeof label !== 'string') return
       // Double-tap debounce: same label+type within 600ms = ignore (#19)
       const _key = label + '|' + type
       const _now = Date.now()
