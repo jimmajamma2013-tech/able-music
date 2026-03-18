@@ -540,7 +540,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
   cursor:pointer; font-family:var(--font); transition: background var(--dur), color var(--dur), border-color var(--dur); }
 .ci-btn-connect{ background:rgba(var(--acc-rgb),.12); color:var(--acc-t); border:1px solid rgba(var(--acc-rgb),.25); }
 .ci-btn-connect:hover { background:rgba(var(--acc-rgb),.22); }
-.ci-btn-connected { background:rgba(var(--green-rgb),.1); color:var(--green); border:1px solid rgba(var(--green-rgb),.25); cursor:default; }
+.ci-btn-connected { background:rgba(var(--green-rgb),.1); color:var(--dash-green-t); border:1px solid rgba(var(--green-rgb),.25); cursor:default; } /* C5 #4 — text on cream: --dash-green-t ≥4.5:1 */
 
 /* ── YOUR WORLD — recommendations management ── */
 .recs-count-btn {
@@ -669,7 +669,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
   display:flex; flex-direction:column; gap:8px;
   animation:fadeSlide .15s ease;
 }
-.snap-btn.published { color:var(--green); border-color:rgba(var(--green-rgb),.25); }
+.snap-btn.published { color:var(--dash-green-t); border-color:rgba(var(--green-rgb),.25); } /* C5 #3 — text on cream */
 
 /* ── ADMIN CONTENT MANAGEMENT ── */
 .admin-add-btn {
@@ -692,7 +692,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
   font-size:10px; font-weight:700; letter-spacing:0.03em;
   white-space:nowrap; flex-shrink:0;
 }
-.rel-status-current { background:rgba(var(--green-rgb),.15); color:var(--green); }
+.rel-status-current { background:rgba(var(--green-rgb),.15); color:var(--dash-green-t); } /* C5 #2 — text on cream: --dash-green-t ≥4.5:1 */
 .rel-status-upcoming { background:rgba(var(--acc-rgb),.15); color:var(--dash-link); }
 .rel-status-prev     { background:rgba(255,255,255,.06); color:var(--t3,#767676); }
 .admin-track-row {
