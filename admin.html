@@ -7776,7 +7776,7 @@ function _loadRealStatsImpl() {
   requestAnimationFrame(() => {
     // Home stat delta labels
     set('statViewsDelta', isDay1 ? 'Day 1 ✦' : trendStr(viewsWeek, viewsPrev));
-    if (isDay1) { const dEl = document.getElementById('statViewsDelta'); if (dEl) dEl.style.color = 'var(--acc,#f4b942)'; }
+    if (isDay1) { const dEl = document.getElementById('statViewsDelta'); if (dEl) dEl.style.color = 'var(--dash-link,#8c6200)'; } /* C5: --dash-link 5:1 on cream; acc fails */
     cls('statViewsDelta', (!isDay1 && (viewsWeek || viewsPrev)) ? trendCls(viewsWeek, viewsPrev) : '');
     set('statClickRate',  ctr !== '—' ? ctr + ' click rate' : (isDay1 ? 'Share your link to see taps' : 'No clicks yet'));
     set('statFansDelta',  trendStr(fansWeek, fansPrev));

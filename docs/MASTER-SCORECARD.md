@@ -19,7 +19,7 @@
 | Page | File | Current score | Spec ceiling | Biggest gap | P0 fix |
 |---|---|---|---|---|---|
 | Artist profile | `able-v8.html` | 9.89/10 | 9.90/10 | Supabase auth + Spotify auto-import | ✅ Wave 6: 10 axe contrast violations → 0 (opacity cascade fixes: footer-legal, support-note, section-empty__eyebrow, profile-completeness__label) |
-| Admin dashboard | `admin.html` | 9.97/10 | ~9.97/10 | Supabase auth (data portability) | ✅ J9: setup-prompt-bar full-width fix (body flex-row → inject into #main column); J5 netlify.toml /:slug before /* catch-all |
+| Admin dashboard | `admin.html` | 9.98/10 | ~9.98/10 | Supabase auth (data portability) | ✅ Wave 6: axe → 0; C5 cream contrast (status/published/connected → dash-green-t, stat-delta → dash-link); A1 tokens; A4 icons 16px |
 | Onboarding wizard | `start.html` | 9.9/10 | ~9.9/10 | Social proof (real artists) | ✅ C23W1: B8 type scale — all sub-11px text raised |
 | Landing page | `landing.html` | 9.9/10 | ~9.9/10 | — | ✅ C21: 'For professionals' section — mixer/producer + videographer cards linking to freelancer.html |
 | Fan dashboard | `fan.html` | 9.83/10 | ~9.85/10 | Supabase realtime | ✅ C23W2: first-10 badge, revisit streak, close circle accent via ?artist=slug |
