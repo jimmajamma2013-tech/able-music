@@ -58,8 +58,9 @@
   --dash-amber:     #f4b942;
   --dash-amber-rgb: 244,185,66;
   --dash-link:   #8c6200;  /* amber-on-light: ≥4.5:1 on --dash-card */
-  --dash-green:  #1e9650;  /* graphics: SVG strokes, fills — not for text on cream */
-  --dash-green-t: #0d7030; /* A1 #4 — text green, ≥4.5:1 on --dash-card (#f8f5f0) */
+  --dash-green:     #1e9650;  /* graphics: SVG strokes, fills — not for text on cream */
+  --dash-green-rgb: 30,150,80; /* A1 #5 — RGB triplet for rgba() usage */
+  --dash-green-t:   #0d7030; /* A1 #4 — text green, ≥4.5:1 on --dash-card (#f8f5f0) */
   --dash-red:    #c04030;
   --dash-text:   #1a1a2e;
   --dash-t2:     #555555;
@@ -2533,7 +2534,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
 /* ── TOAST ── */
 .able-toast { position: fixed; top: 0; left: 0; right: 0; z-index: var(--z-toast); padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-family: var(--font); }
 .able-toast--amber { background: rgba(var(--dash-amber-rgb),0.12); border-bottom: 1px solid rgba(var(--dash-amber-rgb),0.3); color: #f4b942; }
-.able-toast--green  { background: rgba(52,199,89,0.12); border-bottom: 1px solid rgba(52,199,89,0.3); color: #34c759; }
+.able-toast--green  { background: rgba(var(--dash-green-rgb),0.12); border-bottom: 1px solid rgba(var(--dash-green-rgb),0.3); color: var(--dash-green); }
 .able-toast--red    { background: rgba(255,69,58,0.12); border-bottom: 1px solid rgba(255,69,58,0.3); color: #ff453a; }
 .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
 .toast-message { flex: 1; }
@@ -2578,7 +2579,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
 <!-- C17 #36 — session expiry banner (shown by onAuthStateChange when token expires) -->
 <div id="session-expiry-banner" hidden role="alert" aria-live="assertive" style="
   position:fixed;top:0;left:0;right:0;z-index:2000;
-  background:#1a1200;border-bottom:1px solid rgba(244,185,66,.25);
+  background:#1a1200;border-bottom:1px solid rgba(var(--dash-amber-rgb),.25);
   display:flex;align-items:center;justify-content:center;gap:12px;
   padding:10px 16px;font-size:13px;color:#e8e9f0;font-family:var(--font);">
   <span>Your session expired. Sign in again to save changes.</span>
@@ -3912,7 +3913,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <div class="page-sub">Direct to inbox. No algorithm.</div>
     </div>
     <!-- C15 #29 — Artist (not Pro) preview: coming soon teaser -->
-    <div id="broadcastArtistPreview" style="display:none;max-width:860px;background:rgba(244,185,66,0.06);border:1px solid rgba(244,185,66,0.18);border-radius:var(--r-lg);padding:20px 18px;margin-bottom:16px;">
+    <div id="broadcastArtistPreview" style="display:none;max-width:860px;background:rgba(var(--dash-amber-rgb),0.06);border:1px solid rgba(var(--dash-amber-rgb),0.18);border-radius:var(--r-lg);padding:20px 18px;margin-bottom:16px;">
       <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;">Email broadcasts — coming to Artist plan</div>
       <div style="font-size:12px;color:var(--t2);line-height:1.55;">Write once, reach every fan directly. No algorithm, no boost required. We're building this now — you'll be first to know when it's live.</div>
     </div>
@@ -5530,7 +5531,7 @@ document.addEventListener('DOMContentLoaded', function() {
     _offlineBanner.id = 'able-offline-banner';
     _offlineBanner.setAttribute('role', 'status');
     _offlineBanner.setAttribute('aria-live', 'polite');
-    _offlineBanner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(244,185,66,0.12);border-bottom:1px solid rgba(244,185,66,0.3);color:var(--acc);font-size:12px;font-weight:600;text-align:center;padding:8px 16px;font-family:var(--font-d);letter-spacing:0.04em;';
+    _offlineBanner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(var(--dash-amber-rgb),0.12);border-bottom:1px solid rgba(var(--dash-amber-rgb),0.3);color:var(--acc);font-size:12px;font-weight:600;text-align:center;padding:8px 16px;font-family:var(--font-d);letter-spacing:0.04em;';
     _offlineBanner.textContent = "You're offline. Changes save locally and sync when you're back."; // C13 #57
     document.body.prepend(_offlineBanner);
   }
