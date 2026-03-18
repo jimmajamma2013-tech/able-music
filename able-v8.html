@@ -7391,7 +7391,7 @@
 
       let amount    = cc.monthlyAmount || 5
       let currency  = cc.currency || '£'
-      let intro     = cc.introText || ('Get closer to ' + escHtml(profile.name || 'the artist') + '\u2019s music. Early access, close circle sessions, and more.')
+      let intro     = cc.introText || (profile.name ? 'For the people who really show up.' : 'For the people who really show up.') // C20 #39
 
       if (nameEl)  nameEl.textContent  = profile.name || ''
       if (priceEl) priceEl.textContent = currency + amount + '/month'

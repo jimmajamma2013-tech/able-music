@@ -3710,6 +3710,25 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       </div>
     </div>
 
+    <!-- C20 #3 — CTA clicks by type -->
+    <div class="dash-card" style="margin-bottom:24px;" id="clickTypeCard">
+      <div class="dc-head"><div class="dc-title">What people tapped</div></div>
+      <div class="dc-body">
+        <div id="clickTypeList" style="display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:12px;color:var(--t3);">Tap data will appear here once fans visit your page.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C20 #5 — 7-day sparkline of page views -->
+    <div class="dash-card" style="margin-bottom:24px;" id="sparklineCard">
+      <div class="dc-head"><div class="dc-title">Views this week</div></div>
+      <div class="dc-body">
+        <canvas id="viewsSparkline" height="48" style="width:100%;display:block;" aria-label="Daily page views over the last 7 days"></canvas>
+        <div id="viewsSparklineEmpty" style="font-size:12px;color:var(--t3);display:none;">No views recorded yet.</div>
+      </div>
+    </div>
+
     <!-- Pro: source heatmap locked -->
     <div class="gold-lock" data-tier="artist-pro" data-feature="advanced-analytics">
       <div class="dash-card gold-blur" tabindex="-1" aria-hidden="true">
@@ -7347,6 +7366,66 @@ function _loadRealStatsImpl() {
           <div style="font-size:11px;color:var(--t2);width:24px;text-align:right;">${count}</div>
         </div>`
       }).join('')
+    }
+  }
+
+  // C20 #3 — CTA clicks by type breakdown
+  const _clickTypeEl = document.getElementById('clickTypeList');
+  if (_clickTypeEl && clicks.length > 0) {
+    const TYPE_LABEL = { primary_cta:'Primary CTA', secondary_cta:'Secondary CTA', platform:'Platform links', merch:'Merch', ticket:'Tickets', fan:'Fan sign-ups', share:'Shares', admin:'Admin actions' };
+    const typeCounts = {};
+    clicks.forEach(c => { const t = c.type || 'other'; typeCounts[t] = (typeCounts[t]||0)+1; });
+    const typeTop = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    const typeTotal = typeTop.reduce((s,[,n])=>s+n,0);
+    _clickTypeEl.innerHTML = typeTop.map(([type, count]) => {
+      const pct = typeTotal > 0 ? Math.round((count/typeTotal)*100) : 0;
+      return `<div style="display:flex;align-items:center;gap:10px;">
+        <div style="font-size:12px;color:var(--t2);width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(TYPE_LABEL[type]||type)}</div>
+        <div style="flex:1;height:6px;border-radius:var(--r-pill);background:var(--border);overflow:hidden;"><div style="height:100%;width:${pct}%;background:var(--acc);border-radius:var(--r-pill);"></div></div>
+        <div style="font-size:11px;color:var(--t2);width:24px;text-align:right;">${count}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // C20 #5 — 7-day sparkline of daily page views
+  const _sparkCanvas = document.getElementById('viewsSparkline');
+  const _sparkEmpty  = document.getElementById('viewsSparklineEmpty');
+  if (_sparkCanvas) {
+    const _days7 = Array.from({length:7},(_,i) => {
+      const d = new Date(); d.setDate(d.getDate() - (6-i));
+      return d.toISOString().slice(0,10);
+    });
+    const _dayCounts = {};
+    _days7.forEach(d => { _dayCounts[d]=0; });
+    views.forEach(v => {
+      const d = v.ts ? new Date(v.ts).toISOString().slice(0,10) : null;
+      if (d && _dayCounts[d] !== undefined) _dayCounts[d]++;
+    });
+    const _vals = _days7.map(d => _dayCounts[d]);
+    const _max  = Math.max(..._vals, 1);
+    if (_vals.every(v=>v===0)) {
+      _sparkCanvas.style.display='none';
+      if (_sparkEmpty) _sparkEmpty.style.display='';
+    } else {
+      if (_sparkEmpty) _sparkEmpty.style.display='none';
+      const ctx = _sparkCanvas.getContext('2d');
+      if (ctx) {
+        const W = _sparkCanvas.offsetWidth || _sparkCanvas.parentElement?.offsetWidth || 300;
+        _sparkCanvas.width = W;
+        _sparkCanvas.height = 48;
+        const pad=2, barW=Math.floor((W - pad*(7+1))/7);
+        ctx.clearRect(0,0,W,48);
+        const _acc = getComputedStyle(document.documentElement).getPropertyValue('--acc').trim() || '#f4b942';
+        _vals.forEach((v,i) => {
+          const h = Math.max(4, Math.round((v/_max)*40));
+          const x = pad + i*(barW+pad);
+          const y = 48-h;
+          ctx.fillStyle = i===6 ? _acc : (_acc+'99');
+          ctx.beginPath();
+          ctx.roundRect(x, y, barW, h, 2);
+          ctx.fill();
+        });
+      }
     }
   }
 
