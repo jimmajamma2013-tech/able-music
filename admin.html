@@ -5727,8 +5727,8 @@ function updateChqPill(state) {
     'profile':     ['profile',  'Live'],      // D2 #10 — profile = your page is live
     'pre-release': ['pre',      'Pre-release'],
     'live':        ['live',     '● Out now'], // D2 #26 — distinct from profile-state "Live"
-    'gig':         ['gig',      '🔴 Gig tonight'],
-    'gig-post':    ['gig',      '🔴 Gig wrapping up'],
+    'gig':         ['gig',      '● Gig tonight'],    /* G4 #28 — CSS dot, no emoji */
+    'gig-post':    ['gig',      '● Gig wrapping up'],
   };
   const [cls, lbl] = MAP[state] || MAP['profile'];
   pill.className = 'chq-state-pill ' + cls;
@@ -8918,7 +8918,9 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
   const genre  = v3data.genres?.[0] || wizData.genre || '';
 
   // Wire --artist-accent token — builds visual bridge from admin → profile
-  if (accent) {
+  // H1 #59 — validate hex before CSS insertion: prevents injection via crafted profile data
+  const _HEX_RX = /^#[0-9a-fA-F]{6}$/;
+  if (accent && _HEX_RX.test(accent)) {
     document.documentElement.style.setProperty('--artist-accent', accent);
     // Convert hex to RGB for rgba() usage
     const hexToRgb = h => {
@@ -9026,7 +9028,7 @@ window.addEventListener('DOMContentLoaded', () => { try { // C3 #37 — crash bo
     }
   }
 
-  if (accent) {
+  if (accent && _HEX_RX.test(accent)) { /* H1 #59 — re-use validated hex */
     document.documentElement.style.setProperty('--acc', accent);
     try {
       const rgb = accent.match(/\w\w/g).slice(0,3).map(h=>parseInt(h,16)).join(',');

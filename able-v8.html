@@ -6501,25 +6501,27 @@
 
     // === §3.4 DERIVED TOKEN APPLICATION ==========================
 
+    const _HEX_RX = /^#[0-9a-fA-F]{6}$/ // H1 #59 — validate before CSS insertion
     function applyDerivedTokens(root, accentHex, rMult) {
-      const [r, g, b] = hexToRgb(accentHex)
-      root.style.setProperty('--color-accent',      accentHex)
+      const safeHex = _HEX_RX.test(accentHex) ? accentHex : '#e05242' // fallback: rock red
+      const [r, g, b] = hexToRgb(safeHex)
+      root.style.setProperty('--color-accent',      safeHex)
       root.style.setProperty('--color-accent-rgb',  `${r},${g},${b}`)
       root.style.setProperty('--color-accent-glow',   `rgba(${r},${g},${b},0.35)`)
       root.style.setProperty('--color-accent-soft',   `rgba(${r},${g},${b},0.12)`)
       root.style.setProperty('--color-accent-subtle', `rgba(${r},${g},${b},0.12)`)
       // C6: derive on-accent text colour from WCAG luminance — ensures AA for any accent (C6)
-      root.style.setProperty('--color-on-accent', getCtaTextColour(accentHex))
+      root.style.setProperty('--color-on-accent', getCtaTextColour(safeHex))
       root.style.setProperty('--r-sm',  `${Math.round(4  * rMult)}px`)
       root.style.setProperty('--r-md',  `${Math.round(8  * rMult)}px`)
       root.style.setProperty('--r-lg',  `${Math.round(16 * rMult)}px`)
       root.style.setProperty('--r-xl',  `${Math.round(24 * rMult)}px`)
       // Cascade accent to :root so html/body-level uses (overscroll tint, section dividers) work
       document.documentElement.style.setProperty('--color-accent-rgb', `${r},${g},${b}`)
-      document.documentElement.style.setProperty('--color-accent', accentHex)
+      document.documentElement.style.setProperty('--color-accent', safeHex)
       // C11 #27 — update theme-color meta to match artist accent (browser chrome tint on mobile)
       const _tcMeta = document.querySelector('meta[name="theme-color"]')
-      if (_tcMeta) _tcMeta.setAttribute('content', accentHex)
+      if (_tcMeta) _tcMeta.setAttribute('content', safeHex)
     }
 
     // === §3.1 VIBE CONFIGURATION ==================================
