@@ -1,0 +1,2465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#0d0e1a">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>ABLE</title>
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+
+  <!-- Async font load — non-blocking -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap"></noscript>
+
+  <!-- Meta -->
+  <meta name="description" id="meta-description" content="Music, shows, and more — direct from the artist.">
+  <meta name="robots" content="index,follow">
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="profile">
+  <meta property="og:site_name"   content="ABLE">
+  <meta property="og:title"       id="og-title"       content="Artist on ABLE">
+  <meta property="og:description" id="og-description" content="Music, events, and more — direct from the artist.">
+  <meta property="og:url"         id="og-url"         content="">
+  <meta property="og:image"       id="og-image"       content="https://ablemusic.co/og-default.jpg">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale"       content="en_GB">
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       id="tw-title"       content="Artist on ABLE">
+  <meta name="twitter:description" id="tw-description" content="Music, events, and more — direct from the artist.">
+  <meta name="twitter:image"       id="tw-image"       content="https://ablemusic.co/og-default.jpg">
+  <meta name="twitter:site"        content="@ablefm">
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ABLE">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <!-- Canonical -->
+  <link rel="canonical" id="canonical-url" href="https://ablemusic.co/">
+
+  <!-- Structured data -->
+  <script type="application/ld+json" id="structured-data">{}</script>
+
+  <!-- Theme pre-init: read localStorage before first paint to prevent FOWT -->
+  <script>
+    (function() {
+      try {
+        const p = JSON.parse(localStorage.getItem('able_v3_profile') || '{}');
+        let t = p.theme;
+        if (!t && window.matchMedia('(prefers-contrast: more)').matches) t = 'contrast';
+        if (!t && window.matchMedia('(prefers-color-scheme: light)').matches) t = 'light';
+        if (t === 'light' || t === 'glass' || t === 'contrast') {
+          document.documentElement.dataset.themeInit = t;
+        }
+        const a = p.accentColor || p.accent;
+        if (a && /^#[0-9a-fA-F]{6}$/.test(a)) {
+          document.documentElement.style.setProperty('--color-accent', a);
+        }
+      } catch (_) {}
+    })();
+  </script>
+
+  <style>
+    /* Theme pre-init background */
+    html[data-theme-init="light"]    { background: #f0ede8; }
+    html[data-theme-init="contrast"] { background: #000000; }
+    html[data-theme-init="glass"]    { background: #0d0e1a; }
+
+    /* ============================================================
+       ABLE v9 — Design System Tokens
+       ============================================================ */
+
+    /* === STATIC TOKENS ========================================== */
+    :root {
+      --font-body:    'DM Sans', system-ui, sans-serif;
+      --font-d:       'Barlow Condensed', system-ui, sans-serif;
+      --font-d-weight:  700;
+      --font-d-style:   normal;
+      --font-d-transform: none;
+
+      /* Spacing */
+      --sp-1: 4px;  --sp-2: 8px;   --sp-3: 12px; --sp-4: 16px;
+      --sp-5: 20px; --sp-6: 24px;  --sp-8: 32px; --sp-10: 40px;
+      --sp-12: 48px; --sp-16: 64px;
+
+      --tap-min: 44px;
+
+      /* Typography scale */
+      --text-xs:   11px; --text-sm:   13px; --text-base: 15px;
+      --text-lg:   17px; --text-xl:   20px; --text-2xl:  24px;
+      --text-3xl:  32px; --text-4xl:  40px;
+      --text-hero: clamp(48px, 14vw, 80px);
+
+      /* Line heights */
+      --lh-tight:   0.88;
+      --lh-display: 1.0;
+      --lh-body:    1.5;
+      --lh-label:   1.2;
+
+      /* Radii */
+      --r-pill: 999px;
+      --r-sm: 4px; --r-md: 8px; --r-lg: 16px; --r-xl: 24px;
+
+      /* Z-Index Scale */
+      --z-base:     1;
+      --z-card:     10;
+      --z-sticky:   50;
+      --z-dropdown: 100;
+      --z-sheet:    200;
+      --z-modal:    300;
+      --z-overlay:  9000;
+      --z-tooltip:  9999;
+      --z-toast:    9999;
+
+      /* Letter spacing */
+      --ls-d:     0em;
+      --ls-label: 0.12em;
+      --ls-wide:  0.1em;
+
+      /* Easing */
+      --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-decel:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --ease-accel:    cubic-bezier(0.55, 0, 1, 0.45);
+      --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1.0);
+
+      /* Durations */
+      --dur-instant: 80ms;
+      --dur-fast:    150ms;
+      --dur-mid:     250ms;
+      --dur-base:    300ms;
+      --dur-slow:    400ms;
+      --dur-xslow:   600ms;
+
+      /* Campaign state colours */
+      --color-state-pre:  #fbbf24;
+      --color-state-live: #ef4444;
+      --color-state-gig:  #8b1e1e;
+
+      /* Semantic feedback */
+      --color-success: #34c759;
+      --color-warning: #f4b942;
+
+      /* Accent defaults */
+      --color-accent:        #e05242;
+      --color-accent-rgb:    224,82,66;
+      --color-accent-glow:   rgba(224,82,66,0.30);
+      --color-accent-soft:   rgba(224,82,66,0.10);
+      --color-accent-subtle: rgba(224,82,66,0.12);
+      --color-on-accent:     #ffffff;
+    }
+
+    /* === THEME TOKENS =========================================== */
+    [data-theme="dark"] {
+      --color-bg:          #0a0b10;
+      --color-surface:     #0f1018;
+      --color-card:        #16161e;
+      --color-card-raised: #1e1e2a;
+      --color-border:      rgba(255,255,255,0.065);
+      --color-text:        #f0ede8;
+      --color-text-2:      rgba(240,237,232,0.60);
+      --color-text-3:      rgba(218,213,207,0.45);
+      --color-overlay:     rgba(10,11,16,0.82);
+      --shadow-card:       0 4px 28px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.04);
+      --shadow-lift:       0 12px 40px rgba(0,0,0,0.6);
+      --shadow-sheet:      0 -4px 32px rgba(0,0,0,0.5);
+      --shadow-glow:       0 8px 40px var(--color-accent-glow);
+      --color-panel:       #1a1a24;
+      --color-panel-raised:#22222e;
+      --color-panel-text:  #f0ede8;
+    }
+
+    [data-theme="light"] {
+      --color-bg:          #f5f2ec;
+      --color-surface:     #ede9e2;
+      --color-card:        #ffffff;
+      --color-card-raised: #f8f5f2;
+      --color-border:      rgba(0,0,0,0.08);
+      --color-text:        #0d0e1a;
+      --color-text-2:      rgba(13,14,26,0.60);
+      --color-text-3:      rgba(13,14,26,0.38);
+      --color-overlay:     rgba(245,242,236,0.90);
+      --shadow-card:       0 2px 16px rgba(0,0,0,0.07);
+      --shadow-lift:       0 8px 24px rgba(0,0,0,0.12);
+      --shadow-sheet:      0 -2px 16px rgba(0,0,0,0.08);
+      --shadow-glow:       0 6px 28px var(--color-accent-glow);
+      --color-panel:        #ffffff;
+      --color-panel-raised: #f8f5f2;
+      --color-panel-text:   #0d0e1a;
+      --color-on-accent:    #0d0e1a;
+    }
+
+    [data-theme="glass"] {
+      --color-bg:          transparent;
+      --color-surface:     rgba(255,255,255,0.06);
+      --color-card:        rgba(255,255,255,0.08);
+      --color-card-raised: rgba(255,255,255,0.12);
+      --color-border:      rgba(255,255,255,0.14);
+      --color-text:        #f0ede8;
+      --color-text-2:      rgba(240,237,232,0.75);
+      --color-text-3:      rgba(240,237,232,0.55);
+      --backdrop:          blur(28px) saturate(180%);
+      --shadow-card:       0 2px 12px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.10);
+      --shadow-lift:       0 12px 40px rgba(0,0,0,0.5);
+      --shadow-sheet:      0 -4px 24px rgba(0,0,0,0.4);
+      --color-panel:       #1a1a24;
+      --color-panel-raised:#22222e;
+      --color-panel-text:  #f0ede8;
+    }
+
+    @supports not (backdrop-filter: blur(1px)) {
+      [data-theme="glass"] {
+        --color-bg:      #0d0e1a;
+        --color-card:    rgba(22,22,34,0.94);
+        --color-surface: rgba(18,18,30,0.95);
+        --color-border:  rgba(255,255,255,0.12);
+      }
+    }
+
+    [data-theme="contrast"] {
+      --color-bg:          #000000;
+      --color-surface:     #0a0a0a;
+      --color-card:        #111111;
+      --color-card-raised: #1a1a1a;
+      --color-border:      rgba(255,255,255,0.2);
+      --color-text:        #ffffff;
+      --color-text-2:      rgba(255,255,255,0.85);
+      --color-text-3:      rgba(255,255,255,0.65);
+      --shadow-card:       0 2px 16px rgba(0,0,0,0.8);
+      --shadow-lift:       0 8px 24px rgba(0,0,0,0.9);
+      --shadow-sheet:      0 -2px 16px rgba(0,0,0,0.8);
+      --color-panel:       #111111;
+      --color-panel-raised:#1a1a1a;
+      --color-panel-text:  #ffffff;
+      --dur-instant: 0ms;
+      --dur-fast:    0ms;
+      --dur-mid:     80ms;
+      --dur-slow:    80ms;
+      --dur-xslow:   80ms;
+    }
+
+    /* === VIBE CLASSES =========================================== */
+    [data-vibe="electronic"] {
+      --font-d: 'Barlow Condensed', system-ui, sans-serif;
+      --font-d-weight: 700;
+      --font-d-style: normal;
+      --font-d-transform: uppercase;
+      --ls-d: 0.06em;
+      --ls-label: 0.22em;
+      --dur-mid: 180ms;
+      --ease-spring: cubic-bezier(0.34, 1.28, 0.64, 1);
+    }
+
+    [data-vibe="hiphop"] {
+      --font-d: 'Barlow Condensed', system-ui, sans-serif;
+      --font-d-weight: 700;
+      --font-d-style: normal;
+      --font-d-transform: uppercase;
+      --ls-d: 0.04em;
+      --ls-label: 0.28em;
+      --dur-mid: 200ms;
+      --ease-spring: cubic-bezier(0.34, 1.40, 0.64, 1);
+    }
+
+    [data-vibe="indie"] {
+      --font-d: 'Barlow Condensed', system-ui, sans-serif;
+      --font-d-weight: 700;
+      --font-d-style: normal;
+      --font-d-transform: none;
+      --ls-d: -0.01em;
+      --ls-label: 0.08em;
+      --dur-mid: 260ms;
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    [data-vibe="pop"] {
+      --font-d: 'Barlow Condensed', system-ui, sans-serif;
+      --font-d-weight: 700;
+      --font-d-style: normal;
+      --font-d-transform: none;
+      --ls-d: 0.03em;
+      --ls-label: 0.16em;
+      --dur-mid: 220ms;
+      --ease-spring: cubic-bezier(0.34, 1.72, 0.64, 1);
+    }
+
+    [data-vibe="rock"] {
+      --font-d: 'Barlow Condensed', system-ui, sans-serif;
+      --font-d-weight: 700;
+      --font-d-style: normal;
+      --font-d-transform: uppercase;
+      --ls-d: 0.08em;
+      --ls-label: 0.2em;
+      --dur-mid: 190ms;
+      --ease-spring: cubic-bezier(0.34, 1.20, 0.64, 1);
+    }
+
+    [data-vibe="acoustic"] {
+      --font-d: 'Barlow Condensed', system-ui, sans-serif;
+      --font-d-weight: 700;
+      --font-d-style: normal;
+      --font-d-transform: none;
+      --ls-d: 0.01em;
+      --ls-label: 0.10em;
+      --dur-mid: 350ms;
+      --ease-spring: cubic-bezier(0.34, 1.10, 0.64, 1);
+    }
+
+    [data-vibe="jazz"] {
+      --font-d: 'Barlow Condensed', system-ui, sans-serif;
+      --font-d-weight: 700;
+      --font-d-style: normal;
+      --font-d-transform: none;
+      --ls-d: 0.02em;
+      --ls-label: 0.12em;
+      --dur-mid: 300ms;
+      --ease-spring: cubic-bezier(0.34, 1.30, 0.64, 1);
+    }
+
+    /* === RESET & BASE =========================================== */
+    [hidden] { display: none !important; }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    input, textarea, select { font-size: max(16px, 1rem); }
+
+    html {
+      height: 100%;
+      overscroll-behavior: none;
+      background-color: color-mix(in srgb, #0d0e1a 92%, var(--color-accent, #e05242) 8%);
+    }
+
+    body {
+      height: 100%;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: var(--lh-body);
+      color: var(--color-text);
+      background-color: #080808;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    @media (min-width: 500px) {
+      body {
+        background-color: #050505;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        min-height: 100dvh;
+      }
+    }
+
+    /* === APP SHELL ============================================== */
+    #app-shell {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      min-height: 100dvh;
+      margin: 0 auto;
+      background-color: var(--color-bg, #0a0b10);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    @media (min-width: 500px) {
+      #app-shell {
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 32px 120px rgba(0,0,0,0.9);
+      }
+    }
+
+    [data-theme="glass"]#app-shell {
+      background-color: transparent;
+    }
+
+    /* Glass background layer */
+    #profile-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-size: cover;
+      background-position: center top;
+      filter: blur(40px) brightness(0.45);
+      transform: scale(1.1);
+    }
+
+    #profile-bg.active { display: block; }
+    body:has([data-theme="glass"]) #profile-bg { display: block; }
+
+    /* === SCROLL CONTAINER ======================================= */
+    #scroll-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--sp-4));
+    }
+
+    #scroll-container::-webkit-scrollbar { display: none; }
+    #scroll-container { scrollbar-width: none; }
+
+    /* === EDIT BAR =============================================== */
+    #edit-bar {
+      position: sticky;
+      top: 0;
+      z-index: var(--z-sticky);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sp-3) var(--sp-4);
+      background-color: var(--color-panel, #1a1a24);
+      border-bottom: 1px solid var(--color-border, rgba(255,255,255,0.065));
+      gap: var(--sp-3);
+    }
+
+    #edit-bar[hidden] { display: none !important; }
+
+    .edit-bar__label {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-accent);
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+
+    .edit-bar__label::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--color-accent);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    .edit-bar__preview-btn {
+      padding: var(--sp-2) var(--sp-3);
+      border-radius: var(--r-pill);
+      border: 1px solid var(--color-border, rgba(255,255,255,0.12));
+      background: none;
+      color: var(--color-text-2);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--dur-fast) var(--ease-standard);
+      min-height: var(--tap-min);
+      min-width: 80px;
+    }
+
+    .edit-bar__preview-btn:active {
+      transform: scale(0.96);
+      background-color: var(--color-surface);
+    }
+
+    /* === SECTION EDIT OVERLAY =================================== */
+    .section-edit-wrap {
+      position: relative;
+    }
+
+    .section-edit-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: var(--z-card);
+      cursor: pointer;
+      border-radius: var(--r-md);
+      transition: background-color var(--dur-fast) var(--ease-standard);
+    }
+
+    body.edit-mode .section-edit-overlay {
+      display: block;
+    }
+
+    body.edit-mode .section-edit-overlay:hover,
+    body.edit-mode .section-edit-overlay:focus-visible {
+      background-color: rgba(var(--color-accent-rgb), 0.08);
+      outline: 1.5px dashed var(--color-accent);
+      outline-offset: -2px;
+    }
+
+    .section-edit-overlay__icon {
+      position: absolute;
+      top: var(--sp-3);
+      right: var(--sp-3);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: var(--color-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity var(--dur-fast) var(--ease-standard);
+      pointer-events: none;
+    }
+
+    body.edit-mode .section-edit-overlay:hover .section-edit-overlay__icon,
+    body.edit-mode .section-edit-overlay:focus-visible .section-edit-overlay__icon {
+      opacity: 1;
+    }
+
+    /* ============================================================
+       SECTION 1: TOP CARD
+       ============================================================ */
+    #top-card {
+      position: relative;
+      width: 100%;
+      min-height: 75vh;
+      min-height: 75svh;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    #top-card__artwork-slot {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .top-card__artwork {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .top-card__placeholder {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--color-surface, #0f1018) 0%, var(--color-card, #16161e) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: var(--sp-4);
+      overflow: hidden;
+    }
+
+    .top-card__placeholder::after {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(var(--color-accent-rgb), 0.06) 50%,
+        transparent 100%
+      );
+      animation: shimmer 2.4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shimmer {
+      0%   { transform: translateX(-100%) rotate(-15deg); }
+      100% { transform: translateX(200%) rotate(-15deg); }
+    }
+
+    .top-card__placeholder-icon {
+      width: 56px;
+      height: 56px;
+      opacity: 0.25;
+      color: var(--color-text, #f0ede8);
+    }
+
+    .top-card__placeholder-add-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: var(--sp-3) var(--sp-5);
+      border-radius: var(--r-pill);
+      border: 1.5px dashed var(--color-border, rgba(255,255,255,0.12));
+      background: none;
+      color: var(--color-text-2);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      cursor: pointer;
+      min-height: var(--tap-min);
+      transition: all var(--dur-fast) var(--ease-standard);
+      position: relative;
+      z-index: 1;
+    }
+
+    .top-card__placeholder-add-btn:active {
+      transform: scale(0.96);
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    /* Gradient overlay over artwork for text legibility */
+    .top-card__gradient {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        to top,
+        rgba(10,11,16,0.95) 0%,
+        rgba(10,11,16,0.55) 40%,
+        rgba(10,11,16,0.08) 70%,
+        transparent 100%
+      );
+      pointer-events: none;
+    }
+
+    /* Source pill */
+    .top-card__source-pill {
+      position: absolute;
+      z-index: 2;
+      top: var(--sp-5);
+      left: 50%;
+      transform: translateX(-50%) translateY(-4px);
+      padding: 6px var(--sp-3);
+      border-radius: var(--r-pill);
+      background-color: var(--color-accent);
+      color: var(--color-on-accent, #ffffff);
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      animation: source-pill-in var(--dur-slow) var(--ease-decel) 0.4s forwards;
+    }
+
+    @keyframes source-pill-in {
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* Artist name */
+    .top-card__name {
+      position: absolute;
+      z-index: 2;
+      bottom: calc(var(--sp-8) + 104px); /* above CTAs */
+      left: var(--sp-5);
+      right: var(--sp-5);
+      font-family: var(--font-d);
+      font-weight: var(--font-d-weight);
+      font-style: var(--font-d-style);
+      font-size: var(--text-hero);
+      line-height: var(--lh-tight);
+      letter-spacing: var(--ls-d);
+      text-transform: var(--font-d-transform);
+      color: #f0ede8;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+    }
+
+    /* CTA zone */
+    .top-card__ctas {
+      position: absolute;
+      z-index: 2;
+      bottom: var(--sp-8);
+      left: var(--sp-5);
+      right: var(--sp-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .top-card__cta-primary,
+    .top-card__cta-secondary {
+      display: block;
+      width: 100%;
+      min-height: var(--tap-min);
+      padding: var(--sp-3) var(--sp-5);
+      border-radius: var(--r-pill);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform var(--dur-fast) var(--ease-spring),
+                  opacity var(--dur-fast) var(--ease-standard);
+      border: none;
+      letter-spacing: 0.02em;
+    }
+
+    .top-card__cta-primary {
+      background-color: var(--color-accent);
+      color: var(--color-on-accent, #ffffff);
+    }
+
+    .top-card__cta-secondary {
+      background: rgba(240,237,232,0.12);
+      border: 1.5px solid rgba(240,237,232,0.35);
+      color: #f0ede8;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .top-card__cta-primary:active,
+    .top-card__cta-secondary:active {
+      transform: scale(0.96);
+      opacity: 0.85;
+    }
+
+    /* Safe area top spacing */
+    .top-card__safe-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: env(safe-area-inset-top, 0px);
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       SECTION 2: PLATFORM LINKS
+       ============================================================ */
+    #links-section {
+      padding: var(--sp-6) var(--sp-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .links-section__inner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-3);
+    }
+
+    .platform-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: var(--sp-3) var(--sp-4);
+      min-height: var(--tap-min);
+      border-radius: var(--r-pill);
+      background-color: var(--color-card, #16161e);
+      border: 1px solid var(--color-border, rgba(255,255,255,0.065));
+      color: var(--color-text-2);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform var(--dur-fast) var(--ease-spring),
+                  color var(--dur-fast) var(--ease-standard),
+                  border-color var(--dur-fast) var(--ease-standard),
+                  background-color var(--dur-fast) var(--ease-standard);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .platform-pill:hover {
+      color: var(--color-text);
+      border-color: var(--color-accent);
+      background-color: var(--color-accent-soft);
+    }
+
+    .platform-pill:active {
+      transform: scale(0.96);
+    }
+
+    .platform-pill--ghost {
+      border-style: dashed;
+      opacity: 0.55;
+    }
+
+    body:not(.edit-mode) .platform-pill--ghost {
+      display: none;
+    }
+
+    .platform-pill__icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .platform-pill__handle {
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ============================================================
+       SECTION 3: FAN CAPTURE
+       ============================================================ */
+    #fan-capture {
+      padding: var(--sp-10) var(--sp-5);
+      background-color: var(--color-surface, #0f1018);
+      border-top: 1px solid var(--color-border, rgba(255,255,255,0.065));
+      border-bottom: 1px solid var(--color-border, rgba(255,255,255,0.065));
+    }
+
+    .fan-capture__heading {
+      font-family: var(--font-d);
+      font-weight: var(--font-d-weight);
+      font-size: clamp(36px, 10vw, 52px);
+      line-height: var(--lh-display);
+      letter-spacing: var(--ls-d);
+      color: var(--color-text);
+      margin-bottom: var(--sp-3);
+    }
+
+    .fan-capture__sub {
+      font-size: var(--text-base);
+      color: var(--color-text-2);
+      margin-bottom: var(--sp-8);
+      line-height: var(--lh-body);
+    }
+
+    .fan-capture__form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-4);
+    }
+
+    .fan-capture__input-wrap {
+      position: relative;
+    }
+
+    .fan-capture__input {
+      width: 100%;
+      min-height: var(--tap-min);
+      padding: var(--sp-3) 0;
+      background: none;
+      border: none;
+      border-bottom: 1.5px solid var(--color-border, rgba(255,255,255,0.12));
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: max(16px, var(--text-base));
+      outline: none;
+      transition: border-color var(--dur-fast) var(--ease-standard);
+    }
+
+    .fan-capture__input::placeholder {
+      color: var(--color-text-3);
+    }
+
+    .fan-capture__input:focus {
+      border-bottom-color: var(--color-accent);
+    }
+
+    .fan-capture__submit {
+      width: 100%;
+      min-height: var(--tap-min);
+      padding: var(--sp-3) var(--sp-5);
+      border-radius: var(--r-pill);
+      border: none;
+      background-color: var(--color-accent);
+      color: var(--color-on-accent, #ffffff);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform var(--dur-fast) var(--ease-spring),
+                  opacity var(--dur-fast) var(--ease-standard);
+      letter-spacing: 0.02em;
+    }
+
+    .fan-capture__submit:active {
+      transform: scale(0.97);
+      opacity: 0.85;
+    }
+
+    .fan-capture__submit:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .fan-capture__consent {
+      font-size: var(--text-xs);
+      color: var(--color-text-3);
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .fan-capture__count {
+      margin-top: var(--sp-6);
+      font-size: var(--text-sm);
+      color: var(--color-text-3);
+      text-align: center;
+    }
+
+    .fan-capture__count-num {
+      color: var(--color-text-2);
+      font-weight: 600;
+      display: inline-block;
+      transition: transform var(--dur-mid) var(--ease-spring),
+                  opacity var(--dur-mid) var(--ease-standard);
+    }
+
+    .fan-capture__count-num.bump {
+      animation: count-bump var(--dur-slow) var(--ease-spring);
+    }
+
+    @keyframes count-bump {
+      0%   { transform: translateY(8px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Thank you state */
+    .fan-capture__thankyou {
+      text-align: center;
+      padding: var(--sp-8) 0;
+      animation: fade-up var(--dur-slow) var(--ease-decel) both;
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .fan-capture__thankyou-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: var(--color-accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--sp-5);
+    }
+
+    .fan-capture__thankyou-text {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: var(--sp-2);
+    }
+
+    .fan-capture__thankyou-sub {
+      font-size: var(--text-base);
+      color: var(--color-text-2);
+    }
+
+    /* ============================================================
+       SECTION 4: FOOTER
+       ============================================================ */
+    #site-footer {
+      padding: var(--sp-8) var(--sp-5);
+      text-align: center;
+    }
+
+    .footer__link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      color: var(--color-text-3);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color var(--dur-fast) var(--ease-standard),
+                  transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .footer__link:hover {
+      color: var(--color-text-2);
+    }
+
+    .footer__link:active {
+      transform: scale(0.96);
+    }
+
+    .footer__able-wordmark {
+      font-family: var(--font-d);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      color: var(--color-accent);
+    }
+
+    /* ============================================================
+       BOTTOM SHEET
+       ============================================================ */
+    #sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0,0,0,0.6);
+      z-index: calc(var(--z-sheet) - 1);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--dur-base) var(--ease-standard);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+
+    #sheet-backdrop.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #bottom-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%) translateY(100%);
+      width: 100%;
+      max-width: 430px;
+      max-height: 92dvh;
+      background-color: var(--color-panel, #1a1a24);
+      border-radius: var(--r-xl) var(--r-xl) 0 0;
+      box-shadow: 0 -4px 48px rgba(0,0,0,0.7);
+      z-index: var(--z-sheet);
+      transition: transform var(--dur-slow) var(--ease-decel);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #bottom-sheet.open {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .sheet__handle-bar {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      padding: var(--sp-3) var(--sp-5) var(--sp-2);
+    }
+
+    .sheet__handle {
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background-color: rgba(255,255,255,0.20);
+    }
+
+    .sheet__header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sp-2) var(--sp-5) var(--sp-4);
+    }
+
+    .sheet__title {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--color-panel-text, #f0ede8);
+      letter-spacing: -0.01em;
+    }
+
+    .sheet__close {
+      width: var(--tap-min);
+      height: var(--tap-min);
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.08);
+      color: var(--color-panel-text, #f0ede8);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--dur-fast) var(--ease-standard),
+                  transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .sheet__close:active {
+      transform: scale(0.92);
+      background-color: rgba(255,255,255,0.15);
+    }
+
+    #bottom-sheet-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 var(--sp-5) var(--sp-8);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #bottom-sheet-content::-webkit-scrollbar { display: none; }
+    #bottom-sheet-content { scrollbar-width: none; }
+
+    /* Sheet form elements */
+    .sheet-field {
+      margin-bottom: var(--sp-6);
+    }
+
+    .sheet-label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: rgba(var(--color-panel-text, 240,237,232), 0.7);
+      margin-bottom: var(--sp-2);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-text-2);
+    }
+
+    .sheet-input {
+      width: 100%;
+      min-height: var(--tap-min);
+      padding: var(--sp-3) var(--sp-4);
+      border-radius: var(--r-md);
+      border: 1.5px solid var(--color-border, rgba(255,255,255,0.1));
+      background-color: var(--color-panel-raised, #22222e);
+      color: var(--color-panel-text, #f0ede8);
+      font-family: var(--font-body);
+      font-size: max(16px, var(--text-base));
+      outline: none;
+      transition: border-color var(--dur-fast) var(--ease-standard);
+    }
+
+    .sheet-input:focus {
+      border-color: var(--color-accent);
+    }
+
+    .sheet-input::placeholder {
+      color: rgba(240,237,232,0.30);
+    }
+
+    .sheet-input--with-preview {
+      display: flex;
+      gap: var(--sp-3);
+      align-items: flex-start;
+    }
+
+    .sheet-input-url-preview {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--r-md);
+      object-fit: cover;
+      flex-shrink: 0;
+      background-color: var(--color-panel-raised, #22222e);
+      border: 1px solid var(--color-border, rgba(255,255,255,0.08));
+    }
+
+    /* Vibe selector */
+    .vibe-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-2);
+    }
+
+    .vibe-pill-radio {
+      display: none;
+    }
+
+    .vibe-pill-label {
+      display: inline-flex;
+      align-items: center;
+      padding: var(--sp-2) var(--sp-3);
+      border-radius: var(--r-pill);
+      border: 1.5px solid var(--color-border, rgba(255,255,255,0.10));
+      background-color: var(--color-panel-raised, #22222e);
+      color: var(--color-text-2);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      cursor: pointer;
+      min-height: var(--tap-min);
+      transition: all var(--dur-fast) var(--ease-standard);
+    }
+
+    .vibe-pill-radio:checked + .vibe-pill-label {
+      background-color: var(--color-accent);
+      border-color: var(--color-accent);
+      color: var(--color-on-accent, #ffffff);
+    }
+
+    /* Accent swatches */
+    .accent-swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-3);
+      align-items: center;
+    }
+
+    .accent-swatch {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform var(--dur-fast) var(--ease-spring),
+                  border-color var(--dur-fast) var(--ease-standard);
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .accent-swatch:active {
+      transform: scale(0.88);
+    }
+
+    .accent-swatch.selected {
+      border-color: #ffffff;
+    }
+
+    .accent-hex-input {
+      flex: 1;
+      min-width: 80px;
+    }
+
+    /* Platform link inputs */
+    .link-input-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      margin-bottom: var(--sp-4);
+    }
+
+    .link-input-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--r-md);
+      background-color: var(--color-panel-raised, #22222e);
+      border: 1px solid var(--color-border, rgba(255,255,255,0.08));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--color-text-2);
+    }
+
+    .link-input-row .sheet-input {
+      flex: 1;
+    }
+
+    /* Save button */
+    .sheet-save-btn {
+      width: 100%;
+      min-height: var(--tap-min);
+      padding: var(--sp-3) var(--sp-5);
+      border-radius: var(--r-pill);
+      border: none;
+      background-color: var(--color-accent);
+      color: var(--color-on-accent, #ffffff);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform var(--dur-fast) var(--ease-spring),
+                  opacity var(--dur-fast) var(--ease-standard);
+      margin-top: var(--sp-4);
+    }
+
+    .sheet-save-btn:active {
+      transform: scale(0.97);
+      opacity: 0.85;
+    }
+
+    /* Live preview in sheet */
+    .sheet-live-preview {
+      padding: var(--sp-4);
+      border-radius: var(--r-md);
+      background-color: var(--color-panel-raised, #22222e);
+      border: 1px solid var(--color-border, rgba(255,255,255,0.08));
+      margin-bottom: var(--sp-6);
+    }
+
+    .sheet-live-preview__label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-text-3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: var(--sp-3);
+    }
+
+    .sheet-live-preview__heading {
+      font-family: var(--font-d);
+      font-weight: 700;
+      font-size: var(--text-2xl);
+      color: var(--color-panel-text, #f0ede8);
+      line-height: var(--lh-display);
+    }
+
+    /* ============================================================
+       FIRST FAN CEREMONY OVERLAY
+       ============================================================ */
+    #first-fan-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: var(--z-overlay);
+      background-color: #0d0e1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sp-4);
+      padding: var(--sp-8);
+      cursor: pointer;
+      animation: ceremony-in var(--dur-xslow) var(--ease-decel) both;
+    }
+
+    #first-fan-overlay[hidden] { display: none !important; }
+
+    @keyframes ceremony-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .ceremony__glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        ellipse at 50% 50%,
+        rgba(var(--color-accent-rgb), 0.22) 0%,
+        transparent 65%
+      );
+      pointer-events: none;
+      animation: ceremony-glow-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes ceremony-glow-pulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+
+    .ceremony__number {
+      font-family: var(--font-d);
+      font-weight: 700;
+      font-size: 120px;
+      line-height: 1;
+      color: var(--color-accent);
+      position: relative;
+      z-index: 1;
+      animation: ceremony-num-in var(--dur-slow) var(--ease-spring) 0.2s both;
+    }
+
+    @keyframes ceremony-num-in {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .ceremony__headline {
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      color: #f0ede8;
+      position: relative;
+      z-index: 1;
+      animation: fade-up var(--dur-slow) var(--ease-decel) 0.5s both;
+    }
+
+    .ceremony__email {
+      font-size: var(--text-sm);
+      color: rgba(240,237,232,0.45);
+      position: relative;
+      z-index: 1;
+      animation: fade-up var(--dur-slow) var(--ease-decel) 0.7s both;
+    }
+
+    .ceremony__dismiss-hint {
+      position: absolute;
+      bottom: calc(var(--sp-8) + env(safe-area-inset-bottom, 0px));
+      font-size: var(--text-xs);
+      color: rgba(240,237,232,0.25);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      animation: fade-up var(--dur-slow) var(--ease-decel) 1s both;
+    }
+
+    /* ============================================================
+       REDUCED MOTION
+       ============================================================ */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ============================================================
+       STAGGER ENTRANCE
+       ============================================================ */
+    .stagger-item {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity var(--dur-slow) var(--ease-decel),
+                  transform var(--dur-slow) var(--ease-decel);
+    }
+
+    .stagger-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================================
+       TOAST
+       ============================================================ */
+    .able-toast {
+      position: fixed;
+      bottom: calc(var(--sp-8) + env(safe-area-inset-bottom, 0px));
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      padding: var(--sp-3) var(--sp-4);
+      border-radius: var(--r-pill);
+      background-color: var(--color-panel, #1a1a24);
+      border: 1px solid var(--color-border, rgba(255,255,255,0.1));
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      font-size: var(--text-sm);
+      font-family: var(--font-body);
+      color: var(--color-text, #f0ede8);
+      white-space: nowrap;
+      z-index: var(--z-toast);
+      animation: toast-in var(--dur-base) var(--ease-spring) both;
+      max-width: calc(100vw - var(--sp-8));
+    }
+
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    .able-toast--green .toast-dot  { background: var(--color-success); }
+    .able-toast--amber .toast-dot  { background: var(--color-warning); }
+    .able-toast--red   .toast-dot  { background: #ef4444; }
+
+    .toast-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      color: var(--color-text-2);
+      font-size: 14px;
+      cursor: pointer;
+      padding: var(--sp-1);
+      min-width: 24px;
+      min-height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: var(--sp-2);
+    }
+  </style>
+</head>
+<body>
+  <!-- Glass background layer -->
+  <div id="profile-bg" aria-hidden="true"></div>
+
+  <!-- App Shell -->
+  <div id="app-shell" data-theme="dark">
+
+    <!-- Edit Bar (artist mode only) -->
+    <div id="edit-bar" hidden>
+      <span class="edit-bar__label">Editing your page</span>
+      <button class="edit-bar__preview-btn" id="preview-btn" type="button">Preview</button>
+    </div>
+
+    <!-- Scroll container -->
+    <div id="scroll-container" role="main">
+
+      <!-- ── SECTION 1: TOP CARD ──────────────────────────────── -->
+      <div class="section-edit-wrap" id="top-card-wrap">
+        <section id="top-card" aria-label="Artist top card">
+          <div class="top-card__safe-top"></div>
+          <!-- Artwork or placeholder rendered by JS -->
+          <div id="top-card__artwork-slot"></div>
+          <!-- Gradient overlay -->
+          <div class="top-card__gradient" aria-hidden="true"></div>
+          <!-- Source pill -->
+          <div id="source-pill" class="top-card__source-pill" role="status" aria-live="polite" hidden></div>
+          <!-- Artist name -->
+          <h1 id="artist-name" class="top-card__name"></h1>
+          <!-- CTAs -->
+          <div class="top-card__ctas">
+            <a id="cta-primary" class="top-card__cta-primary" href="#" role="button">Stream my music</a>
+            <button id="cta-secondary" class="top-card__cta-secondary" type="button">Sign up</button>
+          </div>
+        </section>
+        <!-- Edit overlay -->
+        <div class="section-edit-overlay" id="top-card-edit-overlay" role="button" tabindex="0" aria-label="Edit top card">
+          <div class="section-edit-overlay__icon" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 2: PLATFORM LINKS ───────────────────────── -->
+      <div class="section-edit-wrap" id="links-section-wrap">
+        <section id="links-section" aria-label="Platform links">
+          <div class="links-section__inner" id="links-inner"></div>
+        </section>
+        <div class="section-edit-overlay" id="links-edit-overlay" role="button" tabindex="0" aria-label="Edit platform links">
+          <div class="section-edit-overlay__icon" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 3: FAN CAPTURE ──────────────────────────── -->
+      <div class="section-edit-wrap" id="fan-capture-wrap">
+        <section id="fan-capture" aria-label="Sign up to hear from this artist">
+          <h2 id="fan-capture-heading" class="fan-capture__heading stagger-item">Stay close.</h2>
+          <p id="fan-capture-sub" class="fan-capture__sub stagger-item">I'll reach out directly. No algorithm.</p>
+
+          <!-- Form state -->
+          <div id="fan-capture-form-state">
+            <form class="fan-capture__form" id="fan-form" novalidate>
+              <div class="fan-capture__input-wrap">
+                <input
+                  id="fan-email"
+                  class="fan-capture__input"
+                  type="email"
+                  autocomplete="email"
+                  inputmode="email"
+                  placeholder="Your email"
+                  aria-label="Your email address"
+                  required
+                >
+              </div>
+              <button class="fan-capture__submit" type="submit" id="fan-submit">I'm in</button>
+              <p class="fan-capture__consent">By signing up you agree to hear directly from this artist.</p>
+            </form>
+            <p class="fan-capture__count" id="fan-count" aria-live="polite"></p>
+          </div>
+
+          <!-- Thank you state (hidden until submit) -->
+          <div id="fan-capture-thankyou" hidden>
+            <div class="fan-capture__thankyou">
+              <div class="fan-capture__thankyou-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <p class="fan-capture__thankyou-text">Got it. I'll be in touch.</p>
+              <p class="fan-capture__thankyou-sub" id="fan-thankyou-sub">You're on the list.</p>
+            </div>
+            <p class="fan-capture__count" id="fan-count-thankyou" aria-live="polite"></p>
+          </div>
+        </section>
+        <div class="section-edit-overlay" id="fan-capture-edit-overlay" role="button" tabindex="0" aria-label="Edit fan capture">
+          <div class="section-edit-overlay__icon" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 4: FOOTER ───────────────────────────────── -->
+      <footer id="site-footer" role="contentinfo">
+        <a class="footer__link" href="https://ablemusic.co" target="_blank" rel="noopener noreferrer">
+          Powered by&nbsp;<span class="footer__able-wordmark">ABLE</span>
+        </a>
+      </footer>
+
+    </div><!-- /scroll-container -->
+  </div><!-- /app-shell -->
+
+  <!-- Sheet Backdrop -->
+  <div id="sheet-backdrop" aria-hidden="true"></div>
+
+  <!-- Bottom Sheet -->
+  <div id="bottom-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title-text" hidden>
+    <div class="sheet__handle-bar" aria-hidden="true">
+      <div class="sheet__handle"></div>
+    </div>
+    <div class="sheet__header">
+      <span class="sheet__title" id="sheet-title-text">Edit</span>
+      <button class="sheet__close" id="sheet-close-btn" type="button" aria-label="Close">&#x2715;</button>
+    </div>
+    <div id="bottom-sheet-content"></div>
+  </div>
+
+  <!-- First Fan Ceremony Overlay -->
+  <div id="first-fan-overlay" role="dialog" aria-modal="true" aria-label="Your first fan" hidden>
+    <div class="ceremony__glow" aria-hidden="true"></div>
+    <div class="ceremony__number" aria-hidden="true">1</div>
+    <p class="ceremony__headline">Your first fan.</p>
+    <p class="ceremony__email" id="ceremony-email"></p>
+    <p class="ceremony__dismiss-hint" aria-hidden="true">tap to continue</p>
+  </div>
+
+  <script>
+    'use strict'
+
+    // ── UTILITY: SAFE LOCALSTORAGE ──────────────────────────────
+    function safeLS(key, fallback) {
+      try {
+        const v = localStorage.getItem(key)
+        return v ? JSON.parse(v) : fallback
+      } catch (e) {
+        return fallback
+      }
+    }
+
+    function setLS(key, val) {
+      try {
+        localStorage.setItem(key, JSON.stringify(val))
+        return true
+      } catch (e) {
+        return false
+      }
+    }
+
+    // ── UTILITY: ESC HTML ───────────────────────────────────────
+    function escHtml(str) {
+      return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')
+    }
+
+    // ── UTILITY: SAFE URL ───────────────────────────────────────
+    const SAFE_URL_RE = /^(https?:|mailto:|tel:)/i
+    function isSafeUrl(url) {
+      if (!url) return false
+      const s = String(url).trim()
+      return SAFE_URL_RE.test(s)
+    }
+
+    // ── UTILITY: GET UTM SOURCE ─────────────────────────────────
+    function getUtmSource() {
+      const params = new URLSearchParams(window.location.search)
+      const ALLOWED = new Set(['instagram','tiktok','youtube','qr','email','email-confirm','other','spotify','twitter','fb','footer','direct','soundcloud'])
+      const ALIAS   = { reel:'instagram', story:'instagram', post:'instagram', bio:'direct', ig:'instagram', tt:'tiktok', yt:'youtube', sc:'soundcloud' }
+      const raw = params.get('ref') || params.get('source') || params.get('src') || params.get('utm_source')
+      if (raw) {
+        const clean = raw.trim().toLowerCase().slice(0, 100).replace(/[<>"']/g, '')
+        return ALIAS[clean] || (ALLOWED.has(clean) ? clean : 'direct')
+      }
+      const _ua = navigator.userAgent || ''
+      if (_ua.includes('Instagram')) return 'instagram'
+      if (_ua.includes('TikTok'))    return 'tiktok'
+      const ref = (document.referrer || '').toLowerCase()
+      if (!ref) return 'direct'
+      if (ref.includes('instagram.com') || ref.includes('l.instagram.com')) return 'instagram'
+      if (ref.includes('tiktok.com') || ref.includes('vm.tiktok.com'))      return 'tiktok'
+      if (ref.includes('twitter.com') || ref.includes('x.com') || ref.includes('t.co')) return 'twitter'
+      if (ref.includes('youtube.com') || ref.includes('youtu.be'))          return 'youtube'
+      return 'direct'
+    }
+
+    // ── UTILITY: TRACK CLICK ────────────────────────────────────
+    let _lastClickKey = ''
+    let _lastClickTs  = 0
+
+    function trackClick(label, type, url) {
+      if (!label || typeof label !== 'string') return
+      const _key = label + '|' + type
+      const _now = Date.now()
+      if (_key === _lastClickKey && _now - _lastClickTs < 600) return
+      _lastClickKey = _key
+      _lastClickTs  = _now
+      try {
+        let clicks = safeLS('able_clicks', [])
+        if (clicks.length > 500) clicks = clicks.slice(-400)
+        clicks.push({
+          id: (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2)),
+          label,
+          type,
+          ts: _now,
+          source: SESSION_SOURCE,
+          ...(url ? { url } : {})
+        })
+        setLS('able_clicks', clicks)
+      } catch (_) {}
+    }
+
+    // ── UTILITY: COMPUTE STATE ──────────────────────────────────
+    const VALID_STATE_OVERRIDES = new Set(['pre-release','live','gig','profile'])
+
+    function computeState(profile) {
+      const now = Date.now()
+      const gigExpires = parseInt(localStorage.getItem('able_gig_expires') || '0', 10)
+      if (gigExpires && now < gigExpires) return 'gig'
+      if (profile.stateOverride && profile.stateOverride !== 'auto') {
+        if (VALID_STATE_OVERRIDES.has(profile.stateOverride)) {
+          if (profile.stateOverride === 'live' && profile.releaseDate) {
+            const _rms = new Date(profile.releaseDate).getTime()
+            if (!isNaN(_rms) && now >= _rms + 14 * 86400000) return 'profile'
+          }
+          return profile.stateOverride
+        }
+      }
+      const releaseMs = profile.releaseDate ? new Date(profile.releaseDate).getTime() : NaN
+      if (!releaseMs || isNaN(releaseMs)) return 'profile'
+      if (now < releaseMs) return 'pre-release'
+      if (now < releaseMs + 14 * 86400000) return 'live'
+      return 'profile'
+    }
+
+    // ── SESSION SOURCE ──────────────────────────────────────────
+    const SESSION_SOURCE = getUtmSource()
+
+    // ── EDIT MODE DETECTION ─────────────────────────────────────
+    const params = new URLSearchParams(window.location.search)
+    const isEditMode = params.get('mode') === 'edit' || safeLS('able_artist_mode', false) === true || localStorage.getItem('able_artist_mode') === 'true'
+
+    // ── PLATFORM SVG ICONS ──────────────────────────────────────
+    const PLATFORM_ICONS = {
+      instagram: '<svg class="platform-pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>',
+      youtube:   '<svg class="platform-pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.95C18.88 4 12 4 12 4s-6.88 0-8.59.47a2.78 2.78 0 0 0-1.95 1.95A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.5C5.12 20 12 20 12 20s6.88 0 8.59-.5a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>',
+      tiktok:    '<svg class="platform-pill__icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.8a8.17 8.17 0 0 0 4.77 1.52V6.89a4.85 4.85 0 0 1-1-.2z"/></svg>',
+      spotify:   '<svg class="platform-pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 13.5c2.5-1 5.5-1 8 0"/><path d="M6.5 10.5C10 9 14 9 17.5 10.5"/><path d="M9 16.5c2-0.8 4-0.8 6 0"/></svg>',
+      soundcloud:'<svg class="platform-pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 10c0 2.21 1.79 4 4 4h14a3 3 0 0 0 0-6h-0.5A5.5 5.5 0 0 0 7.5 6.5 4.5 4.5 0 0 0 1 10z"/></svg>',
+      default:   '<svg class="platform-pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>'
+    }
+
+    // ── PLATFORM DETECTION ──────────────────────────────────────
+    function detectPlatform(url) {
+      if (!url) return null
+      const u = url.toLowerCase()
+      if (u.includes('instagram.com')) return 'instagram'
+      if (u.includes('youtube.com') || u.includes('youtu.be')) return 'youtube'
+      if (u.includes('tiktok.com')) return 'tiktok'
+      if (u.includes('spotify.com')) return 'spotify'
+      if (u.includes('soundcloud.com')) return 'soundcloud'
+      return null
+    }
+
+    // ── SOURCE LABEL ────────────────────────────────────────────
+    function getSourceLabel(src) {
+      const map = {
+        instagram: 'Found through Instagram',
+        tiktok:    'Found through TikTok',
+        youtube:   'Found through YouTube',
+        twitter:   'Found through Twitter',
+        spotify:   'Found through Spotify'
+      }
+      return map[src] || null
+    }
+
+    // ── HEX VALIDATION ──────────────────────────────────────────
+    const HEX_RX = /^#[0-9a-fA-F]{6}$/
+    function validHex(h) { return HEX_RX.test(h) }
+
+    // ── APPLY ACCENT TOKEN ──────────────────────────────────────
+    function applyAccent(accentHex) {
+      const hex = validHex(accentHex) ? accentHex : '#e05242'
+      const c = hex.replace('#','')
+      const r = parseInt(c.slice(0,2),16)
+      const g = parseInt(c.slice(2,4),16)
+      const b = parseInt(c.slice(4,6),16)
+      const shell = document.getElementById('app-shell')
+      shell.style.setProperty('--color-accent',        hex)
+      shell.style.setProperty('--color-accent-rgb',    `${r},${g},${b}`)
+      shell.style.setProperty('--color-accent-glow',   `rgba(${r},${g},${b},0.30)`)
+      shell.style.setProperty('--color-accent-soft',   `rgba(${r},${g},${b},0.10)`)
+      shell.style.setProperty('--color-accent-subtle', `rgba(${r},${g},${b},0.12)`)
+      // Determine on-accent text colour — luminance check
+      const lum = (0.299*r + 0.587*g + 0.114*b) / 255
+      shell.style.setProperty('--color-on-accent', lum > 0.55 ? '#000000' : '#ffffff')
+      // Also set on html for overscroll area
+      document.documentElement.style.setProperty('--color-accent', hex)
+    }
+
+    // ── PROFILE ─────────────────────────────────────────────────
+    let profile = safeLS('able_v3_profile', {})
+    // Defaults
+    profile.name        = profile.name        || 'Your Name'
+    profile.theme       = profile.theme       || 'dark'
+    profile.vibe        = profile.vibe        || 'indie'
+    profile.accentColor = profile.accentColor || profile.accent || '#e05242'
+    profile.links       = profile.links       || {}
+
+    // ── SAVE PROFILE ────────────────────────────────────────────
+    function saveProfile() {
+      setLS('able_v3_profile', profile)
+    }
+
+    // ── RENDER PROFILE ──────────────────────────────────────────
+    function renderProfile() {
+      const shell = document.getElementById('app-shell')
+
+      // Theme
+      shell.dataset.theme = profile.theme || 'dark'
+
+      // Vibe
+      if (profile.vibe) shell.dataset.vibe = profile.vibe
+      else delete shell.dataset.vibe
+
+      // Accent
+      applyAccent(profile.accentColor)
+
+      // Glass background
+      const bg = document.getElementById('profile-bg')
+      if (profile.theme === 'glass' && profile.artwork) {
+        bg.style.backgroundImage = `url("${escHtml(profile.artwork)}")`
+        bg.classList.add('active')
+      } else {
+        bg.classList.remove('active')
+      }
+
+      // Artist name
+      document.getElementById('artist-name').textContent = profile.name || ''
+
+      // Update meta
+      document.title = (profile.name || 'Artist') + ' on ABLE'
+      const ogTitle = document.getElementById('og-title')
+      if (ogTitle) ogTitle.setAttribute('content', profile.name + ' on ABLE')
+
+      // Top card artwork
+      renderTopCardArtwork()
+
+      // CTAs
+      renderCtas()
+
+      // Source pill
+      renderSourcePill()
+
+      // Links
+      renderLinks()
+
+      // Fan capture
+      renderFanCapture()
+
+      // Fan count
+      renderFanCount()
+
+      // Edit mode
+      if (isEditMode) {
+        document.body.classList.add('edit-mode')
+        const editBar = document.getElementById('edit-bar')
+        if (editBar) editBar.hidden = false
+      }
+
+      // Stagger entrance
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.stagger-item').forEach((el, i) => {
+          setTimeout(() => el.classList.add('visible'), i * 40)
+        })
+      })
+    }
+
+    // ── RENDER TOP CARD ARTWORK ──────────────────────────────────
+    function renderTopCardArtwork() {
+      const slot = document.getElementById('top-card__artwork-slot')
+      slot.innerHTML = ''
+
+      if (profile.artwork) {
+        const img = document.createElement('img')
+        img.className = 'top-card__artwork'
+        img.src = profile.artwork
+        img.alt = (profile.name || 'Artist') + ' — artist photo'
+        img.loading = 'eager'
+        img.fetchPriority = 'high'
+        img.onerror = function() {
+          this.style.display = 'none'
+          renderPlaceholder(slot)
+        }
+        slot.appendChild(img)
+      } else {
+        renderPlaceholder(slot)
+      }
+    }
+
+    function renderPlaceholder(slot) {
+      const ph = document.createElement('div')
+      ph.className = 'top-card__placeholder'
+      ph.innerHTML = '<svg class="top-card__placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'
+      if (isEditMode) {
+        const btn = document.createElement('button')
+        btn.className = 'top-card__placeholder-add-btn'
+        btn.type = 'button'
+        btn.textContent = '+ Add your photo'
+        btn.onclick = (e) => { e.stopPropagation(); openSheet('topcard') }
+        ph.appendChild(btn)
+      }
+      slot.appendChild(ph)
+    }
+
+    // ── RENDER CTAs ──────────────────────────────────────────────
+    function renderCtas() {
+      const state = computeState(profile)
+      const primaryBtn = document.getElementById('cta-primary')
+      const secondaryBtn = document.getElementById('cta-secondary')
+
+      // Primary CTA label
+      let primaryLabel = 'Stream my music'
+      if (profile.primaryCta && profile.primaryCta.label) {
+        primaryLabel = profile.primaryCta.label
+      } else {
+        if (state === 'pre-release') primaryLabel = 'Pre-save'
+        else if (state === 'live')   primaryLabel = 'Stream now'
+        else if (state === 'gig')    primaryLabel = 'Get tickets'
+      }
+      primaryBtn.textContent = primaryLabel
+
+      // Primary CTA URL
+      let primaryUrl = '#'
+      if (profile.primaryCta && profile.primaryCta.url && isSafeUrl(profile.primaryCta.url)) {
+        primaryUrl = profile.primaryCta.url
+      }
+      primaryBtn.href = primaryUrl
+      primaryBtn.onclick = function(e) {
+        if (primaryUrl === '#') { e.preventDefault(); return }
+        trackClick(primaryLabel, 'primary_cta', primaryUrl)
+      }
+
+      // Secondary: scroll to fan capture
+      secondaryBtn.onclick = function() {
+        trackClick('Sign up', 'secondary_cta', null)
+        const fc = document.getElementById('fan-capture')
+        if (fc) fc.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        // Focus email after scroll
+        setTimeout(() => {
+          const input = document.getElementById('fan-email')
+          if (input) input.focus()
+        }, 500)
+      }
+    }
+
+    // ── RENDER SOURCE PILL ───────────────────────────────────────
+    function renderSourcePill() {
+      const pill = document.getElementById('source-pill')
+      const label = getSourceLabel(SESSION_SOURCE)
+      if (label) {
+        pill.textContent = label
+        pill.hidden = false
+      } else {
+        pill.hidden = true
+      }
+    }
+
+    // ── RENDER LINKS ─────────────────────────────────────────────
+    function renderLinks() {
+      const inner = document.getElementById('links-inner')
+      inner.innerHTML = ''
+
+      const ORDERED_PLATFORMS = ['instagram', 'youtube', 'tiktok']
+      const links = profile.links || {}
+
+      ORDERED_PLATFORMS.forEach(platform => {
+        const url = links[platform]
+        if (url && isSafeUrl(url)) {
+          const pill = document.createElement('a')
+          pill.className = 'platform-pill stagger-item'
+          pill.href = url
+          pill.target = '_blank'
+          pill.rel = 'noopener noreferrer'
+          pill.setAttribute('aria-label', platform + ' — opens in new tab')
+          pill.innerHTML = (PLATFORM_ICONS[platform] || PLATFORM_ICONS.default) + '<span class="platform-pill__handle">' + escHtml(extractHandle(url, platform)) + '</span>'
+          pill.addEventListener('click', () => trackClick(platform, 'pill', url))
+          inner.appendChild(pill)
+        } else if (isEditMode) {
+          // Ghost placeholder
+          const ghost = document.createElement('button')
+          ghost.className = 'platform-pill platform-pill--ghost stagger-item'
+          ghost.type = 'button'
+          const platformLabel = platform.charAt(0).toUpperCase() + platform.slice(1)
+          ghost.innerHTML = (PLATFORM_ICONS[platform] || PLATFORM_ICONS.default) + '<span class="platform-pill__handle">+ Add ' + platformLabel + '</span>'
+          ghost.onclick = () => openSheet('links')
+          inner.appendChild(ghost)
+        }
+      })
+
+      // Stagger
+      requestAnimationFrame(() => {
+        inner.querySelectorAll('.stagger-item').forEach((el, i) => {
+          setTimeout(() => el.classList.add('visible'), 80 + i * 40)
+        })
+      })
+    }
+
+    function extractHandle(url, platform) {
+      if (!url) return platform
+      try {
+        const u = new URL(url)
+        const parts = u.pathname.split('/').filter(Boolean)
+        if (parts.length > 0) {
+          const handle = parts[parts.length - 1]
+          if (handle && handle.length > 0 && handle.length < 40) {
+            return '@' + handle.replace(/^@/, '')
+          }
+        }
+      } catch (_) {}
+      return platform
+    }
+
+    // ── RENDER FAN CAPTURE ───────────────────────────────────────
+    function renderFanCapture() {
+      const state = computeState(profile)
+      const heading = document.getElementById('fan-capture-heading')
+      const sub     = document.getElementById('fan-capture-sub')
+
+      // State-driven heading (first-person)
+      const headings = {
+        'default':     'Stay close.',
+        'pre-release': 'You signed up right before something.',
+        'gig':         'I\'m playing tonight.',
+        'live':        'Something just dropped.'
+      }
+      heading.textContent = headings[state] || headings['default']
+
+      // Custom sub-text override
+      const customSub = profile.fanCaptureSub
+      sub.textContent = customSub || 'I\'ll reach out directly. No algorithm.'
+
+      // Check if already signed up this session
+      const alreadySigned = sessionStorage.getItem('able_fan_signed') === 'true'
+      if (alreadySigned) {
+        showThankyouState()
+      }
+    }
+
+    // ── RENDER FAN COUNT ─────────────────────────────────────────
+    function renderFanCount() {
+      const fans = safeLS('able_fans', [])
+      const count = fans.length
+      const countEl  = document.getElementById('fan-count')
+      const countEl2 = document.getElementById('fan-count-thankyou')
+
+      const countText = count === 0 ? '' : (count === 1 ? '1 fan has signed up here.' : count + ' fans have signed up here.')
+      if (countEl)  countEl.textContent  = countText
+      if (countEl2) countEl2.textContent = countText
+    }
+
+    // ── FAN FORM SUBMIT ──────────────────────────────────────────
+    document.getElementById('fan-form').addEventListener('submit', function(e) {
+      e.preventDefault()
+      const input = document.getElementById('fan-email')
+      const email = (input.value || '').trim().toLowerCase()
+
+      // Basic validation
+      if (!email || !email.includes('@') || !email.includes('.')) {
+        input.style.borderBottomColor = '#ef4444'
+        input.setAttribute('aria-invalid', 'true')
+        input.focus()
+        return
+      }
+      input.style.borderBottomColor = ''
+      input.removeAttribute('aria-invalid')
+
+      const fans = safeLS('able_fans', [])
+      const prevCount = fans.length
+
+      // Check for dupe in this session
+      const alreadyInList = fans.some(f => f.email === email)
+      if (!alreadyInList) {
+        fans.push({ email, ts: Date.now(), source: SESSION_SOURCE })
+        setLS('able_fans', fans)
+      }
+
+      // Disable button
+      const submitBtn = document.getElementById('fan-submit')
+      submitBtn.disabled = true
+
+      // First fan ceremony
+      if (prevCount === 0 && fans.length === 1) {
+        const firstFanSeen = localStorage.getItem('able_first_fan_seen')
+        if (!firstFanSeen) {
+          localStorage.setItem('able_first_fan_seen', 'true')
+          showFirstFanCeremony(email)
+        }
+      }
+
+      // Mark session
+      sessionStorage.setItem('able_fan_signed', 'true')
+
+      // Track
+      trackClick('fan-signup', 'signup', null)
+
+      // Show thank you
+      showThankyouState()
+      renderFanCount()
+    })
+
+    function showThankyouState() {
+      const formState = document.getElementById('fan-capture-form-state')
+      const tyState   = document.getElementById('fan-capture-thankyou')
+      if (formState) formState.hidden = true
+      if (tyState)   tyState.hidden   = false
+    }
+
+    // ── FIRST FAN CEREMONY ───────────────────────────────────────
+    function showFirstFanCeremony(email) {
+      const overlay = document.getElementById('first-fan-overlay')
+      const emailEl = document.getElementById('ceremony-email')
+
+      if (emailEl && email) {
+        let txt = email
+        if (SESSION_SOURCE && SESSION_SOURCE !== 'direct') {
+          txt += ' — from ' + SESSION_SOURCE
+        }
+        emailEl.textContent = txt
+      }
+
+      overlay.hidden = false
+      overlay.focus()
+
+      let dismissed = false
+      function dismiss() {
+        if (dismissed) return
+        dismissed = true
+        overlay.style.animation = 'ceremony-in 0.3s var(--ease-accel) reverse both'
+        setTimeout(() => { overlay.hidden = true }, 300)
+      }
+
+      overlay.addEventListener('click', dismiss, { once: true })
+      setTimeout(dismiss, 4000)
+    }
+
+    // ── EDIT MODE SETUP ──────────────────────────────────────────
+    if (isEditMode) {
+      // Preview toggle
+      const previewBtn = document.getElementById('preview-btn')
+      if (previewBtn) {
+        let isPreviewing = false
+        previewBtn.addEventListener('click', function() {
+          isPreviewing = !isPreviewing
+          document.body.classList.toggle('edit-mode', !isPreviewing)
+          previewBtn.textContent = isPreviewing ? 'Edit' : 'Preview'
+        })
+      }
+
+      // Section edit overlays
+      document.getElementById('top-card-edit-overlay').addEventListener('click', () => openSheet('topcard'))
+      document.getElementById('top-card-edit-overlay').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') openSheet('topcard') })
+
+      document.getElementById('links-edit-overlay').addEventListener('click', () => openSheet('links'))
+      document.getElementById('links-edit-overlay').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') openSheet('links') })
+
+      document.getElementById('fan-capture-edit-overlay').addEventListener('click', () => openSheet('fancapture'))
+      document.getElementById('fan-capture-edit-overlay').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') openSheet('fancapture') })
+    }
+
+    // ── BOTTOM SHEET ─────────────────────────────────────────────
+    let sheetOpen = false
+    let touchStartY = 0
+    let touchCurrentY = 0
+
+    function openSheet(type) {
+      const sheet   = document.getElementById('bottom-sheet')
+      const backdrop= document.getElementById('sheet-backdrop')
+      const content = document.getElementById('bottom-sheet-content')
+
+      // Build content
+      let title = 'Edit'
+      if      (type === 'topcard')    { title = 'Top card';     content.innerHTML = buildTopcardSheet() }
+      else if (type === 'links')      { title = 'Links';        content.innerHTML = buildLinksSheet() }
+      else if (type === 'fancapture') { title = 'Fan capture';  content.innerHTML = buildFanCaptureSheet() }
+
+      document.getElementById('sheet-title-text').textContent = title
+
+      sheet.hidden = false
+      backdrop.classList.add('visible')
+      requestAnimationFrame(() => {
+        sheet.classList.add('open')
+      })
+      sheetOpen = true
+
+      // Wire sheet-specific events after render
+      if (type === 'topcard')    wireTopcardSheet()
+      else if (type === 'links') wireLinksSheet()
+      else if (type === 'fancapture') wireFanCaptureSheet()
+
+      // Trap focus
+      sheet.setAttribute('aria-hidden', 'false')
+    }
+
+    function closeSheet() {
+      const sheet   = document.getElementById('bottom-sheet')
+      const backdrop= document.getElementById('sheet-backdrop')
+      sheet.classList.remove('open')
+      backdrop.classList.remove('visible')
+      sheetOpen = false
+      setTimeout(() => {
+        sheet.hidden = true
+        sheet.setAttribute('aria-hidden', 'true')
+      }, var_dur_slow())
+    }
+
+    function var_dur_slow() {
+      // Read CSS variable duration
+      const raw = getComputedStyle(document.documentElement).getPropertyValue('--dur-slow') || '400ms'
+      return parseInt(raw) || 400
+    }
+
+    document.getElementById('sheet-close-btn').addEventListener('click', closeSheet)
+    document.getElementById('sheet-backdrop').addEventListener('click', closeSheet)
+
+    // Swipe-down to dismiss
+    const sheetEl = document.getElementById('bottom-sheet')
+    sheetEl.addEventListener('touchstart', function(e) {
+      touchStartY = e.touches[0].clientY
+    }, { passive: true })
+
+    sheetEl.addEventListener('touchmove', function(e) {
+      touchCurrentY = e.touches[0].clientY
+      const delta = touchCurrentY - touchStartY
+      if (delta > 0) {
+        sheetEl.style.transform = `translateX(-50%) translateY(${delta}px)`
+      }
+    }, { passive: true })
+
+    sheetEl.addEventListener('touchend', function() {
+      const delta = touchCurrentY - touchStartY
+      sheetEl.style.transform = ''
+      if (delta > 80) {
+        closeSheet()
+      }
+      touchStartY = 0
+      touchCurrentY = 0
+    }, { passive: true })
+
+    // ── TOP CARD SHEET BUILDER ───────────────────────────────────
+    const ACCENT_PRESETS = ['#e05242','#f4b942','#3b82f6','#8b5cf6','#10b981','#f59e0b','#ec4899']
+    const VIBES = ['pop','indie','electronic','hiphop','rock','acoustic','jazz']
+
+    function buildTopcardSheet() {
+      const currentVibe   = profile.vibe || 'indie'
+      const currentAccent = profile.accentColor || '#e05242'
+      const currentArtwork= profile.artwork || ''
+      const currentName   = profile.name || ''
+      const currentTheme  = profile.theme || 'dark'
+
+      const swatchHtml = ACCENT_PRESETS.map(h =>
+        `<button class="accent-swatch${h === currentAccent ? ' selected' : ''}" data-hex="${escHtml(h)}" style="background-color:${escHtml(h)}" aria-label="Accent colour ${escHtml(h)}" type="button"></button>`
+      ).join('')
+
+      const vibePillHtml = VIBES.map(v =>
+        `<input class="vibe-pill-radio" type="radio" name="vibe" id="vibe-${escHtml(v)}" value="${escHtml(v)}"${v === currentVibe ? ' checked' : ''}><label class="vibe-pill-label" for="vibe-${escHtml(v)}">${escHtml(v.charAt(0).toUpperCase()+v.slice(1))}</label>`
+      ).join('')
+
+      const themeOptions = ['dark','light','glass','contrast'].map(t =>
+        `<option value="${t}"${t === currentTheme ? ' selected' : ''}>${t.charAt(0).toUpperCase()+t.slice(1)}</option>`
+      ).join('')
+
+      return `
+        <div class="sheet-field">
+          <label class="sheet-label" for="sheet-artist-name">Artist name</label>
+          <input class="sheet-input" id="sheet-artist-name" type="text" value="${escHtml(currentName)}" placeholder="Your name" autocomplete="name">
+        </div>
+        <div class="sheet-field">
+          <label class="sheet-label" for="sheet-artwork-url">Artwork URL</label>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <img id="sheet-artwork-preview" class="sheet-input-url-preview" src="${currentArtwork ? escHtml(currentArtwork) : ''}" alt="Artwork preview" style="${currentArtwork ? '' : 'display:none'}">
+            <input class="sheet-input" id="sheet-artwork-url" type="url" value="${escHtml(currentArtwork)}" placeholder="https://...">
+          </div>
+        </div>
+        <div class="sheet-field">
+          <label class="sheet-label" for="sheet-theme-select">Theme</label>
+          <select class="sheet-input" id="sheet-theme-select" style="cursor:pointer;">${themeOptions}</select>
+        </div>
+        <div class="sheet-field">
+          <span class="sheet-label">Vibe</span>
+          <div class="vibe-pills">${vibePillHtml}</div>
+        </div>
+        <div class="sheet-field">
+          <span class="sheet-label">Accent colour</span>
+          <div class="accent-swatches">
+            ${swatchHtml}
+            <input class="sheet-input accent-hex-input" id="sheet-accent-hex" type="text" value="${escHtml(currentAccent)}" placeholder="#e05242" maxlength="7">
+          </div>
+        </div>
+        <button class="sheet-save-btn" id="topcard-save-btn" type="button">Save</button>
+      `
+    }
+
+    function wireTopcardSheet() {
+      // Artwork URL preview
+      const artInput   = document.getElementById('sheet-artwork-url')
+      const artPreview = document.getElementById('sheet-artwork-preview')
+      if (artInput && artPreview) {
+        artInput.addEventListener('input', function() {
+          const v = this.value.trim()
+          if (v && isSafeUrl(v)) {
+            artPreview.src = v
+            artPreview.style.display = 'block'
+          } else {
+            artPreview.style.display = 'none'
+          }
+        })
+      }
+
+      // Accent swatches
+      document.querySelectorAll('.accent-swatch').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.accent-swatch').forEach(b => b.classList.remove('selected'))
+          this.classList.add('selected')
+          const hexInput = document.getElementById('sheet-accent-hex')
+          if (hexInput) hexInput.value = this.dataset.hex
+          applyAccent(this.dataset.hex)
+        })
+      })
+
+      // Hex input sync
+      const hexInput = document.getElementById('sheet-accent-hex')
+      if (hexInput) {
+        hexInput.addEventListener('input', function() {
+          const v = this.value.trim()
+          if (validHex(v)) {
+            applyAccent(v)
+            document.querySelectorAll('.accent-swatch').forEach(b => {
+              b.classList.toggle('selected', b.dataset.hex === v)
+            })
+          }
+        })
+      }
+
+      // Save
+      const saveBtn = document.getElementById('topcard-save-btn')
+      if (saveBtn) {
+        saveBtn.addEventListener('click', function() {
+          const nameVal   = (document.getElementById('sheet-artist-name')?.value || '').trim()
+          const artVal    = (document.getElementById('sheet-artwork-url')?.value || '').trim()
+          const themeVal  = document.getElementById('sheet-theme-select')?.value || 'dark'
+          const vibeChecked = document.querySelector('input[name="vibe"]:checked')
+          const vibeVal   = vibeChecked ? vibeChecked.value : (profile.vibe || 'indie')
+          const hexVal    = document.getElementById('sheet-accent-hex')?.value || profile.accentColor
+
+          profile.name        = nameVal || profile.name
+          profile.artwork     = artVal && isSafeUrl(artVal) ? artVal : profile.artwork
+          profile.theme       = themeVal
+          profile.vibe        = vibeVal
+          profile.accentColor = validHex(hexVal) ? hexVal : profile.accentColor
+
+          saveProfile()
+          renderProfile()
+          closeSheet()
+        })
+      }
+    }
+
+    // ── LINKS SHEET BUILDER ──────────────────────────────────────
+    function buildLinksSheet() {
+      const links = profile.links || {}
+      const ORDERED = ['instagram','youtube','tiktok']
+      const rows = ORDERED.map(p => {
+        const label = p.charAt(0).toUpperCase() + p.slice(1)
+        const val   = links[p] || ''
+        return `
+          <div class="link-input-row">
+            <div class="link-input-icon">${PLATFORM_ICONS[p] || PLATFORM_ICONS.default}</div>
+            <input class="sheet-input" data-platform="${escHtml(p)}" type="url" value="${escHtml(val)}" placeholder="${escHtml(label)} URL" aria-label="${escHtml(label)} link">
+          </div>
+        `
+      }).join('')
+
+      return `
+        ${rows}
+        <button class="sheet-save-btn" id="links-save-btn" type="button">Save</button>
+      `
+    }
+
+    function wireLinksSheet() {
+      // Auto-detect platform on paste / blur
+      document.querySelectorAll('#bottom-sheet-content input[data-platform]').forEach(input => {
+        input.addEventListener('paste', function() {
+          setTimeout(() => {
+            const detected = detectPlatform(this.value)
+            if (detected && detected !== this.dataset.platform) {
+              showToast('Detected as ' + detected)
+            }
+          }, 50)
+        })
+      })
+
+      const saveBtn = document.getElementById('links-save-btn')
+      if (saveBtn) {
+        saveBtn.addEventListener('click', function() {
+          const inputs = document.querySelectorAll('#bottom-sheet-content input[data-platform]')
+          inputs.forEach(inp => {
+            const platform = inp.dataset.platform
+            const val = inp.value.trim()
+            if (!profile.links) profile.links = {}
+            if (val && isSafeUrl(val)) {
+              profile.links[platform] = val
+            } else if (!val) {
+              delete profile.links[platform]
+            }
+          })
+          saveProfile()
+          renderLinks()
+          closeSheet()
+        })
+      }
+    }
+
+    // ── FAN CAPTURE SHEET BUILDER ────────────────────────────────
+    function buildFanCaptureSheet() {
+      const currentSub = profile.fanCaptureSub || ''
+      const state = computeState(profile)
+      const headings = {
+        'default':     'Stay close.',
+        'pre-release': 'You signed up right before something.',
+        'gig':         'I\'m playing tonight.',
+        'live':        'Something just dropped.'
+      }
+      const previewHeading = headings[state] || headings['default']
+
+      return `
+        <div class="sheet-live-preview">
+          <div class="sheet-live-preview__label">Preview</div>
+          <div class="sheet-live-preview__heading" id="sheet-fc-preview">${escHtml(previewHeading)}</div>
+        </div>
+        <div class="sheet-field">
+          <label class="sheet-label" for="sheet-fc-sub">Sub-text (optional)</label>
+          <input class="sheet-input" id="sheet-fc-sub" type="text" value="${escHtml(currentSub)}" placeholder="I'll reach out directly. No algorithm.">
+        </div>
+        <button class="sheet-save-btn" id="fc-save-btn" type="button">Save</button>
+      `
+    }
+
+    function wireFanCaptureSheet() {
+      const saveBtn = document.getElementById('fc-save-btn')
+      if (saveBtn) {
+        saveBtn.addEventListener('click', function() {
+          const subVal = (document.getElementById('sheet-fc-sub')?.value || '').trim()
+          profile.fanCaptureSub = subVal || ''
+          saveProfile()
+          renderFanCapture()
+          closeSheet()
+        })
+      }
+    }
+
+    // ── TOAST ────────────────────────────────────────────────────
+    function showToast(message, tone) {
+      const existing = document.getElementById('ableToast')
+      if (existing) existing.remove()
+      const toast = document.createElement('div')
+      toast.id = 'ableToast'
+      toast.className = 'able-toast able-toast--' + (tone || 'amber')
+      toast.setAttribute('role', 'alert')
+      toast.setAttribute('aria-live', 'polite')
+      const dot = document.createElement('span')
+      dot.className = 'toast-dot'
+      const msg = document.createElement('span')
+      msg.className = 'toast-message'
+      msg.textContent = message
+      const closeBtn = document.createElement('button')
+      closeBtn.className = 'toast-close'
+      closeBtn.setAttribute('aria-label', 'Dismiss')
+      closeBtn.textContent = '✕'
+      closeBtn.onclick = () => document.getElementById('ableToast')?.remove()
+      toast.appendChild(dot)
+      toast.appendChild(msg)
+      toast.appendChild(closeBtn)
+      document.body.appendChild(toast)
+      setTimeout(() => toast?.remove(), 4000)
+    }
+
+    // ── INIT ─────────────────────────────────────────────────────
+    renderProfile()
+  </script>
+</body>
+</html>
