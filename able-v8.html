@@ -8835,6 +8835,18 @@
 
     // === RENDER HERO =============================================
 
+    function getSourceLabel(src) {
+      const map = {
+        instagram:  'Found through Instagram',
+        tiktok:     'Found through TikTok',
+        youtube:    'Found through YouTube',
+        spotify:    'Found through Spotify',
+        twitter:    'Found through X',
+        soundcloud: 'Found through SoundCloud',
+      }
+      return map[src] || null
+    }
+
     function renderHero(profile) {
       const shell = document.getElementById('app-shell')
       const state = computeState(profile)
@@ -8971,15 +8983,7 @@
       ;(function() {
         const _pill = document.getElementById('hero-source-pill')
         if (!_pill) return
-        const SOURCE_LABELS = {
-          instagram: 'Found through Instagram',
-          tiktok:    'Found through TikTok',
-          youtube:   'Found through YouTube',
-          spotify:   'Found through Spotify',
-          twitter:   'Found through X',
-          soundcloud:'Found through SoundCloud',
-        }
-        const _label = SOURCE_LABELS[SESSION_SOURCE]
+        const _label = getSourceLabel(SESSION_SOURCE)
         if (_label) {
           _pill.textContent = _label
           _pill.hidden = false
