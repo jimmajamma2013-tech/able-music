@@ -992,6 +992,97 @@
     }
 
     /* ============================================================
+       STICKY BOTTOM BAR
+       Appears when top card CTAs scroll out of view.
+       Research: floating CTA lifts mobile conversion 32.5%.
+       ============================================================ */
+    #sticky-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: var(--z-sticky);
+      padding: var(--sp-3) var(--sp-5);
+      padding-bottom: calc(var(--sp-3) + env(safe-area-inset-bottom, 0px));
+      background: rgba(13,14,26,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      gap: var(--sp-3);
+      transform: translateY(100%);
+      transition: transform 0.3s var(--ease-decel);
+      pointer-events: none;
+    }
+
+    #sticky-bar.visible {
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Hide sticky bar in edit mode — artist doesn't need it */
+    body.edit-mode #sticky-bar { display: none; }
+
+    /* Hide when sheet or ceremony is open */
+    body.sheet-open #sticky-bar { opacity: 0; pointer-events: none; }
+
+    #sticky-bar-primary {
+      flex: 1;
+      height: 44px;
+      border-radius: var(--r-pill);
+      background-color: var(--color-accent);
+      color: var(--color-on-accent, #fff);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform var(--dur-fast) var(--ease-spring), opacity var(--dur-fast);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #sticky-bar-primary:active { transform: scale(0.96); opacity: 0.88; }
+
+    #sticky-bar-signup {
+      height: 44px;
+      padding: 0 var(--sp-5);
+      border-radius: var(--r-pill);
+      background: rgba(240,237,232,0.12);
+      border: 1.5px solid rgba(240,237,232,0.5);
+      color: #f0ede8;
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform var(--dur-fast) var(--ease-spring);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #sticky-bar-signup:active { transform: scale(0.96); }
+
+    /* CTA entrance animation on load */
+    .top-card__cta-primary,
+    .top-card__cta-secondary {
+      animation: cta-enter var(--dur-slow) var(--ease-spring) 0.3s both;
+    }
+    .top-card__cta-secondary {
+      animation-delay: 0.42s;
+    }
+    @keyframes cta-enter {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .top-card__cta-primary,
+      .top-card__cta-secondary { animation: none; }
+    }
+
+    /* ============================================================
        BOTTOM SHEET
        ============================================================ */
     #sheet-backdrop {
@@ -1577,6 +1668,12 @@
   </div><!-- /app-shell -->
 
   <!-- Sheet Backdrop -->
+  <!-- STICKY BOTTOM BAR — appears when top card CTAs scroll out of view -->
+  <div id="sticky-bar" role="complementary" aria-label="Quick actions">
+    <a id="sticky-bar-primary" href="#" role="button">Stream my music</a>
+    <button id="sticky-bar-signup" type="button">Sign up</button>
+  </div>
+
   <div id="sheet-backdrop" aria-hidden="true"></div>
 
   <!-- Bottom Sheet -->
@@ -2455,8 +2552,61 @@
       setTimeout(() => toast?.remove(), 4000)
     }
 
+    // ── STICKY BAR ───────────────────────────────────────────────
+    function initStickyBar() {
+      const bar        = document.getElementById('sticky-bar')
+      const barPrimary = document.getElementById('sticky-bar-primary')
+      const barSignup  = document.getElementById('sticky-bar-signup')
+      const topCard    = document.getElementById('top-card')
+      if (!bar || !topCard) return
+
+      // Sync label + href from main CTA
+      function syncStickyBar() {
+        const mainCta = document.getElementById('cta-primary')
+        if (mainCta) {
+          barPrimary.textContent = mainCta.textContent
+          barPrimary.href = mainCta.href || '#'
+        }
+      }
+
+      // Show sticky bar after scrolling past ~40% of top card height
+      const SCROLL_THRESHOLD = Math.round(topCard.offsetHeight * 0.4) || 220
+      function onScroll() {
+        bar.classList.toggle('visible', window.scrollY > SCROLL_THRESHOLD)
+      }
+      window.addEventListener('scroll', onScroll, { passive: true })
+      onScroll() // check immediately on init
+
+      // Primary: track click + navigate
+      barPrimary.addEventListener('click', () => {
+        const mainCta = document.getElementById('cta-primary')
+        if (mainCta) trackClick(barPrimary.textContent, 'sticky_primary_cta', barPrimary.href)
+      })
+
+      // Sign up: scroll to fan capture + focus email
+      barSignup.addEventListener('click', () => {
+        trackClick('Sign up', 'sticky_signup_cta', null)
+        const fc = document.getElementById('fan-capture')
+        if (fc) fc.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        setTimeout(() => {
+          const input = document.getElementById('fan-email')
+          if (input) input.focus()
+        }, 450)
+      })
+
+      // Hide sign up button after fan has signed up this session
+      if (sessionStorage.getItem('able_fan_signed') === 'true') {
+        barSignup.hidden = true
+      }
+
+      syncStickyBar()
+      // Re-sync after any profile render
+      document.addEventListener('able:profile-rendered', syncStickyBar)
+    }
+
     // ── INIT ─────────────────────────────────────────────────────
     renderProfile()
+    initStickyBar()
   </script>
 </body>
 </html>
