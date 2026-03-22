@@ -708,11 +708,11 @@
     }
 
     .top-card__cta-secondary {
-      background: rgba(240,237,232,0.12);
-      border: 1.5px solid rgba(240,237,232,0.35);
-      color: #f0ede8;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(240,237,232,0.14);
+      border: 1.5px solid rgba(240,237,232,0.75);
+      color: #ffffff;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
 
     .top-card__cta-primary:active,
@@ -1892,15 +1892,12 @@
       const primaryBtn = document.getElementById('cta-primary')
       const secondaryBtn = document.getElementById('cta-secondary')
 
-      // Primary CTA label
+      // Primary CTA label — campaign states always win
       let primaryLabel = 'Stream my music'
-      if (profile.primaryCta && profile.primaryCta.label) {
-        primaryLabel = profile.primaryCta.label
-      } else {
-        if (state === 'pre-release') primaryLabel = 'Pre-save'
-        else if (state === 'live')   primaryLabel = 'Stream now'
-        else if (state === 'gig')    primaryLabel = 'Get tickets'
-      }
+      if (state === 'pre-release')      primaryLabel = 'Pre-save'
+      else if (state === 'live')        primaryLabel = 'Stream now'
+      else if (state === 'gig')         primaryLabel = 'Get tickets'
+      else if (profile.primaryCta?.label) primaryLabel = profile.primaryCta.label
       primaryBtn.textContent = primaryLabel
 
       // Primary CTA URL
