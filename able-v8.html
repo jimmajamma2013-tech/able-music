@@ -1104,6 +1104,36 @@
     }
 
     /* State chip */
+    /* Source-aware pill — "FOUND THROUGH INSTAGRAM" */
+    .hero__source-pill {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 4;
+      padding: 5px 10px;
+      border-radius: var(--r-pill);
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.9);
+      border: 1px solid rgba(255,255,255,0.12);
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.3s var(--ease-decel), transform 0.3s var(--ease-decel);
+    }
+    .hero__source-pill.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero__source-pill { transition: none; }
+    }
+
     .hero__state-chip {
       display: inline-flex;
       align-items: center;
@@ -5959,6 +5989,9 @@
         <!-- Top vignette — cinematic editorial framing -->
         <div class="hero__top-vignette" aria-hidden="true"></div>
 
+        <!-- Source-aware pill: "FOUND THROUGH INSTAGRAM" etc -->
+        <div class="hero__source-pill" id="hero-source-pill" hidden aria-live="polite"></div>
+
         <!-- Bottom scrim -->
         <div class="hero__scrim" aria-hidden="true"></div>
 
@@ -8732,11 +8765,15 @@
       document.getElementById('hero-artwork').hidden = true
 
       // YouTube: auto-generate thumbnail + branded play button
-      const ytHeroMatch = (topCard.videoUrl || topCard.embedUrl || '').match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]+)/)
+      const rawUrl = topCard.videoUrl || topCard.embedUrl || ''
+      const ytHeroMatch = rawUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]+)/)
       const ytHeroId = ytHeroMatch ? ytHeroMatch[1] : null
+      const ttHeroMatch = rawUrl.match(/tiktok\.com\/@[^/]+\/video\/(\d+)/)
+      const ttHeroId = ttHeroMatch ? ttHeroMatch[1] : null
 
       const posterSrc = topCard.posterUrl
         || (ytHeroId ? `https://img.youtube.com/vi/${ytHeroId}/maxresdefault.jpg` : null)
+        // TikTok: no reliable poster without oEmbed; fallback handled by artwork layer
 
       if (posterSrc) {
         poster.src = posterSrc
@@ -8755,10 +8792,15 @@
             </svg>
           `
         }
+      } else if (ttHeroId) {
+        // TikTok: no thumbnail API without auth — show play button over artwork
+        playBtn.hidden = false
+        playBtn.setAttribute('aria-label', 'Play TikTok video')
       }
 
       const embedSrc = topCard.embedUrl
-        || (ytHeroId ? `https://www.youtube-nocookie.com/embed/${ytHeroId}` : null)<!-- C14 #17 -->
+        || (ytHeroId ? `https://www.youtube-nocookie.com/embed/${ytHeroId}` : null)
+        || (ttHeroId ? `https://www.tiktok.com/embed/v2/${ttHeroId}` : null)<!-- C14 #17 -->
 
       if (embedSrc) {
         playBtn.addEventListener('click', () => {
@@ -8908,6 +8950,28 @@
         }
       }
       applyStateChip(chipState, false, chipCustomText)
+
+      // Source-aware pill: "FOUND THROUGH INSTAGRAM" etc
+      ;(function() {
+        const _pill = document.getElementById('hero-source-pill')
+        if (!_pill) return
+        const SOURCE_LABELS = {
+          instagram: 'Found through Instagram',
+          tiktok:    'Found through TikTok',
+          youtube:   'Found through YouTube',
+          spotify:   'Found through Spotify',
+          twitter:   'Found through X',
+          soundcloud:'Found through SoundCloud',
+        }
+        const _label = SOURCE_LABELS[SESSION_SOURCE]
+        if (_label) {
+          _pill.textContent = _label
+          _pill.hidden = false
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() { _pill.classList.add('visible') })
+          })
+        }
+      })()
 
       // C4 — Gig mode activation flash: one-time per session, most dramatic ABLE moment
       if (state === 'gig' && !sessionStorage.getItem('gig-flash-shown')) {
@@ -10128,6 +10192,10 @@
       // color=white uses white progress bar (not YouTube red)
       const ytMatch = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]+)/)
       if (ytMatch) return `https://www.youtube-nocookie.com/embed/${ytMatch[1]}?modestbranding=1&rel=0&color=white`// C14 #17
+
+      // TikTok — embed via tiktok.com/embed/v2/VIDEO_ID
+      const ttMatch = u.match(/tiktok\.com\/@[^/]+\/video\/(\d+)/)
+      if (ttMatch) return `https://www.tiktok.com/embed/v2/${ttMatch[1]}`
 
       // SoundCloud — suppress user, comments, reposts, teaser, related
       if (u.includes('soundcloud.com')) {
