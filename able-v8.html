@@ -20,9 +20,14 @@
   <!-- Preload demo hero artwork — w=768 matches srcset selection for 390-412px viewports -->
   <link rel="preload" href="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=768&q=75&fm=webp&auto=format" as="image" fetchpriority="high" crossorigin="anonymous">
 
-  <!-- Async font load — non-blocking, display=swap prevents FOIT -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap"></noscript>
+  <!-- Preload DM Sans woff2 — font file fetched immediately, before stylesheet parses.
+       Eliminates font-swap CLS on hero text (Lighthouse identified this file as culprit). -->
+  <link rel="preload" as="font" type="font/woff2"
+        href="https://fonts.gstatic.com/s/dmsans/v17/rP2Hp2ywxg089UriCZOIHTWEBlw.woff2"
+        crossorigin>
+  <!-- font-display=optional: use font only if ready before first paint; no swap = no CLS -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Barlow+Condensed:wght@700&display=optional" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Barlow+Condensed:wght@700&display=optional"></noscript>
 
   <!-- Meta -->
   <meta name="description" id="meta-description" content="Music, shows, and more — direct from the artist.">
