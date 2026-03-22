@@ -17,8 +17,8 @@
   <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="ABLE Music"><!-- C14 #4 -->
   <!-- Preload Supabase SDK — kicks off fetch early but doesn't block parse/render -->
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" as="script">
-  <!-- Preload demo hero artwork — JS may override src once profile loads -->
-  <link rel="preload" href="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75&fm=webp&auto=format" as="image" fetchpriority="high" crossorigin="anonymous">
+  <!-- Preload demo hero artwork — w=768 matches srcset selection for 390-412px viewports -->
+  <link rel="preload" href="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=768&q=75&fm=webp&auto=format" as="image" fetchpriority="high" crossorigin="anonymous">
 
   <!-- Async font load — non-blocking, display=swap prevents FOIT -->
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Barlow+Condensed:wght@700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -5961,7 +5961,7 @@
 
         <!-- Artwork image — LCP element, eager + high priority -->
         <img class="hero__artwork" id="hero-artwork"
-             src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=430&q=75&fm=webp&auto=format"
+             src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=768&q=75&fm=webp&auto=format"
              alt="" aria-hidden="true" loading="eager" fetchpriority="high"
              width="430" height="430"
              crossorigin="anonymous"
@@ -9572,7 +9572,15 @@
       const trustText = variant.trust.replace('{artist}', artistName)
 
       if (h1) h1.textContent = profile.fanCaptureHeading || variant.heading
-      if (h2) h2.textContent = profile.fanCaptureHeading || variant.heading
+      // Second capture — different copy so it doesn't feel like a copy-paste
+      const SECONDARY_HEADINGS = {
+        'profile':     'Want to hear when something drops?',
+        'pre-release': 'Don\'t miss it when it lands.',
+        'live':        'Like what you heard?',
+        'gig':         'Want to know about the next one?',
+        'near-future': 'Remind me when it\'s here.',
+      }
+      if (h2) h2.textContent = SECONDARY_HEADINGS[state] || 'Want to stay in the loop?'
 
       // C9 #29 — fan capture form accessible label
       const _ariaLabel = `Join ${artistName}'s list`
@@ -12287,10 +12295,9 @@
       const _handleParam = new URLSearchParams(location.search).get('handle')
       if (_handleParam) await fetchRemoteProfile(_handleParam)
 
-      // Generate stable device ID on first load — used for Supabase migration (§6.2)
-      if (!localStorage.getItem('able_artist_id')) {
-        try { localStorage.setItem('able_artist_id', crypto.randomUUID()) } catch (_) {}
-      }
+      // NOTE: artist ID is NOT generated here for fans — only admin.html and start.html
+      // generate IDs. Generating it here caused every fan visit to trigger the setup bar
+      // (initEditBar sees an ID but no profile → shows margin-top bar → CLS 1.0).
 
       const shell = document.getElementById('app-shell')
       const profile = getProfile()
