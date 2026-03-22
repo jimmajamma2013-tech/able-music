@@ -6002,8 +6002,10 @@
 
         <!-- Hero text -->
         <div class="hero__text">
-          <!-- State chip: pre-release | live | gig | (hidden for profile) -->
-          <div class="hero__state-chip" id="hero-state-chip" role="status" aria-live="polite">
+          <!-- State chip: pre-release | live | gig | (hidden for profile)
+               Initialized to --profile (display:none) to prevent layout shift:
+               JS confirms profile state → still none → no height change → no CLS. -->
+          <div class="hero__state-chip hero__state-chip--profile" id="hero-state-chip" role="status" aria-live="polite">
             <span id="hero-state-label"></span>
           </div>
 
@@ -7024,7 +7026,7 @@
           id: 'demo-m1',
           type: 'early_access',
           title: 'Echo Chamber — early access listen',
-          date: new Date(Date.now() + 3 * 86400000).toISOString().slice(0,10),
+          date: new Date(Date.now() + 21 * 86400000).toISOString().slice(0,10), // 21d out — beyond 7d window so demo stays in profile state (avoids near-future chip CLS)
           access: 'supporter',
           active: true,
           artistNote: 'Close circle hears this first'
