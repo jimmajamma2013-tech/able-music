@@ -211,6 +211,7 @@ When backend is added:
 ### V8 strategy docs — PRIMARY BUILD AUTHORITY (2026-03-15)
 | File | What's in it |
 |---|---|
+| `docs/TOP_CARD_CTA_DECISION_SPEC.md` | **Top card + CTA system** — governing spec for all top card, CTA, source-aware, and artist setup decisions |
 | `docs/pages/profile/DESIGN-SPEC.md` | **able-v8.html build spec** — 9.7/10 |
 | `docs/pages/admin/DESIGN-SPEC.md` | **admin.html build spec** — 9.7/10 |
 | `docs/pages/onboarding/DESIGN-SPEC.md` | **start.html build spec** — 9.9/10 |

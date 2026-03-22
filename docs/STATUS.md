@@ -239,6 +239,13 @@
 - [ ] Close Circle + Stripe wiring
 - [ ] Email broadcasts (Resend bulk send, Artist Pro tier)
 - [ ] Netlify deploy + ablemusic.co DNS (main branch merge — needs James sign-off)
+- [ ] **Cold-source pre-release exception** — source-aware CTA position adjustment for TikTok / YouTube Shorts traffic during pre-release state
+  - **Spec:** `docs/TOP_CARD_CTA_DECISION_SPEC.md` §2 Decision priority order (cold source exception)
+  - **Current behaviour in `able-v8.html`:** Pre-save is always primary CTA when state = pre-release, regardless of source. No source-aware CTA position logic exists.
+  - **Target behaviour per spec:** When source = TikTok or YouTube Shorts during pre-release, a warm-up action (stream teaser, watch clip) leads as primary CTA. Pre-save is demoted to secondary but must remain reachable without scroll.
+  - **Why it matters:** TikTok and YouTube Shorts traffic is cold and algorithm-served. A pre-save ask before the fan has heard anything exceeds the ask ceiling for that source and will bounce. The warm-up lead increases downstream pre-save conversion.
+  - **Not yet implemented.** Requires UTM source detection to be wired to CTA position logic — source tracking exists (`?src=tiktok`) but does not yet influence which CTA is primary.
+  - **Do not attempt in Phase 1.** Needs 8 weeks of clean source data before adaptive CTA behaviour goes live (spec guardrail).
 
 ### Future (Year 2+)
 - [ ] PostHog analytics integration

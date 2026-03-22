@@ -6,7 +6,7 @@
 <!-- CSP delivered via netlify.toml headers — no inline meta to avoid dual-enforcement conflicts (H2) -->
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#0f1624">
+<meta name="theme-color" content="#09090f">
 <link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -209,7 +209,7 @@ html { font-size:16px; overscroll-behavior: none; }
   }
   *:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px var(--dash-bg), 0 0 0 4px #0d0e1a, 0 0 0 6px rgba(13,14,26,0.35);
+    box-shadow: 0 0 0 2px var(--dash-bg), 0 0 0 4px var(--bg), 0 0 0 6px rgba(13,14,26,0.35);
   }
 }
 
@@ -2606,7 +2606,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
       <p style="margin:0 0 24px;font-size:14px;color:rgba(232,233,240,0.55);line-height:1.5;">We'll send a link to your inbox. Tap it and you're in — no password needed.</p>
       <label for="signin-email" style="display:block;font-size:12px;font-weight:600;letter-spacing:0.06em;color:rgba(232,233,240,0.5);margin-bottom:8px;">YOUR EMAIL</label>
       <input id="signin-email" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email"
-        style="width:100%;box-sizing:border-box;padding:12px 14px;background:#0d0e1a;border:1px solid rgba(255,255,255,0.12);border-radius:8px;font-size:16px;font-family:var(--font);color:#e8e9f0;outline:none;margin-bottom:12px;"
+        style="width:100%;box-sizing:border-box;padding:12px 14px;background:var(--bg);border:1px solid rgba(255,255,255,0.12);border-radius:8px;font-size:16px;font-family:var(--font);color:#e8e9f0;outline:none;margin-bottom:12px;"
         onkeydown="if(event.key==='Enter')document.getElementById('signin-send-btn').click()">
       <div id="signin-error" style="display:none;font-size:13px;color:#e05242;margin-bottom:8px;"></div>
       <button id="signin-send-btn" onclick="sendMagicLink()"
@@ -2895,9 +2895,21 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
           <div id="chqModeDesc" style="margin-top:10px;font-size:11px;color:var(--dash-t3);line-height:1.5;min-height:1.2em;transition:opacity 0.2s;"></div>
         </div>
 
+        <!-- Manual state override — force page to a specific mode -->
+        <div style="margin-top:14px;">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--dash-t3);margin-bottom:8px;">Campaign mode</div>
+          <div style="display:flex;gap:6px;" role="group" aria-label="Force page to state">
+            <button class="chq-state-btn auto" data-state="" title="Let ABLE switch automatically based on your release date">Auto</button>
+            <button class="chq-state-btn" data-state="profile">Profile</button>
+            <button class="chq-state-btn" data-state="pre-release">Pre-release</button>
+            <button class="chq-state-btn" data-state="live">Live</button>
+          </div>
+        </div>
+
         <div class="chq-divider"></div>
 
-        <!-- Gig mode -->
+        <!-- Gig mode — superimposes on top of campaign mode for 24h, then reverts -->
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--dash-t3);margin-bottom:8px;">Tonight only</div>
         <div class="gig-strip" id="gigStrip" onclick="toggleGigHQ()">
           <div class="gig-dot"></div>
           <div class="gig-info">
@@ -3399,7 +3411,7 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
               </div>
               <div style="flex:1;min-width:160px;">
                 <div class="field-label" style="margin-bottom:6px;">Section heading <span style="font-weight:400;opacity:.6;">(optional)</span></div>
-                <input class="field-input" id="recsHeadingInput" type="text" placeholder="Worth knowing" maxlength="40"
+                <input class="field-input" id="recsHeadingInput" type="text" placeholder="Recommended" maxlength="40"
                   oninput="saveRecsHeading(this.value)">
               </div>
             </div>
@@ -9827,7 +9839,7 @@ function renderRecsAdmin() {
   const headingInput = document.getElementById('recsHeadingInput');
   if (headingInput && !headingInput.value) {
     headingInput.value = (recsData.headings || {})['profile'] || '';
-    headingInput.placeholder = 'Worth knowing';
+    headingInput.placeholder = 'Recommended';
   }
 
   if (!pool.length) {
