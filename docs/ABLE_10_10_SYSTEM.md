@@ -193,6 +193,18 @@ Not a social network. Not a streaming platform. Not a marketing tool. Not a cont
 - Section order changes are verifiable between pre-release, live, and gig states
 - No two adjacent sections share identical visual weight
 
+**✅ COMPLETE — 2026-03-22**
+All three criteria passed:
+1. Fan capture elevated in profile mode — visually above all other below-fold sections.
+2. No adjacent sections at equal visual weight in profile mode — three-tier system (primary 35.1px/w700/accent border → secondary 17px/w500/4.3% white border → tertiary 15px/w500/2.4% white border) applied via `[data-campaign-state="profile"]` CSS.
+3. Cross-state section order verified by Playwright (computed + rendered DOM match):
+   - Pre-release: world-map → listen → shows (world-map promoted; listen demoted)
+   - Live: listen → shows → merch → world-map (merch promoted to position 3)
+   - Gig: shows → listen → world-map (shows/listen swap; tickets-first)
+   All three are structurally distinct from profile order in their top 2 visible sections.
+
+Quality Phase 3 is next. Not yet started.
+
 ---
 
 ### Phase 3 — Brand and consistency
