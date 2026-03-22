@@ -9298,10 +9298,12 @@
 
     async function sbSyncClick(label, type, source) {
       if (!sb) return
+      const _clickArtistId = localStorage.getItem('able_artist_id')
+      if (!_clickArtistId) return
       try {
         await sb.from('clicks').insert({
           id:         crypto.randomUUID(),
-          profile_id: getArtistId(),
+          profile_id: _clickArtistId,
           label,
           type,
           source,
@@ -9443,10 +9445,14 @@
 
     async function sbSyncView(source) {
       if (!sb) return
+      // Never auto-generate an artist ID for fan visits — use existing ID or bail.
+      // Auto-generating here triggers the setup bar on subsequent page loads (CLS).
+      const _viewArtistId = localStorage.getItem('able_artist_id')
+      if (!_viewArtistId) return
       try {
         await sb.from('views').insert({
           id:         crypto.randomUUID(),
-          profile_id: getArtistId(),
+          profile_id: _viewArtistId,
           ts:         Date.now(),
           source,
           user_agent: navigator.userAgent || null,
@@ -12446,9 +12452,10 @@
       // On-page edit bar — show if artist owns this profile (has localStorage data)
       initEditBar(profile)
 
-      // Sync profile to Supabase on load (ensures FK exists for fan sign-ups)
-      // Fire-and-forget — localStorage is always the source of truth
-      sbSyncProfile(profile).catch(function() {})
+      // Sync profile to Supabase on load — owner's device only.
+      // Calling getArtistId() on fan visits creates a stale ID in localStorage
+      // that triggers the setup bar on subsequent loads → CLS 1.0.
+      if (getIsOwner(profile)) sbSyncProfile(profile).catch(function() {})
 
       // Tier gate: fan near-full banner for free-tier owners (§9.1)
       const isOwner = getIsOwner(profile)
