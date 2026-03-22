@@ -6020,13 +6020,14 @@
             <span class="hero__tag" id="hero-location">LONDON</span>
           </div>
 
-          <!-- Top card optional credit line -->
-          <p class="hero__credit-line" id="hero-credit-line" hidden></p>
+          <!-- Top card optional credit line — pre-populated for demo to prevent CLS.
+               JS confirms same text/visibility on demo load; overwrites on handle pages. -->
+          <p class="hero__credit-line" id="hero-credit-line">Prod. LUNA · Mix. James Reid · Master. Calum MacPhail</p>
 
-          <!-- Copy your ABLE link — subtle utility -->
+          <!-- Copy your ABLE link — pre-populated for demo to prevent CLS (44px shift) -->
           <button class="hero__copy-link pressable" id="hero-copy-link"
-                  hidden>
-            <span class="hero__copy-prefix">ablemusic.co/</span><span id="hero-handle-display"></span>
+                  aria-label="Copy your ABLE link: ablemusic.co/luna">
+            <span class="hero__copy-prefix">ablemusic.co/</span><span id="hero-handle-display">luna</span>
           </button>
         </div>
       </section>
