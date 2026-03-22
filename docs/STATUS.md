@@ -232,6 +232,8 @@
 - ~~**Fan confirmation email URL param**~~: ✅ Always done — `?artist=slug&ref=email-confirm` is in fan-confirmation.js line 69
 - ~~**GDPR front-end disclosure**~~: ✅ Done — privacy policy link + opt_in + consent_ts wired to Supabase
 
+> **Terminology note:** "Phase" in this section refers to **Roadmap Phases** — product shipping milestones. This is distinct from the **Quality Phases** in `docs/ABLE_10_10_SYSTEM.md` (which also has a "Phase 2"). Qualified forms: **Roadmap Phase 2** (here) vs **Quality Phase 2** (10/10 system).
+
 ### Phase 2 (post-launch)
 - [ ] Supabase auth (magic link — so artists own data, not just localStorage)
 - [ ] freelancer.html — spec complete at `docs/pages/freelancer/DESIGN-SPEC.md`

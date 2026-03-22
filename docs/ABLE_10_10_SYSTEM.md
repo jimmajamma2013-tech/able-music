@@ -171,6 +171,8 @@ Not a social network. Not a streaming platform. Not a marketing tool. Not a cont
 
 ---
 
+> **Terminology note:** "Phase" in this document refers to **Quality Phases** in the 10/10 improvement cycle (Phase 1 = Foundation, Phase 2 = Structure, etc.). This is distinct from the product **Roadmap Phases** in `docs/STATUS.md` (Phase 1 = pre-launch, Phase 2 = post-launch backend). When referencing these phases in conversation or other docs, use the qualified forms: **Quality Phase 2** and **Roadmap Phase 2**.
+
 ### Phase 2 — Structure and hierarchy
 **Objective:** Below-the-fold hierarchy supports the hero. Section order reflects campaign state. Visual weight differentiates primary from secondary sections.
 
