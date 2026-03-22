@@ -203,12 +203,27 @@ All three criteria passed:
    - Gig: shows → listen → world-map (shows/listen swap; tickets-first)
    All three are structurally distinct from profile order in their top 2 visible sections.
 
-Quality Phase 3 is next. Not yet started.
+Quality Phase 3 is complete. Quality Phase 4 is next. Not yet started.
 
 ---
 
 ### Phase 3 — Brand and consistency
 **Objective:** Any surface is identifiable as ABLE. Token differences between surfaces are justified, not accidental. Typography voice is consistent. All surfaces feel like the same product at their respective quality level.
+
+**✅ COMPLETE — 2026-03-22**
+All four success criteria passed. Key items resolved:
+1. **landing.html Artist World register** — retired blue-steel palette (#0f1624 system) across all tokens, borders, text, and gradients. Midnight Navy doctrine applied. Accent confirmed as terracotta #d4704e.
+2. **start.html Artist World register** — same correction applied. Blue accent (#8ab4ce) replaced with terracotta. All 13 inline hardcoded blue values updated. Start and landing now share one coherent arrival world.
+3. **Atmospheric gradient drift** — hero::before and footer-cta::before blue-purple stops cleaned across landing. Zero cool-register stops remain.
+4. **Barlow Condensed italic loading** — Google Fonts request updated to load true italic cuts at 700/900 (was upright-only; browser was synthesising oblique for all italic editorial text).
+5. **Quote weight doctrine violations** — .quote__mark and .quote__text declared weights 300/400 despite only 700 being loaded. CSS corrected to 700 to match rendered output. Dead font-variation-settings (opsz on non-variable font) removed.
+
+Surface background doctrine written to `docs/systems/brand-identity/DOCTRINE.md` — two surface categories (Artist World / Tool World), retired value (#0f1624) documented.
+
+**Remaining housekeeping items (not QP3 blockers):**
+- --wisp-gold token name (now terracotta-tinted — semantic mismatch, no rendering impact)
+- opsz settings on other Barlow elements (dead, no rendering impact)
+- --font-editorial / --font-d naming duplication (cosmetic)
 
 **Allowed:**
 - Token audit and unification within each surface
