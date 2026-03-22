@@ -1916,6 +1916,30 @@
       font-size: clamp(36px, 10vw, var(--text-4xl));
     }
 
+    /* Phase 2 — section visual hierarchy in profile mode: Listen (primary) > Shows (secondary) > Clips (tertiary)
+       Uses the existing section-header--secondary pattern applied via state scoping, not class change,
+       so other states (gig, pre-release, live) are unaffected. */
+    [data-campaign-state="profile"] #shows-section .section-header {
+      border-top-color: rgba(255,255,255,0.045);
+      padding-top: var(--sp-3);
+      margin-bottom: var(--sp-4);
+    }
+    [data-campaign-state="profile"] #shows-section .section-title {
+      font-size: var(--text-lg);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+    [data-campaign-state="profile"] .clips-section .section-header {
+      border-top-color: rgba(255,255,255,0.025);
+      padding-top: var(--sp-2);
+      margin-bottom: var(--sp-3);
+    }
+    [data-campaign-state="profile"] .clips-section .section-title {
+      font-size: var(--text-base);
+      font-weight: 500;
+      letter-spacing: 0.06em;
+    }
+
     .fan-capture--secondary {
       margin-top: 0;
       border-top-width: 1px;
