@@ -12,8 +12,8 @@ ABLE uses exactly three typefaces. This is a decision, not an accident.
 | Role | Typeface | Where |
 |---|---|---|
 | Display / brand moments | Barlow Condensed 700 | Wordmark, section titles, page titles, major CTAs, hero headlines |
-| Artist profile body | DM Sans 400/500 | able-v7.html — all body text, labels, metadata |
-| Admin body | Plus Jakarta Sans 400/500/600 | admin.html, start.html — UI chrome, descriptions, navigation |
+| Artist profile body | DM Sans 400/500 | able-v8.html, start.html — all body text, labels, metadata |
+| Admin body | Plus Jakarta Sans 400/500/600 | admin.html — UI chrome, descriptions, navigation |
 
 **Why three:** One display face creates brand cohesion (every context feels like ABLE). Two body faces are justified because the artist-facing page and the admin backstage serve different registers — DM Sans is slightly warmer and more casual, appropriate for fan-facing copy; Plus Jakarta Sans has more structure, appropriate for dashboard controls and data.
 
@@ -73,9 +73,9 @@ This means every artist's page is a fundamentally different visual experience wh
 
 ### Admin accent is fixed
 
-The admin dashboard uses `--acc: #f4b942` (amber). This is not configurable. It creates the backstage-vs-stage contrast:
-- On stage (able-v7.html): artist's accent colour
-- Backstage (admin.html): ABLE amber
+The admin dashboard uses `--acc: #c9a84c` (muted gold). This is not configurable. It creates the backstage-vs-stage contrast:
+- On stage (able-v8.html): artist's accent colour
+- Backstage (admin.html): ABLE gold
 
 This contrast is intentional. The artist should feel the shift when they move from "what my fans see" to "my dashboard."
 
@@ -125,3 +125,33 @@ DESIGN_SYSTEM_SPEC.md records the canonical token values. This document records 
 - This document is the authority on *why those values exist* and whether a proposed change preserves the intent
 
 Do not change the type tokens without updating this doctrine to record why.
+
+---
+
+## The surface background doctrine
+**Added: 2026-03-22 (Quality Phase 3)**
+
+ABLE has exactly two surface categories. Every surface belongs to one. No third category exists.
+
+### Category A — Artist World
+**Surfaces:** `able-v8.html` · `start.html` · `landing.html` · `fan.html` (when built)
+**Base background:** `#0d0e1a` (Midnight Navy)
+**Card surfaces:** `#16161e` (surface-1) · `#1e1e2a` (surface-2)
+
+These surfaces face outward — toward fans, prospects, and arriving artists. They are all portals into the same place. A fan visiting a profile, a prospective artist on the landing page, and a new artist going through onboarding should all feel the same darkness and warmth. The Midnight Navy is warm-dark: not cold, not blue, not pure black. It holds a rich palette without competing with it.
+
+### Category B — Tool World
+**Surfaces:** `admin.html`
+**Base background:** `#09090f` (near-black)
+**Card surfaces:** `#f8f5f0` (cream — warm white, "paper on dark surface")
+
+Admin is a production surface, not a presentation surface. Near-black communicates backstage. The step-down from Midnight Navy to near-black is intentional: it signals the shift from "what fans see" to "where you work." The cream card system is the visual engine of the Tool World and is not used anywhere in the Artist World.
+
+### The retired value
+`#0f1624` (blue-steel) is not part of the doctrine. It belongs to neither category. Its cooler, bluer character drifts toward a generic SaaS register. Any surface currently using `#0f1624` must be updated to `#0d0e1a`.
+
+### Rules
+1. **New surfaces** — decide which category before choosing any colour.
+2. **Artist World surfaces share one base.** They must be visually indistinguishable at the floor level.
+3. **Tool World surfaces** may introduce additional depth layers but must not borrow Artist World card colours or vice versa.
+4. **Exceptions require this document to be updated** with a written rationale before implementation.
