@@ -2140,6 +2140,28 @@ function tryStep3() {
   localStorage.setItem('able_session', 'local-' + Date.now());
   sessionStorage.removeItem('able_wizard_draft');
 
+  // Sync profile to Supabase immediately (anon write, no auth required at this stage)
+  // This ensures the profile exists in Supabase when the artist taps the magic link
+  // on a different device. Admin.html will re-sync with the real user ID on SIGNED_IN.
+  if (sb) {
+    let artistId = localStorage.getItem('able_artist_id');
+    if (!artistId) { artistId = crypto.randomUUID(); try { localStorage.setItem('able_artist_id', artistId); } catch(_) {} }
+    sb.from('profiles').upsert({
+      id:           artistId,
+      name:         profile.name         || null,
+      handle:       profile.handle       || profile.slug || null,
+      bio:          profile.bio          || null,
+      accent:       profile.accent       || '#e05242',
+      theme:        profile.theme        || 'dark',
+      vibe:         profile.vibe         || 'indie',
+      page_state:   profile.stateOverride|| 'profile',
+      cta_primary:  profile.ctaPrimary   ? JSON.stringify(profile.ctaPrimary)  : null,
+      cta_secondary:profile.ctaSecondary ? JSON.stringify(profile.ctaSecondary): null,
+      platforms:    profile.platforms    ? JSON.stringify(profile.platforms)   : null,
+      updated_at:   Date.now(),
+    }, { onConflict: 'id' }).catch(function() { /* offline — admin.html will sync on login */ });
+  }
+
   // Send magic link via Supabase — show magic-sent state on success, proceed to done on failure
   if (sb) {
     const redirectTo = window.location.origin + '/admin.html';

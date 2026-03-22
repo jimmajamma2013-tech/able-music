@@ -1,0 +1,10 @@
+# ABLE Netlify redirects
+# Static pages — must come before the wildcard handle catch-all
+/admin    /admin.html    200
+/start    /start.html    200
+/landing  /landing.html  200
+/fan      /fan.html      200
+
+# Artist handle catch-all — ablemusic.co/maya → able-v8.html?handle=maya
+# Must be LAST
+/:handle  /able-v8.html?handle=:handle  200

@@ -2583,8 +2583,48 @@ button[disabled], button[aria-disabled="true"] { opacity: 0.4; cursor: not-allow
   display:flex;align-items:center;justify-content:center;gap:12px;
   padding:10px 16px;font-size:13px;color:#e8e9f0;font-family:var(--font);">
   <span>Your session expired. Sign in again to save changes.</span>
-  <button onclick="document.getElementById('session-expiry-banner').hidden=true" style="background:var(--acc,#f4b942);border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-family:var(--font);font-weight:500;color:#0d0e1a;cursor:pointer;min-height:32px;">Sign in →</button>
+  <button onclick="document.getElementById('session-expiry-banner').hidden=true;document.getElementById('signin-overlay').hidden=false;" style="background:var(--acc,#f4b942);border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-family:var(--font);font-weight:500;color:#0d0e1a;cursor:pointer;min-height:32px;">Sign in →</button>
   <button onclick="document.getElementById('session-expiry-banner').hidden=true" aria-label="Dismiss" style="background:none;border:none;color:rgba(232,233,240,.4);font-size:18px;cursor:pointer;padding:4px 8px;line-height:1;min-height:32px;">&times;</button>
+</div>
+
+<!-- ── SIGN-IN MODAL (magic link) ── -->
+<div id="signin-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="signin-heading" style="
+  position:fixed;inset:0;z-index:3000;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(9,9,15,0.92);backdrop-filter:blur(8px);
+  padding:24px;">
+  <div style="
+    width:100%;max-width:360px;
+    background:#12152a;border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px;padding:32px 28px;
+    font-family:var(--font,'Plus Jakarta Sans');">
+    <!-- Logo -->
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:0.08em;color:#e4dfd2;margin-bottom:24px;">ABLE</div>
+    <!-- Step 1: email input -->
+    <div id="signin-step-email">
+      <h2 id="signin-heading" style="margin:0 0 8px;font-size:20px;font-weight:600;color:#e8e9f0;line-height:1.2;">Sign in to your dashboard</h2>
+      <p style="margin:0 0 24px;font-size:14px;color:rgba(232,233,240,0.55);line-height:1.5;">We'll send a link to your inbox. Tap it and you're in — no password needed.</p>
+      <label for="signin-email" style="display:block;font-size:12px;font-weight:600;letter-spacing:0.06em;color:rgba(232,233,240,0.5);margin-bottom:8px;">YOUR EMAIL</label>
+      <input id="signin-email" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email"
+        style="width:100%;box-sizing:border-box;padding:12px 14px;background:#0d0e1a;border:1px solid rgba(255,255,255,0.12);border-radius:8px;font-size:16px;font-family:var(--font);color:#e8e9f0;outline:none;margin-bottom:12px;"
+        onkeydown="if(event.key==='Enter')document.getElementById('signin-send-btn').click()">
+      <div id="signin-error" style="display:none;font-size:13px;color:#e05242;margin-bottom:8px;"></div>
+      <button id="signin-send-btn" onclick="sendMagicLink()"
+        style="width:100%;padding:14px;background:#f4b942;border:none;border-radius:8px;font-size:15px;font-weight:700;font-family:var(--font);color:#0d0e1a;cursor:pointer;min-height:44px;transition:opacity .15s;">
+        Send magic link
+      </button>
+    </div>
+    <!-- Step 2: inbox confirmation -->
+    <div id="signin-step-sent" hidden>
+      <div style="font-size:32px;margin-bottom:16px;">✉️</div>
+      <h2 style="margin:0 0 8px;font-size:20px;font-weight:600;color:#e8e9f0;">Check your inbox</h2>
+      <p id="signin-sent-text" style="margin:0 0 24px;font-size:14px;color:rgba(232,233,240,0.55);line-height:1.5;">We sent a link to <strong id="signin-sent-email" style="color:#e8e9f0;"></strong>. Tap it and your dashboard will open.</p>
+      <button onclick="document.getElementById('signin-step-sent').hidden=true;document.getElementById('signin-step-email').hidden=false;"
+        style="width:100%;padding:12px;background:rgba(255,255,255,0.06);border:none;border-radius:8px;font-size:14px;font-family:var(--font);color:rgba(232,233,240,0.6);cursor:pointer;min-height:44px;">
+        Use a different email
+      </button>
+    </div>
+  </div>
 </div>
 
 <!-- ── SIDEBAR ── -->
@@ -4231,8 +4271,51 @@ if (sb) {
       // C17 #36 — session expiry banner
       const _sexBanner = document.getElementById('session-expiry-banner');
       if (_sexBanner) _sexBanner.hidden = false;
+      // Show sign-in modal
+      const _overlay = document.getElementById('signin-overlay');
+      if (_overlay) _overlay.hidden = false;
     }
   });
+
+  // Check auth state on load — show sign-in modal if not authenticated
+  sb.auth.getSession().then(function({ data }) {
+    if (!data.session) {
+      const _overlay = document.getElementById('signin-overlay');
+      if (_overlay) _overlay.hidden = false;
+    }
+  });
+}
+
+// Magic link sign-in
+async function sendMagicLink() {
+  if (!sb) return;
+  const emailInput = document.getElementById('signin-email');
+  const errEl = document.getElementById('signin-error');
+  const btn = document.getElementById('signin-send-btn');
+  const email = (emailInput ? emailInput.value : '').trim();
+  if (!email || !email.includes('@')) {
+    if (errEl) { errEl.textContent = 'Enter a valid email address.'; errEl.style.display = 'block'; }
+    return;
+  }
+  if (errEl) errEl.style.display = 'none';
+  if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; btn.style.opacity = '0.6'; }
+  try {
+    const { error } = await sb.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: window.location.origin + '/admin' }
+    });
+    if (error) throw error;
+    // Show confirmation step
+    const step1 = document.getElementById('signin-step-email');
+    const step2 = document.getElementById('signin-step-sent');
+    const sentEmail = document.getElementById('signin-sent-email');
+    if (step1) step1.hidden = true;
+    if (step2) step2.hidden = false;
+    if (sentEmail) sentEmail.textContent = email;
+  } catch (err) {
+    if (errEl) { errEl.textContent = 'Couldn\'t send the link. Try again in a moment.'; errEl.style.display = 'block'; }
+    if (btn) { btn.textContent = 'Send magic link'; btn.disabled = false; btn.style.opacity = '1'; }
+  }
 }
 
 function getArtistId() {

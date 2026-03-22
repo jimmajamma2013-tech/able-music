@@ -5009,8 +5009,110 @@
       cursor: pointer;
       transition: opacity var(--dur-fast);
       flex-shrink: 0;
+      min-height: 44px;
     }
     .ep-save-btn:hover { opacity: 0.88; }
+
+    /* Menu-first edit panel styles */
+    .ep-menu-heading {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-text-3);
+      margin: 0 0 12px;
+    }
+    .ep-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 4px;
+    }
+    .ep-menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      min-height: 52px;
+      padding: 0 4px;
+      background: none;
+      border: none;
+      border-bottom: 1px solid var(--color-border, rgba(255,255,255,0.07));
+      color: var(--color-text);
+      font-family: var(--font-body);
+      font-size: var(--text-base, 15px);
+      cursor: pointer;
+      text-align: left;
+      text-decoration: none;
+    }
+    .ep-menu-item:last-child { border-bottom: none; }
+    .ep-menu-item:active { opacity: 0.6; }
+    .ep-menu-item__label { flex: 1; }
+    .ep-menu-item__arrow { color: var(--color-text-3); font-size: 16px; }
+    .ep-menu-item__badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 10px;
+      background: var(--color-accent);
+      color: var(--cta-text-color, #000);
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 8px;
+    }
+    .ep-menu-item--link { color: var(--color-text-2); }
+
+    /* CTA preset picker */
+    .ep-cta-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ep-cta-preset {
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1.5px solid var(--color-border, rgba(255,255,255,0.12));
+      background: none;
+      color: var(--color-text-2);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      min-height: 36px;
+    }
+    .ep-cta-preset.active {
+      border-color: var(--color-accent);
+      background: var(--color-accent);
+      color: var(--cta-text-color, #000);
+    }
+    .ep-back-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: var(--color-accent);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 20px;
+      min-height: 44px;
+    }
+    .ep-sub-heading {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin: 0 0 20px;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
 
     .ep-hint {
       font-size: 11px;
@@ -6942,6 +7044,8 @@
     }
 
     function getProfile() {
+      // Remote profile (fetched by handle from Supabase) takes priority over localStorage
+      if (window._ableRemoteProfile) return window._ableRemoteProfile
       try {
         const stored = safeLS('able_v3_profile', null)
         // Return stored profile if it has a name, else fall back to demo
@@ -8973,6 +9077,38 @@
           updated_at:     Date.now(),
         }, { onConflict: 'id' })
       } catch (_) { /* offline — localStorage is the fallback */ }
+    }
+
+    // Transform a Supabase profiles row → app profile object (snake_case → camelCase, parse JSON cols)
+    function _transformSbProfile(row) {
+      function _tryParse(s) { try { return s ? JSON.parse(s) : null } catch(_) { return null } }
+      return {
+        name:          row.name,
+        handle:        row.handle,
+        bio:           row.bio,
+        location:      row.location,
+        accent:        row.accent         || '#e05242',
+        theme:         row.theme          || 'dark',
+        vibe:          row.vibe           || 'indie',
+        heroTag:       row.hero_tag,
+        pageState:     row.page_state     || 'profile',
+        stateOverride: row.state_override,
+        releaseDate:   row.release_date,
+        release:       _tryParse(row.release_json),
+        ctaPrimary:    _tryParse(row.cta_primary),
+        ctaSecondary:  _tryParse(row.cta_secondary),
+        topCard:       _tryParse(row.top_card),
+        platforms:     _tryParse(row.platforms) || [],
+      }
+    }
+
+    // Fetch profile from Supabase by handle — sets window._ableRemoteProfile on success
+    async function fetchRemoteProfile(handle) {
+      if (!sb || !handle) return
+      try {
+        const { data, error } = await sb.from('profiles').select('*').eq('handle', handle).single()
+        if (!error && data) window._ableRemoteProfile = _transformSbProfile(data)
+      } catch(_) { /* offline — fall through to localStorage/demo */ }
     }
 
     async function sbSyncFanSignup(email, source, campaignState) {
@@ -12074,22 +12210,14 @@
       }
     }
 
-    function init() {
-      // C17 #33 — Profile load error: no stored profile AND not in demo/owner context
-      ;(function() {
-        try {
-          const _p33 = localStorage.getItem('able_v3_profile')
-          const _q33 = new URLSearchParams(location.search)
-          const _hasDemo33 = _q33.has('demo') || _q33.has('owner') || _q33.has('preview')
-          if (!_hasDemo33) {
-            const _parsed33 = _p33 ? JSON.parse(_p33) : null
-            if (!_parsed33 || !_parsed33.name) {
-              const _el33 = document.getElementById('no-profile-state')
-              if (_el33) { _el33.hidden = false; _el33.style.display = 'flex' }
-            }
-          }
-        } catch (_) {}
-      })()
+    async function init() {
+      // No-profile state is never shown to fans — getProfile() always falls back to DEMO_PROFILE
+
+      // --- PHASE 1: Remote profile fetch by handle ---
+      // ablemusic.co/maya → Netlify rewrites to able-v8.html?handle=maya
+      // Fetch that artist's profile from Supabase before any render
+      const _handleParam = new URLSearchParams(location.search).get('handle')
+      if (_handleParam) await fetchRemoteProfile(_handleParam)
 
       // Generate stable device ID on first load — used for Supabase migration (§6.2)
       if (!localStorage.getItem('able_artist_id')) {
@@ -12349,367 +12477,302 @@
       if (hint) hint.remove()
 
       // ── Build panel content ──────────────────────────────────────
-      function buildPanel(p) {
-        const cta0 = p.ctaPrimary   || {}
-        const cta1 = p.ctaSecondary || {}
-        const accent = p.accent || getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim() || '#e07b3a'
+      // ── Edit panel: menu-first approach ─────────────────────────
+      // Opens a simple menu; each item shows a focused sub-panel.
+      // Artist sees 3 choices, not 12 inputs at once.
 
-        // Fan count (§9.1)
-        let fanCount = 0
-        try { fanCount = safeLS('able_fans', []).length } catch (_) {}
-        const FREE_CAP  = 100
-        const fanPct    = Math.min(100, Math.round((fanCount / FREE_CAP) * 100))
-        const nearFull  = fanCount >= 95
-        const fanBarHTML = `
-          <div class="ep-fan-bar" aria-label="Fan list progress">
-            <div class="ep-fan-bar__header">
-              <span class="ep-fan-bar__label">Fans</span>
-              <span class="ep-fan-bar__count">${fanCount}/${FREE_CAP}</span>
-            </div>
-            <div class="ep-fan-bar__track" role="progressbar"
-                 aria-valuenow="${fanCount}" aria-valuemin="0" aria-valuemax="${FREE_CAP}"
-                 aria-label="${fanCount} of ${FREE_CAP} fans">
-              <div class="ep-fan-bar__fill" style="width:${fanPct}%"></div>
-            </div>
-            ${nearFull ? `<p class="ep-fan-bar__warning">Your list is full. These are ${fanCount} people who asked to hear from you. Don't leave them waiting.</p>` : ''}
-          </div>
-        `
+      function reRender(fresh) {
+        const s = document.getElementById('app-shell')
+        if (s) { s.dataset.theme = fresh.theme || 'dark'; applyVibe(fresh.vibe || 'indie', s) }
+        renderHero(fresh); renderPills(fresh); renderFanCapture(fresh)
+        renderListenSection(fresh); renderShowsSection(fresh); renderSnapCards(fresh)
+        renderClips(fresh); renderMerchSection(fresh); renderSupportSection(fresh)
+        renderCreditsSection(fresh); renderRecommendations(fresh); renderFooter(fresh)
+        injectSEO(fresh); applySectionOrder(fresh); applyBackground(fresh, s)
+        if (computeState(fresh) === 'gig') {
+          const listenEl = document.getElementById('listen-section')
+          const showsEl  = document.getElementById('shows-section')
+          if (listenEl && showsEl && listenEl.previousElementSibling !== showsEl) {
+            listenEl.parentNode.insertBefore(showsEl, listenEl)
+          }
+        }
+      }
 
-        const THEMES = ['dark','light','glass','contrast']
-        const VIBES  = ['electronic','hiphop','rnb','indie','pop','rock','acoustic']
-        const VIBE_LABELS = { electronic:'Electronic', hiphop:'Hip Hop', rnb:'R&B / Soul', indie:'Indie / Alt', pop:'Pop', rock:'Rock / Metal', acoustic:'Acoustic / Folk' }
-        const THEME_LABELS = { dark:'Dark', light:'Light', glass:'Glass', contrast:'Contrast' }
+      function saveSection(updater, p) {
+        try {
+          const stored = safeLS('able_v3_profile', {})
+          updater(stored)
+          setLS('able_v3_profile', stored)
+          sbSyncProfile(stored)
+          reRender(getProfile())
+          showToast('Saved.', 'green')
+        } catch (_) {}
+        showEditMenu(getProfile())
+      }
 
-        const themeChips = THEMES.map(t => {
-          const on = (p.theme||'dark')===t
-          return `<button class="ep-chip${on?' active':''}" data-theme="${t}" aria-pressed="${on}">${THEME_LABELS[t]||t}</button>`
-        }).join('')
+      function epBackBtn() {
+        return '<button class="ep-back-btn" id="ep-back" type="button">\u2190 Back</button>'
+      }
 
-        const vibeChips = VIBES.map(v => {
-          const on = (p.vibe||'indie')===v
-          return `<button class="ep-chip${on?' active':''}" data-vibe="${v}" aria-pressed="${on}">${VIBE_LABELS[v]||v}</button>`
-        }).join('')
+      function wireBack(p) {
+        body.querySelector('#ep-back')?.addEventListener('click', () => showEditMenu(p))
+      }
 
-        body.innerHTML = `
-          ${fanBarHTML}
-
-          <div class="ep-divider"></div>
-
-          <div class="ep-field">
-            <label class="ep-label" for="ep-name">Artist name</label>
-            <input class="ep-input" id="ep-name" type="text" value="${escHtml(p.name||'')}" placeholder="Your name" autocomplete="off">
-          </div>
-
-          <div class="ep-field">
-            <label class="ep-label" for="ep-bio">Bio</label>
-            <textarea class="ep-input" id="ep-bio" rows="3" placeholder="A few lines about you and your music">${escHtml(p.bio||'')}</textarea>
-            <button class="ep-ai-btn" type="button" id="ep-bio-ai-btn"><span aria-hidden="true">✦ </span>Suggest a bio</button>
-            <div class="ep-ai-draft loading" id="ep-bio-ai-draft">Generating…</div>
-            <button class="ep-ai-use" id="ep-bio-ai-use" disabled>Use this →</button>
-          </div>
-
-          <div class="ep-field">
-            <span class="ep-label">Theme</span>
-            <div class="ep-chips" id="ep-theme-chips">${themeChips}</div>
-          </div>
-
-          <div class="ep-field">
-            <span class="ep-label">Vibe</span>
-            <div class="ep-chips" id="ep-vibe-chips">${vibeChips}</div>
-          </div>
-
-          <div class="ep-field">
-            <span class="ep-label">Accent colour</span>
-            <div class="ep-colour-row">
-              <div class="ep-colour-swatch" id="ep-swatch" style="background:${accent}">
-                <input type="color" id="ep-accent" value="${accent}">
-              </div>
-              <span class="ep-colour-hex" id="ep-hex-label">${accent}</span>
-            </div>
-          </div>
-
-          <div class="ep-divider"></div>
-
-          <div class="ep-field">
-            <span class="ep-label">Background</span>
-            <p class="ep-hint">Add an image behind your page. Works on all themes.</p>
-            <div class="ep-bg-row">
-              <input class="ep-input ep-bg-url" id="ep-bg-url" type="url"
-                value="${escHtml(p.backgroundUrl||'')}" placeholder="Paste an image URL…">
-              <label class="ep-upload-btn" for="ep-bg-upload" title="Upload image">
-                ↑ Upload
-                <input type="file" id="ep-bg-upload" accept="image/*" style="display:none">
-              </label>
-            </div>
-            <div class="ep-slider-row">
-              <label class="ep-slider-label" for="ep-bg-blur">Blur <span id="ep-bg-blur-val">${p.backgroundBlur??40}px</span></label>
-              <input type="range" id="ep-bg-blur" min="0" max="60" step="2" value="${p.backgroundBlur??40}">
-            </div>
-            <div class="ep-slider-row">
-              <label class="ep-slider-label" for="ep-bg-bright">Darkness <span id="ep-bg-bright-val">${Math.round((1-(p.backgroundBrightness??0.45))*100)}%</span></label>
-              <input type="range" id="ep-bg-bright" min="0" max="100" step="5" value="${Math.round((1-(p.backgroundBrightness??0.45))*100)}">
-            </div>
-            <div class="ep-field" style="margin-top:12px">
-              <span class="ep-label ep-label--sm">Animated presets (free)</span>
-              <div class="ep-chips" id="ep-bg-preset-chips">
-                ${['none','gradient-pulse','particles','grain','aurora'].map(pr => {
-                  const labels = {none:'None','gradient-pulse':'Gradient','particles':'Particles',grain:'Grain',aurora:'Aurora'}
-                  const on = (p.backgroundPreset||'none') === pr
-                  return `<button class="ep-chip${on?' active':''}" data-preset="${pr}" aria-pressed="${on}">${labels[pr]}</button>`
-                }).join('')}
-              </div>
-            </div>
-          </div>
-
-          <div class="ep-divider"></div>
-
-          <div class="ep-field">
-            <span class="ep-label">Campaign state</span>
-            <div class="ep-chips" id="ep-state-chips">
-              ${['profile','pre-release','live','gig'].map(s => {
-                const on = (p.stateOverride||computeState(p))===s
-                return `<button class="ep-chip${on?' active':''}" data-state="${s}" aria-pressed="${on}">${s[0].toUpperCase()+s.slice(1)}</button>`
-              }).join('')}
-            </div>
-            <p class="ep-hint">Auto: <strong>${computeState(p)}</strong>${p.stateOverride ? ' · override active' : ''}. Change this to control what fans see.</p>
-          </div>
-
-          <div class="ep-field">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-              <span class="ep-label" style="margin:0">Primary CTA</span>
-              <button class="ep-clear-cta" id="ep-clear-cta0" type="button" title="Remove this CTA">✕ Clear</button>
-            </div>
-            <div class="ep-cta-row">
-              <input class="ep-input" id="ep-cta0-label" type="text" value="${escHtml(cta0.label||'')}" placeholder="Label (leave blank = no button)">
-              <input class="ep-input" id="ep-cta0-url"   type="url"  value="${escHtml(cta0.url||'')}"   placeholder="https://…">
-            </div>
-          </div>
-
-          <div class="ep-field">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-              <span class="ep-label" style="margin:0">Secondary CTA</span>
-              <button class="ep-clear-cta" id="ep-clear-cta1" type="button" title="Remove this CTA">✕ Clear</button>
-            </div>
-            <div class="ep-cta-row">
-              <input class="ep-input" id="ep-cta1-label" type="text" value="${escHtml(cta1.label||'')}" placeholder="Label (leave blank = no button)">
-              <input class="ep-input" id="ep-cta1-url"   type="url"  value="${escHtml(cta1.url||'')}"   placeholder="https://…">
-            </div>
-            <p class="ep-hint" style="margin-top:4px">Leave both labels blank to show no CTA buttons.</p>
-          </div>
-
-          <div class="ep-divider"></div>
-
-          <button class="ep-save-btn" id="ep-save">Save changes</button>
-          <a class="ep-dash-link" href="admin.html" target="_blank" rel="noopener noreferrer">Manage your page — events, merch, fans, analytics →</a>
-        `
-
-        // Chip selection
-        ;['[data-theme]', '[data-vibe]', '[data-state]'].forEach(sel => {
-          body.querySelectorAll(sel).forEach(btn => {
-            btn.addEventListener('click', () => {
-              body.querySelectorAll(sel).forEach(b => {
-                b.classList.remove('active')
-                b.setAttribute('aria-pressed', 'false')
-              })
-              btn.classList.add('active')
-              btn.setAttribute('aria-pressed', 'true')
-            })
-          })
-        })
-
-        // Clear CTA buttons
-        body.querySelector('#ep-clear-cta0')?.addEventListener('click', () => {
-          body.querySelector('#ep-cta0-label').value = ''
-          body.querySelector('#ep-cta0-url').value = ''
-        })
-        body.querySelector('#ep-clear-cta1')?.addEventListener('click', () => {
-          body.querySelector('#ep-cta1-label').value = ''
-          body.querySelector('#ep-cta1-url').value = ''
-        })
-
-        // Background preset chips + live preview
-        body.querySelectorAll('[data-preset]').forEach(btn => {
+      function wireChips(sel) {
+        body.querySelectorAll(sel).forEach(btn => {
           btn.addEventListener('click', () => {
-            body.querySelectorAll('[data-preset]').forEach(b => {
-              b.classList.remove('active'); b.setAttribute('aria-pressed', 'false')
-            })
-            btn.classList.add('active'); btn.setAttribute('aria-pressed', 'true')
-            // Live preview
-            const cur = safeLS('able_v3_profile', {})
-            const preview = Object.assign({}, p, cur, { backgroundPreset: btn.dataset.preset, backgroundUrl: body.querySelector('#ep-bg-url')?.value?.trim() || p.backgroundUrl || '' })
-            applyBackground(preview, shell)
+            body.querySelectorAll(sel).forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false') })
+            btn.classList.add('active'); btn.setAttribute('aria-pressed','true')
+          })
+        })
+      }
+
+      function showEditMenu(p) {
+        const fanCount = safeLS('able_fans', []).length
+        body.innerHTML =
+          '<p class="ep-menu-heading">What do you want to update?</p>' +
+          '<nav class="ep-menu" aria-label="Edit options">' +
+            '<button class="ep-menu-item" data-sub="happening" type="button">' +
+              '<span class="ep-menu-item__label">What\u2019s happening now</span>' +
+              '<span class="ep-menu-item__arrow" aria-hidden="true">\u2192</span>' +
+            '</button>' +
+            '<button class="ep-menu-item" data-sub="look" type="button">' +
+              '<span class="ep-menu-item__label">Your look</span>' +
+              '<span class="ep-menu-item__arrow" aria-hidden="true">\u2192</span>' +
+            '</button>' +
+            '<button class="ep-menu-item" data-sub="background" type="button">' +
+              '<span class="ep-menu-item__label">Background</span>' +
+              '<span class="ep-menu-item__arrow" aria-hidden="true">\u2192</span>' +
+            '</button>' +
+          '</nav>' +
+          '<div class="ep-divider"></div>' +
+          '<a class="ep-menu-item ep-menu-item--link" href="admin.html">' +
+            '<span class="ep-menu-item__label">Your fans <span class="ep-menu-item__badge">' + fanCount + '</span></span>' +
+            '<span class="ep-menu-item__arrow" aria-hidden="true">\u2192</span>' +
+          '</a>' +
+          '<a class="ep-menu-item ep-menu-item--link" href="admin.html">' +
+            '<span class="ep-menu-item__label">Full dashboard</span>' +
+            '<span class="ep-menu-item__arrow" aria-hidden="true">\u2192</span>' +
+          '</a>'
+        body.querySelectorAll('[data-sub]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            if (btn.dataset.sub === 'happening') showHappeningPanel(p)
+            else if (btn.dataset.sub === 'look') showLookPanel(p)
+            else if (btn.dataset.sub === 'background') showBackgroundPanel(p)
+          })
+        })
+      }
+
+      function showHappeningPanel(p) {
+        const cta0 = p.ctaPrimary || {}
+        const STATE_LABELS = { 'profile': 'Just being an artist', 'pre-release': 'Something\u2019s coming', 'live': 'Music just dropped', 'gig': 'I\u2019m playing tonight' }
+        const cur = p.stateOverride || computeState(p)
+        const auto = computeState(p)
+
+        // CTA presets — artist taps one, label fills automatically
+        const CTA_PRESETS = [
+          { label: 'Stream now',    icon: '\u25b6' },
+          { label: 'Pre-save',      icon: '\u2665' },
+          { label: 'Get tickets',   icon: '\u25b6' },
+          { label: 'Watch now',     icon: '\u25b6' },
+          { label: 'Listen now',    icon: '\u25b6' },
+          { label: 'Download',      icon: '\u2193' },
+          { label: 'Support me',    icon: '\u2665' },
+          { label: 'Stay close',    icon: '\u2665' },
+          { label: 'Buy now',       icon: '\u25b6' },
+        ]
+
+        body.innerHTML =
+          epBackBtn() +
+          '<p class="ep-sub-heading">What\u2019s happening now?</p>' +
+          '<div class="ep-field">' +
+            '<span class="ep-label">Campaign mode</span>' +
+            '<div class="ep-chips" id="ep-state-chips">' +
+              ['profile','pre-release','live','gig'].map(s => {
+                const on = cur === s
+                return '<button class="ep-chip' + (on ? ' active' : '') + '" data-state="' + s + '" aria-pressed="' + on + '">' + STATE_LABELS[s] + '</button>'
+              }).join('') +
+            '</div>' +
+            '<p class="ep-hint">Auto-detected: <strong>' + auto + '</strong>' + (p.stateOverride ? ' \u00b7 override active' : '') + '</p>' +
+          '</div>' +
+          '<div class="ep-field">' +
+            '<span class="ep-label">Main button</span>' +
+            '<div class="ep-cta-presets">' +
+              CTA_PRESETS.map(c => {
+                const on = cta0.label === c.label
+                return '<button class="ep-cta-preset' + (on ? ' active' : '') + '" data-cta-label="' + escHtml(c.label) + '" type="button">' + escHtml(c.label) + '</button>'
+              }).join('') +
+            '</div>' +
+            '<input class="ep-input" id="ep-cta0-label" type="text" value="' + escHtml(cta0.label||'') + '" placeholder="Or type your own\u2026" autocomplete="off" style="margin-top:10px">' +
+          '</div>' +
+          '<div class="ep-field">' +
+            '<label class="ep-label" for="ep-cta0-url">Button URL</label>' +
+            '<input class="ep-input" id="ep-cta0-url" type="url" value="' + escHtml(cta0.url||'') + '" placeholder="https://open.spotify.com/\u2026" autocomplete="off">' +
+          '</div>' +
+          '<button class="ep-save-btn" id="ep-save" type="button">Save</button>'
+
+        wireBack(p)
+        wireChips('[data-state]')
+
+        // CTA preset tap — fills the label input
+        body.querySelectorAll('[data-cta-label]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            body.querySelectorAll('[data-cta-label]').forEach(b => b.classList.remove('active'))
+            btn.classList.add('active')
+            const input = body.querySelector('#ep-cta0-label')
+            if (input) { input.value = btn.dataset.ctaLabel; input.focus() }
           })
         })
 
-        // Background URL live preview
-        const bgUrlInput = body.querySelector('#ep-bg-url')
-        if (bgUrlInput) {
-          bgUrlInput.addEventListener('change', () => {
-            const cur = safeLS('able_v3_profile', {})
-            const preview = Object.assign({}, p, cur, { backgroundUrl: bgUrlInput.value.trim(), backgroundPreset: body.querySelector('[data-preset].active')?.dataset.preset || 'none' })
-            applyBackground(preview, shell)
+        // Typing custom label deselects presets
+        body.querySelector('#ep-cta0-label')?.addEventListener('input', () => {
+          const val = body.querySelector('#ep-cta0-label').value.trim()
+          body.querySelectorAll('[data-cta-label]').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.ctaLabel === val)
           })
-        }
+        })
 
-        // Background file upload — read as data URL
-        const bgUpload = body.querySelector('#ep-bg-upload')
-        if (bgUpload) {
-          bgUpload.addEventListener('change', () => {
-            const file = bgUpload.files[0]
-            if (!file) return
-            const reader = new FileReader()
-            reader.onload = e => {
-              if (bgUrlInput) bgUrlInput.value = e.target.result
-              const cur = safeLS('able_v3_profile', {})
-              const preview = Object.assign({}, p, cur, { backgroundUrl: e.target.result, backgroundPreset: 'none' })
-              applyBackground(preview, shell)
-            }
-            reader.readAsDataURL(file)
-          })
-        }
+        body.querySelector('#ep-save')?.addEventListener('click', () => {
+          const label = body.querySelector('#ep-cta0-label')?.value.trim()
+          const url   = body.querySelector('#ep-cta0-url')?.value.trim()
+          saveSection(stored => {
+            stored.stateOverride = body.querySelector('[data-state].active')?.dataset.state || null
+            if (label) stored.ctaPrimary = { label, url: url || '#' }
+            else if (url) stored.ctaPrimary = { label: 'Stream now', url }
+          }, p)
+        })
+      }
 
-        // Blur/brightness sliders — live preview
-        const bgBlurInput   = body.querySelector('#ep-bg-blur')
-        const bgBlurVal     = body.querySelector('#ep-bg-blur-val')
-        const bgBrightInput = body.querySelector('#ep-bg-bright')
-        const bgBrightVal   = body.querySelector('#ep-bg-bright-val')
-
-        if (bgBlurInput) {
-          bgBlurInput.addEventListener('input', () => {
-            document.documentElement.style.setProperty('--bg-blur', `${bgBlurInput.value}px`)
-            if (bgBlurVal) bgBlurVal.textContent = `${bgBlurInput.value}px`
-          })
-        }
-        if (bgBrightInput) {
-          bgBrightInput.addEventListener('input', () => {
-            const dark = bgBrightInput.value / 100
-            const brightness = 1 - dark
-            document.documentElement.style.setProperty('--bg-brightness', String(brightness))
-            if (bgBrightVal) bgBrightVal.textContent = `${bgBrightInput.value}%`
-          })
-        }
-
-        // Colour picker live preview
+      function showLookPanel(p) {
+        const accent = p.accent || '#e05242'
+        const VIBES  = ['electronic','hiphop','rnb','indie','pop','rock','acoustic']
+        const VIBE_L = { electronic:'Electronic', hiphop:'Hip-hop', rnb:'R&B / Soul', indie:'Indie / Alt', pop:'Pop', rock:'Rock / Metal', acoustic:'Acoustic / Folk' }
+        const THEMES = ['dark','light','glass','contrast']
+        const THEME_L = { dark:'Dark', light:'Light', glass:'Glass', contrast:'Contrast' }
+        body.innerHTML =
+          epBackBtn() +
+          '<p class="ep-sub-heading">Your look</p>' +
+          '<div class="ep-field">' +
+            '<label class="ep-label" for="ep-name">Name</label>' +
+            '<input class="ep-input" id="ep-name" type="text" value="' + escHtml(p.name||'') + '" placeholder="Your artist name" autocomplete="off">' +
+          '</div>' +
+          '<div class="ep-field">' +
+            '<label class="ep-label" for="ep-bio">Bio</label>' +
+            '<textarea class="ep-input" id="ep-bio" rows="3" placeholder="A few lines about you and your music">' + escHtml(p.bio||'') + '</textarea>' +
+            '<button class="ep-ai-btn" type="button" id="ep-bio-ai-btn">\u2736 Suggest a bio</button>' +
+            '<div class="ep-ai-draft" id="ep-bio-ai-draft"></div>' +
+            '<button class="ep-ai-use" id="ep-bio-ai-use" disabled>Use this \u2192</button>' +
+          '</div>' +
+          '<div class="ep-field">' +
+            '<span class="ep-label">Theme</span>' +
+            '<div class="ep-chips">' + THEMES.map(t => '<button class="ep-chip' + ((p.theme||'dark')===t?' active':'') + '" data-theme="' + t + '" aria-pressed="' + ((p.theme||'dark')===t) + '">' + THEME_L[t] + '</button>').join('') + '</div>' +
+          '</div>' +
+          '<div class="ep-field">' +
+            '<span class="ep-label">Vibe</span>' +
+            '<div class="ep-chips">' + VIBES.map(v => '<button class="ep-chip' + ((p.vibe||'indie')===v?' active':'') + '" data-vibe="' + v + '" aria-pressed="' + ((p.vibe||'indie')===v) + '">' + VIBE_L[v] + '</button>').join('') + '</div>' +
+          '</div>' +
+          '<div class="ep-field">' +
+            '<span class="ep-label">Accent colour</span>' +
+            '<div class="ep-colour-row">' +
+              '<div class="ep-colour-swatch" id="ep-swatch" style="background:' + accent + '">' +
+                '<input type="color" id="ep-accent" value="' + accent + '">' +
+              '</div>' +
+              '<span class="ep-colour-hex" id="ep-hex-label">' + accent + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<button class="ep-save-btn" id="ep-save" type="button">Save</button>'
+        wireBack(p); wireChips('[data-theme]'); wireChips('[data-vibe]')
         const accentInput = body.querySelector('#ep-accent')
-        const swatch      = body.querySelector('#ep-swatch')
-        const hexLabel    = body.querySelector('#ep-hex-label')
         if (accentInput) {
           accentInput.addEventListener('input', () => {
-            swatch.style.background = accentInput.value
-            hexLabel.textContent    = accentInput.value
+            body.querySelector('#ep-swatch').style.background = accentInput.value
+            body.querySelector('#ep-hex-label').textContent   = accentInput.value
+            applyDerivedTokens(document.documentElement, accentInput.value)
           })
         }
-
-        // ── Bio AI helper ────────────────────────────────────────────
-        const epBioAiBtn  = body.querySelector('#ep-bio-ai-btn')
-        const epBioAiDraft = body.querySelector('#ep-bio-ai-draft')
-        const epBioAiUse  = body.querySelector('#ep-bio-ai-use')
-        let _epBioDraft = ''
-
-        function epBioTemplates(vibe, name) {
-          const t = {
-            electronic: ['{n} makes club music for people who close their eyes.', 'Producer, sound designer. Quiet studio, loud mixes.'],
-            hiphop:     ['{n}. Rapper, writer, producer. Everything made from scratch.', 'Bars and beats. All original, all intentional.'],
-            rnb:        ['{n} writes about love, grief, and the space in between.', 'Soul music. Real feelings, real production.'],
-            indie:      ['Songs about ordinary things that turn out to be everything.', '{n} — indie music made in the margins.'],
-            pop:        ['{n} makes pop songs people still remember three days later.', 'Big hooks, real feelings. Pop done with intention.'],
-            rock:       ['{n}. Guitar-driven, heavy where it counts.', 'Loud music made carefully. Volume as a choice, not a default.'],
-            acoustic:   ['Just a voice, a guitar, and things worth saying.', '{n} — folk music with its feet on the ground.'],
-          }
-          const pool = t[vibe] || t['indie']
-          return pool[Math.floor(Math.random() * pool.length)].replace(/{n}/g, name || 'Artist')
-        }
-
-        if (epBioAiBtn) {
-          epBioAiBtn.addEventListener('click', () => {
-            epBioAiDraft.classList.add('visible', 'loading')
-            epBioAiDraft.textContent = 'Generating…'
-            epBioAiUse.disabled = true
-            _epBioDraft = ''
-            setTimeout(() => {
-              const name = body.querySelector('#ep-name')?.value.trim() || p.name || ''
-              const vibe = body.querySelector('[data-vibe].active')?.dataset.vibe || p.vibe || 'indie'
-              _epBioDraft = epBioTemplates(vibe, name)
-              epBioAiDraft.classList.remove('loading')
-              epBioAiDraft.textContent = _epBioDraft
-              epBioAiUse.disabled = false
-            }, 500)
-          })
-        }
-
-        if (epBioAiUse) {
-          epBioAiUse.addEventListener('click', () => {
-            if (!_epBioDraft) return
-            const textarea = body.querySelector('#ep-bio')
-            if (textarea) textarea.value = _epBioDraft
-            epBioAiDraft.classList.remove('visible')
-            epBioAiUse.disabled = true
-          })
-        }
-
-        // Save
-        body.querySelector('#ep-save').addEventListener('click', () => {
-          try {
-            const stored = safeLS('able_v3_profile', {})
-            stored.name  = body.querySelector('#ep-name').value.trim() || stored.name
-            stored.bio   = body.querySelector('#ep-bio').value.trim()  || stored.bio
-            stored.theme         = body.querySelector('[data-theme].active')?.dataset.theme  || stored.theme
-            stored.vibe          = body.querySelector('[data-vibe].active')?.dataset.vibe    || stored.vibe
-            stored.stateOverride = body.querySelector('[data-state].active')?.dataset.state  || stored.stateOverride
-            stored.accent        = body.querySelector('#ep-accent')?.value || stored.accent
-
-            const c0label = body.querySelector('#ep-cta0-label')?.value.trim()
-            const c0url   = body.querySelector('#ep-cta0-url')?.value.trim()
-            const c1label = body.querySelector('#ep-cta1-label')?.value.trim()
-            const c1url   = body.querySelector('#ep-cta1-url')?.value.trim()
-
-            // CTA optionality: empty label = remove button entirely
-            stored.ctaPrimary   = c0label ? { label: c0label, url: c0url || '#' } : (c0url ? { label: 'Stream now', url: c0url } : null)
-            stored.ctaSecondary = c1label ? { label: c1label, url: c1url || '#' } : (c1url ? { label: 'Follow', url: c1url } : null)
-
-            // Background settings
-            stored.backgroundUrl    = body.querySelector('#ep-bg-url')?.value?.trim() || stored.backgroundUrl || ''
-            stored.backgroundPreset = body.querySelector('[data-preset].active')?.dataset.preset || stored.backgroundPreset || 'none'
-            stored.backgroundBlur   = parseInt(body.querySelector('#ep-bg-blur')?.value ?? stored.backgroundBlur ?? 40, 10)
-            const darkPct = parseInt(body.querySelector('#ep-bg-bright')?.value ?? ((1-(stored.backgroundBrightness??0.45))*100), 10)
-            stored.backgroundBrightness = 1 - (darkPct / 100)
-
-            setLS('able_v3_profile', stored)
-            sbSyncProfile(stored) // async fire-and-forget to Supabase
-          } catch (_) {}
-
-          closePanel()
-          // Full re-render to reflect all saved changes
-          const fresh = getProfile()
-          const s     = document.getElementById('app-shell')
-          if (s) {
-            s.dataset.theme = fresh.theme || 'dark'
-            applyVibe(fresh.vibe || 'indie', s)
-          }
-          renderHero(fresh)
-          renderPills(fresh)
-          renderFanCapture(fresh)
-          renderListenSection(fresh)
-          renderShowsSection(fresh)
-          renderSnapCards(fresh)
-          renderClips(fresh)
-          renderMerchSection(fresh)
-          renderSupportSection(fresh)
-          renderCreditsSection(fresh)
-          renderRecommendations(fresh)
-          renderFooter(fresh)
-          injectSEO(fresh)
-          applySectionOrder(fresh)
-          applyBackground(fresh, s)
-          // Re-apply gig state section order
-          if (computeState(fresh) === 'gig') {
-            const listenEl = document.getElementById('listen-section')
-            const showsEl  = document.getElementById('shows-section')
-            if (listenEl && showsEl && listenEl.previousElementSibling !== showsEl) {
-              listenEl.parentNode.insertBefore(showsEl, listenEl)
-            }
-          }
+        let _bioDraft = ''
+        const BIO_T = { electronic:'{n} makes club music for people who close their eyes.', hiphop:'{n}. Rapper, writer, producer. Everything made from scratch.', rnb:'{n} writes about love, grief, and the space in between.', indie:'Songs about ordinary things that turn out to be everything.', pop:'{n} makes pop songs people still remember three days later.', rock:'{n}. Guitar-driven, heavy where it counts.', acoustic:'Just a voice, a guitar, and things worth saying.' }
+        body.querySelector('#ep-bio-ai-btn')?.addEventListener('click', () => {
+          const draft = body.querySelector('#ep-bio-ai-draft'); const use = body.querySelector('#ep-bio-ai-use')
+          if (draft) { draft.textContent = 'Generating\u2026'; draft.classList.add('visible','loading') }
+          if (use) use.disabled = true
+          setTimeout(() => {
+            const vibe = body.querySelector('[data-vibe].active')?.dataset.vibe || p.vibe || 'indie'
+            const name = body.querySelector('#ep-name')?.value.trim() || p.name || ''
+            _bioDraft = (BIO_T[vibe] || BIO_T.indie).replace(/{n}/g, name)
+            if (draft) { draft.textContent = _bioDraft; draft.classList.remove('loading') }
+            if (use) use.disabled = false
+          }, 500)
         })
+        body.querySelector('#ep-bio-ai-use')?.addEventListener('click', () => {
+          const ta = body.querySelector('#ep-bio'); if (ta && _bioDraft) ta.value = _bioDraft
+          body.querySelector('#ep-bio-ai-draft')?.classList.remove('visible')
+          const useBtn = body.querySelector('#ep-bio-ai-use'); if (useBtn) useBtn.disabled = true
+        })
+        body.querySelector('#ep-save')?.addEventListener('click', () => {
+          saveSection(stored => {
+            stored.name  = body.querySelector('#ep-name')?.value.trim() || stored.name
+            stored.bio   = body.querySelector('#ep-bio')?.value.trim() || stored.bio
+            stored.theme = body.querySelector('[data-theme].active')?.dataset.theme || stored.theme
+            stored.vibe  = body.querySelector('[data-vibe].active')?.dataset.vibe  || stored.vibe
+            stored.accent = body.querySelector('#ep-accent')?.value || stored.accent
+          }, p)
+        })
+      }
+
+      function showBackgroundPanel(p) {
+        body.innerHTML =
+          epBackBtn() +
+          '<p class="ep-sub-heading">Background</p>' +
+          '<div class="ep-field">' +
+            '<p class="ep-hint">Add an image behind your page. Works on all themes.</p>' +
+            '<div class="ep-bg-row">' +
+              '<input class="ep-input ep-bg-url" id="ep-bg-url" type="url" value="' + escHtml(p.backgroundUrl||'') + '" placeholder="Paste an image URL\u2026">' +
+              '<label class="ep-upload-btn" for="ep-bg-upload" title="Upload image">\u2191 Upload<input type="file" id="ep-bg-upload" accept="image/*" style="display:none"></label>' +
+            '</div>' +
+          '</div>' +
+          '<div class="ep-field">' +
+            '<span class="ep-label">Presets</span>' +
+            '<div class="ep-chips">' + ['none','gradient-pulse','particles','grain','aurora'].map(pr => { const L={none:'None','gradient-pulse':'Gradient',particles:'Particles',grain:'Grain',aurora:'Aurora'}; const on=(p.backgroundPreset||'none')===pr; return '<button class="ep-chip' + (on?' active':'') + '" data-preset="' + pr + '" aria-pressed="' + on + '">' + L[pr] + '</button>' }).join('') + '</div>' +
+          '</div>' +
+          '<div class="ep-slider-row">' +
+            '<label class="ep-slider-label" for="ep-bg-blur">Blur <span id="ep-bg-blur-val">' + (p.backgroundBlur||40) + 'px</span></label>' +
+            '<input type="range" id="ep-bg-blur" min="0" max="60" step="2" value="' + (p.backgroundBlur||40) + '">' +
+          '</div>' +
+          '<div class="ep-slider-row">' +
+            '<label class="ep-slider-label" for="ep-bg-bright">Darkness <span id="ep-bg-bright-val">' + Math.round((1-(p.backgroundBrightness||0.45))*100) + '%</span></label>' +
+            '<input type="range" id="ep-bg-bright" min="0" max="100" step="5" value="' + Math.round((1-(p.backgroundBrightness||0.45))*100) + '">' +
+          '</div>' +
+          '<button class="ep-save-btn" id="ep-save" type="button">Save</button>'
+        wireBack(p); wireChips('[data-preset]')
+        const bgUrl = body.querySelector('#ep-bg-url')
+        const bgBlur = body.querySelector('#ep-bg-blur'); const bgBlurVal = body.querySelector('#ep-bg-blur-val')
+        const bgBright = body.querySelector('#ep-bg-bright'); const bgBrightVal = body.querySelector('#ep-bg-bright-val')
+        bgBlur?.addEventListener('input', () => { if (bgBlurVal) bgBlurVal.textContent = bgBlur.value + 'px'; document.documentElement.style.setProperty('--bg-blur', bgBlur.value + 'px') })
+        bgBright?.addEventListener('input', () => { if (bgBrightVal) bgBrightVal.textContent = bgBright.value + '%'; document.documentElement.style.setProperty('--bg-brightness', String(1-bgBright.value/100)) })
+        bgUrl?.addEventListener('change', () => { applyBackground(Object.assign({}, p, { backgroundUrl: bgUrl.value.trim() }), shell) })
+        body.querySelectorAll('[data-preset]').forEach(btn => {
+          btn.addEventListener('click', () => { applyBackground(Object.assign({}, p, { backgroundPreset: btn.dataset.preset, backgroundUrl: bgUrl?.value?.trim() || p.backgroundUrl || '' }), shell) })
+        })
+        body.querySelector('#ep-bg-upload')?.addEventListener('change', function() {
+          const file = this.files[0]; if (!file) return
+          const reader = new FileReader()
+          reader.onload = e => { if (bgUrl) bgUrl.value = e.target.result; applyBackground(Object.assign({}, p, { backgroundUrl: e.target.result, backgroundPreset: 'none' }), shell) }
+          reader.readAsDataURL(file)
+        })
+        body.querySelector('#ep-save')?.addEventListener('click', () => {
+          const darkPct = parseInt(bgBright?.value ?? ((1-(p.backgroundBrightness||0.45))*100), 10)
+          saveSection(stored => {
+            stored.backgroundUrl    = bgUrl?.value?.trim() || stored.backgroundUrl || ''
+            stored.backgroundPreset = body.querySelector('[data-preset].active')?.dataset.preset || stored.backgroundPreset || 'none'
+            stored.backgroundBlur   = parseInt(bgBlur?.value ?? stored.backgroundBlur ?? 40, 10)
+            stored.backgroundBrightness = 1 - (darkPct / 100)
+          }, p)
+        })
+      }
+
+      function buildPanel(p) {
+        showEditMenu(p)
       }
 
       // ── Focus trap helpers ────────────────────────────────────────
