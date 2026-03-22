@@ -10,7 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
   <!-- CSP delivered via netlify.toml headers — no inline meta needed -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <meta name="theme-color" content="#0f1624">
+  <meta name="theme-color" content="#0d0e1a">
   <title>ABLE — Your artist page, built for real fans</title>
   <meta name="description" content="Your page shifts with your moment. Release day, gig night, new drop — ABLE knows. Every fan sign-up goes straight to your list. Free forever.">
   <link rel="canonical" href="https://ablemusic.co/">
@@ -45,37 +45,37 @@
   <style>
     /* landing.html is always dark-navy regardless of OS colour scheme — intentional brand decision (C10 #28) */
     :root {
-      /* ── FOUNDATION — ethereal blue, between light and dark ── */
-      --bg:            #0f1624;
-      --bg-mid:        #141d2e;
-      --card:          #192438;
-      --card-raised:   #1f2d45;
+      /* ── FOUNDATION — Artist World (Midnight Navy) ── */
+      --bg:            #0d0e1a;
+      --bg-mid:        #12152a;
+      --card:          #16161e;
+      --card-raised:   #1e1e2a;
 
       /* ── BORDER ── */
-      --border:        rgba(138,180,206,0.10);
-      --border-mid:    rgba(138,180,206,0.18);
-      --border-strong: rgba(138,180,206,0.30);
+      --border:        rgba(255,255,255,0.08);
+      --border-mid:    rgba(255,255,255,0.12);
+      --border-strong: rgba(255,255,255,0.22);
 
       /* ── ACCENT — warm gold per DOCTRINE.md §88 ── */
       --accent:        #c9a84c;
       --accent-rgb:    201,168,76;
       --accent-glow:   rgba(201,168,76,0.13);
-      --accent-dim:    rgba(138,180,206,0.09);
-      --accent-border: rgba(138,180,206,0.24);
+      --accent-dim:    rgba(201,168,76,0.09);
+      --accent-border: rgba(201,168,76,0.24);
 
-      /* ── TEXT — cool blue-white ── */
-      --text:          #ccddef;
-      --text-2:        rgba(204,221,239,0.75);
-      --text-3:        rgba(204,221,239,0.68);
-      --text-4:        rgba(204,221,239,0.28);
+      /* ── TEXT — warm near-white ── */
+      --text:          #f0ede8;
+      --text-2:        rgba(240,237,232,0.75);
+      --text-3:        rgba(240,237,232,0.55);
+      --text-4:        rgba(240,237,232,0.28);
 
-      /* ── WISPY ACCENT SURFACES — blue-tinted ── */
-      --wisp-sage:     rgba(90,140,190,0.07);
-      --wisp-rose:     rgba(138,180,206,0.06);
-      --wisp-lavender: rgba(110,100,200,0.07);
-      --wisp-gold:     rgba(138,180,206,0.05);
-      --wisp-border-sage:     rgba(90,140,190,0.14);
-      --wisp-border-lavender: rgba(110,100,200,0.14);
+      /* ── ACCENT SURFACES — gold/neutral tint ── */
+      --wisp-sage:     rgba(201,168,76,0.06);
+      --wisp-rose:     rgba(255,255,255,0.04);
+      --wisp-lavender: rgba(201,168,76,0.04);
+      --wisp-gold:     rgba(201,168,76,0.05);
+      --wisp-border-sage:     rgba(201,168,76,0.12);
+      --wisp-border-lavender: rgba(255,255,255,0.10);
 
       /* ── STATE PASTELS ── */
       --state-live:    #7eaac8;
@@ -254,7 +254,7 @@
       position: absolute; inset: 0; pointer-events: none;
       background:
         radial-gradient(ellipse 70% 60% at 5% 10%, rgba(70,110,200,0.12) 0%, transparent 65%),
-        radial-gradient(ellipse 55% 45% at 90% 15%, rgba(138,180,206,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 45% at 90% 15%, rgba(201,168,76,0.08) 0%, transparent 60%),
         radial-gradient(ellipse 60% 50% at 80% 85%, rgba(110,90,200,0.08) 0%, transparent 60%),
         radial-gradient(ellipse 40% 30% at 20% 85%, rgba(80,160,200,0.07) 0%, transparent 55%);
     }
@@ -266,8 +266,8 @@
         180deg,
         transparent 0px,
         transparent 47px,
-        rgba(138,180,206,0.04) 47px,
-        rgba(138,180,206,0.04) 48px
+        rgba(255,255,255,0.03) 47px,
+        rgba(255,255,255,0.03) 48px
       );
       mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 0%, transparent 100%);
       -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 0%, transparent 100%);
@@ -1021,7 +1021,7 @@
     .footer-cta::before {
       content: ''; position: absolute; bottom: 0; left: 0; right: 0; top: 0;
       background:
-        radial-gradient(ellipse 70% 60% at 50% 120%, rgba(138,180,206,0.14) 0%, transparent 65%),
+        radial-gradient(ellipse 70% 60% at 50% 120%, rgba(201,168,76,0.12) 0%, transparent 65%),
         radial-gradient(ellipse 40% 35% at 15% 30%, rgba(80,120,200,0.09) 0%, transparent 55%),
         radial-gradient(ellipse 40% 35% at 85% 70%, rgba(110,90,200,0.08) 0%, transparent 55%);
       pointer-events: none;
@@ -1499,7 +1499,7 @@
             <div class="state-pills">
               <span class="state-pill" style="background:rgba(168,184,120,0.10);color:var(--state-pre);border:1px solid rgba(168,184,120,0.20);">Building anticipation</span>
               <span class="state-pill" style="background:rgba(126,170,200,0.12);color:var(--state-live);border:1px solid rgba(126,170,200,0.22);">● Out now</span>
-              <span class="state-pill" style="background:rgba(138,180,206,0.06);color:var(--text-3);border:1px solid rgba(138,180,206,0.12);">Always on</span>
+              <span class="state-pill" style="background:rgba(255,255,255,0.06);color:var(--text-3);border:1px solid rgba(255,255,255,0.12);">Always on</span>
               <span class="state-pill" style="background:rgba(184,144,104,0.10);color:var(--state-gig);border:1px solid rgba(184,144,104,0.20);">On tonight</span>
             </div>
           </div>
