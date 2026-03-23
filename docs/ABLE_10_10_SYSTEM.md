@@ -203,7 +203,7 @@ All three criteria passed:
    - Gig: shows → listen → world-map (shows/listen swap; tickets-first)
    All three are structurally distinct from profile order in their top 2 visible sections.
 
-Quality Phase 3 is complete. Quality Phase 4 is next. Not yet started.
+Quality Phases 3 and 4 are complete. Quality Phase 5 is next. Not yet started.
 
 ---
 
@@ -248,6 +248,17 @@ Surface background doctrine written to `docs/systems/brand-identity/DOCTRINE.md`
 ### Phase 4 — Conversion and UX polish
 **Objective:** Key moments feel intentional. Fan post-submit is distinct from a generic form response. CTA copy speaks outcome.
 
+**✅ COMPLETE — 2026-03-23**
+All three success criteria passed. Key items resolved:
+1. **Fan echo hierarchy corrected** — `.fan-capture__echo-confirm` ("You're in. I'll keep you close.") was styled as a footnote (text-xs, dimmed). Now primary: text-base, weight 600, full colour, flex-ordered first. Contextual line demoted to secondary. CSS-only change.
+2. **Gig-state CTA corrected** — "Let me know" → "Keep me posted". Directional fix: fan-facing, pairs with "I'm playing tonight." and trust line "Show news only."
+3. **Gig-post CTA corrected** — "Let me know" → "I'll be there". Forward-looking, pairs with "Were you there tonight?" and "Next show. Nothing else." "Let me know" is now gone from all states.
+4. **Close circle opt-in visual treatment** — moved from naked inline-styled checkbox at 65% opacity to CSS class `fan-capture__cc-opt` with border-top separator, sp-4 padding, and 82% opacity. Reads as a deliberate secondary ask.
+5. **Gig-post secondary heading** — was absent, falling through to generic "Want to stay in the loop?" Added "Don't miss the next one." — all active states now have specific secondary headings.
+
+**Minor polish item (not a QP4 blocker, carried forward):**
+- Profile secondary heading "Want to hear when something drops?" — question form is softer than the rest of the set but not broken. No misleading or generic fallback.
+
 **Allowed:**
 - Post-submit state redesign (fan capture)
 - CTA copy improvement per state
@@ -260,9 +271,9 @@ Surface background doctrine written to `docs/systems/brand-identity/DOCTRINE.md`
 - New features
 
 **Success criteria:**
-- Fan email submit: confirmation copy is contextual to the active state, not generic
-- Every primary CTA label describes what happens next, not the mechanism
-- Pre-save confirmation appears within 300ms of submit
+- Fan email submit: confirmation copy is contextual to the active state, not generic ✓
+- Every primary CTA label describes what happens next, not the mechanism ✓
+- Pre-save confirmation appears within 300ms of submit ✓ (echo-enter: 280ms)
 
 ---
 
