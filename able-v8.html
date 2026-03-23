@@ -2112,6 +2112,19 @@
       text-underline-offset: 2px;
     }
 
+    .fan-capture__cc-opt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: var(--sp-4);
+      padding-top: var(--sp-4);
+      border-top: 1px solid var(--color-border);
+      cursor: pointer;
+      font-size: var(--text-sm);
+      color: rgba(240,237,232,0.82);
+      line-height: 1.4;
+    }
+
     .fan-capture__trust {
       margin-top: var(--sp-3);
       font-size: var(--text-xs);
@@ -6215,7 +6228,7 @@
           <p class="fan-capture__error" id="fan-error" role="alert" aria-live="assertive" hidden></p>
         </form>
         <!-- C23 #31 — close circle opt-in checkbox, shown when profile.closeCircle.enabled -->
-        <label id="close-circle-opt" hidden style="display:flex;align-items:center;gap:10px;margin-top:10px;cursor:pointer;font-size:13px;color:rgba(240,237,232,0.65);line-height:1.4;">
+        <label id="close-circle-opt" class="fan-capture__cc-opt" hidden>
           <input type="checkbox" id="close-circle-check" style="width:18px;height:18px;accent-color:var(--color-accent);flex-shrink:0;cursor:pointer;" aria-label="Join the close circle">
           <span id="close-circle-text">Join my close circle — direct updates, first access.</span>
         </label>
