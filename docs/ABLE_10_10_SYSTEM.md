@@ -203,7 +203,7 @@ All three criteria passed:
    - Gig: shows → listen → world-map (shows/listen swap; tickets-first)
    All three are structurally distinct from profile order in their top 2 visible sections.
 
-Quality Phases 3 and 4 are complete. Quality Phase 5 is next. Not yet started.
+Quality Phases 3, 4, and 5 are complete.
 
 ---
 
@@ -279,6 +279,19 @@ All three success criteria passed. Key items resolved:
 
 ### Phase 5 — Performance and final quality
 **Objective:** Page feels instant. Accessibility passes. No jank.
+
+**✅ COMPLETE — 2026-03-23**
+All font-loading and CLS issues resolved across all active surfaces. Key items:
+1. **display=optional applied to landing, start, admin** — all three surfaces were using `display=swap`, causing font-swap layout shift on every load. Switched to `display=optional` (same strategy as able-v8.html). Zero font-swap CLS across all active pages.
+2. **start.html font request weight cleanup** — removed DM Sans weight 300 and Barlow Condensed weight 600 (neither referenced in CSS). Request now matches actual usage exactly.
+3. **DM Sans italic loaded correctly in start.html** — `.ai-draft--loading` and `.feel-card__eg` both use `font-style: italic` with DM Sans. Browser was synthesising oblique. Added `ital,opsz,wght` axis with `1,9..40,400`. True italic cut now loads.
+4. **admin.html Barlow weight cleanup** — removed Barlow Condensed weight 500 (unused). Retained 600 (offline banner inline style), 700 (headings/stats), 900 (tap-count metric).
+5. **OG image references verified** — both `/og-default.jpg` (root) and `/assets/og/og-landing.jpg` confirmed present in the repository. All active surface OG tags resolve correctly at deploy time. Not a blocker.
+
+**Remaining housekeeping (not QP5 blockers):**
+- `og-landing.png` unused duplicate alongside `og-landing.jpg` in `assets/og/` — can delete anytime
+- `freelancer.html` / `freelancer-start.html` use relative `/og-default.jpg` vs absolute URL elsewhere — functionally identical, minor inconsistency
+- DM Sans direct woff2 preload not added to landing/start/admin (Google Fonts CDN URLs include hashes — brittle to hardcode; defer to self-hosting phase)
 
 **Allowed:**
 - CLS fixes
