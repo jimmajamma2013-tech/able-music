@@ -4269,6 +4269,9 @@ if (sb) {
       // Use Supabase user ID as the canonical artist ID
       const uid = session.user.id;
       localStorage.setItem('able_artist_id', uid);
+      // Hide sign-in overlay (covers magic link redirect flow)
+      const _overlay = document.getElementById('signin-overlay');
+      if (_overlay) _overlay.hidden = true;
       // Sync whatever profile is in localStorage up to Supabase under the real user ID
       const stored = safeLS('able_v3_profile', {});
       if (stored.name) syncProfile(stored);
@@ -4338,7 +4341,6 @@ function getArtistId() {
 
 async function syncProfile(data) {
   if (!sb) return;
-  if (!data.handle) return; // C12 #22 — skip sync if no handle (no Supabase row can be keyed)
   // C12 #46 — 10s AbortController timeout to prevent hung Supabase sync
   const _ac = new AbortController();
   const _syncTimer = setTimeout(() => _ac.abort(), 10000);
@@ -4404,7 +4406,7 @@ async function loadFansFromSupabase() {
   try {
     const profile_id = getArtistId();
     const { data, error } = await sb.from('fans')
-      .select('email,source,ts,double_opted_in')
+      .select('email,source,ts')
       .eq('profile_id', profile_id)
       .order('ts', { ascending: false })
       .limit(2000);
@@ -4416,7 +4418,7 @@ async function loadFansFromSupabase() {
       email:     f.email,
       source:    f.source || 'direct',
       ts:        f.ts || Date.now(),
-      confirmed: f.double_opted_in || false,
+      confirmed: false,
     }));
     if (incoming.length) {
       setLS('able_fans', [...local, ...incoming]);
