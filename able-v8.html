@@ -12399,9 +12399,10 @@
       // No-profile state is never shown to fans — getProfile() always falls back to DEMO_PROFILE
 
       // --- PHASE 1: Remote profile fetch by handle ---
-      // ablemusic.co/maya → Netlify rewrites to able-v8.html?handle=maya
-      // Fetch that artist's profile from Supabase before any render
-      const _handleParam = new URLSearchParams(location.search).get('handle')
+      // ablemusic.co/maya → Netlify serves able-v8.html at /maya (no query string added)
+      // Read slug from pathname first; ?handle= is preserved as dev/testing override
+      const _pathSlug = /^\/[^/.]+$/.test(location.pathname) ? location.pathname.slice(1) : null
+      const _handleParam = new URLSearchParams(location.search).get('handle') || _pathSlug
       if (_handleParam) await fetchRemoteProfile(_handleParam)
 
       // NOTE: artist ID is NOT generated here for fans — only admin.html and start.html
